@@ -1,0 +1,44 @@
+<div class="customer-history-container">
+    <div class="row">
+        <div class="col-xs-12 box-detail">
+            <!--<div class="arrow-left-icon">
+                <a *ngIf="showLeftIconScroll"
+                   class="cursor-pointer"
+                   (click)="scrollToPosition('left')">
+                    <i class="fa fa-caret-left"></i>
+                </a>
+            </div>-->
+
+            <ag-grid-angular #agGrid style="width: 100%" 
+                             class="ag-theme-balham"
+                             [gridOptions]="gridOptions"
+                             [columnDefs]="gridOptions.columnDefs"
+                             [rowData]="gridOptions.rowData"
+                             [suppressDragLeaveHidesColumns]="true"
+                             [suppressContextMenu]="true"
+                             [domLayout]="'autoHeight'"
+                             enableColResize
+                             rowSelection="single"
+                             (gridReady)="onReady($event)">
+            </ag-grid-angular>
+
+            <!--<div class="arrow-right-icon">
+                <a class="cursor-pointer"
+                   *ngIf="showRightIconScroll"
+                   (click)="scrollToPosition('right')">
+                    <i class="fa fa-caret-right"></i>
+                </a>
+            </div>-->
+        </div>
+    </div>
+</div>
+
+
+<ng-template #headerCell let-data>
+    <history-header [data]="data"></history-header>
+</ng-template>
+
+<ng-template #bodyCell let-data>
+    <history-body [data]="data.body"></history-body>
+    <history-footer class="history-footer" [data]="data.footer"></history-footer>
+</ng-template>

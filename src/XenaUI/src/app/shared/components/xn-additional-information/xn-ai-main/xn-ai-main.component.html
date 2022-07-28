@@ -1,0 +1,41 @@
+﻿<div class="additional-information"
+     [ngStyle]="collapseExpandStyle">
+    <div [ngClass]="[additionalInformationOn ? 'additional-information-expand' : 'additional-information-collapse']">
+        <a mat-button
+            class="ai-vertical__text"
+            (click)="showPanelClick($event)">
+            <div class="additional-information-vertical__icon">
+                <i class="fa  fa-sort-desc  additional-information-toggle">
+                </i>
+            </div>
+            <div mat-button
+                class="additional-information-vertical__text">
+                <span class="vertical-text"><label-translation [keyword]="'XnAiMain__Additional_Information'"></label-translation></span>
+                <div *ngIf="editingWidgetStatus"
+                     class="edditing__notice-icon"
+                     aria-hidden="true"
+                     xn-tooltip
+                     [tooltipText]="'Additional Information is editing'"
+                     [tooltipPlacement]="'left'"
+                     container="body">
+                    <a class="fa  fa-bell-o"></a>
+                </div>
+            </div>
+        </a>
+        <div class="col-xs-12  addtional-information-content  no-padding">
+            <a mat-button
+                class="additional-information__header  margin-bottom--sm  padding-left"
+                 (click)="showPanelClick($event)">
+                <i class="fa  fa-sort-desc  additional-information-toggle"></i>
+                <div class="additional-information-title-text"><label-translation [keyword]="'XnAiMain__Additional_Information'"></label-translation></div>
+            </a>
+            <app-xn-ai-tab class="xn-tab--general"
+                           *ngIf="additionalInformation && additionalInformation.SimpleTabs.length > 0"
+                           [data]="additionalInformation.SimpleTabs">
+            </app-xn-ai-tab>
+            <app-xn-ai-page *ngIf="additionalInformation && additionalInformation.SimpleTabs.length <= 0"
+                            [data]="additionalInformation.Page">
+            </app-xn-ai-page>
+        </div>
+    </div>
+</div>

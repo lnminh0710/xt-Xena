@@ -1,0 +1,80 @@
+<div class="article-campaign-grid  height-pc-100">
+      <xn-ag-grid #grid
+                  *ngIf="dataSource && dataSource.columns && dataSource.columns.length"
+                  [id]="gridId"
+                  [parentInstance]="that"
+                  (rowDoubleClicked)="buildSelectedItem($event)"
+                  [dataSource]="dataSource">
+      </xn-ag-grid>
+</div>
+
+<p-dialog appendTo="body"
+          [resizable]="false"
+          [draggable]="false"
+          header=""
+          [(visible)]="showDialog"
+          modal="modal"
+          width="500"
+          responsive="true"
+          (onHide)="cancelSetQuantity()">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="fa  fa-warning  header-icon  pull-left"></span>
+            <span class="header-text  pull-left"><label-translation [keyword]="'Article_Campaign_Search__Warning'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="cancelSetQuantity()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="composition__modal-message">
+        <p><label-translation [keyword]="'Article_Campaign_Search__To_add_an_Article_to_the_set'"></label-translation></p>
+        <p><label-translation [keyword]="'Article_Campaign_Search__You_can_add_quantity_below_to_continue'"></label-translation></p>
+    </div>
+    <div class="composition__quantity  form-horizontal">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="txt-composition-quantity" class="control-label  col-sm-4  required"><label-translation [keyword]="'Article_Campaign_Search__Quantity'"></label-translation>: </label>
+                <div class="col-sm-8">
+                    <input #wijQuantNum [(ngModel)]="selectedArticleItemQuantity"
+                           id="txt-composition-quantity" 
+                           name="txt-composition-quantity"
+                           type="text" 
+                           xn-numeric 
+                           [min]="0"
+                           [max]="9999999"
+                           [format]="globalNumberFormat"
+                           class="custom-wj-input-control xn-input"
+                           (ngModelChange)="quantityChange($event)"
+                           (keyup.enter)="continueSetQuantity()">
+                    <div class="input-group-addon">
+                        <i class="fa fa-sum"></i>
+                    </div>
+                    <div *ngIf="displayError" class="alert alert-danger">
+                        <label-translation [keyword]="'Article_Campaign_Search__You_must_input_quantity_to_continue'"></label-translation>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button"
+                    mat-raised-button
+                    class="pull-right  margin-left--sd xn-margin"
+                    (click)="cancelSetQuantity()">
+                <span class="bt-t"><label-translation [keyword]="'Article_Campaign_Search__Cancel'"></label-translation></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  pull-right xn-margin"
+                    id="btn-continue-set-quantity"
+                    (click)="continueSetQuantity()">
+                <span class="bt-t"><label-translation [keyword]="'Article_Campaign_Search__Continue'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>

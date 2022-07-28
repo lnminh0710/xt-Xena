@@ -1,0 +1,58 @@
+textarea {
+    padding-left: 12px !important;
+}
+
+.text-left {
+    padding-left: 0;
+    padding-bottom: 10px;
+}
+
+:host ::ng-deep {
+    .mat-radio-label-content {
+        padding-top: 0 !important;
+    }
+}
+
+.d-o-r {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.d-o-i {
+    font-size: 22px;
+}
+
+.d-o-t {
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+.g-t {
+    font-weight: 900;
+}
+
+textarea {
+    height: calc(100% - 50px) !important;
+}
+
+.h-s-30 {
+    height: calc(100% - 33px);
+}
+
+.d-o {
+    height: calc(100% - 360px);
+}
+
+.d-o-i-c {
+    height: calc(100% - 40px);
+}
+
+.icon-preview {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 22px;
+    width: 100%;
+    text-align: center;
+}

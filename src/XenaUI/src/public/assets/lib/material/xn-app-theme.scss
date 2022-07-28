@@ -1,0 +1,14 @@
+@import '../../../../app/shared/components/xn-control/light-material-ui/core/theming/all-theme';
+
+
+// Include non-theme styles for core.
+@include mat-core();
+
+// Define a theme.
+$primary: mat-palette($mat-blue,800);
+$accent:  mat-palette($mat-orange, 500, A100, A400);
+$warn:    mat-palette($mat-red,A700);
+$theme:   mat-light-theme($primary, $accent, $warn);
+
+// Include all theme styles for the components.
+@include angular-material-theme($theme);

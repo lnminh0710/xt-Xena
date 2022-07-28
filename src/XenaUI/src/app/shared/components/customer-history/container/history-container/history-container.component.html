@@ -1,0 +1,12 @@
+<div class="history-container" 
+     [perfect-scrollbar]="perfectScrollbarConfig"
+     xn-detect-scroll (onScroll)="handleScroll($event)" [bottomOffset]="20">
+    <history-list *ngFor="let item of customerHistories"
+                  [data]="item"
+                  [resizeInfo]="resizeInfo"
+                  (click)="selectHistoryItem(item)">
+    </history-list>
+</div>
+<div class="history-loading" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+</div>

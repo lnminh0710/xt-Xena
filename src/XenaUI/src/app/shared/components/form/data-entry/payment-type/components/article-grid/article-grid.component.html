@@ -1,0 +1,151 @@
+<div class="data-entry__article-grid">
+    <form [formGroup]="formGroup"
+          id="articleGridFormGroup">
+        <div class="form-inline" [ngClass]="{'submitted': formGroup['submitted']}">
+            <div class="form-group col-sm-12 no-padding">
+                <label class="control-label  new-label">{{localizer['articleNr']}}</label>
+                <div class="article-number">
+                    <input type="text"
+                           #articleNr
+                           formControlName="articleNr"
+                           id="articleNr"
+                           name="articleNr"
+                           class="form-control  xn-input  de__ag__full-width"
+                           placeholder="{{localizer['articleNr']}}"
+                           (ngModelChange)="articleNrChange($event)"
+                           maxlength="10"
+                           autocomplete="off" />
+                    <control-messages [control]="formGroup.controls.articleNr"
+                                      icon="file-text"
+                                      [componentControl]="articleNr"
+                                      [hotKeyValue]="hotKeySettingService.articleNr$ | async">
+                    </control-messages>
+                    <div *ngIf="showArticleNrError" class="alert alert-danger">
+                        <label-translation [keyword]="'The article does not exist'"></label-translation>
+                    </div>
+                </div>
+                <div class="quantity-number">
+                    <input #quantity formControlName="quantity"
+                           id="quantity"
+                           name="quantity"
+                           type="text"
+                           placeholder="Qty"
+                           maxlength="4"
+                           xn-numeric
+                           [min]="0"
+                           [format]="globalNumberFormat"
+                           class="custom-wj-input-control xn-input"
+                           (ngModelChange)="quantityChange($event)">
+                    <control-messages [control]="formGroup.controls.quantity"
+                                      icon="sum"
+                                      [componentControl]="quantity"
+                                      [hotKeyValue]="hotKeySettingService.quantity$ | async">
+                    </control-messages>
+                </div>
+                <div class="de__ag__command">
+                    <a #addArticleBtn (click)="addArticle()"
+                       id="addArticle" name="addArticle"
+                       class="de__ag__command-add cursor-pointer"
+                       [ngClass]="{'icon-button--active': isFullFill, 'icon-button--inactive': !isFullFill}">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </a>
+                    <control-messages [componentControl]="addArticleBtn"
+                                      [hotKeyValue]="hotKeySettingService.addArticle$ | async"
+                                      (onClickComponentControl)="addArticle()">
+                    </control-messages>
+
+                    <div class="form-group">
+                        <mat-checkbox #allArticle
+                                      color="primary"
+                                      class="de__ag__command-check"
+                                      formControlName="allArticle">
+                            {{localizer['allArticle']}}
+                        </mat-checkbox>
+                        <control-messages [componentControl]="allArticle"
+                                          [hotKeyValue]="hotKeySettingService.allArticle$ | async"
+                                          (onClickComponentControl)="updateAllArticleStatus($event)">
+                        </control-messages>
+                    </div>
+
+                    <div class="form-group gift-container" style="position: relative">
+                        <a class="cursor-pointer" (click)="changeGiftStatus()">
+                            <i class="fa fa-gift" aria-hidden="true"></i>
+                            <i class="fa fa-times inactive-gift" *ngIf="!formGroup.value.isGift"></i>
+                        </a>
+
+                        <mat-radio-group #giftGroup [hidden]="!formGroup.value.isGift"
+                                         name="gift-radio"
+                                         formControlName="gift"
+                                         (change)="giftTypeChanged()">
+
+                            <div class="inline-block">
+                                <mat-radio-button class="xn-padding-left-5"
+                                                  color="primary"
+                                                  name="asile-radio"
+                                                  [value]="1">
+                                    {{localizer['allGift']}}
+                                </mat-radio-button>
+
+                                <control-messages [componentControl]="giftGroup"
+                                                  [hotKeyValue]="hotKeySettingService.allGift$ | async"
+                                                  (onClickComponentControl)="updateGiftStatus(1)">
+                                </control-messages>
+                            </div>
+
+                            <div class="inline-block">
+                                <mat-radio-button class="xn-padding-left-5"
+                                                  color="primary"
+                                                  name="gift-radio"
+                                                  [value]="2">
+                                    {{localizer['giftMale']}}
+                                </mat-radio-button>
+
+                                <control-messages [componentControl]="giftGroup"
+                                                  [hotKeyValue]="hotKeySettingService.giftMale$ | async"
+                                                  (onClickComponentControl)="updateGiftStatus(2)">
+                                </control-messages>
+                            </div>
+
+                            <div class="inline-block">
+                                <mat-radio-button class="xn-padding-left-5"
+                                                  color="primary"
+                                                  name="gift-radio"
+                                                  [value]="3">
+                                    {{localizer['giftFemale']}}
+                                </mat-radio-button>
+                                <control-messages [componentControl]="giftGroup"
+                                                  [hotKeyValue]="hotKeySettingService.giftFemale$ | async"
+                                                  (onClickComponentControl)="updateGiftStatus(3)">
+                                </control-messages>
+                            </div>
+                        </mat-radio-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div *ngIf="showArticleGridError" class="alert alert-danger article-list">
+        <label-translation [keyword]="'This Campaign must have at least one Article item'"></label-translation>
+    </div>
+    <div class="article-grid article-grid-add">
+        <xn-ag-grid #articleOrderGrid
+                    [id]="articleOrderGridId"
+                    *ngIf="dataResult1 && dataResult1.columns && dataResult1.columns.length"
+                    [dataSource]="dataResult1"
+                    [readOnly]="false"
+                    [isShowedEditButtons]="true"
+                    [showMenuRowGrouping]="true"
+                    [isEditting]="true"
+                    [allowDelete]="true"
+                    [fitWidthColumn]="true"
+                    [globalProperties]="globalPropertiesLocal"
+                    [sheetName]="'Article'"
+                    [hasFilterBox]="true"
+                    (onRowMarkedAsDelete)="onRowMarkedAsDeletedTable1($event)"
+                    (onDeletedRows)="deleteDataEntryArticle($event)"
+                    (cellEditingStopped)="onArticleOrderGridCellEditEndedHandler($event)"
+                    (hasValidationError)="hasValidationErrorHandler($event)">
+        </xn-ag-grid>
+    </div>
+</div>
+<div class="block-ui" *ngIf="isBlockUI()"></div>

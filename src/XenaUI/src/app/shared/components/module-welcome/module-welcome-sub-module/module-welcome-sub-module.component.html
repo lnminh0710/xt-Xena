@@ -1,0 +1,10 @@
+<div class="card"
+     (click)="selectSubModule(data)">
+    <h2>
+        <i class="fa {{data.iconName}}" aria-hidden="true"></i>
+    </h2>
+    <h4>
+        {{data.moduleName}}
+    </h4>
+    <span *ngIf="data.numberValue" class="number-of-value">{{data.numberValue}}</span>
+</div>

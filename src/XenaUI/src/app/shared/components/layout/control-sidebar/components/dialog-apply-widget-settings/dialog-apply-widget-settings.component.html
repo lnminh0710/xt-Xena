@@ -1,0 +1,89 @@
+<p-dialog
+    #pDialogApplyWidgetSetting
+    header=""
+    [(visible)]="showDialog"
+    [styleClass]="dialogStyleClass"
+    [resizable]="isResizable"
+    [draggable]="isDraggable"
+    modal="true"
+    width="1024"
+    height="768"
+    responsive="true"
+    appendTo="body">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="font-size-18px"><label-translation [keyword]="'Dialog_apply_ws__Apply_Widget_Settings'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="cancel()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-expand-popup"
+                    *ngIf="!isMaximized"
+                    (click)="maximize()">
+                <span class="fa fa-window-maximize"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-collapse-popup"
+                    *ngIf="isMaximized"
+                    (click)="restore()">
+                <span class="fa fa-window-restore"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="row height-pc-100 dialog-body">
+        <div class="col-xs-12">
+            <xn-combo-box #moduleCombo
+                          wjDropdownHelper
+                          class="form-control no-padding custom-wj-input-control font-size-16px"
+                          *ngIf="modules && (modules.length >= 0)"
+                          [itemsSource]="modules"
+                          [displayMemberPath]="'moduleName'"
+                          [selectedValuePath]="'idSettingsGUI'"
+                          [selectedIndex]="-1"
+                          [isRequired]="false"
+                          placeholder="Select a module"
+                          (selectedIndexChanged)="onModuleComboChanged($event)"
+                          (gotFocus)="moduleCombo.isDroppedDown = true; moduleComboFocused = true"
+                          (lostFocus)="moduleComboFocused = false">
+            </xn-combo-box>
+        </div>
+        <div class="col-xs-12 flex-1 margin-top--sm">
+            <xn-ag-grid #userGrid
+                        [id]="userGridId"
+                        *ngIf="userDatasource && userDatasource.columns && userDatasource.columns.length"
+                        [dataSource]="userDatasource"
+                        [readOnly]="false"
+                        [isShowedHeader]="true"
+                        [isEditting]="true"
+                        headerTitle="User List"></xn-ag-grid>
+        </div>
+        <div class="loading"
+             *ngIf="showLoading">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button label="Cancel"
+                    type="button"
+                    mat-raised-button
+                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size  mat-btn-white"
+                    (click)="cancel()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Dialog_apply_ws__Cancel'"></label-translation></span>
+            </button>
+            <button label="Accept"
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                    (click)="apply()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Dialog_apply_ws__Apply'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>

@@ -1,0 +1,104 @@
+<div class="no-padding campaign-form-container">
+    <campaign-country-t1-form #campaignT1aForm *ngIf="showForm1"
+                              [idSalesCampaignWizard]="idSalesCampaignWizard"
+                              [isClone]="isClone"
+                              (saveData)="form1aSaveDataChange($event)"
+                              (outputData)="form1aDataChange($event)"
+                              (showDialog)="selectCampaignToClone()">
+    </campaign-country-t1-form>
+    <campaign-country-t1b-form #campaignT1bForm *ngIf="idSalesCampaignWizard && !showForm1"
+                               [idSalesCampaignWizard]="idSalesCampaignWizard"
+                               [isClone]="isClone"
+                               [form1Data]="outPutForm1a"
+                               (saveData)="form1bSaveDataChange($event)"
+                               (outputData)="form1bDataChange($event)"
+                               (reloadData)="form1bReloadData()">
+    </campaign-country-t1b-form>
+</div>
+
+<p-dialog
+    #pDialogCampaignCloneExisting
+    *ngIf="showDialog"
+    [styleClass]="dialogStyleClass"
+    header=""
+    [(visible)]="showDialog"
+    [resizable]="isResizable"
+    [draggable]="isDraggable"
+    modal="modal"
+    width="900"
+    height="500"
+    responsive="true"
+    appendTo="body">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="fa  fa-upload  header-icon  pull-left"></span>
+            <span class="header-text  pull-left"><label-translation [keyword]="'Campaign_Combine_Form__Clone_an_Existing'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="closeDialog()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-expand-popup"
+                    *ngIf="!isMaximized"
+                    (click)="maximize()">
+                <span class="fa fa-window-maximize"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-collapse-popup"
+                    *ngIf="isMaximized"
+                    (click)="restore()">
+                <span class="fa fa-window-restore"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="col-xs-12 no-padding  height-pc-100">
+        <div class="col-xs-12  no-padding  search-grid">
+            <xn-ag-grid #xnAgGridComponent
+                        *ngIf="campaignExistingData && campaignExistingData.columns && campaignExistingData.columns.length"
+                        [id]="campaignExistingDataGridId"
+                        [dataSource]="campaignExistingData"
+                        [hasSearch]="true"
+                        [serverPaging]="true"
+                        [pageSize]="pageSize"
+                        [isShowedHeader]="true"
+                        [headerTitle]="'Search campaign'"
+                        [isUsedSearchTextboxInside]="true"
+                        (rowClick)="campaignExistingDataRowClick($event)"
+                        (rowDoubleClicked)="campaignExistingDataRowDoubleClick($event)"
+                        [readOnly]="true"
+                        [allowDelete]="false"
+                        [fitWidthColumn]="true"
+                        [globalProperties]="globalProperties"
+                        (onTableSearch)="campaignExistingDataTableSearch($event)"
+                        (pageChanged)="onPageChanged($event)"
+                        (pageNumberChanged)="onPageNumberChanged($event)">
+            </xn-ag-grid>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button"
+                    mat-raised-button
+                    class="pull-right  new-size"
+                    xn-tooltip
+                    [tooltipText]="'Close'"
+                    (click)="closeDialog()">
+                <span class="bt-t"><label-translation [keyword]="'Campaign_Combine_Form__Cancel'"></label-translation></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="pull-right  mat-btn-orange  new-size"
+                    xn-tooltip
+                    [tooltipText]="'Close'"
+                    [disabled]="!isGridItemselect"
+                    (click)="selectCampaign()">
+                <span class="bt-t"><label-translation [keyword]="'Campaign_Combine_Form__Clone'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>

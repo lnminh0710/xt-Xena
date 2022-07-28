@@ -1,0 +1,17 @@
+.pdf-body {
+    height: 100%;
+}
+.wj-viewer {
+    width: 100%;
+    display: block;
+}
+
+.wj-toolbar {
+    display: flex;
+}
+@media (min-width: 2100px) {
+    .wj-viewer {
+        height: 1100px;
+
+    }
+}

@@ -1,0 +1,162 @@
+<div class="col-xs-4  no-padding  height-pc-100  f-wr"
+     [ngClass]="{'submitted': (scheduleEventForm && scheduleEventForm['submitted'])}">
+    <form [formGroup]="scheduleEventForm"
+          class="form-horizontal  {{classNameForm[localScheduleType]}}"
+          id="scheduleEventForm"
+          novalidate>
+        <div class="col-xs-12  no-padding">
+            <label class="control-label  col-xs-3  no-padding-left"><label-translation [keyword]="'ScheduleSettingForm__Start_date'"></label-translation></label>
+            <div class="col-xs-9  no-padding">
+                <xn-date-picker #startDateCtr
+                                [isRequired]="false"
+                                [format]="globalDateFormat"
+                                [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                formControlName="startDate">
+                </xn-date-picker>
+                <control-messages [control]="scheduleEventForm.controls['startDate']"
+                                  [showIcon]="false">
+                </control-messages>
+                <div *ngIf="isStartDateGreaterThanStopDate" class="alert  alert-danger text-left"><label-translation [keyword]="'ScheduleSettingForm__Start_date_must_be_less'"></label-translation></div>
+            </div>
+        </div>
+        <div class="col-xs-12  no-padding">
+            <label class="control-label  col-xs-3  no-padding-left"><label-translation [keyword]="'ScheduleSettingForm__Stop_date'"></label-translation></label>
+            <div class="col-xs-9  no-padding">
+                <xn-date-picker #stopDateCtr
+                                [isRequired]="false"
+                                [format]="globalDateFormat"
+                                [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                formControlName="stopDate">
+                </xn-date-picker>
+                <control-messages [control]="scheduleEventForm.controls['stopDate']"
+                                  [showIcon]="false">
+                </control-messages>
+            </div>
+        </div>
+        <div class="col-xs-12  no-padding"
+             *ngIf="localScheduleType == SCHEDULE_TYPE[0]
+            || localScheduleType == SCHEDULE_TYPE[4]">
+            <label class="control-label  col-xs-3  no-padding-left"><label-translation [keyword]="'ScheduleSettingForm__Run_date'"></label-translation></label>
+            <div class="col-xs-9  no-padding">
+                <xn-date-picker #runDateCtr
+                                [isRequired]="false"
+                                [format]="globalDateFormat"
+                                [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                formControlName="runDate">
+                </xn-date-picker>
+                <control-messages [control]="scheduleEventForm.controls['runDate']"
+                                  [showIcon]="false">
+                </control-messages>
+            </div>
+        </div>
+        <div class="col-xs-12  no-padding">
+            <label class="control-label  col-xs-3  no-padding-left"><label-translation [keyword]="'ScheduleSettingForm__Run_time'"></label-translation></label>
+            <div class="col-xs-9  no-padding">
+                <wj-input-time #scheduleTime
+                               formControlName="runTime"
+                               [format]="'HH:mm'"
+                               (gotFocus)="wjGotFocus()"
+                               [step]="1">
+                </wj-input-time>
+                <control-messages [control]="scheduleEventForm.controls['runTime']"
+                                  [showIcon]="false">
+                </control-messages>
+            </div>
+        </div>
+        <div class="col-xs-12  no-padding  margin-bottom--sm  e">
+            <label class="control-label  col-xs-3  no-padding-left" for="email"><label-translation [keyword]="'ScheduleSettingForm__Email'"></label-translation></label>
+            <div class="col-xs-9  no-padding  height-pc-100">
+                <textarea #email
+                          class="form-control  xn-input"
+                          id="email"
+                          name="email"
+                          formControlName="email"
+                          autocomplete="off">
+                </textarea>
+                <control-messages [control]="scheduleEventForm.controls['email']"
+                                  [showIcon]="false">
+                </control-messages>
+            </div>
+        </div>
+        <span class="pull-right">* <label-translation [keyword]="'ScheduleSettingForm__Send_multiple_email_with_comma_separetor'"></label-translation></span>
+        <div class="col-xs-12  no-padding  margin-bottom--sm  margin-top--sd  p">
+            <label class="control-label  col-xs-3  no-padding-left" for="parameter"><label-translation [keyword]="'ScheduleSettingForm__Parameter'"></label-translation></label>
+            <div class="col-xs-9  no-padding  height-pc-100">
+                <textarea #parameter
+                          class="form-control  xn-input"
+                          id="parameter"
+                          name="parameter"
+                          formControlName="parameter"
+                          autocomplete="off">
+                </textarea>
+            </div>
+        </div>
+        <div class="col-xs-12  no-padding  margin-bottom--sm  margin-top--sd  {{classNameNote[localScheduleType]}}">
+            <label class="control-label  col-xs-3  no-padding-left" for="note"><label-translation [keyword]="'ScheduleSettingForm__Note'"></label-translation>
+            </label>
+            <div class="col-xs-9  no-padding  height-pc-100">
+                <textarea #note
+                          class="form-control  xn-input"
+                          id="note"
+                          name="note"
+                          formControlName="note"
+                          autocomplete="off">
+                </textarea>
+            </div>
+        </div>
+    </form>
+    <div class="col-xs-12  no-padding  week-day-items-wrapper"
+         [hidden]="localScheduleType != SCHEDULE_TYPE[2]">
+        <label class="control-label  col-xs-12  no-padding-left  text-left"><label-translation [keyword]="'ScheduleSettingForm__Choose_days_in_week'"></label-translation></label>
+        <div class="col-xs-12  week-day-items"
+             [perfect-scrollbar]="{suppressScrollX: true, suppressScrollY: false}">
+            <div *ngFor="let weekDayItem of weekDayItems" class="d-i">
+                <mat-checkbox color="primary"
+                              [(ngModel)]="weekDayItem.select"
+                              (click)="weekClicked(weekDayItem)">
+                    <label-translation *ngIf="weekDayItem.name" [keyword]="'Schedule_setting__w_' + weekDayItem.name"></label-translation>
+                </mat-checkbox>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12  no-padding  month-day-items-wrapper"
+         [hidden]="localScheduleType != SCHEDULE_TYPE[3]">
+        <label class="control-label  col-xs-12  no-padding-left  text-left"><label-translation [keyword]="'ScheduleSettingForm__Choose_days_in_month'"></label-translation></label>
+        <div class="col-xs-12  week-day-items"
+             [perfect-scrollbar]="{suppressScrollX: true, suppressScrollY: false}">
+            <div *ngFor="let dayItem of dayItems" class="d-i">
+                <mat-checkbox color="primary"
+                              [(ngModel)]="dayItem.select"
+                              (click)="monthClicked(dayItem)">
+                    {{dayItem.name}}
+                </mat-checkbox>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-9  no-padding  c">
+        <button type="button" mat-raised-button
+                class="mat-btn-blue"
+                (click)="addScheduleEvent()">
+            <span class="bt-t"><label-translation [keyword]="'ScheduleSettingForm__Add_event'"></label-translation></span>
+        </button>
+        <button type="button" mat-raised-button
+                [disabled]="isUpdateButtonDisabled"
+                class="mat-btn-orange"
+                (click)="updateScheduleEvent()">
+            <span class="bt-t"><label-translation [keyword]="'ScheduleSettingForm__Update'"></label-translation></span>
+        </button>
+    </div>
+</div>
+<div class="col-xs-8  no-padding-right  height-pc-100">
+    <schedule-setting-grid #scheduleSettingGrid
+                           [scheduleEventGridData]="scheduleEventGridData"
+                           [scheduleType]="localScheduleType"
+                           [globalDateFormat]="globalDateFormat"
+                           [currentRowData]="currentRowData"
+                           (onDeleteAction)="onDeleteHandle($event)"
+                           (onRunAction)="onRunHandle($event)"
+                           (onGridEditedAction)="onGridEditedHandle($event)"
+                           (onCheckAllCheckedAction)="onCheckAllCheckedHandle($event)"
+                           (onRowDoubleClickedAction)="onRowDoubleClickedHandle($event)">
+    </schedule-setting-grid>
+</div>

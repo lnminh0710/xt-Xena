@@ -1,0 +1,45 @@
+<form class="form-horizontal" [formGroup]="paymentTypeForm">
+
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="email"><label-translation [keyword]="'Payment_Type_Select__Payment_type'"></label-translation>:</label>
+        <div class="col-sm-10">
+            <div class="full-width">
+                <xn-combo-box #paymentType
+                              formControlName="paymentType"
+                              class="custom-wj-input-control xn-select"
+                              [itemsSource]="paymentTypeList"
+                              [displayMemberPath]="'value'"
+                              [selectedValuePath]="'key'"
+                              [isEditable]="true"
+                              [isRequired]="false"
+                              placeholder="Please select"
+                              (selectedIndexChanged)="onChangeValue()"
+                              (gotFocus)="paymentType.isDroppedDown = true">
+                    <!--<ng-template wjItemTemplate let-item="item">-->
+                        <!--<span [ngClass]="{'disabled':item && item.disabled}">{{item.value}}</span>-->
+                    <!--</ng-template>-->
+                </xn-combo-box>
+                <control-messages [xn-trigger-click-inside-cbo]="paymentType" [type]="'textbox'"
+                                  [control]="paymentTypeForm.controls.paymentTypeForm"
+                                  [icon]="'credit-card'"></control-messages>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div [ngSwitch]="selectedKey">
+            <div *ngSwitchCase="'1'">
+                <credit-card-payment-type [currencyList]="currencyList" [creditCardList]="creditCardList"></credit-card-payment-type>
+            </div>
+            <div *ngSwitchCase="'2'">
+                <cash-payment-type [currencyList]="currencyList"></cash-payment-type>
+            </div>
+            <div *ngSwitchCase="'3'">
+                <invoice-payment-type></invoice-payment-type>
+            </div>
+            <div *ngSwitchCase="'4'">
+                <check-payment-type [currencyList]="currencyList"></check-payment-type>
+            </div>
+        </div>
+    </div>
+
+</form>

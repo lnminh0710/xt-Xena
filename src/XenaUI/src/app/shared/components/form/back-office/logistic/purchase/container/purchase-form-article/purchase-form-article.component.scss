@@ -1,0 +1,68 @@
+@import '~sass_files/variables.scss';
+
+.form-container {
+    height: 100%;
+}
+
+.xn__form-header {
+    border-bottom: none;
+}
+
+.composition-left {
+    border-top: none;
+    border-bottom: none;
+}
+
+.set-composition__right {
+    margin-bottom: $spacing-size-mx;
+}
+
+.composition-grid {
+    //height: calc(100% - 40px);
+}
+
+.composition-grid--left {
+    //height: calc(100% - 50px) !important;
+}
+
+.article__set-composition__form {
+    height: 100%;
+}
+
+@media screen and (min-width: 767px) {
+    .composition-grid__panel {
+        height: 100%;
+        width: calc(50% - 20px);
+    }
+
+    .composition-command__panel {
+        width: 40px;
+        margin-top: 15%;
+    }
+
+    .composition-command__button {
+        margin-bottom: $spacing-size-mx;
+    }
+
+    .command__button-spacing {
+        margin-bottom: $spacing-size-sd;
+        margin-left: 7px;
+    }
+}
+
+.command__button-spacing {
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.composition-button {
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+.xn-margin {
+    margin: 10px 0;
+}

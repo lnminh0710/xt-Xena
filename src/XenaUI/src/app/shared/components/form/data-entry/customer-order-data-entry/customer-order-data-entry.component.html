@@ -1,0 +1,22 @@
+<div class="order-detail">
+    <widget-form [hidden]="displayMode == 'grid'"
+                 [dataSource]="formData"
+                 [readonly]="true"
+                 [formType]="formDisplayType"
+                 (onPdfFieldClick)="onPdfColumnClick($event)"
+                 (onTrackingFieldClick)="onTrackingColumnClick($event)"
+                 (onReturnRefundFieldClick)="onReturnRefundColumnClick($event)"></widget-form>
+
+    <xn-ag-grid [hidden]="displayMode == 'form'"
+                *ngIf="renderGrid && datasource && datasource.columns && datasource.columns.length"
+                [id]="gridId"
+                [dataSource]="datasource"
+                [hasFilterBox]="true"
+                [allowDelete]="false"
+                [isShowedHeader]="true"
+                [headerTitle]="'Order Detail'"
+                [globalProperties]="globalProperties"
+                [currentModule]="currentModule"
+                (pdfClick)="onPdfColumnClick($event)">
+    </xn-ag-grid>
+</div>

@@ -1,0 +1,50 @@
+<notification-list-view-child #autoLetterListComponent
+                              [title]="'Auto Letter'"
+                              [messageList]="autoLetterList"
+                              (archiveItemAction)="archiveItemHandler('autoLetter', true)"
+                              (archiveItemOkAction)="archiveItemOkActionHandler($event, 'autoLetter')"
+                              (archiveItemCancelAction)="archiveItemHandler('autoLetter', false)"
+                              (archiveAllItemAction)="archiveAllItemActionHandler()"
+                              (archiveAllItemOkAction)="archiveAllItemOkActionHandler('autoLetter')"
+                              (archiveAllItemCancelAction)="archiveAllItemCancelActionHandler()"
+                              (showArchiveListAction)="showArchiveListActionHandler('autoLetter')"
+                              (showDetailItemAction)="showDetailItemHandler($event, 'autoLetter')">
+</notification-list-view-child>
+<notification-list-view-child #feedbackListComponent
+                              [title]="'Feedback Notification'"
+                              [messageList]="feedbackList"
+                              (archiveItemAction)="archiveItemHandler('feedback', true)"
+                              (archiveItemOkAction)="archiveItemOkActionHandler($event, 'feedback')"
+                              (archiveItemCancelAction)="archiveItemHandler('feedback', false)"
+                              (archiveAllItemAction)="archiveAllItemActionHandler()"
+                              (archiveAllItemOkAction)="archiveAllItemOkActionHandler('feedback')"
+                              (archiveAllItemCancelAction)="archiveAllItemCancelActionHandler()"
+                              (showArchiveListAction)="showArchiveListActionHandler('feedback')"
+                              (showDetailItemAction)="showDetailItemHandler($event, 'feedback')">
+</notification-list-view-child>
+<notification-list-view-child #sendToAdminListComponent
+                              [title]="'Send to Admin'"
+                              [messageList]="sendToAdminList"
+                              (archiveItemAction)="archiveItemHandler('sendToAdmin', true)"
+                              (archiveItemOkAction)="archiveItemOkActionHandler($event, 'sendToAdmin')"
+                              (archiveItemCancelAction)="archiveItemHandler('sendToAdmin', false)"
+                              (archiveAllItemAction)="archiveAllItemActionHandler()"
+                              (archiveAllItemOkAction)="archiveAllItemOkActionHandler('sendToAdmin')"
+                              (archiveAllItemCancelAction)="archiveAllItemCancelActionHandler()"
+                              (showArchiveListAction)="showArchiveListActionHandler('sendToAdmin')"
+                              (showDetailItemAction)="showDetailItemHandler($event, 'sendToAdmin')">
+</notification-list-view-child>
+
+<notification-archive-popup *ngIf="isShowArchivePopup"
+                            [isShow]="isShowArchivePopup"
+                            [typeArchive]="typeArchive"
+                            (showDetailAction)="showDetailActionHandler($event)"
+                            (closeArchivePopupAction)="closeArchivePopupActionHandler()">
+</notification-archive-popup>
+<notification-detail-popup *ngIf="isShowDetailPopup"
+                            [isShow]="isShowDetailPopup"
+                            [data]="detailData"
+                            [isArchived]="isDataArchived"
+                            (closeDetailPopupAction)="closeDetailPopupActionHandler()"
+                            (archiveItemFromPopupAction)="archiveItemFromPopupActionHandler()">
+</notification-detail-popup>

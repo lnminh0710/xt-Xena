@@ -1,0 +1,89 @@
+<div class="de__scanning-status"
+     [ngClass]="{'de__scanning-status--small': (data.bodyData.length < 3)}">
+    <div class="scanning-row">
+        <div class="lot-content">
+            <span class="lot-title">
+                {{localizer['lotName']}}:
+            </span>
+            <span class="lot-name" [hidden]="!autoSelectLot">{{data.totalData.lotName}}</span>
+            <div class="form-group select-lot" [hidden]="autoSelectLot">
+                <xn-combo-box #lotNameCtl
+                              name="lotName"
+                              class="custom-wj-input-control xn-select"
+                              [itemsSource]="lotNames"
+                              [dropDownCssClass]="'wjmo-ddl'"
+                              [displayMemberPath]="'lotName'"
+                              [selectedValuePath]="'idValue'"
+                              [selectedIndex]="-1"
+                              [isEditable]="false"
+                              [isRequired]="false"
+                              [isDisabled]="autoSelectLot"
+                              [placeholder]="'Please select'"
+                              [isContentHtml]="true"
+                              [itemFormatter]="itemFormatterLotName"
+                              (initialized)="lotNameInitialized()"
+                              [maxDropDownWidth]="350"
+                              (gotFocus)="lotNameCtl.isDroppedDown = true"
+                              (selectedIndexChanged)="lotNameChanged($event)">
+                </xn-combo-box>
+                <control-messages [icon]="'list'"
+                                  (clickOnGroupAddon)="lotNameDroppedDown()"
+                                  [control]="lotNameCtl"
+                                  class="control-message-clickable"></control-messages>
+            </div>
+            <span class="auto-selectLot">
+                <mat-checkbox #autoSelectLotCtl color="primary"
+                              [(ngModel)]="autoSelectLot"
+                              (change)="autoSelectLotChange()">
+                </mat-checkbox>
+                <span><label-translation [keyword]="'Scanning_Status__Auto_Select_Lot'"></label-translation></span>
+            </span>
+        </div>
+    </div>
+    <div class="scanning-row">
+        <div class="de__ss__remain">
+            <table>
+                <tr>
+                    <td class="text-right">{{localizer['captured']}}:</td>
+                    <td class="text-left"><strong>{{data.totalData.qtyCapture}}</strong></td>
+                </tr>
+                <tr>
+                    <td class="text-right">{{localizer['remainingOrder']}}:</td>
+                    <td class="text-left"><strong>{{data.totalData.remaningOrder}}</strong></td>
+                </tr>
+                <tr>
+                    <td class="text-right">{{localizer['sendToAdmin']}}:</td>
+                    <td class="text-left"><strong>{{data.totalData.sendToAdmin}}</strong></td>
+                </tr>
+                <tr>
+                    <td class="text-right">{{localizer['skipped']}}:</td>
+                    <td class="text-left"><strong>{{data.totalData.skipped}}</strong></td>
+                </tr>
+                <tr>
+                    <td class="text-right">{{localizer['totalOrder']}}:</td>
+                    <td class="text-left"><strong>{{data.totalData.totalOrder}}</strong></td>
+                </tr>
+            </table>
+        </div>
+        <div class="de__ss__list">
+            <div class="de__ss__list-item__master" [ngClass]="{'col-sm-6': (data.bodyData.length > 0)}"
+                 *ngFor="let item of data.bodyData">
+                <div class="col-xs-12  de__ss__list-item" [perfect-scrollbar]="perfectScrollbarConfig" [ngClass]="{'xn-low-view': !item.isNext}">
+                    <div class="col-xs-12  no-padding  de__ss__list-item__body2">
+                        <span xn-tooltip [tooltipText]="item.mediaCode.length > 13 ? item.mediaCode : ''"
+                              [tooltipPlacement]="'top'"
+                              container="body">{{item.mediaCode}}</span>
+                    </div>
+                    <div class="col-xs-12  no-padding  de__ss__list-item__body3 de__ss__list-item__icon">
+                        <i class="fa  fa-info-circle"></i>
+                        {{item.dataInfor | toString}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="de_ss_image">
+        <img *ngIf="tempImageUrl"
+             src="/api/FileManager/GetScanFile?name={{tempImageUrl}}" alt="">
+    </div>
+</div>

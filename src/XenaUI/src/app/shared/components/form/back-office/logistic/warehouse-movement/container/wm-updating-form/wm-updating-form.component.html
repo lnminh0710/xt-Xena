@@ -1,0 +1,147 @@
+<div *ngIf="isRenderForm" class="form-container" [ngClass]="{'submitted': formGroup['submitted']}">
+    <div>
+        <form class="form-horizontal form clearfix" [formGroup]="formGroup" id="warehouseMovementFormGroup" name="warehouseMovementFormGroup" novalidate>
+            <control-focus #focusControl formName="warehouseMovementFormGroup"
+              controlWaitingMore="notes">
+            </control-focus>
+            <div class="col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label  class="control-label col-md-12 col-lg-4 xn-control-lable"><label-translation [keyword]="'Warehouse_Movement_Form__From_warehouse'"></label-translation></label>
+                    <div class="col-md-12 col-lg-8 no-padding">
+                        <xn-combo-box #fromWarehouseId
+                                      wjDropdownHelper
+                                      [form]="formGroup"
+                                      [selectItemWhenHasOneRowWithoutFocus]="true"
+                                      formControlName="fromWarehouseId"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.wareHouse"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="fromWarehouseId"
+                                          [control]="formGroup.controls['fromWarehouseId']"
+                                          icon="asterisk"
+                                          [componentControl]="fromWarehouseId">
+                        </control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4 xn-control-lable"><label-translation [keyword]="'Warehouse_Movement_Form__To_warehouse'"></label-translation></label>
+                    <div class="col-md-12 col-lg-8 no-padding">
+                        <xn-combo-box #toWarehouseId
+                                      wjDropdownHelper
+                                      [form]="formGroup"
+                                      [selectItemWhenHasOneRowWithoutFocus]="true"
+                                      formControlName="toWarehouseId"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.wareHouse"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="toWarehouseId" [control]="formGroup.controls.toWarehouseId" icon="asterisk"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-md-12 col-lg-4 xn-control-lable"><label-translation [keyword]="'Warehouse_Movement_Form__Currency'"></label-translation></label>
+                    <div class="col-md-12 col-lg-8 no-padding">
+                        <xn-combo-box #currency
+                                      wjDropdownHelper
+                                      [form]="formGroup"
+                                      [selectItemWhenHasOneRowWithoutFocus]="true"
+                                      formControlName="currency"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.Currency"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="currency" icon="money"></control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label  class="control-label col-md-12 col-lg-4 xn-control-lable"><label-translation [keyword]="'Warehouse_Movement_Form__Est_delivery'"></label-translation></label>
+                    <div class="col-md-12 col-lg-8 no-padding">
+                        <xn-date-picker #estimateDeliveryDate
+                                        formControlName="estimateDeliveryDate"
+                                        class="xn-input"
+                                        [format]="globalDateFormat"
+                                        [min]="'1900-01-01' | toDate"
+                                        [isRequired]="false"
+                                        [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus">
+                        </xn-date-picker>
+                        <control-messages [xn-trigger-click-inside-cbo]="estimateDeliveryDate" [control]="formGroup.controls.estimateDeliveryDate" icon="calendar"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-md-12 col-lg-4 xn-control-lable"><label-translation [keyword]="'Warehouse_Movement_Form__Confirm_date'"></label-translation></label>
+                    <div class="col-md-12 col-lg-8 no-padding">
+                        <xn-date-picker #confirmDate formControlName="confirmDate"
+                                        class="xn-input"
+                                        [format]="globalDateFormat"
+                                        [min]="'1900-01-01' | toDate"
+                                        [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                        [isRequired]="false">
+                        </xn-date-picker>
+                        <control-messages [xn-trigger-click-inside-cbo]="confirmDate" [control]="formGroup.controls.confirmDate"
+                                          icon="calendar"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-md-12 col-lg-4 xn-control-lable"><label-translation [keyword]="'Warehouse_Movement_Form__Delivery_date'"></label-translation></label>
+                    <div class="col-md-12 col-lg-8 no-padding">
+                        <xn-date-picker #deliveryDate formControlName="deliveryDate"
+                                        class="xn-input"
+                                        [format]="globalDateFormat"
+                                        [min]="'1900-01-01' | toDate"
+                                        [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                        [isRequired]="false">
+                        </xn-date-picker>
+                        <control-messages [xn-trigger-click-inside-cbo]="deliveryDate" [control]="formGroup.controls.deliveryDate"
+                                          icon="calendar"></control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label  class="control-label col-md-12 col-lg-4 xn-control-lable"><label-translation [keyword]="'Warehouse_Movement_Form__Notes'"></label-translation></label>
+                    <div class="col-md-12 col-lg-8 no-padding">
+                        <textarea class="form-control xn-textarea  xn-input--no-icon"
+                                  id="otes"
+                                  formControlName="notes"
+                                  rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4 xn-control-lable"><label-translation [keyword]="'Warehouse_Movement_Form__Notes_for_recipient'"></label-translation></label>
+                    <div class="col-md-12 col-lg-8 no-padding">
+                        <textarea class="form-control xn-textarea  xn-input--no-icon"
+                                  id="noteForRecipient"
+                                  formControlName="noteForRecipient"
+                                  rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="double-grid-vertical clearfix">
+        <warehouse-movement-select-article #warehouseMovementSelectArticle
+                                           [selectedArticleData]="selectedArticleGrid"
+                                           [globalProperties]="globalProperties"
+                                           [updateFormData]="formGroup.value"
+                                           (onHasError)="onArticleHasError($event)"
+                                           (outputData)="selectArticleOutput($event)">
+        </warehouse-movement-select-article>
+    </div>
+</div>

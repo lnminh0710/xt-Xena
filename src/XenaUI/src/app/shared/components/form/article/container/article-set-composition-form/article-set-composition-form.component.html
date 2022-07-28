@@ -1,0 +1,146 @@
+<div *ngIf="isRenderForm" class="form-container" [ngClass]="{'submitted': articleSetCompositionForm.submitted}">
+    <form [formGroup]="articleSetCompositionForm" class="form-horizontal  article__set-composition__form  padding-top--sd" id="articleSetCompositionForm" novalidate>
+        <div class="col-xs-12  composition-grid__panel">
+            <div class="composition-grid--left">
+                <xn-ag-grid #compositionGridLeft
+                            *ngIf="compositionDataLeft && compositionDataLeft.columns && compositionDataLeft.columns.length"
+                            [id]="compositionGridLeftId"
+                            [dataSource]="compositionDataLeft"
+                            [hasSearch]="true"
+                            [isShowedHeader]="true"
+                            [rowGrouping]="rowLeftGrouping"
+                            [pageSize]="pageSize"
+                            [isUsedSearchTextboxInside]="true"
+                            [serverPaging]="true"
+                            [readOnly]="false"
+                            [isEditting]="true"
+                            [headerTitle]="'Available set'"
+                            (onRowGroupPanel)="handleRowLeftGrouping($event)"
+                            (rowClick)="compositionDataLeftRowClick($event)"
+                            (rowDoubleClicked)="compositionDataLeftRowDoubleClick($event)"
+                            (cellEditingStopped)="onCompositionGridLeftEnd()"
+                            (onTableSearch)="onLeftTableSearch($event)"
+                            (pageChanged)="onPageChanged($event)"
+                            (pageNumberChanged)="onPageNumberChanged($event)">
+                </xn-ag-grid>
+            </div>
+        </div>
+        <div class="col-xs-12  no-padding  composition-command__panel">
+            <div class="col-xs-2  col-sm-12  no-padding">
+                <div class="command__button-spacing" (click)="addComposition($event)">
+                    <span class="move-grid-item-button  fa  fa-step-forward"></span>
+                </div>
+            </div>
+            <!-- <div class="col-xs-2  col-sm-12  no-padding">
+                 <div class="command__button-spacing" (click)="addAllComposition($event)">
+                     <span class="move-grid-item-button  fa  fa-fast-forward"></span>
+                 </div>
+             </div> -->
+            <div class="col-xs-2  col-sm-12  composition-command__button"></div>
+            <div class="col-xs-2  col-sm-12  no-padding">
+                <div class="command__button-spacing" (click)="removeComposition($event)">
+                    <span class="move-grid-item-button  fa  fa-step-backward"></span>
+                </div>
+            </div>
+            <div class="col-xs-2  col-sm-12  no-padding">
+                <div class="command__button-spacing" (click)="removeAllComposition($event)">
+                    <span class="move-grid-item-button  fa  fa-fast-backward"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12  composition-grid__panel">
+            <div class="composition-grid">
+                <xn-ag-grid #compositionGridRight
+                            *ngIf="compositionDataRight && compositionDataRight.columns && compositionDataRight.columns.length"
+                            [id]="compositionGridRightId"
+                            [dataSource]="compositionDataRight"
+                            [isShowedHeader]="true"
+                            [rowGrouping]="rowRightGrouping"
+                            [readOnly]="false"
+                            [isEditting]="true"
+                            [headerTitle]="'Set composition'"
+                            [globalProperties]="globalProps"
+                            (onRowGroupPanel)="handleRowRightGrouping($event)"
+                            (rowDoubleClicked)="compositionDataRightRowDoubleClick($event)"
+                            (cellEditingStopped)="onCompositionGridRightEnd()"
+                            (rowClick)="compositionDataRightRowClick($event)">
+                </xn-ag-grid>
+            </div>
+        </div>
+    </form>
+</div>
+<p-dialog header=""
+          [(visible)]="showDialog"
+          [resizable]="false"
+          modal="modal"
+          width="500"
+          responsive="true"
+          (onAfterHide)="cancelSetQuantity()">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="fa  fa-warning  header-icon  pull-left"></span>
+            <span class="header-text  pull-left">
+                <label-translation [keyword]="'Article_Set__Warning'" User_profile_F></label-translation>
+            </span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="cancelSetQuantity()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="composition__modal-message">
+        <p><label-translation [keyword]="'Article_Set__To_add_an_Article'" User_profile_F></label-translation></p>
+        <p><label-translation [keyword]="'Article_Set__You_can_add_quantity'" User_profile_F></label-translation></p>
+    </div>
+    <div class="composition__quantity  form-horizontal">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="txt-composition-quantity" class="control-label  col-sm-4  required">
+                    <label-translation [keyword]="'Article_Set__Quantity'" User_profile_F></label-translation>:
+                </label>
+                <div class="col-sm-8">
+                    <input [(ngModel)]="compositionModel.quantity"
+                           id="txt-composition-quantity"
+                           name="txt-composition-quantity"
+                           type="text"
+                           xn-numeric
+                           [min]="0"
+                           [format]="globalNumberFormat"
+                           [textAlign]="'right'"
+                           class="custom-wj-input-control xn-input"
+                           (ngModelChange)="quantityChange($event)">
+                    <div class="input-group-addon">
+                        <i class="fa fa-sum"></i>
+                    </div>
+                    <clear-text [enableClearText]="true" [controlName]="'txt-composition-quantity'"></clear-text>
+                    <div [hidden]="!!(compositionModel.quantity) || !isContinueClicked" class="alert alert-danger">
+                        <label-translation [keyword]="'Article_Set__You_must_input_quantity'" User_profile_F></label-translation>.
+                    </div>
+                    <div [hidden]="(!(compositionModel.quantity) || quantityValid)" class="alert alert-danger">
+                        <label-translation [keyword]="'Article_Set__input_quantity_less_than_9999999'" User_profile_F></label-translation>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button"
+                    mat-raised-button
+                    class="pull-right  margin-left--sd  xn-margin"
+                    (click)="cancelSetQuantity()">
+                <span class="bt-t"><label-translation [keyword]="'Article_Set__Cancel'" User_profile_F></label-translation></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  pull-right xn-margin"
+                    id="btn-continue-set-quantity"
+                    (click)="continueSetQuantity()">
+                <span class="bt-t"><label-translation [keyword]="'Article_Set__Continue'" User_profile_F></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>

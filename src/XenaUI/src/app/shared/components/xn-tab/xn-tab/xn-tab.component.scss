@@ -1,0 +1,23 @@
+.tab-content-container {
+    position: relative;
+}
+
+.additional-information__split {
+    border-top: none;
+    border-left: none;
+}
+
+.xn__tab-content__split {
+    overflow: hidden !important;
+}
+
+.title-widget-info {
+    float: left;
+    width: 100%;
+    margin-top: -25px;
+    text-align: center;
+    font-weight: bold;
+    line-height: 1.8;
+    position: relative;
+    z-index: 1;
+}

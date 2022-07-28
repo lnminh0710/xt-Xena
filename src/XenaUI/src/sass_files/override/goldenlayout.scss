@@ -1,0 +1,98 @@
+.edit-layout-setting {
+    position: absolute;
+    left: 1px;
+    right: 0px;
+    top: 0px;
+    bottom: 1px;
+    background-color: #e1e1e1;
+    z-index: 11;
+
+    .edit-layout-setting-stage {
+        position: absolute;
+        z-index: 1;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+    }
+
+
+    .lm_goldenlayout {
+
+        .lm_header {
+            position: static;
+            background: #e1e1e1 !important;
+
+            &.lm_noHeader {
+                background: #e1e1e1;
+                border: 1px solid #cccccc;
+                border-bottom: none;
+                z-index: 0;
+
+                .lm_tab {
+                    box-shadow: none;
+                    border: none;
+                    background: #e1e1e1;
+
+                    &.lm_active {
+                        background: #e1e1e1;
+                    }
+
+                    .lm_close_tab {
+                        display: none;
+                    }
+                }
+            }
+
+            .lm_tab {
+                background: #e1e1e1;
+
+                &.lm_active {
+                    background: #fafafa;
+                }
+
+                &:hover {
+                    background: #fafafa;
+                }
+            }
+        }
+
+        .lm_content {
+            border-top: none;
+        }
+
+        .popover {
+            display: block;
+
+            .popover-content {
+                padding: 5px;
+            }
+
+            .arrow {
+                left: 20px;
+            }
+
+            .input-title {
+                border-radius: 4px;
+                width: 120px;
+                padding: 5px;
+                height: 30px;
+            }
+        }
+        /*
+        .lm-tab-row {
+            background: $grey2 !important;
+        }
+        .lm-tab-column {
+            background: $grey2 !important;
+        }
+        .lm-item-border {
+            border: 1px solid $white1 !important;
+        }
+        */
+    }
+}
+
+/*.lm_dragProxy {
+    z-index: 104 !important;
+}*/

@@ -1,0 +1,56 @@
+{
+    "properties": {
+        "articleNr": {
+            "type": "keyword",
+            "boost": null
+        },
+        "articleNameShort": {
+            "type": "keyword",
+            "boost": null
+        },
+        "articleStatus": {
+            "type": "keyword",
+            "boost": null
+        },
+        "country": {
+            "type": "keyword",
+            "boost": null
+        },
+        "notes": {
+            "type": "keyword",
+            "boost": null
+        },
+        "isPrintProduct": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isActive": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isVirtual": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isSetArticle": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isWarehouseControl": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isService": {
+            "type": "boolean",
+            "boost": null
+        },
+        "createDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "updateDate": {
+            "type": "keyword",
+            "boost": null
+        }
+    }
+}

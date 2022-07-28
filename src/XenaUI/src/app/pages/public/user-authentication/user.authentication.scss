@@ -1,0 +1,81 @@
+@import "~sass_files/variables.scss";
+
+$bg-image-name: "sky-bg.jpg";
+$login-background-url: "#{$images-root}#{$bg-image-name}";
+
+.auth__main {
+	display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    background-image: url(#{$login-background-url});
+	background-size: cover;
+
+    .auth__block {
+        width: $small-size;
+        margin: 0 auto;
+        border-radius: $border-radius-size;
+        background: $blue-trans;
+        color: $white;
+        padding: $spacing-size-mx;
+    }
+    .form-control__right-icon--auth {
+        color: $gray1;
+    }
+
+	.user-authentication__success {
+		color: $accent2;
+	}
+	.user-authentication__fail {
+		color: $red1;
+	}
+	.user-authentication__notice {
+		color: $palevioletred;
+	}
+    
+    .input-group-addon {
+        margin-top: -40px;
+        margin-left: 0px;
+        width: 40px;
+        height: 40px;
+        i {
+            line-height: 24px;
+            font-size: 20px;
+        }
+    }
+    .form-group input {
+        height: 40px;
+        padding-left: 45px;
+    }
+    .top-icon {
+        margin: -10px 0 20px 93px;
+        font-size: 100px;
+    }
+    .push-icon {
+        line-height: 35px;
+        font-size: 23px;
+        margin-right: 7px;
+        margin-top: -3px
+    }
+    .line-separate hr{
+        margin-bottom: 0;
+    }
+    .mat-btn-blue {
+        width: 100%;
+        height: 40px;
+    }
+    .link-to {
+        margin-top: 3px;
+    }
+}
+
+.waveWrapper.waveAnimation {
+    .f-r-fp {
+        a {
+            &:focus {
+                text-decoration: underline !important;
+            }
+        }
+    }
+}

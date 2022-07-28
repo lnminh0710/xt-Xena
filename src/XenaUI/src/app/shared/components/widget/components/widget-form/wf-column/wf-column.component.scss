@@ -1,0 +1,99 @@
+.c,
+.property-panel__order-text {
+    // min-width: 250px;
+    height: 100%;
+}
+.ctr {
+    line-height: 1.5;
+    // min-width: 240px;
+    width: 100%;
+    position: relative;
+}
+.c-n-d:hover {
+    .d-i {
+        display: block !important;
+    }
+}
+.l-b {
+    display: block;
+    position: relative;
+}
+.e-p {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    font-size: 20px;
+}
+.property-panel__order-text {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding-right: 3px;
+}
+.gu-transit {
+    pointer-events: none;
+}
+.c-n-d:hover {
+    .setting-column {
+        display: none !important;
+    }
+}
+.d-i {
+    cursor: pointer;
+    position: absolute;
+    display: none;
+    //right: calc(100% - 50px);
+    top: 0px;
+
+    .fa {
+        font-size: 16px;
+    }
+}
+.chk {
+    display: none;
+    position: absolute;
+    z-index: 2;
+}
+.chk-f {
+    top: 5px;
+}
+.chk-l {
+    top: 2px;
+}
+.ctr-dg {
+    display: none;
+}
+.resize-ghost-element {
+    position: inherit !important;
+}
+.isResizing {
+    display: none;
+}
+.c-rz {
+    position: absolute;
+    right: 6.5px;
+    width: 0;
+    height: 100%;
+    z-index: 3;
+    background: transparent;
+    display: flex;
+    align-items: center;
+}
+.fa-circle-o {
+    cursor: w-resize;
+}
+.resize-ghost-element {
+    min-width: 30px;
+}
+
+:host ::ng-deep {
+    .gu-transit {
+        .ps-scrollbar-x-rail,
+        .ps-scrollbar-y-rail {
+            display: none;
+        }
+    }
+}
+

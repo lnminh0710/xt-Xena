@@ -1,0 +1,62 @@
+{
+    "properties": {
+        "campaignNr": {
+            "type": "keyword",
+            "boost": null
+        },
+        "campaignName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "principal": {
+            "type": "keyword",
+            "boost": null
+        },
+        "mandant": {
+            "type": "keyword",
+            "boost": null
+        },
+        "qtyCountrys": {
+            "type": "long",
+            "boost": null
+        },
+        "notes": {
+            "type": "keyword",
+            "boost": null
+        },
+        "isTrack": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isActive": {
+            "type": "boolean",
+            "boost": null
+        },
+
+        "isAsile": {
+            "type": "boolean",
+            "boost": null
+        },
+
+        "isInter": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isMaster": {
+            "type": "boolean",
+            "boost": null
+        },
+        "createDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "updateDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "postageDate": {
+            "type": "keyword",
+            "boost": null
+        }
+    }
+}

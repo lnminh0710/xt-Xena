@@ -1,0 +1,355 @@
+<div class="doublet-check-main  clearfix">
+    <div class="col-md-2  height-pc-100  padding-top--sm">
+        <div class="left-grid">
+            <xn-ag-grid *ngIf="countryGridData && countryGridData.columns && countryGridData.columns.length"
+                        #countryGrid
+                        [id]="countryGridId"
+                        [dataSource]="countryGridData"
+                        [isShowedHeader]="true"
+                        headerTitle="Country"
+                        [readOnly]="false"
+                        [isEditting]="true"
+                        (cellEditingStopped)="onCountryGridRowEditEnded($event)"
+                        (onMarkedAsSelectedAll)="onCountryGridMarkedAsSelectedAll($event)">
+            </xn-ag-grid>
+        </div>
+    </div>
+    <div class="col-xs-3  height-pc-100  padding-top--sm">
+        <div class="left-grid">
+            <xn-ag-grid *ngIf="countryGridData && countryGridData.columns && countryGridData.columns.length"
+                        #columnsGrid
+                        [id]="columnsGridId"
+                        [dataSource]="columnsGridData"
+                        [isShowedHeader]="true"
+                        headerTitle="Columns"
+                        [readOnly]="false"
+                        [isEditting]="true"
+                        (cellEditingStopped)="onColumnsGridRowEditEnded($event)"
+                        (hasValidationError)="columnsGridHasValidationError($event)"
+                        (onMarkedAsSelectedAll)="onColumnsGridMarkedAsSelectedAll($event)">
+            </xn-ag-grid>
+        </div>
+    </div>
+    <div class="col-xs-2  height-pc-100  padding-top--sm">
+        <div><label-translation [keyword]="'Doublet_check_main__Group_name'"></label-translation></div>
+        <div class="doublet-check-row"
+             [ngClass]="{'submitted':showRequire}">
+            <input class="form-control  xn-input"
+                   [(ngModel)]="groupName"
+                   (keydown)="groupNameKeyDown()"
+                   [ngClass]="{'ng-invalid':showRequire}"
+                   type="text"
+                   autocomplete="off" />
+            <div *ngIf="showRequire" class="alert  alert-danger"><label-translation [keyword]="'Doublet_check_main__Please_enter_the_group_name'"></label-translation></div>
+        </div>
+        <mat-checkbox color="primary"
+                      class="de__ag__command-check"
+                      [(ngModel)]="isAutoMatching"
+                      (change)="onCheckboxChanged()">
+            <label-translation [keyword]="'Doublet_check_main__Auto_Matching'"></label-translation>
+        </mat-checkbox>
+        <div class="doublet-check-row">
+            <button *ngIf="widgetButtonAccessRight && widgetButtonAccessRight.all && widgetButtonAccessRight.createGroup"
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  doublet-check-button"
+                    (click)="createGroup()">
+                <i class="fa  fa-plus" aria-hidden="true"></i>
+                <span class="bt-t-i"><label-translation [keyword]="'Doublet_check_main__Create_group'"></label-translation></span>
+            </button>
+        </div>
+        <div class="doublet-check-row">
+            <button *ngIf="widgetButtonAccessRight && widgetButtonAccessRight.all && widgetButtonAccessRight.updateGroup"
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  doublet-check-button"
+                    (click)="updateGroup()"
+                    [disabled]="!matchingGroup">
+                <i class="fa  fa-arrow-circle-o-down" aria-hidden="true"></i>
+                <span class="bt-t-i"><label-translation [keyword]="'Doublet_check_main__Update_group'"></label-translation></span>
+            </button>
+        </div>
+        <div class="doublet-check-row">
+            <button *ngIf="widgetButtonAccessRight && widgetButtonAccessRight.all && widgetButtonAccessRight.deleteGroup"
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-red doublet-check-button"
+                    (click)="deleteGroup()"
+                    [disabled]="!matchingGroup">
+                <i class="fa  fa-trash" aria-hidden="true"></i>
+                <span class="bt-t-i"><label-translation [keyword]="'Doublet_check_main__Delete_group'"></label-translation></span>
+            </button>
+        </div>
+        <div class="doublet-check-row  margin-top--lg">
+            <button *ngIf="widgetButtonAccessRight && widgetButtonAccessRight.all && (widgetButtonAccessRight.createGroup || widgetButtonAccessRight.updateGroup || widgetButtonAccessRight.deleteGroup)"
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-orange doublet-check-button"
+                    (click)="saveConfig()"
+                    [disabled]="!isDirty">
+                <i class="fa  fa-floppy-o" aria-hidden="true"></i>
+                <span class="bt-t-i"><label-translation [keyword]="'Doublet_check_main__Save_config'"></label-translation></span>
+            </button>
+        </div>
+        <div class="doublet-check-row  margin-top--lg">
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-green  doublet-check-button"
+                    [ngClass]="{'blinking-button': hasDataChanged}"
+                    (click)="refreshData()"
+                    [disabled]="!hasDataChanged">
+                <i class="fa  fa-refresh" aria-hidden="true"></i>
+                <span class="bt-t-i"><label-translation [keyword]="'Doublet_check_main__Refresh'"></label-translation>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-3  group-tab  padding-top--sm">
+        <tabset #groupTab
+                class="tab-with-right-border">
+            <tab heading="Auto"
+                 (select)="selectTab(1, $event)">
+                <xn-ag-grid *ngIf="autoMatchingGridData && autoMatchingGridData.columns && autoMatchingGridData.columns.length"
+                            #autoMatchingGrid
+                            [id]="autoMatchingGridId"
+                            [dataSource]="autoMatchingGridData"
+                            [isShowedHeader]="true"
+                            [hasHeaderBorder]="false"
+                            [readOnly]="false"
+                            [isEditting]="true"
+                            (rowDoubleClicked)="matchingGroupGridRowDoubleClick($event)"
+                            (onCheckAllChecked)="onMatchingGridCheckAllChecked($event, 'autoMatchingGridData')"
+                            (cellEditingStopped)="onMatchingGridCheckChanged($event)">
+                </xn-ag-grid>
+            </tab>
+            <tab heading="Manual"
+                 (select)="selectTab(2, $event)">
+                <xn-ag-grid *ngIf="manualMatchingGridData && manualMatchingGridData.columns && manualMatchingGridData.columns.length"
+                            #manualMatchingGrid
+                            [id]="manualMatchingGridId"
+                            [dataSource]="manualMatchingGridData"
+                            [isShowedHeader]="true"
+                            [hasHeaderBorder]="false"
+                            [readOnly]="false"
+                            [isEditting]="true"
+                            (rowDoubleClicked)="matchingGroupGridRowDoubleClick($event)"
+                            (onCheckAllChecked)="onMatchingGridCheckAllChecked($event, 'manualMatchingGridData')"
+                            (cellEditingStopped)="onMatchingGridCheckChanged($event)">
+                </xn-ag-grid>
+            </tab>
+        </tabset>
+    </div>
+    <div class="col-md-2">
+        <div class="doublet-check-header">
+            <div><label-translation [keyword]="'Doublet_check_main__Schedule_Setting'"></label-translation></div>
+            <div>
+                <button *ngIf="widgetButtonAccessRight && widgetButtonAccessRight.all && widgetButtonAccessRight.scheduleSetting"
+                        type="button"
+                        mat-raised-button
+                        class="mat-btn-blue show-window-dialog-button"
+                        (click)="openWindowDialog($event)">
+                    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <div class="doublet-check-next-event-container">
+            <div class="doublet-check-next-event-title">
+                <label-translation [keyword]="'Doublet_check_main__Next_event'"></label-translation>:
+            </div>
+            <div class="doublet-check-next-event-row">
+                <div class="doublet-check-next-event-lable"><label-translation [keyword]="'Doublet_check_main__On'"></label-translation>:</div>
+                <div class="doublet-check-next-event-value">{{nextScheduleEvent.on}}</div>
+            </div>
+            <div class="doublet-check-next-event-row">
+                <div class="doublet-check-next-event-lable"><label-translation [keyword]="'Doublet_check_main__At'"></label-translation>:</div>
+                <div class="doublet-check-next-event-value">{{nextScheduleEvent.at}}</div>
+            </div>
+        </div>
+        <div class="doublet-check-row">
+            <button *ngIf="widgetButtonAccessRight && widgetButtonAccessRight.all && widgetButtonAccessRight.start"
+                    type="button"
+                    mat-raised-button
+                    class="{{(matchingStatus == 1 ? 'mat-btn-red' : 'mat-btn-green')}}  doublet-check-start-button  mat-raised-button"
+                    (click)="start()">
+                <i class="fa {{(matchingStatus == 1 ? 'fa-ban' : 'fa-play')}}"
+                   aria-hidden="true"></i>
+                <span>
+                    <label-translation *ngIf="matchingStatus == 1" [keyword]="'Doublet_check_main__Stop'"></label-translation>
+                    <label-translation *ngIf="matchingStatus != 1" [keyword]="'Doublet_check_main__Start'"></label-translation>
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+<!--<schedule-setting #scheduleSetting
+                  *ngIf="isShowScheduleSetting"
+                  [globalProperties]="globalProperties"
+                  (closedAction)="closedScheduleSettingHandle($event)">
+</schedule-setting>-->
+
+ <p-dialog header=""
+          [(visible)]="showDialog"
+          modal="true"
+          positionTop="150"
+          responsive="true"
+          appendTo="body"
+          [resizable]="false"
+          [draggable]="false"
+          [contentStyle]="{'padding-bottom': 0, 'padding-top': 0}">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="header-text"><label-translation [keyword]="'Doublet_check_main__Schedule_Setting'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="closeWindowDialog($event)">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="row">
+        <perfect-scrollbar>
+            <div class="container doublet-check-window-dialog-content">
+                <form [formGroup]="scheduleEventForm">
+                    <div class="row">
+                        <div class="col-md-4 col lg-4">
+                            <div class="doublet-check-header">
+                                <div><label-translation [keyword]="'Doublet_check_main__Schedule_Setting'"></label-translation></div>
+                            </div>
+                            <div>
+                                <mat-checkbox color="primary"
+                                              class="de__ag__command-check"
+                                              formControlName="Sunday">
+                                    <label-translation [keyword]="'Doublet_check_main__Sunday'"></label-translation>
+                                </mat-checkbox>
+                            </div>
+                            <div>
+                                <mat-checkbox color="primary"
+                                              class="de__ag__command-check"
+                                              formControlName="Monday">
+                                    <label-translation [keyword]="'Doublet_check_main__Monday'"></label-translation>
+                                </mat-checkbox>
+                            </div>
+                            <div>
+                                <mat-checkbox color="primary"
+                                              class="de__ag__command-check"
+                                              formControlName="Tuesday">
+                                    <label-translation [keyword]="'Doublet_check_main__Tuesday'"></label-translation>
+                                </mat-checkbox>
+                            </div>
+                            <div>
+                                <mat-checkbox color="primary"
+                                              class="de__ag__command-check"
+                                              formControlName="Wednesday">
+                                    <label-translation [keyword]="'Doublet_check_main__Wednesday'"></label-translation>
+                                </mat-checkbox>
+                            </div>
+                            <div>
+                                <mat-checkbox color="primary"
+                                              class="de__ag__command-check"
+                                              formControlName="Thursday">
+                                    <label-translation [keyword]="'Doublet_check_main__Thursday'"></label-translation>
+                                </mat-checkbox>
+                            </div>
+                            <div>
+                                <mat-checkbox color="primary"
+                                              class="de__ag__command-check"
+                                              formControlName="Friday">
+                                    <label-translation [keyword]="'Doublet_check_main__Friday'"></label-translation>
+                                </mat-checkbox>
+                            </div>
+                            <div>
+                                <mat-checkbox color="primary"
+                                              class="de__ag__command-check"
+                                              formControlName="Saturday">
+                                    <label-translation [keyword]="'Doublet_check_main__Saturday'"></label-translation>
+                                </mat-checkbox>
+                            </div>
+                            <div class="doublet-check-input-time-group">
+                                <div><label-translation [keyword]="'Doublet_check_main__Time'"></label-translation></div>
+                                <div class="doublet-check-input-time">
+                                    <wj-input-time #scheduleTime
+                                                   formControlName="Time"
+                                                   [format]="'HH:mm'"
+                                                   [step]="1">
+                                    </wj-input-time>
+                                </div>
+                            </div>
+                            <div class="">
+                                <button type="button" mat-raised-button
+                                        class="mat-btn-blue  width-pc-100"
+                                        (click)="addScheduleEvent()">
+                                    <span class="bt-t"><label-translation [keyword]="'Doublet_check_main__Add_event'"></label-translation></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col lg-8">
+                            <wj-flex-grid #scheduleEventGrid [allowMerging]="allowMerging"
+                                          [itemsSource]="scheduleEventGridData"
+                                          class="doublet-check-schedule-event">
+                                <wj-flex-grid-column [header]="'On'"
+                                                     [binding]="'on'"
+                                                     [width]="'*'"
+                                                     [isReadOnly]="true"
+                                                     [allowMerging]="true"
+                                                     [allowSorting]="false"
+                                                     [cssClass]="'doublet-check-wj-row-cell'">
+                                    <ng-template wjFlexGridCellTemplate
+                                                 [cellType]="'Cell'"
+                                                 let-cell="cell">
+                                        {{ cell.item['on'] }}
+                                    </ng-template>
+                                </wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="'At'"
+                                                     [binding]="'at'"
+                                                     [align]="'center'"
+                                                     [isReadOnly]="true"
+                                                     [allowSorting]="false"
+                                                     [width]="'*'"
+                                                     [cssClass]="'doublet-check-wj-row-cell'">
+                                    <ng-template wjFlexGridCellTemplate
+                                                 [cellType]="'Cell'"
+                                                 let-cell="cell">
+                                        {{ cell.item['at'] }}
+                                    </ng-template>
+                                </wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="' '"
+                                                     [binding]="'id'"
+                                                     [align]="'center'"
+                                                     [isReadOnly]="true"
+                                                     [allowSorting]="false"
+                                                     [width]="'*'">
+                                    <ng-template wjFlexGridCellTemplate
+                                                 [cellType]="'Cell'"
+                                                 let-cell="cell">
+                                        <a xn-tooltip
+                                           [tooltipText]="'Delete Item'"
+                                           [tooltipPlacement]="'top'"
+                                           container="body"
+                                           class="red-color"
+                                           (click)="scheduleEventGridDeleteRow(cell.item['id'])">
+                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        </a>
+                                    </ng-template>
+                                </wj-flex-grid-column>
+                            </wj-flex-grid>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </perfect-scrollbar>
+    </div>
+
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button label="Cancel"
+                    pbutton=""
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-red"
+                    (click)="closeWindowDialog($event)">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Doublet_check_main__Close'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog> 

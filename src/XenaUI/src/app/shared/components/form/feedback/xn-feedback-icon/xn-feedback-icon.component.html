@@ -1,0 +1,11 @@
+<a mat-button
+	style="opacity:0"
+    xn-tooltip
+    [tooltipText]="'Feedback'"
+    [tooltipPlacement]="'bottom'"
+    id="xn-feedback-top-icon"
+    (click)="feedbackClicked()">
+    <i class="fa"
+       [ngClass]="{'fa-spinner fa-spin': isFeedbackLoading,
+                   'fa-email-capture': !isFeedbackLoading}"></i>
+</a>

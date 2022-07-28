@@ -1,0 +1,22 @@
+.reference-inormation-container {
+    height: 185px;
+    padding: 10px;
+}
+
+.reference-box {
+    height: 100%;
+    border: dashed 1px #000;
+}
+
+.customer-address-detail {
+    background-color: #000;
+}
+
+.total-detail, .scanning-status-detail, .card-status-detail {
+    background-color: lightgray;
+}
+
+.col-sm-3 {
+    height: 100%;
+    padding: 1px;
+}

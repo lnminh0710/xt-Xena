@@ -1,0 +1,142 @@
+<p-dialog
+    #pDialogModuleLayoutSetting
+    header=""
+    [(visible)]="showDialog"
+    [styleClass]="dialogStyleClass"
+    [resizable]="isResizable"
+    [draggable]="isDraggable"
+    modal="true"
+    width="1024"
+    height="768"
+    responsive="true"
+    appendTo="body">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="font-size-18px"><label-translation [keyword]="'Dialog_module_ls__Workspace_Template_Settings'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="cancel()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-expand-popup"
+                    *ngIf="!isMaximized"
+                    (click)="maximize()">
+                <span class="fa fa-window-maximize"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-collapse-popup"
+                    *ngIf="isMaximized"
+                    (click)="restore()">
+                <span class="fa fa-window-restore"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="row height-pc-100 dialog-body">
+        <div class="col-xs-12">
+            <xn-combo-box #moduleCombo
+                          wjDropdownHelper
+                          class="form-control no-padding custom-wj-input-control font-size-16px"
+                          *ngIf="modules && (modules.length >= 0)"
+                          [itemsSource]="modules"
+                          [displayMemberPath]="'moduleName'"
+                          [selectedValuePath]="'idSettingsGUI'"
+                          [selectedValue]="selectedValue"
+                          (selectedIndexChanged)="onModuleComboChanged()"
+                          [isRequired]="false"
+                          placeholder="Select a module"
+                          (gotFocus)="moduleCombo.isDroppedDown = true; moduleComboFocused = true"
+                          (lostFocus)="moduleComboFocused = false">
+            </xn-combo-box>
+        </div>
+
+        <!--<div class="col-xs-12">-->
+            <!--<form class="form-horizontal">-->
+                <!--<div class="form-group form-group font-size-16px">-->
+                    <!--<label class="col-xs-1 control-label">Module:</label>-->
+                    <!--<div class="col-xs-11">-->
+                        <!--<p class="form-control-static"><strong>{{ofModuleLocal.moduleName}}</strong></p>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</form>-->
+        <!--</div>-->
+        <div class="col-xs-12 flex-1 margin-top--sm">
+            <xn-ag-grid #workspaceGrid
+                        [id]="workspaceGridId"
+                        [dataSource]="workspaceDataSource"
+                        [readOnly]="false"
+                        [isShowedHeader]="true"
+                        [isEditting]="true"
+                        [hasFilterBox]="true"
+                        [fitWidthColumn]="true"
+                        headerTitle="Template List"
+                        [globalProperties]="globalProperties"
+                        (rowClick)="templateClick($event)"
+                        (deleteClick)="onDeleteWorkspace($event)"></xn-ag-grid>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button"
+                    mat-raised-button
+                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size  mat-btn-white"
+                    (click)="cancel()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Dialog_module_ls__Cancel'"></label-translation></span>
+            </button>
+            <button DisabledWorkspaceButton
+                    [selectedWorkspace]="workspaceGrid ? (workspaceGrid.getSelectedNode() ? workspaceGrid.getSelectedNode().data : null) : null"
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                    (click)="applyTemplate()"
+                    xn-tooltip
+                    [tooltipText]="'Apply selecting template to ' + ofModuleLocal.moduleName +' module layout'"
+                    [tooltipPlacement]="'top'"
+                    container="body">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Dialog_module_ls__Apply'"></label-translation></span>
+            </button>
+            <button DisabledWorkspaceButton
+                    [selectedWorkspace]="workspaceGrid ? (workspaceGrid.getSelectedNode() ? workspaceGrid.getSelectedNode().data : null) : null"
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-dark-grey ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                    (click)="saveDefaultTemplate()"
+                    xn-tooltip
+                    [tooltipText]="'Save current ' + ofModuleLocal.moduleName + ' module layout as default template'"
+                    [tooltipPlacement]="'top'"
+                    container="body">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Dialog_module_ls__Save_Default'"></label-translation></span>
+            </button>
+            <button DisabledWorkspaceButton
+                    [selectedWorkspace]="workspaceGrid ? (workspaceGrid.getSelectedNode() ? workspaceGrid.getSelectedNode().data : null) : null"
+                    [checkOwner]="true"
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-orange  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                    (click)="updateTemplate()"
+                    xn-tooltip
+                    [tooltipText]="'Override current ' + ofModuleLocal.moduleName + ' module layout to selecting template'"
+                    [tooltipPlacement]="'top'"
+                    container="body">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Dialog_module_ls__Edit'"></label-translation></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-green  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                    xn-tooltip
+                    [tooltipText]="'Create new workspace'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="newTemplate()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Dialog_module_ls__New'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<dialog-save-workspace-template *ngIf="showSaveWorkspaceTemplateDialog"
+                                (onClose)="onCloseSaveWorkspaceTemplateDialog()"></dialog-save-workspace-template>

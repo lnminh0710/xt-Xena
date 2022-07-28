@@ -1,0 +1,152 @@
+{
+    "properties": {
+        "firstName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "lastName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "orderType": {
+            "type": "keyword",
+            "boost": null
+        },
+        "invoiceNr": {
+            "type": "keyword",
+            "boost": null
+        },
+        "customerNr": {
+            "type": "keyword",
+            "boost": null
+        },
+        "mEDIACODE": {
+            "type": "keyword",
+            "boost": null
+        },
+        "loginName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "company": {
+            "type": "keyword",
+            "boost": null
+        },
+        "blocked": {
+            "type": "long",
+            "boost": null
+        },
+        "chequeCodeline": {
+            "type": "keyword",
+            "boost": null
+        },
+        "currencyCode": {
+            "type": "keyword",
+            "boost": null
+        },
+        "grossAmount": {
+            "type": "float",
+            "boost": null
+        },
+        "openAmount": {
+            "type": "float",
+            "boost": null
+        },
+        "paidAmount": {
+            "type": "float",
+            "boost": null
+        },
+        "solicitLevel": {
+            "type": "long",
+            "boost": null
+        },
+        "orderDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "campaign": {
+            "type": "keyword",
+            "boost": null
+        },
+        "paymentType": {
+            "type": "keyword",
+            "boost": null
+        },
+        "title": {
+            "type": "keyword",
+            "boost": null
+        },
+        "street": {
+            "type": "keyword",
+            "boost": null
+        },
+        "streetAddition1": {
+            "type": "keyword",
+            "boost": null
+        },
+        "streetAddition2": {
+            "type": "keyword",
+            "boost": null
+        },
+        "streetAddition3": {
+            "type": "keyword",
+            "boost": null
+        },
+        "area": {
+            "type": "keyword",
+            "boost": null
+        },
+        "zip": {
+            "type": "keyword",
+            "boost": null
+        },
+        "place": {
+            "type": "keyword",
+            "boost": null
+        },
+        "countryCode": {
+            "type": "keyword",
+            "boost": null
+        },
+        "email": {
+            "type": "keyword",
+            "boost": null
+        },
+        "phone": {
+            "type": "keyword",
+            "boost": null
+        },
+        "customerName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "contactName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "mandant": {
+            "type": "keyword",
+            "boost": null
+        },
+        "customerLanguage": {
+            "type": "keyword",
+            "boost": null
+        },
+        "country": {
+            "type": "keyword",
+            "boost": null
+        },
+        "articles": {
+            "type": "keyword",
+            "boost": null
+        },
+        "idRepSalesOrderShipper": {
+            "type": "long",
+            "boost": null
+        },
+        "packageNr": {
+            "type": "keyword",
+            "boost": null
+        }
+    }
+}

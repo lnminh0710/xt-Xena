@@ -1,0 +1,13 @@
+<ng-container>
+    <div  [ngClass]="{'xn-disabled' : !isActive}"  class="quantity-article">
+        <input #input [(ngModel)]="value"
+               (change)="onChangeQuantityDefect($event)"
+               type="text"
+               [readonly]="!isActive"
+               xn-numeric
+               [typeNumber]="0"
+               [format]="'N'"
+               class="full-width quantity numeric">
+        <i (click)="handleQuantityDefect()" class="fa fa-bomb" aria-hidden="true"></i>
+    </div>
+</ng-container>

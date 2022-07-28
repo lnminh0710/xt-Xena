@@ -1,0 +1,61 @@
+<div>
+    <div class="col-xs-12  composition-grid__panel">
+        <div class="xn__form-header  col-xs-12  table-border">
+            <p class="pull-left">
+                <label-translation [keyword]="'Purchase_Article__Search_Article'" User_profile_F></label-translation>
+            </p>
+            <p class="pull-right">
+                <label-translation [keyword]="'Purchase_Article__Number_of_entries'" User_profile_F></label-translation>: {{compositionDataLeft.data.length}}
+            </p>
+        </div>
+        <div class="col-xs-12  no-padding  composition-grid--left" style="height: 300px;">
+            <wijmo-grid #compositionGridLeft
+                        [dataSource]="compositionDataLeft"
+                        [hasSearch]="true"
+                        (onRowClick)="compositionDataLeftRowClick($event)"
+                        (onRowDoubleClick)="compositionDataLeftRowDoubleClick($event)"
+                        (onTableSearch)="onLeftTableSearch($event)">
+            </wijmo-grid>
+        </div>
+    </div>
+    <div class="col-xs-12  no-padding  composition-command__panel">
+        <div class="col-xs-2  col-sm-12  no-padding">
+            <div class="command__button-spacing" (click)="addComposition($event)">
+                <span class="move-grid-item-button  fa  fa-step-forward"></span>
+            </div>
+        </div>
+        <div class="col-xs-2  col-sm-12  no-padding">
+            <div class="command__button-spacing" (click)="addAllComposition($event)">
+                <span class="move-grid-item-button  fa  fa-fast-forward"></span>
+            </div>
+        </div>
+        <div class="col-xs-2  col-sm-12  composition-command__button"></div>
+        <div class="col-xs-2  col-sm-12  no-padding">
+            <div class="command__button-spacing" (click)="removeComposition($event)">
+                <span class="move-grid-item-button  fa  fa-step-backward"></span>
+            </div>
+        </div>
+        <div class="col-xs-2  col-sm-12  no-padding">
+            <div class="command__button-spacing" (click)="removeAllComposition($event)">
+                <span class="move-grid-item-button  fa  fa-fast-backward"></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12  composition-grid__panel">
+        <div class="xn__form-header  col-xs-12  table-border">
+            <p class="pull-left">
+                <label-translation [keyword]="'Purchase_Article__Selected_Articles'" User_profile_F></label-translation>
+            </p>
+            <p class="pull-right">
+                <label-translation [keyword]="'Purchase_Article__Number_of_entries'" User_profile_F></label-translation>: {{compositionDataRight.data.length}}
+            </p>
+        </div>
+        <div class="col-xs-12  no-padding  composition-grid" style="height: 300px;">
+            <wijmo-grid #compositionGridRight
+                        [dataSource]="compositionDataRight"
+                        (onRowClick)="compositionDataRightRowClick($event)"
+                        (onRowDoubleClick)="compositionDataRightRowDoubleClick($event)">
+            </wijmo-grid>
+        </div>
+    </div>
+</div>

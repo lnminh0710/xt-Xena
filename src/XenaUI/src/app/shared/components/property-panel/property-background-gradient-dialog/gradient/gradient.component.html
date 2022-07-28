@@ -1,0 +1,98 @@
+<header class="header-app">
+    <div class="header-app__background-transparent"></div>
+    <div [ngStyle]="{'background-image': backgroundImage}"
+         class="header-app__background-color js-header"></div>
+</header>
+
+<main class="js-body-content">
+    <section class="panel-app">
+        <section class="app-gradient">
+            <div id="gp"></div>
+        </section>
+        <section class="app-color">
+            <div class="container-gradient">
+                <div class="direction-gradient">
+                    <label-translation [keyword]="'Gradient__Direction_Gradient'"></label-translation>:
+                </div>
+                <div>
+                    <div class="width-gradient">
+                        <xn-combo-box #directionCtrl
+                            wjDropdownHelper
+                            class="custom-wj-input-control no-padding xn-select"
+                            [itemsSource]="listDirection"
+                            [displayMemberPath]="'textValue'"
+                            [selectedValuePath]="'idValue'"
+                            [isEditable]="true"
+                            [isRequired]="false"
+                            [selectedValue]="selectedDirectionGradient"
+                            (gotFocus)="onLogicalChangeDirection()"
+                            (selectedIndexChanged)="changeDirectionGradient($event)"
+                            placeholder="Please select">
+                        </xn-combo-box>
+                    </div>
+                </div>
+                <div class="type-gradient">
+                    <label-translation [keyword]="'Gradient__Type_Gradient'"></label-translation>:
+                </div>
+                <div>
+                    <div class="width-gradient">
+                        <xn-combo-box
+                            wjDropdownHelper
+                            class="custom-wj-input-control no-padding xn-select"
+                            [itemsSource]="listTypeGradient"
+                            [displayMemberPath]="'textValue'"
+                            [selectedValuePath]="'idValue'"
+                            [isEditable]="true"
+                            [isRequired]="false"
+                            [selectedValue]="selectedTypeGradient"
+                            (gotFocus)="onLogicalChangeType()"
+                            (selectedIndexChanged)="changeTypeGradient($event)"
+                            placeholder="Please select">
+                        </xn-combo-box>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </section>
+
+<!--    <section class="panel-code">-->
+<!--        <div class="row">-->
+<!--            <div class="col-xs-24 col-md-24">-->
+<!--                <section class="code-editor">-->
+<!--                    <div class="code-editor__column">-->
+<!--                        <div class="code-editor__column-tabs"></div>-->
+<!--                        <div class="code-editor__column-numbers">-->
+<!--                            1<br>-->
+<!--                            2<br>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="code-editor__block">-->
+<!--                        <div class="code-editor__tabs">-->
+<!--                            <div class="code-editor__tab is-active">CSS</div>-->
+<!--                        </div>-->
+<!--                        <div class="code-editor__input">-->
+<!--                            <code class="code-editor__input-code js-code"-->
+<!--                                  id="code">background: {{backgroundImage}}</code>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </section>-->
+
+<!--                &lt;!&ndash;                <section class="code-options">&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <button data-clipboard-target="#code" class="code-option__button js-copy">&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <div class="code-option__button-bg js-button-copy"></div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <svg class="code-option__button-svg" width="13" height="17" xmlns="http://www.w3.org/2000/svg">&ndash;&gt;-->
+<!--                &lt;!&ndash;                            <g stroke="#ffffff" stroke-width="2" fill="none" fill-rule="evenodd">&ndash;&gt;-->
+<!--                &lt;!&ndash;                                <path d="M5 5h7v11H5z"/>&ndash;&gt;-->
+<!--                &lt;!&ndash;                                <path d="M1 15V1h10"/>&ndash;&gt;-->
+<!--                &lt;!&ndash;                            </g>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        </svg>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <span>Copy to Clipboard</span>&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </button>&ndash;&gt;-->
+<!--                &lt;!&ndash;                </section>&ndash;&gt;-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+</main>
+
+

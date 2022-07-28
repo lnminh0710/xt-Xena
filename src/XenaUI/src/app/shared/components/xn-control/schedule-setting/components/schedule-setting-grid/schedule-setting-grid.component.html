@@ -1,0 +1,57 @@
+<!-- <ag-grid-angular
+    #agGrid
+    enableColResize
+    class="ag-theme-balham"
+    [gridOptions]="gridOptions"
+    [columnDefs]="gridColumns"
+    [rowData]="scheduleEventGridData"
+    [defaultColDef]="defaultColDef"
+    [animateRows]="true"
+    [enableRangeSelection]="true"
+    [suppressContextMenu]="false"
+    [popupParent]="popupParent"
+    [getContextMenuItems]="buildContextMenuItems"
+    [groupMultiAutoColumn]="true"
+    [groupSuppressAutoColumn]="true"
+    (gridReady)="onReady($event)"
+    (rowDoubleClicked)="onRowDoubleClicked($event)"
+></ag-grid-angular> -->
+
+<xn-ag-grid #scheduleEventGrid
+            *ngIf="showGrid"
+            [id]="gridId"
+            [dataSource]="gridData"
+            [readOnly]="false"
+            [isEditting]="true"
+            [columnsLayoutSettings]="columnsLayoutSettings"
+            (rowDoubleClicked)="onRowDoubleClicked($event)"
+            (deleteClick)="deleteClickHandle($event)"
+            (runScheduleClick)="runScheduleClickHandle($event)"
+            (cellValueChanged)="cellValueChangedHandle($event)"
+            (onCheckAllChecked)="onCheckAllCheckedHandle($event)"
+            (onGridReady)="onGridReadyHandle($event)">
+</xn-ag-grid>
+<!-- <ng-template #deleteButton let-data>
+    <a xn-tooltip
+       [tooltipText]="'Delete Item'"
+       [tooltipPlacement]="'top'"
+       [hidden]="data==null||data==undefined"
+       container="body"
+       class="red-color  command-button"
+       (click)="scheduleEventGridDeleteRow(data)">
+        <i class="fa fa-trash-o" aria-hidden="true"></i>
+    </a>
+</ng-template>
+<ng-template #runButton
+  *ngIf="currentRowData.IdRepAppSystemScheduleServiceName == systemScheduleServiceNameView.CallStoreProcedureService"
+  let-data>
+    <a xn-tooltip
+       [tooltipText]="'Run Immediately'"
+       [tooltipPlacement]="'top'"
+       [hidden]="data==null||data==undefined"
+       container="body"
+       class="green-color  command-button"
+       (click)="runImmediately(data)">
+        <i class="fa fa-play" aria-hidden="true"></i>
+    </a>
+</ng-template> -->

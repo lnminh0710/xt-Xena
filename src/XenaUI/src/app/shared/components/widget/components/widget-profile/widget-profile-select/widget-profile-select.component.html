@@ -1,0 +1,58 @@
+<p-dialog header=""
+          width="1024"
+          height="630"
+          [(visible)]="showDialog"
+          modal="true"
+          responsive="true"
+          [resizable]="false"
+          [draggable]="false"
+          appendTo="body">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="header-text"><label-translation [keyword]="'WidgetProfileSelect__Select_a_template'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="onCancel()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="row">
+        <div class="col-xs-12 no-padding table-source" *ngIf="dataSourceTable">
+            <xn-ag-grid #profileGrid
+                        *ngIf="dataSourceTable && dataSourceTable.columns && dataSourceTable.columns.length"
+                        [id]="profileGridId"
+                        [dataSource]="dataSourceTable"
+                        [fitWidthColumn]="true"
+                        [readOnly]="true"
+                        [globalProperties]="globalProperties"
+                        (rowDoubleClicked)="onRowDoubleClick($event)"
+                        (rowClick)="customerTableRowClick($event)"
+                        (deleteClick)="onDeleteColumnClickHandler($event)">
+            </xn-ag-grid>
+        </div>
+    </div>
+
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button label="Cancel"
+                    pbutton=""
+                    type="button"
+                    mat-raised-button
+                    class="mat-raised-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                    (click)="onCancel()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'WidgetProfileSelect__Cancel'"></label-translation></span>
+            </button>
+            <button label="Ok"
+                    pbutton=""
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                    (click)="onSelect()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'WidgetProfileSelect__Select'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>

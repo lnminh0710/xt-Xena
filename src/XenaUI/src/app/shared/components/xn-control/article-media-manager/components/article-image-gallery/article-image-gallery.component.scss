@@ -1,0 +1,126 @@
+﻿.gallery-container {
+    width: 100%;
+    height: auto;
+    float: left;
+    padding: 20px;
+}
+
+.gallery-container a.image-box {
+    display: block;
+    float: left;
+    margin: 0 1px 1px 1px;
+    position: relative;
+    border: 1px solid lightgray;
+    /*border-radius: 4px;*/
+}
+
+.gallery-container a.image-box {
+    img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    width: 119px;
+    height: 120px;
+    display: flex;
+    margin-left: 5px;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.gallery-container a.image-box.gallery-container__img-main, .gallery-container a.image-box.gallery-container__img-main img {
+    width: 240px;
+    height: 240px;
+}
+
+img {
+    width: auto;
+    // max-width: 100%;
+    // height: 100% !important;
+    border: 0;
+    // object-fit: cover;
+    /*border-radius: 5px;*/
+}
+
+.gallery-image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    background: rgba(46, 44, 44, 0.6) !important;
+    color: #fff;
+    padding: 5px;
+    opacity:0;
+    max-height: 0;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s linear;
+}
+
+a:hover .gallery-container__img-main .gallery-image-overlay {
+    opacity:1;
+    max-height: 50px;
+}
+
+.gallery-image-overlay .checkbox {
+    margin-top: 0px;
+    margin-bottom: 2px;
+    margin-right: -8px;
+}
+
+a:hover .gallery-image-overlay {
+    opacity:1;
+    max-height: 42px;
+}
+
+a:hover .image-remove {
+    visibility: visible;
+    opacity: 1;
+}
+
+.image-remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    color: #fff;
+    padding: 0 5px 0 5px;
+    visibility: hidden;
+    opacity: 0;
+    background: rgba(0,0,0,0.5) !important;
+    transition: opacity 0.5s linear;
+}
+
+.image-remove a {
+    color: #fff;
+}
+
+/*.title {
+    color: #5C666A;
+}*/
+
+.checkbox-primary {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.description {
+    margin-top: -3px;
+}
+
+.description label {
+    margin-bottom: 0px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 12px;
+}
+
+.description label:first-child {
+    width: 80%;
+}
+
+.description label:last-child {
+    margin-bottom: -2px;
+    font-weight: normal;
+}
+

@@ -1,0 +1,10 @@
+<ng-container [ngSwitch]="cellStartedEdit">
+    <ng-container *ngSwitchCase="true">
+        <input #input [(ngModel)]="displayValue"
+               type="text"
+               class="full-width no-border language-input">
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+        <span class="cell-ellipsis">{{displayValue}}</span>
+    </ng-container>
+</ng-container>

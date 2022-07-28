@@ -1,0 +1,40 @@
+{
+    "properties": {
+        "notes": {
+            "type": "keyword",
+            "boost": null
+        },
+        "estimateDelivery": {
+            "type": "keyword",
+            "boost": null
+        },
+        "qtyItems": {
+            "type": "long",
+            "boost": null
+        },
+        "totalQtyItems": {
+            "type": "long",
+            "boost": null
+        },
+        "toWarehouse": {
+            "type": "keyword",
+            "boost": null
+        },
+        "fromWarehouse": {
+            "type": "keyword",
+            "boost": null
+        },
+        "createDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "deliveryDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "completedDate": {
+            "type": "keyword",
+            "boost": null
+        }
+    }
+}

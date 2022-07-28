@@ -1,0 +1,67 @@
+<div class="gs__tab-content  col-xs-12  no-padding"
+     id="gs-tab-content"
+     [perfect-scrollbar]="perfectScrollbarConfig"
+     *ngIf="tabType == globalSearchConsts.searchAll">
+    <gs-module-item-list *ngIf="tabType == globalSearchConsts.searchAll"
+                         [tabs]="tabList"
+                         [isWithStar]="isWithStar"
+                         [globalItems]="globalSearchModuleModels"
+                         [towWayConfig]="globalSearchConfig"
+                         [mainModules]="mainModules"
+                         [subModules]="subModules"
+                         [activeModule]="activeModule"
+                         [activeSubModule]="activeSubModule"
+                         (onGlobalSearchItemClicked)="globalSearchItemClicked($event)"
+                         (onGlobalSearchItemDoubleClicked)="globalSearchItemDoubleClicked($event)">
+    </gs-module-item-list>
+    <div class="col-xs-12  no-padding">
+        <gs-module-item-list [ngClass]="{'hide' : tabType !== globalSearchConsts.searchAll || !globalSearchConfig.isAdministrationClicked }"
+                             [tabs]="tabList"
+                             [isWithStar]="isWithStar"
+                             [globalItems]="globalSearchModuleModelsAdminChildren"
+                             [mainModules]="mainModules"
+                             [subModules]="subModules"
+                             [activeModule]="activeModule"
+                             [activeSubModule]="activeSubModule">
+        </gs-module-item-list>
+    </div>
+</div>
+
+<div class="col-xs-12  no-padding"
+     id="gs-tab-content"
+     [ngClass]="{'gs__tab-content': (currentTab && currentTab.histories && currentTab.histories.length),
+                 'height-pc-100': !(currentTab && currentTab.histories && currentTab.histories.length)
+              }"
+     *ngIf="tabType != globalSearchConsts.searchAll">
+    <div class="gs__grid  col-xs-12  no-padding">
+        <gs-result [keyword]="currentTab.textSearch"
+                   [gridId]="currentTab.id"
+                   [searchIndex]="currentTab.searchIndex"
+                   [module]="currentTab.module"
+                   [allowDrag]="allowDrag"
+                   [isGlobalSearch]="true"
+                   [isWithStar]="currentTab.isWithStar"
+                   [parentInstance]="that"
+                   [activeModule]="activeModule"
+                   [activeSubModule]="activeSubModule"
+                   [tab]="currentTab"
+                   [tabs]="tabList"
+                   (searchItemRightClick)="searchItemRightClick($event)"
+                   (onPinGroupTranslateClick)="pinGroupTranslateClick($event)"
+                   (onRowClicked)="onTableRowClicked($event)"
+                   (onSearchCompleted)="onSearchCompleted($event)"
+                   (addToHistoryAction)="addToHistoryHandler($event)"
+                   [cssClass]="cssClass"></gs-result>
+    </div>
+</div>
+<div class="col-xs-12  g-h">
+  <gs-history *ngIf="tabType != globalSearchConsts.searchAll &&
+                      !isCollapsed && currentTab &&
+                      currentTab.histories &&
+                      currentTab.histories.length"
+              [currentTab]="currentTab"
+              (texClickedAction)="texClickedHandler($event)"
+              (deleteItemAction)="deleteItemHandler($event)"
+              (deleteAllAction)="deleteAllHandler($event)">
+  </gs-history>
+</div>

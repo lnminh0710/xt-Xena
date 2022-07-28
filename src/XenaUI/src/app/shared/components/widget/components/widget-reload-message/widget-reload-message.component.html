@@ -1,0 +1,22 @@
+<div class="m"
+    *ngIf="isBlockUI"></div>
+<div class="c"
+    [ngClass]="{'c-o': isBlur}">
+	<div class="h"><label-translation [keyword]="'WidgetReloadMessage__Notification'"></label-translation></div>
+	<div class="t">
+        <span><label-translation [keyword]="'WidgetReloadMessage__This_widget_content_is_changed_by'"></label-translation>:</span><br/>
+        <strong>{{userJustSaved.DisplayName}}</strong>
+    </div>
+	<div class="t" *ngIf="isShowReloadButton"><label-translation [keyword]="'WidgetReloadMessage__Do_you_want_to_reload_this_widget'"></label-translation>?</div>
+	<div class="b">
+		<button class="pull-right  margin-left--sd" mat-raised-button
+                (click)="cancelClicked()">
+                <span *ngIf="isShowReloadButton" class="bt-t"><label-translation [keyword]="'WidgetReloadMessage__Cancel'"></label-translation></span>
+                <span *ngIf="!isShowReloadButton" class="bt-t"><label-translation [keyword]="'WidgetReloadMessage__Close'"></label-translation></span>
+        </button>
+        <button *ngIf="isShowReloadButton" class="pull-right  mat-btn-orange" mat-raised-button
+                (click)="reloadClicked()">
+            <span class="bt-t"><label-translation [keyword]="'WidgetReloadMessage__Reload'"></label-translation></span>
+        </button>
+	</div>
+</div>

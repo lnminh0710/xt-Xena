@@ -1,0 +1,31 @@
+<div class="auth__main">
+  <div class="auth__block">
+    <i class="fa fa-info-circle  top-icon  user-authentication__fail"></i>
+    <div class="header__block  header__block--center  col-xs-12  no-padding">
+      <h1>Attention!</h1>
+      <h3>{{model.loginMessage}}</h3>
+    </div>
+    <form name="form" (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
+      <div class="col-xs-12  no-padding  form-group  form-control__relative">
+        <h4>Please contact to Administrator for detail</h4>
+      </div>
+      <div class="col-xs-12  no-padding  form-group  form-control__relative">
+        <textarea class="form-control" name="postMessage" [(ngModel)]="model.postMessage" #postMessage="ngModel" required></textarea>
+      </div>
+      <div class="col-xs-12 no-padding  padding-top--sd">
+        <button class="mat-btn-blue  pull-right"
+                mat-raised-button>
+            <span class="fa  fa-arrow-circle-o-up  push-icon"></span>
+            <span class="bt-t-i  login-text">SUBMIT</span>
+        </button>
+      </div>
+
+      <div class="form-group  col-xs-12 no-padding  line-separate">
+        <hr>
+      </div>
+      <div class="form-group">
+        <a [routerLink]="[loginUrl]" class="pull-right  link-to">Go to login page</a>
+      </div>
+    </form>
+  </div>
+</div>

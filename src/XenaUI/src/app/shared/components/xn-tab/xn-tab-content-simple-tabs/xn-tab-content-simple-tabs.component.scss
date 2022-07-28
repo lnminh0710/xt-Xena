@@ -1,0 +1,122 @@
+.simple-tab-summary-wrapper {
+    position: relative;
+    height: 33px;
+    margin: 0 auto;
+    overflow: visible;
+}
+
+.simple-tab-summary-list {
+    position: absolute;
+    min-width: 100%;
+}
+
+.simple-tab-summary-list li {
+    display: table-cell;
+    position: relative;
+    vertical-align: middle;
+}
+
+.simple-scroller {
+    text-align: center;
+    cursor: pointer;
+    display: none;
+    padding: 7px;
+    white-space: no-wrap;
+    vertical-align: middle;
+    background-color: #0F5E8C;
+    color: #fff;
+    opacity: 0.8;
+    position: absolute;
+    z-index: 848;
+    height: 33px;
+}
+
+.simple-scroller-right {
+    right: 0;
+}
+
+.simple-scroller-left {
+    /*left: 0;*/
+}
+
+.simple-tab-header-container {
+    overflow: visible;
+}
+
+.simple-tab-content-container {
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    .tab-pane {
+        height: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .simple-tab-header-container {
+        overflow: hidden;
+    }
+}
+
+:host /deep/ ul {
+    li.simple-tab-summary {
+        min-height: 33px;
+
+        &:first-child {
+            margin-left: 5px;
+        }
+
+        > a {
+            padding: 4px !important;
+            margin-right: 2px;
+            min-height: 33px;
+            max-height: 33px;
+
+            > .panel {
+                margin-bottom: 0;
+                border: none;
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+                box-shadow: none;
+                background: none;
+
+                .panel-heading,
+                .panel-body,
+                .panel-footer {
+                    padding: 5px;
+                }
+
+                > .panel-heading {
+                    padding-top: 4px;
+                    padding-bottom: 2px;
+                    border: none !important;
+
+                    &.heading-sm {
+                        padding: 0;
+                    }
+                }
+            }
+        }
+
+        &.active {
+            > a {
+                &.active {
+                    .panel {
+                        > .panel-heading {
+                            padding-top: 0;
+                            background-color: #fff;
+                        }
+
+                        > .panel-body {
+                            padding-top: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.tab-content {
+    height: calc(100% - 28px) !important;
+}

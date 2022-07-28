@@ -1,0 +1,167 @@
+<div class="m">
+    <div class="col-xs-12 group-buttons">
+        <div class="pull-left no-padding">
+            <button class="mat-btn-blue btn-reset pull-left"
+                    mat-raised-button
+                    (click)="reset()">
+                <i class="fa fa-undo" aria-hidden="true"></i>
+                <span class="bt-t-i"><label-translation [keyword]="'Mailing_return__Reset'"></label-translation></span>
+            </button>
+        </div>
+        <div class="pull-right no-padding">
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-green btn-upload"
+                    (click)="downloadTemplateFile()">
+                <i class="fa fa-cloud-download" aria-hidden="true"></i>
+                <span class="bt-t-i"><label-translation [keyword]="'Mailing_return__Template_File'"></label-translation></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-green btn-upload btn-import"
+                    (click)="importData()">
+                <i class="fa fa-upload" aria-hidden="true"></i>
+                <span class="bt-t-i"><label-translation [keyword]="'Mailing_return__Import'"></label-translation></span>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="isRenderForm" class="col-xs-12 no-padding customer-business-form"
+         [ngClass]="{'submitted': mailingReturnForm.submitted}">
+        <form [formGroup]="mailingReturnForm" class="form-horizontal" id="mailingReturnForm" novalidate>
+            <div class="col-xs-12 no-padding form-container">
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <label for="barcode"
+                               class="control-label col-sm-2"><label-translation [keyword]="'Mailing_return__Barcode'"></label-translation></label>
+                        <div class="col-sm-10">
+                            <input #barcodeCtrl
+                                   formControlName="barcode"
+                                   id="barcode"
+                                   name="barcode"
+                                   type="text"
+                                   class="form-control xn-input input-barcode"
+                                   (keyup)="barcodeOnKeyUp($event)"
+                                   (focusout)="barcodeLostFocus($event)">
+                            <control-messages [icon]="'barcode'"
+                                              [control]="mailingReturnForm.controls['barcode']"></control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <label for="customerNr"
+                               class="control-label col-sm-2"><label-translation [keyword]="'Mailing_return__Customer_Number'"></label-translation></label>
+                        <div class="col-sm-4 no-padding-right">
+                            <input #customerNrCtrl
+                                   formControlName="customerNr"
+                                   id="customerNr"
+                                   name="customerNr"
+                                   type="text"
+                                   class="form-control xn-input"
+                                   (keyup)="customerNrOnKeyUp($event)">
+                            <control-messages [icon]="'user'"
+                                              [control]="mailingReturnForm.controls['customerNr']"></control-messages>
+                        </div>
+                        <label for="mediaCode"
+                               class="control-label col-sm-2"><label-translation [keyword]="'Mailing_return__MediaCode'"></label-translation></label>
+                        <div class="col-sm-4 no-padding-left">
+                            <input #mediaCodeCtrl
+                                   formControlName="mediaCode"
+                                   id="mediaCode"
+                                   name="mediaCode"
+                                   type="text"
+                                   class="form-control xn-input"
+                                   (keyup)="mediaCodeOnKeyUp($event)">
+                            <control-messages [icon]="'qrcode'"
+                                              [control]="mailingReturnForm.controls['mediaCode']"></control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <label for="reason" class="control-label col-sm-2"><label-translation [keyword]="'Mailing_return__Reason'"></label-translation></label>
+                        <div class="col-sm-10">
+                            <xn-combo-box #reasonCtrl
+                                          wjDropdownHelper
+                                          [form]="mailingReturnForm"
+                                          formControlName="reason"
+                                          class="custom-wj-input-control xn-select focus-ignore"
+                                          [itemsSource]="listComboBox.mailingReturnReason"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isEditable]="true"
+                                          [isRequired]="false"
+                                          placeholder="Please select"
+                                          (keyup)="reasonKeyUp($event)">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="reasonCtrl" [icon]="'list'"
+                                              [control]="mailingReturnForm.controls['reason']"></control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-12 group-save">
+                        <label class="control-label col-sm-2">&nbsp;</label>
+                        <div class="col-sm-10">
+                            <button #btnAddCtrl
+                                    [disabled]="disabledAddButton"
+                                    type="button"
+                                    mat-raised-button
+                                    class="mat-btn-blue btn-add" (click)="save()">
+                                <span class="bt-t"><label-translation [keyword]="'Mailing_return__Save'"></label-translation></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<p-dialog [styleClass]="'upload-inventory-file-dialog'"
+          header=""
+          [(visible)]="uploadFileShowDialog"
+          modal="modal"
+          width="900"
+          height="500"
+          responsive="true"
+          appendTo="body"
+          (onAfterHide)="uploadFileCloseDialog()">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="fa  fa-upload  header-icon  pull-left"></span>
+            <span class="header-text  pull-left"><label-translation [keyword]="'Mailing_return__Upload_File'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="uploadFileCloseDialog()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="col-xs-12 no-padding  height-pc-100"
+         *ngIf="uploadFileShowDialog">
+        <file-upload #fileUpload
+                     [uploadFileMode]="uploadFileMode"
+                     [idFolder]="uploadFileIdFolder"
+                     [checkFileCorrect]="true"
+                     [allowSelectDuplicateFile]="false"
+                     [acceptExtensionFiles]="'*.xlsx'"
+                     [singleFile]="false"
+                     [setAuthToken]="true"                     
+                     (onCompleteItem)="uploadFileOnComplete($event)"></file-upload>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button"
+                    mat-raised-button
+                    class="pull-right  new-size"
+                    xn-tooltip
+                    [tooltipText]="'Close'"
+                    (click)="uploadFileCloseDialog()">
+                <span class="bt-t"><label-translation [keyword]="'Mailing_return__Close'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>

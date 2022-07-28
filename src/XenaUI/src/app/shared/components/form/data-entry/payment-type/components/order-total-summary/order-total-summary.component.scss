@@ -1,0 +1,81 @@
+@import "variables.scss";
+
+.de__order-total-summary {
+    padding: 5px 10px 0 10px;
+    font-size: 11px;
+}
+
+.data-entry__title {
+    color: Blue;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.de__ots__pd__item {
+    padding: 2px 0px 0px 0px;
+}
+
+.de__ots__pament-detail {
+    padding: 0px !important;
+    flex-grow: 1;
+    max-height: calc(100% - 65px);
+}
+
+.exchange-icon-button {
+    color: $gray1;
+    font-size: 14px;
+}
+
+.text-black-color {
+    color: $black;
+}
+
+.text-red-color {
+    color: $red7;
+}
+
+.text-blue-color {
+    color: $skin-blue-main;
+}
+
+.text-right-align {
+    text-align: right;
+}
+
+.sub-total-amount {
+    font-weight: 400;
+}
+
+.delivery-charge {
+    float: right;
+    margin-right: 20px;
+}
+
+.fa-exchange {
+    vertical-align: top;
+}
+
+.no-exchange {
+    height: 20px;
+}
+
+.de__ots__total_container {
+    position: absolute;
+    bottom: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.block-ui-message {
+    top: 38%;
+    position: absolute;
+    font-size: 20px;
+    z-index: 9999999999;
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f1a210;
+}

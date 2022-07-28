@@ -1,0 +1,53 @@
+<p-dialog header=""
+          *ngIf="showDialog"
+          [styleClass]="'xn-p-dialog-resizable'"
+          [(visible)]="showDialog"
+          modal="true"
+          width="1200"
+          height="570"
+          responsive="true"
+          appendTo="body"
+          [resizable]="true"
+          [draggable]="true"
+          [contentStyle]="{'padding-bottom': 0, 'padding-top': 0}">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="header-text"><label-translation [keyword]="'Property_bg__Background_Gradient_Color'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="close()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="row">
+        <div class="display-fields">
+                <gradient
+                    [propertiesGradient]="propertiesGradient"
+                    (onChangeBackgroundGradient)="changeGradientColor($event)"
+                    (onApplyBackgroundGradient)="applyGradientColor($event)"></gradient>
+        </div>
+
+    </div>
+
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button label="Cancel"
+                    type="button"
+                    mat-raised-button
+                    (click)="close()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Property_bg__Cancel'"></label-translation></span>
+            </button>
+            <button label="Save"
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-blue"
+                    (click)="apply()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Property_bg__Apply'"></label-translation></span>
+            </button>
+        </div>
+        <div class="widget-info__resize_bottom xn-icon__resize icon-black"></div>
+    </p-footer>
+</p-dialog>

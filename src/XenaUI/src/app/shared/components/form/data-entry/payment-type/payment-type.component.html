@@ -1,0 +1,39 @@
+﻿<div class="xn-tab--general">
+   
+     <div class="tab-header-container">
+        <ul class="nav nav-tabs">
+            <li [ngClass]="{'active': tabz.active}" *ngFor="let tabz of tabs">
+                <a data-toggle="tab" href="#{{tabz.id}}" [ngClass]="{'active': tabz.active }" (click)="selectPaymentTab(tabz, $event)">{{tabz.title}}
+                    <a *ngIf="tabz.active"
+                        mat-raised-button
+                        class="mat-btn-red--icon  mat-tab-close-icon  mat-btn-small--icon"
+                        (click)="removePaymentType(tabz, $event)">
+                        <i class="fa fa-times-circle"></i>
+                    </a>
+                </a>
+            </li>
+            <a class="cursor-pointer" (click)="addMorePaymentTab()">
+                <i class="fa fa-plus-circle add-more" aria-hidden="true"></i>
+            </a>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div id="{{tabz.id}}" class="tab-pane fade in" [ngClass]="{'active': tabz.active }" *ngFor="let tabz of tabs">
+            <div class="payment-container">
+                <payment-type-select (changePaymentType)="changePaymentType($event)"
+                                     [paymentTypeList]="paymentTypeList"
+                                     [currencyList]="currencyList"
+                                     [creditCardList]="creditCardList">
+                </payment-type-select>
+            </div>
+        </div>
+        <div class="article-table">
+            <data-entry-article-grid
+                            [articleOrderGridId]="'810c3284-1294-4e3a-95e3-7b475001a97b'"
+                            [articleUsedInCampaignId]="'c879fbbe-40e6-4035-9a39-e7c6ea74c416'"
+            ></data-entry-article-grid>
+        </div>
+    </div>
+
+</div>

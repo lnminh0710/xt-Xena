@@ -1,0 +1,49 @@
+<span dropdown
+      [isOpen]="status.isopen"
+      (onShown)="toggled(true)"
+      (onHidden)="toggled(false)"
+      *ngIf="accessRight.read">
+    <a [ngStyle]="{'cursor': !(activeModule && activeModule.idSettingsGUI) ? 'default' : '' }"
+       [ngClass]="{'xn-disabled': isDisableToggleMenu}"
+       id="parked-item-dropdown"
+       mat-button
+       dropdownToggle
+       class="park-item-icon cursor-pointer">
+        <span class="xn-icon__dot_list icon-black"></span>
+    </a>
+    <ng-template [ngIf]="activeModule && activeModule.idSettingsGUI">
+        <div class="dropdown-menu panel"
+             *dropdownMenu
+             role="menu"
+             aria-labelledby="parked-item-dropdown">
+            <perfect-scrollbar class="panel-body">
+                <ng-template ngFor let-item [ngForOf]="menuItems" [ngForTrackBy]="itemsTrackBy">
+                    <mat-checkbox color="primary"
+                                  *ngIf="item.fieldName != 'IdPerson'"
+                                  [(ngModel)]="item.isChecked">
+                        {{item.fieldName}}
+                    </mat-checkbox>
+                </ng-template>
+
+            </perfect-scrollbar>
+            <div class="panel-footer text-center">
+                <div *ngIf="menuItems && menuItems.length">
+                    <button type="button"
+                            mat-button
+                            class="mat-btn-blue  mat-btn-block"
+                            (click)="apply()">
+                        <span class="bt-t"><label-translation [keyword]="'Parked_item_dropdown__Apply'"></label-translation></span>
+                    </button>
+                </div>
+                <div *ngIf="accessRight.read">
+                    <button type="button"
+                            mat-button
+                            class="mat-btn-red  mat-btn-block"
+                            (click)="deleteAllParkItem()">
+                        <span class="bt-t"><label-translation [keyword]="'Parked_item_dropdown__Delete_all_parked_item'"></label-translation></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</span>

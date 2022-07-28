@@ -1,0 +1,79 @@
+.form-group .control-label {
+    padding-top: 8px;
+}
+.form-group {
+    padding-bottom: 34px;
+}
+.group-items,
+.group-content,
+mat-radio-group,
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+}
+.form-top {
+    margin-bottom: 15px;
+}
+.xn__form-header span {
+    margin-left: 0 !important;
+}
+.group-items {
+    padding-left: 10px;
+    margin-bottom: 10px;
+    .group-title {
+        margin: 5px 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+}
+.checkbox-group {
+    padding-left: 4px;
+}
+mat-checkbox,
+mat-radio-button {
+    height: 25px;
+}
+.item-control {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2px;
+}
+.rd-control {
+    height: 14px;
+    margin-left: -4px;
+    margin-top: 3px;
+}
+.chk-control {
+    height: 15px;
+    margin-top: 3px;
+}
+.checkbox-text {
+    padding-left: 9px;
+}
+.checkbox-text,
+.radio-text {
+    cursor: pointer;
+    span {
+        white-space: pre-line;
+        font-size: 15px;
+    }
+}
+.txt-control {
+    width: 100%;
+    textarea {
+        font-size: 15px;
+        height: 45px;
+        min-height: 45px;
+        resize: vertical;
+    }
+}
+.note-text {
+    textarea {
+        height: 71px !important;
+    }
+}
+
+.choose-reason {
+    font-size: 18px;
+}
+

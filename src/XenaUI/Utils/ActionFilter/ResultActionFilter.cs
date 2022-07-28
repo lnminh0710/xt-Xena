@@ -1,0 +1,69 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using XenaUI.Models;
+
+namespace XenaUI.Utils
+{
+    /// <summary>
+    /// ResultActionFilter
+    /// </summary>
+    public class ResultActionFilter : ActionFilterAttribute
+    {
+        ///// <summary>
+        ///// OnActionExecuting
+        ///// </summary>
+        ///// <param name="context"></param>
+        //public override void OnActionExecuting(ActionExecutingContext context)
+        //{
+        //    base.OnActionExecuting(context);
+        //}
+
+        /// <summary>
+        /// OnActionExecuted
+        /// </summary>
+        /// <param name="context"></param>
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            var response = new ApiResultResponse();
+
+            if (context.Result != null)
+            {
+                response.StatusCode = ApiMethodResultId.Success;
+                response.Item = ((ObjectResult)(context.Result)).Value;
+            }
+            else
+            {
+                response.StatusCode = ApiMethodResultId.UnexpectedError;
+                if (context.Exception != null)
+                {
+                    response.ResultDescription = context.Exception.Message;
+                    response.Item = context.Exception.Data["Content"] + string.Empty;
+                }
+            }
+            context.Result = new ObjectResult(response);
+            base.OnActionExecuted(context);
+        }
+
+        ///// <summary>
+        ///// OnResultExecuting
+        ///// </summary>
+        ///// <param name="context"></param>
+        //public override void OnResultExecuting(ResultExecutingContext context)
+        //{
+        //    base.OnResultExecuting(context);
+        //}
+
+        ///// <summary>
+        ///// OnResultExecuted
+        ///// </summary>
+        ///// <param name="context"></param>
+        //public override void OnResultExecuted(ResultExecutedContext context)
+        //{           
+        //    base.OnResultExecuted(context);
+        //}
+    }
+}

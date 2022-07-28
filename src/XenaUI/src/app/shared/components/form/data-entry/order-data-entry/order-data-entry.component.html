@@ -1,0 +1,350 @@
+<!-- <button class="btn mat-btn-blue" (click)="saveDataEntry({})">Test Submit</button>
+<button class="btn mat-btn-blue" (click)="reGetOrderFailed()">Test Reload Fail Data</button> -->
+<div *ngIf="isRenderForm" class="form-container no-padding  margin-top--sd col-xs-12  col-sm-12  col-md-12  col-lg-12 no-padding-left"
+     [perfect-scrollbar]="perfectScrollbarConfig"
+     [ngClass]="{'submitted': orderDataEntryForm.submitted}">
+    <form [formGroup]="orderDataEntryForm" class="form-horizontal customer-data-entry-form"
+          id="orderDataEntryForm" novalidate>
+        <control-focus #controlFocus
+                       targetComponentFocus="app-customer-data-entry-form"
+                       formName="orderDataEntryForm"
+                       controlWaitingMore="campaignNumber"
+                       [isFocusOnLast]="(idPerson||customerNr) && customerData && customerData.isValid ? true : false"
+                       [isFocusOnFirstControl]="true">
+        </control-focus>
+        <div class="col-xs-12  col-sm-12  col-md-12  col-lg-12 no-padding form-container">
+            <div *ngIf="orderDataEntryForm.controls.barcode || orderDataEntryForm.controls.mediacode"
+                 class="form-group">
+                <div *ngIf="orderDataEntryForm.controls.barcode">
+                    <label for="barcode" class="control-label  col-sm-2 no-padding-left width87">{{localizer['barcode']}}</label>
+                    <div class="no-padding-left widthFullMinus87"
+                         [ngClass]="{'col-sm-4' : orderDataEntryForm.controls.campaignNumber, 'col-sm-10' : !orderDataEntryForm.controls.campaignNumber}">
+                        <div class="order-de__barcode-chk no-padding">
+                            <mat-checkbox #barcodeCheckbox color="primary"
+                                          class="mat-checkbox--in-textbox"
+                                          formControlName="isDisplayBarCode"
+                                          (change)="displayBarCodeChanged($event)">
+                            </mat-checkbox>
+                            <control-messages *ngIf="!orderDataEntryForm.controls.isDisplayBarCode.value"
+                                              [componentControl]="barcodeCheckbox"
+                                              [hotKeyValue]="hotKeySettingService.barcodeStatus$ | async"
+                                              (onClickComponentControl)="updateBarcodeStatus($event)"></control-messages>
+                        </div>
+                        <div class="col-sm-12  no-padding  pull-left"
+                             [ngClass]="{'xn-invisible': !orderDataEntryForm.controls.isDisplayBarCode.value}"
+                             id="order-data-entry-barcode">
+                            <input #barcode type="text"
+                                   (keyup)="onKeyPressBarcode($event)"
+                                   class="form-control xn-input"
+                                   name="barcode"
+                                   formControlName="barcode"
+                                   id="txt-order-data-entry-barcode"
+                                   autocomplete="off"
+                                   [ngClass]="{'focus-ignore' : !orderDataEntryForm.controls.isDisplayBarCode.value}" />
+                            <control-messages [type]="'textbox'"
+                                              [componentControl]="barcode"
+                                              [control]="orderDataEntryForm.controls.barcode"
+                                              [icon]="'barcode'"
+                                              [showIcon]="false"
+                                              [hotKeyValue]="hotKeySettingService.barcode$ | async"></control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="orderDataEntryForm.controls.mediacode">
+                    <label for="mediacode"
+                           class="control-label  col-sm-2 no-padding-left width87">{{localizer['mediacode']}}</label>
+                    <div [ngClass]="{'col-sm-4' : orderDataEntryForm.controls.customer, 'col-sm-10' : !orderDataEntryForm.controls.customer}"
+                         class="no-padding-left widthFullMinus87">
+                        <div class="col-xs-12  col-sm-12 no-padding"
+                             id="order-data-entry-media-code">
+                            <input #mediacode type="text"
+                                   (keyup)="mediacodeKeyup($event)"
+                                   (blur)="mediacodeBlur($event)"
+                                   class="form-control  xn-input"
+                                   name="mediacode"
+                                   formControlName="mediacode"
+                                   id="txt-order-data-entry-media-code"
+                                   autocomplete="off" />
+                            <div *ngIf="indicatorControl.isMediaCodeSearching" class="input-indicator">
+                                <i class="fa fa-spinner fa-spin fa-fw"></i>
+                            </div>
+                            <control-messages [xn-trigger-click-inside-cbo]="mediacode" [type]="'textbox'"
+                                              [control]="orderDataEntryForm.controls.mediacode"
+                                              [icon]="'search'"
+                                              [componentControl]="mediacode"
+                                              (clickOnGroupAddon)="mediaCodeShowSearchDialog()"
+                                              (onValueReset)="mediaCodeResetValue()"
+                                              [hotKeyValue]="hotKeySettingService.mediacode$ | async"></control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="orderDataEntryForm.controls.orderType || orderDataEntryForm.controls.campaignNumber"
+                 class="form-group">
+                <div *ngIf="orderDataEntryForm.controls.orderType">
+                    <label for="orderType" class="control-label  col-sm-2 no-padding-left width87">{{localizer['orderType']}}</label>
+                    <div [ngClass]="{'col-sm-4' : orderDataEntryForm.controls.orderBy, 'col-sm-10' : !orderDataEntryForm.controls.orderBy}"
+                         class="no-padding-left widthFullMinus87">
+                        <div class="full-width">
+                            <xn-combo-box #orderType
+                                          formControlName="orderType"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="listComboBox.orderType"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [selectedIndex]="-1"
+                                          [isEditable]="true"
+                                          [isRequired]="false"
+                                          placeholder="Please select"
+                                          (selectedIndexChanged)="orderTypeSelectedIndexChanged()"
+                                          (gotFocus)="orderTypeGotFocus()">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="orderType"
+                                              [control]="orderDataEntryForm.controls.orderType"
+                                              [icon]="'list'"
+                                              [componentControl]="orderType"
+                                              [hotKeyValue]="hotKeySettingService.orderType$ | async"></control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="orderDataEntryForm.controls.campaignNumber">
+                    <label for="campaignNumber" class="control-label  col-sm-2 no-padding-left width87">{{localizer['campaignNumber']}}</label>
+                    <div [ngClass]="{'col-sm-4' : orderDataEntryForm.controls.barcode, 'col-sm-10' : !orderDataEntryForm.controls.barcode}"
+                         class="no-padding-left widthFullMinus87">
+                        <div class="col-xs-12  col-sm-12 no-padding"
+                             id="order-data-entry-campaign-number">
+                            <input #campaignNumber type="text"
+                                   class="form-control  xn-input"
+                                   (keyup)="campaignNumberKeyup($event)"
+                                   (blur)="campaignNumberBlur($event)"
+                                   name="campaignNumber"
+                                   formControlName="campaignNumber"
+                                   id="txt-order-data-entry-campaign-number"
+                                   autocomplete="off" />
+                            <control-messages [xn-trigger-click-inside-cbo]="campaignNumber" [type]="'textbox'"
+                                              [componentControl]="campaignNumber"
+                                              [control]="orderDataEntryForm.controls.campaignNumber"
+                                              [icon]="'search'"
+                                              (clickOnGroupAddon)="campaignNumberShowSearchDialog()"
+                                              (onValueReset)="campaignNumberResetValue()"
+                                              [hotKeyValue]="hotKeySettingService.campaignNumber$ | async">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="orderDataEntryForm.controls.orderBy || orderDataEntryForm.controls.customer"
+                 class="form-group">
+                <div *ngIf="orderDataEntryForm.controls.orderBy">
+                    <label for="orderBy" class="control-label col-sm-2 no-padding-left width87">{{localizer['orderBy']}}</label>
+                    <div class="col-sm-4 no-padding-left order-date widthFullMinus87">
+                        <div class="col-xs-12  col-sm-12 no-padding order-date-container">
+                            <div class="full-width">
+                                <xn-combo-box #orderBy
+                                              formControlName="orderBy"
+                                              class="custom-wj-input-control xn-select"
+                                              [itemsSource]="listComboBox.orderBy"
+                                              [displayMemberPath]="'textValue'"
+                                              [selectedValuePath]="'idValue'"
+                                              [selectedIndex]="-1"
+                                              [isEditable]="true"
+                                              [isRequired]="false"
+                                              placeholder="Please select"
+                                              (selectedIndexChanged)="orderBySelectedIndexChanged()"
+                                              (gotFocus)="orderByGotFocus()">
+                                </xn-combo-box>
+                                <control-messages [xn-trigger-click-inside-cbo]="orderBy"
+                                                  [control]="orderDataEntryForm.controls.orderBy"
+                                                  [icon]="'list'"
+                                                  [componentControl]="orderBy"
+                                                  [hotKeyValue]="hotKeySettingService.orderBy$ | async"></control-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="orderDataEntryForm.controls.customer">
+                    <label for="customer" class="control-label  col-sm-2 no-padding-left width87">{{localizer['customer']}}</label>
+                    <div [ngClass]="{'col-sm-4' : orderDataEntryForm.controls.mediacode, 'col-sm-10' : !orderDataEntryForm.controls.mediacode}"
+                         class="no-padding-left widthFullMinus87">
+                        <div class="col-xs-12  col-sm-12 no-padding"
+                             id="order-data-entry-customer-number">
+                            <input #customer type="text"
+                                   (keyup)="customerKeyup($event)"
+                                   (blur)="customerBlur($event)"
+                                   class="form-control  xn-input"
+                                   name="customer"
+                                   formControlName="customer"
+                                   id="txt-order-data-entry-customer-number"
+                                   autocomplete="off" />
+                            <div *ngIf="indicatorControl.isCustomerSearching" class="input-indicator">
+                                <i class="fa fa-spinner fa-spin fa-fw"></i>
+                            </div>
+                            <control-messages [xn-trigger-click-inside-cbo]="customer" [type]="'textbox'"
+                                              [control]="orderDataEntryForm.controls.customer"
+                                              [icon]="'search'"
+                                              [componentControl]="customer"
+                                              (clickOnGroupAddon)="customerShowSearchDialog()"
+                                              (onValueReset)="customerResetValue()"
+                                              [hotKeyValue]="hotKeySettingService.customer$ | async">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="orderDataEntryForm.controls.orderDate || orderDataEntryForm.controls.packageNr"
+                 class="form-group">
+                <div *ngIf="orderDataEntryForm.controls.orderDate">
+                    <label for="orderDate" class="control-label  col-sm-2 no-padding-left width87">{{localizer['orderDate']}}</label>
+                    <div [ngClass]="{'col-sm-4' : orderDataEntryForm.controls.orderType, 'col-sm-10' : !orderDataEntryForm.controls.orderType}"
+                         class="no-padding-left widthFullMinus87">
+                        <div class="full-width">
+                            <xn-date-picker #orderDate formControlName="orderDate"
+                                            class="xn-input"
+                                            [format]="globalDateFormat"
+                                            [disableUntil]="disableUntil"
+                                            [disableSince]="disableSince"
+                                            [showDropDownButton]="false"
+                                            (valueChanged)="orderDateChanged()"
+                                            (gotFocus)="onOrderDateGotFocus($event)"
+                                            [dontShowCalendarWhenFocus]="true"
+                                            [isRequired]="false">
+                            </xn-date-picker>
+                            <control-messages [xn-trigger-click-inside-cbo]="orderDate"
+                                              [control]="orderDataEntryForm.controls.orderDate"
+                                              icon="calendar"
+                                              [componentControl]="orderDate"
+                                              [hotKeyValue]="hotKeySettingService.orderDate$ | async">
+                            </control-messages>
+                        </div>
+                    </div>
+                    <div *ngIf="isInvalidOrderDate" class="alert alert-danger invalid-alert">
+                        <label-translation [keyword]="'Order_Data_Entry__Order_date_is_invalid'"></label-translation>
+                    </div>
+                </div>
+                <div *ngIf="orderDataEntryForm.controls.packageNr">
+                    <label for="packageNr" class="control-label col-sm-2 no-padding-left width87">{{localizer['idRepSalesOrderShipper']}}</label>
+                    <div [ngClass]="{'col-sm-4' : orderDataEntryForm.controls.packageNr, 'col-sm-10' : !orderDataEntryForm.controls.packageNr}"
+                         class="no-padding-left widthFullMinus87">
+                        <div class="col-xs-6 no-padding">
+                            <xn-combo-box #shipper
+                                          formControlName="idRepSalesOrderShipper"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="listComboBox.getShipper"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [selectedIndex]="-1"
+                                          [isEditable]="true"
+                                          [isRequired]="false"
+                                          placeholder="Please select"
+                                          (selectedIndexChanged)="shipperSelectedIndexChanged()"
+                                          (gotFocus)="shipperGotFocus()">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="shipper"
+                                              [control]="orderDataEntryForm.controls.idRepSalesOrderShipper"
+                                              [icon]="'list'"
+                                              [componentControl]="idRepSalesOrderShipper"
+                                              [hotKeyValue]="hotKeySettingService.idRepSalesOrderShipper$ | async"></control-messages>
+                        </div>
+                        <div class="col-xs-6 no-padding-right">
+                            <input #packageNr type="text"
+                                   class="form-control xn-input"
+                                   name="packageNr"
+                                   formControlName="packageNr"
+                                   placeholder="Package number"
+                                   autocomplete="off" />
+                            <control-messages [type]="'textbox'"
+                                              [componentControl]="packageNr"
+                                              [control]="orderDataEntryForm.controls.packageNr"
+                                              [icon]="'code'"
+                                              [hotKeyValue]="hotKeySettingService.packageNr$ | async"></control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <module-search-dialog #searchCompaignDialogModule
+                          [headerTitle]="moduleDialog.campaign.title"
+                          [searchIndex]="moduleDialog.campaign.searchIndex"
+                          [module]="moduleDialog.campaign.module"
+                          [keyword]="orderDataEntryForm.controls.campaignNumber.value"
+                          (onItemSelect)="campaignNumberItemSelect($event)">
+    </module-search-dialog>
+
+    <module-search-dialog #searchCustomerDialogModule
+                          [headerTitle]="moduleDialog.customer.title"
+                          [searchIndex]="moduleDialog.customer.searchIndex"
+                          [module]="moduleDialog.customer.module"
+                          [keyword]="orderDataEntryForm.controls.customer.value"
+                          (onItemSelect)="customerItemSelect($event)"
+                          (onDialogClose)="customerCloseSearchDialog($event)">
+    </module-search-dialog>
+
+</div>
+
+<!--Search Media Code-->
+<p-dialog header=""
+          #pDialogMediacode
+          appendTo="body"
+          [(visible)]="mediaCodeShowDialog"
+          [styleClass]="dialogStyleClass"
+          modal="modal"
+          [resizable]="isResizable"
+          [draggable]="isDraggable"
+          [width]="mediaCodeModalWidth"
+          [height]="mediaCodeModalHeight" responsive="true">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="header-text  pull-left"><label-translation [keyword]="'Order_Data_Entry__Mediacodes'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="mediaCodeCloseDialog()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-expand-popup"
+                    *ngIf="!isMaximized"
+                    (click)="maximize()">
+                <span class="fa fa-window-maximize"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-collapse-popup"
+                    *ngIf="isMaximized"
+                    (click)="restore()">
+                <span class="fa fa-window-restore"></span>
+            </button>
+        </div>
+    </p-header>
+    <div [ngStyle]="mediaCodeBodyHeight">
+        <app-search-media-code *ngIf="mediaCodeShowDialog"
+                               [wjGridSearchMediaCodeLeftId]="'0d5e5b14-64bb-41c1-9a17-5f9f40f0546f'"
+                               [wjGridSearchMediaCodeRightId]="'2017af0d-5d23-4ffd-99c6-29744b16b82d'"
+                               [wijmoGridComponentDetailId]="'6002ed2c-381a-4ce9-a87e-a3f2f9bbe544'"
+                               [searchText]="orderDataEntryForm.controls.campaignNumber.value"
+                               [globalProperties]="globalProperties"
+                               [data]="mediaCodeResult"
+                               (outputData)="mediaCodeSelectWhenClickOnRow($event)"
+                               (outputDataWithCloseModal)="mediaCodeSelectWhenDoubleClickOn($event)">
+        </app-search-media-code>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  pull-right" (click)="mediaCodeClickOkDialog()">
+                <span class="bt-t"><label-translation [keyword]="'Order_Data_Entry__Ok'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<div class="loading" *ngIf="isDataProcessing">
+</div>
+<div class="modal-loading" *ngIf="isDataProcessing">
+    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+</div>

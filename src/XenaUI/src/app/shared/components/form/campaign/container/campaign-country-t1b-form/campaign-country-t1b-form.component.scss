@@ -1,0 +1,24 @@
+.campaign-country-grid-container {
+    padding: 10px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;    
+    bottom: 5px
+}
+
+.btn-costs, .btn-reload {
+    margin-bottom: 10px;
+}
+
+.lbl-defaultCosts {
+    padding-left: 10px;
+}
+
+.campaign-country-grid-container ::ng-deep {
+    .ag-cell-inline-editing {
+        .numeric {
+            height: 95%;
+        }
+    }
+}

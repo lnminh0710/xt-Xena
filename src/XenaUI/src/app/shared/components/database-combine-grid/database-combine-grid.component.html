@@ -1,0 +1,61 @@
+<split class="height-pc-100"
+       direction="horizontal"
+       (dragEnd)="dragEnd($event)"
+       [gutterSize]="5"
+       #horizontalSplit>
+    <split-area [size]="splitterConfig.leftHorizontal"
+                [perfect-scrollbar]="perfectScrollbarConfig">
+        <div class="height-pc-100"
+             [ngClass]="{'xn-disabled' : disabledDatabaseGridData}">
+            <xn-ag-grid *ngIf="databaseGridData && databaseGridData.columns && databaseGridData.columns.length"
+                        #databaseGrid
+                        [id]="databaseGridId"
+                        [dataSource]="databaseGridData"
+                        [readOnly]="false"
+                        [isEditting]="true"
+                        [globalProperties]="globalProperties"
+                        [hasPriorityColumn]="true"
+                        [fitWidthColumn]="true"
+                        [columnsLayoutSettings]="columnsLayoutSettings[databaseGridId]"
+                        (rowClick)="onChangeSelectedItemsChanged($event)"
+                        (hasValidationError)="hasValidationErrorHandler($event, 'databaseGrid')"
+                        (onPriorityEditEnded)="onDatabasePriotityChanged($event)"
+                        (cellValueChanged)="onTableEditSuccess(); onDatabaseRowChecked($event)">
+            </xn-ag-grid>
+        </div>
+    </split-area>
+    <split-area [size]="splitterConfig.rightHorizontal"
+                [perfect-scrollbar]="perfectScrollbarConfig">
+        <xn-ag-grid *ngIf="!showAnotherCountryGrid && countryGridData && countryGridData.columns && countryGridData.columns.length"
+                    #countryGrid
+                    [id]="countryGridId"
+                    [dataSource]="countryGridData"
+                    [globalProperties]="globalProperties"
+                    [readOnly]="false"
+                    [isEditting]="true"
+                    [disabledAll]="isCountryGridDisabled"
+                    [fitWidthColumn]="true"
+                    [columnsLayoutSettings]="columnsLayoutSettings[countryGridId]"
+                    (cellEditingStarted)="onTableEditStart()"
+                    (cellEditingStopped)="onTableEditEnd()"
+                    (cellValueChanged)="onTableEditSuccess(); onCountryGridEditEnded($event)"
+                    (hasValidationError)="hasValidationErrorHandler($event, 'countryGrid')">
+        </xn-ag-grid>
+
+        <xn-ag-grid *ngIf="showAnotherCountryGrid && countryGridAnotherData && countryGridAnotherData.columns && countryGridAnotherData.columns.length"
+                    #countryGrid
+                    [id]="countryGridAnotherId"
+                    [dataSource]="countryGridAnotherData"
+                    [globalProperties]="globalProperties"
+                    [readOnly]="false"
+                    [isEditting]="true"
+                    [disabledAll]="isCountryGridDisabled"
+                    [fitWidthColumn]="true"
+                    [columnsLayoutSettings]="columnsLayoutSettings[countryGridAnotherId]"
+                    (cellEditingStarted)="onTableEditStart()"
+                    (cellEditingStopped)="onTableEditEnd()"
+                    (cellValueChanged)="onTableEditSuccess(); onCountryGridEditEnded($event)"
+                    (hasValidationError)="hasValidationErrorHandler($event, 'countryGrid')">
+        </xn-ag-grid>
+    </split-area>
+</split>

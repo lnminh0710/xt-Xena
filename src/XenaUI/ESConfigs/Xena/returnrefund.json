@@ -1,0 +1,32 @@
+{
+    "properties": {
+        "mEDIACODE": {
+            "type": "keyword",
+            "boost": null
+        },
+        "invoiceNr": {
+            "type": "keyword",
+            "boost": null
+        },
+        "isNewInvoice": {
+            "type": "boolean",
+            "boost": null
+        },
+        "notes": {
+            "type": "keyword",
+            "boost": null
+        },
+        "createDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "idPerson": {
+            "type": "long",
+            "boost": null
+        },
+        "idCountrylanguage": {
+            "type": "long",
+            "boost": null
+        }
+    }
+}

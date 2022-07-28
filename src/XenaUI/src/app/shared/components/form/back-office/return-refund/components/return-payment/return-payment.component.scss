@@ -1,0 +1,31 @@
+.form-container {
+    padding-top: 10px !important;
+
+    form {
+        min-height: 140px;
+        height: 99.5% !important;
+    }
+
+    .note-form-group-container {
+        height: calc(100% - 67px);
+
+        textarea {
+            min-height: 75px;
+            resize: none;
+        }
+    }
+
+    .control-label {
+        width: 110px;
+        float: left;
+        padding-right: 5px;
+    }
+
+    .control-input {
+        width: calc(100% - 120px);
+        float: left;
+    }
+}
+textarea {
+    height: 100px;
+}

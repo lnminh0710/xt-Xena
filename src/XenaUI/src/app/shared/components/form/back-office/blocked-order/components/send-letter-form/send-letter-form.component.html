@@ -1,0 +1,134 @@
+<div *ngIf="isRenderForm" class="form-container  height-pc-100"
+    [perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
+    <div class="form-top  col-xs-12  no-padding"
+        *ngIf="!isPreview">
+        <div class="form-top--left  col-sm-12  col-md-6  col-lg-5  no-padding">
+            <div class="form-group">
+                <label class="control-label  col-sm-3  col-md-4">
+                    <label-translation [keyword]="'Back_Office_Send_Letter_Form__Mandant'"></label-translation>
+                </label>
+                <div class="col-sm-9  col-md-8"
+                    [ngClass]="{'xn-disabled': !displayControl.Mandant}">
+                    <!-- <wj-multi-select #mandanCtr
+                                    placeholder="Please select"
+                                    [ngModel]="mandant"
+                                    class="custom-wj-input-control xn-select"
+                                    [itemsSource]="mandants"
+                                    [displayMemberPath]="'textValue'"
+                                    [checkedMemberPath]="'selected'"
+                                    [isRequired]="true"
+                                    (checkedItemsChanged)="onMandantChanged()">
+                    </wj-multi-select> -->
+                    <xn-combo-box #mandanCtr
+                                    wjDropdownHelper
+                                    [ngModel]="letterType"
+                                    class="custom-wj-input-control xn-select"
+                                    [itemsSource]="mandants"
+                                    [displayMemberPath]="'textValue'"
+                                    [selectedValuePath]="'idValue'"
+                                    [isEditable]="true"
+                                    [isRequired]="false"
+                                    placeholder="Please select"
+                                    (selectedIndexChanged)="onMandantChanged()">
+                    </xn-combo-box>
+                    <control-messages [xn-trigger-click-inside-cbo]="mandanCtr"
+                                        icon="file-text-o">
+                    </control-messages>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label  col-sm-3  col-md-4">
+                    <label-translation [keyword]="'Back_Office_Send_Letter_Form__Letter_Type'"></label-translation>
+                </label>
+                <div class="col-sm-9  col-md-8">
+                    <xn-combo-box #letterTypeCtr
+                                    wjDropdownHelper
+                                    [ngModel]="letterType"
+                                    class="custom-wj-input-control xn-select"
+                                    [itemsSource]="letterTypes"
+                                    [displayMemberPath]="'textValue'"
+                                    [selectedValuePath]="'idValue'"
+                                    [isEditable]="true"
+                                    [isRequired]="false"
+                                    placeholder="Please select"
+                                    (selectedIndexChanged)="onLetterTypeChanged()">
+                    </xn-combo-box>
+                    <control-messages [xn-trigger-click-inside-cbo]="letterTypeCtr"
+                                        icon="file-text-o">
+                    </control-messages>
+                </div>
+            </div>
+        </div>
+        <div class="form-top--right  col-sm-12  col-md-6  col-lg-7  no-padding-right">
+            <div class="xn__form-header  col-xs-12  col-sm-1  no-padding">
+                <span>
+                    <label-translation [keyword]="'Back_Office_Send_Letter__Notes'"></label-translation>
+                </span>
+            </div>
+            <div class="col-xs-12  col-sm-11  no-padding-right note-text">
+                <textarea class="form-control  xn-input"
+                        rows="3"
+                        (change)="notesChanged()"
+                        [(ngModel)]="notes"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="form-bottom  col-xs-12  no-padding">
+        <div class="xn__form-header">
+            <span>
+                <label-translation class="choose-reason" [keyword]="'Back_Office_Send_Letter__Choose_The_Reason'"></label-translation>
+            </span>
+        </div>
+        <div class="group-items"
+            *ngFor="let groupItem of groupItems">
+            <div class="group-title">
+                {{groupItem.GroupName}}
+            </div>
+            <div class="group-content">
+                <mat-radio-group>
+                    <div class="item-control"
+                        *ngFor="let child of groupItem.Children">
+                        <ng-container [ngSwitch]="child.TypeOfChoice">
+                            <ng-container  *ngSwitchCase="0">
+                                <div class="rd-control">
+                                    <mat-radio-button
+                                        color="primary"
+                                        value="{{child.IdBackOfficeLettersGroupsItems}}"
+                                        [checked]="child.Checked"
+                                        (change)="clickRadio(child, groupItem)">
+                                    </mat-radio-button>
+                                </div>
+                                <div class="radio-text" (click)="clickRadio(child, groupItem)">
+                                    <span>{{child.GroupItemName}}</span>
+                                </div>
+                            </ng-container>
+                            <ng-container  *ngSwitchCase="1">
+                                <div class="chk-control">
+                                    <mat-checkbox
+                                        color="primary"
+                                        value="{{child.IdBackOfficeLettersGroupsItems}}"
+                                        [(ngModel)]="child.Checked"
+                                        [checked]="child.Checked"
+                                        (change)="changeCheckbox()">
+                                    </mat-checkbox>
+                                </div>
+                                <div class="checkbox-text"
+                                    (click)="clickCheckbox(child)">
+                                    <span>{{child.GroupItemName}}</span>
+                                </div>
+                            </ng-container>
+                            <ng-container  *ngSwitchCase="2">
+                                <div class="txt-control">
+                                    <textarea
+                                        class="form-control resize-text"
+                                        (change)="textboxChanged()"
+                                        [(ngModel)]="child.GroupItemName"></textarea>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </mat-radio-group>
+            </div>
+        </div>
+    </div>
+</div>

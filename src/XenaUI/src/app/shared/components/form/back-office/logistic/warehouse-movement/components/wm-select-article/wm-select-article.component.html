@@ -1,0 +1,95 @@
+
+<div *ngIf="isRender" class="wm-select-article-grid-standard">
+    <div class="col-xs-12  wm-select-article-grid__panel">
+        <div class="col-xs-12  no-padding  wm-select-article-grid--left">
+            <xn-ag-grid #leftGridComponent
+                        [id]="'e98aba70-c4dc-47f3-a7e4-16dbe98e740d'"
+                        [dataSource]="leftGrid"
+                        [readOnly]="true"
+                        [isShowedHeader]="true"
+                        [rowGrouping]="rowLeftGrouping"
+                        [headerTitle]="'Search article'"
+                        [isEditting]="true"
+                        [allowDelete]="false"
+                        [fitWidthColumn]="true"
+                        [hasSearch]="true"
+                        [globalProperties]="globalProperties"
+                        (onRowGroupPanel)="handleRowLeftGrouping($event)"
+                        (rowClick)="leftGridRowClick($event)"
+                        (rowDoubleClicked)="leftGridRowDoubleClick($event)"
+                        (onTableSearch)="leftGridSearch($event)">
+            </xn-ag-grid>
+        </div>
+    </div>
+    <div class="col-xs-12  no-padding  wm-select-article-command__panel">
+        <div class="col-xs-2  col-sm-12  no-padding">
+            <div class="command__button-spacing" (click)="addArticle()">
+                <span class="move-grid-item-button  fa  fa-step-forward"></span>
+            </div>
+        </div>
+        <div class="col-xs-2  col-sm-12  no-padding">
+            <div class="command__button-spacing" (click)="addAllArticle()">
+                <span class="move-grid-item-button  fa  fa-fast-forward"></span>
+            </div>
+        </div>
+        <div class="col-xs-2  col-sm-12  wm-select-article-command__button"></div>
+        <div class="col-xs-2  col-sm-12  no-padding">
+            <div class="command__button-spacing" (click)="removeArticle()">
+                <span class="move-grid-item-button  fa  fa-step-backward"></span>
+            </div>
+        </div>
+        <div class="col-xs-2  col-sm-12  no-padding">
+            <div class="command__button-spacing" (click)="removeAllArticle()">
+                <span class="move-grid-item-button  fa  fa-fast-backward"></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12  wm-select-article-grid__panel">
+        <div class="col-xs-12  no-padding  wm-select-article-grid--right">
+            <!-- <xn-ag-grid #rightGridComponent
+                        [id]="'3b8f2f65-5a3a-4fdf-b5ee-e45e2b76215e'"
+                        [dataSource]="rightGrid"
+                        [readOnly]="false"
+                        [isArticlesSelected]="true"
+                        [isShowedHeader]="true"
+                        [enterMovesDown]="false"
+                        [rowGrouping]="rowRightGrouping"
+                        [headerTitle]="'Articles selected'"
+                        [isEditting]="true"
+                        [allowDelete]="false"
+                        [fitWidthColumn]="true"
+                        [autoCompleteSearchFunc]="onSearchCellcChanged"
+                        [widgetProperties]="globalProperties"
+                        [globalProperties]="globalProperties"
+                        (onRowGroupPanel)="handleRowRightGrouping($event)"
+                        (onAutoCompleteCellChanged)="onSearchCellcChanged($event)"
+                        (rowClick)="rightGridRowClick($event)"
+                        (rowDoubleClicked)="rightGridRowDoubleClick($event)"
+                        (cellValueChanged)="rightGridRowEditEnded($event)"
+                        (hasValidationError)="hasValidationError($event)">
+            </xn-ag-grid> -->
+            <xn-ag-grid #rightGridComponent
+                        [id]="'3b8f2f65-5a3a-4fdf-b5ee-e45e2b76215e'"
+                        [dataSource]="rightGrid"
+                        [readOnly]="false"
+                        [isArticlesSelected]="true"
+                        [isShowedHeader]="true"
+                        [enterMovesDown]="false"
+                        [rowGrouping]="rowRightGrouping"
+                        [headerTitle]="'Articles selected'"
+                        [isEditting]="true"
+                        [allowDelete]="false"
+                        [fitWidthColumn]="true"
+                        [autoCompleteSearchFunc]="onSearchCellcChanged"
+                        [widgetProperties]="globalProperties"
+                        [globalProperties]="globalProperties"
+                        (onRowGroupPanel)="handleRowRightGrouping($event)"
+                        (onAutoCompleteCellChanged)="onSearchCellcChanged($event)"
+                        (rowClick)="rightGridRowClick($event)"
+                        (rowDoubleClicked)="rightGridRowDoubleClick($event)"
+                        (cellValueChanged)="rightGridRowEditEnded($event)"
+                        (hasValidationError)="hasValidationError($event)">
+            </xn-ag-grid>
+        </div>
+    </div>
+</div>

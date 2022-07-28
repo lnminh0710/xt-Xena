@@ -1,0 +1,7 @@
+<div class="col-xs-12  summary-command__main  no-padding" [ngClass]="{'summary-command__clicked': data.isClicked}" (click)="summaryClick($event)">
+	<div class="summary-command__title  padding-left--sm">{{data.title}}</div>
+	<div class="summary-command__body">
+		<i class="fa  fa-{{data.icon}}"></i>
+	</div>
+	<div class="summary-command__foter  padding-right--sm">{{data.total}}</div>
+</div>

@@ -1,0 +1,149 @@
+@import "../color.scss";
+/*
+ * Skin: Black
+ * ----------
+ */
+.skin-black {
+    .btn-primary {
+        background-color: $black;
+        border-color: $black;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:active,
+    .btn-primary.hover {
+        background-color: $black3;
+    }
+
+    .dnd-drag-start {
+        border: 1px dashed $black !important;
+    }
+
+    .dnd-drag-enter {
+        opacity: 0.7;
+        border: 1px dashed $black !important;
+    }
+
+    .dnd-drag-over {
+        border: 1px dashed $black !important;
+    }
+
+    .dnd-sortable-drag {
+        border: 1px dashed $black !important;
+    }
+
+    .parked-item-panel {
+        .parked-item-header {
+            .parked-item-menu,
+            .parked-item-title,
+            .parked-item-title-vertical,
+            .parked-item-collapse {
+                color: $white;
+            }
+
+            .badge {
+                background-color: $black;
+            }
+
+            .parked-item-menu {
+                .panel {
+                    border-color: $black;
+
+                    .panel-footer {
+                        border-color: $black;
+                    }
+                }
+            }
+
+            .parked-item-collapse {
+                a.parked-item-toggle {
+                    color: $white;
+
+                    &:hover {
+                        color: $grey1;
+                    }
+                }
+            }
+        }
+
+        .parked-item-content {
+            .panel {
+                background-color: $white;
+                border-color: transparent;
+
+                &.active {
+                    border-color: $black;
+
+                    .panel-footer {
+                        border-color: $black;
+                        background-color: $black;
+                        color: $white;
+                    }
+
+                    .edit-icon {
+                        color: #FF6A00;
+                    }
+
+                    .star-icon {
+                        color: #0004FF;
+                    }
+
+                    .check-icon {
+                        color: #00B80F;
+                    }
+                }
+            }
+        }
+    }
+
+    .global-search {
+        .gs__all-icon {
+            color: $light-gray1;
+        }
+
+        .gs_module-item {
+            .gs__all-icon__bg {
+                background-color: $cyan1;
+            }
+        }
+
+        .gs_module-item:hover {
+            .gs__all-icon__bg {
+                background-color: $cyan2;
+            }
+        }
+
+        .gs_module-item {
+            .gs__all-icon__bg--searched {
+                background-color: $blue1;
+            }
+        }
+
+        .gs_module-item:hover {
+            .gs__all-icon__bg--searched {
+                background-color: $blue2;
+            }
+        }
+
+        .gs_module-item {
+            background-color: $gray5;
+            border: 1px solid $gray5;
+        }
+
+        .gs_module-item__clicked {
+            border: 1px solid $accent1;
+        }
+
+        .global-search__pin {
+            color: $yellow1;
+        }
+
+        .global-search__unpin {
+            color: $white1;
+        }
+
+        .panel-heading {
+            background-color: $skin-black-main;
+        }
+    }
+}

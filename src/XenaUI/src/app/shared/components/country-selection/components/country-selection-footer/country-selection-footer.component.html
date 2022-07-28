@@ -1,0 +1,10 @@
+<xn-ag-grid *ngIf="selectedCountryData && selectedCountryData.columns && selectedCountryData.columns.length"
+            [dataSource]="selectedCountryData"
+            [readOnly]="!isEdit"
+            [id]="gridId"
+            [globalProperties]="globalProperties"
+            [allowAddNew]="false"
+            [allowDelete]="false"            
+            [columnsLayoutSettings]="columnsLayoutSettings[gridId]"
+            (cellValueChanged)="onTableEditSuccess($event)">
+</xn-ag-grid>

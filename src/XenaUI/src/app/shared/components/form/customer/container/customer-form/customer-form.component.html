@@ -1,0 +1,432 @@
+<div *ngIf="isRenderForm" class="form-container" [ngClass]="{'submitted': formGroup.submitted, 'vertical-layout': isVerticalLayout}">
+    <form [formGroup]="formGroup"
+          class="form-horizontal"
+          id="customerFormGroup"
+          novalidate>
+        <control-focus #focusControl
+                       formName="customerFormGroup"
+                       [targetComponentFocus]="isVerticalLayout ? 'data-entry-order-payment-type' : ''"
+                       [mustWaitForCheckingDataWhenLastItem]="needToCheckMatchingData"
+                       [isRegisterBlurEventInLastControl]="true"
+                       (callBackAfterEnterWhenLastItemAction)="callBackAfterEnterWhenLastItemHandler($event)"
+                       (callBackWhenInvalidCharacterAction)="callBackWhenInvalidCharacterHandler()">
+        </control-focus>
+        <div class="height-pc-100"
+             [ngClass]="{'no-padding col-xs-12': isVerticalLayout, 'col-xs-12 col-md-5':!isVerticalLayout}">
+            <div class="col-xs-12  no-padding"
+                 *ngIf="isVerticalLayout">
+                <div *ngIf="isVerticalLayout && !hiddenFields['idRepIsoCountryCode'] &&
+                            formGroup.controls.idRepIsoCountryCode"
+                     class="form-group no-padding-left xn-full-width"
+                     [ngClass]="{'col-sm-6 xn-left-comp':formGroup.controls.idRepLanguage,
+                                'col-sm-12': !formGroup.controls.idRepLanguage}">
+                    <label for="idRepIsoCountryCode"
+                           class="control-label col-sm-4 no-padding-left width140">
+                        {{currentCustomer.idRepIsoCountryCode.displayValue}}
+                    </label>
+                    <div class="col-sm-8 no-padding-right widthFullMinus140">
+                        <div class="full-width">
+                            <xn-combo-box #idRepIsoCountryCode
+                                          wjDropdownHelper
+                                          [form]="formGroup"
+                                          formControlName="idRepIsoCountryCode"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="listComboBox.countryCode"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isEditable]="true"
+                                          [isRequired]="false"
+                                          placeholder="Please select"
+                                          (selectedIndexChanged)="onCountryChanged()">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="idRepIsoCountryCode"
+                                              [mandatoryColor]="mandatoryColor['idRepIsoCountryCode']"
+                                              [control]="formGroup.controls['idRepIsoCountryCode']"
+                                              [componentControl]="idRepIsoCountryCode"
+                                              icon="address-card"
+                                              [hotKeyValue]="hotKeySettingService.idRepIsoCountryCode$ | async">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!hiddenFields['idRepLanguage'] &&
+                            formGroup.controls.idRepLanguage"
+                     class="form-group no-padding-left xn-full-width"
+                     [ngClass]="{'col-sm-6 xn-right-comp':formGroup.controls.idRepIsoCountryCode,
+                                'col-sm-12': !formGroup.controls.idRepIsoCountryCode}">
+                    <label for="idRepLanguage"
+                           class="control-label col-sm-4 no-padding-left width140">
+                        {{currentCustomer.idRepLanguage.displayValue}}
+                    </label>
+                    <div class="col-sm-8 no-padding-right widthFullMinus140">
+                        <div class="full-width">
+                            <xn-combo-box #idRepLanguage
+                                          wjDropdownHelper
+                                          [form]="formGroup"
+                                          formControlName="idRepLanguage"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="listComboBox.language"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isEditable]="true"
+                                          [isRequired]="false"
+                                          placeholder="Please select">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="idRepLanguage"
+                                              [mandatoryColor]="mandatoryColor['idRepLanguage']"
+                                              [control]="formGroup.controls['idRepLanguage']"
+                                              [componentControl]="idRepLanguage"
+                                              icon="anchor"
+                                              [hotKeyValue]="hotKeySettingService.idRepLanguage$ | async">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12  no-padding  height-pc-100"
+                 [perfect-scrollbar]="perfectScrollbarConfig">
+                <div class="xn__form-header" *ngIf="!isVerticalLayout">
+                    <span><label-translation [keyword]="'Customer_Form__Main_Information'"></label-translation></span>
+                </div>
+                <div class="form-group"
+                     *ngIf="!isVerticalLayout && !hiddenFields['idRepIsoCountryCode']">
+                    <label for="idRepIsoCountryCode"
+                           class="control-label  col-sm-4">
+                        {{currentCustomer.idRepIsoCountryCode.displayValue}}
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="full-width">
+                            <xn-combo-box #idRepIsoCountryCode
+                                          wjDropdownHelper
+                                          [form]="formGroup"
+                                          formControlName="idRepIsoCountryCode"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="listComboBox.countryCode"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isEditable]="true"
+                                          [isRequired]="false"
+                                          placeholder="Please select"
+                                          (selectedIndexChanged)="onCountryChanged()">
+                            </xn-combo-box>
+
+                            <control-messages [xn-trigger-click-inside-cbo]="idRepIsoCountryCode"
+                                              [mandatoryColor]="mandatoryColor['idRepIsoCountryCode']"
+                                              [control]="formGroup.controls['idRepIsoCountryCode']"
+                                              icon="globe"
+                                              [componentControl]="idRepIsoCountryCode"
+                                              [hotKeyValue]="hotKeySettingService.idRepIsoCountryCode$ | async">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" *ngIf="!isVerticalLayout && !hiddenFields['idRepLanguage']">
+                    <label for="idRepLanguage"
+                           class="control-label  col-sm-4">
+                        {{currentCustomer.idRepLanguage.displayValue}}
+                    </label>
+                    <div class="col-sm-8">
+                        <div class="full-width">
+                            <xn-combo-box #idRepLanguage
+                                          wjDropdownHelper
+                                          [form]="formGroup"
+                                          formControlName="idRepLanguage"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="listComboBox.language"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isEditable]="true"
+                                          [isRequired]="false"
+                                          placeholder="Please select">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="idRepLanguage"
+                                              [mandatoryColor]="mandatoryColor['idRepLanguage']"
+                                              [control]="formGroup.controls['idRepLanguage']"
+                                              icon="language"
+                                              [componentControl]="idRepLanguage"
+                                              [hotKeyValue]="hotKeySettingService.idRepLanguage$ | async">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group no-margin">
+                    <div *ngIf="formGroup.controls['idRepTitle'] && !hiddenFields['idRepTitle']"
+                         class="form-group xn-full-width"
+                         [ngClass]="{'no-padding-left':isVerticalLayout ,
+                         'col-sm-12':!isVerticalLayout,
+                         'col-sm-6 xn-left-comp':isVerticalLayout && formGroup.controls['dateOfBirth'],
+                         'col-sm-12 no-padding-right':isVerticalLayout && !formGroup.controls['dateOfBirth']}">
+                        <label for="idRepTitle"
+                               [ngClass]="{'col-sm-4':!(isVerticalLayout && !formGroup.controls['dateOfBirth']),
+                               'col-sm-2':isVerticalLayout && !formGroup.controls['dateOfBirth']}"
+                               class="control-label width140">{{currentCustomer.idRepTitle.displayValue}}</label>
+                        <div class="widthFullMinus140"
+                             [ngClass]="{'col-sm-8':formGroup.controls['dateOfBirth'],
+                             'no-padding-right': isVerticalLayout && formGroup.controls['dateOfBirth'],
+                             'col-sm-10': isVerticalLayout && !formGroup.controls['dateOfBirth']}">
+                            <div class="full-width">
+                                <xn-combo-box #idRepTitle
+                                              wjDropdownHelper
+                                              [form]="formGroup"
+                                              formControlName="idRepTitle"
+                                              class="custom-wj-input-control xn-select"
+                                              [itemsSource]="listComboBox.title"
+                                              [displayMemberPath]="'textValue'"
+                                              [selectedValuePath]="'idValue'"
+                                              [isEditable]="true"
+                                              [isRequired]="false"
+                                              placeholder="Please select">
+                                </xn-combo-box>
+                                <control-messages [xn-trigger-click-inside-cbo]="idRepTitle"
+                                                  [mandatoryColor]="mandatoryColor['idRepTitle']"
+                                                  [control]="formGroup.controls['idRepTitle']"
+                                                  icon="venus-mars"
+                                                  [componentControl]="idRepTitle"
+                                                  [hotKeyValue]="hotKeySettingService.idRepTitle$ | async">
+                                </control-messages>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="isVerticalLayout && formGroup.controls['dateOfBirth'] &&
+                                !hiddenFields['dateOfBirth']"
+                         class="form-group no-padding-left xn-full-width"
+                         [ngClass]="{'col-sm-6 xn-right-comp':isVerticalLayout && formGroup.controls['idRepTitle'],
+                                    'col-sm-12':isVerticalLayout && !formGroup.controls['idRepTitle']}">
+                        <label for="bdMonth"
+                               [ngClass]="{ 'col-sm-4':!(isVerticalLayout && !formGroup.controls['idRepTitle']),
+                                            'col-sm-2':isVerticalLayout && !formGroup.controls['idRepTitle']}"
+                               class="control-label width140">{{currentCustomer.dateOfBirth.displayValue}}</label>
+                        <div [ngClass]="{'col-sm-8':formGroup.controls['idRepTitle'], 'col-sm-10':!formGroup.controls['idRepTitle']}"
+                             class="no-padding-right order-date widthFullMinus140">
+                            <div class="full-width input-date-of-birth">
+                                <xn-date-picker #dateOfBirth
+                                                [formControl]="formGroup.controls['dateOfBirth']"
+                                                class="xn-input wjDOB"
+                                                [title]="dobDateFormat"
+                                                [format]="dobDateFormat"
+                                                [ignoreDateFormat]="false"
+                                                [placeholder]="dobDateFormat"
+                                                [dontAutoFillDateWhenEnter]="true"
+                                                [showDropDownButton]="false"
+                                                (valueChanged)="dateOfBirthChanged()"
+                                                [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                                [isRequired]="false">
+                                </xn-date-picker>
+                                <control-messages [xn-trigger-click-inside-cbo]="dateOfBirth"
+                                                  [mandatoryColor]="mandatoryColor['dateOfBirth']"
+                                                  [control]="formGroup.controls['dateOfBirth']"
+                                                  icon="calendar"
+                                                  [componentControl]="dateOfBirth"
+                                                  [hotKeyValue]="hotKeySettingService.dateOfBirth$ | async">
+                                </control-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="formGroup.controls['firstName'] && !hiddenFields['firstName']"
+                     class="form-group">
+                    <label for="firstName"
+                           class="control-label  col-sm-4 width140"
+                           [ngClass]="{'col-sm-2':isVerticalLayout}">{{currentCustomer.firstName.displayValue}}</label>
+                    <div class="widthFullMinus140"
+                         [ngClass]="{'col-sm-8':!isVerticalLayout, 'col-sm-10':isVerticalLayout}">
+                        <input #firstName class="form-control  xn-input"
+                               type="text"
+                               id="firstName"
+                               name="firstName"
+                               formControlName="firstName"
+                               autocomplete="off">
+                        <control-messages [mandatoryColor]="mandatoryColor['firstName']"
+                                          [type]="'textbox'"
+                                          [control]="formGroup.controls.firstName"
+                                          [icon]="'user'"
+                                          [componentControl]="firstName"
+                                          [hotKeyValue]="hotKeySettingService.firstName$ | async">
+                        </control-messages>
+                    </div>
+                </div>
+                <div *ngIf="formGroup.controls['lastName'] && !hiddenFields['lastName']"
+                     class="form-group">
+                    <label for="lastName"
+                           class="control-label  col-sm-4 width140"
+                           [ngClass]="{'col-sm-2':isVerticalLayout}">{{currentCustomer.lastName.displayValue}}</label>
+                    <div class="widthFullMinus140"
+                         [ngClass]="{'col-sm-8':!isVerticalLayout, 'col-sm-10':isVerticalLayout}">
+                        <input #lastName class="form-control  xn-input"
+                               type="text"
+                               id="lastName"
+                               name="lastName"
+                               formControlName="lastName"
+                               autocomplete="off">
+                        <control-messages [mandatoryColor]="mandatoryColor['lastName']"
+                                          [type]="'textbox'"
+                                          [control]="formGroup.controls.lastName"
+                                          [icon]="'user'"
+                                          [componentControl]="lastName"
+                                          [hotKeyValue]="hotKeySettingService.lastName$ | async">
+                        </control-messages>
+                    </div>
+                </div>
+                <div *ngIf="formGroup.controls['nameAddition'] && !hiddenFields['nameAddition']"
+                     class="form-group">
+                    <label for="nameAddition"
+                           class="control-label  col-sm-4 width140"
+                           [ngClass]="{'col-sm-2':isVerticalLayout}">{{currentCustomer.nameAddition.displayValue}}</label>
+                    <div class="widthFullMinus140"
+                         [ngClass]="{'col-sm-8':!isVerticalLayout, 'col-sm-10':isVerticalLayout}">
+                        <input #nameAddition
+                               class="form-control  xn-input"
+                               type="text"
+                               id="nameAddition"
+                               name="nameAddition"
+                               formControlName="nameAddition"
+                               autocomplete="off">
+                        <control-messages [mandatoryColor]="mandatoryColor['nameAddition']"
+                                          [type]="'textbox'"
+                                          [control]="formGroup.controls['nameAddition']"
+                                          [icon]="'user'"
+                                          [componentControl]="nameAddition"
+                                          [hotKeyValue]="hotKeySettingService.nameAddition$ | async">
+                        </control-messages>
+                    </div>
+                </div>
+                <form-fg-address *ngIf="isRenderedAddressFG"
+                                 [isVerticalLayout]="isVerticalLayout"
+                                 [initInformation]="addressFGData"
+                                 [mandatoryCheckColor]="mandatoryColor"
+                                 [hiddenFields]="hiddenFields"
+                                 [dontShowControl]="dontShowControl"
+                                 [dontAllowCharForArea]="isVerticalLayout ? ';' : ''"
+                                 (onCountryChangedAction)="onCountryChangedHandler($event)"></form-fg-address>
+
+                <ng-container *ngIf="!isVerticalLayout">
+                    <div class="xn__form-header">
+                        <span><label-translation [keyword]="'Customer_Form__Additional_Information'"></label-translation></span>
+                    </div>
+                    <div class="form-group group-for-is-active">
+                        <label for="isActive"
+                               class="control-label  col-sm-4  width140">
+                            {{currentCustomer.isActive.displayValue}}
+                        </label>
+                        <div class="col-sm-8  widthFullMinus140">
+                            <mat-checkbox #isActive
+                                          color="primary"
+                                          formControlName="isActive">
+                            </mat-checkbox>
+                            <control-messages *ngIf="formGroup.controls.isActive"
+                                              [control]="formGroup.controls.isActive"
+                                              [componentControl]="isActive">
+                            </control-messages>
+                        </div>
+                    </div>
+                    <div class="form-group"
+                         *ngIf="!hiddenFields['idRepPersonStatus']">
+                        <label for="idRepPersonStatus"
+                               class="control-label  col-sm-4  width140">
+                            {{currentCustomer.idRepPersonStatus.displayValue}}
+                        </label>
+                        <div class="col-sm-8  widthFullMinus140">
+                            <div class="full-width">
+                                <xn-combo-box #idRepPersonStatus
+                                              wjDropdownHelper
+                                              [form]="formGroup"
+                                              formControlName="idRepPersonStatus"
+                                              class="custom-wj-input-control xn-select"
+                                              [itemsSource]="listComboBox.customerStatus"
+                                              [displayMemberPath]="'textValue'"
+                                              [selectedValuePath]="'idValue'"
+                                              [isEditable]="true"
+                                              [isRequired]="false"
+                                              placeholder="Please select">
+                                </xn-combo-box>
+                                <control-messages [xn-trigger-click-inside-cbo]="idRepPersonStatus"
+                                                  [mandatoryColor]="mandatoryColor['idRepPersonStatus']"
+                                                  [control]="formGroup.controls['idRepPersonStatus']"
+                                                  icon="user-circle"
+                                                  [componentControl]="idRepPersonStatus">
+                                </control-messages>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group"
+                         *ngIf="!hiddenFields['dateOfBirth']">
+                        <label for="dateOfBirth"
+                               class="control-label  col-sm-4  width140">
+                            {{currentCustomer.dateOfBirth.displayValue}}
+                        </label>
+                        <div class="col-sm-8  xn-calendar  widthFullMinus140">
+                            <div class="full-width">
+                                <xn-date-picker #wjDOB
+                                                (keypress)="keypress($event)"
+                                                [formControl]="formGroup.controls['dateOfBirth']"
+                                                class="xn-input"
+                                                [min]="'1900-01-01' | toDate"
+                                                [max]="lastDayOfThisYear"
+                                                [title]="dobDateFormat"
+                                                [format]="dobDateFormat"
+                                                [placeholder]="dobDateFormat"
+                                                [dontAutoFillDateWhenEnter]="true"
+                                                [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                                [isRequired]="false">
+                                </xn-date-picker>
+                                <control-messages [xn-trigger-click-inside-cbo]="wjDOB"
+                                                  [mandatoryColor]="mandatoryColor['dateOfBirth']"
+                                                  [control]="formGroup.controls['dateOfBirth']"
+                                                  icon="calendar"
+                                                  [componentControl]="wjDOB">
+                                </control-messages>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-xs-12  col-md-5   height-pc-100"
+             *ngIf="!isVerticalLayout">
+            <div class="form-group  xn__form-header">
+                <span class="no-margin"><label-translation [keyword]="'Customer_Form__Communications'"></label-translation></span>
+            </div>
+            <div class="form-group  customer-communication">
+                <xn-communication-table [data]="commInputputData"
+                                        [gridId]="'e993289c-d7e4-42e5-bf95-02aead390bdc'"
+                                        [globalProperties]="proGlobalProperties"
+                                        (onHasError)="onCommHasError($event)"
+                                        (outputData)="getCommOutputData($event)"></xn-communication-table>
+            </div>
+
+            <div class="form-group"
+                 *ngIf="!hiddenFields['notes']">
+                <label for="notes"
+                       class="control-label  col-sm-4 bold-title  margin-top--lg  text-left  no-padding-left">
+                    <label-translation [keyword]="'Customer_Form__Notes'"></label-translation>
+                </label>
+                <textarea #notes
+                          class="form-control  xn-input"
+                          id="notes"
+                          name="notes"
+                          [maxlength]="maxCharactersNotes"
+                          (keypress)="updateLeftCharacters($event)"
+                          (keydown)="updateLeftCharacters($event)"
+                          formControlName="notes"></textarea>
+                <control-messages [mandatoryColor]="mandatoryColor['notes']"
+                                  icon="comment  fa-2"
+                                  styleClass="for-notes"
+                                  [control]="formGroup.controls['notes']"
+                                  [componentControl]="notes">
+                </control-messages>
+                <p>* <label-translation [keyword]="'Customer_Form__You_have'"></label-translation> {{formGroup.leftCharacters}} <label-translation [keyword]="'Customer_Form__characters_more'"></label-translation></p>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="xn-loading"
+     *ngIf="showLoading">
+    <i class="fa fa-spinner fa-spin"></i>
+</div>
+<matching-customer-data-dialog #matchingCustomerDataDialog
+                               *ngIf="showDialog"
+                               [gridId]="'4f887953-05e8-41fd-89b2-b0cf73ec135d'"
+                               [isVerticalLayout]="isVerticalLayout"
+                               (onCloseAction)="onCloseHanlder($event)"
+                               (onIgnoreAndSaveAction)="onIgnoreAndSaveHanlder()"
+                               (onSelectedItemAction)="onSelectedItemHanlder($event)"></matching-customer-data-dialog>

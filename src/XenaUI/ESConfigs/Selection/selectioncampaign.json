@@ -1,0 +1,48 @@
+{
+    "properties": {
+        "projectName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "defaultValue": {
+            "type": "keyword",
+            "boost": null
+        },
+        "country": {
+            "type": "keyword",
+            "boost": null
+        },
+        "notes": {
+            "type": "keyword",
+            "boost": null
+        },
+        "exportDataBase": {
+            "type": "keyword",
+            "boost": null
+        },
+        "generateSelectionTableName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "isArchived": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isActive": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isDeleted": {
+            "type": "boolean",
+            "boost": null
+        },
+        "createDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "updateDate": {
+            "type": "keyword",
+            "boost": null
+        }
+    }
+}

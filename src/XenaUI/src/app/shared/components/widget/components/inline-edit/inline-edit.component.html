@@ -1,0 +1,243 @@
+<div class="inlineEditWrapper  height-pc-100"
+     id="inlineEditWrapper" *ngIf="!control.isHidden">
+    <!-- Editable value -->
+    <a #self  (dblclick)="edit(value, self)"
+        class="h-w-f"
+        [hidden]="editing && !control.readOnly">
+        <div [ngSwitch]="control.controlType"
+             id="{{divId}}"
+             class="v  height-pc-100  {{editingClass}}"
+             [ngStyle]="justifyContent">
+            <div *ngSwitchCase="'checkbox'"
+                 class="v"
+                 [ngClass]="{'align-self-top': alignVerticalTop,
+                             'align-self-center': alignVerticalCenter,
+                             'align-self-bottom': alignVerticalBottom}"
+                 [ngStyle]="editing ? '' : dataStyle">
+                <label class="control-label"
+                       [style.maxHeight]="_height">
+                    <i class="fa fa-circle" [ngClass]="{'active' : value == true, 'in-active' :  value != true }">
+                    </i>
+                </label>
+            </div>
+
+            <div *ngSwitchCase="'date'"
+                 class="v"
+                 [ngClass]="{'align-self-top': alignVerticalTop,
+                             'align-self-center': alignVerticalCenter,
+                             'align-self-bottom': alignVerticalBottom}"
+                 [ngStyle]="editing ? '' : dataStyle">
+                <label class="control-label"
+                       id="{{labelId}}"
+                       [style.maxHeight]="_height"
+                       *ngIf="value">
+                       {{ formatDate(value) }}
+                </label>
+                <label class="control-label empty-value"
+                       [style.maxHeight]="_height"
+                       *ngIf="!value">_ _ _ _ _</label>
+            </div>
+
+            <div *ngSwitchCase="'dropdown'"
+                 class="v"
+                 [ngClass]="{'align-self-top': alignVerticalTop,
+                             'align-self-center': alignVerticalCenter,
+                             'align-self-bottom': alignVerticalBottom}"
+                 [ngStyle]="editing ? '' : dataStyle">
+                <label class="control-label"
+                       id="{{labelId}}"
+                       [style.maxHeight]="_height"
+                       *ngIf="control.displayValue">
+                       {{ control.displayValue }}
+                </label>
+                <label class="control-label empty-value"
+                       [style.maxHeight]="_height"
+                       *ngIf="!control.displayValue">_ _ _ _ _</label>
+            </div>
+
+            <div *ngSwitchCase="'textbox'"
+                 class="v"
+                 [style.font-weight]="isSAVLetter ?  'bold' : ''"
+                 [ngClass]="{'align-self-top': alignVerticalTop,
+                             'align-self-center': alignVerticalCenter,
+                             'align-self-bottom': alignVerticalBottom}"
+                 [ngStyle]="editing ? '' : dataStyle">
+                <label class="control-label"
+                       id="{{labelId}}"
+                       [style.maxHeight]="_height"
+                       *ngIf="value || tempValue">
+                    {{ tempValue || value }}
+                </label>
+                <label class="control-label empty-value"
+                       [style.maxHeight]="_height"
+                       *ngIf="!value && !tempValue">_ _ _ _ _</label>
+            </div>
+
+            <div *ngSwitchCase="'button'" class="v"
+                 [ngStyle]="editing ? '' : dataStyle">
+                <button type="button"
+                        [ngClass]="{'align-self-top': alignVerticalTop,
+                             'align-self-center': alignVerticalCenter,
+                             'align-self-bottom': alignVerticalBottom}"
+                        [disabled]="control.label == 'InvoicePDF' || control.label == 'PDF' && !control.value"
+                        class="mat-btn-non-fix--icon mat-btn-small mat-raised-button mat-btn-blue-form"
+                        (click)="control.clickFunc()">
+                    <i *ngIf="control.label == 'Tracking'"
+                       class="fa fa-truck"></i>
+                    <i *ngIf="control.label == 'InvoicePDF' || control.label == 'PDF'"
+                       class="fa fa-file-pdf-o"></i>
+                    <i *ngIf="control.label == 'Return'"
+                       class="fa fa-exchange"></i>
+                    <i *ngIf="control.label == 'Preview'"
+                       class="fa fa-eye"></i>
+                    <i *ngIf="control.label == 'Download'"
+                       class="fa fa-download"></i>
+                    <i *ngIf="control.label == 'Delete'"
+                       class="fa fa-trash-o"></i>
+                </button>
+            </div>
+
+            <div *ngSwitchCase="'numberbox'"
+              class="v"
+                 [ngClass]="{'align-self-top': alignVerticalTop,
+                             'align-self-center': alignVerticalCenter,
+                             'align-self-bottom': alignVerticalBottom}"
+                 [ngStyle]="editing ? '' : dataStyle">
+                <label class="control-label"
+                       *ngIf="value || tempValue"
+                       [style.maxHeight]="_height">
+                    {{ tempValue || value | displaySeparator:globalFormatNumber }}
+                </label>
+                <label class="control-label empty-value"
+                       [style.maxHeight]="_height"
+                       *ngIf="!value && !tempValue">_ _ _ _ _</label>
+            </div>
+
+            <div *ngSwitchDefault
+                 class="v"
+                 [ngClass]="{'align-self-top': alignVerticalTop,
+                             'align-self-center': alignVerticalCenter,
+                             'align-self-bottom': alignVerticalBottom}"
+                 [ngStyle]="editing ? '' : dataStyle">
+                <label class="control-label"
+                       id="{{labelId}}"
+                       *ngIf="value"
+                       [style.maxHeight]="_height">
+                    {{ value }}
+                </label>
+                <label class="control-label empty-value"
+                       [style.maxHeight]="_height"
+                       *ngIf="!value">_ _ _ _ _</label>
+            </div>
+
+        </div>
+    </a>
+    <!-- inline edit form -->
+    <div class="inline-edit-form form-inline" *ngIf="editing && !control.readOnly">
+        <div class="form-group"
+             [ngClass]="{'has-error':!form.controls[control.key].valid && (form.controls[control.key].touched || errorShow) }">
+
+            <!-- inline edit control  -->
+            <div [ngSwitch]="control.controlType"
+                 [ngStyle]="editing ? {'max-width': defaultMaxWidth + 'px'} :appendDataStyle({'max-width': defaultMaxWidth + 'px'})"
+                 class="control-container">
+                <div *ngSwitchCase="'textbox'"
+                     contenteditable="true"
+                     #inlineEditControl
+                     [perfect-scrollbar]="perfectScrollbarConfig"
+                     class="form-control textarea"
+                     [ngStyle]="editing ? '' : appendDataStyle({'overflow': tempValue == preValue ? 'hidden':'auto',
+                               'padding-right': tempValue == preValue ? '':'20px'})"
+                     [id]="control.key"
+                     (keypress.out-zone)="keypress($event)"
+                     (keyup.out-zone)="keyup($event)"
+                     (paste)="keypress($event)"
+                     triggers=""
+                     [textContent]="value">
+                </div>
+                <wj-input-mask *ngSwitchCase="'textboxMask'"
+                               #inlineEditControl
+                               class="form-control no-padding"
+                               [id]="control.key"
+                               [mask]="control.mask"
+                               [value]="value"
+                               [isRequired]="false"
+                               (keypress.out-zone)="keypress($event)"
+                               (keyup.out-zone)="keyup($event)"
+                               triggers=""
+                               container="body"
+                               placement="right">
+                </wj-input-mask>
+                <input [(ngModel)]="value" #inlineEditControl *ngSwitchCase="'numberbox'"
+                           type="text"
+                           xn-numeric
+                           [format]="globalNumberFormat"
+                           [ngStyle]="editing ? {'max-width': defaultMaxWidth + 'px'} :appendDataStyle({'max-width': defaultMaxWidth + 'px'})"
+                           class="form-control"
+                           (ngModelChange)="onNumberValueChanged($event)">
+
+                <div *ngSwitchCase="'checkbox'" class="width-pc-100">
+                    <mat-checkbox color="primary"
+                                  class="inline-checkbox"
+                                  #inlineEditControl
+                                  [ngModel]="value"
+                                  (change)="onCheckboxChange($event)"
+                                  (keypress)="keypress($event)">
+                    </mat-checkbox>
+                </div>
+
+                <div *ngSwitchCase="'dropdown'" class="width-pc-100">
+                    <xn-combo-box #inlineEditControl
+                                  wjDropdownHelper
+                                  [isInWidget]="true"
+                                  [isShowWhenFocus]="isShowDropdownWhenFocusCombobox"
+                                  [applyOnWidget]="applyOnWidget"
+                                  [controlName]="control.label"
+                                  id="control.key"
+                                  class="custom-wj-input-control no-padding-left no-padding-right small-size drop-down"
+                                  [ngStyle]="editing ? {'max-width': defaultMaxWidth + 'px'} :appendDataStyle({'max-width': defaultMaxWidth + 'px'})"
+                                  *ngIf="control.options && (control.options.length >= 0)"
+                                  [itemsSource]="control.options"
+                                  [displayMemberPath]="'value'"
+                                  [selectedValuePath]="'key'"
+                                  [selectedValue]="value"
+                                  [isEditable]="true"
+                                  [isRequired]="false"
+                                  placeholder="Please select"
+                                  (keyup)="comboboxKeyup($event)"
+                                  (selectedIndexChanged)="onChangeValue()"
+                                  [xnAppendStyle]="dataStyle">
+                    </xn-combo-box>
+                </div>
+                <div *ngSwitchCase="'date'" class="width-pc-100">
+                    <xn-date-picker #inlineEditControl
+                                    (keypress)="keypress($event)"
+                                    class="no-padding-left no-padding-right small-size drop-down"
+                                    [ngStyle]="editing ? {'max-width': defaultMaxWidth + 'px'} : appendDataStyle({'max-width': defaultMaxWidth + 'px'})"
+                                    [min]="'1900-01-01' | toDate"
+                                    [max]="lastDayOfThisYear"
+                                    [placeholder]="getDateFormatForDOB()"
+                                    [format]="getDateFormatForDOB()"
+                                    [isRequired]="false"
+                                    [isInGrid]="true"
+                                    [dontAutoFillDateWhenEnter]="isDateOfBirth"
+                                    [dontShowCalendarWhenFocus]="!buildDatePickerDropdownShowWhenFocus()"
+                                    (valueChanged)="onChangeValue($event)"
+                                    [(ngModel)]="value"
+                                    [xnAppendStyle]="editing ? {'max-width': defaultMaxWidth + 'px'} : dataStyle">
+                    </xn-date-picker>
+                </div>
+
+                <!-- inline cancel buttons -->
+                <a *ngIf="value != preValue || (control.controlType == 'textbox' && tempValue != preValue) "
+                   class="btn-cancel"
+                   [ngClass]="{'btn-cancel-checkbox':control.controlType == 'checkbox',
+                               'btn-cancel-combobox':control.controlType == 'dropdown' || control.controlType == 'date'}"
+                   (click)="cancel()" role="button">
+                    <i class="fa fa-undo"></i>
+                </a>
+            </div>
+        </div>
+        <div class="alert  alert-danger text-left">{{errorMessage}}</div>
+    </div>
+</div>

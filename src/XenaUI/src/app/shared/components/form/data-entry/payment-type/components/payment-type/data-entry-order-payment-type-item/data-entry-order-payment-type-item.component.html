@@ -1,0 +1,584 @@
+<div *ngIf="dataEntryPaymentTypeItemForm"
+     class="de__payment-type__item"
+     [ngClass]="{
+    'submitted': dataEntryPaymentTypeItemForm['submitted'],
+    'no-border  no-margin-bottom': !isInGroup,
+    'de__payment-type__item--bg  de__payment-type__item-inline': (layoutViewMode == 1),
+    'de__payment-type__item-intab': (layoutViewMode == 2)
+    }">
+    <div *ngIf="layoutViewMode == 1 && isInGroup" class="col-xs-12">
+        <span class="de__pt__item__title">{{data.headerText}}</span>
+        <span class="de__pt__item__close"
+              [ngClass]="{'disabled': disabledRemoveButton}">
+            <i class="fa fa-times-circle"
+               (click)="removeItem($event)"></i>
+        </span>
+        <span class="de__pt__item__add"
+              [ngClass]="{'disabled': !data.paymentTypeId}">
+            <i *ngIf="isShowAddPaymentButton" class="fa fa-plus-circle" (click)="addPayment($event)"></i>
+        </span>
+    </div>
+    <form [formGroup]="dataEntryPaymentTypeItemForm" class="form-horizontal"
+          id="dataEntryPaymentTypeItemForm_{{ascIndex}}" novalidate
+          [ngClass]="{'no-padding-bottom': !isInGroup}">
+        <control-focus #focusControl
+                       [targetComponentIndex]="ascIndex == maxIndex? 0 : ascIndex + 1"
+                       [targetComponentFocus]="ascIndex == maxIndex ? 'data-entry-article-grid':'data-entry-order-payment-type'"
+                       formName="dataEntryPaymentTypeItemForm_{{ascIndex}}"
+                       [preventFocus]="preventFocus">
+        </control-focus>
+
+        <!--S CreditCard: Months-->
+        <div *ngIf="currentPaymentTypeGroup == PaymentTypeGroupEnum.CreditCard"
+             class="form-group creditCard-options">
+            <label class="control-label"></label>
+            <div class="control-input">
+                <mat-radio-group #creditCardOptionCtl
+                                 formControlName="creditCardOption"
+                                 (change)="creditCardOptionChanged()"
+                                 [disabled]="data.creditCardTotalAmount==undefined || creditCardOptionDisabled">
+
+                    <div class="inline-block group-month group0">
+                        <mat-radio-button class="mat-radio-button"
+                                          color="primary"
+                                          name="creditCard-option"
+                                          [value]="1">
+                            <label-translation [keyword]="'ODE_Payment_Item__Default'"></label-translation>
+                        </mat-radio-button>
+                        <control-messages [hotKeyValue]="hotKeySettingService.paymentTypeCreditCardMonthDefault$| async"
+                                          (onClickComponentControl)="creditCardOptionChoose(1)">
+                        </control-messages>
+                    </div>
+                    <div class="inline-block group-month group1">
+                        <mat-radio-button class="mat-radio-button"
+                                          color="primary"
+                                          name="creditCard-option"
+                                          [value]="3"
+                                          [disabled]="data.creditCardOptionsConfig&&data.creditCardOptionsConfig[3].disabled">
+                            <label-translation [keyword]="'ODE_Payment_Item__3M'"></label-translation>
+                        </mat-radio-button>
+                        <control-messages [hotKeyValue]="hotKeySettingService.paymentTypeCreditCardMonth3M$| async"
+                                          (onClickComponentControl)="creditCardOptionChoose(3)">
+                        </control-messages>
+                    </div>
+                    <div class="inline-block group-month group0">
+                        <mat-radio-button class="mat-radio-button"
+                                          color="primary"
+                                          name="creditCard-option"
+                                          [value]="6"
+                                          [disabled]="data.creditCardOptionsConfig&&data.creditCardOptionsConfig[6].disabled">
+                            <label-translation [keyword]="'ODE_Payment_Item__6M'"></label-translation>
+                        </mat-radio-button>
+                        <control-messages [hotKeyValue]="hotKeySettingService.paymentTypeCreditCardMonth6M$| async"
+                                          (onClickComponentControl)="creditCardOptionChoose(6)">
+                        </control-messages>
+                    </div>
+                    <div class="inline-block group-month group1">
+                        <mat-radio-button class="mat-radio-button"
+                                          color="primary"
+                                          name="creditCard-option"
+                                          [value]="12"
+                                          [disabled]="data.creditCardOptionsConfig&&data.creditCardOptionsConfig[12].disabled">
+                            <label-translation [keyword]="'ODE_Payment_Item__12M'"></label-translation>
+                        </mat-radio-button>
+                        <control-messages [hotKeyValue]="hotKeySettingService.paymentTypeCreditCardMonth12M$| async"
+                                          (onClickComponentControl)="creditCardOptionChoose(12)">
+                        </control-messages>
+                    </div>
+                    <div class="inline-block group-month custom group0">
+                        <mat-radio-button class="mat-radio-button"
+                                          color="primary"
+                                          name="creditCard-option"
+                                          [value]="0"
+                                          [disabled]="data.creditCardOptionsConfig&&data.creditCardOptionsConfig[0].disabled">
+                            <label-translation [keyword]="'ODE_Payment_Item__Custom'"></label-translation>
+                        </mat-radio-button>
+                        <control-messages [hotKeyValue]="hotKeySettingService.paymentTypeCreditCardMonthCustom$| async"
+                                          (onClickComponentControl)="creditCardOptionChoose(0)">
+                        </control-messages>
+                    </div>
+                </mat-radio-group>
+                <div class="inline-block custom-month">
+                    <input #creditCardCustomMonthCtrl formControlName="creditCardCustomMonth"
+                           type="text"
+                           xn-numeric
+                           class="custom-wj-input-control xn-input"
+                           [isDisabled]="(data.creditCardOptionsConfig&&data.creditCardOptionsConfig[0].disabled) || dataEntryPaymentTypeItemForm.controls['creditCardOption'].value != 0"
+                           (ngModelChange)="creditCardCustomMonthValueChanged($event)"
+                           (focusout)="creditCardCustomMonthLostFocus($event)"
+                           (keyup)="creditCardCustomMonthKeyUp($event)">
+                    <span class="lb-month">(<label-translation [keyword]="'ODE_Payment_Item__M'"></label-translation>)</span>
+                </div>
+            </div>
+        </div>
+        <!--E CreditCard: Months-->
+        <!--S PaymentTypeId-->
+        <div class="form-group">
+            <label for="paymentTypeId" class="control-label">{{localizer['paymentType'] || 'Payment Type'}}</label>
+            <div class="control-input">
+                <div class="full-width">
+                    <xn-combo-box #payementTypeCtl
+                                  formControlName="paymentTypeId"
+                                  class="custom-wj-input-control xn-select"
+                                  [itemsSource]="data.paymentTypes"
+                                  [selectedIndex]="-1"
+                                  [displayMemberPath]="'paymentTypeText'"
+                                  [selectedValuePath]="'paymentTypeId'"
+                                  [autoExpandSelection]="paymentTypeCtrlAutoExpandSelection"
+                                  [isEditable]="true"
+                                  [isRequired]="false"
+                                  placeholder="Please select"
+                                  [isDisabled]="!data.paymentTypes.length || !data.currencyList || !data.currencyList.length"
+                                  (keyup)="paymentTypeIdKeyUp($event)"
+                                  (click)="paymentTypeIdClick($event)"
+                                  (selectedIndexChanged)="paymentTypeIdChanged($event)"
+                                  (gotFocus)="paymentTypeIdGotFocus()">
+                    </xn-combo-box>
+                    <control-messages [xn-trigger-click-inside-cbo]="payementTypeCtl"
+                                      [control]="dataEntryPaymentTypeItemForm.controls['paymentTypeId']"
+                                      icon="money"
+                                      [componentControl]="payementTypeCtl"
+                                      [hotKeyValue]="hotKeySettingService.paymentTypeCtrl$| async"></control-messages>
+                    <div *ngIf="!data.paymentTypes.length || !data.currencyList || !data.currencyList.length" class="no-payment-type">
+                        <label-translation [keyword]="'ODE_Payment_Item__The_Campaign_does_not'"></label-translation>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--E PaymentTypeId-->
+        <!--S Cash-->
+        <div *ngIf="currentPaymentTypeGroup == PaymentTypeGroupEnum.Cash" class="form-group">
+            <label for="amount" class="control-label">{{localizer['amount']}}</label>
+            <div class="control-input">
+                <div class="col-xs-6  no-padding">
+                    <xn-combo-box #currencyCtl
+                                  formControlName="currency"
+                                  class="custom-wj-input-control xn-select"
+                                  [itemsSource]="data.currencyList"
+                                  [displayMemberPath]="'textValue'"
+                                  [selectedValuePath]="'idValue'"
+                                  [isEditable]="true"
+                                  [isRequired]="true"
+                                  placeholder="Please select"
+                                  (keyup)="currencyKeyUp($event)"
+                                  (click)="currencyClick($event)"
+                                  (lostFocus)="currencyLostFocus($event)"
+                                  (gotFocus)="currencyGotFocus()"
+                                  [isDisabled]="data.paymentTypeId == PaymentTypeIdEnum.OpenInvoice">
+                    </xn-combo-box>
+                    <control-messages [xn-trigger-click-inside-cbo]="currencyCtl"
+                                      [control]="dataEntryPaymentTypeItemForm.controls['currency']"
+                                      icon="money"></control-messages>
+                </div>
+                <div class="col-xs-6  no-padding-right">
+                    <div class="full-width">
+                        <input #amount formControlName="amount"
+                               type="text"
+                               xn-numeric
+                               class="custom-wj-input-control xn-input"
+                               (focusout)="amountLostFocus($event)"
+                               (keyup)="amountKeyUp($event,i)"
+                               [isDisabled]="data.paymentTypeId == PaymentTypeIdEnum.OpenInvoice">
+                        <control-messages [control]="dataEntryPaymentTypeItemForm.controls['amount']"
+                                          icon="sum"></control-messages>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--E Cash-->
+        <!--S Cheque-->
+        <div *ngIf="currentPaymentTypeGroup == PaymentTypeGroupEnum.Cheque">
+            <div class="form-group">
+                <label for="codeline" class="control-label">{{localizer['currency']}}</label>
+                <div class="control-input">
+                    <div class="col-xs-6 no-padding">
+                        <xn-combo-box #currencyCtl
+                                      formControlName="currency"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="data.currencyList"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="true"
+                                      placeholder="Please select"
+                                      (keyup)="currencyKeyUp($event)"
+                                      (click)="currencyClick($event)"
+                                      (lostFocus)="currencyLostFocus($event)"
+                                      (gotFocus)="currencyGotFocus()">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="currencyCtl"
+                                          [control]="dataEntryPaymentTypeItemForm.controls['currency']"
+                                          icon="money"></control-messages>
+                    </div>
+                    <div class="col-xs-6  no-padding-right">
+                        <div class="full-width">
+                            <input #codelineCtrl type="text"
+                                   class="form-control xn-input"
+                                   name="codeline" formControlName="codeline"
+                                   autocomplete="off"
+                                   (keyup)="textKeyUp($event)"
+                                   [placeholder]="localizer['codeline']" />
+                            <control-messages [control]="dataEntryPaymentTypeItemForm.controls['codeline']" icon="align-justify">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div formArrayName="amounts" class="form-group cheque-amounts">
+                <label for="amount" class="control-label">{{localizer['amount']}}</label>
+                <div class="control-input">
+                    <div *ngFor="let amount of dataEntryPaymentTypeItemForm.controls.amounts.controls; index as i;"
+                         [formGroupName]="i" class="col-xs-12 no-padding">
+                        <div class="group-amount" [ngClass]="{'group0': i % 2 == 0, 'group1': i % 2 != 0}">
+                            <div class="col-xs-6 no-padding">
+                                <input #amount formControlName="amount"
+                                       type="text"
+                                       xn-numeric
+                                       class="custom-wj-input-control xn-input"
+                                       (focusout)="chequeAmountLostFocus($event,i)"
+                                       (keyup)="chequeAmountKeyUp($event,i)"
+                                       [placeholder]="localizer['amount']">
+
+                                <control-messages [control]="dataEntryPaymentTypeItemForm.controls['amounts'].controls[i].controls['amount']"
+                                                  icon="sum"
+                                                  [iconContent]="(i+1)"></control-messages>
+                            </div>
+                            <div class="col-xs-6 no-padding-right"
+                                xn-tooltip [tooltipText]="'Receive Date'">
+                                <div class="control-date">
+                                    <xn-date-picker #chequeDate
+                                                    formControlName="chequeDate"
+                                                    class="xn-input"
+                                                    [format]="globalDateFormat"
+                                                    [showDropDownButton]="false"
+                                                    (keyup)="chequeDateKeyUp($event,i)"
+                                                    [isRequired]="false">
+                                    </xn-date-picker>
+                                    <control-messages [xn-trigger-click-inside-cbo]="chequeDate"
+                                                      [control]="dataEntryPaymentTypeItemForm.controls['amounts'].controls[i].controls['chequeDate']"
+                                                      icon="calendar">
+                                    </control-messages>
+                                </div>
+
+                                <span class="buttons">
+                                    <span *ngIf="dataEntryPaymentTypeItemForm.controls.amounts.controls.length==1||i==dataEntryPaymentTypeItemForm.controls.amounts.controls.length-1"
+                                          class="ico-minus">
+                                        <i class="fa fa-minus-circle"
+                                           [ngClass]="{'disabled': i==0}"
+                                           (click)="chequeRemoveAmountDate($event,i)"></i>
+                                        <control-messages [hotKeyValue]="hotKeySettingService.paymentTypeChequeRemoveAmount$| async"
+                                                          (onClickComponentControl)="chequeRemoveAmountDate($event,i)">
+                                        </control-messages>
+                                    </span>
+                                    <span *ngIf="i==dataEntryPaymentTypeItemForm.controls.amounts.controls.length-1"
+                                          class="ico-plus">
+                                        <i class="fa fa-plus-circle"
+                                           [ngClass]="{'disabled': !dataEntryPaymentTypeItemForm.controls['amounts'].controls[i].controls['amount'].value||!dataEntryPaymentTypeItemForm.controls['amounts'].controls[i].controls['chequeDate'].value}"
+                                           (click)="chequeAddAmountDate($event,i)"></i>
+                                        <control-messages [hotKeyValue]="hotKeySettingService.paymentTypeChequeAddAmount$| async"
+                                                          (onClickComponentControl)="chequeAddAmountDate($event,i)">
+                                        </control-messages>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--E Cheque-->
+        <!--S Credit Card-->
+        <div *ngIf="currentPaymentTypeGroup == PaymentTypeGroupEnum.CreditCard">
+            <div class="form-group">
+                <label for="issuer" class="control-label">{{localizer['issuer']}}</label>
+                <div class="control-input">
+                    <div class="full-width">
+                        <xn-combo-box #issuerCtl
+                                      formControlName="issuer"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.issuers"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select"
+                                      (gotFocus)="issuerGotFocus()">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="issuerCtl"
+                                          [control]="dataEntryPaymentTypeItemForm.controls['issuer']"
+                                          icon="money"
+                                          [componentControl]="issuerCtl"
+                                          [hotKeyValue]="hotKeySettingService.paymentTypeCreditCardIssuer$| async"></control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="creditCardNr" class="control-label">{{localizer['creditcardNr']}}</label>
+                <div class="control-input">
+                    <wj-input-mask #creditCardNr class="custom-wj-input-control xn-select"
+                                   [mask]="creditCardMaskString"
+                                   formControlName="creditCardNr"
+                                   (keyup)="textKeyUp($event)"></wj-input-mask>
+                    <control-messages [type]="'textbox'"
+                                      [control]="dataEntryPaymentTypeItemForm.controls['creditCardNr']"
+                                      icon="money"
+                                      [componentControl]="creditCardNr"
+                                      [hotKeyValue]="hotKeySettingService.paymentTypeCreditCardNumber$| async"></control-messages>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="validThruMonth" class="control-label">{{localizer['validThru']}}</label>
+                <div class="control-input">
+                    <div class="col-xs-4 no-padding">
+                        <wj-input-mask #validThru class="custom-wj-input-control xn-select"
+                                       [mask]="validThruMaskString"
+                                       formControlName="validThru"
+                                       (valueChanged)="validThruValueChanged($event)"
+                                       (keyup)="validThruKeyUp($event)"
+                                       (lostFocus)="validThruLostFocus($event)"></wj-input-mask>
+                        <control-messages [control]="dataEntryPaymentTypeItemForm.controls['validThru']"
+                                          icon="calendar"
+                                          [componentControl]="validThru"
+                                          [hotKeyValue]="hotKeySettingService.paymentTypeCreditCardValidThru$| async"></control-messages>
+                    </div>
+                    <div class="col-xs-2 no-padding">
+                        <label for="cvc" class="control-label--second no-padding-left pull-right">{{localizer['cvc']}}</label>
+                    </div>
+                    <div class="col-xs-6 no-padding-right">
+                        <wj-input-mask #cvcCtrl class="custom-wj-input-control xn-select"
+                                       [mask]="cvcMaskString"
+                                       formControlName="cvc"
+                                       (keyup)="textKeyUp($event)"></wj-input-mask>
+                        <control-messages [control]="dataEntryPaymentTypeItemForm.controls['cvc']"
+                                          [type]="'textbox'"
+                                          icon="calculator"
+                                          [componentControl]="cvcCtrl"
+                                          [hotKeyValue]="hotKeySettingService.paymentTypeCreditCardCVV$| async"></control-messages>
+                    </div>
+                </div>
+            </div>
+            <!--S Option Month Default-->
+            <div *ngIf="dataEntryPaymentTypeItemForm.controls['creditCardOption'] && dataEntryPaymentTypeItemForm.controls['creditCardOption'].value == 1">
+                <div class="form-group">
+                    <label for="amount" class="control-label">{{localizer['amount']}}</label>
+                    <div class="control-input">
+                        <div class="col-xs-6 no-padding">
+                            <input #amount
+                                   formControlName="creditCardAmount"
+                                   type="text"
+                                   xn-numeric
+                                   class="custom-wj-input-control xn-input"
+                                   (focusout)="amountLostFocus($event)"
+                                   (keyup)="amountKeyUp($event,i)"
+                                   [isDisabled]="!isBackofficeOrders()">
+
+                            <control-messages [control]="dataEntryPaymentTypeItemForm.controls['creditCardAmount']"
+                                              icon="sum"></control-messages>
+                        </div>
+                        <div class="col-xs-6  no-padding-right">
+                            <div class="full-width">
+                                <xn-combo-box #currencyCtl
+                                              formControlName="currency"
+                                              class="custom-wj-input-control xn-select"
+                                              [itemsSource]="data.currencyList"
+                                              [displayMemberPath]="'textValue'"
+                                              [selectedValuePath]="'idValue'"
+                                              [isEditable]="true"
+                                              [isRequired]="true"
+                                              [isDisabled]="!isBackofficeOrders()"
+                                              placeholder="Please select"
+                                              (keyup)="currencyKeyUp($event)"
+                                              (click)="currencyClick($event)"
+                                              (lostFocus)="currencyLostFocus($event)"
+                                              (gotFocus)="currencyGotFocus()">
+                                </xn-combo-box>
+                                <control-messages [xn-trigger-click-inside-cbo]="currencyCtl"
+                                                  [control]="dataEntryPaymentTypeItemForm.controls['currency']"
+                                                  icon="money"></control-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--E Option Month Default-->
+            <div *ngIf="dataEntryPaymentTypeItemForm.controls['creditCardOption'] && dataEntryPaymentTypeItemForm.controls['creditCardOption'].value != 1">
+                <div class="form-group">
+                    <label for="currency" class="control-label">{{localizer['currency']}}</label>
+                    <div class="control-input">
+                        <div class="col-xs-4 no-padding">
+                            <xn-combo-box #currencyCtl
+                                          formControlName="currency"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="data.currencyList"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isEditable]="true"
+                                          [isRequired]="true"
+                                          [isDisabled]="true"
+                                          placeholder="Please select"
+                                          (keyup)="currencyKeyUp($event)"
+                                          (click)="currencyClick($event)"
+                                          (lostFocus)="currencyLostFocus($event)"
+                                          (gotFocus)="currencyGotFocus()">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="currencyCtl"
+                                              [control]="dataEntryPaymentTypeItemForm.controls['currency']"
+                                              icon="money"></control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div formArrayName="creditCardAmounts" class="form-group creditCard-amounts">
+                    <label for="amount" class="control-label">{{localizer['amount']}}</label>
+                    <div class="control-input">
+                        <ng-template ngFor let-amount [ngForOf]="dataEntryPaymentTypeItemForm.controls.creditCardAmounts.controls" let-i="index">
+                            <div [formGroupName]="i" class="col-xs-6 no-padding">
+                                <div class="group-amount" [ngClass]="{'last': i % 2 != 0, 'group0': (Math.floor(i/2)) % 2 == 0, 'group1': (Math.floor(i/2)) % 2 != 0}">
+                                    <div class="col-xs-6 no-padding">
+                                        <input #amount formControlName="amount"
+                                               type="text"
+                                               xn-numeric
+                                               class="custom-wj-input-control xn-input"
+                                               (focusout)="amountLostFocus($event)"
+                                               (keyup)="creditCardAmountKeyUp($event,i)">
+
+                                        <control-messages [control]="dataEntryPaymentTypeItemForm.controls['creditCardAmounts'].controls[i].controls['amount']"
+                                                          [isShowMessage]="false"
+                                                          icon="sum"
+                                                          [iconContent]="(i+1)"></control-messages>
+                                    </div>
+                                    <div class="col-xs-6 no-padding"
+                                        xn-tooltip [tooltipText]="'Receive Date'">
+                                        <xn-date-picker #creditDate
+                                                        formControlName="creditDate"
+                                                        class="xn-input"
+                                                        [format]="globalDateFormat"
+                                                        [showDropDownButton]="false"
+                                                        (keyup)="creditDateKeyUp($event)"
+                                                        (valueChanged)="creditDateValueChanged($event)"
+                                                        [isRequired]="false">
+                                        </xn-date-picker>
+                                        <control-messages [xn-trigger-click-inside-cbo]="creditDate"
+                                                          [control]="dataEntryPaymentTypeItemForm.controls['creditCardAmounts'].controls[i].controls['creditDate']"
+                                                          [isShowMessage]="false"
+                                                          icon="calendar">
+                                        </control-messages>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--E Credit Card-->
+        <!--S PostBank-->
+        <div *ngIf="currentPaymentTypeGroup == PaymentTypeGroupEnum.PostBank">
+            <div class="form-group">
+                <label for="postBankName" class="control-label">{{currentPaymentTypeId==PaymentTypeIdEnum.Post?'Post Name':'Bank Name'}}</label>
+                <div class="control-input">
+                    <div class="col-xs-6 no-padding">
+                        <xn-combo-box #postBankNameCtl
+                                      formControlName="postBankName"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="currentPaymentTypeId==PaymentTypeIdEnum.Post?data.postNameList:data.bankNameList"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="true"
+                                      placeholder="Please select"
+                                      (keyup)="postBankNameKeyUp($event)"
+                                      (click)="postBankNameClick($event)"
+                                      (lostFocus)="postBankNameLostFocus($event)"
+                                      (gotFocus)="postBankNameGotFocus()">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="postBankNameCtl"
+                                          [control]="dataEntryPaymentTypeItemForm.controls['postBankName']"
+                                          icon="university"></control-messages>
+                    </div>
+                    <div class="col-xs-6  no-padding-right"
+                        xn-tooltip
+                        [tooltipText]="'Payment Date'">
+                        <div class="full-width">
+                            <xn-date-picker #paymentDate
+                                            formControlName="paymentDate"
+                                            class="xn-input"
+                                            [format]="globalDateFormat"
+                                            [showDropDownButton]="false"
+                                            (keyup)="paymentDateKeyUp($event,i)"
+                                            [isRequired]="false">
+                            </xn-date-picker>
+                            <control-messages [xn-trigger-click-inside-cbo]="paymentDate"
+                                              [control]="dataEntryPaymentTypeItemForm.controls['paymentDate']"
+                                              icon="calendar">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="amount" class="control-label">{{localizer['amount']}}</label>
+                <div class="control-input">
+                    <div class="col-xs-6 no-padding">
+                        <xn-combo-box #currencyCtl
+                                      formControlName="currency"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="data.currencyList"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="true"
+                                      placeholder="Please select"
+                                      (keyup)="currencyKeyUp($event)"
+                                      (click)="currencyClick($event)"
+                                      (lostFocus)="currencyLostFocus($event)"
+                                      (gotFocus)="currencyGotFocus()">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="currencyCtl"
+                                          [control]="dataEntryPaymentTypeItemForm.controls['currency']"
+                                          icon="money"></control-messages>
+                    </div>
+                    <div class="col-xs-6 no-padding-right"
+                        xn-tooltip
+                        [tooltipText]="'Amount'">
+                        <div class="full-width">
+                            <input #amount formControlName="amount"
+                                   type="text"
+                                   xn-numeric
+                                   class="custom-wj-input-control xn-input"
+                                   (focusout)="amountLostFocus($event)"
+                                   (keyup)="amountKeyUp($event,i)">
+                            <control-messages [control]="dataEntryPaymentTypeItemForm.controls['amount']"
+                                              icon="sum"></control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="payementTypeCtl
+            && payementTypeCtl.selectedValue
+            && tabID == 'BackofficeOrders'
+            && currentPaymentTypeGroup != PaymentTypeGroupEnum.PostBank">
+            <div class="form-group">
+                <label for="postBankName" class="control-label">{{localizer['paymentDate']}}</label>
+                <div class="control-input">
+                    <div class="col-xs-6  no-padding">
+                        <div class="full-width">
+                            <xn-date-picker #paymentDate
+                                            formControlName="paymentDate"
+                                            class="xn-input"
+                                            [format]="globalDateFormat"
+                                            [showDropDownButton]="false"
+                                            [isRequired]="false">
+                            </xn-date-picker>
+                            <control-messages [xn-trigger-click-inside-cbo]="paymentDate"
+                                              [control]="dataEntryPaymentTypeItemForm.controls['paymentDate']"
+                                              icon="calendar">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--E PostBank-->
+    </form>
+</div>

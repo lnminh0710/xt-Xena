@@ -1,0 +1,28 @@
+<div class="checkbox-primary">
+    <mat-checkbox color="primary"
+                  [(ngModel)]="cbStatus"
+                  (change)="onCheckboxChange()">
+    </mat-checkbox>
+    <label class="no-margin">
+        <input #inputNumber
+               type="text"
+               xn-numeric
+               class="no-border"
+               placeholder="Value"
+               [format]="'N'"
+               [hidden]="!cbStatus"
+               [(ngModel)]="value"
+               [isRequired]="false"
+               (ngModelChange)="onValueChanged()"
+               (click)="onFocus()">
+        <!--<input type="text"
+           XnOnlyNumber="true"
+           [hidden]="!cbStatus"
+           [(ngModel)]="value"
+           (keyup)="onValueChanged()"
+           (keypress)="numberKeyPress($event)"
+           (click)="onFocus()"
+           placeholder="Value"
+           autocomplete="off" />-->
+    </label>
+</div>

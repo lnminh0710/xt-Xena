@@ -1,0 +1,46 @@
+<p-dialog [styleClass]="'upload-file-dialog'"
+          header=""
+          [(visible)]="showFileUploadPopup"
+          modal="modal"
+          width="900"
+          height="500"
+          responsive="true"
+          appendTo="body"
+          (onAfterHide)="close()">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="fa  fa-upload  header-icon  pull-left"></span>
+            <span class="header-text  pull-left"><label-translation [keyword]="'FileUploadPopup__Upload_File'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="close()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="col-xs-12 no-padding  height-pc-100">
+        <file-upload #fileUpload
+                     [inputFilesData]="inputFilesData"
+                     [uploadFileMode]="uploadFileMode"
+                     [singleFile]="singleFile"
+                     [saveFileName]="saveFileName"
+                     [idFolder]="idFolder"
+                     [checkFileCorrect]="checkFileCorrect"
+                     [allowSelectDuplicateFile]="allowSelectDuplicateFile"
+                     [acceptExtensionFiles]="acceptExtensionFiles"
+                     (onCompleteItem)="onCompleteItemHandler($event)"></file-upload>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button"
+                    mat-raised-button
+                    class="pull-right  new-size"
+                    title="Close"
+                    (click)="close()">
+                <span class="bt-t"><label-translation [keyword]="'FileUploadPopup__Close'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>

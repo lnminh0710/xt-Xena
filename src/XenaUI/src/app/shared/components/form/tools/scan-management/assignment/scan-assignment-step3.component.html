@@ -1,0 +1,22 @@
+<div class="col-xs-12  xn-padding-10">
+    <button type="button"
+            mat-raised-button
+            class="mat-btn-blue  pull-right"
+            (click)="unassign()">
+        <span class="bt-t"><label-translation [keyword]="'SA_step3__Unassign'"></label-translation></span>
+    </button>
+</div>
+<div class="col-xs-12 scan-assignment-step-3-grid">
+    <xn-ag-grid #wjgridPoolsDetailTable
+                *ngIf="dataSourceTableForPoolsDetail && dataSourceTableForPoolsDetail.columns && dataSourceTableForPoolsDetail.columns.length"
+                [id]="wjgridPoolsDetailTableId"
+                [dataSource]="dataSourceTableForPoolsDetail"
+                [globalProperties]="globalProperties"
+                [showMenuRowGrouping]="true"
+                [isShowedHeader]="true"
+                headerTitle="Assignments"
+                [allowSelectAll]="true"
+                [autoSelectFirstRow]="true"
+                [fitWidthColumn]="true">
+    </xn-ag-grid>
+</div>

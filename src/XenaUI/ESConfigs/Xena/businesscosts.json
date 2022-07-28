@@ -1,0 +1,52 @@
+{
+    "properties": {
+        "businessCosts": {
+            "type": "keyword",
+            "boost": null
+        },
+        "invoiceNr": {
+            "type": "keyword",
+            "boost": null
+        },
+        "currencyCode": {
+            "type": "keyword",
+            "boost": null
+        },
+        "amount": {
+            "type": "float",
+            "boost": null
+        },
+        "company": {
+            "type": "keyword",
+            "boost": null
+        },
+        "notes": {
+            "type": "keyword",
+            "boost": null
+        },
+        "isActive": {
+            "type": "boolean",
+            "boost": null
+        },
+        "createDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "updateDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "doneDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "invoiceDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "campaignNr": {
+            "type": "keyword",
+            "boost": null
+        }
+    }
+}

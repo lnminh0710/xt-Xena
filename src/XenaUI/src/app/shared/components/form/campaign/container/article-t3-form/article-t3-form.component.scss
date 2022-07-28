@@ -1,0 +1,42 @@
+@import '~sass_files/variables.scss';
+
+.campaign-t3-form {
+    height: 100%;
+    
+    .split-area-container {
+        overflow: hidden;
+        min-height: 100px;
+        height: 100%;
+    }
+
+    .campaign-grid-standard {
+        height: 100%;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .spacing-top {
+        height: 15%;
+    }
+
+    .campaign-grid__panel {
+        float: left;
+        width: calc(50% - 20px);
+        height: 100%;
+        position: relative;
+    }
+
+    .campaign-command__panel {
+        float: left;
+        width: 40px;
+        height: 100%;
+    }
+
+    .spacing-bottom {
+        margin-bottom: $spacing-size-mx;
+    }
+
+    .command__button {
+        padding: 5px 2px;
+    }
+}

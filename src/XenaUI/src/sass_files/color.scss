@@ -1,0 +1,220 @@
+/*Begin Global Params*/
+$white: #fff;
+$white1: #f5f5f5;
+$white2: #ddd;
+$white3: #f2f2f2;
+$black: #000;
+$black1: #4C4743;
+$black2: #404040;
+$black3: #5C5C5C;
+$black4: #333333;
+$black5: #2b2929;
+$black6: #080808;
+$gray1: #6B6B6B;
+$gray2: #A0A0A0;
+$gray3: #D3D3D3;
+$gray4: #939393;
+$gray5: #e8e7e7;
+$gray6: #444444;
+$gray7: #aaaaaa;
+$gray8: #cccccc;
+$gray9: #919191;
+$gray10: #DDDDDD;
+$gray11: #d2d6de;
+$gray12: #f9f9f9;
+$gray13: #acacac;
+$gray14: #c5c5c5;
+$gray15: #c6c6c6;
+$gray16: #eaeaea;
+$gray17: #ececec;
+$gray18: #757575;
+$gray19: #777777;
+$gray20: #626262;
+$gray21: #cfcfcf;
+$gray22: #eeeeee;
+$gray23: #d9d9d9;
+$gray24: #d6d5d5;
+$gray25: #888787;
+$gray26: #555555;
+$gray27: #d4d4d4;
+$gray28: #c8c7c7;
+$gray29: #e9e7e7;
+$gray30: #e2e2e2;
+$gray31: #dad8d8;
+$gray32: #c1c1c1;
+$gray33: #e5e5e5;
+$gray34: #e9eef3;
+$gray35: #c4c4c4;
+$gray36: #d6d6d6;
+$gray37: #d0d0d0;
+$gray38: #d5d5d5;
+$gray39: #a4a4a4;
+$gray40: #e1e1e1;
+$gray41: #c3c3c3;
+$gray42: #dedede;
+
+$light-gray: #C0C0C0;
+$light-gray1: #efefef;
+$light-gray2: #aca7a7;
+$grey: #808080;
+$grey1: #777;
+$grey2: #c9c9c9;
+$light-pink: #f9f0e3;
+$yellow1: #fcb040;
+$yellow2: #F9A11D;
+$yellow3: #F5B858;
+$yellow4: #f6b02d;
+$yellow5: #FFC107;
+$accent1: #ED6D46;
+$accent2: #4AC5C3;
+$accent3: #115FA1;
+$brown1: #8a6d3b;
+$brown2: #c2a470;
+$lightsalmon: #FFA07A;
+$salmon: #FA8072;
+$darksalmon: #E9967A;
+$lightcoral: #F08080;
+$indianred: #CD5C5C;
+$crimson: #DC143C;
+$firebrick: #B22222;
+$error: #a94442;
+$error1: #f90404;
+$red: #FF0000;
+$red1: #dd4b39;
+$red3: #DE5F50;
+$red4: #d73925;
+$red5: #C62828;
+$red6: #c1495f;
+$red7: #da0000;
+$red8: #B51E1E;
+$pink1: #e0017b;
+$pink2: #E898A5;
+$darkred: #8B0000;
+$maroon: #800000;
+$tomato: #FF6347;
+$orangered: #FF4500;
+$light-dark-orange: #f1a210;
+$light-dark-orange-hover: #efac2e;
+$palevioletred: #DB7093;
+$blue-trans: rgba(0, 0, 0, 0.55);
+$cyan1: #00e6ac;
+$cyan2: #009973;
+$cyan3: #1abc9a;
+$cyan4: #cae8e0;
+$cyan5: #31ad92;
+$cyan6: #afddb5;
+$cyan7: #b6daf1;
+$cyan8: #00BCD4;
+$cyan9: #BCF1F9;
+$blue1: #1a53ff;
+$blue2: #002699;
+$blue3: #367fa9;
+$blue4: #0D69A1;
+$blue5: #337ab7;
+$blue6: #446dd7;
+$blue7: #3b5998;
+$blue8: #579ac1;
+$blue9: #008fe6;
+$blue10: #cde6f4;
+$blue11: #0085c7;
+$blue12: #278bc5;
+$blue13: #1078cc;
+$blue14: #0779b4;
+$green: #00E07A;
+$green2: #2E7D32;
+$green3: #22ab22;
+$green4: #53b33a;
+$green5: #099E1F;
+$dark-green01: #048404;
+$light-green-01: #00a800;
+$purple: #6965BA;
+$purple1: #a6c5fb;
+$search-module-clicked: $gray22;
+$edit-orange-color: #de820c;
+$header-orange-color: #ff9800;
+$edit-orange-color-hover: #fdc880;
+$error-red-color: #dd4b39;
+$content-wrapper-background: #ecf0f5;
+$orange-f8c76e: #f8c76e;
+$form-control-color: $gray26;
+$form-color-darker-0: rgba(0, 0, 0, 0);
+$form-color-darker-1: rgba(0, 0, 0, 0.1);
+$form-color-darker-2: rgba(0, 0, 0, 0.2);
+$form-color-darker-3: rgba(0, 0, 0, 0.3);
+$form-color-darker-4: rgba(0, 0, 0, 0.4);
+$form-color-darker-5: rgba(0, 0, 0, 0.5);
+$form-color-darker-6: rgba(0, 0, 0, 0.6);
+$form-color-darker-7: rgba(0, 0, 0, 0.7);
+$form-color-darker-8: rgba(0, 0, 0, 0.8);
+$form-color-darker-9: rgba(0, 0, 0, 0.9);
+
+$form-color-orange-5: rgba(226, 211, 110, 0.5);
+$form-color-orange: rgba(226, 211, 110, 1);
+
+$text-editor-border-1: $gray22;
+$text-editor-border-2: #ccc;
+$orange1: #FB8C00;
+$orange2: #f8d8d3;
+$orange3: #F6B12F;
+/*for all button*/
+$btn-text-white: #fff;
+$btn-text-black: #000;
+$btn-white: #fff;
+$btn-red: #C62828;
+$btn-green: #2E9D32;
+$btn-green-off: #227725;
+$btn-blue: #3C8DBC;
+$btn-orange: #FB8C00;
+$btn-orange-off: #d88012;
+$btn-dark-grey: #757575;
+$btn-pink: #EC407A;
+$dropdown-icon: #666666;
+$dropdown-icon--hover: #e8e8e8;
+
+/*Modes*/
+$view-mode: #0F5E8C;
+$edit-mode: #FF8400;
+/*End Global Params*/
+/*Begin blue Skin Params*/
+$skin-blue-main: #3c8dbc;
+$skin-blue-hover: #367FAA;
+$skin-blue-button-primary: #367fa9;
+$skin-blue-row-hover: #aad8f2;
+$skin-blue-border: #205a7d;
+$skin-blue-active-parked-item: #d3eeff;
+/*End blue Skin Params*/
+/*Begin green Skin Params*/
+$skin-green-main: #00a65a;
+$skin-green-hover: #009651;
+$skin-green-button-primary: #00A65A;
+$skin-green-row-hover: #009551;
+$skin-green-border: #0b5332;
+/*End green Skin Params*/
+/*Begin red Skin Params*/
+$skin-red-main: #dd4b39;
+$skin-red-hover: #C74433;
+$skin-red-button-primary: #DD4B39;
+$skin-red-row-hover: #C64333;
+$skin-red-border: #852a1f;
+/*End red Skin Params*/
+/*Begin purple Skin Params*/
+$skin-purple-main: #605ca8;
+$skin-purple-hover: #575398;
+$skin-purple-button-primary: #605CA8;
+$skin-purple-row-hover: #565397;
+$skin-purple-border: #3a33b4;
+/*End purple Skin Params*/
+/*Begin yellow Skin Params*/
+$skin-yellow-main: #f39c12;
+$skin-yellow-hover: #DB8D10;
+$skin-yellow-button-primary: #F39C12;
+$skin-yellow-row-hover: #DA8C10;
+$skin-yellow-border: #9e660d;
+/*End yellow Skin Params*/
+/*Begin black Skin Params*/
+$skin-black-main: #000;
+$skin-black-hover: #367FAA;
+$skin-black-button-primary: #367fa9;
+$skin-black-row-hover: #aad8f2;
+/*End black Skin Params*/
+

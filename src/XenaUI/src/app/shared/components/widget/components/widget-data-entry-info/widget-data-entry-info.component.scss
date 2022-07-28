@@ -1,0 +1,123 @@
+.widget-data-entry-info,
+.widget-user-management-info {
+    height: 100%;
+}
+
+.box {
+    border: none;
+    box-shadow: none;
+}
+
+.remove-box {
+    font-size: 15px;
+    margin-top: -5px;
+    margin-top: -15px;
+    margin-right: -10px;
+}
+
+.remove-box a {
+    color: #cc2828;
+}
+
+.box-header {
+    width: 100%;
+    padding: 0;
+    position: relative;
+    z-index: 3;
+    display: none;
+}
+
+.box-header-btns {
+    /*cursor: pointer;*/
+    z-index: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 28px;
+}
+
+.widget-button-style {
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 14px;
+}
+
+.widget-button-style:hover {
+    background-color: #f9af3d;
+}
+
+.translate-widget-button-style {
+    color: #757575;
+}
+
+.remove-widget-button-style {
+    color: #cc2828;
+}
+
+.widget-menu-status-main-container {
+    width: 200px;
+    right: 28px;
+    top: 0px;
+    bottom: 0px;
+    position: absolute;
+    z-index: 4;
+}
+
+.box-body {
+    width: 100%;
+}
+
+.widget-data-entry-container {
+    padding: 0 !important;
+    height: 100%;
+}
+
+.edit-mode {
+    border-width: 1px;
+    border-style: dashed;
+
+    & .widget-data-entry-container {
+        /*margin-top: -25px;*/
+        position: relative;
+        z-index: 1;
+        float: left;
+    }
+
+    & .box-header {
+        display: block;
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+    }
+
+    .main-title {
+        font-size: 12px;
+        font-weight: bold;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.cover-edit-mode {
+    width: 100%;
+    height: calc(100% - 25px);
+    background-color: #fff;
+    position: absolute;
+    z-index: 10;
+    opacity: 0.01;
+    top: 25px;
+}
+
+.communication-data-entry,
+.customer-status-widget,
+.customer-order-widget {
+    height: calc(100% - 2px);
+    position: relative;
+}
+
+.data-entry-article-grid {
+    height: 100%;
+    position: relative;
+}

@@ -1,0 +1,59 @@
+@import "~sass_files/variables.scss";
+
+.gs__result {
+    line-height: $global-icon-size;
+    font-size: $global-text-font-size;
+    margin-left: $spacing-size-sm;
+    font-weight: bold;
+}
+
+.gs__result--sm {
+    line-height: $global-icon-size-sm;
+    font-size: $global-text-font-size-sm;
+    margin-left: $spacing-size-sm;
+    font-weight: bold;
+}
+
+.gs_module-item__header {
+    margin-top: $spacing-size-sm;
+    white-space: nowrap;
+    margin-bottom: $spacing-size-sd;
+    font-size: $global-head-text-font-size;
+}
+
+.gs_module-item {
+    margin-right: $spacing-size-sd;
+    margin-top: $spacing-size-sd;
+    padding-bottom: $spacing-size-sd;
+}
+
+.gs_module-item__parent {
+    min-width: 135px;
+    max-width: 150px;
+}
+
+.gs_module-item__child {
+    min-width: 100px;
+    max-width: 110px;
+
+    .gs_module-item__header {
+        margin-bottom: $spacing-size-sm !important;
+
+        p {
+            margin-bottom: 0 !important;
+        }
+    }
+}
+
+.gs__all-icon--loading__wrapper {
+    position: absolute;
+}
+
+.gs__all-icon--loading__sub {
+    opacity: $global-icon-loading-opacity;
+    margin-right: $spacing-size-sd;
+}
+
+.gs__all-icon--blur {
+    opacity: $global-icon-blur-opacity;
+}

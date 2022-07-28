@@ -1,0 +1,410 @@
+<div class="upload-template-file  form-group  no-margin"
+    [ngClass]="{'submitted': submitted}"
+    [formGroup]="formSav">
+    <split direction="horizontal"
+           [gutterSize]="5"
+    >
+        <split-area [size]="35"
+                    [perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
+            <div class="xn-uft-left-side  border-gray--right" #eleLeftSideEle>
+                <div class="col-xs-12  no-padding" #elementDropdownGroupEle>
+                    <div class="xn__form-header">
+                        <span class="no-margin"><label-translation
+                            [keyword]="'Sav_Letter_Template__Mandant'"></label-translation></span>
+                    </div>
+                    <div class="col-xs-12  no-padding">
+                        <div class="col-xs-1  no-padding  left-section-width  list-template-of-file-cbo">
+                            <wj-multi-select #mandant
+                                             placeholder="Please select"
+                                             class="custom-wj-input-control xn-select"
+                                             [itemsSource]="mandants"
+                                             [displayMemberPath]="'textValue'"
+                                             [checkedMemberPath]="'selected'"
+                                             [isRequired]="true"
+                                             (checkedItemsChanged)="onMandantChange()">
+                            </wj-multi-select>
+                            <control-messages [xn-trigger-click-inside-cbo]="mandant"
+                                              [control]="formSav.controls.mandant"
+                                              icon="object-group">
+                            </control-messages>
+                        </div>
+                    </div>
+                    <div class="col-xs-12  no-padding">
+                        <div class="xn__form-header  letter-type-header">
+                            <span class="no-margin"><label-translation
+                                [keyword]="'Sav_Letter_Template__Letter_Type'"></label-translation></span>
+                            <div class="sav-checkbox">
+                                <mat-checkbox
+                                    [checked]="true"
+                                    formControlName="savChecked"
+                                    (change)="refreshLetterType()"
+                                    color="primary">
+                                    <label-translation [keyword]="'Sav_Letter_Template__Checkbox_SAV'"></label-translation>
+                                </mat-checkbox>
+                            </div>
+                            <div>
+                                <mat-checkbox
+                                    [checked]="true"
+                                    formControlName="autoChecked"
+                                    (change)="refreshLetterType()"
+                                    color="primary">
+                                    <label-translation [keyword]="'Sav_Letter_Template__Checkbox_Auto'"></label-translation>
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                        <div class="col-xs-1  no-padding  left-section-width  list-template-of-file-cbo">
+                            <xn-combo-box #letterTypeCtr
+                                          wjDropdownHelper
+                                          class="custom-wj-input-control xn-select"
+                                          placeholder="Please select"
+                                          formControlName="letterType"
+                                          [itemsSource]="letter"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          (selectedIndexChanged)="onLetterTypeChanged()"
+                                          [isEditable]="true"
+                                          [isRequired]="false"
+                            >
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="letterTypeCtr"
+                                              [control]="formSav.controls.letterType"
+                                              icon="object-group">
+                            </control-messages>
+                        </div>
+                        <div class="col-xs-1  no-padding  file-template-menu">
+                            <app-xn-ai-tab-plus
+                                [tabs]="templateFileMenus"
+                                [buttonIcon]="'ellipsis-v'"
+                                [toolTip]="'File Template Menu'"
+                                [customCss]="'file-template-menu-icon'"
+                                (dropdownItemClicked)="dropdownItemClickedHandler($event)"></app-xn-ai-tab-plus>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12  no-padding  left-section-width" #assignmentWidgetEle
+                    *ngIf="!isNewAutoTemplate"
+                    [ngStyle]="assignmentWidgetStyle">
+                    <div class="col-xs-12  no-padding">
+                        <span class="no-margin  pull-left  xn__form-header">
+                            <label-translation [keyword]="'Sav_Letter_Template__Assignment_Widget'"></label-translation></span>
+                    </div>
+                    <div formArrayName="assignmentWidget" class="col-xs-12  no-padding  assignment-widget"
+                         [perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
+                        <div class="m-b--checkbox"
+                             *ngFor="let item of formSav['controls'].assignmentWidget['controls']; let i = index">
+                        <span class="checkbox-assignment" [formGroupName]="i">
+                            <mat-checkbox
+                                formControlName="isActive"
+                                [checked]="item.value.IsActive"
+                                (change)="changeCheckbox($event)"
+                                color="primary">
+                                {{item.value.WidgetName}}
+                            </mat-checkbox>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12  no-padding  left-section-width" #typeOfAutoLetterEle
+                    *ngIf="isNewAutoTemplate"
+                    [ngStyle]="assignmentWidgetStyle">
+                    <div class="col-xs-12  no-padding">
+                        <span class="no-margin  pull-left  xn__form-header">
+                            <label-translation [keyword]="'Sav_Letter_Template__Type_Of_Auto_Letter'"></label-translation></span>
+                    </div>
+                    <mat-radio-group formControlName="typeOfAutoLetterActive" class="type-of-auto-letter-active">
+                        <div formArrayName="typeOfAutoLetter" class="col-xs-12  no-padding  type-of-auto-letter">
+                            <div class="auto-letter-item">
+                                <div class="type-of-value">
+                                    <label-translation [keyword]="'Sav_Letter_Template__Type_Of_Auto_Letter_Type'"></label-translation>
+                                </div>
+                                <div class="type-of-value-active">
+                                    <label-translation [keyword]="'Sav_Letter_Template__Type_Of_Auto_Letter_Active'"></label-translation>
+                                </div>
+                            </div>
+                            <div class="auto-letter-item"
+                                *ngFor="let item of formSav['controls'].typeOfAutoLetter['controls']; let i = index">
+                                <div class="type-of-value" [formGroupName]="i">
+                                    {{item.value.typeName}}
+                                    <!-- <mat-checkbox
+                                        formControlName="selected"
+                                        [checked]="item.value.selected"
+                                        (change)="changeAutoLetterCheckbox()"
+                                        color="primary">
+                                        {{item.value.typeName}}
+                                    </mat-checkbox> -->
+                                </div>
+                                <div class="type-of-value-active" [formGroupName]="i">
+                                    <!-- <mat-checkbox
+                                        formControlName="isActive"
+                                        [checked]="item.value.isActive"
+                                        (change)="changeAutoLetterActiveCheckbox()"
+                                        color="primary">
+                                    </mat-checkbox> -->
+                                    <mat-radio-button class="xn-padding-left-5"
+                                                    color="primary"
+                                                    [value]="item.value.IdRepTypeOfAutoLetter"
+                                                    (click)="changeAutoLetterActiveCheckbox(item)">
+                                    </mat-radio-button>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-radio-group>
+                </div>
+                <div class="col-xs-12  no-padding  left-section-width" #countriesSectionEle>
+                    <div class="xn__form-header header-countries">
+                        <span class="no-margin"><label-translation
+                            [keyword]="'Sav_Letter_Template__Countries'"></label-translation></span>
+                    </div>
+                    <xn-country-check-list
+                        #countryCheckList
+                        *ngIf="countryCheckListData && countryCheckListData.length"
+                        [data]="countryCheckListData"
+                        (onChangeShowCountry)="setAssignmentWidgetHeight(300)"
+                        (outputAllData)="outputDataCountryHandler($event)">
+                    </xn-country-check-list>
+                </div>
+                <div class="col-xs-12  no-padding  grid-template  left-section-width" #templateGridSectionEle>
+                    <div class="col-xs-12  no-padding">
+                        <span class="no-margin  pull-left  xn__form-header">
+                            <label-translation [keyword]="'Sav_Letter_Template__Template_File'"></label-translation></span>
+                    </div>
+                    <widget-form
+                                 [dataSource]="formData"
+                                 [isSAVLetter]="true"
+                                 [readonly]="true"
+                                 (onPdfFieldClick)="previewClickHandler($event)"
+                                 (downloadClick)="downloadClickHandler($event)"
+                                 (deleteClick)="deleteClickHandler($event)"></widget-form>
+                    <!-- <div *ngIf="showPreviewIndicator" class="template-loading">
+                        <i *ngIf="showPreviewIndicator" class="fa fa-spinner fa-spin fa-2x"></i>
+                    </div> -->
+                </div>
+            </div>
+        </split-area>
+        <split-area [size]="65"
+                    [perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
+            <div formArrayName="groupReason" [dragula]="'group'" id="accordion"
+                 [dragulaModel]="formSav['controls'].groupReason['controls']">
+                <div class="no-padding template-group  form-group"
+                     *ngFor="let group of formSav['controls'].groupReason['controls'] | orderBy:{ property: 'GroupOrderBy', descending: false }; let i = index; trackBy: trackByGroupId">
+                    <div class="item-group" [formGroupName]="i">
+                        <div class="input-container">
+                        <a data-toggle="collapse"  [href]="'#collapseOne' + i" class="group-title">
+                            <label-translation class="padding-g-t"
+                                               [keyword]="'Sav_Letter_Template__Group_Title'">
+                            </label-translation></a>
+                            <div class="group-icon  group-drag">
+                                <img class="group-drag"
+                                     src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTMuNSAyLjV2MW0wIDJ2MW0wIDJ2MW0zLTd2MW0wIDJ2MW0wIDJ2MW0zLTd2MW0wIDJ2MW0wIDJ2MW0zLTd2MW0wIDJ2MW0wIDJ2MSIgc3Ryb2tlPSIjN0Y4QzhEIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIi8+PC9zdmc+">
+                            </div>
+                            <div class="wrap-delete">
+                                <input type="text"
+                                       class="field-input  padding-left--sm"
+                                       placeholder="Group Name"
+                                       formControlName="GroupName"
+                                       autocomplete="off"
+                                />
+                                <div class="delete-field" (click)="deleteReasonGroup(i)">
+                                    <i class="fa fa-times-circle"></i>
+                                </div>
+
+                            </div>
+                            <span>—</span>
+                            <input type="text"
+                                   [ngClass]="{'ng-invalid-dirty' : inputPlaceHolderNameInvalid,
+                                            'input-error': formSav.controls['groupReason']['controls'][i].controls['PlaceHolderName']['ErrorMessage']}"
+                                   class="field-input uniqueId"
+                                   placeholder="PlaceHolderName"
+                                   xn-tooltip
+                                   [tooltipText]="formSav.controls['groupReason']['controls'][i].controls['PlaceHolderName']['ErrorMessage']"
+                                   formControlName="PlaceHolderName"
+                                   (keyup)="validateDuplicatePlaceHolderName()"
+                                   autocomplete="off"
+                            />
+                            <a #elementCollapsed data-toggle="collapse" [id]="'collapsed' + i" (click)="onCollapseAndExpand($event, i)" [href]="'#collapseOne' + i" class="collapsed"><i class="fa"></i></a>
+                        </div>
+                        <div formArrayName="JSONGroupItems" [dragula]="'item' + i" [id]="'collapseOne' + i" class="collapse" data-parent="#accordion"
+                             [dragulaModel]="group['controls'].JSONGroupItems['controls']">
+                            <div class="padding-item"
+                                 *ngFor="let item of group['controls'].JSONGroupItems['controls'] | orderBy:{ property: 'ItemOrderBy', descending: false }; let j = index; trackBy: trackByItemId">
+                                <div class=" input-container" [formGroupName]="j">
+                                    <div class="">
+                                        <div class="icon-change-checkbox icon-margin">
+                                            <i class="fa fa-circle"></i>
+                                            <i class="fa fa-check-square-o"></i>
+                                            <i class="fa fa-keyboard-o"></i>
+                                        </div>
+                                        <div class="icon-change-checkbox">
+                                            <div class="">
+                                                <mat-radio-group name="{{'dp-st1-radio' + i + j}}"
+                                                                 formControlName="TypeOfChoice">
+                                                    <mat-radio-button class="xn-padding-left-5"
+                                                                      color="primary"
+                                                                      [value]="0"
+                                                                      (change)="onChangeTypeOfChoices(i, j, 0)">
+                                                    </mat-radio-button>
+                                                    <mat-radio-button class="xn-padding-left-5"
+                                                                      [value]="1"
+                                                                      color="primary"
+                                                                      (change)="onChangeTypeOfChoices(i, j, 1)">
+                                                    </mat-radio-button>
+                                                    <mat-radio-button class="xn-padding-left-5"
+                                                                      [value]="2"
+                                                                      color="primary"
+                                                                      (change)="onChangeTypeOfChoices(i, j, 2)">
+                                                    </mat-radio-button>
+                                                </mat-radio-group>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item-icon  item-drag">
+                                        <img class="item-drag"
+                                             src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTMuNSAyLjV2MW0wIDJ2MW0wIDJ2MW0zLTd2MW0wIDJ2MW0wIDJ2MW0zLTd2MW0wIDJ2MW0wIDJ2MW0zLTd2MW0wIDJ2MW0wIDJ2MSIgc3Ryb2tlPSIjN0Y4QzhEIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIi8+PC9zdmc+">
+                                    </div>
+                                    <div class="wrap-delete">
+                                <textarea #name
+                                          class="field-input vertical  padding-left--sm"
+                                          [ngClass]="{'ng-invalid-dirty' : inputItemInvalid}"
+                                          placeholder="Item Name"
+                                          name="content"
+                                          formControlName="GroupItemName"></textarea>
+                                        <div class="delete-field" (click)="deleteItemReason(i, j)">
+                                            <i class="fa fa-times-circle"></i>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <i (click)="addItemReason(i)" class="fa fa-plus-circle  cursor-pointer"></i>
+                            <label-translation (click)="addItemReason(i)" class="text-group  cursor-pointer"
+                                               [keyword]="'Sav_Letter_Template__Add_New_Reason'"></label-translation>
+                        </div>
+                    </div>
+
+                </div>
+                <i (click)="addReasonGroup()" class="fa fa-plus-circle padding-left-fa  cursor-pointer"></i>
+                <label-translation (click)="addReasonGroup()" class="text-group  cursor-pointer"
+                                   [keyword]="'Sav_Letter_Template__Add_New_Reason_Group'"></label-translation>
+            </div>
+            <!-- <div class="invalid-checkbox" *ngIf="requireOneGroupReason">
+                <label-translation class="text-group"
+                                   [keyword]="'Sav_Letter_Template__At_Least_Group_Reason'"></label-translation>
+            </div> -->
+        </split-area>
+    </split>
+</div>
+<p-dialog
+    [styleClass]="'upload-file-dialog'"
+    header=""
+    [(visible)]="showDialog"
+    modal="modal"
+    width="900"
+    height="500"
+    responsive="true"
+    appendTo="body"
+    (onAfterHide)="close()">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="fa  fa-upload  header-icon  pull-left"></span>
+            <span class="header-text  pull-left"><label-translation
+                [keyword]="'XnUploadTemplateFile__Upload_File'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="close()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="col-xs-12 no-padding  height-pc-100">
+        <file-upload *ngIf="showDialog" #fileUpload
+                     [uploadFileMode]="uploadFileMode"
+                     [singleFile]="true"
+                     [acceptExtensionFiles]="'.doc,.docx'"
+                     (onCompleteItem)="onCompleteUploadItem($event)"></file-upload>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button"
+                    mat-raised-button
+                    class="pull-right  new-size"
+                    xn-tooltip
+                    [tooltipText]="'Close'"
+                    (click)="close()">
+                <span class="bt-t"><label-translation
+                    [keyword]="'XnUploadTemplateFile__Close'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<p-dialog
+    [styleClass]="'upload-file-dialog'"
+    header=""
+    [(visible)]="showDialogTemplateName"
+    modal="modal"
+    width="300"
+    height="180"
+    responsive="true"
+    appendTo="body"
+>
+    <p-header>
+        <div class="modal-header--information">
+            <span class="fa  fa-upload  header-icon  pull-left"></span>
+            <span class="header-text  pull-left">{{templateTile}}</span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="closeDialogTemplateName()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="col-xs-12 no-padding  height-pc-100">
+        <input class="form-control  xn-input"
+               [ngClass]="{'input-error': (!templateName && submitTemplateName)}"
+               id="txt-template-name-for-upload-file"
+               (change)="templateNameChanged()"
+               [(ngModel)]="templateName">
+        <div [hidden]="templateName || !submitTemplateName" class="alert alert-danger">
+            <label-translation [keyword]="'XnUploadTemplateFile__Please_input_the_template_name'"></label-translation>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button type="button"
+                    mat-raised-button
+                    class="pull-right  new-size"
+                    xn-tooltip
+                    [tooltipText]="'Close'"
+                    (click)="closeDialogTemplateName()">
+                <span class="bt-t"><label-translation
+                    [keyword]="'XnUploadTemplateFile__Cancel'"></label-translation></span>
+            </button>
+            <button label="Save"
+                    pbutton=""
+                    mat-raised-button
+                    type="button"
+                    class="mat-btn-blue"
+                    (click)="saveTemplateName(templateNameSavingMode)">
+                <span class="bt-t  ui-button-text ui-c"><label-translation
+                    [keyword]="'XnUploadTemplateFile__Save'"></label-translation></span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+
+<send-letter-dialog #sendLetterDialogComponent
+                   *ngIf="isShowSendLetter"
+                   (initComponentAction)="initComponentHandle()"
+                   (startGeneratePdfAction)="startGeneratePdfHandle($event)"
+                   (closedAction)="closedSendLetterHandle($event)">
+</send-letter-dialog>
+
+<div *ngIf="isLoading" class="widget-loading">
+    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+</div>

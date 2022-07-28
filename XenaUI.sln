@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A4BC74CD-700A-4F30-91B4-D827ED73B9F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61DFC2C1-9F10-4D25-85AA-641B369A2711}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XenaUI", "src\XenaUI\XenaUI.csproj", "{AB1BFEEC-7859-49A7-92DD-53644998B120}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB1BFEEC-7859-49A7-92DD-53644998B120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB1BFEEC-7859-49A7-92DD-53644998B120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB1BFEEC-7859-49A7-92DD-53644998B120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB1BFEEC-7859-49A7-92DD-53644998B120}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AB1BFEEC-7859-49A7-92DD-53644998B120} = {A4BC74CD-700A-4F30-91B4-D827ED73B9F2}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B3B219F6-DE14-4612-9608-2B2D910F581D}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://tfs.xena.local:8080/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = src\\XenaUI\\XenaUI.csproj
+		SccProjectTopLevelParentUniqueName1 = XenaUI.sln
+		SccProjectName1 = src/XenaUI
+		SccLocalPath1 = src\\XenaUI
+	EndGlobalSection
+EndGlobal

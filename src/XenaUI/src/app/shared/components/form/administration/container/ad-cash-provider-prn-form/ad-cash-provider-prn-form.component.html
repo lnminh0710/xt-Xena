@@ -1,0 +1,22 @@
+<div class="form-container" [ngClass]="{'submitted': adCashProviderPRNFormGroup['submitted']}">
+    <form [formGroup]="adCashProviderPRNFormGroup" id="adCashProviderPRNFormGroup" class="form-horizontal">
+        <control-focus [formName]="'adCashProviderPRNFormGroup'"
+                       [isFocusOnFirstControl]="true"></control-focus>
+        <div class="col-xs-12  col-sm-6">
+            <ad-cheques-prn #adChequesPrn
+                            [initInformation]="chequesPRNData"
+                            [idPerson]="idPerson"
+                            (initFormGroup)="onInitFormGroup($event)"
+                            (onPaymentMethodChanged)="onPaymentMethodChanged($event)"></ad-cheques-prn>
+        </div>
+        <div class="col-xs-12  col-sm-6">
+            <xn-credit-card #xnCreditCard
+                *ngIf="isRederCreditCard"
+                [initInformation]="creditCardData"
+                [paymentIsCreditCard]="isRederCreditCard"
+                [editMode]="true"
+                (selectedData)="selectedCreditCards($event)">
+            </xn-credit-card>
+        </div>
+    </form>
+</div>

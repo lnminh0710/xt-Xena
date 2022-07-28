@@ -1,0 +1,65 @@
+<p-dialog header=""
+          [styleClass]="'prime-dialog prime-dialog-history'"
+          [(visible)]="showDialog"
+          modal="true"
+          width="600"
+          height="500"
+          positionTop="150"
+          responsive="true"
+          appendTo="body"
+          [resizable]="true"
+          [draggable]="true"
+          [contentStyle]="{'padding-bottom': 0, 'padding-top': 0}">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="header-text">
+              <label-translation [keyword]="'Cus_His__Detail'"></label-translation>
+            </span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="close()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div *ngIf="showDialog"
+         class="row content-detail" [perfect-scrollbar]="perfectScrollbarConfig">
+        <ng-container *ngIf="fieldsetData">
+            <form class="form-horizontal">
+                <ng-container *ngFor="let item of fieldsetData">
+                    <div class="form-group" *ngIf="item.setting && item.setting.display">
+                        <label class="control-label col-sm-3" for="email">{{item.columnName}}:</label>
+                        <div class="col-sm-9">
+                            <label class="control-label">{{item.value}}</label>
+                        </div>
+                    </div>
+                </ng-container>
+            </form>
+        </ng-container>
+
+        <ng-container *ngIf="dataSourceTable">
+            <wijmo-grid *ngIf="dataSourceTable"
+                        [readOnly]="true"
+                        [hasSearch]="false"
+                        [dataSource]="dataSourceTable"
+                        [fitWidthColumn]="true">
+            </wijmo-grid>
+        </ng-container>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button label="Cancel"
+                    pbutton=""
+                    type="button"
+                    mat-raised-button
+                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                    (click)="close()">
+                <span class="bt-t  ui-button-text ui-c">
+                  <label-translation [keyword]="'Cus_His__Close'"></label-translation>
+                </span>
+            </button>
+        </div>
+    </p-footer>
+</p-dialog>

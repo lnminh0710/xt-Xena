@@ -1,0 +1,36 @@
+{
+    "properties": {
+        "articleNr": {
+            "type": "keyword",
+            "boost": null
+        },
+        "articleNameShort": {
+            "type": "keyword",
+            "boost": null
+        },
+        "reason": {
+            "type": "keyword",
+            "boost": null
+        },
+        "loginName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "company": {
+            "type": "keyword",
+            "boost": null
+        },
+        "addOnStock": {
+            "type": "long",
+            "boost": null
+        },
+        "lessOnStock": {
+            "type": "long",
+            "boost": null
+        },
+        "isDone": {
+            "type": "boolean",
+            "boost": null
+        }
+    }
+}

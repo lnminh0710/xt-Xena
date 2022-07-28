@@ -1,0 +1,99 @@
+<div>
+    <!--<span *ngIf="index == 0"
+          class="condition-title">Condition</span>
+    <div class="left-filter-content">
+        <span>{{condition}}</span>
+    </div>-->
+    <table>
+        <tr>
+            <td class="padding-top-25">
+                <xn-combo-box #logicalOperator
+                              wjDropdownHelper
+                              class="custom-wj-input-control xn-select no-padding-left fix-width-control"
+                              [ngClass]="{'ng-invalid': !logicalOperator._pristine && !logicalOperator.selectedValue}"
+                              [itemsSource]="listComboBox.LogicalOperatores"
+                              [displayMemberPath]="'textValue'"
+                              [selectedValuePath]="'idValue'"
+                              [isEditable]="true"
+                              [isRequired]="false"
+                              [(ngModel)]="condition"
+                              (gotFocus)="onLogicalOperatorFocus()"
+                              (selectedIndexChanged)="changeLogicalOperator()"
+                              placeholder="Please select">
+                </xn-combo-box>
+            </td>
+            <td>
+                <div class="right-filter-content form-container"
+                     [ngClass]="{'submitted': extendedForm['submitted']}">
+                    <form class="form-inline"
+                          [formGroup]="extendedForm"
+                          id="extendedForm">
+                        <div class="form-group">
+                            <span style="display: block"><label-translation [keyword]="'ExtendedFilter__Filter_name'"></label-translation></span>
+                            <xn-combo-box #typeCombobox
+                                          wjDropdownHelper
+                                          class="custom-wj-input-control xn-select no-padding-left fix-width-control"
+                                          [ngClass]="{'ng-invalid': !typeCombobox._pristine && !typeCombobox.selectedValue}"
+                                          formControlName="filterName"
+                                          [itemsSource]="listComboBox.Types"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isEditable]="false"
+                                          [isRequired]="false"
+                                          (gotFocus)="onTypeFocus()"
+                                          (selectedIndexChanged)="changeType()">
+                            </xn-combo-box>
+                        </div>
+                        <div class="form-group">
+                            <span style="display: block"><label-translation [keyword]="'ExtendedFilter__Operator'"></label-translation></span>
+                            <xn-combo-box #operatorCombobox
+                                          wjDropdownHelper
+                                          class="custom-wj-input-control xn-select no-padding-left fix-width-control"
+                                          [ngClass]="{'ng-invalid': !operatorCombobox._pristine && !operatorCombobox.selectedValue}"
+                                          formControlName="operator"
+                                          [itemsSource]="listComboBox.Operatores"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isEditable]="false"
+                                          [isRequired]="false"
+                                          (selectedIndexChanged)="changeRule()">
+                            </xn-combo-box>
+                        </div>
+                        <div class="form-group">
+                            <span style="display: block"><label-translation [keyword]="'ExtendedFilter__Value'"></label-translation></span>
+                            <ng-container [ngSwitch]="comparasionType">
+                                <input *ngSwitchCase="'number'" formControlName="value"
+                                    id="groupQuantity"
+                                    name="groupQuantity"
+                                    type="text"
+                                    xn-numeric
+                                    [max]="maxLengthOfControl"
+                                    class="custom-wj-input-control xn-input no-padding-left fix-width-control">
+                                <div *ngSwitchCase="'checkbox'">
+                                    <input type="checkbox"
+                                           formControlName="value"
+                                           class="input-checkbox" />
+                                </div>
+                                <wj-input-date *ngSwitchCase="'date'"
+                                               class="custom-wj-input-control xn-input no-padding-left fix-width-control"
+                                               formControlName="value"
+                                               (keypress)="keypress($event)"
+                                               [isRequired]="false"
+                                               (valueChanged)="onValueChange($event)"
+                                               [(value)]="value">
+                                </wj-input-date>
+                                <input *ngSwitchDefault
+                                       class="form-control xn-input--no-icon fix-width-control"
+                                       type="text"
+                                       formControlName="value"
+                                       maxlength="{{maxLengthOfControl}}"
+                                       placeholder="Value" />
+                            </ng-container>
+                        </div>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</div>

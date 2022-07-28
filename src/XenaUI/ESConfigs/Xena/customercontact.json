@@ -1,0 +1,44 @@
+{
+    "properties": {
+        "firstName": {
+            "type": "keyword",
+            "boost": 10
+        },
+        "lastName": {
+            "type": "keyword",
+            "boost": 9
+        },
+        "cOName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "street": {
+            "type": "keyword",
+            "boost": null
+        },
+        "place": {
+            "type": "keyword",
+            "boost": null
+        },
+        "country": {
+            "type": "keyword",
+            "boost": null
+        },
+        "notes": {
+            "type": "keyword",
+            "boost": null
+        },
+        "createDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "contactAddressType": {
+            "type": "keyword",
+            "boost": null
+        },
+        "company": {
+            "type": "keyword",
+            "boost": null
+        }
+    }
+}

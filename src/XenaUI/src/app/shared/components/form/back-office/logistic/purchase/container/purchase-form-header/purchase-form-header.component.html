@@ -1,0 +1,211 @@
+<div *ngIf="isRenderForm"
+     class="form-container"
+     [ngClass]="{'submitted': formGroup.submitted}">
+    <form [formGroup]="formGroup"
+          class="form-horizontal  height-pc-100"
+          id="purchaseFormGroup" novalidate>
+        <control-focus #focusControl
+                       formName="purchaseFormGroup">
+        </control-focus>
+        <div class="col-xs-12  col-md-5  height-pc-100" [perfect-scrollbar]="perfectScrollbarConfig">
+            <div class="xn__form-header">
+                <span>
+                  <label-translation [keyword]="'Purchase_Header__Main_Data'" User_profile_F></label-translation>
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="supplier"
+                       class="control-label  col-sm-4">
+                    <label-translation [keyword]="'Purchase_Header__Purchse_Id'" User_profile_F></label-translation>
+                </label>
+                <div class="col-sm-8">
+                    <div class="full-width  text-bold">
+                        <label>{{purchaseId}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="supplier"
+                       class="control-label  col-sm-4">
+                    <label-translation [keyword]="'Purchase_Header__Supplier'" User_profile_F></label-translation>
+                </label>
+                <div class="col-sm-8">
+                    <div class="full-width">
+                        <xn-combo-box #supplier
+                                      wjDropdownHelper
+                                      [form]="formGroup"
+                                      formControlName="supplier"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.supplier"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="supplier"
+                                          [control]="formGroup.controls['supplier']"
+                                          icon="building">
+                        </control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="idRepTitle"
+                       class="control-label  col-sm-4">
+                    <label-translation [keyword]="'Purchase_Header__Gender'" User_profile_F></label-translation>
+                </label>
+                <div class="col-sm-8">
+                    <div class="full-width">
+                        <xn-combo-box #gender
+                                      wjDropdownHelper
+                                      [form]="formGroup"
+                                      formControlName="gender"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.principal"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="gender"
+                                          [control]="formGroup.controls['gender']"
+                                          icon="anchor">
+                        </control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="warehouse"
+                       class="control-label  col-sm-4">
+                    <label-translation [keyword]="'Purchase_Header__Warehouse'" User_profile_F></label-translation>
+                </label>
+                <div class="col-sm-8">
+                    <div class="full-width">
+                        <xn-combo-box #warehouse
+                                      wjDropdownHelper
+                                      [form]="formGroup"
+                                      formControlName="warehouse"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.wareHouse"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="warehouse"
+                                          [control]="formGroup.controls['warehouse']"
+                                          icon="anchor">
+                        </control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="warehouse"
+                       class="control-label  col-sm-4">
+                    <label-translation [keyword]="'Purchase_Header__Currency'" User_profile_F></label-translation>
+                </label>
+                <div class="col-sm-8">
+                    <div class="full-width">
+                        <xn-combo-box #currency
+                                      wjDropdownHelper
+                                      [form]="formGroup"
+                                      formControlName="currency"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.currency"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="currency"
+                                          [control]="formGroup.controls['currency']"
+                                          icon="money">
+                        </control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lastName"
+                       class="control-label  col-sm-4">
+                    Date
+                </label>
+                <div class="col-sm-8">
+                    <div class="full-width  text-bold">
+                        <label>{{formatDate(date, globalDateFormat + ' HH:mm')}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="neededDeliveryDate"
+                       class="control-label  col-sm-4">
+                    <label-translation [keyword]="'Purchase_Header__Needed_delivery_date'" User_profile_F></label-translation>
+                </label>
+                <div class="col-sm-8  xn-calendar"
+                     [ngClass]="{'xn__calendar-validate': !formGroup.controls['neededDeliveryDate'].valid}">
+                    <div class="full-width">
+                        <xn-date-picker [formControl]="formGroup.controls['neededDeliveryDate']"
+                                        class="xn-input"
+                                        [format]="globalDateFormat"
+                                        [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                        [isRequired]="false">
+                        </xn-date-picker>
+                        <control-messages [xn-trigger-click-inside-cbo]="neededDeliveryDate"
+                                          [control]="formGroup.controls['neededDeliveryDate']"
+                                          icon="calendar">
+                        </control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="estimatedDeliveryDate"
+                       class="control-label  col-sm-4">
+                    <label-translation [keyword]="'Purchase_Header__Estimated_delivery'" User_profile_F></label-translation>
+                </label>
+                <div class="col-sm-8  xn-calendar"
+                     [ngClass]="{'xn__calendar-validate': !formGroup.controls['estimatedDeliveryDate'].valid}">
+                    <div class="full-width">
+                        <xn-date-picker [formControl]="formGroup.controls['estimatedDeliveryDate']"
+                                        class="xn-input"
+                                        [format]="globalDateFormat"
+                                        [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                        [isRequired]="false">
+                        </xn-date-picker>
+                        <control-messages [xn-trigger-click-inside-cbo]="estimatedDeliveryDate"
+                                          [control]="formGroup.controls['estimatedDeliveryDate']"
+                                          icon="calendar">
+                        </control-messages>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12  col-md-5  height-pc-100">
+            <div class="form-group  xn__form-header">
+                <span class="no-margin">
+                  <label-translation [keyword]="'Purchase_Header__Notes'" User_profile_F></label-translation>
+                </span>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control  xn-input"
+                          id="notes"
+                          name="notes"
+                          [maxlength]="maxCharactersNotes"
+                          (keypress)="updateLeftCharacters($event)"
+                          (keydown)="updateLeftCharacters($event)"
+                          formControlName="notes"></textarea>
+                <control-messages [control]="formGroup.controls['notes']"
+                                  icon="comment  fa-2"
+                                  styleClass="for-notes">
+                </control-messages>
+                <p>* 
+                  <label-translation [keyword]="'Purchase_Header__You_have'" User_profile_F></label-translation>
+                   {{formGroup.leftCharacters}} 
+                  <label-translation [keyword]="'Purchase_Header__characters_more'"></label-translation>
+                </p>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,129 @@
+<p-dialog header="" [(visible)]="showDialog"
+          [styleClass]="'xn-p-dialog-resizable'"
+          appendTo="body"
+          modal="modal"
+          [draggable]="true"
+          [resizable]="true"
+          responsive="true"
+          [width]="500">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="fa fa-external-link header-icon  pull-left"></span>
+            <span class="header-text  pull-left"><label-translation [keyword]="'Widget_communication_dialog__Widget_Communication'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="close()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+        </div>
+    </p-header>
+    <div class="sync-group" *ngIf="communicationWidgetInfo && (communicationWidgetInfo.isConnectToMainSupport ||
+                    (communicationWidgetInfo.relatingWidgetInfos && communicationWidgetInfo.relatingWidgetInfos.length) ||
+                    (communicationWidgetInfo.childrenRelatingWidgetInfos && communicationWidgetInfo.childrenRelatingWidgetInfos.length) )">
+        <div class="row">
+            <div class="col-md-12">
+                <label><label-translation [keyword]="'Widget_communication_dialog__Please_choose_an_item_to_connect'"></label-translation>:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    <mat-radio-group class="communication-radio-group"
+                                     name="widget-communication-radio">
+                        <mat-radio-button *ngIf="communicationWidgetInfo.isConnectToMainSupport"
+                                          color="primary"
+                                          value="-1"
+                                          name="widget-communication-radio"
+                                          (change)="connectToMain()">
+                            <label-translation [keyword]="'Widget_communication_dialog__With_Parked_Item'"></label-translation>
+                        </mat-radio-button>
+                        <mat-radio-button *ngFor="let item of communicationWidgetInfo.relatingWidgetInfos; trackBy: itemsTrackBy"
+                                          value="{{item.id}}"
+                                          color="primary"
+                                          name="widget-communication-radio"
+                                          [ngClass]="{ 'hidden' : !item.title }"
+                                          (change)="connectToParent(item)">
+                            {{item.title}}
+                        </mat-radio-button>
+                        <mat-radio-button *ngFor="let item of communicationWidgetInfo.childrenRelatingWidgetInfos; trackBy: itemsTrackBy"
+                                          value="{{item.id}}"
+                                          color="primary"
+                                          name="widget-communication-radio"
+                                          [ngClass]="{ 'hidden' : !item.title }"
+                                          (change)="connectToChild(item)">
+                            {{item.title}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sync-group" *ngIf="communicationWidgetInfo && communicationWidgetInfo.chartLinkTableInfos && communicationWidgetInfo.chartLinkTableInfos.length">
+        <div class="row">
+            <div class="col-md-12" *ngIf="communicationWidgetInfo.srcWidgetDetail.idRepWidgetType === widgetType.Chart">
+                <label><label-translation [keyword]="'Widget_communication_dialog__Please_choose_an_item_to_connect_to_Chart_Widget'"></label-translation>:</label>
+            </div>
+            <div class="col-md-12" *ngIf="communicationWidgetInfo.srcWidgetDetail.idRepWidgetType === widgetType.PdfViewer">
+                <label><label-translation [keyword]="'Widget_communication_dialog__Please_choose_an_item_to_connect_to_Pdf_Viewer'"></label-translation>:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    <mat-radio-group class="communication-radio-group"
+                                     name="widget-communication-radio">
+                        <mat-radio-button *ngFor="let item of communicationWidgetInfo.chartLinkTableInfos; trackBy: itemsTrackBy"
+                                          value="{{item.id}}"
+                                          color="primary"
+                                          name="widget-communication-radio"
+                                          [ngClass]="{ 'hidden' : !item.title }"
+                                          (change)="connectToChart(item)">
+                            {{item.title}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="sync-group" *ngIf="communicationWidgetInfo && communicationWidgetInfo.sameTypeWidgetInfos && communicationWidgetInfo.sameTypeWidgetInfos.length">
+        <div class="row">
+            <div class="col-md-12">
+                <label><label-translation [keyword]="'Widget_communication_dialog__Sync_to_widget_with_the_same_type'"></label-translation>: </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="funkyradio">
+                    <mat-radio-group class="communication-radio-group"
+                                     name="widget-communication-type-radio">
+                        <mat-radio-button *ngFor="let item of communicationWidgetInfo.sameTypeWidgetInfos; trackBy: itemsTrackBy"
+                                          value="{{item.id}}"
+                                          color="primary"
+                                          name="widget-communication-type-radio"
+                                          (change)="onSameTypeSelectionChange(item)">
+                            {{item.title}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix no-border no-padding">
+            <button type="button"
+                    class="mat-btn-blue  pull-right  new-size"
+                    mat-raised-button
+                    title="Save"
+                    (click)="save()">
+                <span class="bt-t"><label-translation [keyword]="'Widget_communication_dialog__Save_and_Close'"></label-translation></span>
+            </button>
+        </div>
+        <div class="widget-info__resize_bottom xn-icon__resize icon-black"></div>
+    </p-footer>
+</p-dialog>

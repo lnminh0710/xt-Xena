@@ -1,0 +1,44 @@
+<div class="form-container no-margin  no-padding  full-height  col-xs-12" [ngClass]="{'submitted': refundPaymentForm['submitted']}">
+    <form [formGroup]="refundPaymentForm" id="refundPaymentForm" class="form-horizontal full-height formContainer no-margin">
+        <control-focus #focusControl formName="refundPaymentForm"></control-focus>
+        <div class="col-xs-12  no-padding  return-refund__form full-height">
+            <div class="col-xs-12  no-padding" [ngClass]="{'xn-disabled': isDontRefund}">
+                <data-entry-order-payment-type-item #paymentItem
+                                                    [initInformation]="paymentTypeFormData"
+                                                    [hidden]="false"
+                                                    [data]="paymentTypeData"
+                                                    [layoutViewMode]="1"
+                                                    [isInGroup]="false"
+                                                    (changePaymentType)="changePaymentType($event)"
+                                                    (outputData)="paymentTypeFormOutputData($event)"
+                                                    (updateData)="updateData($event)"
+                                                    (initFormGroup)="onInitFormGroup($event)">
+                </data-entry-order-payment-type-item>
+            </div>
+            <div class="form-group">
+                <label for="dont-refund" class="control-label"><label-translation [keyword]="'Refund_Payment__Dont_refund'"></label-translation></label>
+                <div class="control-input">
+                    <mat-checkbox color="primary"
+                                  formControlName="dontRefund"
+                                  (change)="dontRefundChanged()">
+                    </mat-checkbox>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="refund-reason" class="control-label"><label-translation [keyword]="'Refund_Payment__Reason'"></label-translation></label>
+                <div class="control-input">
+                    <textarea class="form-control"
+                              id="refund-reason"
+                              name="refund-reason"
+                              [maxlength]="maxCharactersNotes"
+                              (keypress)="updateLeftCharacters($event)"
+                              (keydown)="updateLeftCharacters($event)"
+                              formControlName="reason"></textarea>
+                </div>
+                <div class="reason-count-down">
+                    <p>* <label-translation [keyword]="'Refund_Payment__You_have'"></label-translation> {{refundPaymentForm['leftCharacters']}} <label-translation [keyword]="'Refund_Payment__characters_more'"></label-translation></p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

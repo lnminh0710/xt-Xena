@@ -1,0 +1,18 @@
+<div class="cell-icon text-center">
+    <i *ngIf="icon && icon.icon"
+    	[ngStyle]="{'color': icon.color}"
+		xn-tooltip
+		[tooltipText]="icon.tooltip"
+		[tooltipPlacement]="'top'"
+        class="fa {{icon.icon}} font-size-20px"
+        aria-hidden="true"></i>
+    <div *ngIf="iconData && iconData.FoundIn" class="action">
+        <i *ngIf="iconData.FoundIn.hasContact"
+           [ngStyle]="{'color': iconData.IconContact.color}"
+		    xn-tooltip
+		    [tooltipText]="iconData.IconContact.tooltip"
+		    [tooltipPlacement]="'top'"
+            class="fa {{iconData.IconContact.icon}} font-size-20px"
+           (click)="onClickIcon('Contact')"></i>
+    </div>
+</div>

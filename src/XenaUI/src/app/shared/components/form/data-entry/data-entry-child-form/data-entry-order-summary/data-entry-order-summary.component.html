@@ -1,0 +1,119 @@
+<div class="data-entry__order-summary  padding-top--sd">
+    <div class="data-entry__order-summary__command  col-xs-12">
+        <div class="col-xs-12  col-sm-2  col-md-1  col-lg-1  no-padding-left" *ngFor="let command of commandList">
+            <app-summary-command [data]="command" (commandClicked)="commandClick(command.id)"></app-summary-command>
+        </div>
+    </div>
+    <div *ngIf="!isSendToAdmin" class="data-entry__order-summary__filter  col-xs-12   margin-top--sd">
+        <div class="data-entry__order-summary__filter  col-xs-12  no-padding-left">
+            <div *ngIf="isByDate" class="col-xs-12  col-sm-3  col-sd-2  col-lg-2  no-padding-left">
+                <label for="data-entry-order-summary-filter-from-date" class="col-xs-4  summary-command__date-label">
+                    <label-translation [keyword]="'Data_Entry_Order_Sum__From'"></label-translation>
+                </label>
+                <div class="col-xs-8  no-padding">
+                    <xn-date-picker [(ngModel)]="fromDate"
+                                    [isRequired]="false"
+                                    [format]="globalDateFormat"
+                                    [isInGrid]="true"
+                                    class="summary-command__date xn-input"></xn-date-picker>
+                </div>
+            </div>
+            <div *ngIf="isByDate" class="col-xs-12  col-sm-3  col-sd-2  col-lg-2  no-padding-left">
+                <label for="data-entry-order-summary-filter-to-date" class="col-xs-4  summary-command__date-label">
+                    <label-translation [keyword]="'Data_Entry_Order_Sum__To'"></label-translation>
+                </label>
+                <div class="col-xs-8  no-padding">
+                    <xn-date-picker [(ngModel)]="toDate"
+                                    [isRequired]="false"
+                                    [format]="globalDateFormat"
+                                    [isInGrid]="true"
+                                    class="summary-command__date xn-input"></xn-date-picker>
+                </div>
+            </div>
+            <div *ngIf="isByDate" class="col-xs-12  col-sm-2  col-sd-1  col-lg-1  no-padding-left">
+                <a class="mat-btn-blue"
+                   mat-raised-button>
+                    <label-translation [keyword]="'Data_Entry_Order_Sum__Filter'"></label-translation> <i class="fa  fa-filter  summary-command__button"></i>
+                </a>
+            </div>
+            <div class="col-xs-12  col-sm-3  col-sd-2  col-lg-1 no-padding-left">
+                <a class="mat-btn-blue"
+                   (click)="downloadPdf($event)"
+                   mat-raised-button>
+                    <label-translation [keyword]="'Data_Entry_Order_Sum__Download_Pdf'"></label-translation> <i class="fa  fa-file-pdf-o  summary-command__button"></i>
+                </a>
+            </div>
+        </div>
+        <div class="xn__form-header  col-xs-12  table-border  margin-top--sd">
+            <p class="pull-left"><label-translation [keyword]="'Data_Entry_Order_Sum__Orders_summary'"></label-translation></p>
+            <p class="pull-right">
+                <label-translation [keyword]="'Data_Entry_Order_Sum__N_of_entries'"></label-translation>: {{searchByDateGridData.data.length}}
+            </p>
+        </div>
+        <div class="col-xs-12  no-padding  order-summary_search-grid">
+            <wijmo-grid #searchByDateGrid
+                        [dataSource]="searchByDateGridData"
+                        [allowDelete]="false">
+            </wijmo-grid>
+        </div>
+    </div>
+    <div *ngIf="isSendToAdmin" class="col-xs-12">
+        <split direction="horizontal"
+               (dragStart)="dragStart()">
+            <split-area [size]="75" [perfect-scrollbar]="perfectScrollbarConfig">
+                <div class="col-xs-12  data-entry__order-summary__left  margin-top--sd  no-padding-left">
+                    <div class="data-entry__order-summary__filter  col-xs-12  no-padding-left">
+                        <div class="col-xs-12  col-sm-3  col-sd-3  col-lg-3  no-padding-left">
+                            <label for="data-entry-order-summary-filter-from-date" class="col-xs-4  summary-command__date-label">From</label>
+                            <div class="col-xs-8  no-padding">
+                                <xn-date-picker [(ngModel)]="fromDate"
+                                                [isRequired]="false"
+                                                [format]="globalDateFormat"
+                                                [isInGrid]="true"
+                                                class="summary-command__date xn-input"></xn-date-picker>
+                            </div>
+                        </div>
+                        <div class="col-xs-12  col-sm-3  col-sd-3  col-lg-3  no-padding-left">
+                            <label for="data-entry-order-summary-filter-to-date" class="col-xs-4  summary-command__date-label">To</label>
+                            <div class="col-xs-8  no-padding">
+                                <xn-date-picker [(ngModel)]="toDate"
+                                                [isRequired]="false"
+                                                [format]="globalDateFormat"
+                                                [isInGrid]="true"
+                                                class="summary-command__date xn-input"></xn-date-picker>
+                            </div>
+                        </div>
+                        <div class="col-xs-12  col-sm-3  col-sd-2  col-lg-3  no-padding-left">
+                            <a class="mat-btn-blue"
+                               mat-raised-button>
+                                <label-translation [keyword]="'Data_Entry_Order_Sum__Filter'"></label-translation> <i class="fa  fa-filter  summary-command__button"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="xn__form-header  col-xs-12  table-border  margin-top--sd">
+                        <p class="pull-left"><label-translation [keyword]="'Data_Entry_Order_Sum__Send_to_admin'"></label-translation></p>
+                        <p class="pull-right">
+                            <label-translation [keyword]="'Data_Entry_Order_Sum__N_of_entries'"></label-translation>: {{sendToAdminGridData.data.length}}
+                        </p>
+                    </div>
+                    <div class="col-xs-12  no-padding  order-summary_search-grid">
+                        <wijmo-grid [dataSource]="sendToAdminGridData" [allowDelete]="false">
+                        </wijmo-grid>
+                    </div>
+                </div>
+            </split-area>
+            <split-area [size]="25" [perfect-scrollbar]="perfectScrollbarConfig">
+                <div class="col-xs-12  data-entry__order-summary__right">
+                    <div class="data-entry__order-summary__filter  col-xs-12">
+                        <div class="col-xs-12  col-sm-2  col-sd-2  col-lg-2">
+                            <a class="mat-btn-blue"
+                               mat-raised-button>
+                                <label-translation [keyword]="'Data_Entry_Order_Sum__Refresh'"></label-translation> <i class="fa  fa-refresh"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </split-area>
+        </split>
+    </div>
+</div>

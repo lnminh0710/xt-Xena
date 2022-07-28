@@ -1,0 +1,47 @@
+<div class="widget-export-blocked-customer">
+    <split direction="horizontal"
+           [gutterSize]="5"
+           (dragEnd)="dragEnd($event)">
+        <split-area [size]="leftSize"
+                    [perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
+            <div class="blocked-grid">
+                <xn-ag-grid #blockedCustomer
+                            *ngIf="blockedCodeGridData && blockedCodeGridData.columns && blockedCodeGridData.columns.length"
+                            [id]="blockCustomerId"
+                            [dataSource]="blockedCodeGridData"
+                            [allowSelectAll]="true"
+                            [readOnly]="true"
+                            [fitWidthColumn]="true"
+                            [rowGrouping]="rowGroupingBlock"
+                            [columnsLayoutSettings]="blockedCustomerColumnsLayoutSettings"
+                            [parentInstance]="widgetExportBlocked"
+                            (onRowGroupPanel)="handleRowGroupPanelBlocked($event)"
+                            (onSelectedAllChecked)="onSelectedAllChecked()"
+                            (onMarkedAsSelectedAll)="onSelectedAllChecked()"
+                            >
+                </xn-ag-grid>
+            </div>
+        </split-area>
+        <split-area [size]="rightSize"
+                    [perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
+            <div class="blocked-result-grid">
+                <xn-ag-grid #blockedCustomerResult
+                            *ngIf="blockedCodeResultGridData && blockedCodeResultGridData.columns && blockedCodeResultGridData.columns.length"
+                            [id]="resultCustomerId"
+                            [dataSource]="blockedCodeResultGridData"
+                            [readOnly]="true"
+                            [rowGrouping]="rowGroupingResult"
+                            [globalProperties]="globalProperties"
+                            [fitWidthColumn]="true"
+                            [parentInstance]="widgetExportBlocked"
+                            [columnsLayoutSettings]="blockedCustomerResultColumnsLayoutSettings"
+                            (onRowGroupPanel)="handleRowGroupPanelResult($event)"
+                           >
+                </xn-ag-grid>
+            </div>
+            <div class="loading" *ngIf="isLoading">
+                <i class="fa fa-spinner fa-pulse fa-3x icon"></i>
+            </div>
+        </split-area>
+    </split>
+</div>

@@ -1,0 +1,38 @@
+<div [perfect-scrollbar]="perfectScrollbarConfig"
+     class="xn__double-page-view__vertical"
+     [ngStyle]="containerStyle">
+    <split direction="vertical"
+           (dragStart)="dragStart()"
+           (dragEnd)="dragEnd($event,pageItems)"
+           style="height: 100%" [gutterSize]="5">
+        <split-area [size]="item.ContentSize"
+                    class="split-area-content"
+                    *ngFor="let item of pageItems"
+                    [perfect-scrollbar]="item.perfectScrollbarConfig">
+            <div class="vertical-page_content  height-pc-100"
+                 *ngIf="item.Page"
+                 id="{{item.Page.PageId || ''}}">
+                <widget-container *ngIf="contentHeight"
+                                  [isActivated]="isActivated"
+                                  [pageId]="item.Page.PageId"
+                                  [tabID]="tabID"
+                                  (onWidgetDeleted)="refreshPerfectScrollbar($event)"></widget-container>
+            </div>
+
+            <div class="vertical-page_content  height-pc-100"
+                 *ngIf="!item.Page && (item.Split || item.SimpleTabs)">
+                <app-xn-tab-page-view [data]="item"
+                                      [isActivated]="isActivated"
+                                      [isOrderDataEntry]="isOrderDataEntry"
+                                      [tabID]="tabID"
+                                      *ngIf="item.Split"></app-xn-tab-page-view>
+
+                <xn-tab-content-simple-tabs [data]="item"
+                                            [isActivated]="isActivated"
+                                            [tabID]="tabID"
+                                            *ngIf="item.SimpleTabs"></xn-tab-content-simple-tabs>
+            </div>
+
+        </split-area>
+    </split>
+</div>

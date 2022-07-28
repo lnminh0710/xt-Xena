@@ -1,0 +1,33 @@
+.formContainer {
+    min-width: 370px;
+
+    form {
+        height: 99.5%;
+        min-height: 140px;
+    }
+
+    .control-label {
+        width: 110px;
+        float: left;
+        padding-right: 5px;
+    }
+
+    .control-input {
+        width: calc(100% - 120px);
+        float: left;
+    }
+}
+
+:host ::ng-deep {
+    .mat-checkbox label {
+        margin-top: 8px;
+    }
+}
+
+.reason-count-down {
+    float: left;
+    padding-left: 110px;
+}
+textarea {
+    height: 100px !important;
+}

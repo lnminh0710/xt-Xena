@@ -1,0 +1,60 @@
+<div class="tab-header-container">
+    <xn-tab-header [data]="headerData"
+                   [setting]="tabSetting"
+                   [subTabSetting]="subTabSetting"
+                   class="xn-tab--general"
+                   [ngClass]="{'newTabSummary':newTabConfig, 'editTabSummary':formEditMode}"
+                   [selectedEntity]="selectedEntity"
+                   [editingTabData]="editingTabData"></xn-tab-header>
+</div>
+
+<div class="tab-content-container"
+     [ngStyle]="tabContainerStyle"
+     *ngIf="tabSetting"
+     [context-menu-directive]="contextMenuData"
+     [isShowMenu]="isShowContextMenu"
+     [wantToLeftClick]="false">
+
+    <!--Without Additional Info-->
+    <xn-tab-content *ngIf="!tabSetting.AdditionalInfo || !tabSetting.AdditionalInfo.accessRight.read"
+                    [tabSummaryModels]="headerData"
+                    [setting]="tabSetting"
+                    [newTabConfig]="newTabConfig"
+                    [contentDisplayMode]="contentDisplayModeState | async"
+                    class="xn-tab--general"
+                    (onMainFormChanged)="onMainFormChanged($event)"
+                    (onOtherFormChanged)="onOtherFormChanged($event)"></xn-tab-content>
+
+    <!--With Additional Info-->
+    <split direction="horizontal"
+           *ngIf="tabSetting.AdditionalInfo && tabSetting.AdditionalInfo.accessRight.read"
+           (dragEnd)="dragEnd($event)"
+           (dragStart)="dragEnd($event)"
+           [gutterSize]="5">
+        <split-area [size]="config.left"
+                    class="xn__tab-content__split">
+            <xn-tab-content [tabSummaryModels]="headerData"
+                            [setting]="tabSetting"
+                            [newTabConfig]="newTabConfig"
+                            [contentDisplayMode]="contentDisplayModeState | async"
+                            class="xn-tab--general"
+                            [hasSplitter]="true"></xn-tab-content>
+        </split-area>
+        <split-area [size]="config.right"
+                    class="additional-information__split"
+                    [perfect-scrollbar]="perfectScrollbarConfigForAI">
+            <app-xn-ai-main #additionalInformationMain
+                            [data]="tabSetting.AdditionalInfo"
+                            [config]="config"
+                            [configWidth]="configWidth"></app-xn-ai-main>
+        </split-area>
+    </split>
+
+
+    <!-- Golden Layout -->
+    <div *ngIf="editLayout"
+         class="edit-layout-setting">
+        <div class="edit-layout-setting-stage"></div>
+    </div>
+</div>
+

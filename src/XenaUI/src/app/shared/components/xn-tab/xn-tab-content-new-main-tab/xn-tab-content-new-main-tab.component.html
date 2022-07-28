@@ -1,0 +1,51 @@
+<div *ngIf="config"
+     [ngSwitch]="config.activeModuleId"
+     [perfect-scrollbar]="perfectScrollbarConfig"
+     [ngStyle]="contentStyle">
+    <ng-template [ngSwitchCase]="2">
+        <customer-form (outputData)="onChanged($event)"
+                       [searchIndexKey]="searchIndexKey"
+                       [globalProperties]="globalProperties"></customer-form>
+    </ng-template>
+    <ng-template [ngSwitchCase]="1">
+        <app-ad-form *ngIf="isRenderAdmin"
+                     (outputData)="onChanged($event)"
+                     [config]="administrtionConfig"
+                     [searchIndexKey]="searchIndexKey"></app-ad-form>
+    </ng-template>
+    <ng-template [ngSwitchCase]="3">
+        <article-form (outputData)="onChanged($event)"></article-form>
+    </ng-template>
+    <ng-template [ngSwitchCase]="4">
+        <app-campaign-combine-t1-form [globalProperties]="globalProperties"
+                                      [campaignExistingDataGridId]="'a3b74d92-0c55-4eef-ad00-d95621495b68'"
+                                      (outputData)="onChanged($event)"></app-campaign-combine-t1-form>
+    </ng-template>
+    <ng-template [ngSwitchCase]="6">
+        <!-- <app-business-cost-form switchForm="header"
+                                [gridId]="'af1adcde-468a-4719-9ce2-6a8d999153b1'"
+                                (outputData)="onChanged($event)"></app-business-cost-form> -->
+        <app-business-cost-row-form
+                                [gridId]="'af1adcde-468a-4719-9ce2-6a8d999153b1'"
+                                (outputData)="onChanged($event)"></app-business-cost-row-form>
+    </ng-template>
+    <ng-template [ngSwitchCase]="31">
+        <app-stock-correction [globalProperties]="globalProperties"
+                              [gridId]="'f9b5c2c7-4a80-4791-81a7-396d4211bcd0'"
+                              (outputData)="onChanged($event)"></app-stock-correction>
+    </ng-template>
+    <ng-template [ngSwitchCase]="32">
+        <warehouse-movement-updating-form *ngIf="!subForm"
+                                  (outputData)="onChanged($event)"></warehouse-movement-updating-form>
+        <sorting-goods-edit-form  *ngIf="subForm === warehouseMovementFormEnum.SortingGood"
+                                  [globalProperties]="globalProperties"
+                                  (outputData)="onChanged($event)"></sorting-goods-edit-form>
+    </ng-template>
+    <ng-template [ngSwitchCase]="30">
+        <purchase-form-combine (outputData)="onChanged($event)"></purchase-form-combine>
+    </ng-template>
+    <ng-template [ngSwitchCase]="97">
+        <app-new-project-form [globalProperties]="globalProperties"
+                              (outputData)="onChanged($event)"></app-new-project-form>
+    </ng-template>
+</div>

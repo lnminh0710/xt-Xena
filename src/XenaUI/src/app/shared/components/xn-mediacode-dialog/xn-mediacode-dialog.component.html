@@ -1,0 +1,135 @@
+<p-dialog
+    #pDialogXnMediaCode
+    header=""
+    [(visible)]="showDialog"
+    [styleClass]="dialogStyleClass"
+    [styleClass]="'campaign-code-dialog  xn-tab--general xn-p-dialog-resizable'"
+    [resizable]="isResizable"
+    [draggable]="isDraggable"
+    modal="true"
+    width="1024"
+    height="768"
+    responsive="true"
+    appendTo="body">
+    <p-header>
+        <div class="modal-header--information">
+            <span class="font-size-18px">{{activeModule.moduleName}}: </span>
+            <span class="font-size-18px header-sub-text"><label-translation [keyword]="'XnMediaCodeDialog__Update'"></label-translation> {{countryName}}
+                <label-translation [keyword]="'XnMediaCodeDialog__Article_Mediacode_Price'"></label-translation></span>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-close-popup"
+                    aria-label="Close"
+                    (click)="onMediacodeCancel()">
+                <span class="fa fa-fw fa-close"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-expand-popup"
+                    *ngIf="!isMaximized"
+                    (click)="maximize()">
+                <span class="fa fa-window-maximize"></span>
+            </button>
+            <button type="button"
+                    mat-raised-button
+                    class="mat-btn-collapse-popup"
+                    *ngIf="isMaximized"
+                    (click)="restore()">
+                <span class="fa fa-window-restore"></span>
+            </button>
+        </div>
+    </p-header>
+    <div *ngIf="showDialog"
+         class="col-xs-12 no-padding  height-pc-100">
+        <tabset>
+            <tab heading="Payment Type Sale Price">
+                <div class="xn__form-header  col-xs-12  table-border border-top-0 padding-top--sm">
+                    <p class="pull-left  xn__form-header-title"><label-translation [keyword]="'XnMediaCodeDialog__Payment_Type_Price'"></label-translation></p>
+                    <p class="pull-right  xn__form-header-title">
+                        <label-translation [keyword]="'XnMediaCodeDialog__No_of_entries'">:</label-translation> {{paymentTypeData && paymentTypeData.data ? paymentTypeData.data.length : 0}}
+                    </p>
+                </div>
+                <div class="col-xs-12 no-padding  height-pc-100">
+                    <div class="col-xs-12 no-padding  height-pc-100">
+                        <xn-ag-grid #paymentTypeDataGrid *ngIf="paymentTypeData && paymentTypeData.columns && paymentTypeData.columns.length"
+                                    [id]="gridId"
+                                    [dataSource]="paymentTypeData"
+                                    [readOnly]="false"
+                                    [allowDelete]="false"
+                                    [isEditting]="true"
+                                    [hasGoToNextColRow]="isSelectionProject"
+                                    [fitWidthColumn]="true"
+                                    (cellEditingStopped)="onPaymentTypTableEditSuccess($event)"
+                                    (hasValidationError)="hasValidationErrorPaymentTypeHandler($event)">
+                        </xn-ag-grid>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="MediaCode Price">
+                <div class="col-xs-12 no-padding  height-pc-100">
+                    <div class="xn__form-header  col-xs-12  table-border border-top-0 padding-top--sm">
+                        <p class="pull-left  xn__form-header-title"><label-translation [keyword]="'XnMediaCodeDialog__Article_price'"></label-translation></p>
+                        <p class="pull-right  xn__form-header-title">
+                            <label-translation [keyword]="'XnMediaCodeDialog__No_of_entries'">:</label-translation> {{mediacodeData && mediacodeData.data ? mediacodeData.data.length : 0}}
+                        </p>
+                    </div>
+                    <div class="col-xs-12 no-padding  height-pc-100">
+                        <xn-ag-grid #mediaCodeDataGrid *ngIf="mediacodeData && mediacodeData.columns && mediacodeData.columns.length"
+                                    [id]="gridId"
+                                    [dataSource]="mediacodeData"
+                                    [readOnly]="false"
+                                    [allowDelete]="false"
+                                    [isEditting]="true"
+                                    [hasGoToNextColRow]="isSelectionProject"
+                                    [fitWidthColumn]="true"
+                                    (cellEditingStopped)="onMediaCodeTableEditSuccess($event)"
+                                    (hasValidationError)="hasValidationErrorMediaCodeHandler($event)">
+                        </xn-ag-grid>
+                    </div>
+                </div>
+            </tab>
+            <tab *ngIf="!isSelectionProject"
+                 heading="Campaign Catalog">
+                <div class="col-xs-12  no-padding  margin-top--sd">
+                    <widget-form #widgetFormComponent
+                                 [dataSource]="catalogData"
+                                 [globalProperties]="globalProperties"
+                                 (onFormChanged)="onFormChanged($event)">
+                    </widget-form>
+                </div>
+            </tab>
+        </tabset>
+
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <button label="Cancel"
+                    pbutton=""
+                    type="button"
+                    mat-raised-button
+                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size  mat-btn-white"
+                    (click)="onMediacodeCancel()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'XnMediaCodeDialog__Cancel'"></label-translation></span>
+            </button>
+            <button label="Save &amp; Close"
+                    [disabled]="(!hasEditedItemForMediaCodeDataGrid && !hasEditedItemForPaymentTypeDataGrid && !hasFormEdited)"
+                    pbutton=""
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                    (click)="onMediacodeSaveAndClose()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'XnMediaCodeDialog__Save_Close'"></label-translation></span>
+            </button>
+            <button label="Save"
+                    [disabled]="(!hasEditedItemForMediaCodeDataGrid && !hasEditedItemForPaymentTypeDataGrid && !hasFormEdited)"
+                    pbutton=""
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                    (click)="onMediacodeSave()">
+                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'XnMediaCodeDialog__Save'"></label-translation></span>
+            </button>
+        </div>
+        <div class="widget-info__resize_bottom xn-icon__resize icon-black"></div>
+    </p-footer>
+</p-dialog>

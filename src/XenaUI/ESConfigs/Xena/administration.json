@@ -1,0 +1,148 @@
+{
+    "properties": {
+        "firstName": {
+            "type": "keyword",
+            "boost": 10
+        },
+        "lastName": {
+            "type": "keyword",
+            "boost": 9
+        },
+        "middlename": {
+            "type": "keyword",
+            "boost": null
+        },
+        "nameAddition": {
+            "type": "keyword",
+            "boost": null
+        },
+        "suffixName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "cOName": {
+            "type": "keyword",
+            "boost": null
+        },
+        "personStatus": {
+            "type": "long",
+            "boost": null
+        },
+        "country": {
+            "type": "keyword",
+            "boost": null
+        },
+        "zip": {
+            "type": "keyword",
+            "boost": null
+        },
+        "zip2": {
+            "type": "keyword",
+            "boost": null
+        },
+        "personNr": {
+            "type": "keyword",
+            "boost": null
+        },
+        "poboxLabel": {
+            "type": "keyword",
+            "boost": null
+        },
+        "addition": {
+            "type": "keyword",
+            "boost": null
+        },
+        "area": {
+            "type": "keyword",
+            "boost": null
+        },
+        "streetNr": {
+            "type": "keyword",
+            "boost": null
+        },
+        "street": {
+            "type": "keyword",
+            "boost": null
+        },
+        "place": {
+            "type": "keyword",
+            "boost": null
+        },
+        "streetAddition1": {
+            "type": "keyword",
+            "boost": null
+        },
+        "streetAddition2": {
+            "type": "keyword",
+            "boost": null
+        },
+        "streetaddition3": {
+            "type": "keyword",
+            "boost": null
+        },
+        "notes": {
+            "type": "keyword",
+            "boost": null
+        },
+        "bNotes": {
+            "type": "keyword",
+            "boost": null
+        },
+        "eSearchAdditional": {
+            "type": "keyword",
+            "boost": null
+        },
+        "matchingGroup": {
+            "type": "keyword",
+            "boost": null
+        },
+        "matchingText": {
+            "type": "keyword",
+            "boost": null
+        },
+        "matching": {
+            "type": "keyword",
+            "boost": null
+        },
+        "createDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "updateDate": {
+            "type": "keyword",
+            "boost": null
+        },
+        "isActive": {
+            "type": "boolean",
+            "boost": null
+        },
+        "isDeleted": {
+            "type": "boolean",
+            "boost": null
+        },
+        "blocked": {
+            "type": "long",
+            "boost": null
+        },
+        "customerStatusText": {
+            "type": "keyword",
+            "boost": null
+        },
+        "businessStatusText": {
+            "type": "keyword",
+            "boost": null
+        },
+        "customerStatus": {
+            "type": "keyword",
+            "boost": null
+        },
+        "businessStatus": {
+            "type": "keyword",
+            "boost": null
+        },
+        "company": {
+            "type": "keyword",
+            "boost": null
+        }
+    }
+}

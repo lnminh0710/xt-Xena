@@ -1,0 +1,574 @@
+<div class="wijmo-grid-container"
+     [ngClass]="{'has-data': (wijmoDataSource && wijmoDataSource.data && wijmoDataSource.data.length > 0),
+     'readonly': readOnly, 'editable': !readOnly, 'hasHeader': isShowedHeader}">
+
+    <div class="row" *ngIf="serverPaging && gridData">
+        <div class="col-xs-12 no-padding paging-grid">
+            <xn-pagination [boundaryLinks]="true"
+                           [itemsPerPage]="pageSize"
+                           [totalItems]="totalResults"
+                           [(ngModel)]="currentPage"
+                           (pageChanged)="currentPageChanged($event)"
+                           [maxSize]="6">
+            </xn-pagination>
+        </div>
+    </div>
+    <div class="row  table__search__header" *ngIf="isShowedHeader">
+        <span class="table__search__header_title" *ngIf="headerTitle && headerTitle.length > 0">{{headerTitle}}</span>
+        <span class="table__search__header_count" *ngIf="totalResults && totalResults > 0">N. of entries: {{totalResults}}</span>
+        <span class="table__search__header_count" *ngIf="(!totalResults || totalResults <= 0) && wijmoDataSource && wijmoDataSource.data">N. of entries: {{wijmoDataSource.data.length}}</span>
+    </div>
+    <div class="row  table__search" *ngIf="hasSearch || hasFilterBox">
+        <div *ngIf="hasSearch"
+             class="filter-search-box margin-top--sm">
+            <div class="input-group">
+                <app-xn-input-debounce delayTimer="600"
+                                       placeholder="Search"
+                                       [value]="search"
+                                       [hasIndicator]="true"
+                                       [hasSearchButton]="true"
+                                       [isLoading]="isSearching"
+                                       (onValueChanged)="doSearch($event)"
+                                       (onSearchButtonClicked)="searchClicked($event)"
+                                       cssClass="form-control input-sm">
+                </app-xn-input-debounce>
+                <div *ngIf="isSearching" class="search-spinner">
+                    <i class="fa fa-spinner fa-spin fa-fw"></i>
+                </div>
+                <button [disabled]="isSearching"
+                        (click)="searchClicked()"
+                        class="mat-btn-blue  search-button"
+                        mat-raised-button>
+                    <i class="fa fa-search  search-icon" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <div *ngIf="hasFilterBox"
+             class="filter-search-box margin-top--sm">
+            <div class="input-group">
+                <input type="text"
+                       class="form-control input-sm"
+                       placeholder="Filter"
+                       [(ngModel)]="filter" />
+                <span class="input-group-addon">
+                    <i class="fa fa-filter"
+                       aria-hidden="true"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="row  table__command" *ngIf="isShowedEditButtons">
+        <div class="col-xs-4 no-margin float-right no-padding"
+             *ngIf="!readOnly && isShowedEditButtons">
+            <!--Delete button-->
+            <a href="javascript:void(0)"
+               class="btn btn-primary btn-sm btn-del-editable-table"
+               [ngClass]="[allowDelete && !isMarkedAsDelete ? 'disabled' : '']"
+               (click)="deleteRows()"
+               title="Delete"
+               *ngIf="allowDelete">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </a>
+
+            <!--Add button-->
+            <a href="javascript:void(0)"
+               class="btn btn-primary btn-sm btn-plus-editable-table"
+               [ngClass]="[allowAddNew && _hasValidationError ? 'disabled' : '']"
+               title="Add New Row"
+               (click)="addNewRow()"
+               *ngIf="allowAddNew">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
+
+            <!--Upload button-->
+            <a href="javascript:void(0)"
+               class="btn btn-primary btn-sm btn-upload-editable-table"
+               title="Upload file"
+               (click)="uploadFile()"
+               *ngIf="allowUploadFile">
+                <i class="fa fa-upload" aria-hidden="true"></i>
+            </a>
+            <a _ngcontent-otn-151="" class="btn btn-primary btn-sm icon-editable-table" href="javascript:void(0);" style="color: #c0c0c0;cursor:default">
+                <i _ngcontent-otn-151="" _ngcontent-yjv-64="" aria-hidden="true" class="fa fa-table"></i>
+            </a>
+        </div>
+    </div>
+    <!--<wj-menu id="ctxMenu"
+             #ctxMenu
+             style="display: none">
+        <wj-menu-item *ngFor="let menuLink of gridContextMenuData; trackBy: gridContextMenuDataTrackBy" [value]="menuLink.title"
+                      [ngClass]="[showCtxItem ? '' : 'hidden']">
+            <div *ngIf="menuLink && !menuLink.disabled" (click)="contextMenuItemClick(menuLink.callback)" class="xn__wijmo-context"
+                 [ngClass]="[showCtxItem ? '' : 'hidden']">
+                <i class="xn__wijmo-context__icon fa {{menuLink.iconName}}  margin-right--sd" aria-hidden="true"></i>
+                <span class="xn__wijmo-context__text">{{ menuLink.title }}</span>
+                <span *ngIf="!!menuLink.hotkey" class="xn__wijmo-context__hot-key  pull-right  margin-left--lg">{{ menuLink.hotkey }}</span>
+            </div>
+            <div *ngIf="menuLink && menuLink.disabled" class="xn__wijmo-context  xn-disabled"
+                 [ngClass]="[showCtxItem ? '' : 'hidden']">
+                <i class="xn__wijmo-context__icon fa {{menuLink.iconName}}  margin-right--sd" aria-hidden="true"></i>
+                <span class="xn__wijmo-context__text">{{ menuLink.title }}</span>
+                <span *ngIf="!!menuLink.hotkey" class="xn__wijmo-context__hot-key  pull-right  margin-left--lg">{{ menuLink.hotkey }}</span>
+            </div>
+        </wj-menu-item>
+    </wj-menu>-->
+    <!-- the grid -->
+    <wj-flex-grid #flex
+                  class="grid height-pc-100 display-block {{customClass}}"
+                  [ngClass]="[(hasSearch || hasFilterBox) ? 'grid-small-height' : '']"
+                  [selectionMode]="selectionMode"
+                  [headersVisibility]="headersVisibility"
+                  [showSelectedHeaders]="showSelectedHeaders"
+                  [showMarquee]="showMarquee"
+                  [allowResizing]="allowResizing"
+                  [itemsSource]="gridData"
+                  [showErrors]="true"
+                  [isReadOnly]="readOnly"
+                  [validateEdits]="false"
+                  [itemFormatter]="itemFormatter"
+                  (rowEditStarted)="rowEditStartedHandler($event)"
+                  (rowEditEnded)="rowEditEndedHandler($event)"
+                  (cellEditEnded)="cellEditEndedHandler($event)"
+                  (dblclick)="onRowDblclicked(flex,$event)"
+                  (copying)="copyToClipboard($event)">
+
+        <wj-flex-grid-filter #filter
+                             *ngIf="columnFilter"
+                             [filterColumns]="filterColumns"></wj-flex-grid-filter>
+
+        <ng-template ngFor let-col [ngForOf]="gridColumns" let-idx="index" [ngForTrackBy]="gridColumnsTrackBy">
+            <wj-flex-grid-column *ngIf="!CONTROL_COLUMNS[col.data] && col.data != 'groupIcon'"
+                                 [header]="col.title"
+                                 [binding]="col.data"
+                                 [isReadOnly]="col.readonly"
+                                 [isRequired]="false"
+                                 [visible]="col.visible"
+                                 [dataType]="col.dataType"
+                                 [cssClass]="col.readonly ? 'readonly' : 'editable'"
+                                 [minWidth]="col.minWidth ? col.minWidth : 70"
+                                 [width]="col.dataType == 'Boolean' ? 70 : (col.visible ? (col.width ? col.width : '*') : 0)"
+                                 [allowSorting]="allowSorting"
+                                 [aggregate]="col.dataType == 'Number' || (col.controlType && col.controlType.toLowerCase() == 'numeric') || (col.controlType && col.controlType.toLowerCase() == 'quantitypriority') ? 1 : 0">
+
+                <ng-template *ngIf="col.dataType == 'Date'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-cell="cell">
+                    <div class="text-{{col.align}}">{{format(cell.item[col.data], globalDateFormat)}}</div>
+                </ng-template>
+                <ng-template *ngIf="col.dataType == 'Date'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'CellEdit'"
+                             let-cell="cell">
+                    <wj-input-date class="full-width"
+                                   [(value)]="cell.value"
+                                   [isRequired]="false"
+                                   [format]="globalDateFormat"></wj-input-date>
+                </ng-template>
+
+                <ng-template *ngIf="col.dataType == 'Boolean'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="text-left">
+                        {{col.title}}
+                    </div>
+                </ng-template>
+                <ng-template *ngIf="col.dataType == 'Boolean'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item"
+                             let-cell="cell">
+                    <ng-container *ngIf="(readOnly || col.readonly);else edit_content">
+                        <i class="fa fa-check" [ngClass]="{'active' : item[col.data], 'in-active' :  !item[col.data] }">
+                        </i>
+                    </ng-container>
+                    <ng-template #edit_content>
+                        <mat-checkbox *ngIf="!col.controlType || col.controlType.toLowerCase() != 'disablerow'"
+                                      color="primary"
+                                      [disabled]="(readOnly || col.readonly)"
+                                      [(ngModel)]="item[col.data]"
+                                      (change)="onCheckboxChanged(item, col.data, $event)">
+                        </mat-checkbox>
+                        <mat-checkbox *ngIf="col.controlType && col.controlType.toLowerCase() == 'disablerow'"
+                                      color="primary"
+                                      [(ngModel)]="item['IsActive']"
+                                      (change)="onSelectColumnChanged(item, $event, cell)">
+                        </mat-checkbox>
+                    </ng-template>
+                </ng-template>
+
+                <ng-template *ngIf="col.dataType == 'Object' && col.controlType.toLowerCase() != 'quantitypriority'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item">
+                    <div class="text-{{col.align}}">{{item[col.data].value}}</div>
+                </ng-template>
+                <ng-template *ngIf="col.dataType == 'Object' && col.controlType.toLowerCase() != 'quantitypriority'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'CellEdit'"
+                             let-cell="cell">
+                    <wj-combo-box *ngIf="cell.value && cell.value.options.length"
+                                  class="full-width no-border"
+                                  [(text)]="cell.item[col.data].value"
+                                  [itemsSource]="cell.value.options"
+                                  [displayMemberPath]="'label'"
+                                  [selectedValuePath]="'value'"
+                                  [(selectedValue)]="cell.value.key"
+                                  [isRequired]="false"
+                                  placeholder="Please select">
+                    </wj-combo-box>
+                </ng-template>
+
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             *ngIf="col.controlType && col.controlType.toLowerCase() == 'icon'"
+                             let-item="item">
+                    <div class="cell-icon">
+                        <i class="fa  fa-{{item[col.data]}}  grid-column-icon" aria-hidden="true"></i>
+                    </div>
+                </ng-template>
+
+                <ng-template *ngIf="col.controlType && col.controlType.toLowerCase() == 'numeric'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="{{col.align ? 'text-' + col.align : 'text-right'}}">
+                        {{col.title}}
+                    </div>
+                </ng-template>
+                <ng-template *ngIf="col.controlType && col.controlType.toLowerCase() == 'numeric'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item">
+                    <div class="{{col.align ? 'text-' + col.align : 'text-right padding-right--sm'}}">
+                        {{formatNumber(item[col.data], globalNumberFormat)}}
+                    </div>
+                </ng-template>
+                <ng-template *ngIf="col.controlType && col.controlType.toLowerCase() == 'numeric'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'CellEdit'"
+                             let-cell="cell">
+                    <input [(value)]="cell.value"
+                             type="text" 
+                             xn-numeric 
+                             [min]="col.min || 0"
+                             [format]="globalNumberFormat"
+                             class="full-width no-border">
+                </ng-template>
+
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             *ngIf="col.controlType && col.controlType.toLowerCase() == 'countryflag'"
+                             let-item="item">
+                    <div>
+                        <img src="public/assets/img/blank.gif"
+                             class="flag  flag-{{_buildCcList(item[col.data])[0] | lowercase}}"
+                             alt="{{_buildCcList(item[col.data])[1]}}" />
+                        {{_buildCcList(item[col.data])[1]}}
+                    </div>
+                </ng-template>
+
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'ColumnFooter'"
+                             let-cell="cell">
+                    <div class="cell-ellipsis {{col.align ? 'text-' + col.align : 'text-right padding-right--sm'}}">
+                        {{formatNumber(cell.value, globalNumberFormat, col.allowNumberSeparator)}}
+                    </div>
+                </ng-template>
+
+                <ng-template *ngIf="col.controlType && col.controlType.toLowerCase() == 'quantitypriority'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <table class="quantity-priority-title">
+                        <tr class="main-title">
+                            <td colspan="2">{{col.title}}</td>
+                        </tr>
+                        <tr class="sub-title">
+                            <td>Qty</td>
+                            <td>Priority</td>
+                        </tr>
+                    </table>
+                </ng-template>
+                <ng-template *ngIf="col.controlType && col.controlType.toLowerCase() == 'quantitypriority'"
+                             wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item">
+                    <div class="empty-cell"
+                         *ngIf="item[col.data] && item[col.data]['Qty'] <= 0"></div>
+                    <div class="row quantity-priority-container"
+                         *ngIf="item[col.data] && item[col.data]['Qty'] > 0">
+                        <div class="col-xs-6 no-padding-right quantity-container text-center">
+                            <span class="quantity-label text-{{col.align}}"
+                                  *ngIf="!item[col.data].qEdit"
+                                  (click)="onQuantityPriorityClick(item[col.data], col.data, 'qEdit')"
+                                  (contextmenu)="onQuantityPriorityRightClick(item[col.data], col.data)">
+                                {{formatNumber(item[col.data]['ExportQty'], globalNumberFormat)}}
+                            </span>
+                            <wj-input-number *ngIf="item[col.data].qEdit"
+                                             #quantityInputNumber
+                                             class="full-width no-border-top no-border-left no-border-bottom display-block"
+                                             [min]="0"
+                                             [(value)]="item[col.data]['ExportQty']"
+                                             [isRequired]="false"
+                                             [format]="globalNumberFormat"
+                                             (keypress)="onFrequencyQuantityKeypress($event, quantityInputNumber)"
+                                             (lostFocus)="onFrequencyQuantityChanged(item[col.data], quantityInputNumber)"
+                                             (initialized)="onFrequencyQuantityInit(quantityInputNumber)"
+                                             (contextmenu)="onQuantityPriorityRightClick(item[col.data], col.data)"></wj-input-number>
+                        </div>
+                        <div class="col-xs-6 no-padding-left priority-container text-center">
+                            <span class="priority-label text-{{col.align}}"
+                                  *ngIf="!item[col.data].pEdit"
+                                  (click)="onQuantityPriorityClick(item[col.data], col.data, 'pEdit')">
+                                {{formatNumber(item[col.data]['Priority'], globalNumberFormat)}}
+                            </span>
+                            <wj-combo-box *ngIf="item[col.data].pEdit"
+                                          #priorityCombobox
+                                          class="full-width no-border frequency-quantity-combobox"
+                                          [(ngModel)]="item[col.data]['Priority']"
+                                          [displayMemberPath]="'value'"
+                                          [selectedValuePath]="'key'"
+                                          [itemsSource]="quantityPriority"
+                                          [isEditable]="true"
+                                          [isRequired]="false"
+                                          (selectedIndexChanged)="onFrequencyPriorityChanged(item[col.data], priorityCombobox)">
+                            </wj-combo-box>
+                        </div>
+                    </div>
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column *ngIf="col.data == CONTROL_COLUMNS.selectAll"
+                                 [dataType]="'Boolean'"
+                                 [isReadOnly]="col.readonly"
+                                 [width]="70"
+                                 [binding]="col.data">
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="trash"
+                         [ngClass]="{'col-header-readonly': readOnly}">
+                        Select all
+                        <span class="trash-cbx-container"
+                              [ngStyle]="{'display': (wijmoDataSource && wijmoDataSource.data && wijmoDataSource.data.length) ? '' : 'none'}">
+                            <mat-checkbox color="primary"
+                                          class="mat-checkbox--check-all"
+                                          [(ngModel)]="isMarkedAsSelectedAll"
+                                          (change)="selectAllColumnItems()">
+                            </mat-checkbox>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item">
+                    <mat-checkbox color="primary"
+                                  class="mat-checkbox--check-all"
+                                  [(ngModel)]="item['selectAll']"
+                                  (change)="onCheckboxChanged(item, 'selectAll', $event)">
+                    </mat-checkbox>
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column *ngIf="col.data == CONTROL_COLUMNS.deleted"
+                                 [dataType]="'Boolean'"
+                                 [isReadOnly]="col.readonly"
+                                 [width]="70"
+                                 [binding]="col.data">
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="trash"
+                         [ngClass]="{'col-header-readonly': readOnly}">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        <span class="trash-cbx-container"
+                              [ngStyle]="{'display': (wijmoDataSource && wijmoDataSource.data && wijmoDataSource.data.length) ? '' : 'none'}">
+                            <mat-checkbox color="primary"
+                                          class="mat-checkbox--check-all"
+                                          [(ngModel)]="isSelectDeletedAll"
+                                          (change)="selectDeleteAll()">
+                            </mat-checkbox>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item">
+                    <mat-checkbox color="primary"
+                                  [(ngModel)]="item['deleted']"
+                                  (change)="onCheckboxChanged(item, 'deleted', $event)">
+                    </mat-checkbox>
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column *ngIf="col.data == CONTROL_COLUMNS.FilterExtended"
+                                 [binding]="col.data"
+                                 [visible]="col.visible"
+                                 [isReadOnly]="col.readonly"
+                                 [width]="70">
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="text-center">{{col.title}}</div>
+                </ng-template>
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item">
+                    <div class="text-center" *ngIf="item[col.data]">
+                        <button class="mat-btn-blue  mat-btn-non-fix--icon mat-btn-small"
+                                (click)="editButtonClickHandler(item, col.data)"
+                                mat-raised-button>
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column *ngIf="col.data == CONTROL_COLUMNS.Delete"
+                                 [binding]="col.data"
+                                 [visible]="!readOnly && col.visible"
+                                 [isReadOnly]="true"
+                                 [width]="70">
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="text-center">{{col.title}}</div>
+                </ng-template>
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item">
+                    <div class="text-center">
+                        <button class="mat-btn-transparent-red  mat-btn-non-fix--icon mat-btn-small"
+                                (click)="deleteButtonClickHandler(item)"
+                                mat-raised-button>
+                            <i class="fa fa-trash font-size-20px" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column *ngIf="col.data == CONTROL_COLUMNS.Edit"
+                                 [binding]="col.data"
+                                 [visible]="!readOnly && col.visible"
+                                 [isReadOnly]="true"
+                                 [width]="70">
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="text-center">{{col.title}}</div>
+                </ng-template>
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item">
+                    <div class="text-center">
+                        <button class="mat-btn-orange  mat-btn-non-fix--icon mat-btn-small"
+                                [disabled]="item['deleted'] !== undefined && item['deleted'] !== null && item['deleted']"
+                                (click)="editButtonClickHandler(item, col.data)"
+                                mat-raised-button>
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column *ngIf="col.data == CONTROL_COLUMNS.Priority"
+                                 [binding]="col.data"
+                                 [visible]="col.visible"
+                                 [isReadOnly]="false"
+                                 [width]="col.visible ? '*' : 0">
+
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="text-left">
+                        {{col.title}}
+                    </div>
+                </ng-template>
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-cell="cell">
+                    <div class="text-center">
+                        {{cell.item[col.data]}}
+                    </div>
+                </ng-template>
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'CellEdit'"
+                             let-cell="cell">
+                    <wj-combo-box #comboBox
+                                  class="full-width no-border"
+                                  [(ngModel)]="cell.value"
+                                  [displayMemberPath]="'value'"
+                                  [selectedValuePath]="'key'"
+                                  [itemsSource]="priority"
+                                  [isEditable]="true"
+                                  [isRequired]="false"
+                                  (selectedIndexChanged)="onPriorityChangeValue(cell.item, comboBox)">
+                    </wj-combo-box>
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column *ngIf="col.data == 'groupIcon'"
+                                 [binding]="col.data"
+                                 [visible]="col.visible"
+                                 [isReadOnly]="true"
+                                 [width]="70">
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="text-left">
+                        {{col.title}}
+                    </div>
+                </ng-template>
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-cell="cell">
+                    <div class="text-center">
+                        <img width="25" height="25" src="{{cell.item[col.data]}}" />
+                    </div>
+                </ng-template>
+            </wj-flex-grid-column>
+
+            <wj-flex-grid-column *ngIf="col.data == CONTROL_COLUMNS.noExport"
+                                 [binding]="col.data"
+                                 [visible]="col.visible"
+                                 [isReadOnly]="col.readonly"
+                                 [width]="70">
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'ColumnHeader'">
+                    <div class="text-left">
+                        {{col.title}}
+                    </div>
+                </ng-template>
+                <ng-template wjFlexGridCellTemplate
+                             [cellType]="'Cell'"
+                             let-item="item">
+                    <i class="fa fa-check"
+                       [ngClass]="{'active' : item['noExport'], 'in-active' :  !item['noExport'] }"
+                       *ngIf="readOnly"></i>
+                    <mat-checkbox *ngIf="!readOnly"
+                                  color="primary"
+                                  [(ngModel)]="item['noExport']"
+                                  (change)="onCheckboxExportChanged(item, $event)">
+                    </mat-checkbox>
+                </ng-template>
+            </wj-flex-grid-column>
+        </ng-template>
+
+    </wj-flex-grid>
+
+    <div class="popupFilter"
+         *ngIf="hasFilter && isShowingPopupFilter"
+         [ngStyle]="{'margin-top': '-' + popupPosition.top + 'px'}"
+         [ngClass]="{'half-opacity':isHalfOpacity}">
+        <div class="header">Input filter text</div>
+        <a href="javascript:void(0);"
+           class="btn btn-danger btn-sm close-btn"
+           (click)="closePopupHandler($event)"
+           title="Close">
+            <i class="fa fa-times"></i>
+        </a>
+        <div class="col-sm-12 form-group">
+            <input id="xn-input{{_randomNo}}" class="form-control  xn-input"
+                   placeholder="Filter"
+                   type="text"
+                   [(ngModel)]="filter"
+                   (focus)="focusFilterHandler($event, false)"
+                   (focusout)="focusFilterHandler($event, true)" />
+        </div>
+        <div class="input-group-addon">
+            <i class="fa fa-filter "></i>
+        </div>
+    </div>
+</div>

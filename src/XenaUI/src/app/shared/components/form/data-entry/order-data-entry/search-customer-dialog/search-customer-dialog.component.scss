@@ -1,0 +1,44 @@
+﻿.header-text {
+    font-size: 15px;
+}
+
+.row {
+    height: 522px;
+    margin-top: -8px;
+}
+
+.table-source {
+    height: 454px;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    margin: 0;
+}
+
+.search-txt {
+    width: 120px;
+    height: 26px;
+    float: left;
+    margin: 1px 0 0 1px;
+}
+
+.search-button {
+    float: left;
+    padding: 4px 7px !important;
+    margin: 1px 0 0 2px;
+    background-color: rgb(84, 151, 190);
+    border-radius: 3px;
+    color: #fff;
+}
+
+.search-button:hover {
+    background-color: rgba(84, 151, 190, 0.81);
+    cursor: pointer;
+}
+
+.customer-search-dialog {
+    width: calc(100vw - 230px) !important;
+    left: 100px !important;
+    top: 58px !important;
+    height: calc(100vh - 60px) !important;
+}

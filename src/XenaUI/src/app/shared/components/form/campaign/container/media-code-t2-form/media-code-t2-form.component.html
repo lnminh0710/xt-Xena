@@ -1,0 +1,139 @@
+<div class="form-container  media-code-container"
+     [ngClass]="{'submitted': mediaCodeT2Form['submitted'], 'xn-disabled': disableForm}"
+     [attr.data-pageId]="pageId">
+    <div class="col-xs-6 media-code-form-container">
+        <div class="media-code-form">
+            <form class="form-horizontal m-b-30" [formGroup]="countryLanguageForm">
+                <div class="form-group">
+                    <label for="countryLanguage" class="control-label col-sm-3"><label-translation [keyword]="'Media_Code_T2__Country_Language'"></label-translation></label>
+                    <div class="col-sm-9">
+                        <xn-combo-box #countryLanguage
+                                      wjDropdownHelper
+                                      [form]="countryLanguageForm"
+                                      formControlName="countryLanguage"
+                                      name="countryLanguage"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="countryLanguageList"
+                                      [dropDownCssClass]="'wjmo-ddl'"
+                                      [displayMemberPath]="'Country'"
+                                      [selectedValuePath]="'IdSalesCampaignWizardItems'"
+                                      [isRequired]="false"
+                                      placeholder="'Please select'"
+                                      [itemFormatter]="itemFormatter"
+                                      [isEditable]="false"
+                                      [selectedValue]="currentIdSalesCampaignWizardItems"
+                                      [isContentHtml]="true"
+                                      [maxDropDownWidth]="533"
+                                      (gotFocus)="wjCountryLanguage_GotFocus($event)"
+                                      (lostFocus)="wjCountryLanguage_LostFocus($event)"
+                                      (selectedIndexChanged)="wjCountryLanguageSelectedIndexChanged($event)">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="countryLanguage" [type]="'dropdown'"
+                                          [control]="countryLanguageForm.controls.countryLanguage" icon="globe"></control-messages>
+                    </div>
+                </div>
+            </form>
+            <label> <label-translation [keyword]="'Media_Code_T2__Insert_new_media_code'"></label-translation> </label>
+            <form class="form-horizontal" [formGroup]="mediaCodeT2Form" id="mediaCodeT2Form" >
+                <control-focus formName="mediaCodeT2Form" focusControl="MediaCode" [noLoop]="true"></control-focus>
+                <div class="form-group">
+                    <label for="firstName" class="control-label col-sm-3"><label-translation [keyword]="'Media_Code_T2__Mediacode'"></label-translation></label>
+                    <div class="col-sm-9">
+                        <app-xn-input-debounce #mediaCodeCtrl
+                                               cssClass="xn-input"
+                                               formControlName="MediaCode"
+                                               [hasSearchButton]="false"
+                                               [isLoading]="isSearching"
+                                               [hasIndicator]="true"
+                                               [hasValidation]="true"
+                                               delayTimer="600">
+                        </app-xn-input-debounce>
+                        <control-messages [type]="'textbox'"
+                                          [control]="mediaCodeT2Form.controls.MediaCode" icon="code"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="MediaCodeLabel"><label-translation [keyword]="'Media_Code_T2__Media_Code_Label'"></label-translation>:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control  xn-input" name="MediaCodeLabel" formControlName="MediaCodeLabel" autocomplete="off">
+                        <control-messages [type]="'textbox'"
+                                          [control]="mediaCodeT2Form.controls.MediaCodeLabel" icon="file-text"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="Quantity"><label-translation [keyword]="'Media_Code_T2__Quantity'"></label-translation>:</label>
+                    <div class="col-sm-9">
+                        <input #controlAmountNumber formControlName="Quantity"
+                           id="Quantity"
+                           name="Quantity"
+                           type="text"
+                           xn-numeric
+                           [min]="0"
+                           [format]="globalNumberFormat"
+                           class="custom-wj-input-control xn-input"
+                           (keyup)="amountNumberKeyUp($event)">
+                        <clear-text [enableClearText]="true"
+                                    [controlType]="'number'"
+                                    [inputControl]="mediaCodeT2Form.controls.Quantity"
+                                    [controlName]="'Quantity'"></clear-text>
+                        <control-messages [control]="mediaCodeT2Form.controls.Quantity"
+                                          [icon]="'sum'"
+                                          [type]="'textbox'">
+                        </control-messages>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button"
+                                mat-raised-button
+                                (click)="addMediaCode(mediaCodeT2Form)"
+                                class="mat-btn-blue  media-code-button"
+                                #buttonAddMediaCode>
+                            <span class="bt-t"><label-translation [keyword]="'Media_Code_T2__Add'"></label-translation></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="media-code-import">
+            <label> <label-translation [keyword]="'Media_Code_T2__Media_Code_Import'"></label-translation> </label>
+            <div class="media-code-import-content">
+                <file-upload #mediaCodeFileUpload
+                  [readDataMode]="true"
+                  [acceptExtensionFiles]="acceptExtensionFiles"
+                  (onCompleteItem)="onCompleteImportItem($event)"
+                  (onFileChangedAction)="onFileChangedHandler($event)"></file-upload>
+            </div>
+            <div class="col-xs-12 no-padding">
+              <button type="button"
+                      mat-raised-button
+                      (click)="downloadTeamplate($event)"
+                      class="mat-btn-green">
+                  <span class="bt-t"><label-translation [keyword]="'Media_Code_T2__Download_Template'"></label-translation></span>
+              </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="media-code-table"
+             [ngStyle]="mediaCodeTableStyle">
+            <xn-ag-grid #mediaCodeGrid
+                        [id]="gridId"
+                        *ngIf="dataSourceTable && dataSourceTable.columns && dataSourceTable.columns.length"
+                        [readOnly]="false"
+                        [isEditting]="true"
+                        [showMenuRowGrouping]="true"
+                        [dataSource]="dataSourceTable"
+                        [allowDelete]="true"
+                        [fitWidthColumn]="true"
+                        [isShowedEditButtons]="true"
+                        [globalProperties]="globalProps"
+                        (cellValueChanged)="onTableEditSuccess($event)"
+                        (onDeletedRows)="onDeleteRows($event)">
+            </xn-ag-grid>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,184 @@
+{
+    "properties": {
+        "iD_QFNS": {
+            "type": "long",
+            "boost": null
+        },
+        "iD_CUSTOMER": {
+            "type": "long",
+            "boost": null
+        },
+        "mEDIACODE": {
+            "type": "keyword",
+            "boost": null
+        },
+        "cUSTOMER_NR": {
+            "type": "keyword",
+            "boost": null
+        },
+        "iD_TITLE": {
+            "type": "long",
+            "boost": null
+        },
+        "cOMPANY": {
+            "type": "keyword",
+            "boost": null
+        },
+        "lASTNAME": {
+            "type": "keyword",
+            "boost": null
+        },
+        "lASTNAME2": {
+            "type": "keyword",
+            "boost": null
+        },
+        "fIRSTNAME": {
+            "type": "keyword",
+            "boost": null
+        },
+        "fIRSTNAME2": {
+            "type": "keyword",
+            "boost": null
+        },
+        "nAMEADDITION": {
+            "type": "keyword",
+            "boost": null
+        },
+        "sTREET": {
+            "type": "keyword",
+            "boost": null
+        },
+        "sTREET_NR": {
+            "type": "keyword",
+            "boost": null
+        },
+        "sTREETADDITION": {
+            "type": "keyword",
+            "boost": null
+        },
+        "sTREETADDITION2": {
+            "type": "keyword",
+            "boost": null
+        },
+        "sTREETADDITION3": {
+            "type": "keyword",
+            "boost": null
+        },
+        "aDDITION": {
+            "type": "keyword",
+            "boost": null
+        },
+        "pOBOX": {
+            "type": "keyword",
+            "boost": null
+        },
+        "zIP": {
+            "type": "keyword",
+            "boost": null
+        },
+        "zIP2": {
+            "type": "keyword",
+            "boost": null
+        },
+        "pLACE": {
+            "type": "keyword",
+            "boost": null
+        },
+        "aREA": {
+            "type": "keyword",
+            "boost": null
+        },
+        "county": {
+            "type": "keyword",
+            "boost": null
+        },
+        "lAND": {
+            "type": "keyword",
+            "boost": null
+        },
+        "iD_ISOLC": {
+            "type": "long",
+            "boost": null
+        },
+        "iD_LANGUAGE": {
+            "type": "long",
+            "boost": null
+        },
+        "gEBURTSTAG": {
+            "type": "keyword",
+            "boost": null
+        },
+        "gEBURTSORT": {
+            "type": "keyword",
+            "boost": null
+        },
+        "gEBURTSSTUNDE_STD": {
+            "type": "keyword",
+            "boost": null
+        },
+        "gEBURTSSTUNDE_MIN": {
+            "type": "keyword",
+            "boost": null
+        },
+        "gEBURTSLAND": {
+            "type": "keyword",
+            "boost": null
+        },
+        "iMPORT_DATA": {
+            "type": "keyword",
+            "boost": null
+        },
+        "dATAMATRIX": {
+            "type": "keyword",
+            "boost": null
+        },
+        "cREATEDATE": {
+            "type": "keyword",
+            "boost": null
+        },
+        "sOURCE_FILE": {
+            "type": "keyword",
+            "boost": null
+        },
+        "tITLE": {
+            "type": "keyword",
+            "boost": null
+        },
+        "nOT_USE_BLOCKED": {
+            "type": "boolean",
+            "boost": null
+        },
+        "nOT_USE_DUPLICATED": {
+            "type": "boolean",
+            "boost": null
+        },
+        "mERGE_DATE": {
+            "type": "keyword",
+            "boost": null
+        },
+        "pRIORITY": {
+            "type": "long",
+            "boost": null
+        },
+        "tmp_ID_TITLE": {
+            "type": "long",
+            "boost": null
+        },
+        "is_FF": {
+            "type": "boolean",
+            "boost": null
+        },
+        "oRIGINAL_MEDIACODE": {
+            "type": "keyword",
+            "boost": null
+        },
+        "is_BDK": {
+            "type": "boolean",
+            "boost": null
+        },
+        "returnStatus": {
+            "type": "keyword",
+            "boost": null
+        }
+    }
+}

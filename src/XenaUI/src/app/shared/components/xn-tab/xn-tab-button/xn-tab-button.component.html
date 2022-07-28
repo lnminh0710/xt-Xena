@@ -1,0 +1,486 @@
+<div class="parent-container"
+     [ngStyle]="parentStyle">
+    <ng2-slim-loading-bar [height]="'4px'"
+                          [color]="'#fba026'"></ng2-slim-loading-bar>
+    <a class="overlap"></a>
+    <div class="button-container text-right"
+         [ngClass]="{'margin-right-25px': (tabHeaderHasScrollerState | async) && (tabHeaderHasScrollerState | async)?.side == 'right' && (tabHeaderHasScrollerState | async)?.hasScroller}"
+         *ngIf="showTabButton"
+         [@enterAnimation]="showTabButton">
+
+        <div class="btn-group"
+             *ngIf="(isViewModeState | async) && isSelectionProject && selectedTab && selectedTab.tabSummaryInfor.tabID == 'Frequencies'">
+            <button class="mat-btn-green mat-btn-non-fix--icon"
+                    xn-tooltip
+                    [tooltipText]="'Build Frequency'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    mat-raised-button
+                    (click)="buildFrequency()">
+                <i class="fa fa-play"
+                   aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="btn-group"
+             *ngIf="(isViewModeState | async) && isSelectionProject && selectedTab && selectedTab.tabSummaryInfor.tabID == 'SynchronizationMediacode'">
+            <button class="mat-btn-green mat-btn-non-fix--icon"
+                    xn-tooltip
+                    [tooltipText]="'Sync Mediacode'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    mat-raised-button
+                    (click)="syncMediacode()">
+                <i class="fa fa-random"
+                   aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="btn-group"
+             *ngIf="(isViewModeState | async) && isSelectionProject && selectedTab && selectedTab.tabSummaryInfor.tabID == 'Export'">
+            <button class="mat-btn-blue mat-btn-non-fix--icon"
+                    xn-tooltip
+                    [tooltipText]="'Export Data'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    mat-raised-button
+                    (click)="exportSelectionData()">
+                <i class="fa fa-download"
+                   aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="btn-group"
+             *ngIf="(isViewModeState | async) && isSelectionProject">
+            <button class="mat-btn-non-fix--icon"
+                    [ngClass]="{'mat-btn-green-on': isEditAllWidgetMode,
+                                'mat-btn-green-off': !isEditAllWidgetMode}"
+                    xn-tooltip
+                    [tooltipText]="'Auto-Edit'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    mat-raised-button
+                    (click)="toggleEditAllWidget()">
+                <i class="fa fa-pencil"
+                   aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="btn-group"
+             *ngIf="editingWidgets && editingWidgets.length && ofModule && ofModule.idSettingsGUI != 7 && !isSelectionProject">
+            <button class="mat-btn-blue  mat-btn-non-fix--icon btn-multiple-save"
+                    [ngClass]="{'mat-btn-orange':saveButtonClass.dataDirty}"
+                    xn-tooltip
+                    [tooltipText]="'Save'"
+                    [tooltipPlacement]="'top'"
+                    (click)="saveAllWidget()"
+                    mat-raised-button
+                    container="body"
+                    #btnSaveAllWidgetCtrl>
+                <i class="fa fa-save-all" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="btn-group"
+             *ngIf="(isViewModeState | async) && ofModule && ofModule.idSettingsGUI != 5 && ofModule.idSettingsGUI != 7">
+            <button class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    tooltipText="{{ofModule.idSettingsGUI == 6 ? 'Add':'New'}}"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="add()"
+                    *ngIf="tabAccessRight && tabAccessRight.new && toolbarSetting && toolbarSetting.CanNew == '1'">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+            <button class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Edit'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    [disabled]="!isEditBtnActive()"
+                    (click)="edit()"
+                    *ngIf="tabAccessRight && tabAccessRight.edit && toolbarSetting && toolbarSetting.CanEdit == '1'">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            </button>
+            <button class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Clone'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    [disabled]="(ofModule.idSettingsGUI != 38 && !selectedEntity) || (ofModule.idSettingsGUI == 38 && !selectedWidgetRowData)"
+                    (click)="clone()"
+                    *ngIf="sysManageWidgetTabButtonsAccessRight.clone && toolbarSetting && toolbarSetting.CanClone == '1'">
+                <i class="fa fa-copy" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <!--Backoffice -- Warehouse Movement -- Sorting Goods -->
+        <ng-template [ngIf]="(isViewModeState | async) && ofModule && ofModule.idSettingsGUI == 32">
+            <div class="btn-group">
+                <button *ngIf="toolbarSetting && toolbarSetting.CanEditSortingGood == '1'"
+                        type="button"
+                        mat-raised-button
+                        placement="top"
+                        container="body"
+                        (click)="editSortingGood()"
+                        class="mat-btn-green  fixed-height">
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                    <span class="bt-t-i"><label-translation [keyword]="'XnTabButton__Edit_sorting_goods'"></label-translation></span>
+                </button>
+            </div>
+        </ng-template>
+
+        <!--SELECTION-->
+        <div class="btn-group"
+             *ngIf="(isViewModeState | async) && isSelectionProject">
+            <button *ngIf="tabAccessRight && tabAccessRight.new && toolbarSetting && toolbarSetting.SaveNext == '1'"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    [ngClass]="{'mat-btn-orange':saveButtonClass.dataDirty}"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Save'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="saveAndNext_Widget()">
+                <i class="fa fa-save" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <!--Order Data Entry-->
+        <div class="btn-group"
+             *ngIf="(isViewModeState | async) && ofModule && (ofModule.idSettingsGUI == 7)">
+            <button *ngIf="odeButtonsAccessRight.save && toolbarSetting && toolbarSetting.CanSave == '1'"
+                    [disabled]="!isOrderDataEntrySaveDisabled || !isOrderDataEntrySaveDisabled.status || (selectedODETab && selectedODETab.TabID == 'Scanning' && !idScansContainerItems && isOrderDataEntrySaveDisabled.orderType != '2')"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    [ngClass]="{'mat-btn-orange':saveButtonClass.dataDirty}"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Save'"
+                    [tooltipPlacement]="'top'"
+                    container="body">
+                <i class="fa fa-floppy-o" aria-hidden="true"
+                   (click)="saveOnlyWithoutControllingTab($event)"
+                   #btnOrderDataEntrySaveCtrl></i>
+            </button>
+            <button *ngIf="toolbarSetting && toolbarSetting.CanReload == '1'"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Reload'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="reloadOrderDataEntry()">
+                <i class="fa fa-undo" aria-hidden="true"></i>
+            </button>
+            <button *ngIf="odeButtonsAccessRight.skip && toolbarSetting && toolbarSetting.CanSkip == '1'"
+                    [disabled]="!idScansContainerItems"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Skip'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="skipOrderDataEntry()">
+                <i class="fa fa-step-forward" aria-hidden="true"></i>
+            </button>
+            <button *ngIf="odeButtonsAccessRight.download && toolbarSetting && toolbarSetting.CanDownload == '1'"
+                    [disabled]="!idScansContainerItems"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Download'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="downloadOrderDataEntryScanningImage()">
+                <i class="fa fa-download" aria-hidden="true"></i>
+            </button>
+            <button *ngIf="odeButtonsAccessRight.sendToAdmin && toolbarSetting && toolbarSetting.CanSendToAdmin == '1'"
+                    [disabled]="!idScansContainerItems"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Send To Admin'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="sendToAdmin($event)">
+                <i class="fa "
+                   [ngClass]="{'fa-spinner fa-spin': isSendToAdminLoading,
+                                'fa-paper-plane-o': !isSendToAdminLoading}"
+                   aria-hidden="true"></i>
+            </button>
+            <button *ngIf="odeButtonsAccessRight.delete && toolbarSetting && toolbarSetting.CanDelete == '1'"
+                    [disabled]="!idScansContainerItems"
+                    class="mat-btn-red mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Delete'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="deleteOrderDataEntry()">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button *ngIf="odeButtonsAccessRight.print && toolbarSetting && toolbarSetting.CanPrint == '1'"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Print'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="print($event)">
+                <i class="fa fa-print" aria-hidden="true"></i>
+            </button>
+        </div>
+        <!--Order Data Entry-->
+        <!--Backoffice -- Orders-->
+        <div class="btn-group"
+             *ngIf="(isViewModeState | async) && ofModule && ofModule.idSettingsGUI == 28">
+            <button *ngIf="ordersButtonsAccessRight.pdf && toolbarSetting && toolbarSetting.CanDownloadPdf == '1'"
+                    (click)="downloadPdf()"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Download PDF'"
+                    [tooltipPlacement]="'top'"
+                    container="body">
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+            </button>
+            <button *ngIf="ordersButtonsAccessRight.tracking && toolbarSetting && toolbarSetting.CanTracking == '1'"
+                    (click)="goToTrackingPage()"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'To tracking page'"
+                    [tooltipPlacement]="'top'"
+                    container="body">
+                <i class="fa fa-truck" aria-hidden="true"></i>
+            </button>
+            <button *ngIf="ordersButtonsAccessRight.returnRefund && toolbarSetting && toolbarSetting.CanReturnRefund == '1'"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'To ret and ref page'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="openReturnRefundModule()">
+                <i class="fa fa-exchange" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <!--Backoffice -- Return & Refund-->
+        <ng-template [ngIf]="(isViewModeState | async) && ofModule && ofModule.idSettingsGUI == 29">
+            <div class="btn-group">
+                <button [disabled]="!returnAndRefundInvoiceNumberData || !returnAndRefundInvoiceNumberData.enableConfirmButton"
+                        *ngIf="returnRefundButtonsAccessRight.confirm && toolbarSetting && toolbarSetting.CanConfirm == '1'"
+                        type="button"
+                        mat-raised-button
+                        (click)="confirmReturnRefund()"
+                        class="mat-btn-blue fixed-height">
+                    <span class="bt-t"><label-translation [keyword]="'XnTabButton__Confirm'"></label-translation></span>
+                </button>
+            </div>
+            <!-- <div class="btn-group">
+                <button *ngIf="returnRefundButtonsAccessRight.newInvoice && toolbarSetting && toolbarSetting.CanNewInvoice == '1'"
+                        (click)="newInvoiceReturnRefund()"
+                        mat-raised-button
+                        class="mat-btn-blue fixed-height">
+                    <span class="bt-t"><label-translation [keyword]="'XnTabButton__New_Invoice'"></label-translation></span>
+                </button>
+            </div> -->
+        </ng-template>
+        <div class="btn-group"
+             *ngIf="!(isViewModeState | async)">
+            <button *ngIf="(selectedSubTab && selectedSubTab.toolbar && selectedSubTab.toolbar.CanNewInEdit == '1')
+                            || (toolbarSetting && toolbarSetting.CanNewInEdit == '1')"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    tooltipText="{{ofModule.idSettingsGUI == 6 ? 'Reset':'New'}}"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="addItemInEdit()">
+                <i class="fa fa-{{ofModule.idSettingsGUI == 6 ? 'repeat':'plus'}}" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="btn-group"
+             *ngIf="!(isViewModeState | async)">
+            <button *ngIf="toolbarSetting && toolbarSetting.Translation == '1'"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Translate'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="openTranslationDialog()">
+                <i class="fa fa-globe" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="btn-group"
+             *ngIf="!(isViewModeState | async)">
+            <button *ngIf="toolbarSetting && toolbarSetting.CanConfirmSortingGood == '1' && subForm === warehouseMovementFormEnum.SortingGood"
+                    type="button"
+                    mat-raised-button
+                    (click)="confirmAllSortingGood()"
+                    [disabled]="TAB_BUTTON_STATE.confirmAll.disabled"
+                    class="mat-btn-green  fixed-height">
+                <i class="fa  fa-check-square-o " aria-hidden="true"></i>
+                <span class="bt-t"><label-translation [keyword]="'XnTabButton__Confirm_All'"></label-translation></span>
+            </button>
+        </div>
+        <div class="btn-group"
+             *ngIf="!(isViewModeState | async)">
+            <button *ngIf="toolbarSetting && toolbarSetting.CanConfirmSortingGood == '1' && subForm === warehouseMovementFormEnum.SortingGood"
+                    type="button"
+                    mat-raised-button
+                    (click)="saveAndConfirmSortingGood()"
+                    [disabled]="TAB_BUTTON_STATE.confirmAndSave.disabled"
+                    class="mat-btn-blue  fixed-height">
+                <i class="fa  fa-check-square-o " aria-hidden="true"></i>
+                <span class="bt-t"><label-translation [keyword]="'XnTabButton__Save_Confirm'"></label-translation></span>
+            </button>
+        </div>
+
+        <div class="btn-group"
+             *ngIf="!(isViewModeState | async)">
+            <button *ngIf="toolbarSetting && toolbarSetting.SaveOnly == '1'"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    [ngClass]="{'mat-btn-orange':saveButtonClass.dataDirty}"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Save'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    [disabled]="TAB_BUTTON_STATE.save.disabled"
+                    (click)="saveOnly()"
+                    #btnSaveOnlyCtrl>
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            </button>
+            <button *ngIf="toolbarSetting &&
+                            toolbarSetting.SaveOnlyForSortingGood == '1' &&
+                            subForm === warehouseMovementFormEnum.SortingGood"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    [ngClass]="{'mat-btn-orange':saveButtonClass.dataDirty}"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Save'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    [disabled]="TAB_BUTTON_STATE.saveOnlyForSortingGood.disabled"
+                    (click)="saveOnly()"
+                    #btnSaveOnlyCtrl>
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            </button>
+            <button *ngIf="toolbarSetting && toolbarSetting.SaveNew == '1'
+                            && !(ofModule
+                                && ((ofModule.idSettingsGUI == 38 && selectedTab && selectedTab.tabSummaryInfor.tabID == 'User')
+                                    || ofModule.idSettingsGUI == 1
+                                    || ofModule.idSettingsGUI == 2
+                                    || ofModule.idSettingsGUI == 3
+                                    || ofModule.idSettingsGUI == 4
+                                    || ofModule.idSettingsGUI == 6)
+                                && isFormEditMode)"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    [ngClass]="{'mat-btn-orange':saveButtonClass.dataDirty}"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Save & New'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    [disabled]="TAB_BUTTON_STATE.saveAndNew.disabled"
+                    (click)="saveAndNew()">
+                <i class="fa fa-save-new" aria-hidden="true"></i>
+            </button>
+
+            <button *ngIf="toolbarSetting &&
+                            toolbarSetting.SaveClose == '1' &&
+                            subForm !== warehouseMovementFormEnum.SortingGood"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    [ngClass]="{'mat-btn-orange':saveButtonClass.dataDirty}"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Save & Close'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    [disabled]="TAB_BUTTON_STATE.saveAndClose.disabled"
+                    (click)="saveAndClose()">
+                <i class="fa"
+                   [ngClass]="{'fa-save-new': isSelectionProject, 'fa-save-close': !isSelectionProject}"
+                   aria-hidden="true"></i>
+            </button>
+            <button *ngIf="toolbarSetting && toolbarSetting.SaveNext == '1'"
+                    class="mat-btn-blue  mat-btn-non-fix--icon"
+                    [ngClass]="{'mat-btn-orange':saveButtonClass.dataDirty}"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Save & Next'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    [disabled]="TAB_BUTTON_STATE.saveAndNext.disabled"
+                    (click)="saveAndNext()">
+                <i class="fa fa-save-next" aria-hidden="true"></i>
+            </button>
+        </div>
+        <!--Collapse/Expand Button-->
+        <div class="btn-group"
+             *ngIf="ofModule && (ofModule.idSettingsGUI != 7)">
+            <button class="mat-btn-blue  mat-btn-non-fix--icon"
+                    xn-tooltip
+                    [tooltipText]="isTabCollapsed ? 'Expand' : 'Collapse'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    mat-raised-button
+                    (click)="toggleTab()">
+                <i class="fa {{isTabCollapsed ? 'fa-expand' : 'fa-compress'}}" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <!--Refresh Button-->
+        <div class="btn-group"
+             *ngIf="ofModule && ofModule.idSettingsGUI != 7 && (isViewModeState | async)">
+            <button class="mat-btn-blue mat-btn-non-fix--icon"
+                    xn-tooltip
+                    [tooltipText]="'Refresh Widgets'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    mat-raised-button
+                    (click)="refreshWidgets()">
+                <i class="fa fa-undo" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <!--Cancel Button-->
+        <div class="btn-group"
+             *ngIf="!(isViewModeState | async)">
+            <button class="mat-btn-white-red  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Cancel'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="cancel()">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <!--Close Button-->
+        <div class="btn-group second-group"
+             *ngIf="(isViewModeState | async)">
+            <button class="mat-btn-red  mat-btn-non-fix--icon"
+                    mat-raised-button
+                    xn-tooltip
+                    [tooltipText]="'Close'"
+                    [tooltipPlacement]="'top'"
+                    container="body"
+                    (click)="close()">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<selection-export-data-dialog *ngIf="isSelectionProject && showSelectionExportDataDialog"
+                              (onClose)="onCloseSelectionExportDataDialog()"></selection-export-data-dialog>

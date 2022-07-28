@@ -1,0 +1,40 @@
+.article-search {
+    padding: 20px 20px 0 20px;
+}
+
+.article-grid {
+    height: calc(50% - 30px);
+    padding: 0 0 20px 0;
+}
+
+.left-form-group {
+    label {
+        margin-top: 5px;
+    }
+
+    input {
+        float: left;
+        width: calc((100% - 115px)/2);
+        margin: 0 10px;
+    }
+}
+
+.article-search__article-label {
+    min-width: 60px;
+}
+
+.article-search__article-input {
+    width: 140px;
+}
+
+.article-search__qty-input {
+    width: 150px;
+}
+
+.article-search__qty {
+    padding: 0 30px 0 30px;
+}
+
+.search-article-btn {
+    margin-right: 10px;
+}

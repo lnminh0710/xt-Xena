@@ -1,0 +1,102 @@
+<div>
+    <!--Inline: 1-->
+    <div *ngIf="_layoutViewMode == 1" class="de__payment-type" [perfect-scrollbar]="perfectScrollbarConfig">
+        <data-entry-order-payment-type-item #paymentItem
+                                            *ngFor="let item of data; let i = index; trackBy: itemsTrackBy"
+                                            [masterData]="data"
+                                            [data]="item"
+                                            [parentComponent]="parentComponent"
+                                            [ascIndex]="i"
+                                            [maxIndex]="data.length - 1"
+                                            [index]="data.length - i"
+                                            [layoutViewMode]="_layoutViewMode"
+                                            [disabledRemoveButton]="data.length === 1"
+                                            [isShowAddPaymentButton]="i === 0"
+                                            [localizer]="localizer"
+                                            [tabID]="tabID"
+                                            (outputRemove)="removePayment($event)"
+                                            (changePaymentType)="changePaymentType($event)"
+                                            (outputData)="outputDataHandler($event)"
+                                            (updateData)="updateData($event)"
+                                            (onAddPayment)="addPayment($event)"
+                                            (onCurrencyChanged)="onCurrencyChanged($event)">
+        </data-entry-order-payment-type-item>
+        <div class="de__payment-type__item--bg" *ngIf="!data.length">
+            <p><label-translation [keyword]="'ODE_Payment_Master__Empty_of_Payment'"></label-translation></p>
+        </div>
+    </div>
+    <!--Tab: 2-->
+    <div *ngIf="_layoutViewMode == 2" class="de__payment-type">
+        <div class="tab-header-container">
+            <ul class="nav nav-tabs min-height-34px">
+                <ng-template ngFor let-tab [ngForOf]="data" let-i="index">
+                    <li class="nav-item"
+                        [ngClass]="{'active': tab.active}">
+                        <a data-toggle="tab" #tabCtrl
+                           href="#{{tab.paymentId}}"
+                           class="nav-link"
+                           [ngClass]="{'active': tab.active }"
+                           (click)="selectTab(tab)">
+                            {{tab.headerText}}
+                        </a>
+                        <a *ngIf="tab.active"
+                           (click)="removePayment(tab)"
+                           class="remove-button"
+                           [ngClass]="{'disabled': data.length === 1}">
+                            <i class="fa fa-times-circle"></i>
+                        </a>
+                        <control-messages [componentControl]="tabCtrl"
+                                          [hotKeyValue]="hotKeySettingService.getHotKeyTab('paymentId_' + i ) | async"
+                                          (onClickComponentControl)="selectTab(tab)">
+                        </control-messages>
+                    </li>
+                </ng-template>
+                <li class="nav-item" *ngIf="mainCurrency && shadowPaymentTypeList && shadowPaymentTypeList.length">
+                    <a aria-hidden="true"
+                       xn-tooltip
+                       [tooltipText]="'Add more Payment'"
+                       [tooltipPlacement]="top"
+                       container="body"
+                       class="add-more-payment  no-padding cursor-pointer"
+                       [ngClass]="{'icon-button--active': allowAddingPaymentType, 'icon-button--inactive': !allowAddingPaymentType}">
+                        <span #plusCtrl class="fa fa-plus-circle" (click)="addPayment($event)"></span>
+                    </a>
+                    <control-messages [hotKeyValue]="hotKeySettingService.getHotKeyTab('payment_plus') | async"
+                                      (onClickComponentControl)="addPayment($event)">
+                    </control-messages>
+                </li>
+            </ul>
+        </div>
+
+        <div class="de__pt-tab-content-container"
+             [ngStyle]="tabContainerStyle"
+             [perfect-scrollbar]="perfectScrollbarConfig">
+            <div *ngFor="let tabz of data; let i = index; trackBy: itemsTrackBy"
+                 id="{{tabz.paymentId}}"
+                 class="tab-pane"
+                 [ngClass]="{'active': tabz.active, 'in-active': !tabz.active }">
+                <data-entry-order-payment-type-item #paymentItem
+                                                    [hidden]="!tabz.active"
+                                                    [masterData]="data"
+                                                    [data]="tabz"
+                                                    [index]="i + 1"
+                                                    [ascIndex]="i"
+                                                    [maxIndex]="data.length - 1"
+                                                    [layoutViewMode]="_layoutViewMode"
+                                                    [localizer]="localizer"
+                                                    [tabID]="tabID"
+                                                    (outputRemove)="removePayment($event)"
+                                                    (changePaymentType)="changePaymentType($event)"
+                                                    (outputData)="outputDataHandler($event)"
+                                                    (updateData)="updateData($event)"
+                                                    (onCurrencyChanged)="onCurrencyChanged($event)">
+                </data-entry-order-payment-type-item>
+            </div>
+            <div *ngIf="!data.length" class="tab-pane  de__pt-empty">
+                <p><label-translation [keyword]="'ODE_Payment_Master__Empty_of_Payment'"></label-translation></p>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="block-ui" *ngIf="isBlockUI()"></div>

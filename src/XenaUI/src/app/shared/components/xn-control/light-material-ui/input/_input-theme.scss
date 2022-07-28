@@ -1,0 +1,29 @@
+@import '../core/theming/palette';
+@import '../core/theming/theming';
+@import '../core/style/form-common';
+@import '../core/typography/typography-utils';
+
+
+@mixin mat-input-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $is-dark-theme: map-get($theme, is-dark);
+
+  .mat-input-element:disabled {
+    color: mat-color($foreground, secondary-text, if($is-dark-theme, 0.7, 0.42));
+  }
+}
+
+@mixin mat-input-typography($config) {
+  // The unit-less line-height from the font config.
+  $line-height: mat-line-height($config, input);
+
+  // The amount of space between the top of the line and the top of the actual text
+  // (as a fraction of the font-size).
+  $line-spacing: ($line-height - 1) / 2;
+
+  // <input> elements seem to have their height set slightly too large on Safari causing the text to
+  // be misaligned w.r.t. the placeholder. Adding this margin corrects it.
+  input.mat-input-element {
+    margin-top: -$line-spacing * 1em;
+  }
+}

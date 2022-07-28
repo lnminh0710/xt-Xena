@@ -1,0 +1,31 @@
+<div class="lb-e"
+     *ngIf="isEditingLayout && !isSettingDialog"
+     mwlResizable
+     [enableGhostResize]="'true'"
+     [resizeEdges]="{bottom: true, right: false, top: false, left: false}"
+     (resizeStart)="onResizeStart($event)"
+     (resizeEnd)="onResizeEnd($event)"
+     [ngStyle]="{'height': (lineBreak.height || minLineBreakHeight) + 'px'}"
+     [ngClass]="{'isResizing': lineBreak.isResizing}">
+    <div class="lb-f"></div>
+    <div class="lb-d"
+         (click)="onDelete()">
+        <i class="fa  fa-trash  ignore-drag"
+            xn-tooltip
+            [tooltipText]="'Delete Line Break'"
+            [tooltipPlacement]="'top'"
+            *ngIf="isEditingLayout"></i>
+    </div>
+    <div class="rz"
+         *ngIf="!isSettingDialog"
+         mwlResizeHandle
+         [resizeEdges]="{bottom: true}"
+         (mousedown)="onMousedownOnResize()"
+         (mouseup)="onMouseupOnResize()">
+        <i class="fa  fa-circle-o  ignore-drag"></i>
+    </div>
+</div>
+<div *ngIf="!isEditingLayout || isSettingDialog"
+    [ngClass]="{'lb-f': isSettingDialog}"
+    [ngStyle]="{'height': (lineBreak.height || minLineBreakHeight) + 'px'}">
+</div>

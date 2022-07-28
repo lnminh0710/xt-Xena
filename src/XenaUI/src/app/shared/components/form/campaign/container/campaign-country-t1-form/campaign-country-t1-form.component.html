@@ -1,0 +1,526 @@
+<div class="campaign-country-container" [ngClass]="{'submitted': campaignCountryForm.submitted}" *ngIf="campaignCountryForm">
+    <form class="form-horizontal" [formGroup]="campaignCountryForm" id="campaignCountryForm">
+        <control-focus #controlFocusComponent
+                       formName="campaignCountryForm"
+                       [isFocusOnFirstControl]="true"></control-focus>
+        <div class="row">
+            <div class="col-md-6 col-lg-6 no-padding">
+                <div class="form-group">
+                    <label class="control-label col-md-6 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__What_do_you_like_to_do'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || !campaignCountryForm.controls.campaignMode.invalid}">
+                        <div [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && campaignCountryForm.controls.campaignMode.invalid}">
+                            <mat-radio-group name="what-you-like-radio" formControlName="campaignMode" (change)="selectCampaignToClone()">
+                                <mat-radio-button class="col-md-6 col-lg-6 no-padding" color="primary" name="what-you-like-radio" value="newCampaign">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Create_new_campaign'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button class="col-md-6 col-lg-6 no-padding" color="primary" name="what-you-like-radio" value="cloneCampaign">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Select_campaign_to_clone'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.campaignMode"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Choose_campaign_type'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.campaignType.valid}">
+                        <div class="clearfix" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.campaignType.valid}">
+                            <mat-radio-group name="campaign-type-radio" formControlName="campaignType" (change)="campaignTypeChanged()">
+                                <mat-radio-button class="col-md-3 col-lg-3 no-padding" color="primary" name="campaign-type-radio" value="master">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Master'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button class="col-md-3 col-lg-3 no-padding" color="primary" name="campaign-type-radio" value="track">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Track'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button class="col-md-3 col-lg-3 no-padding" color="primary" name="campaign-type-radio" value="inter">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Inter'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button class="col-md-3 col-lg-3 no-padding" color="primary" name="campaign-type-radio" value="asile">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Asile'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.campaignType"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Campaign_number'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8 campaign-number">
+                        <div class="col-md-3 campaign-number-input" *ngIf="supportCampaignNumberPrefix">
+                            <div class="full-width">
+                                <xn-combo-box *ngIf="campaignNumberList"
+                                              #campaignNumberPrefix
+                                              wjDropdownHelper
+                                              [form]="campaignCountryForm"
+                                              formControlName="campaignNumberPrefix"
+                                              class="custom-wj-input-control xn-select campaign-number-prefix"
+                                              [itemsSource]="campaignNumberList"
+                                              [displayMemberPath]="'textValue'"
+                                              [selectedValuePath]="'idValue'"
+                                              [isRequired]="false"
+                                              [isEditable]="true">
+                                </xn-combo-box>
+                                <xn-combo-box *ngIf="!campaignNumberList"
+                                              #campaignNumberPrefix
+                                              wjDropdownHelper
+                                              [form]="campaignCountryForm"
+                                              formControlName="campaignNumberPrefix"
+                                              class="custom-wj-input-control xn-select campaign-number-prefix"
+                                              [isRequired]="false"
+                                              placeholder="Please select"
+                                              [isEditable]="true">
+                                </xn-combo-box>
+                                <control-messages [xn-trigger-click-inside-cbo]="campaignNumberPrefix" [control]="campaignCountryForm.controls.campaignNr3" [isShowMessage]="false">
+                                </control-messages>
+                            </div>
+                        </div>
+                        <div class="col-md-3 campaign-number-input">
+                            <input class="form-control  xn-input--no-icon" type="text" formControlName="campaignNr1" autocomplete="off">
+                        </div>
+                        <div class="col-md-3 campaign-number-input">
+                            <input class="form-control  xn-input--no-icon" type="text" formControlName="campaignNr2" autocomplete="off">
+                            <label class="split-number">-</label>
+                        </div>
+                        <div class="col-md-3 campaign-number-input">
+                            <input class="form-control  xn-input--no-icon" type="text" formControlName="campaignNr3" autocomplete="off">
+                            <label class="split-number">-</label>
+                        </div>
+                        <div *ngIf="existedCampaignNumber" class="alert alert-danger no-padding"><label-translation [keyword]="'Campaign_Country_T1__The_value_already_in_use'"></label-translation></div>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4">
+                        <label-translation [keyword]="'Campaign_Country_T1__Campaign_name'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8">
+                        <input class="form-control  xn-input" type="text" formControlName="campaignName" autocomplete="off">
+                        <control-messages [type]="'textbox'" [control]="campaignCountryForm.controls.campaignName" [icon]="'user'">
+                        </control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4">
+                        <label-translation [keyword]="'Campaign_Country_T1__For_which_group'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8">
+                        <div class="full-width">
+                            <xn-combo-box *ngIf="campaignGroupList"
+                                          #campaignGroup
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          formControlName="campaignGroup"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="campaignGroupList"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <xn-combo-box *ngIf="!campaignGroupList"
+                                          #campaignGroup
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          class="custom-wj-input-control xn-select"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="campaignGroup" [control]="campaignCountryForm.controls.campaignGroup" [icon]="'users'">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4">
+                        <label-translation [keyword]="'Campaign_Country_T1__Select_mandant'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8">
+                        <div class="full-width">
+                            <xn-combo-box *ngIf="mandantList"
+                                          #mandant
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          formControlName="mandant"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="mandantList"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <xn-combo-box *ngIf="!mandantList"
+                                          #mandant
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          class="custom-wj-input-control xn-select"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="mandantCombobox" [control]="campaignCountryForm.controls.mandant" [icon]="'user'">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4">
+                        <label-translation [keyword]="'Campaign_Country_T1__Select_service_provider'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8">
+                        <div class="full-width">
+                            <xn-combo-box *ngIf="serviceProviderList"
+                                          #serviceProvider
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          formControlName="serviceProvider"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="serviceProviderList"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <xn-combo-box *ngIf="!serviceProviderList"
+                                          #serviceProvider
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          class="custom-wj-input-control xn-select"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="serviceProvider" [control]="campaignCountryForm.controls.serviceProvider" [icon]="'building'">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4">
+                        <label-translation [keyword]="'Campaign_Country_T1__Select_warehouse'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8">
+                        <div class="full-width">
+                            <xn-combo-box *ngIf="wareHouseList"
+                                          #wareHouse
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          formControlName="wareHouse"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="wareHouseList"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <xn-combo-box *ngIf="!wareHouseList"
+                                          #wareHouse
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          class="custom-wj-input-control xn-select"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="wareHouse" [control]="campaignCountryForm.controls.wareHouse" [icon]="'address-card'">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4">
+                        <label-translation [keyword]="'Campaign_Country_T1__Select_shipping_address'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8">
+                        <div class="full-width">
+                            <xn-combo-box *ngIf="campaignAddressList"
+                                          #shippingAddress
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          formControlName="shippingAddress"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="campaignAddressList"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true"
+                                          [itemFormatter]="itemFormatterShippingAddress"
+                                          [dropDownCssClass]="'wjmo-ddl'"
+                                          [isContentHtml]="true"
+                                          [maxDropDownWidth]="500">
+                            </xn-combo-box>
+                            <xn-combo-box *ngIf="!campaignAddressList"
+                                          formControlName="shippingAddress"
+                                          #shippingAddress
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          class="custom-wj-input-control xn-select"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="shippingAddress" [control]="campaignCountryForm.controls.shippingAddress" [icon]="'address-card-o'">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4">
+                        <label-translation [keyword]="'Campaign_Country_T1__Select_return_address'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8">
+                        <div class="full-width">
+                            <xn-combo-box *ngIf="campaignAddressList"
+                                          #returnAddress
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          formControlName="returnAddress"
+                                          class="custom-wj-input-control xn-select"
+                                          [itemsSource]="campaignAddressList"
+                                          [displayMemberPath]="'textValue'"
+                                          [selectedValuePath]="'idValue'"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true"
+                                          [isContentHtml]="true"
+                                          [maxDropDownWidth]="500"
+                                          [itemFormatter]="itemFormatterShippingAddress"
+                                          [dropDownCssClass]="'wjmo-ddl'">
+                            </xn-combo-box>
+                            <xn-combo-box *ngIf="!campaignAddressList"
+                                          #returnAddress
+                                          wjDropdownHelper
+                                          [form]="campaignCountryForm"
+                                          formControlName="returnAddress"
+                                          class="custom-wj-input-control xn-select"
+                                          [isRequired]="false"
+                                          placeholder="'Please select'"
+                                          [isEditable]="true">
+                            </xn-combo-box>
+                            <control-messages [xn-trigger-click-inside-cbo]="returnAddress" [control]="campaignCountryForm.controls.returnAddress" [icon]="'address-card-o'">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4">
+                        <label-translation [keyword]="'Campaign_Country_T1__Estimate_postage_date'"></label-translation>:
+                    </label>
+                    <div class="col-md-12 col-lg-8">
+                        <div class="full-width">
+                            <xn-date-picker #postageDate
+                                            formControlName="postageDate"
+                                            class="xn-input"
+                                            [format]="globalDateFormat"
+                                            [min]="'1900-01-01' | toDate"
+                                            [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                                            [max]="lastDayOfThisYear"
+                                            (inGrid)="calendarToggle($event)"></xn-date-picker>
+                            <control-messages [xn-trigger-click-inside-cbo]="postageDate" [control]="campaignCountryForm.controls.postageDate" [icon]="'calendar'">
+                            </control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 no-padding">
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_with_postage_costs'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.postageCost.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.postageCost.valid}">
+                            <mat-radio-group name="postage-cost-radio" formControlName="postageCost">
+                                <mat-radio-button color="primary" name="postage-cost-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="postage-cost-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.postageCost"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group background-odd">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_with_selection'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.selection.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.selection.valid}">
+                            <mat-radio-group name="selection-radio" formControlName="selection">
+                                <mat-radio-button color="primary" name="selection-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="selection-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.selection"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_with_collate'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.collate.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.collate.valid}">
+                            <mat-radio-group name="collate-radio" formControlName="collate">
+                                <mat-radio-button color="primary" name="collate-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="collate-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.collate"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group background-odd">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_with_gift'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.gift.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.gift.valid}">
+                            <mat-radio-group name="gift-radio" formControlName="gift">
+                                <mat-radio-button color="primary" name="gift-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="gift-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.gift"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_with_white_mail'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.mail.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.mail.valid}">
+                            <mat-radio-group name="mail-radio" formControlName="mail">
+                                <mat-radio-button color="primary" name="mail-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="mail-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.mail"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group background-odd">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_with_track'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.track.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.track.valid}">
+                            <mat-radio-group name="track-radio" formControlName="track">
+                                <mat-radio-button color="primary" name="track-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="track-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.track"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_with_inter'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.inter.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.inter.valid}">
+                            <mat-radio-group name="inter-radio" formControlName="inter">
+                                <mat-radio-button color="primary" name="inter-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="inter-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.inter"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group background-odd">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_with_asile'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.asile.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.asile.valid}">
+                            <mat-radio-group name="asile-radio" formControlName="asile">
+                                <mat-radio-button color="primary" name="asile-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="asile-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.asile"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_with_Catalog'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.catalog.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.catalog.valid}">
+                            <mat-radio-group name="catalog-radio" formControlName="catalog">
+                                <mat-radio-button color="primary" name="catalog-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="catalog-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.catalog"></control-messages>
+                    </div>
+                </div>
+                <div class="form-group background-odd">
+                    <label class="control-label col-md-12 col-lg-4 required">
+                        <label-translation [keyword]="'Campaign_Country_T1__Is_birthday_mandatory'"></label-translation> ?
+                    </label>
+                    <div class="col-md-12 col-lg-8" [ngClass]="{'padding-top--sd': !campaignCountryForm.submitted || campaignCountryForm.controls.birthday.valid}">
+                        <div class="xn-radio-group" [ngClass]="{'radio-group-validation': campaignCountryForm.submitted && !campaignCountryForm.controls.birthday.valid}">
+                            <mat-radio-group name="birthday-radio" formControlName="birthday">
+                                <mat-radio-button color="primary" name="birthday-radio" [value]="booleanObj.true">
+                                    <label-translation [keyword]="'Campaign_Country_T1__Yes'"></label-translation>
+                                </mat-radio-button>
+                                <mat-radio-button color="primary" name="birthday-radio" [value]="booleanObj.false">
+                                    <label-translation [keyword]="'Campaign_Country_T1__No'"></label-translation>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages [control]="campaignCountryForm.controls.birthday"></control-messages>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <xn-country-check-list #countryCheckList
+                           *ngIf="countryCheckListData && countryCheckListData.length"
+                           [data]="countryCheckListData"
+                           [isClone]="isClone"
+                           (outputData)="getCountryList(countryCheckList)">
+    </xn-country-check-list>
+</div>

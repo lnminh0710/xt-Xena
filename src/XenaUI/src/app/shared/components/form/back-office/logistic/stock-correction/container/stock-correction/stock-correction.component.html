@@ -1,0 +1,260 @@
+<div *ngIf="isRenderForm" class="form-container no-padding  margin-top--sd col-xs-12 no-padding-left"
+     [ngClass]="{'submitted': stockCorrectionForm.submitted}">
+    <form [formGroup]="stockCorrectionForm" class="form-horizontal"
+          id="stockCorrectionForm" novalidate>
+
+        <control-focus #focusControl formName="stockCorrectionForm"></control-focus>
+        <div class="col-xs-12 no-padding form-container">
+            <div class="pull-left info-group form-group">
+                <div class="col-xs-4 no-padding-left max-width">
+                    <label for="warehouse" class="col-xs-12 control-label no-padding-top no-padding-right">
+                      <label-translation [keyword]="'Stock_Correction__Warehouse'" User_profile_F></label-translation>
+                    </label>
+                    <div class="col-xs-12 no-padding-right">
+                        <xn-combo-box #warehouseCtrl
+                                      wjDropdownHelper
+                                      [form]="stockCorrectionForm"
+                                      formControlName="warehouse"
+                                      class="custom-wj-input-control xn-select focus-ignore"
+                                      [itemsSource]="listComboBox.wareHouse"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select"
+                                      (selectedIndexChanged)="warehouseChanged($event)"
+                                      (keyup)="warehouseKeyUp($event)">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="warehouseCtrl" [icon]="'list'"
+                                          [control]="stockCorrectionForm.controls['warehouse']"></control-messages>
+                    </div>
+                </div>
+                <div class="col-xs-4  no-padding-left max-width">
+                    <label for="reason" class="control-label  col-xs-12 no-padding">
+                      <label-translation [keyword]="'Stock_Correction__Reason'" User_profile_F></label-translation>
+                    </label>
+                    <div class="col-xs-12 no-padding">
+                        <xn-combo-box #reasonCtrl
+                                      wjDropdownHelper
+                                      [form]="stockCorrectionForm"
+                                      formControlName="reason"
+                                      class="custom-wj-input-control xn-select focus-ignore"
+                                      [itemsSource]="listComboBox.warehouseCorrectionReason"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select"
+                                      (keyup)="reasonKeyUp($event)"
+                                      (selectedIndexChanged)="reasonChanged($event)">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="reasonCtrl" [icon]="'list'"
+                                          [control]="stockCorrectionForm.controls['reason']"></control-messages>
+                    </div>
+                </div>
+                <div class="col-xs-4  no-padding-left max-width">
+                    <label for="articleNr" class="control-label col-xs-12 no-padding">
+                      <label-translation [keyword]="'Stock_Correction__Article_Number'" User_profile_F></label-translation>
+                    </label>
+                    <div class="col-xs-12 no-padding">
+                        <wj-auto-complete #searchArticleNumberCtl
+                                          wjDropdownHelper
+                                          [form]="stockCorrectionForm"
+                                          [dontShowDropDownButtonWhenEmpty]="true"
+                                          class="xn-custom-auto-complete xn-auto-complete focus-ignore"
+                                          formControlName="articleNr"
+                                          [itemsSourceFunction]="searchArticleNr"
+                                          [displayMemberPath]="'ArticleNr'"
+                                          [selectedValuePath]="'IdArticle'"
+                                          [cssMatch]="'highlight'"
+                                          [isRequired]="false"
+                                          [minLength]="0"
+                                          [delay]="300"
+                                          placeholder="Search Article Number"
+                                          (keydown)="searchArticleNumberKeyTabDown($event)"
+                                          (keyup)="searchArticleNumberKeyUp($event)">
+                        </wj-auto-complete>
+                        <control-messages [icon]="'search'"
+                                          [control]="stockCorrectionForm.controls['articleNr']"></control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-left info-group form-group group-price">
+                <div class="col-xs-4  no-padding-left max-width">
+                    <label for="price"
+                           class="col-xs-12 control-label no-padding-top no-padding-right">
+                           <label-translation [keyword]="'Stock_Correction__Price'" User_profile_F></label-translation>
+                    </label>
+                    <div class="col-xs-12 no-padding-right">
+                        <input #priceCtl formControlName="price"
+                                         name="price"
+                                         type="text"
+                                         xn-numeric
+                                         [min]="1"
+                                         [format]="globalNumberFormat"
+                                         class="custom-wj-input-control xn-input"
+                                         (focusout)="priceLostFocus($event)"
+                                         (keyup)="priceKeyUp($event,i)"
+                                         [isDisabled]="!reasonCtrl || !reasonCtrl.selectedItem || reasonCtrl.selectedItem.isWithPrice != 'True'">
+                        <control-messages icon="sum"
+                                          [disabled]="!reasonCtrl || !reasonCtrl.selectedItem || reasonCtrl.selectedItem.isWithPrice != 'True'"
+                                          [control]="stockCorrectionForm.controls['price']"></control-messages>
+                    </div>
+                </div>
+                <div class="col-xs-4  no-padding-left max-width">
+                    <label for="currency" class="control-label  col-xs-12 no-padding">
+                      <label-translation [keyword]="'Stock_Correction__Currency'" User_profile_F></label-translation>
+                    </label>
+                    <div class="col-xs-12 no-padding">
+                        <xn-combo-box #currencyCtl
+                                      wjDropdownHelper
+                                      [form]="stockCorrectionForm"
+                                      formControlName="currency"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.currency"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select"
+                                      [isDisabled]="!reasonCtrl || !reasonCtrl.selectedItem || reasonCtrl.selectedItem.isWithPrice != 'True'">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="currencyCtl"
+                                          [control]="stockCorrectionForm.controls['currency']"
+                                          [disabled]="!reasonCtrl || !reasonCtrl.selectedItem || reasonCtrl.selectedItem.isWithPrice != 'True'"
+                                          icon="money"></control-messages>
+                    </div>
+                </div>
+                <div class="col-xs-4  no-padding-left max-width">
+                    <label for="vat" class="control-label col-xs-12 no-padding">
+                      <label-translation [keyword]="'Stock_Correction__VAT'" User_profile_F></label-translation>
+                    </label>
+                    <div class="col-xs-12 no-padding">
+                        <xn-combo-box #vatCtl
+                                      wjDropdownHelper
+                                      [form]="stockCorrectionForm"
+                                      formControlName="vat"
+                                      class="custom-wj-input-control xn-select"
+                                      [itemsSource]="listComboBox.vat"
+                                      [displayMemberPath]="'textValue'"
+                                      [selectedValuePath]="'idValue'"
+                                      [isEditable]="true"
+                                      [isRequired]="false"
+                                      placeholder="Please select"
+                                      [isDisabled]="!reasonCtrl || !reasonCtrl.selectedItem || reasonCtrl.selectedItem.isWithPrice != 'True'"
+                                      (keydown)="vatKeyTabDown($event)">
+                        </xn-combo-box>
+                        <control-messages [xn-trigger-click-inside-cbo]="vatCtl"
+                                          [control]="stockCorrectionForm.controls['vat']"
+                                          [disabled]="!reasonCtrl || !reasonCtrl.selectedItem || reasonCtrl.selectedItem.isWithPrice != 'True'"
+                                          icon="sum"></control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-left qty-group form-group">
+                <mat-radio-group class="pull-left margin-top-7px" id="rd-quantity"
+                                 name="quantity-mode-radio">
+                    <mat-radio-button class="width-35px margin-top-22px rd-quantity-substract"
+                                      color="primary"
+                                      name="quantity-mode-radio"
+                                      [value]="1"
+                                      (change)="changeQtyMode(1)"
+                                      (keydown)="rdQuantityKeyTabDown($event, 1)">
+                        -
+                    </mat-radio-button>
+                    <mat-radio-button class="width-35px margin-top-22px rd-quantity-add"
+                                      color="primary"
+                                      name="quantity-mode-radio"
+                                      [checked]="true"
+                                      [value]="2"
+                                      (change)="changeQtyMode(2)"
+                                      (keydown)="rdQuantityKeyTabDown($event, 2)">
+                        +
+                    </mat-radio-button>
+                </mat-radio-group>
+                <div class="pull-left width-80px no-padding margin-01 qty-container">
+                    <label class="col-xs-12 no-padding" for="qty">
+                      <label-translation [keyword]="'Stock_Correction__Quantity'" User_profile_F></label-translation>
+                    </label>
+                    <div class="col-xs-12 no-padding">
+                        <input #quantityCtl
+                                         formControlName="qty"
+                                         id="qty"
+                                         name="qty"
+                                         type="text"
+                                         xn-numeric
+                                         [min]="1"
+                                         [format]="globalNumberFormat"
+                                         [typeNumber]="quantityTypeNumber"
+                                         [ngClass]="{'plus-bg-color': qtyMode == 2,'minus-bg-color': qtyMode == 1}"
+                                         class="custom-wj-input-control xn-input stock-correction-quantity"
+                                         (keydown)="ipQuantityKeyDown($event)"
+                                         (keyup)="ipQuantityKeyUp($event)">
+                        <control-messages [icon]="'balance-scale'"
+                                          [control]="stockCorrectionForm.controls['qty']"></control-messages>
+                    </div>
+                </div>
+                <div class="pull-left no-padding margin-01">
+                    <label class="col-xs-12 no-padding">
+                      <label-translation [keyword]="'Stock_Correction__Notes'" User_profile_F></label-translation>
+                    </label>
+                    <div class="col-xs-12 no-padding">
+                        <input class="form-control  xn-input"
+                               formControlName="notes"
+                               autocomplete="off"
+                               (keyup)="noteKeyUp($event)" />
+                        <control-messages icon="comment"
+                                          [control]="stockCorrectionForm.controls['notes']"></control-messages>
+                    </div>
+                </div>
+                <button [disabled]="!isEnableBtns"
+                        type="button"
+                        mat-raised-button
+                        class="mat-btn-blue btn-add-item" (click)="add()">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    <div class="col-xs-12 full-height-minus-69px">
+        <div class="xn__form-header  col-xs-12 ">
+            <p class="pull-left xn__form-header-title">
+              <label-translation [keyword]="'Stock_Correction__Corrections'" User_profile_F></label-translation>
+            </p>
+            <p class="pull-right xn__form-header-title">
+              <label-translation [keyword]="'Stock_Correction__No_of_entries'" User_profile_F></label-translation>: {{stockCorrectionDataSource.data.length}}
+            </p>
+        </div>
+        <div class="col-xs-12  no-padding  stock-correction-grid">
+
+            <xn-ag-grid #wijmoGridComponent
+                        *ngIf="stockCorrectionDataSource && stockCorrectionDataSource.columns && stockCorrectionDataSource.columns.length"
+                        [id]="gridId"
+                        [dataSource]="stockCorrectionDataSource"
+                        [readOnly]="false"
+                        [showMenuRowGrouping]="true"
+                        [isShowedEditButtons]="true"
+                        [isEditting]="true"
+                        [allowDelete]="true"
+                        [enableQtyWithColor]="true"
+                        [globalProperties]="globalProps"
+                        (cellValueChanged)="onTableEditSuccess($event)"
+                        (onRowMarkedAsDelete)="deleteStockCorrectionItem($event)"
+                        (onDeletedRows)="deleteStockCorrectionItem($event)"
+                        (hasValidationError)="hasValidationError($event)">
+            </xn-ag-grid>
+
+            <!--<wijmo-grid #wijmoGridComponent
+                        [dataSource]="stockCorrectionDataSource"
+                        [readOnly]="false"
+                        [isShowedEditButtons]="true"
+                        [allowDelete]="true"
+                        [enableQtyWithColor]="true"
+                        (onRowEditEnded)="onTableEditSuccess($event)"
+                        (onRowMarkedAsDelete)="deleteStockCorrectionItem($event)"
+                        (hasValidationError)="hasValidationError($event)">
+            </wijmo-grid>-->
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="col-xs-12  notification-list-view-child">
+	<div class="nlvc-header">
+		<span class="pull-left"><label-translation *ngIf="title" [keyword]="'Notification_list_view__' + title"></label-translation></span>
+		<div class="pull-right  circle-border  circle-border--collapse"
+			[ngClass]="{'xn-disabled': (!messageList || !messageList.length)}">
+			<i class="fa"
+				[ngClass]="{'fa-chevron-down': !isShow, 'fa-chevron-up': isShow}"
+				(click)="toggle()"></i>
+		</div>
+		<div class="pull-right  circle-border  circle-border--archived"
+			[ngClass]="{'xn-disabled': (!messageList || !messageList.length)}">
+			<i class="fa  fa-check" (click)="archiveAll()"></i>
+		</div>
+		<div class="pull-right  circle-border  circle-border--archived-view">
+			<i class="fa  fa-eye" (click)="showArchive()"></i>
+		</div>
+	</div>
+	<div [hidden]="!isShow" class="nlvc-items  col-xs-12  no-padding"
+		[perfect-scrollbar]="perfectScrollbarConfig">
+        <div *ngFor="let item of messageList"
+             class="nlvc-item"
+             [ngClass]="{'nlvc-item--focus': (item.isFocused)}"
+             (click)="showDetailItem(item)">
+            <div class="nlvc-item-left pull-left">
+                <div class="nlvc-item-left-date">
+                    {{item.CreateDateDisplay}}
+                </div>
+                <div class="nlvc-item-left-title">
+                    {{item.Subject}}
+                </div>
+                <i class="nlvc-item-left-content">
+                    {{item.MainComment}}
+                </i>
+            </div>
+            <div class="nlvc-item-right pull-right"
+                 (click)="archiveItem(item, $event)">
+                <div class="buttons">
+                    <i class="fa  fa-check-circle"></i>
+                    <span><label-translation
+                        [keyword]="'NotificationListViewChild__Archive'"></label-translation></span>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>

@@ -1,0 +1,25 @@
+.m {
+    height: 100%;
+    background: #fff;
+}
+.g {
+	height: calc(100% - 60px);
+}
+button {
+    width: 150px;
+    height: 40px;
+    font-size: 15px;
+
+    i {
+        font-size: 25px;
+    }
+
+    &.btn-import {
+        width: 110px;
+    }
+
+    &.btn-reset {
+        width: 100px;
+        margin-left: 10px;
+    }
+}

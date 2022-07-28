@@ -1,0 +1,74 @@
+.f-wr {
+    display: flex;
+    flex-direction: column;
+}
+.form-horizontal {
+
+}
+.control-label {
+    line-height: 32px;
+    text-align: right;
+    font-weight: 600;
+}
+.week-day-items-wrapper {
+    height: 100px;
+}
+.month-day-items-wrapper {
+    height: 170px;
+}
+.week-day-items {
+    height: calc(100% - 45px);
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding: 0 5px;
+}
+.c {
+    align-self: flex-end;
+    margin-top: auto;
+}
+.d-i {
+    margin-left: 10px;
+}
+.f-o,
+.f-d,
+.f-y {
+    height: calc(100% - 30px);
+}
+.f-w {
+    height: calc(100% - 130px);
+}
+.f-m {
+    height: calc(100% - 200px);
+}
+textarea {
+    height: 100%;
+}
+.wj-input-time {
+    width: 100%;
+    border-radius: 30px;
+}
+
+.e {
+    height: 15%;
+}
+
+.p {
+    height: 20%;
+}
+
+.n-o,
+.n-y {
+    height: calc(65% - 210px);
+}
+.n-d,
+.n-w {
+    height: calc(65% - 170px);
+}
+.n-m {
+    height: calc(65% - 160px);
+}
+button {
+    width: calc(50% - 2px);
+}
