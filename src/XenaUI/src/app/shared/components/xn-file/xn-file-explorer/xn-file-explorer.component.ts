@@ -7,11 +7,9 @@ import {
     ViewChild,
     OnDestroy,
     ElementRef,
-    ChangeDetectorRef
-} from '@angular/core';
-import {
-    Router
-} from '@angular/router';
+    ChangeDetectorRef,
+} from "@angular/core";
+import { Router } from "@angular/router";
 import {
     DatatableService,
     CampaignService,
@@ -20,24 +18,22 @@ import {
     CommonService,
     DomHandler,
     ModalService,
-    PropertyPanelService
-} from 'app/services';
+    PropertyPanelService,
+} from "app/services";
 import {
     CommunicationModel,
     WidgetDetail,
     ApiResultResponse,
     SimpleTabModel,
     FieldFilter,
-    Module
-} from 'app/models';
-import {
-    XnTableUploadedFilesComponent
-} from '../xn-table-of-uploaded-files';
-import isNil from 'lodash-es/isNil';
-import isNumber from 'lodash-es/isNumber';
-import isObject from 'lodash-es/isObject';
-import isString from 'lodash-es/isString';
-import cloneDeep from 'lodash-es/cloneDeep';
+    Module,
+} from "app/models";
+import { XnTableUploadedFilesComponent } from "../xn-table-of-uploaded-files";
+import isNil from "lodash-es/isNil";
+import isNumber from "lodash-es/isNumber";
+import isObject from "lodash-es/isObject";
+import isString from "lodash-es/isString";
+import cloneDeep from "lodash-es/cloneDeep";
 import {
     ComboBoxTypeConstant,
     FileUploadModuleType,
@@ -45,49 +41,36 @@ import {
     UploadFileMode,
     Configuration,
     SharingTreeGroupsRootName,
-    MessageModal
-} from 'app/app.constants';
-import {
-    FileUploadComponent
-} from '../file-upload';
-import {
-    Uti
-} from 'app/utilities';
-import {
-    Subscription
-} from 'rxjs/Subscription';
-import {
-    Observable
-} from 'rxjs/Observable';
-import {
-    Store
-} from '@ngrx/store';
-import {
-    AppState
-} from 'app/state-management/store';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    ListTemplateOfFileComponent
-} from '../list-template-of-file';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import {ToasterService} from 'angular2-toaster/angular2-toaster';
-import {GuidHelper} from 'app/utilities/guild.helper';
-import isEmpty from 'lodash-es/isEmpty';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { FileTreeViewComponent } from 'app/shared/components/xn-file';
+    MessageModal,
+} from "app/app.constants";
+import { FileUploadComponent } from "../file-upload";
+import { Uti } from "app/utilities";
+import { Subscription } from "rxjs/Subscription";
+import { Observable } from "rxjs/Observable";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { BaseComponent } from "app/pages/private/base";
+import { ListTemplateOfFileComponent } from "../list-template-of-file";
+import * as tabSummaryReducer from "app/state-management/store/reducer/tab-summary";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { GuidHelper } from "app/utilities/guild.helper";
+import isEmpty from "lodash-es/isEmpty";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { FileTreeViewComponent } from "app/shared/components/xn-file";
 
 @Component({
-    selector: 'xn-file-explorer',
-    styleUrls: ['./xn-file-explorer.component.scss'],
-    templateUrl: './xn-file-explorer.component.html'
+    selector: "xn-file-explorer",
+    styleUrls: ["./xn-file-explorer.component.scss"],
+    templateUrl: "./xn-file-explorer.component.html",
 })
-export class XnFileExplorerComponent extends BaseComponent implements OnInit, OnDestroy {
+export class XnFileExplorerComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public dataFileTree: any;
     public dataSourceTable: any = {};
     public dropFiles: File[];
-    public randonNr = (new Date()).getTime();
+    public randonNr = new Date().getTime();
     public showDialog = false;
     public fileUploadModuleTypeView = FileUploadModuleType;
     public templateId: any;
@@ -102,7 +85,7 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     public isHideTreeView = false;
     public isEnableDeleteButton = false;
     public campaignEditingData: Array<any> = [];
-    public allowUploadeExtension = '*';
+    public allowUploadeExtension = "*";
     public showArrowText = true;
     public uploadFileMode = this.UploadFileModeView.Printing;
     public that: any;
@@ -118,14 +101,14 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     private _inputData: any;
     private _treeViewFileExtention: any = [];
     private _isDataChanged = false;
-    private _leftSplitAreaW = '';
-    private _rightSplitAreaW = '';
+    private _leftSplitAreaW = "";
+    private _rightSplitAreaW = "";
     private _selectedSimpleTabState: Observable<SimpleTabModel>;
     private _selectedSimpleTabStateSubscription: Subscription;
     private _templates: any = [];
     private _contentDetail: any = {
         collectionData: [],
-        columnSettings: []
+        columnSettings: [],
     };
     private _hasDeleteFile = false;
     private _currentModule = new BehaviorSubject<Module>(null);
@@ -140,7 +123,8 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     @Input() properties;
     @Input() gridStyle: any;
     @Input() isShowHeader = true;
-    @Input() fileUploadModuleType: FileUploadModuleType = FileUploadModuleType.BusinessCost;
+    @Input() fileUploadModuleType: FileUploadModuleType =
+        FileUploadModuleType.BusinessCost;
     @Input() showTotalRow = false;
     @Input() rowGrouping = false;
     @Input() pivoting = false;
@@ -183,28 +167,38 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     @Output() toggleFileEditModeAction = new EventEmitter<any>();
     @Output() returnImageUrlAction = new EventEmitter<any>();
 
-    @ViewChild('xnTableUploadedFilesComponent') xnTableUploadedFilesComponent: XnTableUploadedFilesComponent;
-    @ViewChild('listTemplateOfFile') listTemplateOfFile: ListTemplateOfFileComponent;
-    @ViewChild('fileUpload') fileUpload: FileUploadComponent;
-    @ViewChild('fileTreeView') fileTreeView: FileTreeViewComponent;
+    @ViewChild("xnTableUploadedFilesComponent")
+    xnTableUploadedFilesComponent: XnTableUploadedFilesComponent;
+    @ViewChild("listTemplateOfFile")
+    listTemplateOfFile: ListTemplateOfFileComponent;
+    @ViewChild("fileUpload") fileUpload: FileUploadComponent;
+    @ViewChild("fileTreeView") fileTreeView: FileTreeViewComponent;
 
-    constructor(private _eref: ElementRef,
-                private store: Store<AppState>,
-                private datatableService: DatatableService,
-                private campaignService: CampaignService,
-                private appErrorHandler: AppErrorHandler,
-                private businessCostService: BusinessCostService,
-                private commonService: CommonService,
-                private elementRef: ElementRef,
-                private domHandler: DomHandler,
-                private changeDetectorRef: ChangeDetectorRef,
-                private modalService: ModalService,
-                private toasterService: ToasterService,
-                private propertyPanelService: PropertyPanelService,
-                private configuration: Configuration,
-                protected router: Router) {
+    constructor(
+        private _eref: ElementRef,
+        private store: Store<AppState>,
+        private datatableService: DatatableService,
+        private campaignService: CampaignService,
+        private appErrorHandler: AppErrorHandler,
+        private businessCostService: BusinessCostService,
+        private commonService: CommonService,
+        private elementRef: ElementRef,
+        private domHandler: DomHandler,
+        private changeDetectorRef: ChangeDetectorRef,
+        private modalService: ModalService,
+        private toasterService: ToasterService,
+        private propertyPanelService: PropertyPanelService,
+        private configuration: Configuration,
+        protected router: Router
+    ) {
         super(router);
-        this._selectedSimpleTabState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedSimpleTab);
+        this._selectedSimpleTabState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedSimpleTab
+        );
         this.checkFileCorrect = this.checkFileCorrect.bind(this);
         this.that = this;
     }
@@ -236,11 +230,11 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
                 this.callRefreshData(isOnlyReloadGrid);
             }
         } else {
-            if (this.xnTableUploadedFilesComponent) this.xnTableUploadedFilesComponent.refresh();
+            if (this.xnTableUploadedFilesComponent)
+                this.xnTableUploadedFilesComponent.refresh();
             this.buildDatatable(this._inputData);
         }
-        if (this.listTemplateOfFile)
-            this.listTemplateOfFile.resetData();
+        if (this.listTemplateOfFile) this.listTemplateOfFile.resetData();
     }
 
     public saveUpdateData() {
@@ -250,34 +244,50 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     public deleteFiles() {
-        if (this.xnTableUploadedFilesComponent) this.xnTableUploadedFilesComponent.deleteFiles();
+        if (this.xnTableUploadedFilesComponent)
+            this.xnTableUploadedFilesComponent.deleteFiles();
     }
 
     public templateOutputData($event) {
-        $event = $event || {data: {}, dirty: false};
-        if (!isEmpty($event.data)
-            && this._template.idValue !== $event.data.idValue
-            && this._currentItem.IdRepAppSystemColumnNameTemplate != $event.data.idValue
-            && this._currentItem.IdSalesCampaignAddOnDocTemplate) {
-
-            this._currentItem.IdRepAppSystemColumnNameTemplate = $event.data.idValue;
+        $event = $event || { data: {}, dirty: false };
+        if (
+            !isEmpty($event.data) &&
+            this._template.idValue !== $event.data.idValue &&
+            this._currentItem.IdRepAppSystemColumnNameTemplate !=
+                $event.data.idValue &&
+            this._currentItem.IdSalesCampaignAddOnDocTemplate
+        ) {
+            this._currentItem.IdRepAppSystemColumnNameTemplate =
+                $event.data.idValue;
             if (this._currentItem.IdSalesCampaignAddOnDocTemplate) {
-                Uti.removeItemInArray(this.campaignEditingData, this._currentItem, 'IdSalesCampaignAddOnDocTemplate');
+                Uti.removeItemInArray(
+                    this.campaignEditingData,
+                    this._currentItem,
+                    "IdSalesCampaignAddOnDocTemplate"
+                );
                 this.campaignEditingData.push({
-                    IdRepAppSystemColumnNameTemplate: this._currentItem.IdRepAppSystemColumnNameTemplate,
+                    IdRepAppSystemColumnNameTemplate:
+                        this._currentItem.IdRepAppSystemColumnNameTemplate,
                     IdSharingTreeGroups: 1, // Hard code from rocco
                     IdRepTreeMediaType: this._currentItem.IdRepTreeMediaType,
                     // MediaName: this._currentItem.MediaName,
                     // MediaOriginalName: this._currentItem.MediaOriginalName,
-                    IdSalesCampaignWizardItems: this._currentItem.IdSalesCampaignWizardItems,
-                    IdSalesCampaignAddOnDocTemplate: this._currentItem.IdSalesCampaignAddOnDocTemplate,
-                    IdSalesCampaignAddOn: this._currentItem.IdSalesCampaignAddOn,
+                    IdSalesCampaignWizardItems:
+                        this._currentItem.IdSalesCampaignWizardItems,
+                    IdSalesCampaignAddOnDocTemplate:
+                        this._currentItem.IdSalesCampaignAddOnDocTemplate,
+                    IdSalesCampaignAddOn:
+                        this._currentItem.IdSalesCampaignAddOn,
                     IdSharingTreeMedia: this._currentItem.IdSharingTreeMedia,
-                    IsActive: 1
+                    IsActive: 1,
                 });
             }
         }
-        if (this.campaignEditingData && this.campaignEditingData.length && $event.dirty) {
+        if (
+            this.campaignEditingData &&
+            this.campaignEditingData.length &&
+            $event.dirty
+        ) {
             this.onFileExplorerEditingAction.emit();
         }
         this._template = $event.data;
@@ -289,8 +299,7 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     public resetData(isKeepEditing: boolean) {
-        if (!isKeepEditing)
-            this.isEditing = false;
+        if (!isKeepEditing) this.isEditing = false;
         this.showArrowText = true;
         this.refreshData();
     }
@@ -298,13 +307,21 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     public onRowClickHandler($event) {
         this.showArrowText = false;
         this.waitDataLoadingWhenDownload = true;
-        const deleted = Uti.getValueFromArrayByKey($event, 'deleted');
+        const deleted = Uti.getValueFromArrayByKey($event, "deleted");
         if (deleted) {
             this.waitDataLoadingWhenDownload = false;
             return;
         }
-        const idSalesCampaignAddOnDocTemplate = Uti.getValueFromArrayByKey($event, 'IdSalesCampaignAddOnDocTemplate');
-        this._currentItem = this.dataSourceTable.data.data.find(x => x.IdSalesCampaignAddOnDocTemplate === idSalesCampaignAddOnDocTemplate) || {};
+        const idSalesCampaignAddOnDocTemplate = Uti.getValueFromArrayByKey(
+            $event,
+            "IdSalesCampaignAddOnDocTemplate"
+        );
+        this._currentItem =
+            this.dataSourceTable.data.data.find(
+                (x) =>
+                    x.IdSalesCampaignAddOnDocTemplate ===
+                    idSalesCampaignAddOnDocTemplate
+            ) || {};
         if (!this._currentItem.IdRepAppSystemColumnNameTemplate) {
             if (!this.isEditing) {
                 this._template.idValue = this.templateId = null;
@@ -312,11 +329,18 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
             return;
         }
         setTimeout(() => {
-            if (this._template.idValue == this._currentItem.IdRepAppSystemColumnNameTemplate) {
+            if (
+                this._template.idValue ==
+                this._currentItem.IdRepAppSystemColumnNameTemplate
+            ) {
                 this.waitDataLoadingWhenDownload = false;
             }
-            this._template.idValue = this._currentItem.IdRepAppSystemColumnNameTemplate + '';
-            this.templateId = {templateId: this._currentItem.IdRepAppSystemColumnNameTemplate + ''};
+            this._template.idValue =
+                this._currentItem.IdRepAppSystemColumnNameTemplate + "";
+            this.templateId = {
+                templateId:
+                    this._currentItem.IdRepAppSystemColumnNameTemplate + "",
+            };
             this.changeDetectorRef.detectChanges();
         });
     }
@@ -326,20 +350,26 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
             this.parkedItemId = event.id;
             if (this._hasDeleteFile) {
                 this.modalService.confirmMessage({
-                    headerText: 'Confirmation',
-                    message: [{key: 'Modal_Message__Do_You_Want_To_Delete_Files_Selected'}],
+                    headerText: "Confirmation",
+                    message: [
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Delete_Files_Selected",
+                        },
+                    ],
                     messageType: MessageModal.MessageType.error,
                     buttonType1: MessageModal.ButtonType.danger,
                     callBack1: () => {
-                        this.saveUpdateData()
+                        this.saveUpdateData();
                         setTimeout(() => {
-                            this.listFilesByIdSharingTreeGroups(this.parkedItemId);
+                            this.listFilesByIdSharingTreeGroups(
+                                this.parkedItemId
+                            );
                         }, 500);
                     },
                     callBack2: () => {
                         this.listFilesByIdSharingTreeGroups(this.parkedItemId);
-                    }
-                })
+                    },
+                });
             } else {
                 this.listFilesByIdSharingTreeGroups(this.parkedItemId);
             }
@@ -349,7 +379,9 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     public onCompleteUploadItem(event) {
         const response = event.response;
         if (!response || !response.fileName) return;
-        const idRepTreeMediaType = this.getIdRepTreeMediaType(response.fileName);
+        const idRepTreeMediaType = this.getIdRepTreeMediaType(
+            response.fileName
+        );
         switch (this.fileUploadModuleType) {
             case FileUploadModuleType.BusinessCost:
                 this.saveFileForBusiness(idRepTreeMediaType, response);
@@ -383,28 +415,36 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
             }
             this.downloadTimesWaiting = 0;
             const downloadData = this.buildDownloadFile($event);
-            this.commonService.downloadTemplates(downloadData).subscribe((response: any) => {
-                this.appErrorHandler.executeAction(() => {
-                    const file = this.base64ToArrayBuffer(response);
-                    this.saveByteArray(this.buildZipFileName(this._templateFile.MediaOriginalName, this._currentItem.MediaOriginalName) || Uti.guid(), file);
+            this.commonService
+                .downloadTemplates(downloadData)
+                .subscribe((response: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        const file = this.base64ToArrayBuffer(response);
+                        this.saveByteArray(
+                            this.buildZipFileName(
+                                this._templateFile.MediaOriginalName,
+                                this._currentItem.MediaOriginalName
+                            ) || Uti.guid(),
+                            file
+                        );
+                    });
                 });
-            });
         }, 500);
     }
 
     private buildZipFileName(name1: any, name2: any) {
-        let result = '';
+        let result = "";
         let arr: any;
         if (name1) {
-            arr = name1.split('.');
+            arr = name1.split(".");
             if (arr && arr.length) {
                 result = arr[0];
             }
         }
         if (name2) {
-            arr = name2.split('.');
+            arr = name2.split(".");
             if (arr && arr.length) {
-                result += (result) ? '_' + arr[0] : arr[0];
+                result += result ? "_" + arr[0] : arr[0];
             }
         }
         return result;
@@ -416,15 +456,21 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
 
     public checkFileCorrect(file: any): boolean {
         if (!file) return false;
-        if (this.uploadFileMode === this.UploadFileModeView.ImageGallery ||
+        if (
+            this.uploadFileMode === this.UploadFileModeView.ImageGallery ||
             !this.dataSourceTable ||
             !this.dataSourceTable.data ||
             !this.dataSourceTable.data.data ||
-            !this.dataSourceTable.data.data.length) {
+            !this.dataSourceTable.data.data.length
+        ) {
             return true;
         }
         for (const item of this.dataSourceTable.data.data) {
-            if (item.MediaOriginalName && file.name && file.name.toLowerCase() == item.MediaOriginalName.toLowerCase()) {
+            if (
+                item.MediaOriginalName &&
+                file.name &&
+                file.name.toLowerCase() == item.MediaOriginalName.toLowerCase()
+            ) {
                 return false;
             }
         }
@@ -433,32 +479,34 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
 
     public fileDuplicateHandler(file: any) {
         this.modalService.warningHTMLText([
-                {key: '<p>'},
-                {key: 'Modal_Message__This_File_Is_Already_Uploaded'},
-                {key: '</p><p>'},
-                {key: file.name},
-                {key: '</p>'}
-            ]);
+            { key: "<p>" },
+            { key: "Modal_Message__This_File_Is_Already_Uploaded" },
+            { key: "</p><p>" },
+            { key: file.name },
+            { key: "</p>" },
+        ]);
     }
 
     public fileDuplicateOnQueueHandler(file: any) {
         this.modalService.warningHTMLText([
-                {key: '<p>'},
-                {key: 'Modal_Message__This_File_Is_Already_Selected'},
-                {key: '</p><p>'},
-                {key: file.name},
-                {key: '</p>'}
-            ]);
+            { key: "<p>" },
+            { key: "Modal_Message__This_File_Is_Already_Selected" },
+            { key: "</p><p>" },
+            { key: file.name },
+            { key: "</p>" },
+        ]);
     }
 
     public dontAllowFileExtensionHander() {
         this.modalService.warningHTMLText([
-                {key: '<p>'},
-                {key: 'Modal_Message__You_Should_Upload_File_That_Has_Extensions'},
-                {key: '</p><p>'},
-                {key: this.allowUploadeExtension},
-                {key: '</p>'}
-            ]);
+            { key: "<p>" },
+            {
+                key: "Modal_Message__You_Should_Upload_File_That_Has_Extensions",
+            },
+            { key: "</p><p>" },
+            { key: this.allowUploadeExtension },
+            { key: "</p>" },
+        ]);
     }
 
     public onDataLoadedHandler() {
@@ -474,31 +522,48 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     public onRemoveImageHandler(image) {
-        this.deleteFileAfterDeleteFolder(image['article']);
+        this.deleteFileAfterDeleteFolder(image["article"]);
     }
 
     public bindEventForSplitterBar(event?: any) {
-        if ($('split', $(this.elementRef.nativeElement))) {
-            const areas = $('split split-area', $(this.elementRef.nativeElement));
-            const disabledGutter = $('split div.gutter-horizontal-disabled', $(this.elementRef.nativeElement));
-            $('split div.gutter, split div.gutter-horizontal-disabled', $(this.elementRef.nativeElement)).unbind('dblclick').bind('dblclick', () => {
-                this.isHideTreeView = !this.isHideTreeView;
-                if (this.isHideTreeView) {
-                    disabledGutter.show();
-                    this._leftSplitAreaW = $(areas[0]).attr('style').split('width:')[1].split(';')[0];
-                    this._rightSplitAreaW = $(areas[1]).attr('style').split('width:')[1].split(';')[0];
-                } else {
-                    disabledGutter.hide();
-                    $(areas[0]).css({
-                        'width': this._leftSplitAreaW
-                    });
-                    $(areas[1]).css({
-                        'width': this._rightSplitAreaW
-                    });
-                    this._leftSplitAreaW = '';
-                    this._rightSplitAreaW = '';
-                }
-            });
+        if ($("split", $(this.elementRef.nativeElement))) {
+            const areas = $(
+                "split split-area",
+                $(this.elementRef.nativeElement)
+            );
+            const disabledGutter = $(
+                "split div.gutter-horizontal-disabled",
+                $(this.elementRef.nativeElement)
+            );
+            $(
+                "split div.gutter, split div.gutter-horizontal-disabled",
+                $(this.elementRef.nativeElement)
+            )
+                .unbind("dblclick")
+                .bind("dblclick", () => {
+                    this.isHideTreeView = !this.isHideTreeView;
+                    if (this.isHideTreeView) {
+                        disabledGutter.show();
+                        this._leftSplitAreaW = $(areas[0])
+                            .attr("style")
+                            .split("width:")[1]
+                            .split(";")[0];
+                        this._rightSplitAreaW = $(areas[1])
+                            .attr("style")
+                            .split("width:")[1]
+                            .split(";")[0];
+                    } else {
+                        disabledGutter.hide();
+                        $(areas[0]).css({
+                            width: this._leftSplitAreaW,
+                        });
+                        $(areas[1]).css({
+                            width: this._rightSplitAreaW,
+                        });
+                        this._leftSplitAreaW = "";
+                        this._rightSplitAreaW = "";
+                    }
+                });
         }
     }
 
@@ -527,52 +592,63 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     private saveByteArray(reportName, byte) {
-        const blob = new Blob([byte], {type: 'application/zip'});
-        const link = document.createElement('a');
+        const blob = new Blob([byte], { type: "application/zip" });
+        const link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
         link.download = reportName;
         link.click();
         setTimeout(() => {
             link.remove();
         }, 500);
-    };
+    }
 
     private buildDownloadFile(itemFile: any) {
         const result = [];
-        if (itemFile.MediaName && this._templateFile && this._templateFile.MediaOriginalName) {
+        if (
+            itemFile.MediaName &&
+            this._templateFile &&
+            this._templateFile.MediaOriginalName
+        ) {
             result.push({
                 Filename: itemFile.MediaName,
                 Mode: this.uploadFileMode,
                 Id: this.parkedItemId,
-                OriginalFilename: itemFile.MediaOriginalName
+                OriginalFilename: itemFile.MediaOriginalName,
             });
             result.push({
                 Filename: this._templateFile.MediaName,
                 Mode: this.uploadFileMode,
                 Id: this.configuration.printingUploadTemplateFolderName,
                 OriginalFilename: this._templateFile.MediaOriginalName,
-                Content: this._templateFile.Content
+                Content: this._templateFile.Content,
             });
-        } else if (itemFile.MediaName && (!this._templateFile || !this._templateFile.MediaName)) {
+        } else if (
+            itemFile.MediaName &&
+            (!this._templateFile || !this._templateFile.MediaName)
+        ) {
             result.push({
                 Filename: itemFile.MediaName,
                 Mode: this.uploadFileMode,
                 Id: this.parkedItemId,
-                OriginalFilename: itemFile.MediaOriginalName
+                OriginalFilename: itemFile.MediaOriginalName,
             });
-        } else if (!itemFile.MediaName && this._templateFile && this._templateFile.MediaOriginalName) {
+        } else if (
+            !itemFile.MediaName &&
+            this._templateFile &&
+            this._templateFile.MediaOriginalName
+        ) {
             result.push({
-                Filename: GuidHelper.generateGUID() + '.txt',
+                Filename: GuidHelper.generateGUID() + ".txt",
                 Mode: this.uploadFileMode,
                 Id: this.configuration.printingUploadTemplateFolderName,
                 OriginalFilename: this._templateFile.MediaOriginalName,
-                Content: this._templateFile.Content
+                Content: this._templateFile.Content,
             });
         }
 
         return {
             ZipFileName: this._template.textValue,
-            Templates: result
+            Templates: result,
         };
     }
 
@@ -591,7 +667,9 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
                 break;
             case FileUploadModuleType.ToolsFileTemplate:
                 if (!isOnlyReloadGrid) {
-                    this.listTreeItemByIdSharingTreeGroupsRootname(SharingTreeGroupsRootName.Tools);
+                    this.listTreeItemByIdSharingTreeGroupsRootname(
+                        SharingTreeGroupsRootName.Tools
+                    );
                 } else {
                     this.listFilesByIdSharingTreeGroups(this.parkedItemId);
                 }
@@ -605,10 +683,12 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     private setSharingTreeGroupRootName() {
         switch (this.fileUploadModuleType) {
             case FileUploadModuleType.ToolsFileTemplate:
-                this.idSharingTreeGroupRootName = SharingTreeGroupsRootName.Tools;
+                this.idSharingTreeGroupRootName =
+                    SharingTreeGroupsRootName.Tools;
                 break;
             case FileUploadModuleType.ImageGallery:
-                this.idSharingTreeGroupRootName = SharingTreeGroupsRootName.ImageGallery;
+                this.idSharingTreeGroupRootName =
+                    SharingTreeGroupsRootName.ImageGallery;
         }
     }
 
@@ -634,7 +714,8 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
                 break;
             case FileUploadModuleType.Campaign:
                 this.showFileUploadGird = true;
-                this.allowUploadeExtension = this.configuration.wordExtesion;
+                this.allowUploadeExtension =
+                    this.configuration.campaignExtension;
                 setTimeout(() => {
                     this.isShowTemplateList = true;
                 }, 100);
@@ -647,49 +728,70 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     private loadTreeViewFileExtention() {
-        this.commonService.getListComboBox(ComboBoxTypeConstant.treeMediaType).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response) || !response.item.treeMediaType) {
-                    return;
-                }
-                this._treeViewFileExtention = response.item.treeMediaType;
+        this.commonService
+            .getListComboBox(ComboBoxTypeConstant.treeMediaType)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.treeMediaType
+                    ) {
+                        return;
+                    }
+                    this._treeViewFileExtention = response.item.treeMediaType;
+                });
             });
-        });
     }
 
     private listTreeItemByBusinessCostId(businessCostsId: number) {
-        this.campaignService.getCampaignCostsTreeView(businessCostsId).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    return;
-                }
-                this.dataFileTree = this.buildRawTreeViewData(response.item);
+        this.campaignService
+            .getCampaignCostsTreeView(businessCostsId)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        return;
+                    }
+                    this.dataFileTree = this.buildRawTreeViewData(
+                        response.item
+                    );
+                });
             });
-        });
     }
 
-    private listTreeItemByIdSharingTreeGroupsRootname(_idSharingTreeGroupRootName: any) {
-        this.campaignService.listTreeItemByIdSharingTreeGroupsRootname(_idSharingTreeGroupRootName).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    return;
-                }
-                this.dataFileTree = this.buildRawTreeViewDataForToolFile(response.item);
+    private listTreeItemByIdSharingTreeGroupsRootname(
+        _idSharingTreeGroupRootName: any
+    ) {
+        this.campaignService
+            .listTreeItemByIdSharingTreeGroupsRootname(
+                _idSharingTreeGroupRootName
+            )
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        return;
+                    }
+                    this.dataFileTree = this.buildRawTreeViewDataForToolFile(
+                        response.item
+                    );
+                });
             });
-        });
     }
 
     private listTreeItemForImageGallery() {
-        this.commonService.getImageGalleryFolder().subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    return;
-                }
-                this.dataFileTree = this.buildRawTreeViewData(response.item);
-                this.galleryImages = [];
-                this.changeDetectorRef.detectChanges();
+        this.commonService
+            .getImageGalleryFolder()
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        return;
+                    }
+                    this.dataFileTree = this.buildRawTreeViewData(
+                        response.item
+                    );
+                    this.galleryImages = [];
+                    this.changeDetectorRef.detectChanges();
+                });
             });
-        });
     }
 
     private processData(data: any) {
@@ -700,11 +802,16 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
             this.parkedItemId = data;
             this.callRefreshData();
         } else if (isObject(data) && !isString(data)) {
-            if (this.listTemplateOfFile) this.listTemplateOfFile.resetData(true);
-            const listenKeyRequest = (data as WidgetDetail).widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
+            if (this.listTemplateOfFile)
+                this.listTemplateOfFile.resetData(true);
+            const listenKeyRequest = (
+                data as WidgetDetail
+            ).widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
             if (listenKeyRequest) {
-                const value = listenKeyRequest[Object.keys(listenKeyRequest)[0]];
-                if (isNaN(value) || isNil(value) || !value) this.parkedItemId = 0;
+                const value =
+                    listenKeyRequest[Object.keys(listenKeyRequest)[0]];
+                if (isNaN(value) || isNil(value) || !value)
+                    this.parkedItemId = 0;
                 else this.parkedItemId = parseInt(value, 10);
             }
             this.buildDatatable(data.contentDetail.data);
@@ -722,7 +829,9 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
                 this.listTreeItemByBusinessCostId(this.parkedItemId);
                 break;
             case FileUploadModuleType.ToolsFileTemplate:
-                this.listTreeItemByIdSharingTreeGroupsRootname(SharingTreeGroupsRootName.Tools);
+                this.listTreeItemByIdSharingTreeGroupsRootname(
+                    SharingTreeGroupsRootName.Tools
+                );
                 break;
             case FileUploadModuleType.ImageGallery:
                 this.listTreeItemForImageGallery();
@@ -743,27 +852,37 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     private buildRawTreeViewDataForToolFile(responseData: any) {
-        if (!responseData || !responseData.data || !responseData.data[1] || !responseData.data[1].length) {
+        if (
+            !responseData ||
+            !responseData.data ||
+            !responseData.data[1] ||
+            !responseData.data[1].length
+        ) {
             return [];
         }
-        return responseData.data[1].map(x => {
+        return responseData.data[1].map((x) => {
             return {
                 id: x.IdSharingTreeGroups,
                 text: x.GroupName,
-                parentId: x.Slave2IdSharingTreeGroups
+                parentId: x.Slave2IdSharingTreeGroups,
             };
         });
     }
 
     private buildRawTreeViewData(responseData: any) {
-        if (!responseData || !responseData.data || !responseData.data[0] || !responseData.data[0].length) {
+        if (
+            !responseData ||
+            !responseData.data ||
+            !responseData.data[0] ||
+            !responseData.data[0].length
+        ) {
             return [];
         }
-        return responseData.data[0].map(x => {
+        return responseData.data[0].map((x) => {
             return {
                 id: x.IdSharingTreeGroups,
                 text: x.GroupName,
-                parentId: x.Slave2IdSharingTreeGroups
+                parentId: x.Slave2IdSharingTreeGroups,
             };
         });
     }
@@ -782,82 +901,88 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
         if (!data || !data.length || !data[0] || !data[0].length) {
             this.galleryImages = [];
         }
-        this.galleryImages = data[0].map(x => {
+        this.galleryImages = data[0].map((x) => {
             return {
                 article: this.buildArtileItem(x),
-                description: '',
+                description: "",
                 isDeleted: false,
                 isMain: false,
                 isSelected: false,
-                source: '/api/FileManager/GetFile?name=' + x.MediaName + '&mode=' + this.uploadFileMode + '&subFolder=' + x.IdSharingTreeGroups,
-                title: ''
-            }
+                source:
+                    "/api/FileManager/GetFile?name=" +
+                    x.MediaName +
+                    "&mode=" +
+                    this.uploadFileMode +
+                    "&subFolder=" +
+                    x.IdSharingTreeGroups,
+                title: "",
+            };
         });
     }
 
     private buildArtileItem(item: any) {
         return {
             groupName: {
-                displayValue: 'GroupName',
-                originalComlumnName: 'GroupName',
-                value: ''
+                displayValue: "GroupName",
+                originalComlumnName: "GroupName",
+                value: "",
             },
             idArticleGroupsMedia: {
-                displayValue: 'IdArticleGroupsMedia',
-                originalComlumnName: 'IdArticleGroupsMedia',
-                value: ''
+                displayValue: "IdArticleGroupsMedia",
+                originalComlumnName: "IdArticleGroupsMedia",
+                value: "",
             },
             idSharingTreeGroups: {
-                displayValue: 'IdSharingTreeGroups',
-                originalComlumnName: 'IdSharingTreeGroups',
-                value: item.IdSharingTreeGroups
+                displayValue: "IdSharingTreeGroups",
+                originalComlumnName: "IdSharingTreeGroups",
+                value: item.IdSharingTreeGroups,
             },
             idSharingTreeMedia: {
-                displayValue: 'IdSharingTreeMedia',
-                originalComlumnName: 'IdSharingTreeMedia',
-                value: item.IdSharingTreeMedia
+                displayValue: "IdSharingTreeMedia",
+                originalComlumnName: "IdSharingTreeMedia",
+                value: item.IdSharingTreeMedia,
             },
             isActive: {
-                displayValue: 'IsActive',
-                originalComlumnName: 'IsActive',
-                value: false
+                displayValue: "IsActive",
+                originalComlumnName: "IsActive",
+                value: false,
             },
             isDeleted: {
-                displayValue: 'IsDeleted',
-                originalComlumnName: 'IsDeleted',
-                value: false
+                displayValue: "IsDeleted",
+                originalComlumnName: "IsDeleted",
+                value: false,
             },
             mediaDescription: {
-                displayValue: 'MediaDescription',
-                originalComlumnName: 'MediaDescription',
-                value: item.MediaDescription
+                displayValue: "MediaDescription",
+                originalComlumnName: "MediaDescription",
+                value: item.MediaDescription,
             },
             mediaName: {
-                displayValue: 'mediaName',
-                originalComlumnName: 'MediaName',
-                value: item.MediaName
+                displayValue: "mediaName",
+                originalComlumnName: "MediaName",
+                value: item.MediaName,
             },
             mediaNotes: {
-                displayValue: 'MediaNotes',
-                originalComlumnName: 'MediaNotes',
-                value: item.MediaNotes
+                displayValue: "MediaNotes",
+                originalComlumnName: "MediaNotes",
+                value: item.MediaNotes,
             },
             mediaRelativePath: {
-                displayValue: 'MediaRelativePath',
-                originalComlumnName: 'MediaRelativePath',
-                value: ''
+                displayValue: "MediaRelativePath",
+                originalComlumnName: "MediaRelativePath",
+                value: "",
             },
             mediaTitle: {
-                displayValue: 'MediaTitle',
-                originalComlumnName: 'MediaTitle',
-                value: item.MediaTitle
+                displayValue: "MediaTitle",
+                originalComlumnName: "MediaTitle",
+                value: item.MediaTitle,
             },
             rootName: {
-                displayValue: 'RootName',
-                originalComlumnName: 'RootName',
-                value: ''
-            }
-        }
+                displayValue: "RootName",
+                originalComlumnName: "RootName",
+                value: "",
+            },
+        };
     }
 
     private buildDatatable(data?: any) {
@@ -865,15 +990,19 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
         if (this._inputData != data) this._inputData = cloneDeep(data);
         const _data = {};
 
-        const tableData = this.datatableService.formatDataTableFromRawData(this._inputData);
+        const tableData = this.datatableService.formatDataTableFromRawData(
+            this._inputData
+        );
         this._contentDetail = cloneDeep(tableData);
-        this.onHeaderColsUpdated.emit(Object['values'](this._contentDetail.columnSettings).map(x => {
-            return {
-                fieldName: x.OriginalColumnName,
-                fieldDisplayName: x.ColumnHeader,
-                setting: x.Setting || []
-            };
-        }));
+        this.onHeaderColsUpdated.emit(
+            Object["values"](this._contentDetail.columnSettings).map((x) => {
+                return {
+                    fieldName: x.OriginalColumnName,
+                    fieldDisplayName: x.ColumnHeader,
+                    setting: x.Setting || [],
+                };
+            })
+        );
         this.rebuildColumnsSettingFromFilter();
         this._currentItem = {};
         this.campaignEditingData = [];
@@ -885,16 +1014,22 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
         if (!this._contentDetail || !this._contentDetail.columnSettings) return;
         const contentDetail = cloneDeep(this._contentDetail);
         if (this._fieldFilters && this._fieldFilters.length) {
-            contentDetail.columnSettings = this.datatableService.updateTableColumnSettings(
-                this._selectedFilter,
-                this._fieldFilters,
-                contentDetail.columnSettings,
-                contentDetail.collectionData);
+            contentDetail.columnSettings =
+                this.datatableService.updateTableColumnSettings(
+                    this._selectedFilter,
+                    this._fieldFilters,
+                    contentDetail.columnSettings,
+                    contentDetail.collectionData
+                );
         }
         const tableData: any = {};
-        tableData['data'] = this.datatableService.buildDataSource(cloneDeep(contentDetail));
-        tableData['data'] = this.datatableService.buildWijmoDataSource(tableData['data']);
-        tableData['isDataChanged'] = this._isDataChanged;
+        tableData["data"] = this.datatableService.buildDataSource(
+            cloneDeep(contentDetail)
+        );
+        tableData["data"] = this.datatableService.buildWijmoDataSource(
+            tableData["data"]
+        );
+        tableData["isDataChanged"] = this._isDataChanged;
         this.dataSourceTable = tableData;
         if (!tableData || !tableData.data || !tableData.data.length) {
             if (!this.isEditing) {
@@ -906,103 +1041,135 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     private saveFileForBusiness(idRepTreeMediaType: any, response: any) {
-        this.businessCostService.saveFilesByBusinessCostsId({
-            CampaignCostFiles: [{
-                IdBusinessCosts: this.parkedItemId,
-                // IdSharingTreeMedia: 1, // don't have this value so don't transfer
-                IdRepTreeMediaType: idRepTreeMediaType ? idRepTreeMediaType : 1,
-                IdSharingTreeGroups: 1, // Hard code from rocco
-                MediaRelativePath: response.path,
-                MediaName: response.fileName,
-                MediaOriginalName: response.originalFileName,
-                MediaNotes: '',
-                MediaTitle: '',
-                MediaDescription: 'Insert new file',
-                MediaSize: response.size,
-                MediaHight: 1,
-                MediaWidth: 1,
-                MediaPassword: null,
-                IsBlocked: false,
-                IsActive: true
-            }]
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.refreshData(this.parkedItemId);
-                this.toasterService.pop('success', 'Success', 'File uploaded successfully');
+        this.businessCostService
+            .saveFilesByBusinessCostsId({
+                CampaignCostFiles: [
+                    {
+                        IdBusinessCosts: this.parkedItemId,
+                        // IdSharingTreeMedia: 1, // don't have this value so don't transfer
+                        IdRepTreeMediaType: idRepTreeMediaType
+                            ? idRepTreeMediaType
+                            : 1,
+                        IdSharingTreeGroups: 1, // Hard code from rocco
+                        MediaRelativePath: response.path,
+                        MediaName: response.fileName,
+                        MediaOriginalName: response.originalFileName,
+                        MediaNotes: "",
+                        MediaTitle: "",
+                        MediaDescription: "Insert new file",
+                        MediaSize: response.size,
+                        MediaHight: 1,
+                        MediaWidth: 1,
+                        MediaPassword: null,
+                        IsBlocked: false,
+                        IsActive: true,
+                    },
+                ],
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.refreshData(this.parkedItemId);
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "File uploaded successfully"
+                    );
+                });
             });
-        });
     }
 
     private saveFileForImageGallery(idRepTreeMediaType: any, response: any) {
-        this.commonService.editImagesGallery({
-            CampaignCostFiles: [{
-                IdRepTreeMediaType: idRepTreeMediaType ? idRepTreeMediaType : 1,
-                IdSharingTreeGroups: this.parkedItemId,
-                MediaRelativePath: response.path,
-                MediaName: response.fileName,
-                MediaOriginalName: response.originalFileName,
-                MediaNotes: '',
-                MediaTitle: '',
-                MediaDescription: 'Insert new image file',
-                MediaSize: response.size,
-                MediaHight: 1,
-                MediaWidth: 1,
-                MediaPassword: null,
-                IsBlocked: false,
-                IsActive: true
-            }]
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.refreshData(this.parkedItemId);
-                this.toasterService.pop('success', 'Success', 'File uploaded successfully');
+        this.commonService
+            .editImagesGallery({
+                CampaignCostFiles: [
+                    {
+                        IdRepTreeMediaType: idRepTreeMediaType
+                            ? idRepTreeMediaType
+                            : 1,
+                        IdSharingTreeGroups: this.parkedItemId,
+                        MediaRelativePath: response.path,
+                        MediaName: response.fileName,
+                        MediaOriginalName: response.originalFileName,
+                        MediaNotes: "",
+                        MediaTitle: "",
+                        MediaDescription: "Insert new image file",
+                        MediaSize: response.size,
+                        MediaHight: 1,
+                        MediaWidth: 1,
+                        MediaPassword: null,
+                        IsBlocked: false,
+                        IsActive: true,
+                    },
+                ],
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.refreshData(this.parkedItemId);
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "File uploaded successfully"
+                    );
+                });
             });
-        });
     }
 
     private deleteFileAfterDeleteFolder(sharingTreeMedia: any) {
-        this.deleteFileForImageGallery([{
-            idSharingTreeMedia: sharingTreeMedia.idSharingTreeMedia.value,
-            mediaName: sharingTreeMedia.mediaName.value
-        }]);
+        this.deleteFileForImageGallery([
+            {
+                idSharingTreeMedia: sharingTreeMedia.idSharingTreeMedia.value,
+                mediaName: sharingTreeMedia.mediaName.value,
+            },
+        ]);
     }
 
     private deleteFilesAfterDeleteFolder() {
-        if (!this.treeViewUpdateData.deleteItems ||
+        if (
+            !this.treeViewUpdateData.deleteItems ||
             !this.treeViewUpdateData.deleteItems.length ||
             !this.galleryImages ||
-            !this.galleryImages.length) {
+            !this.galleryImages.length
+        ) {
             return;
         }
-        this.deleteFileForImageGallery(this.galleryImages.map(x => {
-            return {
-                idSharingTreeMedia: x.article.idSharingTreeMedia.value,
-                mediaName: x.article.mediaName.value
-            }
-        }));
+        this.deleteFileForImageGallery(
+            this.galleryImages.map((x) => {
+                return {
+                    idSharingTreeMedia: x.article.idSharingTreeMedia.value,
+                    mediaName: x.article.mediaName.value,
+                };
+            })
+        );
     }
 
     private deleteFileForImageGallery(sharingTreeMedias: any) {
-        this.commonService.editImagesGallery({
-            CampaignCostFiles: sharingTreeMedias.map(x => {
-                return {
-                    IdSharingTreeMedia: x.idSharingTreeMedia,
-                    IsDeleted: '1'
-                };
-            }),
-            deleteFile: sharingTreeMedias.map(x => {
-                return {
-                    'IdSharingTreeMedia': 'IdSharingTreeMedia',
-                    'IsDeleted': '1',
-                    'MediaName': x.mediaName,
-                    'SubFolder': x.idSharingTreeMedia,
-                    'UploadFileMode': this.uploadFileMode
-                };
+        this.commonService
+            .editImagesGallery({
+                CampaignCostFiles: sharingTreeMedias.map((x) => {
+                    return {
+                        IdSharingTreeMedia: x.idSharingTreeMedia,
+                        IsDeleted: "1",
+                    };
+                }),
+                deleteFile: sharingTreeMedias.map((x) => {
+                    return {
+                        IdSharingTreeMedia: "IdSharingTreeMedia",
+                        IsDeleted: "1",
+                        MediaName: x.mediaName,
+                        SubFolder: x.idSharingTreeMedia,
+                        UploadFileMode: this.uploadFileMode,
+                    };
+                }),
             })
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.toasterService.pop('success', 'Success', 'File delete successfully');
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "File delete successfully"
+                    );
+                });
             });
-        });
     }
 
     // private deleteFileForImageGallery(sharingTreeMedia: any) {
@@ -1026,8 +1193,6 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     //     });
     // }
 
-
-
     private saveFileForCampaign(idRepTreeMediaType: any, response: any) {
         const savingData: any = {
             IdSharingTreeGroups: 1, // Hard code from rocco
@@ -1037,75 +1202,112 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
             IdSalesCampaignWizardItems: this.parkedItemId,
             MediaSize: response.size,
             MediaRelativePath: response.path,
-            IsActive: 1
+            IsActive: 1,
         };
-        const externalParamProp = this.propertyPanelService.getItemRecursive(this.properties, 'ExternalParam');
+        const externalParamProp = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "ExternalParam"
+        );
         let externalParam;
         if (externalParamProp) {
             externalParam = externalParamProp.value;
         }
-        this.campaignService.saveSalesCampaignAddOn([this.appendTemplateId(savingData)], this.deleteFiles, externalParam)
+        this.campaignService
+            .saveSalesCampaignAddOn(
+                [this.appendTemplateId(savingData)],
+                this.deleteFiles,
+                externalParam
+            )
             .subscribe(() => {
                 this.appErrorHandler.executeAction(() => {
-                    this.toasterService.pop('success', 'Success', 'File uploaded successfully');
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "File uploaded successfully"
+                    );
                 });
             });
     }
 
-    private saveFileForToolsFileTemplate(idRepTreeMediaType: any, response: any) {
+    private saveFileForToolsFileTemplate(
+        idRepTreeMediaType: any,
+        response: any
+    ) {
         const savingData: any = {
-            CampaignCostFiles: [{
-                IdSharingTreeGroups: this.parkedItemId,
-                IdRepTreeMediaType: idRepTreeMediaType,
-                MediaName: response.fileName,
-                MediaOriginalName: response.originalFileName,
-                MediaSize: response.size,
-                MediaRelativePath: response.path,
-                IsActive: 1
-            }]
+            CampaignCostFiles: [
+                {
+                    IdSharingTreeGroups: this.parkedItemId,
+                    IdRepTreeMediaType: idRepTreeMediaType,
+                    MediaName: response.fileName,
+                    MediaOriginalName: response.originalFileName,
+                    MediaSize: response.size,
+                    MediaRelativePath: response.path,
+                    IsActive: 1,
+                },
+            ],
         };
 
-        this.campaignService.saveFilesByIdSharingTreeGroups(savingData)
+        this.campaignService
+            .saveFilesByIdSharingTreeGroups(savingData)
             .subscribe(() => {
                 this.appErrorHandler.executeAction(() => {
                     this.refreshData(this.parkedItemId, true);
-                    this.toasterService.pop('success', 'Success', 'File uploaded successfully');
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "File uploaded successfully"
+                    );
                 });
             });
     }
 
     private appendTemplateId(savingData: any): any {
         if (this._template.idValue) {
-            savingData.IdRepAppSystemColumnNameTemplate = this._template.idValue;
+            savingData.IdRepAppSystemColumnNameTemplate =
+                this._template.idValue;
             return savingData;
         }
         if (!this._templates || !this._templates.length) {
             return savingData;
         }
-        savingData.IdRepAppSystemColumnNameTemplate = this._templates[0].idValue;
+        savingData.IdRepAppSystemColumnNameTemplate =
+            this._templates[0].idValue;
         return savingData;
     }
 
     private subscribeSelectedSimpleTabState() {
-        this._selectedSimpleTabStateSubscription = this._selectedSimpleTabState.subscribe((selectedSimpleTabState: SimpleTabModel) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!selectedSimpleTabState) {
-                    return;
+        this._selectedSimpleTabStateSubscription =
+            this._selectedSimpleTabState.subscribe(
+                (selectedSimpleTabState: SimpleTabModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (!selectedSimpleTabState) {
+                            return;
+                        }
+                        setTimeout(() => {
+                            const parent = this.domHandler.findParent(
+                                this._eref.nativeElement,
+                                "#" + selectedSimpleTabState.TabID
+                            );
+                        });
+                    });
                 }
-                setTimeout(() => {
-                    const parent = this.domHandler.findParent(this._eref.nativeElement, '#' + selectedSimpleTabState.TabID);
-                });
-            });
-        });
+            );
     }
 
     private getIdRepTreeMediaType(fileName): any {
-        if (!fileName || !this._treeViewFileExtention || !this._treeViewFileExtention.length) return '';
-        const arr = fileName.split('.');
-        if (!arr || !arr.length) return '-1';
+        if (
+            !fileName ||
+            !this._treeViewFileExtention ||
+            !this._treeViewFileExtention.length
+        )
+            return "";
+        const arr = fileName.split(".");
+        if (!arr || !arr.length) return "-1";
         const ext = arr[arr.length - 1];
-        const extItem = this._treeViewFileExtention.find(x => x.textValue.toLowerCase() === ext.toLowerCase());
-        if (!extItem) return '-1';
+        const extItem = this._treeViewFileExtention.find(
+            (x) => x.textValue.toLowerCase() === ext.toLowerCase()
+        );
+        if (!extItem) return "-1";
         return extItem.idValue;
     }
 
@@ -1113,14 +1315,23 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
         if ($event) {
             switch (this.fileUploadModuleType) {
                 case FileUploadModuleType.Campaign:
-                    if (!this._templates || !this._templates.length || !this._template || !this._template.idValue) {
-                        this.modalService.warningText('Modal_Message__Select_Template_Upload_File');
+                    if (
+                        !this._templates ||
+                        !this._templates.length ||
+                        !this._template ||
+                        !this._template.idValue
+                    ) {
+                        this.modalService.warningText(
+                            "Modal_Message__Select_Template_Upload_File"
+                        );
                         return;
                     }
                     break;
                 case FileUploadModuleType.ToolsFileTemplate:
                     if (isNil(this.parkedItemId) || this.parkedItemId == 0) {
-                        this.modalService.warningText('Modal_Message__Select_Folder_Upload_File');
+                        this.modalService.warningText(
+                            "Modal_Message__Select_Folder_Upload_File"
+                        );
                         return;
                     }
             }
@@ -1150,8 +1361,15 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     public onDeleteFilesCompleted(event) {
         if (event) {
             this.onUpdateFilesCompleted.emit(true);
-            this.callRefreshData(this.fileUploadModuleType === FileUploadModuleType.ToolsFileTemplate);
-            this.toasterService.pop('success', 'Success', 'Data saved successfully');
+            this.callRefreshData(
+                this.fileUploadModuleType ===
+                    FileUploadModuleType.ToolsFileTemplate
+            );
+            this.toasterService.pop(
+                "success",
+                "Success",
+                "Data saved successfully"
+            );
             this.refreshData();
             this._hasDeleteFile = false;
         } else this.buildDatatable(this._inputData);
@@ -1165,14 +1383,16 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     private listFilesByBusinessCostId(businessCostId) {
-        this.businessCostService.getFilesByBusinessCostsId(businessCostId).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    return;
-                }
-                this.buildDatatable(response.item.data);
+        this.businessCostService
+            .getFilesByBusinessCostsId(businessCostId)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        return;
+                    }
+                    this.buildDatatable(response.item.data);
+                });
             });
-        });
     }
 
     private listFilesByIdSharingTreeGroups(idSharingTreeGroups: any) {
@@ -1186,26 +1406,30 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     private getImageGallery(idSharingTreeGroups: any) {
-        this.commonService.getImagesByFolderId(idSharingTreeGroups).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    this.galleryImages = [];
-                    return;
-                }
-                this.buildFileData(response.item.data);
+        this.commonService
+            .getImagesByFolderId(idSharingTreeGroups)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        this.galleryImages = [];
+                        return;
+                    }
+                    this.buildFileData(response.item.data);
+                });
             });
-        });
     }
 
     private getFilesByIdSharingTreeGroups(idSharingTreeGroups: any) {
-        this.campaignService.listDocumentTemplatesBySharingTreeGroup(idSharingTreeGroups).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    return;
-                }
-                this.buildFileData(response.item.data);
+        this.campaignService
+            .listDocumentTemplatesBySharingTreeGroup(idSharingTreeGroups)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        return;
+                    }
+                    this.buildFileData(response.item.data);
+                });
             });
-        });
     }
 
     public fileOverBase(e: any): void {
@@ -1234,8 +1458,7 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
         Uti.handleWhenSpliterResize();
     }
 
-    public dragSplitterEnd(event) {
-    }
+    public dragSplitterEnd(event) {}
 
     private checkShowUploadDialog(): boolean {
         switch (this.fileUploadModuleType) {
@@ -1243,11 +1466,20 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
                 return true;
             case FileUploadModuleType.Campaign:
                 if (!this.parkedItemId) {
-                    this.modalService.warningText('Modal_Message__Select_Campaign_Country');
+                    this.modalService.warningText(
+                        "Modal_Message__Select_Campaign_Country"
+                    );
                     return false;
                 }
-                if (!this._templates || !this._templates.length || !this._template || !this._template.idValue) {
-                    this.modalService.warningText('Modal_Message__Select_Template_Upload_File');
+                if (
+                    !this._templates ||
+                    !this._templates.length ||
+                    !this._template ||
+                    !this._template.idValue
+                ) {
+                    this.modalService.warningText(
+                        "Modal_Message__Select_Template_Upload_File"
+                    );
                     this.toggleFileEditModeAction.emit(true);
                     return false;
                 }
@@ -1255,12 +1487,13 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
             case FileUploadModuleType.ToolsFileTemplate:
             case FileUploadModuleType.ImageGallery:
                 if (isNil(this.parkedItemId) || this.parkedItemId === 0) {
-                    this.modalService.warningText('Modal_Message__Select_Folder_Upload_File');
+                    this.modalService.warningText(
+                        "Modal_Message__Select_Folder_Upload_File"
+                    );
                     return false;
                 }
         }
         return true;
-
     }
 
     private setUploadFileMode() {
@@ -1274,57 +1507,88 @@ export class XnFileExplorerComponent extends BaseComponent implements OnInit, On
     }
 
     private callSaveTreeViewData() {
-        if (!this.treeViewUpdateData ||
-            (!(this.treeViewUpdateData.addItems && this.treeViewUpdateData.addItems.length) &&
-             !(this.treeViewUpdateData.editItems && this.treeViewUpdateData.editItems.length) &&
-             !(this.treeViewUpdateData.deleteItems && this.treeViewUpdateData.deleteItems.length))
-            ) {
+        if (
+            !this.treeViewUpdateData ||
+            (!(
+                this.treeViewUpdateData.addItems &&
+                this.treeViewUpdateData.addItems.length
+            ) &&
+                !(
+                    this.treeViewUpdateData.editItems &&
+                    this.treeViewUpdateData.editItems.length
+                ) &&
+                !(
+                    this.treeViewUpdateData.deleteItems &&
+                    this.treeViewUpdateData.deleteItems.length
+                ))
+        ) {
             return;
         }
-        this.commonService.savingSharingTreeGroups(this.getSavingFolderData()).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    return;
-                }
-                this.deleteFilesAfterDeleteFolder();
-                this.toasterService.pop('success', 'Success', 'Folder is saved successfully');
-                // Add case
-                if (this.treeViewUpdateData.addItems && this.treeViewUpdateData.addItems.length) {
-                    // If add multiple you should refresh data by call get data again
-                    this.fileTreeView.updateIdForAddItem((response.item.returnID * 1), this.treeViewUpdateData.addItems[0].id);
-                }
-                this.fileTreeView.resetDataAfterSaving();
+        this.commonService
+            .savingSharingTreeGroups(this.getSavingFolderData())
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        return;
+                    }
+                    this.deleteFilesAfterDeleteFolder();
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "Folder is saved successfully"
+                    );
+                    // Add case
+                    if (
+                        this.treeViewUpdateData.addItems &&
+                        this.treeViewUpdateData.addItems.length
+                    ) {
+                        // If add multiple you should refresh data by call get data again
+                        this.fileTreeView.updateIdForAddItem(
+                            response.item.returnID * 1,
+                            this.treeViewUpdateData.addItems[0].id
+                        );
+                    }
+                    this.fileTreeView.resetDataAfterSaving();
+                });
             });
-        });
     }
 
     private getSavingFolderData() {
         // Warning: If multiple will write by other hand
 
-        if (this.treeViewUpdateData.addItems && this.treeViewUpdateData.addItems.length) {
-            return this.treeViewUpdateData.addItems.map(x => {
+        if (
+            this.treeViewUpdateData.addItems &&
+            this.treeViewUpdateData.addItems.length
+        ) {
+            return this.treeViewUpdateData.addItems.map((x) => {
                 return {
-                    'Slave2IdSharingTreeGroups': x.parentId,
-                    'IdSharingTreeGroupsRootname': 10,
-                    'GroupName': x.text
-                }
+                    Slave2IdSharingTreeGroups: x.parentId,
+                    IdSharingTreeGroupsRootname: 10,
+                    GroupName: x.text,
+                };
             })[0];
         }
-        if (this.treeViewUpdateData.editItems && this.treeViewUpdateData.editItems.length) {
-            return this.treeViewUpdateData.editItems.map(x => {
+        if (
+            this.treeViewUpdateData.editItems &&
+            this.treeViewUpdateData.editItems.length
+        ) {
+            return this.treeViewUpdateData.editItems.map((x) => {
                 return {
-                    'IdSharingTreeGroups': x.id,
-                    'Slave2IdSharingTreeGroups': x.parentId,
-                    'GroupName': x.text
-                }
+                    IdSharingTreeGroups: x.id,
+                    Slave2IdSharingTreeGroups: x.parentId,
+                    GroupName: x.text,
+                };
             })[0];
         }
-        if (this.treeViewUpdateData.deleteItems && this.treeViewUpdateData.deleteItems.length) {
-            return this.treeViewUpdateData.deleteItems.map(x => {
+        if (
+            this.treeViewUpdateData.deleteItems &&
+            this.treeViewUpdateData.deleteItems.length
+        ) {
+            return this.treeViewUpdateData.deleteItems.map((x) => {
                 return {
-                    'IdSharingTreeGroups': x.id,
-                    'IsDeleted': 1
-                }
+                    IdSharingTreeGroups: x.id,
+                    IsDeleted: 1,
+                };
             })[0];
         }
     }
