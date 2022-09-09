@@ -1,8 +1,19 @@
 import {
-    Component, OnInit, Input, Output, OnChanges, SimpleChanges,
-    EventEmitter, ViewChild, OnDestroy, ElementRef,
-    ComponentFactoryResolver, ViewContainerRef, ChangeDetectorRef, AfterViewInit
-} from '@angular/core';
+    Component,
+    OnInit,
+    Input,
+    Output,
+    OnChanges,
+    SimpleChanges,
+    EventEmitter,
+    ViewChild,
+    OnDestroy,
+    ElementRef,
+    ComponentFactoryResolver,
+    ViewContainerRef,
+    ChangeDetectorRef,
+    AfterViewInit,
+} from "@angular/core";
 import {
     FilterModeEnum,
     SavingWidgetType,
@@ -20,25 +31,38 @@ import {
     ComboBoxTypeConstant,
     PropertyNameOfWidgetProperty,
     FileUploadModuleType,
-    ModuleConfiguration, TypeForm, SignalRActionEnum, SignalRJobEnum, FormSaveEvenType, SAVIdConnectionName
-} from 'app/app.constants';
-import { Uti } from 'app/utilities/uti';
-import 'rxjs/add/operator/switchMap';
+    ModuleConfiguration,
+    TypeForm,
+    SignalRActionEnum,
+    SignalRJobEnum,
+    FormSaveEvenType,
+    SAVIdConnectionName,
+} from "app/app.constants";
+import { Uti } from "app/utilities/uti";
+import "rxjs/add/operator/switchMap";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
 import {
-    Store,
-    ReducerManagerDispatcher
-} from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import {
-    WidgetPropertyModel, WidgetPropertiesStateModel,
-    FieldFilter, ColumnLayoutSetting, Country,
-    WidgetDetail, FilterData, WidgetItemSize,
-    WidgetType, MessageModel, ApiResultResponse, RowSetting,
-    SignalRNotifyModel, SimpleTabModel, WidgetConstant, WidgetMenuStatusModel,
+    WidgetPropertyModel,
+    WidgetPropertiesStateModel,
+    FieldFilter,
+    ColumnLayoutSetting,
+    Country,
+    WidgetDetail,
+    FilterData,
+    WidgetItemSize,
+    WidgetType,
+    MessageModel,
+    ApiResultResponse,
+    RowSetting,
+    SignalRNotifyModel,
+    SimpleTabModel,
+    WidgetConstant,
+    WidgetMenuStatusModel,
     LightWidgetDetail,
     ListenKey,
-    IListenKeyConfig
-} from 'app/models';
+    IListenKeyConfig,
+} from "app/models";
 import {
     PropertyPanelActions,
     AdditionalInformationActions,
@@ -49,8 +73,9 @@ import {
     CustomAction,
     WidgetDetailActions,
     ProcessDataActions,
-    FilterActions, ParkedItemActions
-} from 'app/state-management/store/actions';
+    FilterActions,
+    ParkedItemActions,
+} from "app/state-management/store/actions";
 import {
     CommonService,
     WidgetTemplateSettingService,
@@ -73,66 +98,84 @@ import {
     MenuStatusService,
     ResourceTranslationService,
     BlockedOrderService,
-} from 'app/services';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
-import { WidgetUtils } from '../../utils';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isNull from 'lodash-es/isNull';
-import { XnMediacodeDialogComponent } from 'app/shared/components/xn-mediacode-dialog';
-import { XnFileExplorerComponent, XnUploadTemplateFileComponent } from 'app/shared/components/xn-file';
-import { WidgetModuleInfoTranslationComponent } from '../widget-module-info-translation';
-import * as Ps from 'perfect-scrollbar';
-import { BaseWidgetModuleInfo } from './base.widget-module-info';
-import { NgGridItemConfig } from 'app/shared/components/grid-stack';
-import { XnWidgetMenuStatusComponent } from 'app/shared/components/widget/components/xn-widget-menu-status';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import { ModuleList } from 'app/pages/private/base';
-import * as widgetContentReducer from 'app/state-management/store/reducer/widget-content-detail';
-import { EditingWidget, RowData } from 'app/state-management/store/reducer/widget-content-detail';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { ScheduleSettingComponent, ScheduleSettingRunImmediatelyComponent } from 'app/shared/components/xn-control/';
-import { SendLetterDialogComponent, PrinterFormDialogComponent, MatchingCustomerDataDialogComponent } from 'app/shared/components/form';
-import { SelCountrySelectionCombineComponent } from 'app/shared/components/country-selection';
-import { CountryBlacklistComponent } from 'app/shared/components/country-blacklist';
-import { DatabaseCombineGridComponent } from 'app/shared/components/database-combine-grid';
-import { AgeFilterGridComponent } from 'app/shared/components/age-filter-grid/age-filter-grid.component';
-import { ExtendedFilterGridComponent } from 'app/shared/components/extended-filter-grid/extended-filter-grid.component';
-import { NewLotDialogComponent } from '../new-lot-dialog';
-import { WidgetProfileSavingComponent, WidgetProfileSelectComponent } from '../widget-profile';
-import { FrequencyGridComponent } from 'app/shared/components/frequency-grid/frequency-grid.component';
-import { GroupPriorityGridComponent } from 'app/shared/components/group-priority-grid/group-priority-grid.component';
-import { WidgetChartComponent } from '../widget-chart';
-import { WidgetPdfComponent } from '../widget-pdf/widget-pdf.component';
-import { SelectionProjectDetailComponent } from 'app/shared/components/selection-project-detail/selection-project-detail.component';
-import { MediacodePricingGridComponent } from 'app/shared/components/mediacode-pricing-grid/mediacode-pricing-grid.component';
-import * as autoScroll from 'dom-autoscroller';
-import { GuidHelper } from 'app/utilities/guild.helper';
-import { LocalStorageKey } from 'app/app.constants';
-import { SavLetterTemplateComponent } from 'app/shared/components/form/tools/sav-letter-template';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
-import { has } from 'lodash-es';
-import { NoteActionEnum, NoteFormDataAction } from 'app/models/note.model';
-import { WidgetNoteFormComponent } from '../widget-note-form';
+} from "app/services";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { Subject } from "rxjs/Subject";
+import { WidgetUtils } from "../../utils";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import cloneDeep from "lodash-es/cloneDeep";
+import isNull from "lodash-es/isNull";
+import { XnMediacodeDialogComponent } from "app/shared/components/xn-mediacode-dialog";
+import {
+    XnFileExplorerComponent,
+    XnUploadTemplateFileComponent,
+} from "app/shared/components/xn-file";
+import { WidgetModuleInfoTranslationComponent } from "../widget-module-info-translation";
+import * as Ps from "perfect-scrollbar";
+import { BaseWidgetModuleInfo } from "./base.widget-module-info";
+import { NgGridItemConfig } from "app/shared/components/grid-stack";
+import { XnWidgetMenuStatusComponent } from "app/shared/components/widget/components/xn-widget-menu-status";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import { ModuleList } from "app/pages/private/base";
+import * as widgetContentReducer from "app/state-management/store/reducer/widget-content-detail";
+import {
+    EditingWidget,
+    RowData,
+} from "app/state-management/store/reducer/widget-content-detail";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import {
+    ScheduleSettingComponent,
+    ScheduleSettingRunImmediatelyComponent,
+} from "app/shared/components/xn-control/";
+import {
+    SendLetterDialogComponent,
+    PrinterFormDialogComponent,
+    MatchingCustomerDataDialogComponent,
+} from "app/shared/components/form";
+import { SelCountrySelectionCombineComponent } from "app/shared/components/country-selection";
+import { CountryBlacklistComponent } from "app/shared/components/country-blacklist";
+import { DatabaseCombineGridComponent } from "app/shared/components/database-combine-grid";
+import { AgeFilterGridComponent } from "app/shared/components/age-filter-grid/age-filter-grid.component";
+import { ExtendedFilterGridComponent } from "app/shared/components/extended-filter-grid/extended-filter-grid.component";
+import { NewLotDialogComponent } from "../new-lot-dialog";
+import {
+    WidgetProfileSavingComponent,
+    WidgetProfileSelectComponent,
+} from "../widget-profile";
+import { FrequencyGridComponent } from "app/shared/components/frequency-grid/frequency-grid.component";
+import { GroupPriorityGridComponent } from "app/shared/components/group-priority-grid/group-priority-grid.component";
+import { WidgetChartComponent } from "../widget-chart";
+import { WidgetPdfComponent } from "../widget-pdf/widget-pdf.component";
+import { SelectionProjectDetailComponent } from "app/shared/components/selection-project-detail/selection-project-detail.component";
+import { MediacodePricingGridComponent } from "app/shared/components/mediacode-pricing-grid/mediacode-pricing-grid.component";
+import * as autoScroll from "dom-autoscroller";
+import { GuidHelper } from "app/utilities/guild.helper";
+import { LocalStorageKey } from "app/app.constants";
+import { SavLetterTemplateComponent } from "app/shared/components/form/tools/sav-letter-template";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
+import { has } from "lodash-es";
+import { NoteActionEnum, NoteFormDataAction } from "app/models/note.model";
+import { WidgetNoteFormComponent } from "../widget-note-form";
 
 @Component({
-    selector: 'widget-module-info',
-    styleUrls: ['./widget-module-info.component.scss'],
-    templateUrl: './widget-module-info.component.html',
+    selector: "widget-module-info",
+    styleUrls: ["./widget-module-info.component.scss"],
+    templateUrl: "./widget-module-info.component.html",
     providers: [WidgetUtils],
     host: {
-        '(mouseleave)': 'mouseout($event)',
-        '(mouseenter)': 'mouseenter($event)',
-        '(click)': 'mouseenter($event)',
-        '(dblclick)': 'mouseDblClick($event)',
-        '(contextmenu)': 'onRightClick($event)'
-    }
+        "(mouseleave)": "mouseout($event)",
+        "(mouseenter)": "mouseenter($event)",
+        "(click)": "mouseenter($event)",
+        "(dblclick)": "mouseDblClick($event)",
+        "(contextmenu)": "onRightClick($event)",
+    },
 })
-export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-
+export class WidgetModuleComponent
+    extends BaseWidgetModuleInfo
+    implements OnInit, OnChanges, OnDestroy, AfterViewInit
+{
     @Input() gridItemConfig: NgGridItemConfig;
     @Input() columnsLayoutSettings: any = {};
     @Input() payload: any = {};
@@ -172,7 +215,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         ExtendedFilter: LogicItemsId.ExtendedFilter,
         GroupPriority: LogicItemsId.GroupPriority,
         AgeFilter_Extend: LogicItemsId.AgeFilter_Extend,
-        ExtendedFilter_Extend: LogicItemsId.ExtendedFilter_Extend
+        ExtendedFilter_Extend: LogicItemsId.ExtendedFilter_Extend,
     };
     public savSendLetterData: any = { data: [] };
     public idLinkWidgetList = [];
@@ -188,12 +231,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     @Input() set resized(resized: string) {
         this.resizedLocal = resized;
 
-
         if (!this.showInDialog) {
-            if (this.resizedLocal.indexOf('start') !== -1) {
+            if (this.resizedLocal.indexOf("start") !== -1) {
                 this.removeHorizontalPerfectScrollEvent();
                 this.removeVerticalPerfectScrollEvent();
-            } else if (this.resizedLocal.indexOf('stop') !== -1) {
+            } else if (this.resizedLocal.indexOf("stop") !== -1) {
                 this.checkWidgetFormHasScrollbars();
             }
         }
@@ -201,12 +243,19 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     @Input() set layoutPageInfo(layoutPageInfo: any) {
         this.layoutPageInfoWidget = layoutPageInfo;
-        if (layoutPageInfo && this.data && this.data.syncWidgetIds && this.data.syncWidgetIds.length) {
+        if (
+            layoutPageInfo &&
+            this.data &&
+            this.data.syncWidgetIds &&
+            this.data.syncWidgetIds.length
+        ) {
             const parentWidgetId = this.data.syncWidgetIds[0];
             let parentWidgetDetail: WidgetDetail;
 
             for (let i = 0; i < layoutPageInfo.length; i++) {
-                const parentWidget = layoutPageInfo[i].widgetboxesTitle.find(x => x.id == parentWidgetId);
+                const parentWidget = layoutPageInfo[i].widgetboxesTitle.find(
+                    (x) => x.id == parentWidgetId
+                );
                 if (parentWidget) {
                     parentWidgetDetail = parentWidget.widgetDetail;
                     break;
@@ -217,7 +266,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 this.initwidgetMenuStatusData = {
                     widgetDetail: {
                         ...this.data,
-                        contentDetail: parentWidgetDetail.contentDetail
+                        contentDetail: parentWidgetDetail.contentDetail,
                     },
                     selectedFilter: this.selectedFilter,
                     selectedSubFilter: this.selectedSubFilter,
@@ -228,7 +277,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                     widgetProperties: this.properties,
                     gridLayoutSettings: this.columnsLayoutSettings,
                     isForAllCountryCheckbox: false,
-                    isForAllCountryButton: false
+                    isForAllCountryButton: false,
                 };
             }
         }
@@ -249,41 +298,59 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     @Output() onMaximizeWidget = new EventEmitter<any>(); //Toggle: true: maximize, false: restore
 
     // -----------------------
-    @ViewChild('xnFileExplorerComponentCtrl') xnFileExplorerComponentCtrl: XnFileExplorerComponent;
-    @ViewChild('xnMediacodeDialog') xnMediacodeDialog: XnMediacodeDialogComponent;
-    @ViewChild('widgetInfoTranslation') widgetModuleInfoTranslationComponent: WidgetModuleInfoTranslationComponent;
-    @ViewChild('uploadTemplateFileComponent') uploadTemplateFileComponent: XnUploadTemplateFileComponent;
-    @ViewChild(XnWidgetMenuStatusComponent) widgetMenuStatusComponent: XnWidgetMenuStatusComponent;
-    @ViewChild('scheduleSetting') private scheduleSetting: ScheduleSettingComponent;
-    @ViewChild('sendLetterDialogComponent') private sendLetterDialogComponent: SendLetterDialogComponent;
-    @ViewChild('scheduleSettingRunImmediately') private scheduleSettingRunImmediately: ScheduleSettingRunImmediatelyComponent;
-    @ViewChild('widgetProfileSaving') widgetProfileSaving: WidgetProfileSavingComponent;
-    @ViewChild('widgetProfileSelect') widgetProfileSelect: WidgetProfileSelectComponent;
-    @ViewChild('countryBlacklist') countryBlacklist: CountryBlacklistComponent;
-    @ViewChild('ageFilterGrid') ageFilterGrid: AgeFilterGridComponent;
-    @ViewChild('extendedFilterGrid') extendedFilterGrid: ExtendedFilterGridComponent;
-    @ViewChild('groupPriority') groupPriority: GroupPriorityGridComponent;
-    @ViewChild('databaseCombineGrid') databaseCombineGrid: DatabaseCombineGridComponent;
-    @ViewChild('newLotDialog') newLotDialogComponent: NewLotDialogComponent;
-    @ViewChild('countrySelectionCombine') countrySelectionCombine: SelCountrySelectionCombineComponent;
-    @ViewChild('frequencyGrid') frequencyGrid: FrequencyGridComponent;
-    @ViewChild('signalRPopover') signalRPopover: any;
-    @ViewChild('chartWidget') chartWidget: WidgetChartComponent;
-    @ViewChild('pdfWidget') pdfWidget: WidgetPdfComponent;
-    @ViewChild('selectionProjectDetail') selectionProjectDetail: SelectionProjectDetailComponent;
-    @ViewChild('synchronizationMediacodeGrid') mediacodePricingGrid: MediacodePricingGridComponent;
-    @ViewChild('savLetterTemplateComponent') savLetterTemplateComponent: SavLetterTemplateComponent;
-    @ViewChild('idLinkWidgetCombobox') idLinkWidgetCombobox: AngularMultiSelect;
-    @ViewChild('printerFormDialog') printerFormDialog: PrinterFormDialogComponent;
+    @ViewChild("xnFileExplorerComponentCtrl")
+    xnFileExplorerComponentCtrl: XnFileExplorerComponent;
+    @ViewChild("xnMediacodeDialog")
+    xnMediacodeDialog: XnMediacodeDialogComponent;
+    @ViewChild("widgetInfoTranslation")
+    widgetModuleInfoTranslationComponent: WidgetModuleInfoTranslationComponent;
+    @ViewChild("uploadTemplateFileComponent")
+    uploadTemplateFileComponent: XnUploadTemplateFileComponent;
+    @ViewChild(XnWidgetMenuStatusComponent)
+    widgetMenuStatusComponent: XnWidgetMenuStatusComponent;
+    @ViewChild("scheduleSetting")
+    private scheduleSetting: ScheduleSettingComponent;
+    @ViewChild("sendLetterDialogComponent")
+    private sendLetterDialogComponent: SendLetterDialogComponent;
+    @ViewChild("scheduleSettingRunImmediately")
+    private scheduleSettingRunImmediately: ScheduleSettingRunImmediatelyComponent;
+    @ViewChild("widgetProfileSaving")
+    widgetProfileSaving: WidgetProfileSavingComponent;
+    @ViewChild("widgetProfileSelect")
+    widgetProfileSelect: WidgetProfileSelectComponent;
+    @ViewChild("countryBlacklist") countryBlacklist: CountryBlacklistComponent;
+    @ViewChild("ageFilterGrid") ageFilterGrid: AgeFilterGridComponent;
+    @ViewChild("extendedFilterGrid")
+    extendedFilterGrid: ExtendedFilterGridComponent;
+    @ViewChild("groupPriority") groupPriority: GroupPriorityGridComponent;
+    @ViewChild("databaseCombineGrid")
+    databaseCombineGrid: DatabaseCombineGridComponent;
+    @ViewChild("newLotDialog") newLotDialogComponent: NewLotDialogComponent;
+    @ViewChild("countrySelectionCombine")
+    countrySelectionCombine: SelCountrySelectionCombineComponent;
+    @ViewChild("frequencyGrid") frequencyGrid: FrequencyGridComponent;
+    @ViewChild("signalRPopover") signalRPopover: any;
+    @ViewChild("chartWidget") chartWidget: WidgetChartComponent;
+    @ViewChild("pdfWidget") pdfWidget: WidgetPdfComponent;
+    @ViewChild("selectionProjectDetail")
+    selectionProjectDetail: SelectionProjectDetailComponent;
+    @ViewChild("synchronizationMediacodeGrid")
+    mediacodePricingGrid: MediacodePricingGridComponent;
+    @ViewChild("savLetterTemplateComponent")
+    savLetterTemplateComponent: SavLetterTemplateComponent;
+    @ViewChild("idLinkWidgetCombobox") idLinkWidgetCombobox: AngularMultiSelect;
+    @ViewChild("printerFormDialog")
+    printerFormDialog: PrinterFormDialogComponent;
     //
-    @ViewChild('widgetComponent') widgetComponent: any;
-    @ViewChild('widgetNoteFormComponent') widgetNoteFormComponent: WidgetNoteFormComponent;
+    @ViewChild("widgetComponent") widgetComponent: any;
+    @ViewChild("widgetNoteFormComponent")
+    widgetNoteFormComponent: WidgetNoteFormComponent;
 
     // ------------------------
 
     public menuStatusConfig: any = {
         isForAllCountryCheckbox: false,
-        isForAllCountryButton: false
+        isForAllCountryButton: false,
     };
 
     public isShowCreditCardSelection: boolean;
@@ -303,9 +370,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         read: false,
         edit: false,
         delete: false,
-        export: false
+        export: false,
     };
-    public accessRightForCommandButton: any = this.initAccessRightDataForCommandButton();
+    public accessRightForCommandButton: any =
+        this.initAccessRightDataForCommandButton();
     public accessRightAll: any = {};
     public isCampaignCountrySelection = 0;
     private outputDataCountries: Country[];
@@ -362,10 +430,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     public widgetFormType: WidgetFormTypeEnum = null;
 
     private settingNewDataForProperties = false;
-    private originalTitle = '';
+    private originalTitle = "";
     public editingTitle: boolean;
 
-    public widgetBackgroundColor = '';
+    public widgetBackgroundColor = "";
 
     public isHideWidetToolbarSpecialCase = false;
 
@@ -384,7 +452,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     public menuStatusSettings: WidgetMenuStatusModel = null;
 
     public isShowMatchingDataDialog = false;
-    @ViewChild('matchingCustomerDataDialog') matchingCustomerDataDialog: MatchingCustomerDataDialogComponent;
+    @ViewChild("matchingCustomerDataDialog")
+    matchingCustomerDataDialog: MatchingCustomerDataDialogComponent;
 
     public noteFormDataAction: NoteFormDataAction;
     public dataSourceNotes = [];
@@ -428,9 +497,27 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         private contextMenuService: ContextMenuService,
         private _resourceTranslationService: ResourceTranslationService,
         public menuStatusService: MenuStatusService,
-        private _blockedOrderService: BlockedOrderService,
+        private _blockedOrderService: BlockedOrderService
     ) {
-        super(_eref, store, modalService, propertyPanelService, widgetUtils, treeViewService, widgetTemplateSettingService, componentFactoryResolver, containerRef, domHandler, datatableService, globalSettingService, articleService, personService, ref, widgetDetailActions, propertyPanelActions);
+        super(
+            _eref,
+            store,
+            modalService,
+            propertyPanelService,
+            widgetUtils,
+            treeViewService,
+            widgetTemplateSettingService,
+            componentFactoryResolver,
+            containerRef,
+            domHandler,
+            datatableService,
+            globalSettingService,
+            articleService,
+            personService,
+            ref,
+            widgetDetailActions,
+            propertyPanelActions
+        );
         this.widgetInstance = this;
 
         //this.requestSavePropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, this.currentModule.moduleNameTrim).requestSave);
@@ -441,40 +528,56 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         //this.editingWidgetsState = store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.currentModule.moduleNameTrim).editingWidgets);
         //this.rowsDataState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.currentModule.moduleNameTrim).rowsData);
         //this.isEditAllWidgetModeState = store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.currentModule.moduleNameTrim).isEditAllWidgetMode);
-        this.isSelectionProject = Configuration.PublicSettings.isSelectionProject;
+        this.isSelectionProject =
+            Configuration.PublicSettings.isSelectionProject;
     }
 
     ngOnChanges(changes: SimpleChanges) {
         this.reattach();
 
         this.listenKeyRequestItem = this.getListenKeyRequestItem();
-        this.disableButtonEditWidget = (!this.isSelectionProject && !this.listenKeyRequestItem
-            || (!!this.listenKeyRequestItem && !this.listenKeyRequestItem.value)
-            || this.data.idRepWidgetType == this.WidgetTypeView.FieldSetReadonly);
+        this.disableButtonEditWidget =
+            (this.currentModule.idSettingsGUI === 7 && !!this.listenKeyValue) ||
+            (!this.isSelectionProject && !this.listenKeyRequestItem) ||
+            (!!this.listenKeyRequestItem && !this.listenKeyRequestItem.value) ||
+            this.data.idRepWidgetType == this.WidgetTypeView.FieldSetReadonly;
+
         this.enableEditWidgetContextMenu();
 
-        if (changes['selectedEntity'] && this.hasChanges(changes['selectedEntity'])) {
+        if (
+            changes["selectedEntity"] &&
+            this.hasChanges(changes["selectedEntity"])
+        ) {
             this.subscribeSelectedEntity();
         }
-        if (!changes['widgetStates'] && !changes['tabHeaderTableFilter']) {
+        if (!changes["widgetStates"] && !changes["tabHeaderTableFilter"]) {
             return;
         }
-        const hasChanges = this.hasChanges(changes['widgetStates']) || this.hasChanges(changes['tabHeaderTableFilter']);
+        const hasChanges =
+            this.hasChanges(changes["widgetStates"]) ||
+            this.hasChanges(changes["tabHeaderTableFilter"]);
 
-        if ((this.payload && this.payload.idRepWidgetApp) || (this.data && this.data.idRepWidgetApp)) {
+        if (
+            (this.payload && this.payload.idRepWidgetApp) ||
+            (this.data && this.data.idRepWidgetApp)
+        ) {
             this.buildAccessRight();
         }
 
         if (hasChanges && this.widgetStates.length) {
             this.processData();
             if (this.data.idRepWidgetType === this.WidgetTypeView.NoteForm) {
-                this.dataSourceNotes = !this.data || !this.data.contentDetail || !this.data.contentDetail.data || !this.data.contentDetail.data[1]
-                    ? []
-                    : this.data.contentDetail.data[1];
+                this.dataSourceNotes =
+                    !this.data ||
+                    !this.data.contentDetail ||
+                    !this.data.contentDetail.data ||
+                    !this.data.contentDetail.data[1]
+                        ? []
+                        : this.data.contentDetail.data[1];
             }
         }
 
-        if (this.hasChanges(changes['widgetStates'])) {
+        if (this.hasChanges(changes["widgetStates"])) {
             this.showEditingNotification();
             this.checkToHideWidgetToolbarForSpecialCases();
 
@@ -500,8 +603,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             this.createSavSendLetterData();
         }
 
-        if (this.hasChanges(changes['currentModule'])) {
-            this.isCampaignCountrySelection = (changes['currentModule'].currentValue || {}).idSettingsGUI
+        if (this.hasChanges(changes["currentModule"])) {
+            this.isCampaignCountrySelection = (
+                changes["currentModule"].currentValue || {}
+            ).idSettingsGUI;
         }
 
         this.detach(2000);
@@ -517,24 +622,75 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private initState() {
-        this.requestSavePropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, this.currentModule.moduleNameTrim).requestSave);
-        this.requestApplyPropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, this.currentModule.moduleNameTrim).requestApply);
-        this.requestUpdatePropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, this.currentModule.moduleNameTrim).requestUpdateProperties);
-        this.requestRollbackPropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, this.currentModule.moduleNameTrim).requestRollbackProperties);
-        this.globalPropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, ModuleList.Base.moduleNameTrim).globalProperties);
-        this.editingWidgetsState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.currentModule.moduleNameTrim).editingWidgets);
-        this.rowsDataState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.currentModule.moduleNameTrim).rowsData);
-        this.isEditAllWidgetModeState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.currentModule.moduleNameTrim).isEditAllWidgetMode);
+        this.requestSavePropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).requestSave
+        );
+        this.requestApplyPropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).requestApply
+        );
+        this.requestUpdatePropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).requestUpdateProperties
+        );
+        this.requestRollbackPropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).requestRollbackProperties
+        );
+        this.globalPropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    ModuleList.Base.moduleNameTrim
+                ).globalProperties
+        );
+        this.editingWidgetsState = this.store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).editingWidgets
+        );
+        this.rowsDataState = this.store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).rowsData
+        );
+        this.isEditAllWidgetModeState = this.store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).isEditAllWidgetMode
+        );
     }
 
     ngOnInit() {
         this.printId = Uti.guid();
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
 
-        this.accessRightAll = { ...this.accessRight, ...this.accessRightForCommandButton };
+        this.accessRightAll = {
+            ...this.accessRight,
+            ...this.accessRightForCommandButton,
+        };
 
         this.menuStatusSettings = new WidgetMenuStatusModel();
         this.menuStatusSettings.setAccessRight(this.accessRightAll);
@@ -547,20 +703,31 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
         setTimeout(() => {
             if (this.data && this.data.id) {
-                this.store.dispatch(this.widgetDetailActions.clearWidgetTableDataRows(this.data, this.currentModule));
+                this.store.dispatch(
+                    this.widgetDetailActions.clearWidgetTableDataRows(
+                        this.data,
+                        this.currentModule
+                    )
+                );
             }
         }, 200);
-
     }
 
     private subscribeRequestClearPropertiesSuccessState() {
-        this.requestClearPropertiesSuccessSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === PropertyPanelActions.REQUEST_CLEAR_PROPERTIES_SUCCESS && action.module.idSettingsGUI == this.currentModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.afterCheckDirtyWhenClickOutSide();
+        this.requestClearPropertiesSuccessSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        PropertyPanelActions.REQUEST_CLEAR_PROPERTIES_SUCCESS &&
+                    action.module.idSettingsGUI ==
+                        this.currentModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.afterCheckDirtyWhenClickOutSide();
+                });
             });
-        });
     }
 
     private subscribe() {
@@ -570,237 +737,384 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             this.editingWidgetsStateSubscription.unsubscribe();
         }
 
-        this.editingWidgetsStateSubscription = this.editingWidgetsState.subscribe((editingWidgets: Array<EditingWidget>) => {
-            this.appErrorHandler.executeAction(() => {
-                this.editingWidgets = editingWidgets;
-            });
-        });
-
-        this.requestSavePropertiesStateSubscription = this.requestSavePropertiesState.subscribe((requestSavePropertiesState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (requestSavePropertiesState && JSON.stringify(this.propertiesForSaving) !== JSON.stringify(this.properties)) {
-                    this.saveProperties(requestSavePropertiesState.propertiesParentData);
+        this.editingWidgetsStateSubscription =
+            this.editingWidgetsState.subscribe(
+                (editingWidgets: Array<EditingWidget>) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.editingWidgets = editingWidgets;
+                    });
                 }
-            });
-        });
+            );
 
-        this.requestApplyPropertiesStateSubscription = this.requestApplyPropertiesState.subscribe((requestApplyPropertiesState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (requestApplyPropertiesState) {
-                    const widgetData: WidgetDetail = requestApplyPropertiesState.propertiesParentData;
-                    if (widgetData && widgetData.id === this.data.id) {
-                        // this.changeProperties();
-                        this.saveChangeOfPropDisplayFields();
-                        this.saveChangeOfPropImportantDisplayFields();
-                        this.saveChangeOfPropFieldFormat();
-                    }
-                }
-            });
-        });
-
-        this.requestUpdatePropertiesStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === PropertyPanelActions.UPDATE_PROPERTIES && (action.module || {}).idSettingsGUI == (this.currentModule || {}).idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return action.payload;
-        }).subscribe((actionData) => {
-            this.appErrorHandler.executeAction(() => {
-                if (actionData) {
-                    this.widgetPropertyEditing = actionData;
-                    const widgetData: WidgetDetail = actionData.widgetData;
-                    const properties: any = actionData.widgetProperties;
-                    if (widgetData && widgetData.id && this.data.id && widgetData.id === this.data.id && properties) {
-                        this.settingNewDataForProperties = true;
-                        if (properties.length) {
-                            this.properties = JSON.parse(JSON.stringify(properties));
-                        }
-                        if (!this.properties) {
-                            this.widgetProperties = properties;
-                        }
-                        this.changeProperties();
-                        this.requestDataWhenChangePropety(actionData);
-                        this.reattach();
-                        this.detach(2000);
-                    }
-                }
-            });
-        });
-
-        this.requestUpdateTempPropertiesStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === PropertyPanelActions.UPDATE_TEMP_PROPERTIES && (action.module || {}).idSettingsGUI == (this.currentModule || {}).idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return action.payload;
-        }).subscribe((actionData) => {
-            this.appErrorHandler.executeAction(() => {
-                // if (!actionData || this.isEditingLayout) return;
-
-                // this.properties = actionData;
-                // this.changeProperties();
-                // setTimeout(() => {
-                //     this.ref.markForCheck();
-                //     this.ref.detectChanges();
-                // }, 500);
-            });
-        });
-
-        this.requestUpdateOriginalPropertiesStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === PropertyPanelActions.UPDATE_ORIGINAL_PROPERTIES && (action.module || {}).idSettingsGUI == (this.currentModule || {}).idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return action.payload;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.originalProperties = cloneDeep(this.properties);
-            });
-        });
-
-        this.requestRollbackPropertiesStateSubscription = this.requestRollbackPropertiesState.subscribe((requestRollbackPropertiesState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (requestRollbackPropertiesState && requestRollbackPropertiesState.data && !requestRollbackPropertiesState.isGlobal) {
-                    const widgetData: WidgetDetail = requestRollbackPropertiesState.data;
-                    if (widgetData && widgetData.id && this.data.id && widgetData.id === this.data.id) {
-                        // update original properties for saving before assign it to the properties
-                        this.updateOrgPropertiesBeforeRollback();
-                        this.properties = cloneDeep(this.originalProperties);
-                        this.resetPropertiesToOriginal();
-                        // if (isNil(this.propertiesForSaving.properties)) {
-                        //     this.properties = cloneDeep(this.propertiesForSaving);
-                        // } else {
-                        //     this.properties = cloneDeep(this.propertiesForSaving.properties);
-                        // }
-                        const propTitleText: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'TitleText');
-                        propTitleText.translatedValue = this.title.value;
-                        this.updatePropertiesFromGlobalProperties(this.globalProperties);
-                        const widgetPropertiesStateModel: WidgetPropertiesStateModel = new WidgetPropertiesStateModel({
-                            widgetData: this.data,
-                            widgetProperties: this.properties
-                        });
-                        this.store.dispatch(this.propertyPanelActions.updateProperties(widgetPropertiesStateModel, this.currentModule));
-                    }
-                }
-            });
-        });
-
-        this.globalPropertiesStateSubscription = this.globalPropertiesState.throttleTime(200).distinctUntilChanged().subscribe((globalProperties: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (globalProperties) {
-                    this.globalProperties = globalProperties;
-                    this.updatePropertiesFromGlobalProperties(globalProperties);
-                    this.updateWidgetFormGeneralStyle(globalProperties);
-                    this.updateWidgetFormLabelStyle(globalProperties);
-                    this.updateWidgetFormDataStyle(globalProperties);
-                    this.updateWidgetFormSeparatorStyle(globalProperties);
-                    this.updateWidgetTableRowBackground(globalProperties);
-                }
-            });
-        });
-
-        if (this.rowsDataStateSubscription)
-            this.rowsDataStateSubscription.unsubscribe();
-        this.rowsDataStateSubscription = this.rowsDataState.subscribe((rowsData: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.selectedRowsData = rowsData;
-            });
-        });
-
-        this.tabChangedSuccessSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === TabSummaryActions.TAB_CHANGED_SUCCESS && (action.module || {}).idSettingsGUI == (this.currentModule || {}).idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.requestChangeTab) {
-
-                    if (this.requestChangeTab.nextEvent == 'new') {
-                        setTimeout(() => {
-                            this.store.dispatch(this.widgetDetailActions.canceAllWidgetEditing(this.currentModule));
-                            this.store.dispatch(this.tabButtonActions.requestNew(this.currentModule));
-                            this.requestChangeTab = null;
-                        }, 100);
-                    } else if (this.requestChangeTab.nextEvent == 'edit') {
-                        setTimeout(() => {
-                            this.store.dispatch(this.widgetDetailActions.canceAllWidgetEditing(this.currentModule));
-                            this.store.dispatch(this.tabButtonActions.requestEdit(this.currentModule));
-                            this.requestChangeTab = null;
-                        }, 100);
-                    }
-                }
-            });
-        });
-
-        this.tabChangedFailedSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === TabSummaryActions.TAB_CHANGED_FAILED && (action.module || {}).idSettingsGUI == (this.currentModule || {}).idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.requestChangeTab) {
-                    if (this.requestChangeTab.nextEvent == 'new') {
-                        this.toasterService.pop('warning', 'Add Failed', 'Cannot add new data');
-                    } else if (this.requestChangeTab.nextEvent == 'edit') {
-                        this.toasterService.pop('warning', 'Edit Failed', 'Cannot edit this data');
-                    }
-
-                    this.requestChangeTab = null;
-
-                }
-            });
-        });
-
-        this.requestRemoveConnectionFromParentWidgetSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WidgetDetailActions.REQUEST_REMOVE_CONNECTION_FROM_PARENT_WIDGET && (action.module || {}).idSettingsGUI == this.currentModule.idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return action.payload
-        }).subscribe((parentWidgetId) => {
-            this.appErrorHandler.executeAction(() => {
-                if (parentWidgetId
-                    &&
-                    (
-                        (this.data.widgetDataType.parentWidgetIds
-                            && this.data.widgetDataType.parentWidgetIds.indexOf(parentWidgetId) !== -1)
-                        ||
-                        (this.data.syncWidgetIds
-                            && this.data.syncWidgetIds.indexOf(parentWidgetId) !== -1)
-                    )
-                ) {
-                    this.removeLinkWidgetSuccess(true);
-                    this.linkedSuccessWidget = false;
-                }
-            });
-        });
-
-        this.requestRemoveConnectionFromChildWidgetSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WidgetDetailActions.REQUEST_REMOVE_CONNECTION_FROM_CHILD_WIDGET && (action.module || {}).idSettingsGUI == (this.currentModule || {}).idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return action.payload
-        }).subscribe((parentWidgetIds: Array<string>) => {
-            this.appErrorHandler.executeAction(() => {
-                if (parentWidgetIds && parentWidgetIds.length) {
-                    parentWidgetIds.forEach(parentWidgetId => {
-                        if (parentWidgetId == this.data.id) {
-                            this.linkedSuccessWidget = false;
-                            this.checkLinkedWidgetStatus();
+        this.requestSavePropertiesStateSubscription =
+            this.requestSavePropertiesState.subscribe(
+                (requestSavePropertiesState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            requestSavePropertiesState &&
+                            JSON.stringify(this.propertiesForSaving) !==
+                                JSON.stringify(this.properties)
+                        ) {
+                            this.saveProperties(
+                                requestSavePropertiesState.propertiesParentData
+                            );
                         }
                     });
                 }
-            });
-        });
+            );
 
-        this.isEditAllWidgetModeStateSubscription = this.isEditAllWidgetModeState.subscribe((isEditAllWidgetModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.isEditAllWidgetMode !== isEditAllWidgetModeState) {
-                    this.isEditAllWidgetMode = isEditAllWidgetModeState;
-
-                    if (this.isSelectionProject) {
-                        setTimeout(() => {
-                            if (this.widgetMenuStatusComponent) {
-                                this.widgetMenuStatusComponent.toggleToolButtonsWithoutClick(isEditAllWidgetModeState);
+        this.requestApplyPropertiesStateSubscription =
+            this.requestApplyPropertiesState.subscribe(
+                (requestApplyPropertiesState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (requestApplyPropertiesState) {
+                            const widgetData: WidgetDetail =
+                                requestApplyPropertiesState.propertiesParentData;
+                            if (widgetData && widgetData.id === this.data.id) {
+                                // this.changeProperties();
+                                this.saveChangeOfPropDisplayFields();
+                                this.saveChangeOfPropImportantDisplayFields();
+                                this.saveChangeOfPropFieldFormat();
                             }
-
-                            if (this.isEditAllWidgetMode && this.data.idRepWidgetType == WidgetType.FieldSet && this.widgetFormComponent) {
-                                this.editFormWidget(1);
-                            } else {
-                                this.resetWidget();
-                            }
-                        }, 200);
-                    }
+                        }
+                    });
                 }
+            );
+
+        this.requestUpdatePropertiesStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === PropertyPanelActions.UPDATE_PROPERTIES &&
+                    (action.module || {}).idSettingsGUI ==
+                        (this.currentModule || {}).idSettingsGUI
+                );
+            })
+            .map((action: CustomAction) => {
+                return action.payload;
+            })
+            .subscribe((actionData) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (actionData) {
+                        this.widgetPropertyEditing = actionData;
+                        const widgetData: WidgetDetail = actionData.widgetData;
+                        const properties: any = actionData.widgetProperties;
+                        if (
+                            widgetData &&
+                            widgetData.id &&
+                            this.data.id &&
+                            widgetData.id === this.data.id &&
+                            properties
+                        ) {
+                            this.settingNewDataForProperties = true;
+                            if (properties.length) {
+                                this.properties = JSON.parse(
+                                    JSON.stringify(properties)
+                                );
+                            }
+                            if (!this.properties) {
+                                this.widgetProperties = properties;
+                            }
+                            this.changeProperties();
+                            this.requestDataWhenChangePropety(actionData);
+                            this.reattach();
+                            this.detach(2000);
+                        }
+                    }
+                });
             });
-        });
+
+        this.requestUpdateTempPropertiesStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        PropertyPanelActions.UPDATE_TEMP_PROPERTIES &&
+                    (action.module || {}).idSettingsGUI ==
+                        (this.currentModule || {}).idSettingsGUI
+                );
+            })
+            .map((action: CustomAction) => {
+                return action.payload;
+            })
+            .subscribe((actionData) => {
+                this.appErrorHandler.executeAction(() => {
+                    // if (!actionData || this.isEditingLayout) return;
+                    // this.properties = actionData;
+                    // this.changeProperties();
+                    // setTimeout(() => {
+                    //     this.ref.markForCheck();
+                    //     this.ref.detectChanges();
+                    // }, 500);
+                });
+            });
+
+        this.requestUpdateOriginalPropertiesStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        PropertyPanelActions.UPDATE_ORIGINAL_PROPERTIES &&
+                    (action.module || {}).idSettingsGUI ==
+                        (this.currentModule || {}).idSettingsGUI
+                );
+            })
+            .map((action: CustomAction) => {
+                return action.payload;
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.originalProperties = cloneDeep(this.properties);
+                });
+            });
+
+        this.requestRollbackPropertiesStateSubscription =
+            this.requestRollbackPropertiesState.subscribe(
+                (requestRollbackPropertiesState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            requestRollbackPropertiesState &&
+                            requestRollbackPropertiesState.data &&
+                            !requestRollbackPropertiesState.isGlobal
+                        ) {
+                            const widgetData: WidgetDetail =
+                                requestRollbackPropertiesState.data;
+                            if (
+                                widgetData &&
+                                widgetData.id &&
+                                this.data.id &&
+                                widgetData.id === this.data.id
+                            ) {
+                                // update original properties for saving before assign it to the properties
+                                this.updateOrgPropertiesBeforeRollback();
+                                this.properties = cloneDeep(
+                                    this.originalProperties
+                                );
+                                this.resetPropertiesToOriginal();
+                                // if (isNil(this.propertiesForSaving.properties)) {
+                                //     this.properties = cloneDeep(this.propertiesForSaving);
+                                // } else {
+                                //     this.properties = cloneDeep(this.propertiesForSaving.properties);
+                                // }
+                                const propTitleText: WidgetPropertyModel =
+                                    this.propertyPanelService.getItemRecursive(
+                                        this.properties,
+                                        "TitleText"
+                                    );
+                                propTitleText.translatedValue =
+                                    this.title.value;
+                                this.updatePropertiesFromGlobalProperties(
+                                    this.globalProperties
+                                );
+                                const widgetPropertiesStateModel: WidgetPropertiesStateModel =
+                                    new WidgetPropertiesStateModel({
+                                        widgetData: this.data,
+                                        widgetProperties: this.properties,
+                                    });
+                                this.store.dispatch(
+                                    this.propertyPanelActions.updateProperties(
+                                        widgetPropertiesStateModel,
+                                        this.currentModule
+                                    )
+                                );
+                            }
+                        }
+                    });
+                }
+            );
+
+        this.globalPropertiesStateSubscription = this.globalPropertiesState
+            .throttleTime(200)
+            .distinctUntilChanged()
+            .subscribe((globalProperties: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (globalProperties) {
+                        this.globalProperties = globalProperties;
+                        this.updatePropertiesFromGlobalProperties(
+                            globalProperties
+                        );
+                        this.updateWidgetFormGeneralStyle(globalProperties);
+                        this.updateWidgetFormLabelStyle(globalProperties);
+                        this.updateWidgetFormDataStyle(globalProperties);
+                        this.updateWidgetFormSeparatorStyle(globalProperties);
+                        this.updateWidgetTableRowBackground(globalProperties);
+                    }
+                });
+            });
+
+        if (this.rowsDataStateSubscription)
+            this.rowsDataStateSubscription.unsubscribe();
+        this.rowsDataStateSubscription = this.rowsDataState.subscribe(
+            (rowsData: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.selectedRowsData = rowsData;
+                });
+            }
+        );
+
+        this.tabChangedSuccessSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === TabSummaryActions.TAB_CHANGED_SUCCESS &&
+                    (action.module || {}).idSettingsGUI ==
+                        (this.currentModule || {}).idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.requestChangeTab) {
+                        if (this.requestChangeTab.nextEvent == "new") {
+                            setTimeout(() => {
+                                this.store.dispatch(
+                                    this.widgetDetailActions.canceAllWidgetEditing(
+                                        this.currentModule
+                                    )
+                                );
+                                this.store.dispatch(
+                                    this.tabButtonActions.requestNew(
+                                        this.currentModule
+                                    )
+                                );
+                                this.requestChangeTab = null;
+                            }, 100);
+                        } else if (this.requestChangeTab.nextEvent == "edit") {
+                            setTimeout(() => {
+                                this.store.dispatch(
+                                    this.widgetDetailActions.canceAllWidgetEditing(
+                                        this.currentModule
+                                    )
+                                );
+                                this.store.dispatch(
+                                    this.tabButtonActions.requestEdit(
+                                        this.currentModule
+                                    )
+                                );
+                                this.requestChangeTab = null;
+                            }, 100);
+                        }
+                    }
+                });
+            });
+
+        this.tabChangedFailedSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === TabSummaryActions.TAB_CHANGED_FAILED &&
+                    (action.module || {}).idSettingsGUI ==
+                        (this.currentModule || {}).idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.requestChangeTab) {
+                        if (this.requestChangeTab.nextEvent == "new") {
+                            this.toasterService.pop(
+                                "warning",
+                                "Add Failed",
+                                "Cannot add new data"
+                            );
+                        } else if (this.requestChangeTab.nextEvent == "edit") {
+                            this.toasterService.pop(
+                                "warning",
+                                "Edit Failed",
+                                "Cannot edit this data"
+                            );
+                        }
+
+                        this.requestChangeTab = null;
+                    }
+                });
+            });
+
+        this.requestRemoveConnectionFromParentWidgetSubscription =
+            this.dispatcher
+                .filter((action: CustomAction) => {
+                    return (
+                        action.type ===
+                            WidgetDetailActions.REQUEST_REMOVE_CONNECTION_FROM_PARENT_WIDGET &&
+                        (action.module || {}).idSettingsGUI ==
+                            this.currentModule.idSettingsGUI
+                    );
+                })
+                .map((action: CustomAction) => {
+                    return action.payload;
+                })
+                .subscribe((parentWidgetId) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            parentWidgetId &&
+                            ((this.data.widgetDataType.parentWidgetIds &&
+                                this.data.widgetDataType.parentWidgetIds.indexOf(
+                                    parentWidgetId
+                                ) !== -1) ||
+                                (this.data.syncWidgetIds &&
+                                    this.data.syncWidgetIds.indexOf(
+                                        parentWidgetId
+                                    ) !== -1))
+                        ) {
+                            this.removeLinkWidgetSuccess(true);
+                            this.linkedSuccessWidget = false;
+                        }
+                    });
+                });
+
+        this.requestRemoveConnectionFromChildWidgetSubscription =
+            this.dispatcher
+                .filter((action: CustomAction) => {
+                    return (
+                        action.type ===
+                            WidgetDetailActions.REQUEST_REMOVE_CONNECTION_FROM_CHILD_WIDGET &&
+                        (action.module || {}).idSettingsGUI ==
+                            (this.currentModule || {}).idSettingsGUI
+                    );
+                })
+                .map((action: CustomAction) => {
+                    return action.payload;
+                })
+                .subscribe((parentWidgetIds: Array<string>) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (parentWidgetIds && parentWidgetIds.length) {
+                            parentWidgetIds.forEach((parentWidgetId) => {
+                                if (parentWidgetId == this.data.id) {
+                                    this.linkedSuccessWidget = false;
+                                    this.checkLinkedWidgetStatus();
+                                }
+                            });
+                        }
+                    });
+                });
+
+        this.isEditAllWidgetModeStateSubscription =
+            this.isEditAllWidgetModeState.subscribe(
+                (isEditAllWidgetModeState: boolean) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            this.isEditAllWidgetMode !==
+                            isEditAllWidgetModeState
+                        ) {
+                            this.isEditAllWidgetMode = isEditAllWidgetModeState;
+
+                            if (this.isSelectionProject) {
+                                setTimeout(() => {
+                                    if (this.widgetMenuStatusComponent) {
+                                        this.widgetMenuStatusComponent.toggleToolButtonsWithoutClick(
+                                            isEditAllWidgetModeState
+                                        );
+                                    }
+
+                                    if (
+                                        this.isEditAllWidgetMode &&
+                                        this.data.idRepWidgetType ==
+                                            WidgetType.FieldSet &&
+                                        this.widgetFormComponent
+                                    ) {
+                                        this.editFormWidget(1);
+                                    } else {
+                                        this.resetWidget();
+                                    }
+                                }, 200);
+                            }
+                        }
+                    });
+                }
+            );
     }
 
     private saveProperties(widgetDetail: WidgetDetail) {
@@ -814,9 +1128,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     handleRowGroupPanel(data) {
         this.rowGrouping = data;
-        const prop = this.propertyPanelService.getItemRecursive(this.properties, 'RowGrouping');
-        if (prop)
-            prop.value = this.rowGrouping;
+        const prop = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "RowGrouping"
+        );
+        if (prop) prop.value = this.rowGrouping;
     }
 
     onShowCreditCardSelection($event) {
@@ -832,7 +1148,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     public onChangeColumnLayoutHandler($event) {
         this.widgetMenuStatusComponent.onColumnsLayoutSettingsChanged();
-        if ($event && $event.type == 'columnResized' && $event.source == 'autosizeColumns') {
+        if (
+            $event &&
+            $event.type == "columnResized" &&
+            $event.source == "autosizeColumns"
+        ) {
             this.allowFitColumn = false;
             if (this.columnLayoutsetting) {
                 this.columnLayoutsetting.isFitWidthColumn = false;
@@ -846,14 +1166,17 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private checkToHideWidgetToolbarForSpecialCases() {
-        if (this.isHideWidetToolbarSpecialCase)
-            return;
+        if (this.isHideWidetToolbarSpecialCase) return;
 
         if (this.data) {
             // is return-refund module and is
             // new-invoice/return-payment/refund-payment/invoice-number
-            this.isHideWidetToolbarSpecialCase = this.data.idRepWidgetType === WidgetType.ReturnRefund &&
-                (this.data.idRepWidgetApp == 78 || this.data.idRepWidgetApp == 85 || this.data.idRepWidgetApp == 77 || this.data.idRepWidgetApp == 74)
+            this.isHideWidetToolbarSpecialCase =
+                this.data.idRepWidgetType === WidgetType.ReturnRefund &&
+                (this.data.idRepWidgetApp == 78 ||
+                    this.data.idRepWidgetApp == 85 ||
+                    this.data.idRepWidgetApp == 77 ||
+                    this.data.idRepWidgetApp == 74);
         }
     }
 
@@ -873,18 +1196,25 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.updateChangeOfPropImportantDisplayFields();
 
         // Field Format (Label + Data)
-        if (this.data.idRepWidgetType === WidgetType.FieldSet ||
+        if (
+            this.data.idRepWidgetType === WidgetType.FieldSet ||
             this.data.idRepWidgetType === WidgetType.Combination ||
             this.data.idRepWidgetType === WidgetType.CombinationCreditCard ||
-            this.data.idRepWidgetType === WidgetType.FieldSetReadonly) {
+            this.data.idRepWidgetType === WidgetType.FieldSetReadonly
+        ) {
             this.updateChangeOfPropLabelFieldFormat();
             this.updateChangeOfPropDataFieldFormat();
         }
     }
 
     private saveChangeOfPropDisplayFields() {
-        const propertiesResetBackground = this.propertyPanelService.getItemRecursive(this.properties, 'ResetBackground');
-        const valueResetBackground = propertiesResetBackground && propertiesResetBackground.value;
+        const propertiesResetBackground =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "ResetBackground"
+            );
+        const valueResetBackground =
+            propertiesResetBackground && propertiesResetBackground.value;
         if (this.updateChangeOfPropDisplayFields()) {
             this.propertiesForSaving.properties = cloneDeep(this.properties);
             this._saveMenuChanges(false);
@@ -893,27 +1223,82 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     private updateChangeOfPropDisplayFields(): boolean {
         // get from properties
-        const propDisplayField: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'DisplayField');
-        const propShowDropDownOfField: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'ShowDropDownOfField');
-        const propBackgroundStyleImage: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'WidgetBackgroundStyleImage');
-        const propDisplayColumn: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'DisplayColumn');
+        const propDisplayField: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "DisplayField"
+            );
+        const propShowDropDownOfField: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "ShowDropDownOfField"
+            );
+        const propBackgroundStyleImage: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "WidgetBackgroundStyleImage"
+            );
+        const propDisplayColumn: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "DisplayColumn"
+            );
         // get from propertiesForSaving
-        const propDisplayField_ForSaving: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'DisplayField');
-        const propShowDropDownOfField_ForSaving: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'ShowDropDownOfField');
-        const propBackgroundStyleImage_ForSaving: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'WidgetBackgroundStyleImage');
-        const propDisplayColumn_ForSaving: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'DisplayColumn');
-        if (!propDisplayField_ForSaving || !propDisplayColumn_ForSaving || !propShowDropDownOfField_ForSaving) return;
+        const propDisplayField_ForSaving: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.propertiesForSaving.properties,
+                "DisplayField"
+            );
+        const propShowDropDownOfField_ForSaving: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.propertiesForSaving.properties,
+                "ShowDropDownOfField"
+            );
+        const propBackgroundStyleImage_ForSaving: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.propertiesForSaving.properties,
+                "WidgetBackgroundStyleImage"
+            );
+        const propDisplayColumn_ForSaving: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.propertiesForSaving.properties,
+                "DisplayColumn"
+            );
+        if (
+            !propDisplayField_ForSaving ||
+            !propDisplayColumn_ForSaving ||
+            !propShowDropDownOfField_ForSaving
+        )
+            return;
         // update
-        if ((propDisplayField && JSON.stringify(propDisplayField.options) !== JSON.stringify(propDisplayField_ForSaving.options)) ||
-            (propDisplayColumn && JSON.stringify(propDisplayColumn.options) !== JSON.stringify(propDisplayColumn_ForSaving.options)) ||
-            (propShowDropDownOfField && JSON.stringify(propShowDropDownOfField.options) !== JSON.stringify(propShowDropDownOfField_ForSaving.options)) ||
-            (propBackgroundStyleImage && JSON.stringify(propBackgroundStyleImage.value) !== JSON.stringify(propBackgroundStyleImage_ForSaving.value))) {
+        if (
+            (propDisplayField &&
+                JSON.stringify(propDisplayField.options) !==
+                    JSON.stringify(propDisplayField_ForSaving.options)) ||
+            (propDisplayColumn &&
+                JSON.stringify(propDisplayColumn.options) !==
+                    JSON.stringify(propDisplayColumn_ForSaving.options)) ||
+            (propShowDropDownOfField &&
+                JSON.stringify(propShowDropDownOfField.options) !==
+                    JSON.stringify(
+                        propShowDropDownOfField_ForSaving.options
+                    )) ||
+            (propBackgroundStyleImage &&
+                JSON.stringify(propBackgroundStyleImage.value) !==
+                    JSON.stringify(propBackgroundStyleImage_ForSaving.value))
+        ) {
             if (propDisplayField)
-                propDisplayField_ForSaving.options = cloneDeep(propDisplayField.options);
+                propDisplayField_ForSaving.options = cloneDeep(
+                    propDisplayField.options
+                );
             if (propShowDropDownOfField)
-                propShowDropDownOfField_ForSaving.options = cloneDeep(propShowDropDownOfField.options);
+                propShowDropDownOfField_ForSaving.options = cloneDeep(
+                    propShowDropDownOfField.options
+                );
             if (propDisplayColumn)
-                propDisplayColumn_ForSaving.options = cloneDeep(propDisplayColumn.options);
+                propDisplayColumn_ForSaving.options = cloneDeep(
+                    propDisplayColumn.options
+                );
 
             return true;
         }
@@ -923,32 +1308,56 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     private saveChangeOfPropImportantDisplayFields() {
         if (this.updateChangeOfPropImportantDisplayFields()) {
             // Reset widget properties dirty
-            this.properties = this.propertyPanelService.resetDirty(this.properties);
-            this.propertiesForSaving.properties = this.propertyPanelService.resetDirty(this.propertiesForSaving.properties);
+            this.properties = this.propertyPanelService.resetDirty(
+                this.properties
+            );
+            this.propertiesForSaving.properties =
+                this.propertyPanelService.resetDirty(
+                    this.propertiesForSaving.properties
+                );
 
             // Save setting here
             this.onChangeFieldFilter.emit({
-                widgetDetail: this.data
+                widgetDetail: this.data,
             });
         }
     }
 
     private updateChangeOfPropImportantDisplayFields(): boolean {
-        if (!(this.data.idRepWidgetType === WidgetType.FieldSet ||
-            this.data.idRepWidgetType === WidgetType.DataGrid ||
-            this.data.idRepWidgetType === WidgetType.Combination ||
-            this.data.idRepWidgetType === WidgetType.CombinationCreditCard ||
-            this.data.idRepWidgetType === WidgetType.FieldSetReadonly))
+        if (
+            !(
+                this.data.idRepWidgetType === WidgetType.FieldSet ||
+                this.data.idRepWidgetType === WidgetType.DataGrid ||
+                this.data.idRepWidgetType === WidgetType.Combination ||
+                this.data.idRepWidgetType ===
+                    WidgetType.CombinationCreditCard ||
+                this.data.idRepWidgetType === WidgetType.FieldSetReadonly
+            )
+        )
             return false;
 
         // get from properties
-        const propDisplayField: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'ImportantDisplayFields');
+        const propDisplayField: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "ImportantDisplayFields"
+            );
         // get from propertiesForSaving
-        const propDisplayField_ForSaving: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'ImportantDisplayFields');
+        const propDisplayField_ForSaving: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.propertiesForSaving.properties,
+                "ImportantDisplayFields"
+            );
         // update
-        if (propDisplayField && JSON.stringify(propDisplayField.options) !== JSON.stringify(propDisplayField_ForSaving.options)) {
+        if (
+            propDisplayField &&
+            JSON.stringify(propDisplayField.options) !==
+                JSON.stringify(propDisplayField_ForSaving.options)
+        ) {
             if (propDisplayField)
-                propDisplayField_ForSaving.options = cloneDeep(propDisplayField.options);
+                propDisplayField_ForSaving.options = cloneDeep(
+                    propDisplayField.options
+                );
             return true;
         }
         return false;
@@ -958,54 +1367,95 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
      * saveChangeOfPropFieldFormat
      */
     private saveChangeOfPropFieldFormat() {
-        if (!(this.data.idRepWidgetType === WidgetType.FieldSet ||
-            this.data.idRepWidgetType === WidgetType.Combination ||
-            this.data.idRepWidgetType === WidgetType.CombinationCreditCard ||
-            this.data.idRepWidgetType === WidgetType.FieldSetReadonly))
+        if (
+            !(
+                this.data.idRepWidgetType === WidgetType.FieldSet ||
+                this.data.idRepWidgetType === WidgetType.Combination ||
+                this.data.idRepWidgetType ===
+                    WidgetType.CombinationCreditCard ||
+                this.data.idRepWidgetType === WidgetType.FieldSetReadonly
+            )
+        )
             return;
 
         let isUpdated = false;
         // update Prop Label Field Format
         if (this.updateChangeOfPropLabelFieldFormat()) {
             // Reset widget properties dirty
-            this.properties = this.propertyPanelService.resetDirty(this.properties);
-            this.propertiesForSaving.properties = this.propertyPanelService.resetDirty(this.propertiesForSaving.properties);
+            this.properties = this.propertyPanelService.resetDirty(
+                this.properties
+            );
+            this.propertiesForSaving.properties =
+                this.propertyPanelService.resetDirty(
+                    this.propertiesForSaving.properties
+                );
             isUpdated = true;
         }
         // update Prop Data Field Format
         if (this.updateChangeOfPropDataFieldFormat()) {
             // Reset widget properties dirty
-            this.properties = this.propertyPanelService.resetDirty(this.properties);
-            this.propertiesForSaving.properties = this.propertyPanelService.resetDirty(this.propertiesForSaving.properties);
+            this.properties = this.propertyPanelService.resetDirty(
+                this.properties
+            );
+            this.propertiesForSaving.properties =
+                this.propertyPanelService.resetDirty(
+                    this.propertiesForSaving.properties
+                );
             isUpdated = true;
         }
 
         if (isUpdated) {
             // Save setting here
             this.onChangeFieldFilter.emit({
-                widgetDetail: this.data
+                widgetDetail: this.data,
             });
         }
     }
 
     private updateChangeOfPropLabelFieldFormat(): boolean {
-        const labelDisplayProp: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'LabelDisplay');
-        const labelDisplayProp_ForSaving: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'LabelDisplay');
+        const labelDisplayProp: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "LabelDisplay"
+            );
+        const labelDisplayProp_ForSaving: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.propertiesForSaving.properties,
+                "LabelDisplay"
+            );
         // update
-        if (labelDisplayProp && labelDisplayProp_ForSaving &&
-            JSON.stringify(labelDisplayProp.value) !== JSON.stringify(labelDisplayProp_ForSaving.value)) {
-            labelDisplayProp_ForSaving.value = cloneDeep(labelDisplayProp.value);
+        if (
+            labelDisplayProp &&
+            labelDisplayProp_ForSaving &&
+            JSON.stringify(labelDisplayProp.value) !==
+                JSON.stringify(labelDisplayProp_ForSaving.value)
+        ) {
+            labelDisplayProp_ForSaving.value = cloneDeep(
+                labelDisplayProp.value
+            );
             return true;
         }
         return false;
     }
 
     private updateChangeOfPropDataFieldFormat(): boolean {
-        const dataDisplayProp: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'DataDisplay');
-        const dataDisplayProp_ForSaving: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'DataDisplay');
+        const dataDisplayProp: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "DataDisplay"
+            );
+        const dataDisplayProp_ForSaving: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.propertiesForSaving.properties,
+                "DataDisplay"
+            );
         // update
-        if (dataDisplayProp && dataDisplayProp_ForSaving &&
-            JSON.stringify(dataDisplayProp.value) !== JSON.stringify(dataDisplayProp_ForSaving.value)) {
+        if (
+            dataDisplayProp &&
+            dataDisplayProp_ForSaving &&
+            JSON.stringify(dataDisplayProp.value) !==
+                JSON.stringify(dataDisplayProp_ForSaving.value)
+        ) {
             dataDisplayProp_ForSaving.value = cloneDeep(dataDisplayProp.value);
             return true;
         }
@@ -1023,22 +1473,27 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private subscribeSaveTranslateSuccess() {
-        this.successSavedSubscription = this._resourceTranslationService.successSaved$.subscribe(status => {
-            switch (this.data.idRepWidgetType) {
-                case WidgetType.DataGrid:
-                    // this.updateTableStatusAfterCompletedSaving();
-                    this.allowGridTranslation = false;
-                    break;
-            }
-        })
+        this.successSavedSubscription =
+            this._resourceTranslationService.successSaved$.subscribe(
+                (status) => {
+                    switch (this.data.idRepWidgetType) {
+                        case WidgetType.DataGrid:
+                            // this.updateTableStatusAfterCompletedSaving();
+                            this.allowGridTranslation = false;
+                            break;
+                    }
+                }
+            );
     }
 
     saveWidget(event): void {
         this.onSaveWidget.emit();
         switch (this.data.idRepWidgetType) {
             case WidgetType.FieldSet:
-                if (this.currentModule.idSettingsGUI === MenuModuleId.customer) {
-                    this.checkMatchingDataBeforeSaveWidgetData()
+                if (
+                    this.currentModule.idSettingsGUI === MenuModuleId.customer
+                ) {
+                    this.checkMatchingDataBeforeSaveWidgetData();
                     break;
                 }
                 this.saveFormWidget();
@@ -1081,7 +1536,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             case WidgetType.Translation: {
                 this.widgetTranslationComponent.submit(() => {
                     this.onSaveSuccessWidget.emit(this.data);
-                    this.reloadWidgets.emit([this.widgetTranslationComponent.translateCommunicationData.srcWidgetDetail]);
+                    this.reloadWidgets.emit([
+                        this.widgetTranslationComponent
+                            .translateCommunicationData.srcWidgetDetail,
+                    ]);
                 });
                 break;
             }
@@ -1149,7 +1607,14 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 break;
         }
 
-        this.buildContextMenu(this.contextMenuData, this.data.idRepWidgetType, this.currentModule, this.toolbarSetting, this.selectedTabHeader, this.activeSubModule);
+        this.buildContextMenu(
+            this.contextMenuData,
+            this.data.idRepWidgetType,
+            this.currentModule,
+            this.toolbarSetting,
+            this.selectedTabHeader,
+            this.activeSubModule
+        );
     }
 
     private reloadLinkWidgetAfterDataSaved() {
@@ -1165,19 +1630,21 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }
         // show message modal in case of widget edited
         setTimeout(() => {
-            if (this.isWidgetDataEdited && this.data.idRepWidgetType === this.WidgetTypeView.NoteForm) {
+            if (
+                this.isWidgetDataEdited &&
+                this.data.idRepWidgetType === this.WidgetTypeView.NoteForm
+            ) {
                 const hasData = !!this.noteFormDataAction.status.hasData;
                 if (!hasData) {
                     this.onModalSaveAndExit.bind(this);
                     this.resetEditingWidget(callback);
-                }
-                else {
-
+                } else {
                     setTimeout(() => {
                         this.modalService.unsavedWarningMessageDefault({
-                            headerText: 'Reset Widget',
+                            headerText: "Reset Widget",
                             onModalSaveAndExit: () => {
-                                const updateRequest = this.widgetNoteFormComponent.getDataSave();
+                                const updateRequest =
+                                    this.widgetNoteFormComponent.getDataSave();
                                 this.callSaveNoteFormWidget(updateRequest);
                                 this.resetEditingWidget(callback);
                             },
@@ -1185,20 +1652,22 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                                 this.onModalExit.bind(this);
                                 this.resetEditingWidget(callback);
                             },
-                            onModalCancel: this.onModalCancel.bind(this)
+                            onModalCancel: this.onModalCancel.bind(this),
                         });
                     });
                 }
                 return;
-            }
-            else if (this.isWidgetDataEdited && this.data.idRepWidgetType !== this.WidgetTypeView.NoteForm) {
+            } else if (
+                this.isWidgetDataEdited &&
+                this.data.idRepWidgetType !== this.WidgetTypeView.NoteForm
+            ) {
                 setTimeout(() => {
                     // this.initForMessageModal(MessageModal.MessageType.warning);
                     this.modalService.unsavedWarningMessageDefault({
-                        headerText: 'Reset Widget',
+                        headerText: "Reset Widget",
                         onModalSaveAndExit: this.onModalSaveAndExit.bind(this),
                         onModalExit: this.onModalExit.bind(this),
-                        onModalCancel: this.onModalCancel.bind(this)
+                        onModalCancel: this.onModalCancel.bind(this),
                     });
                 });
                 return;
@@ -1207,14 +1676,19 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         });
     }
 
-    private showModalWarningMesDefault(funcSaveAndExist: any, funcNotSaveAndExist: any = null) {
+    private showModalWarningMesDefault(
+        funcSaveAndExist: any,
+        funcNotSaveAndExist: any = null
+    ) {
         setTimeout(() => {
             // this.initForMessageModal(MessageModal.MessageType.warning);
             this.modalService.unsavedWarningMessageDefault({
-                headerText: 'Reset Widget',
+                headerText: "Reset Widget",
                 onModalSaveAndExit: funcSaveAndExist,
-                onModalExit: !!funcNotSaveAndExist ? funcNotSaveAndExist : this.onModalExit.bind(this),
-                onModalCancel: this.onModalCancel.bind(this)
+                onModalExit: !!funcNotSaveAndExist
+                    ? funcNotSaveAndExist
+                    : this.onModalExit.bind(this),
+                onModalCancel: this.onModalCancel.bind(this),
             });
         });
     }
@@ -1226,8 +1700,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     /**
      * resetWidgetToViewMode
      **/
-    public resetWidgetToViewMode(fromWidgetContainer?: boolean, callback?: Function, manualReset?: boolean) {
-
+    public resetWidgetToViewMode(
+        fromWidgetContainer?: boolean,
+        callback?: Function,
+        manualReset?: boolean
+    ) {
         switch (this.data.idRepWidgetType) {
             case WidgetType.FieldSet:
             case WidgetType.FieldSetReadonly:
@@ -1251,12 +1728,18 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                     this.agGridComponent.toggleDeleteColumn(false);
                 }
 
-                if (!fromWidgetContainer && (this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerStatus || this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerBusinessStatus)) {
+                if (
+                    !fromWidgetContainer &&
+                    (this.data.idRepWidgetApp ==
+                        RepWidgetAppIdEnum.CustomerStatus ||
+                        this.data.idRepWidgetApp ==
+                            RepWidgetAppIdEnum.CustomerBusinessStatus)
+                ) {
                     this.isCustomerStatusWidgetEdit = false;
                 }
                 this.changeToEditModeDefault();
                 if (this.allowGridTranslation) {
-                    this.widgetMenuStatusComponent.openTranslateWidget('row');
+                    this.widgetMenuStatusComponent.openTranslateWidget("row");
                 }
                 break;
             case WidgetType.Combination:
@@ -1315,7 +1798,9 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
                     if (!this.isEditAllWidgetMode) {
                         this.widgetMenuStatusComponent.toggleToolButtons(false);
-                        this.widgetMenuStatusComponent.toggleToolButtonsWithoutClick(false);
+                        this.widgetMenuStatusComponent.toggleToolButtonsWithoutClick(
+                            false
+                        );
                     }
                 }
 
@@ -1352,7 +1837,9 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                         }
 
                         this.widgetMenuStatusComponent.toggleToolButtons(false);
-                        this.widgetMenuStatusComponent.toggleToolButtonsWithoutClick(false);
+                        this.widgetMenuStatusComponent.toggleToolButtonsWithoutClick(
+                            false
+                        );
                     }
                 }
                 break;
@@ -1368,7 +1855,9 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                         }
 
                         this.widgetMenuStatusComponent.toggleToolButtons(false);
-                        this.widgetMenuStatusComponent.toggleToolButtonsWithoutClick(false);
+                        this.widgetMenuStatusComponent.toggleToolButtonsWithoutClick(
+                            false
+                        );
                     }
                 }
             case WidgetType.NoteForm:
@@ -1389,7 +1878,14 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             this.onCancelEditingWidget.emit(this.data);
         }
         this.onResetWidget.emit(this.data);
-        this.buildContextMenu(this.contextMenuData, this.data.idRepWidgetType, this.currentModule, this.toolbarSetting, this.selectedTabHeader, this.activeSubModule);
+        this.buildContextMenu(
+            this.contextMenuData,
+            this.data.idRepWidgetType,
+            this.currentModule,
+            this.toolbarSetting,
+            this.selectedTabHeader,
+            this.activeSubModule
+        );
         this.reattach();
         this.reEditWhenInPopup();
         this.runImmediatelyRowDatas.length = 0;
@@ -1427,7 +1923,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                         case WidgetType.CombinationCreditCard:
                         case WidgetType.Translation:
                             this.editFormWidget(widgetType);
-                            this.contextMenuData = this.widgetUtils.contextMenuInEditMode(this.contextMenuData, this.getAccessRightAll());
+                            this.contextMenuData =
+                                this.widgetUtils.contextMenuInEditMode(
+                                    this.contextMenuData,
+                                    this.getAccessRightAll()
+                                );
                             break;
                         // case WidgetType.EditableTable:
                         case WidgetType.EditableGrid:
@@ -1444,7 +1944,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                             break;
                         case WidgetType.TreeView: {
                             this.editTreeView();
-                            this.contextMenuData = this.widgetUtils.contextMenuInEditMode(this.contextMenuData, this.getAccessRightAll());
+                            this.contextMenuData =
+                                this.widgetUtils.contextMenuInEditMode(
+                                    this.contextMenuData,
+                                    this.getAccessRightAll()
+                                );
                             break;
                         }
                         case WidgetType.NoteForm:
@@ -1462,7 +1966,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
      * @param changes
      */
     private hasChanges(changes) {
-        return changes && changes.hasOwnProperty('currentValue') && changes.hasOwnProperty('previousValue');
+        return (
+            changes &&
+            changes.hasOwnProperty("currentValue") &&
+            changes.hasOwnProperty("previousValue")
+        );
     }
 
     private intSavingWidgetType(): void {
@@ -1472,7 +1980,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                     this.savingWidgetType = SavingWidgetType.Combination;
                     break;
                 case WidgetType.CombinationCreditCard:
-                    this.savingWidgetType = SavingWidgetType.CombinationCreditCard;
+                    this.savingWidgetType =
+                        SavingWidgetType.CombinationCreditCard;
                     break;
                 case WidgetType.Country:
                     this.savingWidgetType = SavingWidgetType.Country;
@@ -1493,7 +2002,13 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private initContextMenu() {
-        this.widgetTemplateSettingService.getWidgetToolbar(null, null, (this.currentModule || {}).idSettingsGUI, ModuleType.WIDGET_TOOLBAR)
+        this.widgetTemplateSettingService
+            .getWidgetToolbar(
+                null,
+                null,
+                (this.currentModule || {}).idSettingsGUI,
+                ModuleType.WIDGET_TOOLBAR
+            )
             .subscribe((response: ApiResultResponse) => {
                 if (!Uti.isResquestSuccess(response)) {
                     return;
@@ -1501,91 +2016,137 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
                 let contextMenuText: any = {
                     name: this.currentModule.moduleName,
-                    id: this.currentModule.moduleName
+                    id: this.currentModule.moduleName,
                 };
                 //let moduleNameText = this.currentModule.moduleName;
                 if (response.item.length && response.item[0].jsonSettings) {
-                    const widgetToolbarJson = Uti.tryParseJson(response.item[0].jsonSettings);
+                    const widgetToolbarJson = Uti.tryParseJson(
+                        response.item[0].jsonSettings
+                    );
                     if (widgetToolbarJson && widgetToolbarJson.length) {
                         this.widgetToolbarSetting = widgetToolbarJson;
-                        contextMenuText = this.widgetUtils.getTabIDFromWidgetToolbar(contextMenuText, this.data.idRepWidgetApp, this.widgetToolbarSetting);
+                        contextMenuText =
+                            this.widgetUtils.getTabIDFromWidgetToolbar(
+                                contextMenuText,
+                                this.data.idRepWidgetApp,
+                                this.widgetToolbarSetting
+                            );
                     }
                 }
 
                 this.contextMenuData = [
                     {
-                        id: 'widget-new-entity-menu-context',
-                        title: ((this.currentModule.idSettingsGUI == ModuleList.BusinessCosts.idSettingsGUI) ? 'Add ' : 'New ') + contextMenuText.name,
-                        iconName: 'fa-plus  green-color',
+                        id: "widget-new-entity-menu-context",
+                        title:
+                            (this.currentModule.idSettingsGUI ==
+                            ModuleList.BusinessCosts.idSettingsGUI
+                                ? "Add "
+                                : "New ") + contextMenuText.name,
+                        iconName: "fa-plus  green-color",
                         callback: (event) => {
-                            if (contextMenuText.name != this.currentModule.moduleName) {
+                            if (
+                                contextMenuText.name !=
+                                this.currentModule.moduleName
+                            ) {
                                 this.requestChangeTab = {
-                                    nextEvent: 'new'
+                                    nextEvent: "new",
                                 };
-                                this.store.dispatch(this.tabSummaryActions.requestSelectTab(contextMenuText.id, this.currentModule));
+                                this.store.dispatch(
+                                    this.tabSummaryActions.requestSelectTab(
+                                        contextMenuText.id,
+                                        this.currentModule
+                                    )
+                                );
                             } else {
-                                this.store.dispatch(this.tabButtonActions.requestNew(this.currentModule));
+                                this.store.dispatch(
+                                    this.tabButtonActions.requestNew(
+                                        this.currentModule
+                                    )
+                                );
                             }
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: true
+                        hidden: true,
                     },
                     {
-                        id: 'widget-edit-entity-menu-context',
-                        title: 'Edit ' + contextMenuText.name,
-                        iconName: 'fa-pencil-square-o  orange-color',
+                        id: "widget-edit-entity-menu-context",
+                        title: "Edit " + contextMenuText.name,
+                        iconName: "fa-pencil-square-o  orange-color",
                         callback: (event) => {
-                            if (contextMenuText.name != this.currentModule.moduleName) {
+                            if (
+                                contextMenuText.name !=
+                                this.currentModule.moduleName
+                            ) {
                                 this.requestChangeTab = {
-                                    nextEvent: 'edit'
+                                    nextEvent: "edit",
                                 };
-                                this.store.dispatch(this.tabSummaryActions.requestSelectTab(contextMenuText.id, this.currentModule));
+                                this.store.dispatch(
+                                    this.tabSummaryActions.requestSelectTab(
+                                        contextMenuText.id,
+                                        this.currentModule
+                                    )
+                                );
                             } else {
-                                this.store.dispatch(this.tabButtonActions.requestEdit(this.currentModule));
+                                this.store.dispatch(
+                                    this.tabButtonActions.requestEdit(
+                                        this.currentModule
+                                    )
+                                );
                             }
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: true
+                        hidden: true,
                     },
                     {
-                        id: 'widget-clone-entity-menu-context',
-                        title: 'Clone ' + contextMenuText.name,
-                        iconName: 'fa-copy',
+                        id: "widget-clone-entity-menu-context",
+                        title: "Clone " + contextMenuText.name,
+                        iconName: "fa-copy",
                         callback: (event) => {
-                            if (contextMenuText.name != this.currentModule.moduleName) {
+                            if (
+                                contextMenuText.name !=
+                                this.currentModule.moduleName
+                            ) {
                                 this.requestChangeTab = {
-                                    nextEvent: 'clone'
+                                    nextEvent: "clone",
                                 };
-                                this.store.dispatch(this.tabSummaryActions.requestSelectTab(contextMenuText.id, this.currentModule));
+                                this.store.dispatch(
+                                    this.tabSummaryActions.requestSelectTab(
+                                        contextMenuText.id,
+                                        this.currentModule
+                                    )
+                                );
                             } else {
-                                this.store.dispatch(this.tabButtonActions.requestClone(this.currentModule));
+                                this.store.dispatch(
+                                    this.tabButtonActions.requestClone(
+                                        this.currentModule
+                                    )
+                                );
                             }
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: true
+                        hidden: true,
                     },
                     {
-                        id: 'widget-separator-menu-context',
-                        title: '',
-                        iconName: '',
-                        callback: (event) => {
-                        },
+                        id: "widget-separator-menu-context",
+                        title: "",
+                        iconName: "",
+                        callback: (event) => {},
                         subject: new Subject(),
                         disabled: false,
                         children: [],
                         hidden: false,
-                        isSeparator: true
+                        isSeparator: true,
                     },
                     {
-                        id: 'widget-edit-menu-context',
-                        title: 'Edit Widget',
-                        iconName: 'fa-pencil-square-o  orange-color',
+                        id: "widget-edit-menu-context",
+                        title: "Edit Widget",
+                        iconName: "fa-pencil-square-o  orange-color",
                         callback: (event) => {
                             if (this.widgetMenuStatusComponent) {
                                 this.controlMenuStatusToolButtons(true);
@@ -1594,26 +2155,38 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                                     case WidgetType.FieldSet:
                                     case WidgetType.Combination:
                                     case WidgetType.CombinationCreditCard:
-                                        this.widgetMenuStatusComponent.editWidget('form');
+                                        this.widgetMenuStatusComponent.editWidget(
+                                            "form"
+                                        );
                                         break;
                                     // case WidgetType.EditableTable:
                                     case WidgetType.EditableGrid:
                                     case WidgetType.FileExplorer:
                                     case WidgetType.ToolFileTemplate:
-                                        this.widgetMenuStatusComponent.editWidget('table');
+                                        this.widgetMenuStatusComponent.editWidget(
+                                            "table"
+                                        );
                                         break;
                                     case WidgetType.FileExplorerWithLabel:
-                                        this.widgetMenuStatusComponent.toggleToolButtons(true);
+                                        this.widgetMenuStatusComponent.toggleToolButtons(
+                                            true
+                                        );
                                         break;
                                     case WidgetType.Country:
-                                        this.widgetMenuStatusComponent.editWidget('country');
+                                        this.widgetMenuStatusComponent.editWidget(
+                                            "country"
+                                        );
                                         break;
                                     case WidgetType.TreeView: {
-                                        this.widgetMenuStatusComponent.editWidget('treeview');
+                                        this.widgetMenuStatusComponent.editWidget(
+                                            "treeview"
+                                        );
                                         break;
                                     }
                                     case WidgetType.NoteForm:
-                                        this.widgetMenuStatusComponent.editWidget(EditWidgetTypeEnum.NoteForm);
+                                        this.widgetMenuStatusComponent.editWidget(
+                                            EditWidgetTypeEnum.NoteForm
+                                        );
                                         break;
                                 }
                             }
@@ -1621,26 +2194,30 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: true
+                        hidden: true,
                     },
                     {
-                        id: 'widget-save-menu-context',
-                        title: 'Save Widget',
-                        iconName: 'fa-floppy-o  orange-color',
+                        id: "widget-save-menu-context",
+                        title: "Save Widget",
+                        iconName: "fa-floppy-o  orange-color",
                         callback: (event) => {
                             this.saveWidget(this.savingWidgetType);
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hotkey: 'Ctrl + S',
+                        hotkey: "Ctrl + S",
                         // hidden: !this.getAccessRightForCommandButton('ToolbarButton') || !this.getAccessRightForCommandButton('ToolbarButton__EditButton')
-                        hidden: !this.accessRight['edit'] || !this.getAccessRightForCommandButton('ToolbarButton')
+                        hidden:
+                            !this.accessRight["edit"] ||
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton"
+                            ),
                     },
                     {
-                        id: 'widget-add-row-menu-context',
-                        title: 'Add Row',
-                        iconName: 'fa-plus  green-color',
+                        id: "widget-add-row-menu-context",
+                        title: "Add Row",
+                        iconName: "fa-plus  green-color",
                         callback: (event) => {
                             this.addRowEditableTable();
                         },
@@ -1648,40 +2225,52 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                         disabled: false,
                         children: [],
                         // hidden: !this.getAccessRightForCommandButton('ToolbarButton') || !this.getAccessRightForCommandButton('ToolbarButton__EditButton')
-                        hidden: !this.accessRight['edit'] || !this.getAccessRightForCommandButton('ToolbarButton')
+                        hidden:
+                            !this.accessRight["edit"] ||
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton"
+                            ),
                     },
                     {
-                        id: 'widget-upload-file-menu-context',
-                        title: 'Upload File',
-                        iconName: 'fa-cloud-upload  green-color',
+                        id: "widget-upload-file-menu-context",
+                        title: "Upload File",
+                        iconName: "fa-cloud-upload  green-color",
                         callback: (event) => {
                             this.onUploadFileClick();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hotkey: '',
+                        hotkey: "",
                         // hidden: !this.getAccessRightForCommandButton('ToolbarButton') || !this.getAccessRightForCommandButton('ToolbarButton__EditButton')
-                        hidden: !this.accessRight['edit'] || !this.getAccessRightForCommandButton('ToolbarButton')
+                        hidden:
+                            !this.accessRight["edit"] ||
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton"
+                            ),
                     },
                     {
-                        id: 'widget-delete-file-menu-context',
-                        title: 'Delete File',
-                        iconName: 'fa-trash-o  red-color',
+                        id: "widget-delete-file-menu-context",
+                        title: "Delete File",
+                        iconName: "fa-trash-o  red-color",
                         callback: (event) => {
                             this.onClickDeleteFiles();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hotkey: '',
+                        hotkey: "",
                         // hidden: !this.getAccessRightForCommandButton('ToolbarButton') || !this.getAccessRightForCommandButton('ToolbarButton__EditButton')
-                        hidden: !this.accessRight['delete'] || !this.getAccessRightForCommandButton('ToolbarButton')
+                        hidden:
+                            !this.accessRight["delete"] ||
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton"
+                            ),
                     },
                     {
-                        id: 'widget-cancel-menu-context',
-                        title: 'Cancel Edit Widget',
-                        iconName: 'fa-undo  red-color',
+                        id: "widget-cancel-menu-context",
+                        title: "Cancel Edit Widget",
+                        iconName: "fa-undo  red-color",
                         callback: (event) => {
                             this.cancelEditing();
                         },
@@ -1689,12 +2278,16 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                         disabled: false,
                         children: [],
                         // hidden: !this.getAccessRightForCommandButton('ToolbarButton') || !this.getAccessRightForCommandButton('ToolbarButton__EditButton')
-                        hidden: !this.accessRight['edit'] || !this.getAccessRightForCommandButton('ToolbarButton')
+                        hidden:
+                            !this.accessRight["edit"] ||
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton"
+                            ),
                     },
                     {
-                        id: 'widget-translate-menu-context',
-                        title: 'Translate',
-                        iconName: 'fa-language  blue-color',
+                        id: "widget-translate-menu-context",
+                        title: "Translate",
+                        iconName: "fa-language  blue-color",
                         callback: (event) => {
                             // this.translateWidget(event);
                             this.openTranslateWidget(event);
@@ -1702,49 +2295,80 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: !this.getAccessRightForCommandButton('ToolbarButton') || !this.getAccessRightForCommandButton('ToolbarButton__TranslateButton')
+                        hidden:
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton"
+                            ) ||
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton__TranslateButton"
+                            ),
                     },
                     {
-                        id: 'widget-translate-fields-menu-context',
-                        title: 'Translate Fields',
-                        iconName: 'fa-tasks',
+                        id: "widget-translate-fields-menu-context",
+                        title: "Translate Fields",
+                        iconName: "fa-tasks",
                         callback: (event) => {
                             this.onOpenFieldTranslateWidget(event);
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: !(this.data.idRepWidgetApp == 106) || !this.getAccessRightForCommandButton('ToolbarButton') || !this.getAccessRightForCommandButton('ToolbarButton__TranslateButton')
+                        hidden:
+                            !(this.data.idRepWidgetApp == 106) ||
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton"
+                            ) ||
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton__TranslateButton"
+                            ),
                     },
                     {
-                        id: 'widget-print-menu-context',
-                        title: 'Print',
-                        iconName: 'fa-print',
+                        id: "widget-print-menu-context",
+                        title: "Print",
+                        iconName: "fa-print",
                         callback: (event) => {
                             this.printWidget();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: !this.getAccessRightForCommandButton('ToolbarButton') || !this.getAccessRightForCommandButton('ToolbarButton__PrintButton')
+                        hidden:
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton"
+                            ) ||
+                            !this.getAccessRightForCommandButton(
+                                "ToolbarButton__PrintButton"
+                            ),
                     },
                     {
-                        id: 'widget-refresh-menu-context',
-                        title: 'Refresh',
-                        iconName: 'fa-undo  green-color',
+                        id: "widget-refresh-menu-context",
+                        title: "Refresh",
+                        iconName: "fa-undo  green-color",
                         callback: (event) => {
                             this.onRefreshWidget();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: false
-                    }
+                        hidden: false,
+                    },
                 ];
 
-                this.buildContextMenu(this.contextMenuData, this.data.idRepWidgetType, this.currentModule, this.toolbarSetting, this.selectedTabHeader, this.activeSubModule);
+                this.buildContextMenu(
+                    this.contextMenuData,
+                    this.data.idRepWidgetType,
+                    this.currentModule,
+                    this.toolbarSetting,
+                    this.selectedTabHeader,
+                    this.activeSubModule
+                );
                 this.rebuildContextMenuForToggleEditForm();
-                this.widgetUtils.rebuildContextMenuWhenChangeSimpleTab(this.contextMenuData, this._simpleTabData, this.getAccessRightAll(), this.currentModule);
+                this.widgetUtils.rebuildContextMenuWhenChangeSimpleTab(
+                    this.contextMenuData,
+                    this._simpleTabData,
+                    this.getAccessRightAll(),
+                    this.currentModule
+                );
                 this.addContextMenuForDesignLayout();
                 this.addMenuSettingForm();
                 this.enableEditWidgetContextMenu();
@@ -1752,78 +2376,87 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private addMenuSettingForm() {
-        if (!!(((this.data.idRepWidgetType == this.WidgetTypeView.DataGrid)
-            && this.displayReadonlyGridAsForm)
-            || (this.data.idRepWidgetType == this.WidgetTypeView.FieldSet)
-            || (this.data.idRepWidgetType == this.WidgetTypeView.FieldSetReadonly))
-            && !Uti.existItemInArray(this.contextMenuData, { id: 'settingForm' }, 'id')) {
+        if (
+            !!(
+                (this.data.idRepWidgetType == this.WidgetTypeView.DataGrid &&
+                    this.displayReadonlyGridAsForm) ||
+                this.data.idRepWidgetType == this.WidgetTypeView.FieldSet ||
+                this.data.idRepWidgetType ==
+                    this.WidgetTypeView.FieldSetReadonly
+            ) &&
+            !Uti.existItemInArray(
+                this.contextMenuData,
+                { id: "settingForm" },
+                "id"
+            )
+        ) {
             this.contextMenuData.push({
-                id: 'widget-separator-menu-context',
-                title: '',
-                iconName: '',
+                id: "widget-separator-menu-context",
+                title: "",
+                iconName: "",
                 subject: new Subject(),
                 disabled: false,
                 children: [],
                 hidden: true,
-                isSeparator: true
+                isSeparator: true,
             });
             this.contextMenuData.push({
-                id: 'settingForm',
-                title: 'Setting Form',
-                iconName: '',
+                id: "settingForm",
+                title: "Setting Form",
+                iconName: "",
                 subject: new Subject(),
                 disabled: false,
                 children: [
                     {
-                        id: 'settingColumn',
-                        title: 'Setting Column',
-                        iconName: 'fa-columns  blue-color',
+                        id: "settingColumn",
+                        title: "Setting Column",
+                        iconName: "fa-columns  blue-color",
                         callback: (event) => {
                             this.widgetFormComponent.openSettingColumnDialog();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: false
+                        hidden: false,
                     },
                     {
-                        id: 'settingPanel',
-                        title: 'Setting Panel',
-                        iconName: 'fa-square-o  blue-color',
+                        id: "settingPanel",
+                        title: "Setting Panel",
+                        iconName: "fa-square-o  blue-color",
                         callback: (event) => {
                             this.widgetFormComponent.openSettingPanelDialog();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: false
+                        hidden: false,
                     },
                     {
-                        id: 'settingField',
-                        title: 'Setting Field',
-                        iconName: 'fa-cog  blue-color',
+                        id: "settingField",
+                        title: "Setting Field",
+                        iconName: "fa-cog  blue-color",
                         callback: (event) => {
                             this.widgetFormComponent.openSettingFieldDialog();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: false
+                        hidden: false,
                     },
                     {
-                        id: 'settingAllFields',
-                        title: 'Setting All Fields',
-                        iconName: 'fa-bars  blue-color',
+                        id: "settingAllFields",
+                        title: "Setting All Fields",
+                        iconName: "fa-bars  blue-color",
                         callback: (event) => {
                             this.widgetFormComponent.openSettingAllFieldDialog();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: false
-                    }
+                        hidden: false,
+                    },
                 ],
-                hidden: true
+                hidden: true,
             });
         }
         if (this.isEditingLayout) {
@@ -1832,51 +2465,60 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private addContextMenuForDesignLayout() {
-        if (!!(((this.data.idRepWidgetType == this.WidgetTypeView.DataGrid)
-            && this.displayReadonlyGridAsForm)
-            || (this.data.idRepWidgetType == this.WidgetTypeView.FieldSet)
-            || (this.data.idRepWidgetType == this.WidgetTypeView.FieldSetReadonly))
-            && !Uti.existItemInArray(this.contextMenuData, { id: 'designTemplate' }, 'id')) {
+        if (
+            !!(
+                (this.data.idRepWidgetType == this.WidgetTypeView.DataGrid &&
+                    this.displayReadonlyGridAsForm) ||
+                this.data.idRepWidgetType == this.WidgetTypeView.FieldSet ||
+                this.data.idRepWidgetType ==
+                    this.WidgetTypeView.FieldSetReadonly
+            ) &&
+            !Uti.existItemInArray(
+                this.contextMenuData,
+                { id: "designTemplate" },
+                "id"
+            )
+        ) {
             this.contextMenuData.push({
-                id: 'widget-separator-menu-context',
-                title: '',
-                iconName: '',
+                id: "widget-separator-menu-context",
+                title: "",
+                iconName: "",
                 subject: new Subject(),
                 disabled: false,
                 children: [],
                 hidden: true,
-                isSeparator: true
+                isSeparator: true,
             });
             this.contextMenuData.push({
-                id: 'designTemplate',
-                title: 'Design Template',
-                iconName: '',
+                id: "designTemplate",
+                title: "Design Template",
+                iconName: "",
                 subject: new Subject(),
                 disabled: false,
                 children: [
                     {
-                        id: 'addColumn',
-                        title: 'Add Column',
-                        iconName: 'fa-columns  blue-color',
+                        id: "addColumn",
+                        title: "Add Column",
+                        iconName: "fa-columns  blue-color",
                         callback: (event) => {
                             this.widgetFormComponent.addColumn();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: false
+                        hidden: false,
                     },
                     {
-                        id: 'addPanel',
-                        title: 'Add Panel',
-                        iconName: 'fa-square-o  blue-color',
+                        id: "addPanel",
+                        title: "Add Panel",
+                        iconName: "fa-square-o  blue-color",
                         callback: (event) => {
                             this.widgetFormComponent.addPanel();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: false
+                        hidden: false,
                     },
                     // {
                     //     id: 'addRowPanel',
@@ -1891,19 +2533,19 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                     //     hidden: false
                     // },
                     {
-                        id: 'addLineBreak',
-                        title: 'Add Line-break',
-                        iconName: 'fa-arrows-v  blue-color',
+                        id: "addLineBreak",
+                        title: "Add Line-break",
+                        iconName: "fa-arrows-v  blue-color",
                         callback: (event) => {
                             this.widgetFormComponent.addLineBreak();
                         },
                         subject: new Subject(),
                         disabled: false,
                         children: [],
-                        hidden: false
-                    }
+                        hidden: false,
+                    },
                 ],
-                hidden: true
+                hidden: true,
             });
         }
         if (this.isEditingLayout) {
@@ -1912,56 +2554,88 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private addContextMenuForSelectionExport(context) {
-        if (Configuration.PublicSettings.isSelectionProject &&
-            (this.data.idRepWidgetApp === 514 || this.data.idRepWidgetApp === 515) &&
-            !Uti.existItemInArray(this.contextMenuData, { name: 'Selection Export' }, 'name')) {
+        if (
+            Configuration.PublicSettings.isSelectionProject &&
+            (this.data.idRepWidgetApp === 514 ||
+                this.data.idRepWidgetApp === 515) &&
+            !Uti.existItemInArray(
+                this.contextMenuData,
+                { name: "Selection Export" },
+                "name"
+            )
+        ) {
             context.push({
-                name: '',
-                cssClasses: ['xn-ag-separator'],
+                name: "",
+                cssClasses: ["xn-ag-separator"],
                 index: 710,
             });
             context.push({
-                name: 'Selection Export',
-                cssClasses: [''],
+                name: "Selection Export",
+                cssClasses: [""],
                 icon: `<i class="fa  fa-download blue-color  ag-context-icon"/>`,
                 index: 711,
                 subMenu: [
                     {
-                        name: 'All',
-                        cssClasses: [''],
+                        name: "All",
+                        cssClasses: [""],
                         icon: `<i class="fa  fa-file-o  blue-color ag-context-icon"/>`,
                         action: (event) => {
-                            this.store.dispatch(this.processDataActions.requestExportSelectionDataFromContextMenu('all', this.currentModule))
-                        }
+                            this.store.dispatch(
+                                this.processDataActions.requestExportSelectionDataFromContextMenu(
+                                    "all",
+                                    this.currentModule
+                                )
+                            );
+                        },
                     },
                     {
-                        name: 'Mediacode',
-                        cssClasses: [''],
+                        name: "Mediacode",
+                        cssClasses: [""],
                         icon: `<i class="fa  fa-file-excel-o green-color ag-context-icon"/>`,
                         action: (event) => {
-                            this.store.dispatch(this.processDataActions.requestExportSelectionDataFromContextMenu('mediacode', this.currentModule))
-                        }
+                            this.store.dispatch(
+                                this.processDataActions.requestExportSelectionDataFromContextMenu(
+                                    "mediacode",
+                                    this.currentModule
+                                )
+                            );
+                        },
                     },
                     {
-                        name: 'Data',
-                        cssClasses: [''],
+                        name: "Data",
+                        cssClasses: [""],
                         icon: `<i class="fa  fa-file-archive-o orange-color  ag-context-icon"/>`,
                         action: (event) => {
-                            this.store.dispatch(this.processDataActions.requestExportSelectionDataFromContextMenu('data', this.currentModule))
-                        }
-                    }
-                ]
+                            this.store.dispatch(
+                                this.processDataActions.requestExportSelectionDataFromContextMenu(
+                                    "data",
+                                    this.currentModule
+                                )
+                            );
+                        },
+                    },
+                ],
             });
         }
     }
 
     private execSelectedSimpleTab(data: SimpleTabModel) {
-        this.widgetUtils.rebuildContextMenuWhenChangeSimpleTab(this.contextMenuData, data, this.getAccessRightAll(), this.currentModule);
+        this.widgetUtils.rebuildContextMenuWhenChangeSimpleTab(
+            this.contextMenuData,
+            data,
+            this.getAccessRightAll(),
+            this.currentModule
+        );
     }
 
     private rebuildContextMenuForToggleEditForm() {
-        if (this.data.idRepWidgetType == WidgetType.FileExplorerWithLabel && this.xnFileExplorerComponentCtrl) {
-            this.makeEditingContextMenuForFileExplorerComponent(this.xnFileExplorerComponentCtrl.isEditing);
+        if (
+            this.data.idRepWidgetType == WidgetType.FileExplorerWithLabel &&
+            this.xnFileExplorerComponentCtrl
+        ) {
+            this.makeEditingContextMenuForFileExplorerComponent(
+                this.xnFileExplorerComponentCtrl.isEditing
+            );
         }
     }
 
@@ -1977,14 +2651,29 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 this.timesLoopSetRightMenu++;
                 return;
             }
-            this.buildContextMenu(this.contextMenuData, this.data.idRepWidgetType, this.currentModule, this.toolbarSetting, this.selectedTabHeader, this.activeSubModule);
+            this.buildContextMenu(
+                this.contextMenuData,
+                this.data.idRepWidgetType,
+                this.currentModule,
+                this.toolbarSetting,
+                this.selectedTabHeader,
+                this.activeSubModule
+            );
         }, 300);
     }
 
     private translateWidget(event) {
-        if (this.widgetFormComponent && this.widgetFormComponent.editLanguageMode !== undefined) {
+        if (
+            this.widgetFormComponent &&
+            this.widgetFormComponent.editLanguageMode !== undefined
+        ) {
             this.widgetFormComponent.editLanguageMode = true;
-            this.contextMenuData = this.widgetUtils.contextMenuInTranslateMode(this.contextMenuData, this.data.idRepWidgetType, this.getAccessRightAll(), this.data.idRepWidgetApp);
+            this.contextMenuData = this.widgetUtils.contextMenuInTranslateMode(
+                this.contextMenuData,
+                this.data.idRepWidgetType,
+                this.getAccessRightAll(),
+                this.data.idRepWidgetApp
+            );
         }
     }
 
@@ -1992,7 +2681,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (isEmpty(this.data)) {
             return;
         }
-        if (!isNil(this.data.idRepWidgetType) && this.data.idRepWidgetType !== WidgetType.Combination)
+        if (
+            !isNil(this.data.idRepWidgetType) &&
+            this.data.idRepWidgetType !== WidgetType.Combination
+        )
             this.selectedSubFilter = null;
 
         this.updateDataForWidgetMenuStatus();
@@ -2000,15 +2692,22 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (this.columnLayoutsetting)
             this.columnLayout = this.columnLayoutsetting.columnLayout;
 
-        if (this.data.widgetDataType &&
+        if (
+            this.data.widgetDataType &&
             this.data.widgetDataType.listenKey &&
-            this.data.widgetDataType.listenKey.main) {
+            this.data.widgetDataType.listenKey.main
+        ) {
             const key = this.data.widgetDataType.listenKey.main.key;
-            this.listenKeyValue = this.data.widgetDataType.listenKeyRequest(this.currentModule.moduleNameTrim)[key];
+            this.listenKeyValue = this.data.widgetDataType.listenKeyRequest(
+                this.currentModule.moduleNameTrim
+            )[key];
         }
 
         if (this.widgetUtils.isTableWidgetDataType(this.data)) {
-            if (!this.isWidgetDataEdited && !this.checkCurrentWidgetHasChildrenInEditMode()) {
+            if (
+                !this.isWidgetDataEdited &&
+                !this.checkCurrentWidgetHasChildrenInEditMode()
+            ) {
                 this.formatTableSetting();
                 // Build datatable
                 this.changeDisplayTable(true);
@@ -2021,7 +2720,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
         this.formatShowFilterSetting();
 
-        if (WidgetConstant.WidgetTypeIdAllowWidgetInfoTranslation.indexOf(this.data.idRepWidgetType) > -1) {
+        if (
+            WidgetConstant.WidgetTypeIdAllowWidgetInfoTranslation.indexOf(
+                this.data.idRepWidgetType
+            ) > -1
+        ) {
             this.allowWidgetInfoTranslation = true;
         }
         if (this.widgetMenuStatusComponent && this.showInDialog) {
@@ -2029,7 +2732,12 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             this.widgetMenuStatusComponent.isShowWidgetSetting = false;
         }
 
-        if (this.isCustomerStatusWidgetEdit && (this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerStatus || this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerBusinessStatus)) {
+        if (
+            this.isCustomerStatusWidgetEdit &&
+            (this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerStatus ||
+                this.data.idRepWidgetApp ==
+                    RepWidgetAppIdEnum.CustomerBusinessStatus)
+        ) {
             this.onTableEditStart(null);
         }
 
@@ -2072,56 +2780,122 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             widgetProperties: this.properties,
             gridLayoutSettings: this.columnsLayoutSettings,
             isForAllCountryCheckbox: isForAllCountryCheckbox,
-            isForAllCountryButton: isForAllCountryButton
+            isForAllCountryButton: isForAllCountryButton,
         };
     }
 
     private updateBackgroundWhenColorChangeValue() {
         // Get data from Old Property
-        const oldWidgetStyleBackgroundColor: WidgetPropertyModel = this.propertyPanelService.getItemRecursiveResultNotNull(this.propertiesOld, 'WidgetStyleBackgroundColor');
-        const oldWidgetBackgroundStyleGradientColor: WidgetPropertyModel = this.propertyPanelService.getItemRecursiveResultNotNull(this.propertiesOld, 'WidgetBackgroundStyleGradientColor');
-        const oldPropBackgroundStyleImage: WidgetPropertyModel = this.propertyPanelService.getItemRecursiveResultNotNull(this.propertiesOld, 'WidgetBackgroundStyleImage');
-        const oldPropResetBackground: WidgetPropertyModel = this.propertyPanelService.getItemRecursiveResultNotNull(this.propertiesOld, 'ResetBackground');
+        const oldWidgetStyleBackgroundColor: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.propertiesOld,
+                "WidgetStyleBackgroundColor"
+            );
+        const oldWidgetBackgroundStyleGradientColor: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.propertiesOld,
+                "WidgetBackgroundStyleGradientColor"
+            );
+        const oldPropBackgroundStyleImage: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.propertiesOld,
+                "WidgetBackgroundStyleImage"
+            );
+        const oldPropResetBackground: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.propertiesOld,
+                "ResetBackground"
+            );
 
         // Get data from New Property
-        const propertyResetBackground: WidgetPropertyModel = this.propertyPanelService.getItemRecursiveResultNotNull(this.properties, 'ResetBackground');
-        const newWidgetStyleBackgroundColor: WidgetPropertyModel = this.propertyPanelService.getItemRecursiveResultNotNull(this.properties, 'WidgetStyleBackgroundColor');
-        const newWidgetBackgroundStyleGradientColor: WidgetPropertyModel = this.propertyPanelService.getItemRecursiveResultNotNull(this.properties, 'WidgetBackgroundStyleGradientColor');
-        const newPropBackgroundStyleImage: WidgetPropertyModel = this.propertyPanelService.getItemRecursiveResultNotNull(this.properties, 'WidgetBackgroundStyleImage');
-        const newOpacityImage: WidgetPropertyModel = this.propertyPanelService.getItemRecursiveResultNotNull(this.properties, 'OpacityImage');
+        const propertyResetBackground: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.properties,
+                "ResetBackground"
+            );
+        const newWidgetStyleBackgroundColor: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.properties,
+                "WidgetStyleBackgroundColor"
+            );
+        const newWidgetBackgroundStyleGradientColor: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.properties,
+                "WidgetBackgroundStyleGradientColor"
+            );
+        const newPropBackgroundStyleImage: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.properties,
+                "WidgetBackgroundStyleImage"
+            );
+        const newOpacityImage: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.properties,
+                "OpacityImage"
+            );
 
         // Reset background
-        if (oldPropResetBackground.value !== propertyResetBackground.value && propertyResetBackground.value) {
-            newWidgetStyleBackgroundColor.value = '#ffffff';
-            this.setBackgroundForWidget(newWidgetStyleBackgroundColor.value, null, null, null);
+        if (
+            oldPropResetBackground.value !== propertyResetBackground.value &&
+            propertyResetBackground.value
+        ) {
+            newWidgetStyleBackgroundColor.value = "#ffffff";
+            this.setBackgroundForWidget(
+                newWidgetStyleBackgroundColor.value,
+                null,
+                null,
+                null
+            );
             // this.store.dispatch(this.propertyPanelActions.togglePanel(this.currentModule, true, this.data, this.properties, false));
             this.updateNewPropertiesForOldProperties();
         }
 
         // 1./ If color/image have not changed then return
-        if ((oldWidgetStyleBackgroundColor.value || '') === (newWidgetStyleBackgroundColor.value || '') &&
-            (oldWidgetBackgroundStyleGradientColor.value || '') === (newWidgetBackgroundStyleGradientColor.value || '') &&
-            oldPropBackgroundStyleImage.value === newPropBackgroundStyleImage.value) {
-            this.setBackgroundForWidget(newWidgetStyleBackgroundColor.value, newWidgetBackgroundStyleGradientColor.value, newPropBackgroundStyleImage.value, newOpacityImage.value);
+        if (
+            (oldWidgetStyleBackgroundColor.value || "") ===
+                (newWidgetStyleBackgroundColor.value || "") &&
+            (oldWidgetBackgroundStyleGradientColor.value || "") ===
+                (newWidgetBackgroundStyleGradientColor.value || "") &&
+            oldPropBackgroundStyleImage.value ===
+                newPropBackgroundStyleImage.value
+        ) {
+            this.setBackgroundForWidget(
+                newWidgetStyleBackgroundColor.value,
+                newWidgetBackgroundStyleGradientColor.value,
+                newPropBackgroundStyleImage.value,
+                newOpacityImage.value
+            );
             return;
         }
 
         // The first time set background and do not save then return
-        if (!newWidgetStyleBackgroundColor.value && !newWidgetBackgroundStyleGradientColor.value && !newPropBackgroundStyleImage.value) {
+        if (
+            !newWidgetStyleBackgroundColor.value &&
+            !newWidgetBackgroundStyleGradientColor.value &&
+            !newPropBackgroundStyleImage.value
+        ) {
             this.setBackgroundForWidget(null, null, null, null);
             return;
         }
 
-
         // 3./ If image changed and have image
-        if (oldPropBackgroundStyleImage.value !== newPropBackgroundStyleImage.value && newPropBackgroundStyleImage.value) {
+        if (
+            oldPropBackgroundStyleImage.value !==
+                newPropBackgroundStyleImage.value &&
+            newPropBackgroundStyleImage.value
+        ) {
             const updateOpacity = newOpacityImage.value;
             if (!newOpacityImage.value) {
                 newOpacityImage.value = 0.5;
             } else {
                 newOpacityImage.value = updateOpacity;
             }
-            this.setBackgroundForWidget(null, null, newPropBackgroundStyleImage.value, newOpacityImage.value);
+            this.setBackgroundForWidget(
+                null,
+                null,
+                newPropBackgroundStyleImage.value,
+                newOpacityImage.value
+            );
             newWidgetStyleBackgroundColor.value = null;
             newWidgetBackgroundStyleGradientColor.value = null;
             propertyResetBackground.value = false;
@@ -2130,8 +2904,17 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }
 
         // 2.2/ If gradient color changed and have gradient color
-        if (((oldWidgetBackgroundStyleGradientColor.value || '') !== (newWidgetBackgroundStyleGradientColor.value || '')) && newWidgetBackgroundStyleGradientColor.value) {
-            this.setBackgroundForWidget(null, newWidgetBackgroundStyleGradientColor.value, null, null);
+        if (
+            (oldWidgetBackgroundStyleGradientColor.value || "") !==
+                (newWidgetBackgroundStyleGradientColor.value || "") &&
+            newWidgetBackgroundStyleGradientColor.value
+        ) {
+            this.setBackgroundForWidget(
+                null,
+                newWidgetBackgroundStyleGradientColor.value,
+                null,
+                null
+            );
             newPropBackgroundStyleImage.value = null;
             newWidgetStyleBackgroundColor.value = null;
             newOpacityImage.value = null;
@@ -2141,8 +2924,16 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }
 
         // 2.1/ If straight color changed and have color
-        if ((oldWidgetStyleBackgroundColor.value || '') !== (newWidgetStyleBackgroundColor.value || '')) {
-            this.setBackgroundForWidget(newWidgetStyleBackgroundColor.value, null, null, null);
+        if (
+            (oldWidgetStyleBackgroundColor.value || "") !==
+            (newWidgetStyleBackgroundColor.value || "")
+        ) {
+            this.setBackgroundForWidget(
+                newWidgetStyleBackgroundColor.value,
+                null,
+                null,
+                null
+            );
             newPropBackgroundStyleImage.value = null;
             newWidgetBackgroundStyleGradientColor.value = null;
             newOpacityImage.value = null;
@@ -2168,35 +2959,45 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }, 500);
     }
 
-    private setBackgroundForWidget(color: any, gradientColor: any, image: any, opacity: any) {
+    private setBackgroundForWidget(
+        color: any,
+        gradientColor: any,
+        image: any,
+        opacity: any
+    ) {
         if (color) {
             this.backgroundColor = color;
-            this.backGroundImageStyle = '';
+            this.backGroundImageStyle = "";
             return;
         }
 
         if (gradientColor) {
             this.backgroundColor = gradientColor;
-            this.backGroundImageStyle = '';
+            this.backGroundImageStyle = "";
             return;
         }
 
-        this.backgroundColor = '';
+        this.backgroundColor = "";
         if (!image) {
-            this.backGroundImageStyle = '';
+            this.backGroundImageStyle = "";
             return;
         }
         this.backGroundImageStyle = {
-            image: `linear-gradient(rgba(255,255,255, ${opacity || 0.5}), rgba(255,255,255, ${opacity || 0.5})), url(${image})`,
-            size: 'cover',
-            position: 'center center'
-        }
+            image: `linear-gradient(rgba(255,255,255, ${
+                opacity || 0.5
+            }), rgba(255,255,255, ${opacity || 0.5})), url(${image})`,
+            size: "cover",
+            position: "center center",
+        };
     }
 
     private changeProperties() {
         this.updateConnectedWidgetStatusProperty(this.data);
         this.updateWidgetTitle();
-        const newTitleObj = this.propertyPanelService.getItemRecursive(this.properties, 'TitleText');
+        const newTitleObj = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "TitleText"
+        );
         if (newTitleObj) {
             this.data.title = newTitleObj.value;
         }
@@ -2207,14 +3008,16 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.updateBackgroundWhenColorChangeValue();
         // this.changeBackGroundStyle(this.properties);
         //this.updateWidgetToolbarStyle();
-        const isNotWidgetTable = this.data.idRepWidgetType &&
-            (this.data.idRepWidgetType === WidgetType.FieldSet
-                || this.data.idRepWidgetType === WidgetType.FieldSetReadonly
-                || this.data.idRepWidgetType === WidgetType.Combination
-                || this.data.idRepWidgetType === WidgetType.CombinationCreditCard);
+        const isNotWidgetTable =
+            this.data.idRepWidgetType &&
+            (this.data.idRepWidgetType === WidgetType.FieldSet ||
+                this.data.idRepWidgetType === WidgetType.FieldSetReadonly ||
+                this.data.idRepWidgetType === WidgetType.Combination ||
+                this.data.idRepWidgetType === WidgetType.CombinationCreditCard);
         const isChart = this.data.idRepWidgetType === WidgetType.Chart;
         const isPDfViewer = this.data.idRepWidgetType === WidgetType.PdfViewer;
-        const isSavSendLetter = this.data.idRepWidgetType === WidgetType.SAVSendLetter;
+        const isSavSendLetter =
+            this.data.idRepWidgetType === WidgetType.SAVSendLetter;
         if (isChart) {
             this.updateChartType();
             this.updateChartColorScheme();
@@ -2239,15 +3042,19 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             this.updateWidgetFormPanelStyle();
             this.updateWidgetFormImportantLabelStyle();
             this.updateWidgetFormImportantDataStyle();
-
         }
-        const isReadonlyWidgetTable = this.data.idRepWidgetType === WidgetType.DataGrid;
+        const isReadonlyWidgetTable =
+            this.data.idRepWidgetType === WidgetType.DataGrid;
         if (isNotWidgetTable || isReadonlyWidgetTable) {
             this.updateImportantDisplayFields();
         }
 
-        if (this.data.idRepWidgetType &&
-            (WidgetConstant.WidgetTypeIdUpdateProperty.indexOf(this.data.idRepWidgetType) > -1)) {
+        if (
+            this.data.idRepWidgetType &&
+            WidgetConstant.WidgetTypeIdUpdateProperty.indexOf(
+                this.data.idRepWidgetType
+            ) > -1
+        ) {
             this.updateWidgetGridHeaderStyle();
             this.updateWidgetGridRowStyle();
             this.updateRowBackground();
@@ -2257,13 +3064,20 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             }, 200);
         }
 
-        if (this.data.idRepWidgetType && this.data.idRepWidgetType === WidgetType.Doublette || WidgetType.SynchronizeElasticsSearch) {
+        if (
+            (this.data.idRepWidgetType &&
+                this.data.idRepWidgetType === WidgetType.Doublette) ||
+            WidgetType.SynchronizeElasticsSearch
+        ) {
             this.updateWidgetGridRowStyle();
             this.updateRowBackground();
             this.updateWidgetGridBorderRowStyle();
         }
 
-        if (this.data.idRepWidgetType && this.data.idRepWidgetType === WidgetType.DataGrid) {
+        if (
+            this.data.idRepWidgetType &&
+            this.data.idRepWidgetType === WidgetType.DataGrid
+        ) {
             this.updateForEachFieldStyle();
             // this.updateWidgetFormLabelStyle();
             // this.updateWidgetFormDataStyle();
@@ -2275,7 +3089,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             this.updateWidgetGridRowStyle();
             this.updateRowBackground();
             this.updateWidgetGridBorderRowStyle();
-            this.readonlyGridAutoSwitchToDetailProp = this.checkForReadonlyGridAutoSwitchToDetail();
+            this.readonlyGridAutoSwitchToDetailProp =
+                this.checkForReadonlyGridAutoSwitchToDetail();
             this._buildFormDataForReadonlyGridCounter = 0;
 
             setTimeout(() => {
@@ -2283,7 +3098,6 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 this.buildFormDataForReadonlyGrid();
                 //this.readonlyGridMultipleRowDisplayProp = this.checkForReadonlyGridMultipleRowDisplay();
             }, 200);
-
         }
 
         // setTimeout(() => {
@@ -2309,9 +3123,9 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.updateFitWidthColumnProperty();
         this.updateShowTotalRowProperty();
         this.updateShowTotalRowDetail();
-        this.updateAgGridProperty('rowGrouping');
-        this.updateAgGridProperty('pivoting');
-        this.updateAgGridProperty('columnFilter');
+        this.updateAgGridProperty("rowGrouping");
+        this.updateAgGridProperty("pivoting");
+        this.updateAgGridProperty("columnFilter");
         this.updateDisplayFieldsProperty(null);
         this.updateDisplayModeProperty();
         this.updateDOBFormat();
@@ -2322,73 +3136,125 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
      * @param filterModeEnum
      * @param isSubDisplayMode
      */
-    private updateDisplayModeProperty(filterModeEnum?: FilterModeEnum, isSubDisplayMode?: boolean) {
-        if (!this.data && !this.properties)
-            return;
+    private updateDisplayModeProperty(
+        filterModeEnum?: FilterModeEnum,
+        isSubDisplayMode?: boolean
+    ) {
+        if (!this.data && !this.properties) return;
 
         const isFireEventUpdateData = false;
-        const isNotWidgetTable = this.data && (this.data.idRepWidgetType === WidgetType.FieldSet ||
-            this.data.idRepWidgetType === WidgetType.FieldSetReadonly ||
-            this.data.idRepWidgetType === WidgetType.OrderDataEntry);
-        const isWidgetCombination = this.data && this.data.idRepWidgetType === WidgetType.Combination;
-        const propDisplayField: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'DisplayField');
-        const propDisplayColumn: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'DisplayColumn');
+        const isNotWidgetTable =
+            this.data &&
+            (this.data.idRepWidgetType === WidgetType.FieldSet ||
+                this.data.idRepWidgetType === WidgetType.FieldSetReadonly ||
+                this.data.idRepWidgetType === WidgetType.OrderDataEntry);
+        const isWidgetCombination =
+            this.data && this.data.idRepWidgetType === WidgetType.Combination;
+        const propDisplayField: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "DisplayField"
+            );
+        const propDisplayColumn: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "DisplayColumn"
+            );
 
         if (propDisplayField || propDisplayColumn) {
             let isChangeDisplayMode = false;
             // ShowData of DisplayColumn
-            if (propDisplayColumn && propDisplayColumn.children && propDisplayColumn.children.length) {
-                const propDisplayColumn_ShowData: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(propDisplayColumn.children, 'ShowData');
+            if (
+                propDisplayColumn &&
+                propDisplayColumn.children &&
+                propDisplayColumn.children.length
+            ) {
+                const propDisplayColumn_ShowData: WidgetPropertyModel =
+                    this.propertyPanelService.getItemRecursive(
+                        propDisplayColumn.children,
+                        "ShowData"
+                    );
                 //// clear value of propDisplayColumn_ShowData in case no options
                 //// (mean this gets default setting from DB)
                 //if (!propDisplayColumn_ShowData.options || !propDisplayColumn_ShowData.options.length)
                 //    propDisplayColumn_ShowData.value = null;
 
-                if (propDisplayColumn_ShowData && !isNil(filterModeEnum) &&
-                    propDisplayColumn_ShowData.value !== filterModeEnum) {
-                    if (filterModeEnum !== FilterModeEnum.ShowAllWithoutFilter) {
+                if (
+                    propDisplayColumn_ShowData &&
+                    !isNil(filterModeEnum) &&
+                    propDisplayColumn_ShowData.value !== filterModeEnum
+                ) {
+                    if (
+                        filterModeEnum !== FilterModeEnum.ShowAllWithoutFilter
+                    ) {
                         if (isSubDisplayMode || !propDisplayField) {
                             propDisplayColumn_ShowData.value = filterModeEnum;
                             propDisplayColumn.disabled = false;
                         }
-                    } else
-                        propDisplayColumn.disabled = true;
+                    } else propDisplayColumn.disabled = true;
                 }
 
-                if (!isSubDisplayMode && propDisplayColumn_ShowData && this.selectedFilter !== filterModeEnum &&
-                    !isNil(propDisplayColumn_ShowData.value) && this.selectedFilter !== propDisplayColumn_ShowData.value) {
+                if (
+                    !isSubDisplayMode &&
+                    propDisplayColumn_ShowData &&
+                    this.selectedFilter !== filterModeEnum &&
+                    !isNil(propDisplayColumn_ShowData.value) &&
+                    this.selectedFilter !== propDisplayColumn_ShowData.value
+                ) {
                     this.selectedFilter = propDisplayColumn_ShowData.value;
                     isChangeDisplayMode = true;
                 }
 
-                if ((isSubDisplayMode && this.selectedSubFilter !== filterModeEnum) ||
-                    (propDisplayColumn_ShowData && propDisplayField && !isNil(propDisplayColumn_ShowData.value) &&
-                        this.selectedSubFilter !== propDisplayColumn_ShowData.value)) {
+                if (
+                    (isSubDisplayMode &&
+                        this.selectedSubFilter !== filterModeEnum) ||
+                    (propDisplayColumn_ShowData &&
+                        propDisplayField &&
+                        !isNil(propDisplayColumn_ShowData.value) &&
+                        this.selectedSubFilter !==
+                            propDisplayColumn_ShowData.value)
+                ) {
                     this.selectedSubFilter = propDisplayColumn_ShowData.value;
                     isChangeDisplayMode = true;
                 }
             }
 
             // ShowData of DisplayField
-            if (propDisplayField && propDisplayField.children && propDisplayField.children.length) {
-                const propDisplayField_ShowData: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(propDisplayField.children, 'ShowData');
+            if (
+                propDisplayField &&
+                propDisplayField.children &&
+                propDisplayField.children.length
+            ) {
+                const propDisplayField_ShowData: WidgetPropertyModel =
+                    this.propertyPanelService.getItemRecursive(
+                        propDisplayField.children,
+                        "ShowData"
+                    );
                 //// clear value of propDisplayColumn_ShowData in case no options
                 //// (mean this gets default setting from DB)
                 //if (!propDisplayField_ShowData.options || !propDisplayField_ShowData.options.length)
                 //    propDisplayField_ShowData.value = null;
 
-                if (propDisplayField_ShowData && !isNil(filterModeEnum) &&
-                    propDisplayField_ShowData.value !== filterModeEnum && !isSubDisplayMode) {
-                    if (filterModeEnum !== FilterModeEnum.ShowAllWithoutFilter) {
+                if (
+                    propDisplayField_ShowData &&
+                    !isNil(filterModeEnum) &&
+                    propDisplayField_ShowData.value !== filterModeEnum &&
+                    !isSubDisplayMode
+                ) {
+                    if (
+                        filterModeEnum !== FilterModeEnum.ShowAllWithoutFilter
+                    ) {
                         propDisplayField_ShowData.value = filterModeEnum;
                         propDisplayField.disabled = false;
-                    } else
-                        propDisplayField.disabled = true;
+                    } else propDisplayField.disabled = true;
                 }
 
-                if (propDisplayField_ShowData && this.selectedFilter !== filterModeEnum &&
+                if (
+                    propDisplayField_ShowData &&
+                    this.selectedFilter !== filterModeEnum &&
                     !isNil(propDisplayField_ShowData.value) &&
-                    this.selectedFilter !== propDisplayField_ShowData.value) {
+                    this.selectedFilter !== propDisplayField_ShowData.value
+                ) {
                     this.selectedFilter = propDisplayField_ShowData.value;
                     isChangeDisplayMode = true;
                 }
@@ -2399,31 +3265,47 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 if (!this.fieldFilters || !this.fieldFilters.length) {
                     this.fieldFilters = [];
                     // from DisplayField
-                    if (propDisplayField && propDisplayField.options && propDisplayField.options.length) {
-                        const displayFields: Array<any> = cloneDeep(propDisplayField.options);
+                    if (
+                        propDisplayField &&
+                        propDisplayField.options &&
+                        propDisplayField.options.length
+                    ) {
+                        const displayFields: Array<any> = cloneDeep(
+                            propDisplayField.options
+                        );
                         displayFields.forEach((item) => {
-                            this.fieldFilters.push(new FieldFilter({
-                                fieldDisplayName: item.value,
-                                fieldName: item.key,
-                                selected: item.selected,
-                                isHidden: item.isHidden,
-                                isEditable: item.isEditable
-                            }))
-                        })
+                            this.fieldFilters.push(
+                                new FieldFilter({
+                                    fieldDisplayName: item.value,
+                                    fieldName: item.key,
+                                    selected: item.selected,
+                                    isHidden: item.isHidden,
+                                    isEditable: item.isEditable,
+                                })
+                            );
+                        });
                     }
 
                     // from DisplayColumn
-                    if (propDisplayColumn && propDisplayColumn.options && propDisplayColumn.options.length) {
-                        const displayFields: Array<any> = cloneDeep(propDisplayColumn.options);
+                    if (
+                        propDisplayColumn &&
+                        propDisplayColumn.options &&
+                        propDisplayColumn.options.length
+                    ) {
+                        const displayFields: Array<any> = cloneDeep(
+                            propDisplayColumn.options
+                        );
                         displayFields.forEach((item) => {
-                            this.fieldFilters.push(new FieldFilter({
-                                fieldDisplayName: item.value,
-                                fieldName: item.key,
-                                selected: item.selected,
-                                isHidden: item.isHidden,
-                                isEditable: item.isEditable
-                            }))
-                        })
+                            this.fieldFilters.push(
+                                new FieldFilter({
+                                    fieldDisplayName: item.value,
+                                    fieldName: item.key,
+                                    selected: item.selected,
+                                    isHidden: item.isHidden,
+                                    isEditable: item.isEditable,
+                                })
+                            );
+                        });
                     }
                 }
                 if (this.fieldFilters && this.fieldFilters.length)
@@ -2435,52 +3317,73 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     private updateDisplayFieldsProperty(fieldFilters?: FieldFilter[]) {
         const isUpdateProperties = fieldFilters && fieldFilters.length;
         const _fieldFilters: FieldFilter[] = [];
-        const propDisplayFields: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'DisplayField');
-        const propDisplayColumns: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'DisplayColumn');
-        if (propDisplayFields && propDisplayFields.options && propDisplayFields.options.length) {
+        const propDisplayFields: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "DisplayField"
+            );
+        const propDisplayColumns: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "DisplayColumn"
+            );
+        if (
+            propDisplayFields &&
+            propDisplayFields.options &&
+            propDisplayFields.options.length
+        ) {
             propDisplayFields.options.forEach((item) => {
                 if (isUpdateProperties) {
-                    const fItem = fieldFilters.find((_item) => _item.fieldName === item.key);
-                    if (fItem)
-                        item.selected = fItem.selected;
+                    const fItem = fieldFilters.find(
+                        (_item) => _item.fieldName === item.key
+                    );
+                    if (fItem) item.selected = fItem.selected;
                 }
-                _fieldFilters.push(new FieldFilter({
-                    fieldDisplayName: item.value,
-                    fieldName: item.key,
-                    selected: item.selected,
-                    isHidden: item.isHidden,
-                    isEditable: item.isEditable
-                }))
-
-            })
-        }
-
-
-        if (propDisplayColumns && propDisplayColumns.options && propDisplayColumns.options.length) {
-            propDisplayColumns.options.forEach((item) => {
-                if (isUpdateProperties) {
-                    const fItem = fieldFilters.find((_item) => _item.fieldName === item.key);
-                    if (fItem)
-                        item.selected = fItem.selected;
-                }
-                const itemFilters = _fieldFilters.some(value => value.fieldName === item.key);
-                if (!itemFilters) {
-                    _fieldFilters.push(new FieldFilter({
+                _fieldFilters.push(
+                    new FieldFilter({
                         fieldDisplayName: item.value,
                         fieldName: item.key,
                         selected: item.selected,
                         isHidden: item.isHidden,
                         isEditable: item.isEditable,
-                        isTableField: item.isTableField
-                    }))
+                    })
+                );
+            });
+        }
+
+        if (
+            propDisplayColumns &&
+            propDisplayColumns.options &&
+            propDisplayColumns.options.length
+        ) {
+            propDisplayColumns.options.forEach((item) => {
+                if (isUpdateProperties) {
+                    const fItem = fieldFilters.find(
+                        (_item) => _item.fieldName === item.key
+                    );
+                    if (fItem) item.selected = fItem.selected;
                 }
-            })
+                const itemFilters = _fieldFilters.some(
+                    (value) => value.fieldName === item.key
+                );
+                if (!itemFilters) {
+                    _fieldFilters.push(
+                        new FieldFilter({
+                            fieldDisplayName: item.value,
+                            fieldName: item.key,
+                            selected: item.selected,
+                            isHidden: item.isHidden,
+                            isEditable: item.isEditable,
+                            isTableField: item.isTableField,
+                        })
+                    );
+                }
+            });
         }
 
         if (_fieldFilters !== this.fieldFilters) {
             this.fieldFilters = cloneDeep(_fieldFilters);
         }
-
     }
 
     /**
@@ -2488,19 +3391,29 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
      * @param widgetFormType
      */
     private updateWidgetFormTypeProperty(widgetFormType?: WidgetFormTypeEnum) {
-        if (!this.data && !this.properties)
-            return;
+        if (!this.data && !this.properties) return;
 
         if (this.showInDialog) {
             this.widgetFormType = WidgetFormTypeEnum.List;
             return;
         }
 
-        const propWidgetType = this.propertyPanelService.getItemRecursive(this.properties, 'WidgetType');
-        if (propWidgetType && !isNil(widgetFormType) && propWidgetType.value !== widgetFormType)
+        const propWidgetType = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "WidgetType"
+        );
+        if (
+            propWidgetType &&
+            !isNil(widgetFormType) &&
+            propWidgetType.value !== widgetFormType
+        )
             propWidgetType.value = widgetFormType;
 
-        if (propWidgetType && !isNil(propWidgetType.value) && this.widgetFormType !== propWidgetType.value) {
+        if (
+            propWidgetType &&
+            !isNil(propWidgetType.value) &&
+            this.widgetFormType !== propWidgetType.value
+        ) {
             this.widgetFormType = propWidgetType.value;
         }
     }
@@ -2509,84 +3422,123 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
      * updateFitWidthColumnProperty
      * @param columnLayoutSetting
      */
-    private updateFitWidthColumnProperty(columnLayoutSetting?: ColumnLayoutSetting) {
-        if (!this.data && !this.properties)
-            return;
+    private updateFitWidthColumnProperty(
+        columnLayoutSetting?: ColumnLayoutSetting
+    ) {
+        if (!this.data && !this.properties) return;
 
-        const propFitWidthColumn = this.propertyPanelService.getItemRecursive(this.properties, 'IsFitWidthColumn');
-        if (propFitWidthColumn && columnLayoutSetting && propFitWidthColumn.value !== columnLayoutSetting.isFitWidthColumn) {
+        const propFitWidthColumn = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "IsFitWidthColumn"
+        );
+        if (
+            propFitWidthColumn &&
+            columnLayoutSetting &&
+            propFitWidthColumn.value !== columnLayoutSetting.isFitWidthColumn
+        ) {
             propFitWidthColumn.value = columnLayoutSetting.isFitWidthColumn;
         }
 
-        const hasDifference = this.columnLayoutsetting && propFitWidthColumn && !isNil(propFitWidthColumn.value) &&
-            this.columnLayoutsetting.isFitWidthColumn !== propFitWidthColumn.value;
-        const isEmpty = !this.columnLayoutsetting && propFitWidthColumn && !isNil(propFitWidthColumn.value);
+        const hasDifference =
+            this.columnLayoutsetting &&
+            propFitWidthColumn &&
+            !isNil(propFitWidthColumn.value) &&
+            this.columnLayoutsetting.isFitWidthColumn !==
+                propFitWidthColumn.value;
+        const isEmpty =
+            !this.columnLayoutsetting &&
+            propFitWidthColumn &&
+            !isNil(propFitWidthColumn.value);
         if (isEmpty || hasDifference) {
-            this.changeColumnLayoutsetting(new ColumnLayoutSetting({
-                isFitWidthColumn: propFitWidthColumn.value,
-                columnLayout: null
-            }));
+            this.changeColumnLayoutsetting(
+                new ColumnLayoutSetting({
+                    isFitWidthColumn: propFitWidthColumn.value,
+                    columnLayout: null,
+                })
+            );
         }
     }
 
     private updateShowTotalRowProperty(rowSetting?: RowSetting) {
-        if (!this.data && !this.properties)
-            return;
+        if (!this.data && !this.properties) return;
 
-        const propShowTotalRow = this.propertyPanelService.getItemRecursive(this.properties, 'ShowTotalRow');
-        if (propShowTotalRow && rowSetting && propShowTotalRow.value !== rowSetting.showTotalRow)
+        const propShowTotalRow = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "ShowTotalRow"
+        );
+        if (
+            propShowTotalRow &&
+            rowSetting &&
+            propShowTotalRow.value !== rowSetting.showTotalRow
+        )
             propShowTotalRow.value = rowSetting.showTotalRow;
 
-        const hasDifference = this.rowSetting && propShowTotalRow && !isNil(propShowTotalRow.value) &&
+        const hasDifference =
+            this.rowSetting &&
+            propShowTotalRow &&
+            !isNil(propShowTotalRow.value) &&
             this.rowSetting.showTotalRow !== propShowTotalRow.value;
-        const isEmpty = !this.rowSetting && propShowTotalRow && !isNil(propShowTotalRow.value);
+        const isEmpty =
+            !this.rowSetting &&
+            propShowTotalRow &&
+            !isNil(propShowTotalRow.value);
         if (isEmpty || hasDifference) {
-            this.changeRowSetting(new RowSetting({
-                showTotalRow: propShowTotalRow.value,
-                positionTotalRow: '',
-                backgroundTotalRow: '',
-                colorTextTotalRow: ''
-            }));
+            this.changeRowSetting(
+                new RowSetting({
+                    showTotalRow: propShowTotalRow.value,
+                    positionTotalRow: "",
+                    backgroundTotalRow: "",
+                    colorTextTotalRow: "",
+                })
+            );
         }
     }
 
     private updateShowTotalRowDetail() {
-        const propShowTotalRow = this.propertyPanelService.getItemRecursive(this.properties, 'ShowTotalRow');
-        const propPosition = this.propertyPanelService.getItemRecursive(this.properties, 'Position');
-        const propBackground = this.propertyPanelService.getItemRecursive(this.properties, 'BackgroundTotalRow');
-        const propTextColor = this.propertyPanelService.getItemRecursive(this.properties, 'TextColorTotalRow');
+        const propShowTotalRow = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "ShowTotalRow"
+        );
+        const propPosition = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "Position"
+        );
+        const propBackground = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "BackgroundTotalRow"
+        );
+        const propTextColor = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            "TextColorTotalRow"
+        );
 
         if (propPosition && propPosition.value) {
             this.positionTotalRow = propPosition.value;
-
         }
         if (propBackground && propBackground.value) {
             this.backgroundTotalRow = propBackground.value;
-
         }
         if (propTextColor && propTextColor.value) {
             this.colorTextTotalRow = propTextColor.value;
-
         }
         if (propShowTotalRow && propShowTotalRow.value) {
             this.showTotalRow = {
                 showTotalRow: propShowTotalRow.value,
                 positionTotalRow: this.positionTotalRow,
                 backgroundTotalRow: this.backgroundTotalRow,
-                colorTextTotalRow: this.colorTextTotalRow
+                colorTextTotalRow: this.colorTextTotalRow,
             };
         }
-
     }
 
-
     private updateAgGridProperty(propName) {
-        if (!this.data && !this.properties)
-            return;
+        if (!this.data && !this.properties) return;
 
-        const prop = this.propertyPanelService.getItemRecursive(this.properties, this.upperFirstChar(propName));
-        if (prop)
-            this[propName] = prop.value;
+        const prop = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            this.upperFirstChar(propName)
+        );
+        if (prop) this[propName] = prop.value;
     }
 
     private upperFirstChar(string) {
@@ -2601,107 +3553,192 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public removeWidget(): void {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            messageType: MessageModal.MessageType.error,
-            headerText: 'Remove Widget',
-            message: [{ key: '<p>' }, { key: 'Modal_Message__Do_You_Want_To_Remove_This_Widget' },
-            { key: '</p>' }],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.onRemoveWidget.emit(Object.assign({}, this.data, { id: this.payload.id }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                messageType: MessageModal.MessageType.error,
+                headerText: "Remove Widget",
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Remove_This_Widget" },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.onRemoveWidget.emit(
+                        Object.assign({}, this.data, { id: this.payload.id })
+                    );
 
-                this.store.dispatch(this.propertyPanelActions.clearProperties(this.currentModule));
-                this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.currentModule));
-            }
-        }));
+                    this.store.dispatch(
+                        this.propertyPanelActions.clearProperties(
+                            this.currentModule
+                        )
+                    );
+                    this.store.dispatch(
+                        this.layoutInfoActions.setRightPropertyPanelWidth(
+                            "0",
+                            this.currentModule
+                        )
+                    );
+                },
+            })
+        );
     }
 
     private saveFormWidget(updateRequest?: string, data?: any) {
         if (this.isWidgetDataEdited) {
-            if (this.data.idRepWidgetType === this.WidgetTypeView.NoteForm || this.widgetFormComponent.form.valid) {
-                const formValues = this.data.idRepWidgetType === this.WidgetTypeView.NoteForm ? data : this.widgetFormComponent.filterValidFormField();
+            if (
+                this.data.idRepWidgetType === this.WidgetTypeView.NoteForm ||
+                this.widgetFormComponent.form.valid
+            ) {
+                const formValues =
+                    this.data.idRepWidgetType === this.WidgetTypeView.NoteForm
+                        ? data
+                        : this.widgetFormComponent.filterValidFormField();
                 //Remove to fix bug 2976
                 //formValues = Uti.convertDataEmptyToNull(formValues);
                 let updateKeyValue;
-                if (this.data.idRepWidgetType === this.WidgetTypeView.NoteForm) {
-                    const updateKeyValueTemp = this.data.widgetDataType.listenKeyRequest(this.currentModule.moduleNameTrim);
-                    updateKeyValue = updateKeyValueTemp ? JSON.stringify(updateKeyValueTemp) : null;
+                if (
+                    this.data.idRepWidgetType === this.WidgetTypeView.NoteForm
+                ) {
+                    const updateKeyValueTemp =
+                        this.data.widgetDataType.listenKeyRequest(
+                            this.currentModule.moduleNameTrim
+                        );
+                    updateKeyValue = updateKeyValueTemp
+                        ? JSON.stringify(updateKeyValueTemp)
+                        : null;
+                    if (
+                        this.currentModule.idSettingsGUI === 7 &&
+                        !!updateKeyValue
+                    ) {
+                        updateKeyValue = `{'IdPerson' : ${this.listenKeyValue}}`;
+                    }
                 } else {
-                    updateKeyValue = Uti.getUpdateKeyValue(formValues, this.data.widgetDataType.listenKeyRequest(this.currentModule.moduleNameTrim));
+                    updateKeyValue = Uti.getUpdateKeyValue(
+                        formValues,
+                        this.data.widgetDataType.listenKeyRequest(
+                            this.currentModule.moduleNameTrim
+                        )
+                    );
                 }
 
                 let updatedModule = this.currentModule;
 
                 if (this.currentModule) {
-                    if (this.currentModule.idSettingsGUI == MenuModuleId.administration
-                        || this.currentModule.idSettingsGUI == MenuModuleId.customer) {
-
-                        if (this.currentModule.idSettingsGUI == MenuModuleId.administration) {
+                    if (
+                        this.currentModule.idSettingsGUI ==
+                            MenuModuleId.administration ||
+                        this.currentModule.idSettingsGUI ==
+                            MenuModuleId.customer
+                    ) {
+                        if (
+                            this.currentModule.idSettingsGUI ==
+                            MenuModuleId.administration
+                        ) {
                             updatedModule = this.activeSubModule;
                         }
 
-                        if (this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerContactDetail
-                            || this.data.idRepWidgetApp == RepWidgetAppIdEnum.AdministrationContactDetail) {
+                        if (
+                            this.data.idRepWidgetApp ==
+                                RepWidgetAppIdEnum.CustomerContactDetail ||
+                            this.data.idRepWidgetApp ==
+                                RepWidgetAppIdEnum.AdministrationContactDetail
+                        ) {
                             updatedModule = null;
                         }
                     }
                 }
 
-                this.widgetTemplateSettingServiceSubscription = this.widgetTemplateSettingService.updateWidgetInfo(formValues, updateRequest ? updateRequest : this.data.updateRequest, updatedModule, updateKeyValue, null, this.data.widgetDataType.jsonTextUpdate)
-                    .subscribe(() => {
-                        this.appErrorHandler.executeAction(() => {
-                            const checkIdArticle = this.selectedEntity && this.selectedEntity.id === formValues.B00Article_IdArticle;
-                            if (checkIdArticle) {
-                                this.store.dispatch(this.tabSummaryActions.requestLoadTabs(this.currentModule));
-                            }
-                            this.store.dispatch(this.parkedItemActions.requestReloadList(this.currentModule));
-                            this.isWidgetDataEdited = false;
-                            if (this.widgetFormComponent) {
-                                this.widgetFormComponent.syncFormDataToDataSource();
-                                this.widgetFormComponent.updatePreValue();
-                            }
-                            this.manageEditableTableStatusButtonsAfterSaving();
-                            this.copiedData = null;
-                            this.onCancelEditingWidget.emit(this.data);
-                            this.onSaveSuccessWidget.emit(this.data);
-                            // set credit card to read mode
-                            if (this.creditCardComponent) {
-                                // this.isOnEditCreditCard = false;
-                                this.creditCardComponent.editMode = false;
-                            }
+                this.widgetTemplateSettingServiceSubscription =
+                    this.widgetTemplateSettingService
+                        .updateWidgetInfo(
+                            formValues,
+                            updateRequest
+                                ? updateRequest
+                                : this.data.updateRequest,
+                            updatedModule,
+                            updateKeyValue,
+                            null,
+                            this.data.widgetDataType.jsonTextUpdate
+                        )
+                        .subscribe(() => {
+                            this.appErrorHandler.executeAction(() => {
+                                const checkIdArticle =
+                                    this.selectedEntity &&
+                                    this.selectedEntity.id ===
+                                        formValues.B00Article_IdArticle;
+                                if (checkIdArticle) {
+                                    this.store.dispatch(
+                                        this.tabSummaryActions.requestLoadTabs(
+                                            this.currentModule
+                                        )
+                                    );
+                                }
+                                this.store.dispatch(
+                                    this.parkedItemActions.requestReloadList(
+                                        this.currentModule
+                                    )
+                                );
+                                this.isWidgetDataEdited = false;
+                                if (this.widgetFormComponent) {
+                                    this.widgetFormComponent.syncFormDataToDataSource();
+                                    this.widgetFormComponent.updatePreValue();
+                                }
+                                if (this.currentModule.idSettingsGUI === 7) {
+                                    this.widgetNoteFormComponent.refresh();
+                                }
+                                this.manageEditableTableStatusButtonsAfterSaving();
+                                this.copiedData = null;
+                                this.onCancelEditingWidget.emit(this.data);
+                                this.onSaveSuccessWidget.emit(this.data);
+                                // set credit card to read mode
+                                if (this.creditCardComponent) {
+                                    // this.isOnEditCreditCard = false;
+                                    this.creditCardComponent.editMode = false;
+                                }
 
-                            if (!this.widgetFormComponent) return;
-                            if (!this.showInDialog) {
-                                this.widgetFormComponent.editFormMode = false;
-                                this.widgetFormComponent.resetToViewMode();
-                            } else {
-                                this.widgetFormComponent.updateOriginalFormValues();
-                                setTimeout(() => {
-                                    this.widgetFormComponent.editFormMode = true;
-                                });
-                            }
-                            this.widgetFormComponent.invokeSaveWidgetSuccess();
+                                if (!this.widgetFormComponent) return;
+                                if (!this.showInDialog) {
+                                    this.widgetFormComponent.editFormMode =
+                                        false;
+                                    this.widgetFormComponent.resetToViewMode();
+                                } else {
+                                    this.widgetFormComponent.updateOriginalFormValues();
+                                    setTimeout(() => {
+                                        this.widgetFormComponent.editFormMode =
+                                            true;
+                                    });
+                                }
+                                this.widgetFormComponent.invokeSaveWidgetSuccess();
+                            });
                         });
-                    });
                 this.afterWidgetGetData(formValues);
             } else {
-                this.toasterService.pop('warning', 'Validation Failed', 'There are some fields do not pass validation!');
+                this.toasterService.pop(
+                    "warning",
+                    "Validation Failed",
+                    "There are some fields do not pass validation!"
+                );
                 this.widgetFormComponent.focusOnFirstFieldError();
             }
         } else {
-            if(this.showInDialog)return;
+            if (this.showInDialog) return;
             this.resetForm();
         }
     }
 
     private afterWidgetGetData(formValues: any) {
-        if (this.data.idRepWidgetApp != RepWidgetAppIdEnum.MainArticleDetail) return;
+        if (this.data.idRepWidgetApp != RepWidgetAppIdEnum.MainArticleDetail)
+            return;
         // call to set disable for Tab header for Article set when save an Article
-        this.store.dispatch(this.processDataActions.setDisableTabHeader(
-            Uti.makeWidgetDataToFormData(this.data.contentDetail.data[1], {
-                isSetArticle: formValues.B00Article_IsSetArticle
-            }),
-            this.currentModule));
+        this.store.dispatch(
+            this.processDataActions.setDisableTabHeader(
+                Uti.makeWidgetDataToFormData(this.data.contentDetail.data[1], {
+                    isSetArticle: formValues.B00Article_IsSetArticle,
+                }),
+                this.currentModule
+            )
+        );
     }
 
     private saveFormCreditCardCombinationWidget() {
@@ -2710,7 +3747,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             if (!updateData) {
                 updateData = [];
             }
-            const updateRequest = this.widgetUtils.updateCustomData(this.data.updateRequest, updateData, this.creditCardComponent.isFormChanged);
+            const updateRequest = this.widgetUtils.updateCustomData(
+                this.data.updateRequest,
+                updateData,
+                this.creditCardComponent.isFormChanged
+            );
             this.saveFormWidget(updateRequest);
         });
     }
@@ -2731,23 +3772,27 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         let updateItem: any;
         this.creditCardSelected.forEach((item) => {
             editItem = this.getCreditCardItemByIcon(item.iconFileName);
-            if ((!!item.select) !== (!!Uti.strValObj(editItem.IsActive))) {
+            if (!!item.select !== !!Uti.strValObj(editItem.IsActive)) {
                 // update credit card Item
                 if (!!item.id) {
                     updateItem = {
                         IdCashProviderContractCreditcardTypeContainer: item.id,
-                        IsActive: (item.select ? '1' : '0')
+                        IsActive: item.select ? "1" : "0",
                     };
                     if (!item.select) {
-                        updateItem.IsDeleted = '1';
+                        updateItem.IsDeleted = "1";
                     }
                     result.push(updateItem);
                 } else if (!!item.select) {
                     // insert credit card Item
                     result.push({
-                        IdCashProviderContract: Uti.strValObj(editItem.IdCashProviderContract),
-                        IdRepCreditCardType: Uti.strValObj(editItem.IdRepCreditCardType),
-                        IsActive: 1
+                        IdCashProviderContract: Uti.strValObj(
+                            editItem.IdCashProviderContract
+                        ),
+                        IdRepCreditCardType: Uti.strValObj(
+                            editItem.IdRepCreditCardType
+                        ),
+                        IsActive: 1,
                     });
                 }
             }
@@ -2756,7 +3801,9 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private getCreditCardItemByIcon(icon: string) {
-        return this.data.contentDetail.data[3].find(x => Uti.strValObj(x.IconFileName) === icon);
+        return this.data.contentDetail.data[3].find(
+            (x) => Uti.strValObj(x.IconFileName) === icon
+        );
     }
 
     private resetForm() {
@@ -2809,8 +3856,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (dataFilter) {
             if (!dataFilter.isSub)
                 this.selectedFilter = dataFilter.selectedFilter;
-            else
-                this.selectedSubFilter = dataFilter.selectedFilter;
+            else this.selectedSubFilter = dataFilter.selectedFilter;
             this.fieldFilters = dataFilter.fieldFilters;
 
             this.changeDisplayTable();
@@ -2818,10 +3864,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             this.checkToShowScrollbars();
             if (!dataFilter.isSub)
                 this.updateDisplayModeProperty(this.selectedFilter, false);
-            else
-                this.updateDisplayModeProperty(this.selectedSubFilter, true);
+            else this.updateDisplayModeProperty(this.selectedSubFilter, true);
         }
-
     }
 
     public onRowClick(rowData: any) {
@@ -2835,16 +3879,21 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.currentGridRowItem = rowData;
         this.onRowTableClick.emit({
             cellInfos: rowData,
-            widgetDetail: this.data
+            widgetDetail: this.data,
         });
         this.checkSelectedNodes();
     }
 
     private processWhenGridItemClickOnPopup(rowData: any) {
-        this.store.dispatch(this.processDataActions.setGridItemDataToLocalStorage(this.currentModule, {
-            widgetDetail: new LightWidgetDetail(this.data),
-            data: rowData
-        }));
+        this.store.dispatch(
+            this.processDataActions.setGridItemDataToLocalStorage(
+                this.currentModule,
+                {
+                    widgetDetail: new LightWidgetDetail(this.data),
+                    data: rowData,
+                }
+            )
+        );
     }
 
     public makeContextMenu(data?: any) {
@@ -2856,8 +3905,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }
         for (const item of this.contextMenuData) {
             if (item.hidden) continue;
-            if (item.id === 'widget-separator-menu-context') {
-                context.push('separator');
+            if (item.id === "widget-separator-menu-context") {
+                context.push("separator");
                 continue;
             }
             context.push({
@@ -2865,17 +3914,17 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 action: (event) => {
                     item.callback(event);
                 },
-                cssClasses: [''],
+                cssClasses: [""],
                 icon: `<i class="fa  ` + item.iconName + `  ag-context-icon"/>`,
                 key: item.key,
                 params: item.params,
-                disabled: item.disabled
+                disabled: item.disabled,
             });
         }
 
         this.makeGotoModuleContextMenu(context, data);
         this.addContextMenuForSelectionExport(context);
-        context.push('separator');
+        context.push("separator");
         this.enableEditWidgetContextMenuForGrid(context);
         return context;
     }
@@ -2885,55 +3934,72 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         const goToModule = Uti.tryParseJson(data.goToModule);
         if (!goToModule || !goToModule.length) return;
         context.push({
-            name: '',
-            cssClasses: ['xn-ag-separator'],
+            name: "",
+            cssClasses: ["xn-ag-separator"],
             index: 700,
         });
         const gotoModuleContext = {
-            name: 'Goto module',
-            cssClasses: [''],
+            name: "Goto module",
+            cssClasses: [""],
             icon: `<i class="fa  fa-exchange  ag-context-icon  green-color"/>`,
             index: 701,
-            subMenu: []
+            subMenu: [],
         };
 
         for (const item of goToModule) {
             const result = {
                 item: item,
-                data: data
+                data: data,
             };
             gotoModuleContext.subMenu.push({
                 name: item.Displayname,
                 action: (event) => {
-                    this.store.dispatch(this.processDataActions.requestGoToModule(result, this.currentModule));
+                    this.store.dispatch(
+                        this.processDataActions.requestGoToModule(
+                            result,
+                            this.currentModule
+                        )
+                    );
                 },
-                cssClasses: [''],
-                icon: `<i class="fa  ` + ModuleConfiguration.Icon[(item || {}).IdSettingsGUI] + `  ag-context-icon"/>`
+                cssClasses: [""],
+                icon:
+                    `<i class="fa  ` +
+                    ModuleConfiguration.Icon[(item || {}).IdSettingsGUI] +
+                    `  ag-context-icon"/>`,
             });
         }
         context.push(gotoModuleContext);
-
     }
 
     public onStartStopClickHandler(data) {
-        data.Status = data.StartStop == '1' ? 'Stopped' : 'Running';
+        data.Status = data.StartStop == "1" ? "Stopped" : "Running";
         this.agGridComponent.updateRowData([data]);
         // update start/stop for this schedule setting
-        this._toolsService.saveStatusSystemSchedule(this.buildScheduleSettingSavingData(data))
+        this._toolsService
+            .saveStatusSystemSchedule(this.buildScheduleSettingSavingData(data))
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) return;
-                    this.toasterService.pop('success', 'Success', 'Schedule is ' + (data.StartStop == '1' ? 'stop' : 'start') + ' now');
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "Schedule is " +
+                            (data.StartStop == "1" ? "stop" : "start") +
+                            " now"
+                    );
                 });
             });
     }
 
     private buildScheduleSettingSavingData(data: any) {
         return {
-            'ScheduleStatus': [{
-                'IdRepAppSystemScheduleServiceName': data.IdRepAppSystemScheduleServiceName,
-                'IsDeleted': data.StartStop
-            }]
+            ScheduleStatus: [
+                {
+                    IdRepAppSystemScheduleServiceName:
+                        data.IdRepAppSystemScheduleServiceName,
+                    IsDeleted: data.StartStop,
+                },
+            ],
         };
     }
 
@@ -2946,11 +4012,14 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private showcounterWaitingScheduleSettingRunImmediatelyDialog(data) {
-        if (this.counterWaitingScheduleSettingRunImmediatelyDialog > 100) return;
+        if (this.counterWaitingScheduleSettingRunImmediatelyDialog > 100)
+            return;
         setTimeout(() => {
             this.counterWaitingScheduleSettingRunImmediatelyDialog++;
             if (!this.scheduleSettingRunImmediately) {
-                this.showcounterWaitingScheduleSettingRunImmediatelyDialog(data);
+                this.showcounterWaitingScheduleSettingRunImmediatelyDialog(
+                    data
+                );
                 return;
             }
             this.scheduleSettingRunImmediately.callShowDiaglog(data);
@@ -2963,7 +4032,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     public runScheduleHandle(currentItem: any) {
         if (currentItem) {
             // Disable Run button
-            this.setDataForRunButton(currentItem.rowData, '2');
+            this.setDataForRunButton(currentItem.rowData, "2");
             this.runImmediatelyRowDatas.push(currentItem);
         }
         // if (this.isRequestingStatus) return;
@@ -2977,10 +4046,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     private setDataForRunButton(rowData: any, data: any) {
         for (const row of this.dataSourceTable.data) {
-            if (row.DT_RowId != rowData['dtRowId']) {
+            if (row.DT_RowId != rowData["dtRowId"]) {
                 continue;
             }
-            row['Run'] = data;
+            row["Run"] = data;
             this.agGridComponent.updateRowData([row]);
             break;
         }
@@ -3004,28 +4073,42 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (!currentItem) {
             return;
         }
-        this._toolsService.getScheduleServiceStatusByQueueId(currentItem.idAppSystemScheduleQueue)
+        this._toolsService
+            .getScheduleServiceStatusByQueueId(
+                currentItem.idAppSystemScheduleQueue
+            )
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.data
-                        || !response.item.data.length
-                        || !response.item.data[0]
-                        || !response.item.data[0].length
-                        || !response.item.data[0][0]) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.data ||
+                        !response.item.data.length ||
+                        !response.item.data[0] ||
+                        !response.item.data[0].length ||
+                        !response.item.data[0][0]
+                    ) {
                         return;
                     }
-                    if (response.item.data[0][0].StatusID == '1') {
+                    if (response.item.data[0][0].StatusID == "1") {
                         // Enable Run button
                         this.setDataForRunButton(currentItem.rowData, true);
-                        Uti.removeItemInArray(this.runImmediatelyRowDatas, currentItem, 'idScheduleQueue');
+                        Uti.removeItemInArray(
+                            this.runImmediatelyRowDatas,
+                            currentItem,
+                            "idScheduleQueue"
+                        );
                         this.onRowClick(this.currentGridRowItem);
                         // this.isRequestingStatus = !!this.runImmediatelyRowDatas.length;
                     }
-                    if (response.item.data[0][0].StatusID == '3') {
+                    if (response.item.data[0][0].StatusID == "3") {
                         // Enable Run button
                         this.setDataForRunButton(currentItem.rowData, true);
                         // Show no data message
-                        this.toasterService.pop('error', 'Notification', 'No data exported');
+                        this.toasterService.pop(
+                            "error",
+                            "Notification",
+                            "No data exported"
+                        );
                     }
                 });
             });
@@ -3053,20 +4136,23 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     public closedScheduleSettingHandle(isReload?: boolean) {
         this.isShowScheduleSetting = false;
-        if (isReload)
-            this.reloadWidgets.emit([this.data]);
+        if (isReload) this.reloadWidgets.emit([this.data]);
     }
 
     public dateFilterOutputHandle($event) {
         this.onRowTableClick.emit({
             cellInfos: Uti.buildKeyValueArrayForObject($event),
-            widgetDetail: this.data
+            widgetDetail: this.data,
         });
     }
 
     public changeFieldFilter($event: FilterData) {
         if ($event) {
-            this.fieldFilters = Object.assign([], this.fieldFilters, $event.fieldFilters);
+            this.fieldFilters = Object.assign(
+                [],
+                this.fieldFilters,
+                $event.fieldFilters
+            );
             this.columnLayoutsetting = $event.columnLayoutsetting;
             this.rowSetting = $event.rowSetting;
             this.widgetFormType = $event.widgetFormType;
@@ -3078,11 +4164,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.updateDataForWidgetMenuStatus();
     }
 
-
     private _saveMenuChanges(isClosedPropertyPanel?: boolean) {
         if (this.columnLayoutsetting) {
             if (this.agGridComponent) {
-                this.columnLayoutsetting.columnLayout = this.agGridComponent.getColumnLayout();
+                this.columnLayoutsetting.columnLayout =
+                    this.agGridComponent.getColumnLayout();
             } else {
                 this.columnLayoutsetting.columnLayout = null;
             }
@@ -3105,7 +4191,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
         // Reset widget properties dirty
         this.properties = this.propertyPanelService.resetDirty(this.properties);
-        this.propertiesForSaving.properties = this.propertyPanelService.resetDirty(this.propertiesForSaving.properties);
+        this.propertiesForSaving.properties =
+            this.propertyPanelService.resetDirty(
+                this.propertiesForSaving.properties
+            );
         this.removeTranslatedTitleFromPropertiesForSaving();
 
         // Save setting here
@@ -3113,14 +4202,14 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             fieldFilters: this.fieldFilters,
             widgetDetail: this.data,
             widgetFormType: this.widgetFormType,
-            isClosedPropertyPanel: isClosedPropertyPanel
+            isClosedPropertyPanel: isClosedPropertyPanel,
         });
 
         // Turn off the changing columns layout dirty
         setTimeout(() => {
             if (!this.agGridComponent) return;
             this.agGridComponent.isColumnsLayoutChanged = false;
-        })
+        });
     }
 
     private checkToShowScrollbars() {
@@ -3154,10 +4243,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             return;
         }
 
-        if (!isOnChangingData)
-            this.updateDataSourceFromDataTable();
-        else
-            this.copiedData = cloneDeep(this.data);
+        if (!isOnChangingData) this.updateDataSourceFromDataTable();
+        else this.copiedData = cloneDeep(this.data);
         this.updateDataSourceCloumnSettings();
         let contentDetail = this.copiedData.contentDetail;
         if (this.data.idRepWidgetType === WidgetType.Combination) {
@@ -3174,8 +4261,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public editTitle() {
-        if (this.allowDesignEdit)
-            return;
+        if (this.allowDesignEdit) return;
         this.editingTitle = true;
         this.originalTitle = this.title.value;
     }
@@ -3184,10 +4270,14 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (!isNil(this.title.value)) {
             this.editingTitle = false;
             this.updateWidgetTitle(this.title);
-            const propTitleText: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'TitleText');
+            const propTitleText: WidgetPropertyModel =
+                this.propertyPanelService.getItemRecursive(
+                    this.propertiesForSaving.properties,
+                    "TitleText"
+                );
             if (propTitleText) {
                 propTitleText.value = this.title.value;
-                propTitleText.translatedValue = '';
+                propTitleText.translatedValue = "";
                 this.onUpdateTitle.emit(this.data);
                 this.originalTitle = this.title.value;
             }
@@ -3195,8 +4285,12 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private removeTranslatedTitleFromPropertiesForSaving() {
-        const propTitleText: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'TitleText');
-        propTitleText.translatedValue = '';
+        const propTitleText: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.propertiesForSaving.properties,
+                "TitleText"
+            );
+        propTitleText.translatedValue = "";
     }
 
     private resetTitle() {
@@ -3220,28 +4314,55 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private mouseout(event) {
-        if (this.isActiveWidget || this.allowDesignEdit || this.isMaximized) return;
+        if (this.isActiveWidget || this.allowDesignEdit || this.isMaximized)
+            return;
 
         let parentElm, editDropdown;
         if (event.toElement) {
-            parentElm = this.domHandler.findParent(event.toElement, 'filter-menu');
-            editDropdown = this.domHandler.findParent(event.toElement, 'edit-dropdown');
+            parentElm = this.domHandler.findParent(
+                event.toElement,
+                "filter-menu"
+            );
+            editDropdown = this.domHandler.findParent(
+                event.toElement,
+                "edit-dropdown"
+            );
         } else if (event.relatedTarget) {
-            parentElm = this.domHandler.findParent(event.relatedTarget, 'filter-menu');
-            editDropdown = this.domHandler.findParent(event.relatedTarget, 'edit-dropdown');
+            parentElm = this.domHandler.findParent(
+                event.relatedTarget,
+                "filter-menu"
+            );
+            editDropdown = this.domHandler.findParent(
+                event.relatedTarget,
+                "edit-dropdown"
+            );
         }
-        if ((!parentElm || parentElm.length === 0) && (!editDropdown || !editDropdown.length)) {
+        if (
+            (!parentElm || parentElm.length === 0) &&
+            (!editDropdown || !editDropdown.length)
+        ) {
             if (this.isMaximized) {
                 this.hoverBox = true;
             } else {
                 this.hoverBox = false;
             }
-            if (!this.allowDesignEdit && !this.isOnEditingCountry && !this.isOnEditTreeView &&
-                !this.isOnEditingTable && !this.isOnEditFileExplorer &&
-                !(this.widgetFormComponent && (this.widgetFormComponent.editFormMode || this.widgetFormComponent.editFieldMode))) {
+            if (
+                !this.allowDesignEdit &&
+                !this.isOnEditingCountry &&
+                !this.isOnEditTreeView &&
+                !this.isOnEditingTable &&
+                !this.isOnEditFileExplorer &&
+                !(
+                    this.widgetFormComponent &&
+                    (this.widgetFormComponent.editFormMode ||
+                        this.widgetFormComponent.editFieldMode)
+                )
+            ) {
                 if (this.widgetMenuStatusComponent) {
-                    this.widgetMenuStatusComponent.dropdownStatus.isHidden = true;
-                    this.widgetMenuStatusComponent.dropdownTableStatus.isHidden = true;
+                    this.widgetMenuStatusComponent.dropdownStatus.isHidden =
+                        true;
+                    this.widgetMenuStatusComponent.dropdownTableStatus.isHidden =
+                        true;
                     this.widgetMenuStatusComponent.isShowEditDropdown = false;
                     this.widgetMenuStatusComponent.hideMenuWidgetStatus();
 
@@ -3251,42 +4372,59 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             }
         }
         setTimeout(() => {
-            $('div.box-default', $(this._eref.nativeElement)).removeClass('click');
-        })
+            $("div.box-default", $(this._eref.nativeElement)).removeClass(
+                "click"
+            );
+        });
 
-        this.scrollUtils.scrollUnHovering('left');
-        this.scrollUtils.scrollUnHovering('top');
-        this.widgetBorderColor = '';
+        this.scrollUtils.scrollUnHovering("left");
+        this.scrollUtils.scrollUnHovering("top");
+        this.widgetBorderColor = "";
     }
 
     private mouseenter(event) {
         // Design mode
-        if (this.allowDesignEdit
+        if (
+            this.allowDesignEdit
             // || this.isMaximized
         ) {
             return;
         }
         this.hoverBox = true;
-        if (event.type === 'click') {
-            $('div.box-default', $(this._eref.nativeElement)).addClass('click');
+        if (event.type === "click") {
+            $("div.box-default", $(this._eref.nativeElement)).addClass("click");
             return;
         } else
-            $('div.box-default', $(this._eref.nativeElement)).removeClass('click');
-        if (!this.allowDesignEdit && !this.isOnEditingCountry && !this.isOnEditTreeView &&
-            !this.isOnEditingTable && !this.isOnEditFileExplorer &&
-            !(this.widgetFormComponent && (this.widgetFormComponent.editFormMode || this.widgetFormComponent.editFieldMode))) {
+            $("div.box-default", $(this._eref.nativeElement)).removeClass(
+                "click"
+            );
+        if (
+            !this.allowDesignEdit &&
+            !this.isOnEditingCountry &&
+            !this.isOnEditTreeView &&
+            !this.isOnEditingTable &&
+            !this.isOnEditFileExplorer &&
+            !(
+                this.widgetFormComponent &&
+                (this.widgetFormComponent.editFormMode ||
+                    this.widgetFormComponent.editFieldMode)
+            )
+        ) {
             if (this.widgetMenuStatusComponent) {
                 this.widgetMenuStatusComponent.dropdownStatus.isHidden = false;
-                this.widgetMenuStatusComponent.dropdownTableStatus.isHidden = false;
+                this.widgetMenuStatusComponent.dropdownTableStatus.isHidden =
+                    false;
                 this.widgetMenuStatusComponent.isShowEditDropdown = true;
             }
         }
         if (this.widgetStyle.borderColor) {
-            this.widgetBorderColor = '1px solid ' + this.widgetStyle.borderColor;
+            this.widgetBorderColor =
+                "1px solid " + this.widgetStyle.borderColor;
             return;
         }
         if (this.widgetStyle.globalBorderColor)
-            this.widgetBorderColor = '1px solid ' + this.widgetStyle.globalBorderColor;
+            this.widgetBorderColor =
+                "1px solid " + this.widgetStyle.globalBorderColor;
     }
 
     private onEditFormField(event) {
@@ -3314,11 +4452,19 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             if (!this.isTableEdited) {
                 this.isOnEditingTable = false;
                 let strUpdateRequest: string = this.data.updateRequest;
-                if (this.data.updateRequest.includes('<<JSONText>>')) {
-                    const start = this.data.updateRequest.indexOf('<<JSONText>>');
-                    const end = this.data.updateRequest.lastIndexOf('<<JSONText>>');
-                    strUpdateRequest = this.data.updateRequest.substring(start, end + '<<JSONText>>'.length);
-                    strUpdateRequest = this.data.updateRequest.replace(strUpdateRequest, '');
+                if (this.data.updateRequest.includes("<<JSONText>>")) {
+                    const start =
+                        this.data.updateRequest.indexOf("<<JSONText>>");
+                    const end =
+                        this.data.updateRequest.lastIndexOf("<<JSONText>>");
+                    strUpdateRequest = this.data.updateRequest.substring(
+                        start,
+                        end + "<<JSONText>>".length
+                    );
+                    strUpdateRequest = this.data.updateRequest.replace(
+                        strUpdateRequest,
+                        ""
+                    );
                 }
                 this.saveFormWidget(strUpdateRequest);
                 return;
@@ -3326,25 +4472,43 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 let _dataSourceTable = this.dataSourceTable;
                 if (this.agGridComponent) {
                     const wijmoGridData = this.agGridComponent.getEditedItems();
-                    _dataSourceTable = Uti.mergeWijmoGridData(this.dataSourceTable, wijmoGridData);
+                    _dataSourceTable = Uti.mergeWijmoGridData(
+                        this.dataSourceTable,
+                        wijmoGridData
+                    );
                 }
                 // TODO: NTH
-                const key = Object.keys(this.data.widgetDataType.listenKeyRequest(this.currentModule.moduleNameTrim))[0];
-                const value = this.data.widgetDataType.listenKeyRequest(this.currentModule.moduleNameTrim)[key];
+                const key = Object.keys(
+                    this.data.widgetDataType.listenKeyRequest(
+                        this.currentModule.moduleNameTrim
+                    )
+                )[0];
+                const value = this.data.widgetDataType.listenKeyRequest(
+                    this.currentModule.moduleNameTrim
+                )[key];
 
                 _dataSourceTable = this.rebuildComboboxData(_dataSourceTable);
                 this.updateDataSourceFromDataTable(_dataSourceTable);
                 let updateData = Uti.mapDataSourceToDataUpdateByColumnSetting(
                     this.copiedData.contentDetail.data[2][0],
                     key,
-                    value);
+                    value
+                );
                 updateData = JSON.stringify(updateData);
                 updateData = updateData.replace(/"/g, '\\\\\\"');
                 let strUpdateRequest: string = this.data.updateRequest;
-                if (this.data.updateRequest.includes('<<JSONText>>')) {
-                    strUpdateRequest = this.data.updateRequest.replace(new RegExp('<<JSONText>>', 'g'), '');
+                if (this.data.updateRequest.includes("<<JSONText>>")) {
+                    strUpdateRequest = this.data.updateRequest.replace(
+                        new RegExp("<<JSONText>>", "g"),
+                        ""
+                    );
                 }
-                this.saveFormWidget(strUpdateRequest.replace('<<SubInputParameter>>', updateData));
+                this.saveFormWidget(
+                    strUpdateRequest.replace(
+                        "<<SubInputParameter>>",
+                        updateData
+                    )
+                );
                 return;
             }
         });
@@ -3356,22 +4520,41 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             case WidgetType.ToolFileTemplate:
                 this.isOnEditFileExplorer = true;
                 if (!this.isDeletedFiles && this.widgetMenuStatusComponent)
-                    this.widgetMenuStatusComponent.manageSaveTableButtonStatus(true);
+                    this.widgetMenuStatusComponent.manageSaveTableButtonStatus(
+                        true
+                    );
                 break;
             case WidgetType.FileExplorerWithLabel:
             case WidgetType.FileTemplate:
                 this.isOnEditFileExplorer = true;
                 if (this.widgetMenuStatusComponent)
-                    this.widgetMenuStatusComponent.manageSaveTableButtonStatus(false);
-                this.makeEditingContextMenuForFileExplorerComponent(true, true, true);
+                    this.widgetMenuStatusComponent.manageSaveTableButtonStatus(
+                        false
+                    );
+                this.makeEditingContextMenuForFileExplorerComponent(
+                    true,
+                    true,
+                    true
+                );
                 break;
             default:
-                if (this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerStatus || this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerBusinessStatus) {
+                if (
+                    this.data.idRepWidgetApp ==
+                        RepWidgetAppIdEnum.CustomerStatus ||
+                    this.data.idRepWidgetApp ==
+                        RepWidgetAppIdEnum.CustomerBusinessStatus
+                ) {
                     this.isCustomerStatusWidgetEdit = true;
                     this.reloadWidgets.emit([this.data]);
                 } else {
                     this.isOnEditingTable = true;
-                    this.contextMenuData = this.widgetUtils.contextMenuInEditMode(this.contextMenuData, this.getAccessRightAll(), this.data, this.widgetMenuStatusComponent);
+                    this.contextMenuData =
+                        this.widgetUtils.contextMenuInEditMode(
+                            this.contextMenuData,
+                            this.getAccessRightAll(),
+                            this.data,
+                            this.widgetMenuStatusComponent
+                        );
                     if (this.agGridComponent) {
                         this.agGridComponent.toggleDeleteColumn(true);
                     }
@@ -3384,9 +4567,14 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }
     }
 
-    private makeEditingContextMenuForFileExplorerComponent(isShow: boolean, isShowSaveWidget?: boolean, isShowCancelSave?: boolean) {
+    private makeEditingContextMenuForFileExplorerComponent(
+        isShow: boolean,
+        isShowSaveWidget?: boolean,
+        isShowCancelSave?: boolean
+    ) {
         if (!isShow) return;
-        this.contextMenuData = this.widgetUtils.contextMenuInEditMode(this.contextMenuData,
+        this.contextMenuData = this.widgetUtils.contextMenuInEditMode(
+            this.contextMenuData,
             this.getAccessRightAll(),
             this.data,
             this.widgetMenuStatusComponent,
@@ -3394,30 +4582,41 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 isShowSaveWidget: isShowSaveWidget,
                 isShowCancelSave: isShowCancelSave,
                 isShowUploadTemplate: true,
-                isShowDeleteTemplate: true
+                isShowDeleteTemplate: true,
             }
         );
     }
 
     public checkToShowCommandButtons(makeCommandButsHidden?: boolean) {
         // const isTableWidget = (this.data.idRepWidgetType === WidgetType.EditableGrid || this.data.idRepWidgetType === WidgetType.EditableTable);
-        const isTableWidget = (this.data.idRepWidgetType === WidgetType.EditableGrid);
+        const isTableWidget =
+            this.data.idRepWidgetType === WidgetType.EditableGrid;
         let isTableWidgetUnEdited = !this.isTableEdited && isTableWidget;
 
-        const isFormWidget = (this.data.idRepWidgetType === WidgetType.FieldSet);
+        const isFormWidget = this.data.idRepWidgetType === WidgetType.FieldSet;
         const isFormWidgetUnEdited = !this.isWidgetDataEdited && isFormWidget;
 
-        const isCombinationWidget = (this.data.idRepWidgetType === WidgetType.Combination || this.data.idRepWidgetType === WidgetType.CombinationCreditCard);
-        let isCombinationWidgetUnEdited = !this.isTableEdited && !this.isWidgetDataEdited && isCombinationWidget;
+        const isCombinationWidget =
+            this.data.idRepWidgetType === WidgetType.Combination ||
+            this.data.idRepWidgetType === WidgetType.CombinationCreditCard;
+        let isCombinationWidgetUnEdited =
+            !this.isTableEdited &&
+            !this.isWidgetDataEdited &&
+            isCombinationWidget;
 
-        const isFileExplorerWidget = (this.data.idRepWidgetType === WidgetType.FileExplorer
-            || this.data.idRepWidgetType === WidgetType.ToolFileTemplate
-            || this.data.idRepWidgetType === WidgetType.FileExplorerWithLabel);
-        const isFileExplorerWidgetUnEdited = !this.isOnEditFileExplorer && isFileExplorerWidget;
+        const isFileExplorerWidget =
+            this.data.idRepWidgetType === WidgetType.FileExplorer ||
+            this.data.idRepWidgetType === WidgetType.ToolFileTemplate ||
+            this.data.idRepWidgetType === WidgetType.FileExplorerWithLabel;
+        const isFileExplorerWidgetUnEdited =
+            !this.isOnEditFileExplorer && isFileExplorerWidget;
 
         if (makeCommandButsHidden && this.agGridComponent) {
             const editedItems = this.agGridComponent.getEditedItems();
-            const hasEditedItems = !isNil(editedItems) && editedItems.itemsEdited && editedItems.itemsEdited.length > 0;
+            const hasEditedItems =
+                !isNil(editedItems) &&
+                editedItems.itemsEdited &&
+                editedItems.itemsEdited.length > 0;
             if (isTableWidget) {
                 isTableWidgetUnEdited = hasEditedItems ? false : true;
                 if (isTableWidgetUnEdited) {
@@ -3426,16 +4625,23 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             }
 
             if (isCombinationWidget) {
-                isCombinationWidgetUnEdited = this.isWidgetDataEdited ? isCombinationWidgetUnEdited :
-                    (hasEditedItems ? false : true);
+                isCombinationWidgetUnEdited = this.isWidgetDataEdited
+                    ? isCombinationWidgetUnEdited
+                    : hasEditedItems
+                    ? false
+                    : true;
                 if (isCombinationWidgetUnEdited) {
                     this.onCancelEditingWidget.emit(this.data);
                 }
             }
-
         }
 
-        return (isTableWidgetUnEdited || isFormWidgetUnEdited || isCombinationWidgetUnEdited || isFileExplorerWidgetUnEdited);
+        return (
+            isTableWidgetUnEdited ||
+            isFormWidgetUnEdited ||
+            isCombinationWidgetUnEdited ||
+            isFileExplorerWidgetUnEdited
+        );
     }
 
     ///////// ----------------Start CombiCredit Card Widget-----------------////////////////////
@@ -3476,7 +4682,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.editingWidget(this.dataInfo);
         this.onRowMarkedAsDeleted({
             disabledDeleteButton: true,
-            showCommandButtons: true
+            showCommandButtons: true,
         });
         if (this.widgetMenuStatusInfo) {
             // enable save button
@@ -3493,7 +4699,6 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }
     }
 
-
     ///////// ----------------End CombiCredit Card Widget-----------------////////////////////
 
     ///////// ----------------Start Country Widget-----------------////////////////////
@@ -3508,41 +4713,64 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         // TODO: NTH
         const updateData = this.prepareDataForSavingCountryWidget();
 
-        this.widgetTemplateSettingServiceSubscription = this.widgetTemplateSettingService.updateWidgetInfo(updateData, this.data.updateRequest, null, null, (s: string) => {
-            return s.replace(/"/g, '\\\\"');
-        }).subscribe((rs) => {
-            this.appErrorHandler.executeAction(() => {
-                this.onCancelEditingWidget.emit(this.data);
-                this.onSaveSuccessWidget.emit(this.data);
-                this.countryCheckListData = cloneDeep(this.outputDataCountries);
-                if (this.showInDialogStatus) {
-                    this.widgetCountryComponent.setEditMode(true);
-                    return;
-                }
-                this.widgetCountryComponent.setEditMode(false);
-                this.isWidgetDataEdited = false;
-                this.outputDataCountries = [];
-            });
-        });
+        this.widgetTemplateSettingServiceSubscription =
+            this.widgetTemplateSettingService
+                .updateWidgetInfo(
+                    updateData,
+                    this.data.updateRequest,
+                    null,
+                    null,
+                    (s: string) => {
+                        return s.replace(/"/g, '\\\\"');
+                    }
+                )
+                .subscribe((rs) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.onCancelEditingWidget.emit(this.data);
+                        this.onSaveSuccessWidget.emit(this.data);
+                        this.countryCheckListData = cloneDeep(
+                            this.outputDataCountries
+                        );
+                        if (this.showInDialogStatus) {
+                            this.widgetCountryComponent.setEditMode(true);
+                            return;
+                        }
+                        this.widgetCountryComponent.setEditMode(false);
+                        this.isWidgetDataEdited = false;
+                        this.outputDataCountries = [];
+                    });
+                });
     }
 
     private prepareDataForSavingCountryWidget() {
-        if (!this.outputDataCountries || !this.outputDataCountries.length) return [];
+        if (!this.outputDataCountries || !this.outputDataCountries.length)
+            return [];
         const result: any[] = [];
-        const key = Object.keys(this.data.widgetDataType.listenKeyRequest(this.currentModule.moduleNameTrim))[0];
-        const value = this.data.widgetDataType.listenKeyRequest(this.currentModule.moduleNameTrim)[key];
+        const key = Object.keys(
+            this.data.widgetDataType.listenKeyRequest(
+                this.currentModule.moduleNameTrim
+            )
+        )[0];
+        const value = this.data.widgetDataType.listenKeyRequest(
+            this.currentModule.moduleNameTrim
+        )[key];
 
         this.outputDataCountries.forEach((item) => {
             const _newItem = {};
             if (isNil(item.idArticleExcludeCountries)) {
                 _newItem[key] = value;
-                _newItem['IdCountrylanguage'] = item.idValue;
-                _newItem['IdPersonInterfaceContactCountries'] = item.idValueExtra;
-                _newItem['IsActive'] = item.isActive == true ? 1 : 0;
+                _newItem["IdCountrylanguage"] = item.idValue;
+                _newItem["IdPersonInterfaceContactCountries"] =
+                    item.idValueExtra;
+                _newItem["IsActive"] = item.isActive == true ? 1 : 0;
                 result.push(_newItem);
-            } else if (!isNil(item.idArticleExcludeCountries) && !item.isActive) {
-                _newItem['IdArticleExcludeCountries'] = item.idArticleExcludeCountries;
-                _newItem['IsDeleted'] = '1';
+            } else if (
+                !isNil(item.idArticleExcludeCountries) &&
+                !item.isActive
+            ) {
+                _newItem["IdArticleExcludeCountries"] =
+                    item.idArticleExcludeCountries;
+                _newItem["IsDeleted"] = "1";
                 result.push(_newItem);
             }
         });
@@ -3553,7 +4781,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (this.widgetCountryComponent)
             this.widgetCountryComponent.setEditMode(true);
 
-        this.contextMenuData = this.widgetUtils.contextMenuInEditMode(this.contextMenuData, this.getAccessRightAll());
+        this.contextMenuData = this.widgetUtils.contextMenuInEditMode(
+            this.contextMenuData,
+            this.getAccessRightAll()
+        );
     }
 
     private resetCountryWidget() {
@@ -3563,23 +4794,33 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private editNoteForm(event) {
-        if (this.widgetNoteFormComponent && this.widgetMenuStatusComponent) {
+        if (
+            (this.widgetNoteFormComponent ||
+                this.currentModule.idSettingsGUI === 7) &&
+            this.widgetMenuStatusComponent
+        ) {
             this.widgetMenuStatusComponent.updateModeStatusNoteForm(true);
         }
 
         this.isEditAllWidgetMode = true;
-        this.contextMenuData = this.widgetUtils.contextMenuInEditMode(this.contextMenuData, this.getAccessRightAll());
+        this.contextMenuData = this.widgetUtils.contextMenuInEditMode(
+            this.contextMenuData,
+            this.getAccessRightAll()
+        );
     }
 
     private resetNoteForm() {
-        if (this.widgetNoteFormComponent && this.widgetMenuStatusComponent) {
+        if (
+            (this.widgetNoteFormComponent ||
+                this.currentModule.idSettingsGUI === 7) &&
+            this.widgetMenuStatusComponent
+        ) {
             this.widgetMenuStatusComponent.updateModeStatusNoteForm(false);
         }
         this.isEditAllWidgetMode = false;
     }
 
     ///////// ----------------End Country Widget-----------------////////////////////
-
 
     ///////// ----------------Start Message Modal-----------------////////////////////
     private onModalSaveAndExit() {
@@ -3592,9 +4833,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.resetWidget();
     }
 
-    private onModalCancel() {
-
-    }
+    private onModalCancel() {}
 
     ///////// ----------------End Message Modal-----------------////////////////////
 
@@ -3613,19 +4852,34 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     public onPdfColumnClickHandler(eventData) {
         if (eventData) {
-            this.store.dispatch(this.backofficeActions.requestDownloadPdf(this.currentModule, eventData));
+            this.store.dispatch(
+                this.backofficeActions.requestDownloadPdf(
+                    this.currentModule,
+                    eventData
+                )
+            );
         }
     }
 
     public onTrackingColumnClickHandler(eventData) {
         if (eventData) {
-            this.store.dispatch(this.backofficeActions.requestGoToTrackingPage(this.currentModule, eventData));
+            this.store.dispatch(
+                this.backofficeActions.requestGoToTrackingPage(
+                    this.currentModule,
+                    eventData
+                )
+            );
         }
     }
 
     public onReturnRefundColumnClickHandler(eventData) {
         if (eventData) {
-            this.store.dispatch(this.backofficeActions.requestOpenReturnRefundModule(this.currentModule, eventData));
+            this.store.dispatch(
+                this.backofficeActions.requestOpenReturnRefundModule(
+                    this.currentModule,
+                    eventData
+                )
+            );
         }
     }
 
@@ -3635,15 +4889,26 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     public onRowDoubleClickHandler($event: any) {
         // if (($event && $event.isReadOnlyColumn) || !this.getAccessRightForCommandButton('ToolbarButton') || !this.getAccessRightForCommandButton('ToolbarButton__EditButton')) return;
-        if (($event && $event.isReadOnlyColumn) || !this.accessRight['edit'] || !this.getAccessRightForCommandButton('ToolbarButton')) return;
+        if (
+            ($event && $event.isReadOnlyColumn) ||
+            !this.accessRight["edit"] ||
+            !this.getAccessRightForCommandButton("ToolbarButton")
+        )
+            return;
 
         // call to open edit grid if not readolny
-        if (this.data.idRepWidgetType == this.WidgetTypeView.EditableGrid
+        if (
+            this.data.idRepWidgetType == this.WidgetTypeView.EditableGrid ||
             // || this.data.idRepWidgetType == this.WidgetTypeView.EditableTable
-            || this.data.idRepWidgetType == this.WidgetTypeView.Combination
-            || this.data.idRepWidgetType == this.WidgetTypeView.EditableRoleTreeGrid) {
-
-            if (this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerStatus || this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerBusinessStatus) {
+            this.data.idRepWidgetType == this.WidgetTypeView.Combination ||
+            this.data.idRepWidgetType ==
+                this.WidgetTypeView.EditableRoleTreeGrid
+        ) {
+            if (
+                this.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerStatus ||
+                this.data.idRepWidgetApp ==
+                    RepWidgetAppIdEnum.CustomerBusinessStatus
+            ) {
                 this.isCustomerStatusWidgetEdit = true;
                 this.reloadWidgets.emit([this.data]);
             }
@@ -3659,29 +4924,43 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     public onUnblockColumnClickHandler(eventData) {
         if (eventData) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                headerText: 'Unblock Order',
-                message: [{ key: '<p>' }, { key: 'Modal_Message__Do_You_Want_To_Unblock_This_Order' },
-                { key: '</p>' }],
-                callBack1: () => {
-                    this.saveUnblockOrder(eventData);
-                }
-            }));
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    headerText: "Unblock Order",
+                    message: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Unblock_This_Order",
+                        },
+                        { key: "</p>" },
+                    ],
+                    callBack1: () => {
+                        this.saveUnblockOrder(eventData);
+                    },
+                })
+            );
         }
     }
 
     public onDeleteColumnClickHandler(eventData) {
         if (eventData) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                messageType: MessageModal.MessageType.error,
-                headerText: 'Delete Order',
-                message: [{ key: '<p>' }, { key: 'Modal_Message__Do_You_Want_To_Delete_This_Order' },
-                { key: '</p>' }],
-                buttonType1: MessageModal.ButtonType.danger,
-                callBack1: () => {
-                    this.saveDeleteOrder(eventData);
-                }
-            }));
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    messageType: MessageModal.MessageType.error,
+                    headerText: "Delete Order",
+                    message: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Delete_This_Order",
+                        },
+                        { key: "</p>" },
+                    ],
+                    buttonType1: MessageModal.ButtonType.danger,
+                    callBack1: () => {
+                        this.saveDeleteOrder(eventData);
+                    },
+                })
+            );
         }
     }
 
@@ -3694,7 +4973,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private saveUnblockOrder(eventData: any, isDelete?: boolean) {
-        this.backOfficeServiceSubscription = this.backOfficeService.saveUnblockOrder(eventData.IdSalesOrder, isDelete)
+        this.backOfficeServiceSubscription = this.backOfficeService
+            .saveUnblockOrder(eventData.IdSalesOrder, isDelete)
             .subscribe((resultData: any) => {
                 this.appErrorHandler.executeAction(() => {
                     // TODO: will get correct message in result
@@ -3705,7 +4985,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private saveDeleteOrder(eventData: any) {
-        this.backOfficeServiceSubscription = this.backOfficeService.saveDeleteOrder(eventData.IdSalesOrder)
+        this.backOfficeServiceSubscription = this.backOfficeService
+            .saveDeleteOrder(eventData.IdSalesOrder)
             .subscribe((resultData: any) => {
                 this.appErrorHandler.executeAction(() => {
                     // TODO: will get correct message in result
@@ -3717,18 +4998,30 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     private hasScrollbarsHandler(eventData) {
         if (eventData) {
-            this.scrollStatus.top = isNull(eventData.top) ? this.scrollStatus.top : eventData.top;
-            this.scrollStatus.left = isNull(eventData.left) ? this.scrollStatus.left : eventData.left;
-            this.scrollStatus.right = isNull(eventData.right) ? this.scrollStatus.right : eventData.right;
-            this.scrollStatus.bottom = isNull(eventData.bottom) ? this.scrollStatus.bottom : eventData.bottom;
+            this.scrollStatus.top = isNull(eventData.top)
+                ? this.scrollStatus.top
+                : eventData.top;
+            this.scrollStatus.left = isNull(eventData.left)
+                ? this.scrollStatus.left
+                : eventData.left;
+            this.scrollStatus.right = isNull(eventData.right)
+                ? this.scrollStatus.right
+                : eventData.right;
+            this.scrollStatus.bottom = isNull(eventData.bottom)
+                ? this.scrollStatus.bottom
+                : eventData.bottom;
         }
     }
 
     private hasValidationErrorHandler(eventData) {
         if (this.agGridComponent) {
             if (this.widgetMenuStatusComponent && this.isOnEditingTable) {
-                this.widgetMenuStatusComponent.manageAddRowTableButtonStatus(eventData);
-                this.widgetMenuStatusComponent.manageSaveTableButtonStatus(eventData);
+                this.widgetMenuStatusComponent.manageAddRowTableButtonStatus(
+                    eventData
+                );
+                this.widgetMenuStatusComponent.manageSaveTableButtonStatus(
+                    eventData
+                );
             }
         }
     }
@@ -3736,7 +5029,6 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     //////// -----------------End Wijmo Grid--------------///////////////////
 
     private checkWidgetFormHasScrollbars() {
-
         if (this.scrollUtils.hasVerticalScroll) {
             this.scrollStatus.top = this.scrollUtils.canScrollUpTop;
             this.scrollStatus.bottom = this.scrollUtils.canScrollDownBottom;
@@ -3777,41 +5069,41 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private addHorizontalPerfectScrollEvent() {
-        $(this._eref.nativeElement).on('ps-scroll-left', () => {
+        $(this._eref.nativeElement).on("ps-scroll-left", () => {
             this.scrollStatus.left = this.scrollUtils.canScrollToLeft;
             this.scrollStatus.right = this.scrollUtils.canScrollToRight;
         });
 
-        $(this._eref.nativeElement).on('ps-scroll-right', () => {
+        $(this._eref.nativeElement).on("ps-scroll-right", () => {
             this.scrollStatus.left = this.scrollUtils.canScrollToLeft;
             this.scrollStatus.right = this.scrollUtils.canScrollToRight;
         });
     }
 
     private removeHorizontalPerfectScrollEvent() {
-        $(this._eref.nativeElement).off('ps-scroll-left');
-        $(this._eref.nativeElement).off('ps-scroll-right');
-        $(this._eref.nativeElement).off('ps-x-reach-end');
-        $(this._eref.nativeElement).off('ps-x-reach-start');
+        $(this._eref.nativeElement).off("ps-scroll-left");
+        $(this._eref.nativeElement).off("ps-scroll-right");
+        $(this._eref.nativeElement).off("ps-x-reach-end");
+        $(this._eref.nativeElement).off("ps-x-reach-start");
     }
 
     private addVerticalPerfectScrollEvent() {
-        $(this._eref.nativeElement).on('ps-scroll-up', () => {
+        $(this._eref.nativeElement).on("ps-scroll-up", () => {
             this.scrollStatus.top = this.scrollUtils.canScrollUpTop;
             this.scrollStatus.bottom = this.scrollUtils.canScrollDownBottom;
         });
 
-        $(this._eref.nativeElement).on('ps-scroll-down', () => {
+        $(this._eref.nativeElement).on("ps-scroll-down", () => {
             this.scrollStatus.top = this.scrollUtils.canScrollUpTop;
             this.scrollStatus.bottom = this.scrollUtils.canScrollDownBottom;
         });
     }
 
     private removeVerticalPerfectScrollEvent() {
-        $(this._eref.nativeElement).off('ps-scroll-up');
-        $(this._eref.nativeElement).off('ps-scroll-down');
-        $(this._eref.nativeElement).off('ps-y-reach-end');
-        $(this._eref.nativeElement).off('ps-y-reach-start');
+        $(this._eref.nativeElement).off("ps-scroll-up");
+        $(this._eref.nativeElement).off("ps-scroll-down");
+        $(this._eref.nativeElement).off("ps-y-reach-end");
+        $(this._eref.nativeElement).off("ps-y-reach-start");
     }
 
     /**
@@ -3843,7 +5135,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.widgetFormType = $event;
         this.updateWidgetFormTypeProperty($event);
         setTimeout(() => {
-            const container = $('div.widget-form-container', $(this._eref.nativeElement));
+            const container = $(
+                "div.widget-form-container",
+                $(this._eref.nativeElement)
+            );
             if (container && container.length) {
                 Ps.update(container.get(0));
                 setTimeout(() => {
@@ -3859,7 +5154,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     private getWidgetItemSize(): WidgetItemSize {
         let totalHeight = 0;
         const totalWidth = this._eref.nativeElement.scrollWidth;
-        const container = this._eref.nativeElement.querySelector('.box-default');
+        const container =
+            this._eref.nativeElement.querySelector(".box-default");
         if (container && container.children.length) {
             for (let i = 0; i < container.children.length; i++) {
                 totalHeight += container.children[i].scrollHeight;
@@ -3867,24 +5163,35 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }
         return {
             width: totalWidth,
-            height: totalHeight
+            height: totalHeight,
         };
     }
-
 
     // ---------------File Explorer Widget
 
     public onPropertiesItemClickHandler(eventData) {
         if (eventData) {
-            this.store.dispatch(this.additionalInformationActions.requestTogglePanel(false, this.currentModule));
-            this.store.dispatch(this.propertyPanelActions.togglePanel(this.currentModule, eventData, this.data, this.properties, false));
+            this.store.dispatch(
+                this.additionalInformationActions.requestTogglePanel(
+                    false,
+                    this.currentModule
+                )
+            );
+            this.store.dispatch(
+                this.propertyPanelActions.togglePanel(
+                    this.currentModule,
+                    eventData,
+                    this.data,
+                    this.properties,
+                    false
+                )
+            );
             if (this.isMaximized) {
                 this.hoverBox = true;
             } else {
                 this.hoverBox = false;
             }
             this.onOpenPropertyPanel.emit(true);
-
         }
     }
 
@@ -3896,7 +5203,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         let translateInDialog = true;
         this.isTranslateDataTextOnly = false;
         if (this.widgetUtils.isTableWidgetDataType(this.data)) {
-            if (event && event.mode == 'row') {
+            if (event && event.mode == "row") {
                 this.allowGridTranslation = !this.allowGridTranslation;
                 translateInDialog = false;
             }
@@ -3918,7 +5225,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
      */
     public openArticleTranslate() {
         if (this.widgetArticleTranslationDialogComponent) {
-            this.widgetArticleTranslationDialogComponent.translatedDataGrid = this.dataSourceTable;
+            this.widgetArticleTranslationDialogComponent.translatedDataGrid =
+                this.dataSourceTable;
             this.widgetArticleTranslationDialogComponent.open();
             // this.ref.detectChanges();
         }
@@ -3938,7 +5246,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     openTranslateTitle() {
         this.isTranslateDataTextOnly = true;
         this.isRenderWidgetInfoTranslation = true;
-        const propTitleText: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.propertiesForSaving.properties, 'TitleText');
+        const propTitleText: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.propertiesForSaving.properties,
+                "TitleText"
+            );
         this.translationDataKeyword = propTitleText.value;
         this.onOpenTranslateWidget.emit({ isHidden: false });
         setTimeout(() => {
@@ -3965,14 +5277,20 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (this.data.contentDetail.columnSettings) {
             // const gridToDetailPro = of(this.readonlyGridAutoSwitchToDetailProp).filter(Boolean).take(1);
             // gridToDetailPro.subscribe(value => {
-            if (this.readonlyGridAutoSwitchToDetailProp && this.agGridComponent && this.agGridComponent.gridOptions) {
+            if (
+                this.readonlyGridAutoSwitchToDetailProp &&
+                this.agGridComponent &&
+                this.agGridComponent.gridOptions
+            ) {
                 this.displayReadonlyGridAsForm = true;
                 this.readonlyGridFormData = cloneDeep(this.data);
                 this.readonlyGridFormData.contentDetail = { data: [[[]], []] };
-                const rowData = this.agGridComponent.gridOptions.rowData.length > 0 && this.agGridComponent.gridOptions.rowData;
+                const rowData =
+                    this.agGridComponent.gridOptions.rowData.length > 0 &&
+                    this.agGridComponent.gridOptions.rowData;
                 const gridSelectedRow = [];
                 if (filterObj) {
-                    Object.keys(filterObj).forEach(x => {
+                    Object.keys(filterObj).forEach((x) => {
                         for (const key of rowData) {
                             if (key[x] === filterObj[x]) {
                                 gridSelectedRow.push(key);
@@ -3981,9 +5299,20 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                     });
                 }
 
-                const rowDataChange = gridSelectedRow && gridSelectedRow.length > 0 ? gridSelectedRow : this.agGridComponent.gridOptions.rowData;
-                this.readonlyGridFormData.contentDetail.data[1] = this.widgetUtils.buildReadonlyGridFormColumns(this.data.contentDetail.columnSettings, this.readonlyGridFormData.contentDetail.data[1]);
-                this.readonlyGridFormData.contentDetail.data[1] = this.widgetUtils.buildReadonlyGridFormColumnsValue(rowDataChange, this.readonlyGridFormData.contentDetail.data[1]);
+                const rowDataChange =
+                    gridSelectedRow && gridSelectedRow.length > 0
+                        ? gridSelectedRow
+                        : this.agGridComponent.gridOptions.rowData;
+                this.readonlyGridFormData.contentDetail.data[1] =
+                    this.widgetUtils.buildReadonlyGridFormColumns(
+                        this.data.contentDetail.columnSettings,
+                        this.readonlyGridFormData.contentDetail.data[1]
+                    );
+                this.readonlyGridFormData.contentDetail.data[1] =
+                    this.widgetUtils.buildReadonlyGridFormColumnsValue(
+                        rowDataChange,
+                        this.readonlyGridFormData.contentDetail.data[1]
+                    );
             } else {
                 this.displayReadonlyGridAsForm = false;
                 if (this.agGridComponent) {
@@ -3999,14 +5328,21 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private buildEmptyDataForWidgetDetail() {
-        if (!this.readonlyGridFormData ||
-            !this.readonlyGridFormData.contentDetail) return;
+        if (
+            !this.readonlyGridFormData ||
+            !this.readonlyGridFormData.contentDetail
+        )
+            return;
 
         const data = cloneDeep(this.data);
         data.contentDetail = {
-            data: [[[]], []]
+            data: [[[]], []],
         };
-        data.contentDetail.data[1] = this.widgetUtils.buildReadonlyGridFormColumns(this.data.contentDetail.columnSettings, []);
+        data.contentDetail.data[1] =
+            this.widgetUtils.buildReadonlyGridFormColumns(
+                this.data.contentDetail.columnSettings,
+                []
+            );
         this.readonlyGridFormData = data;
     }
 
@@ -4021,9 +5357,18 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             if (isShow) {
                 this.makeEditingContextMenuForFileExplorerComponent(true);
             } else {
-                this.buildContextMenu(this.contextMenuData, this.data.idRepWidgetType, this.currentModule, this.toolbarSetting, this.selectedTabHeader, this.activeSubModule);
+                this.buildContextMenu(
+                    this.contextMenuData,
+                    this.data.idRepWidgetType,
+                    this.currentModule,
+                    this.toolbarSetting,
+                    this.selectedTabHeader,
+                    this.activeSubModule
+                );
             }
-        } else if (this.data.idRepWidgetType === WidgetType.ExportBlockedCustomer) {
+        } else if (
+            this.data.idRepWidgetType === WidgetType.ExportBlockedCustomer
+        ) {
             if (isShow) {
                 this.hoverBox = true;
                 this.ref.markForCheck();
@@ -4036,7 +5381,14 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.noEntryData = $event;
     }
 
-    private buildContextMenu(contextMenuData, idRepWidgetType, currentModule, toolbarSetting, selectedTabHeader, activeSubModule) {
+    private buildContextMenu(
+        contextMenuData,
+        idRepWidgetType,
+        currentModule,
+        toolbarSetting,
+        selectedTabHeader,
+        activeSubModule
+    ) {
         this.contextMenuData = this.widgetUtils.contextMenuInViewMode(
             contextMenuData,
             idRepWidgetType,
@@ -4053,11 +5405,18 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     public onRightClick($event: MouseEvent) {
         $event.preventDefault();
         $event.stopPropagation();
-        if (this.currentModule && this.currentModule.idSettingsGUI == MenuModuleId.administration
-            && this.activeSubModule && this.activeSubModule.idSettingsGUI != MenuModuleId.cashProvider) {
-
+        if (
+            this.currentModule &&
+            this.currentModule.idSettingsGUI == MenuModuleId.administration &&
+            this.activeSubModule &&
+            this.activeSubModule.idSettingsGUI != MenuModuleId.cashProvider
+        ) {
             for (let i = 0; i < this.contextMenuData.length; i++) {
-                if (this.contextMenuData[i].title.indexOf('CC PRN') !== -1 || this.contextMenuData[i].title.indexOf('Provider Cost') !== -1) {
+                if (
+                    this.contextMenuData[i].title.indexOf("CC PRN") !== -1 ||
+                    this.contextMenuData[i].title.indexOf("Provider Cost") !==
+                        -1
+                ) {
                     this.contextMenuData[i].hidden = true;
                 }
             }
@@ -4065,37 +5424,55 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public onOpenFieldTranslateWidget(event) {
-        if (this.data
-            && this.data.idRepWidgetApp == 106) { //Repository Name widget
+        if (this.data && this.data.idRepWidgetApp == 106) {
+            //Repository Name widget
 
             const gridData = this.agGridComponent.gridOptions.rowData;
             const translateSource: any[] = [];
             const groupNames: any[] = [];
             for (let i = 0; i < gridData.length; i++) {
-                if (!translateSource.length || !translateSource.find(t => t.Value == gridData[i].TableName)) {
+                if (
+                    !translateSource.length ||
+                    !translateSource.find(
+                        (t) => t.Value == gridData[i].TableName
+                    )
+                ) {
                     translateSource.push({
                         ColumnName: gridData[i].Alias,
                         OriginalText: gridData[i].Alias,
                         Value: gridData[i].TableName,
-                        OriginalColumnName: 'RepositoryName_' + gridData[i].Alias.replace(/ /g, ''),
-                        Selected: this.agGridComponent
-                            && this.agGridComponent.selectedNode
-                            && this.agGridComponent.selectedNode.data
-                            && gridData[i].TableName == this.agGridComponent.selectedNode.data.TableName
+                        OriginalColumnName:
+                            "RepositoryName_" +
+                            gridData[i].Alias.replace(/ /g, ""),
+                        Selected:
+                            this.agGridComponent &&
+                            this.agGridComponent.selectedNode &&
+                            this.agGridComponent.selectedNode.data &&
+                            gridData[i].TableName ==
+                                this.agGridComponent.selectedNode.data
+                                    .TableName,
                     });
 
                     const groupName = gridData[i].GroupNameAlias;
-                    if (groupNames.findIndex(x => x.OriginalText == groupName) === -1) {
+                    if (
+                        groupNames.findIndex(
+                            (x) => x.OriginalText == groupName
+                        ) === -1
+                    ) {
                         groupNames.push({
                             IsGroupName: true,
                             ColumnName: groupName,
                             OriginalText: groupName,
                             Value: gridData[i].GroupName,
-                            OriginalColumnName: 'RepositoryName_' + groupName.replace(/ /g, ''),
-                            Selected: this.agGridComponent
-                                && this.agGridComponent.selectedNode
-                                && this.agGridComponent.selectedNode.data
-                                && gridData[i].TableName == this.agGridComponent.selectedNode.data.TableName
+                            OriginalColumnName:
+                                "RepositoryName_" + groupName.replace(/ /g, ""),
+                            Selected:
+                                this.agGridComponent &&
+                                this.agGridComponent.selectedNode &&
+                                this.agGridComponent.selectedNode.data &&
+                                gridData[i].TableName ==
+                                    this.agGridComponent.selectedNode.data
+                                        .TableName,
                         });
                     }
                 }
@@ -4123,13 +5500,13 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             case 105:
                 return [
                     {
-                        name: 'IdLoginRoles',
-                        value: 1
+                        name: "IdLoginRoles",
+                        value: 1,
                     },
                     {
-                        name: 'IdLoginRoles',
-                        value: 2
-                    }
+                        name: "IdLoginRoles",
+                        value: 2,
+                    },
                 ];
             default:
                 return null;
@@ -4149,16 +5526,23 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     public buildCustomTooltip(idRepWidgetApp) {
         switch (idRepWidgetApp) {
             case 106:
-                return { preText: 'Original Name: ', fieldName: 'Alias' };
+                return { preText: "Original Name: ", fieldName: "Alias" };
             case 105:
-                return { preText: '', fieldName: 'Explanation' };
+                return { preText: "", fieldName: "Explanation" };
             default:
                 return null;
         }
     }
 
     public onAddWidgetTemplate() {
-        if (this.data && (this.data.idRepWidgetApp == 111 || this.data.idRepWidgetApp == 112 || this.data.idRepWidgetApp == 113 || this.data.idRepWidgetApp == 114 || this.data.idRepWidgetApp == 126)) {
+        if (
+            this.data &&
+            (this.data.idRepWidgetApp == 111 ||
+                this.data.idRepWidgetApp == 112 ||
+                this.data.idRepWidgetApp == 113 ||
+                this.data.idRepWidgetApp == 114 ||
+                this.data.idRepWidgetApp == 126)
+        ) {
             if (this.agGridComponent) {
                 this.clearDataSourceData();
             }
@@ -4196,7 +5580,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             let updateRequest;
             if (event.data) {
                 const eventData = event.data;
-                eventData['Date'] = eventData.date;
+                eventData["Date"] = eventData.date;
                 updateRequest = [eventData];
             } else {
                 updateRequest = this.widgetNoteFormComponent.getDataSave();
@@ -4240,19 +5624,28 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (!this.settingNewDataForProperties) {
             this.originalProperties = cloneDeep(this.properties);
         }
-        this.store.dispatch(this.propertyPanelActions.updateTempProperties(this.originalProperties, this.currentModule));
+        this.store.dispatch(
+            this.propertyPanelActions.updateTempProperties(
+                this.originalProperties,
+                this.currentModule
+            )
+        );
     }
 
     // #region [Access Right]
     private getAccessRightAll(): any {
-        const moduleAccessRight = this._accessRightsService.getAccessRight(AccessRightTypeEnum.Tab, {
-            idSettingsGUIParent: (this.currentModule || {}).idSettingsGUIParent,
-            idSettingsGUI: (this.currentModule || {}).idSettingsGUI,
-            tabID: this.tabID
-        });
+        const moduleAccessRight = this._accessRightsService.getAccessRight(
+            AccessRightTypeEnum.Tab,
+            {
+                idSettingsGUIParent: (this.currentModule || {})
+                    .idSettingsGUIParent,
+                idSettingsGUI: (this.currentModule || {}).idSettingsGUI,
+                tabID: this.tabID,
+            }
+        );
         const result = {
             ParkedItem_New: moduleAccessRight.new,
-            ParkedItem_Edit: moduleAccessRight.edit
+            ParkedItem_Edit: moduleAccessRight.edit,
         };
         for (const item in AccessRightWidgetCommandButtonEnum) {
             result[item] = this.getAccessRightForCommandButton(item);
@@ -4271,38 +5664,67 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     private buildAccessRight() {
         if (!this.activeSubModule) return;
         const accessRightData: Array<any> = [];
-        const idRepWidgetApp = this.payload ? this.payload.idRepWidgetApp : this.data ? this.data.idRepWidgetApp : null;
-        const idRepWidgetType = this.payload ? this.payload.idRepWidgetType : this.data ? this.data.idRepWidgetType : null;
+        const idRepWidgetApp = this.payload
+            ? this.payload.idRepWidgetApp
+            : this.data
+            ? this.data.idRepWidgetApp
+            : null;
+        const idRepWidgetType = this.payload
+            ? this.payload.idRepWidgetType
+            : this.data
+            ? this.data.idRepWidgetType
+            : null;
         for (const item in AccessRightWidgetCommandButtonEnum) {
             accessRightData.push({
-                idSettingsGUIParent: (this.currentModule || {}).idSettingsGUIParent,
+                idSettingsGUIParent: (this.currentModule || {})
+                    .idSettingsGUIParent,
                 idSettingsGUI: (this.currentModule || {}).idSettingsGUI,
                 idRepWidgetApp: idRepWidgetApp,
-                buttonCommand: item
+                buttonCommand: item,
             });
         }
-        this.accessRightForCommandButton = this._accessRightsService.SetAccessRightsForWidgetMenuStatus(accessRightData);
+        this.accessRightForCommandButton =
+            this._accessRightsService.SetAccessRightsForWidgetMenuStatus(
+                accessRightData
+            );
 
-        if (idRepWidgetType === WidgetType.Translation || idRepWidgetType === WidgetType.BlankWidget) {
-            this.accessRight = this._accessRightsService.createFullAccessRight();
+        if (
+            idRepWidgetType === WidgetType.Translation ||
+            idRepWidgetType === WidgetType.BlankWidget
+        ) {
+            this.accessRight =
+                this._accessRightsService.createFullAccessRight();
         } else {
-            this.accessRight = this._accessRightsService.SetAccessRightsForWidget({
-                idSettingsGUIParent: (this.currentModule || {}).idSettingsGUIParent,
-                idSettingsGUI: (this.currentModule || {}).idSettingsGUI,
-                idRepWidgetApp: idRepWidgetApp
-            });
+            this.accessRight =
+                this._accessRightsService.SetAccessRightsForWidget({
+                    idSettingsGUIParent: (this.currentModule || {})
+                        .idSettingsGUIParent,
+                    idSettingsGUI: (this.currentModule || {}).idSettingsGUI,
+                    idRepWidgetApp: idRepWidgetApp,
+                });
         }
 
-        this.accessRightAll = { ...this.accessRight, ...this.accessRightForCommandButton };
+        this.accessRightAll = {
+            ...this.accessRight,
+            ...this.accessRightForCommandButton,
+        };
         if (this.menuStatusSettings)
             this.menuStatusSettings.setAccessRight(this.accessRightAll);
     }
 
     public getAccessRightForCommandButton(buttonName: string) {
-        if (!this.accessRightForCommandButton || !this.accessRightForCommandButton[AccessRightWidgetCommandButtonEnum[buttonName]]) {
+        if (
+            !this.accessRightForCommandButton ||
+            !this.accessRightForCommandButton[
+                AccessRightWidgetCommandButtonEnum[buttonName]
+            ]
+        ) {
             return false;
         }
-        const status = this.accessRightForCommandButton[AccessRightWidgetCommandButtonEnum[buttonName]]['read'];
+        const status =
+            this.accessRightForCommandButton[
+                AccessRightWidgetCommandButtonEnum[buttonName]
+            ]["read"];
         return status;
     }
 
@@ -4317,12 +5739,16 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public onFilterCountrySelectionChanged(selectedCountry: any[]) {
-        if (selectedCountry
-            && selectedCountry.length
-            && this.data.idRepWidgetType == WidgetType.DoubleGrid
-            && (this.data.idRepWidgetApp == LogicItemsId.AgeFilter || this.data.idRepWidgetApp == LogicItemsId.AgeFilter_Extend
-                || this.data.idRepWidgetApp == LogicItemsId.ExtendedFilter || this.data.idRepWidgetApp == LogicItemsId.ExtendedFilter_Extend)) {
-            const isActive = selectedCountry.find(c => c.key == 'IsActive');
+        if (
+            selectedCountry &&
+            selectedCountry.length &&
+            this.data.idRepWidgetType == WidgetType.DoubleGrid &&
+            (this.data.idRepWidgetApp == LogicItemsId.AgeFilter ||
+                this.data.idRepWidgetApp == LogicItemsId.AgeFilter_Extend ||
+                this.data.idRepWidgetApp == LogicItemsId.ExtendedFilter ||
+                this.data.idRepWidgetApp == LogicItemsId.ExtendedFilter_Extend)
+        ) {
+            const isActive = selectedCountry.find((c) => c.key == "IsActive");
             if (isActive) {
                 this.isSelectedCountryActive = isActive.value;
             }
@@ -4334,19 +5760,29 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public onSaveFilter() {
-        this.profileSelectedData['IdSelectionWidget'] = MapFromWidgetAppToFilterId[this.data.idRepWidgetApp];
+        this.profileSelectedData["IdSelectionWidget"] =
+            MapFromWidgetAppToFilterId[this.data.idRepWidgetApp];
         this.widgetProfileSaving.openConfirmSaving();
     }
 
     public onOpenFilter() {
-        this.widgetProfileSelect.open({ idSelectionWidget: MapFromWidgetAppToFilterId[this.data.idRepWidgetApp] });
+        this.widgetProfileSelect.open({
+            idSelectionWidget:
+                MapFromWidgetAppToFilterId[this.data.idRepWidgetApp],
+        });
     }
 
     public onProfileSelectedData($event) {
-        $event['IdSelectionWidget'] = MapFromWidgetAppToFilterId[this.data.idRepWidgetApp];
+        $event["IdSelectionWidget"] =
+            MapFromWidgetAppToFilterId[this.data.idRepWidgetApp];
         this.profileSelectedData = $event;
 
-        this.store.dispatch(this.filterActions.requestLoadProfile(this.profileSelectedData, this.currentModule));
+        this.store.dispatch(
+            this.filterActions.requestLoadProfile(
+                this.profileSelectedData,
+                this.currentModule
+            )
+        );
     }
 
     public onProfileSavingData(isNew: boolean) {
@@ -4380,14 +5816,21 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             case LogicItemsId.GroupPriority:
                 this.processSaveProfile(isNew, this.groupPriority);
                 break;
-
         }
     }
 
     private processSaveProfile(isNew, gridComponent) {
         gridComponent.createJsonDataForProfile().subscribe((jsonData: any) => {
-            if (!isNew && (isEmpty(this.profileSelectedData) || !this.profileSelectedData || !this.profileSelectedData.IdSelectionWidgetTemplate)) {
-                this.widgetProfileSaving.openUpdateWithoutSelectProfile(MapFromWidgetAppToFilterId[this.data.idRepWidgetApp], jsonData);
+            if (
+                !isNew &&
+                (isEmpty(this.profileSelectedData) ||
+                    !this.profileSelectedData ||
+                    !this.profileSelectedData.IdSelectionWidgetTemplate)
+            ) {
+                this.widgetProfileSaving.openUpdateWithoutSelectProfile(
+                    MapFromWidgetAppToFilterId[this.data.idRepWidgetApp],
+                    jsonData
+                );
                 return;
             }
             this.widgetProfileSaving.callSavingData(jsonData);
@@ -4401,39 +5844,49 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public onDeleteProjectClick($event) {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            messageType: MessageModal.MessageType.error,
-            headerText: 'Delete Project',
-            message: [{ key: '<p>' }, { key: 'Modal_Message__Do_You_Want_To_Delete_This_Project' },
-            { key: '</p>' }],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.deleteProject();
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                messageType: MessageModal.MessageType.error,
+                headerText: "Delete Project",
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Delete_This_Project",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.deleteProject();
+                },
+            })
+        );
     }
 
     private deleteProject() {
         const formValues = this.widgetFormComponent.filterValidFormField();
-        const updateKeyValue = Uti.getUpdateKeyValue(formValues, this.data.widgetDataType.listenKeyRequest(this.currentModule.moduleNameTrim));
+        const updateKeyValue = Uti.getUpdateKeyValue(
+            formValues,
+            this.data.widgetDataType.listenKeyRequest(
+                this.currentModule.moduleNameTrim
+            )
+        );
 
         const saveData = {
             IdSalesCampaignWizard: updateKeyValue,
-            IsDeleted: true
-        }
+            IsDeleted: true,
+        };
 
-        this.projectService.saveProject([saveData])
-            .subscribe((response: ApiResultResponse) => {
+        this.projectService.saveProject([saveData]).subscribe(
+            (response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
                         return;
                     }
-
-
                 });
-            }, (err) => {
-
-            });
+            },
+            (err) => {}
+        );
     }
 
     public onNewRule(isForAllCountry?: boolean) {
@@ -4505,10 +5958,14 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public mouseDblClick($event) {
-        if (this.data
-            && (this.data.idRepWidgetType == WidgetType.DoubleGrid || this.data.idRepWidgetType == WidgetType.TripleGrid || this.data.idRepWidgetType == WidgetType.CountrySelection)
-            && this.widgetMenuStatusComponent
-            && !this.isToolbarButtonsShowed) {
+        if (
+            this.data &&
+            (this.data.idRepWidgetType == WidgetType.DoubleGrid ||
+                this.data.idRepWidgetType == WidgetType.TripleGrid ||
+                this.data.idRepWidgetType == WidgetType.CountrySelection) &&
+            this.widgetMenuStatusComponent &&
+            !this.isToolbarButtonsShowed
+        ) {
             this.widgetMenuStatusComponent.toggleToolButtonsWithoutClick(true);
         }
     }
@@ -4520,8 +5977,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.copiedData = null;
         this.reEditWhenInPopup();
 
-
-        this.isTableEdited = false
+        this.isTableEdited = false;
         this.isOnEditingTable = false;
         if (this.isSelectionProject && !this.isEditAllWidgetMode) {
             this.widgetMenuStatusComponent.toggleToolButtons(false);
@@ -4531,7 +5987,10 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public onDeleteRuleColumnClick(deleteCount: number) {
-        if (this.widgetMenuStatusComponent && this.widgetMenuStatusComponent.showDeleteRuleButton) {
+        if (
+            this.widgetMenuStatusComponent &&
+            this.widgetMenuStatusComponent.showDeleteRuleButton
+        ) {
             this.widgetMenuStatusComponent.deletedRulesCount = deleteCount;
         }
     }
@@ -4546,50 +6005,71 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     private _isActivated = true;
 
     private signalRRegisterEvent() {
-        if (!Configuration.PublicSettings.enableSignalR ||
+        if (
+            !Configuration.PublicSettings.enableSignalR ||
             !Configuration.PublicSettings.enableSignalRForWidgetDetail ||
             !this.payload ||
-            (this.payload.idRepWidgetType != this.WidgetTypeView.FieldSet
-                && this.payload.idRepWidgetType != this.WidgetTypeView.FieldSetReadonly)) return;
+            (this.payload.idRepWidgetType != this.WidgetTypeView.FieldSet &&
+                this.payload.idRepWidgetType !=
+                    this.WidgetTypeView.FieldSetReadonly)
+        )
+            return;
         this.registerListenEditingEvent();
         this.registerListenSavedSuccessEvent();
     }
 
     private registerListenEditingEvent() {
-        if (this.listenEditingEventSubscription) this.listenEditingEventSubscription.unsubscribe();
+        if (this.listenEditingEventSubscription)
+            this.listenEditingEventSubscription.unsubscribe();
 
-        this.listenEditingEventSubscription = this.signalRService.messageReceived.subscribe((items: Array<SignalRNotifyModel>) => {
-            if (!this.widgetFormComponent || !this.widgetFormComponent.notifyObjectId) return;
+        this.listenEditingEventSubscription =
+            this.signalRService.messageReceived.subscribe(
+                (items: Array<SignalRNotifyModel>) => {
+                    if (
+                        !this.widgetFormComponent ||
+                        !this.widgetFormComponent.notifyObjectId
+                    )
+                        return;
 
-            this.notifyItems = items.filter(x => x.ObjectId === this.widgetFormComponent.notifyObjectId);
-            this.setValueForIsOpenUserEditingList();
-            setTimeout(() => {
-                this.ref.detectChanges();
-            }, 100);
-        });
+                    this.notifyItems = items.filter(
+                        (x) =>
+                            x.ObjectId ===
+                            this.widgetFormComponent.notifyObjectId
+                    );
+                    this.setValueForIsOpenUserEditingList();
+                    setTimeout(() => {
+                        this.ref.detectChanges();
+                    }, 100);
+                }
+            );
     }
 
     private registerListenSavedSuccessEvent() {
-        if (this.listenSavedSuccessEventSubscription) this.listenSavedSuccessEventSubscription.unsubscribe();
+        if (this.listenSavedSuccessEventSubscription)
+            this.listenSavedSuccessEventSubscription.unsubscribe();
 
-        this.listenSavedSuccessEventSubscription = this.signalRService.messageWidgetSavedSuccessReceived.subscribe((item: SignalRNotifyModel) => {
-            if (!item) return;
-            this.userJustSaved = item;
+        this.listenSavedSuccessEventSubscription =
+            this.signalRService.messageWidgetSavedSuccessReceived.subscribe(
+                (item: SignalRNotifyModel) => {
+                    if (!item) return;
+                    this.userJustSaved = item;
 
-            if (this.isWidgetEditMode) {
-                this.isShowReloadMessage = true;
-            } else {
-                this.reloadWidgets.emit([this.data]);
-                this.setReloadMessageValue(true);
-                this.autoClearMessageAfterShow(5000);
-            }
-            this.callDetectChanges();
-        });
+                    if (this.isWidgetEditMode) {
+                        this.isShowReloadMessage = true;
+                    } else {
+                        this.reloadWidgets.emit([this.data]);
+                        this.setReloadMessageValue(true);
+                        this.autoClearMessageAfterShow(5000);
+                    }
+                    this.callDetectChanges();
+                }
+            );
     }
 
     public setActivatedForThisComponent(isActivated: boolean) {
         setTimeout(() => {
-            this.isOpenUserEditingList = isActivated && !!(this.notifyItems && this.notifyItems.length);
+            this.isOpenUserEditingList =
+                isActivated && !!(this.notifyItems && this.notifyItems.length);
             if (!this.signalRPopover) return;
             if (this.isOpenUserEditingList) {
                 this.signalRPopover.show();
@@ -4601,11 +6081,17 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private setValueForIsOpenUserEditingList() {
-        this.isOpenUserEditingList = (this._isActivated && !!(this.notifyItems && this.notifyItems.length));
+        this.isOpenUserEditingList =
+            this._isActivated &&
+            !!(this.notifyItems && this.notifyItems.length);
     }
 
     private showEditingNotification() {
-        if (this.widgetFormComponent && this.data && this.data.idRepWidgetType == this.WidgetTypeView.FieldSet) {
+        if (
+            this.widgetFormComponent &&
+            this.data &&
+            this.data.idRepWidgetType == this.WidgetTypeView.FieldSet
+        ) {
             this.widgetFormComponent.signalRIsThereAnyoneEditing();
         }
     }
@@ -4676,7 +6162,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     //#endregion SignalR
 
     //#region [Property]
-    private currentObjectName = '';
+    private currentObjectName = "";
 
     private requestDataWhenChangePropety(data: WidgetPropertiesStateModel) {
         if (data.widgetData.idRepWidgetApp == RepWidgetAppIdEnum.ChartWidget) {
@@ -4684,16 +6170,36 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }
     }
 
-    private requestDataWhenChangeObjectNameOfChartProperty(data: WidgetPropertiesStateModel) {
-        if (!data.widgetData || (data.widgetData.syncWidgetIds && data.widgetData.syncWidgetIds.length)) {
+    private requestDataWhenChangeObjectNameOfChartProperty(
+        data: WidgetPropertiesStateModel
+    ) {
+        if (
+            !data.widgetData ||
+            (data.widgetData.syncWidgetIds &&
+                data.widgetData.syncWidgetIds.length)
+        ) {
             return;
         }
-        const properties = data.widgetProperties.properties ? data.widgetProperties.properties : data.widgetProperties;
-        const dataSourceObject: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(properties, ComboBoxTypeConstant.chartDataSourceObject, PropertyNameOfWidgetProperty.ComboboxStoreObject);
-        if (!dataSourceObject || !dataSourceObject.value || dataSourceObject.value == this.currentChartDataSourceObject) {
+        const properties = data.widgetProperties.properties
+            ? data.widgetProperties.properties
+            : data.widgetProperties;
+        const dataSourceObject: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                properties,
+                ComboBoxTypeConstant.chartDataSourceObject,
+                PropertyNameOfWidgetProperty.ComboboxStoreObject
+            );
+        if (
+            !dataSourceObject ||
+            !dataSourceObject.value ||
+            dataSourceObject.value == this.currentChartDataSourceObject
+        ) {
             return;
         }
-        data.widgetData.request = data.widgetData.request.replace(this.currentObjectName ? this.currentObjectName : '<<ObjectName>>', dataSourceObject.value);
+        data.widgetData.request = data.widgetData.request.replace(
+            this.currentObjectName ? this.currentObjectName : "<<ObjectName>>",
+            dataSourceObject.value
+        );
         this.currentObjectName = dataSourceObject.value;
         this.reloadWidgets.emit([data.widgetData]);
     }
@@ -4705,18 +6211,38 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     private updateChartData() {
         if (this.data.idRepWidgetApp != RepWidgetAppIdEnum.ChartWidget) return;
-        const dataSourceObject: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, ComboBoxTypeConstant.chartDataSourceObject, PropertyNameOfWidgetProperty.ComboboxStoreObject);
+        const dataSourceObject: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                ComboBoxTypeConstant.chartDataSourceObject,
+                PropertyNameOfWidgetProperty.ComboboxStoreObject
+            );
 
-        if (dataSourceObject && dataSourceObject.value && dataSourceObject.value == this.currentChartDataSourceObject) {
+        if (
+            dataSourceObject &&
+            dataSourceObject.value &&
+            dataSourceObject.value == this.currentChartDataSourceObject
+        ) {
             return;
         }
 
-        const linkWidgetTitleId: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, PropertyNameOfWidgetProperty.LinkWidgetTitleId);
+        const linkWidgetTitleId: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                PropertyNameOfWidgetProperty.LinkWidgetTitleId
+            );
         if (!this.data.syncWidgetIds || !this.data.syncWidgetIds.length) {
             dataSourceObject.visible = true;
             linkWidgetTitleId.visible = false;
-            if (!this.data.contentDetail || !this.data.contentDetail.data || this.data.contentDetail.data.length < 2) return;
-            this.chartData = this.datatableService.formatDataTableFromRawData(this.data.contentDetail.data);
+            if (
+                !this.data.contentDetail ||
+                !this.data.contentDetail.data ||
+                this.data.contentDetail.data.length < 2
+            )
+                return;
+            this.chartData = this.datatableService.formatDataTableFromRawData(
+                this.data.contentDetail.data
+            );
 
             if (this.isExpandedPropertyPanel) {
                 this.buildFieldFilterForChart(this.chartData.columnSettings);
@@ -4727,7 +6253,9 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             // Update combobx text when link chart to other widget
             dataSourceObject.visible = false;
             linkWidgetTitleId.visible = true;
-            const parentWidget: WidgetDetail = this.getWidgetById(this.data.syncWidgetIds[0]);
+            const parentWidget: WidgetDetail = this.getWidgetById(
+                this.data.syncWidgetIds[0]
+            );
             linkWidgetTitleId.value = parentWidget ? parentWidget.title : null;
             this.currentChartDataSourceObject = null;
         }
@@ -4736,9 +6264,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     private getWidgetById(widgetId: any) {
         let widgetDetail: any;
         for (const item of this.layoutPageInfoWidget) {
-            widgetDetail = item.widgetboxesTitle.find(x => x.id == widgetId);
-            if (widgetDetail && widgetDetail.id)
-                return widgetDetail;
+            widgetDetail = item.widgetboxesTitle.find((x) => x.id == widgetId);
+            if (widgetDetail && widgetDetail.id) return widgetDetail;
         }
         return widgetDetail;
     }
@@ -4746,25 +6273,35 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     private buildFieldFilterForChart(columnSettings) {
         this.fieldFilters = [];
         Object.keys(columnSettings).forEach((key) => {
-            this.fieldFilters.push(new FieldFilter({
-                fieldDisplayName: columnSettings[key].ColumnName,
-                fieldName: columnSettings[key].OriginalColumnName,
-                selected: false,
-                isHidden: false,
-                isEditable: false
-            }));
+            this.fieldFilters.push(
+                new FieldFilter({
+                    fieldDisplayName: columnSettings[key].ColumnName,
+                    fieldName: columnSettings[key].OriginalColumnName,
+                    selected: false,
+                    isHidden: false,
+                    isEditable: false,
+                })
+            );
         });
 
         //Reset previous data
         this.widgetMenuStatusComponent.isInitDisplayFields = false;
         this.widgetMenuStatusComponent.fieldFilters = [];
-        const propXSeries: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'XSeries');
+        const propXSeries: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "XSeries"
+            );
         if (propXSeries) {
             propXSeries.options = [];
             propXSeries.value = [];
         }
 
-        const propYSeries: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, 'YSeries');
+        const propYSeries: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                "YSeries"
+            );
         if (propYSeries) {
             propYSeries.options = [];
             propYSeries.value = [];
@@ -4773,7 +6310,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.initwidgetMenuStatusData = {
             widgetDetail: {
                 ...this.data,
-                contentDetail: this.chartData
+                contentDetail: this.chartData,
             },
             selectedFilter: this.selectedFilter,
             selectedSubFilter: this.selectedSubFilter,
@@ -4784,12 +6321,22 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             widgetProperties: this.properties,
             gridLayoutSettings: this.columnsLayoutSettings,
             isForAllCountryCheckbox: false,
-            isForAllCountryButton: false
+            isForAllCountryButton: false,
         };
 
         setTimeout(() => {
-            this.store.dispatch(this.propertyPanelActions.clearProperties(this.currentModule));
-            this.store.dispatch(this.propertyPanelActions.togglePanel(this.currentModule, true, this.data, this.properties, false));
+            this.store.dispatch(
+                this.propertyPanelActions.clearProperties(this.currentModule)
+            );
+            this.store.dispatch(
+                this.propertyPanelActions.togglePanel(
+                    this.currentModule,
+                    true,
+                    this.data,
+                    this.properties,
+                    false
+                )
+            );
         }, 250);
     }
 
@@ -4798,14 +6345,20 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     // ==========================================================================================================================================
     //#region [Sav Letter]
     private messageRCWord2PdfSubscription: Subscription;
-    private showSendLetterDialogData: { widgetData: any, selectedItems: Array<any> } = { widgetData: {}, selectedItems: [] };
-    private showSAVWidgetDialogData: { widgetData: any, data: any } = { widgetData: {}, data: {} };
+    private showSendLetterDialogData: {
+        widgetData: any;
+        selectedItems: Array<any>;
+    } = { widgetData: {}, selectedItems: [] };
+    private showSAVWidgetDialogData: { widgetData: any; data: any } = {
+        widgetData: {},
+        data: {},
+    };
     private isCallStart: boolean = false;
     private startTimeout: any;
     private sendLetterOutputData: any = {};
     private isSAVPreview = false;
     private isSAVWidget = false;
-    private sAVIdConnectionName = 'NoConnection';
+    private sAVIdConnectionName = "NoConnection";
 
     public closedSendLetterHandle(isReload?: boolean) {
         this.isShowSendLetter = false;
@@ -4816,11 +6369,20 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public buttonAndCheckboxClickHandler(rowData: any) {
-        this.showSendLetterDialogData = { widgetData: this.data, selectedItems: [rowData] };
+        this.showSendLetterDialogData = {
+            widgetData: this.data,
+            selectedItems: [rowData],
+        };
         this.isShowSendLetter = true;
         Uti.executeFunctionWithTimeout(
-            () => { this.sendLetterDialogComponent.callShowDialog(this.showSendLetterDialogData); },
-            () => { return !!this.sendLetterDialogComponent; }
+            () => {
+                this.sendLetterDialogComponent.callShowDialog(
+                    this.showSendLetterDialogData
+                );
+            },
+            () => {
+                return !!this.sendLetterDialogComponent;
+            }
         );
     }
 
@@ -4832,17 +6394,34 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.sendLetterOutputData = data;
         this.isSAVPreview = isPreview;
         if (this.isCallStart) {
-            this.toasterService.pop('warning', 'SignalR', 'Bus connection is connecting...');
+            this.toasterService.pop(
+                "warning",
+                "SignalR",
+                "Bus connection is connecting..."
+            );
             return;
         }
 
-        if (this.isSAVWidget && (!this.showSAVWidgetDialogData.data || !this.showSAVWidgetDialogData.data.key)) {
-            this.modalService.warningText('Modal_Message__Please_Select_Item_To_Generate_PDF');
+        if (
+            this.isSAVWidget &&
+            (!this.showSAVWidgetDialogData.data ||
+                !this.showSAVWidgetDialogData.data.key)
+        ) {
+            this.modalService.warningText(
+                "Modal_Message__Please_Select_Item_To_Generate_PDF"
+            );
             return;
         }
 
-        if (!this.isSAVPreview && !this.isSAVWidget && (!this.showSendLetterDialogData.selectedItems || !this.showSendLetterDialogData.selectedItems.length)) {
-            this.modalService.warningText('Modal_Message__Please_Select_Blocked_Order_Item');
+        if (
+            !this.isSAVPreview &&
+            !this.isSAVWidget &&
+            (!this.showSendLetterDialogData.selectedItems ||
+                !this.showSendLetterDialogData.selectedItems.length)
+        ) {
+            this.modalService.warningText(
+                "Modal_Message__Please_Select_Blocked_Order_Item"
+            );
             return;
         }
 
@@ -4855,11 +6434,17 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             if (this.isCallStart) {
                 this.isCallStart = false;
                 if (this.savLetterTemplateComponent) {
-                    this.savLetterTemplateComponent.setShowPreviewIndicator(false);
+                    this.savLetterTemplateComponent.setShowPreviewIndicator(
+                        false
+                    );
                 }
-                this.toasterService.pop('error', 'SignalR Error', 'Bus connection failed, please try again.');
+                this.toasterService.pop(
+                    "error",
+                    "SignalR Error",
+                    "Bus connection failed, please try again."
+                );
             }
-        }, 5000)
+        }, 5000);
     }
 
     /* Private Methods */
@@ -4875,52 +6460,55 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     private signalRIsProcessing: boolean = false;
     private signalRListenMessage() {
-        if (this.messageRCWord2PdfSubscription) this.messageRCWord2PdfSubscription.unsubscribe();
+        if (this.messageRCWord2PdfSubscription)
+            this.messageRCWord2PdfSubscription.unsubscribe();
 
-        this.messageRCWord2PdfSubscription = this.signalRService.messageRCWord2Pdf
-            .subscribe((message: SignalRNotifyModel) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (message.Job == SignalRJobEnum.Disconnected) {
-                        // BackgroundJob is stopped
-                        // Notify an error message to user
-                        return;
-                    }
+        this.messageRCWord2PdfSubscription =
+            this.signalRService.messageRCWord2Pdf.subscribe(
+                (message: SignalRNotifyModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (message.Job == SignalRJobEnum.Disconnected) {
+                            // BackgroundJob is stopped
+                            // Notify an error message to user
+                            return;
+                        }
 
-                    // if (isDevMode()) {
-                    console.log(message);
-                    // }
+                        // if (isDevMode()) {
+                        console.log(message);
+                        // }
 
-                    switch (message.Action) {
-                        case SignalRActionEnum.RCWord2Pdf_ServiceAlive:
-                            this.createQueueAndStart();
-                            break;
-                        case SignalRActionEnum.RCWord2Pdf_GetProcessingList:
-                            // Refresh Grid get data
-                            // this.signalRGetProcessingList(message);
-                            break;
-                        case SignalRActionEnum.RCWord2Pdf_StartSuccessfully:
-                            this.signalRStartSuccessfully(message);
-                            break;
-                        case SignalRActionEnum.RCWord2Pdf_Processsing:
-                            this.signalRProcesssing(message);
-                            break;
-                        case SignalRActionEnum.RCWord2Pdf_Fail:
-                            this.signalRProcesssing(message);
-                            break;
-                        case SignalRActionEnum.RCWord2Pdf_Success:
-                            this.signalRProcesssing(message);
-                            break;
-                        case SignalRActionEnum.RCWord2Pdf_Finish:
-                            this.signalRProcessingFinish(message);
-                            break;
-                        case SignalRActionEnum.RCWord2Pdf_StopSuccessfully:
-                            this.signalRStopSuccessfully();
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            });
+                        switch (message.Action) {
+                            case SignalRActionEnum.RCWord2Pdf_ServiceAlive:
+                                this.createQueueAndStart();
+                                break;
+                            case SignalRActionEnum.RCWord2Pdf_GetProcessingList:
+                                // Refresh Grid get data
+                                // this.signalRGetProcessingList(message);
+                                break;
+                            case SignalRActionEnum.RCWord2Pdf_StartSuccessfully:
+                                this.signalRStartSuccessfully(message);
+                                break;
+                            case SignalRActionEnum.RCWord2Pdf_Processsing:
+                                this.signalRProcesssing(message);
+                                break;
+                            case SignalRActionEnum.RCWord2Pdf_Fail:
+                                this.signalRProcesssing(message);
+                                break;
+                            case SignalRActionEnum.RCWord2Pdf_Success:
+                                this.signalRProcesssing(message);
+                                break;
+                            case SignalRActionEnum.RCWord2Pdf_Finish:
+                                this.signalRProcessingFinish(message);
+                                break;
+                            case SignalRActionEnum.RCWord2Pdf_StopSuccessfully:
+                                this.signalRStopSuccessfully();
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                }
+            );
     }
 
     private signalRProcesssing(message: SignalRNotifyModel) {
@@ -4940,15 +6528,28 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     private signalRProcessingForPreview(message: SignalRNotifyModel) {
         switch (message.Action) {
             case SignalRActionEnum.RCWord2Pdf_Processsing:
-                if (this.savLetterTemplateComponent) this.savLetterTemplateComponent.setShowPreviewIndicator(true);
+                if (this.savLetterTemplateComponent)
+                    this.savLetterTemplateComponent.setShowPreviewIndicator(
+                        true
+                    );
                 break;
             case SignalRActionEnum.RCWord2Pdf_Success:
-                if (this.savLetterTemplateComponent) this.savLetterTemplateComponent.setShowPreviewIndicator(false);
+                if (this.savLetterTemplateComponent)
+                    this.savLetterTemplateComponent.setShowPreviewIndicator(
+                        false
+                    );
                 this.callShowPDFFileAfterGenerated(message);
                 break;
             case SignalRActionEnum.RCWord2Pdf_Fail:
-                if (this.savLetterTemplateComponent) this.savLetterTemplateComponent.setShowPreviewIndicator(false);
-                this.toasterService.pop('error', 'Notification', 'File is not generated');
+                if (this.savLetterTemplateComponent)
+                    this.savLetterTemplateComponent.setShowPreviewIndicator(
+                        false
+                    );
+                this.toasterService.pop(
+                    "error",
+                    "Notification",
+                    "File is not generated"
+                );
                 break;
         }
         this.callDetectChanges();
@@ -4961,8 +6562,20 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 this.reloadLinkWidgets.emit(this.data);
                 break;
             case SignalRActionEnum.RCWord2Pdf_Success:
-                if (!(() => { try { return !!message.Data[0].FileItem.MediaName; } catch (d) { return false; } })()) {
-                    this.toasterService.pop('error', 'Notification', (message.Message || 'File is not generated'));
+                if (
+                    !(() => {
+                        try {
+                            return !!message.Data[0].FileItem.MediaName;
+                        } catch (d) {
+                            return false;
+                        }
+                    })()
+                ) {
+                    this.toasterService.pop(
+                        "error",
+                        "Notification",
+                        message.Message || "File is not generated"
+                    );
                     return;
                 }
                 this.savSendLetterData.Status = 2;
@@ -4970,7 +6583,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
                 this.reloadLinkWidgets.emit(this.data);
                 break;
             case SignalRActionEnum.RCWord2Pdf_Fail:
-                this.toasterService.pop('error', 'Notification', (message.Message || 'File is not generated'));
+                this.toasterService.pop(
+                    "error",
+                    "Notification",
+                    message.Message || "File is not generated"
+                );
                 break;
         }
         // this.savSendLetterData = cloneDeep(this.savSendLetterData);
@@ -4982,45 +6599,78 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             case SignalRActionEnum.RCWord2Pdf_Processsing:
             case SignalRActionEnum.RCWord2Pdf_Success:
                 {
-                    let _item = this.showSendLetterDialogData.selectedItems.find(x => x.IdSalesOrder == message.Data[0]['IdSalesOrder']);
+                    let _item =
+                        this.showSendLetterDialogData.selectedItems.find(
+                            (x) =>
+                                x.IdSalesOrder ==
+                                message.Data[0]["IdSalesOrder"]
+                        );
                     if (!_item) return;
 
-                    let _jsonData = Uti.parseJsonString(_item['Letters']);
-                    _jsonData['Status'] = message.Data[0]['Status'];
-                    _jsonData['IdGenerateLetter'] = message.Data[0]['IdGenerateLetter'];
-                    _item['Letters'] = JSON.stringify(_jsonData);
-                    if (message.Action === SignalRActionEnum.RCWord2Pdf_Success) {
-                        const pdfString = (() => { try { return message.Data[0].FileItem.FullFileName; } catch (e) { return ''; } })();
-                        _item['PDFLetter'] = pdfString;
+                    let _jsonData = Uti.parseJsonString(_item["Letters"]);
+                    _jsonData["Status"] = message.Data[0]["Status"];
+                    _jsonData["IdGenerateLetter"] =
+                        message.Data[0]["IdGenerateLetter"];
+                    _item["Letters"] = JSON.stringify(_jsonData);
+                    if (
+                        message.Action === SignalRActionEnum.RCWord2Pdf_Success
+                    ) {
+                        const pdfString = (() => {
+                            try {
+                                return message.Data[0].FileItem.FullFileName;
+                            } catch (e) {
+                                return "";
+                            }
+                        })();
+                        _item["PDFLetter"] = pdfString;
                         this.callShowPDFFileAfterGenerated(message);
                     }
                     this.agGridComponent.updateRowData([_item]);
                 }
                 break;
             case SignalRActionEnum.RCWord2Pdf_Fail:
-                this.toasterService.pop('error', 'Notification', (message.Message || 'File is not generated'));
+                this.toasterService.pop(
+                    "error",
+                    "Notification",
+                    message.Message || "File is not generated"
+                );
                 break;
         }
     }
 
     private callShowPDFFileAfterGenerated(message: SignalRNotifyModel) {
-        const pdfString = (() => { try { return message.Data[0].FileItem.FullFileName; } catch (e) { return ''; } })();
-        let rowData: any = [{
-            key: 'PDF',
-            value: pdfString
-        }];
+        const pdfString = (() => {
+            try {
+                return message.Data[0].FileItem.FullFileName;
+            } catch (e) {
+                return "";
+            }
+        })();
+        let rowData: any = [
+            {
+                key: "PDF",
+                value: pdfString,
+            },
+        ];
         if (!this.isSAVPreview) {
-            Uti.setValueForArrayByKey(this.currentGridRowItem, 'value', pdfString, 'key', 'PDFLetter');
+            Uti.setValueForArrayByKey(
+                this.currentGridRowItem,
+                "value",
+                pdfString,
+                "key",
+                "PDFLetter"
+            );
             rowData = this.currentGridRowItem;
         }
         this.onRowTableClick.emit({
             cellInfos: rowData,
-            widgetDetail: this.data
+            widgetDetail: this.data,
         });
     }
 
     private signalRProcessingFinish(message: SignalRNotifyModel) {
-        if (this.savLetterTemplateComponent) this.savLetterTemplateComponent.setShowPreviewIndicator(false);
+        if (this.savLetterTemplateComponent)
+            this.savLetterTemplateComponent.setShowPreviewIndicator(false);
         this.signalRIsProcessing = false;
     }
 
@@ -5035,12 +6685,17 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (!message.Data || !message.Data.length) return;
 
         this.signalRIsProcessing = true;
-        this.toasterService.pop('success', 'Success', 'Data processing is started');
+        this.toasterService.pop(
+            "success",
+            "Success",
+            "Data processing is started"
+        );
         this.updateWaitingStatusForRenderPdfItems();
     }
 
     private signalRStopSuccessfully() {
-        if (this.savLetterTemplateComponent) this.savLetterTemplateComponent.setShowPreviewIndicator(false);
+        if (this.savLetterTemplateComponent)
+            this.savLetterTemplateComponent.setShowPreviewIndicator(false);
         this.signalRIsProcessing = false;
     }
 
@@ -5064,52 +6719,63 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private getIdSalesOrdersFromCheckedItems() {
-        return this.showSendLetterDialogData.selectedItems.map(x => {
+        return this.showSendLetterDialogData.selectedItems.map((x) => {
             return {
-                'Mode': null,
-                'IdSalesOrder': x.IdSalesOrder,
-                'IdGenerateLetter': this.sendLetterOutputData['IdGenerateLetter'],
-                'IdBackOfficeLetters': this.sendLetterOutputData['IdBackOfficeLetters'],
+                Mode: null,
+                IdSalesOrder: x.IdSalesOrder,
+                IdGenerateLetter: this.sendLetterOutputData["IdGenerateLetter"],
+                IdBackOfficeLetters:
+                    this.sendLetterOutputData["IdBackOfficeLetters"],
                 //'DynamicValues': {
                 //    'Key': value
                 //}
-            }
+            };
         });
     }
 
     private getSAVPreviewData() {
-        return [{
-            'Mode': 'Test',
-            'IdSalesOrder': (new Date().getTime()) + '',
-            'IdBackOfficeLetters': this.sendLetterOutputData['IdBackOfficeLetters'],
-            'ListOfIdCountryLanguage': this.sendLetterOutputData['ListOfIdCountryLanguage'],
-            'DataTest': this.getDataTest(),
-            //'DynamicValues': {
-            //    'Key': value
-            //}
-        }];
+        return [
+            {
+                Mode: "Test",
+                IdSalesOrder: new Date().getTime() + "",
+                IdBackOfficeLetters:
+                    this.sendLetterOutputData["IdBackOfficeLetters"],
+                ListOfIdCountryLanguage:
+                    this.sendLetterOutputData["ListOfIdCountryLanguage"],
+                DataTest: this.getDataTest(),
+                //'DynamicValues': {
+                //    'Key': value
+                //}
+            },
+        ];
     }
 
     private getSAVWidgetData() {
         const value = this.getSAVIdConnectionValue();
-        return [{
-            'Mode': null,
-            'IdSalesOrder': value[this.sAVIdConnectionName],
-            'IdPerson': this.sAVIdConnectionName == SAVIdConnectionName.IdPerson ? value[this.sAVIdConnectionName] : '',
-            'IdGenerateLetter': this.sendLetterOutputData['IdGenerateLetter'],
-            'IdBackOfficeLetters': this.sendLetterOutputData['IdBackOfficeLetters'],
-            //'DynamicValues': {
-            //    'Key': value
-            //}
-        }];
+        return [
+            {
+                Mode: null,
+                IdSalesOrder: value[this.sAVIdConnectionName],
+                IdPerson:
+                    this.sAVIdConnectionName == SAVIdConnectionName.IdPerson
+                        ? value[this.sAVIdConnectionName]
+                        : "",
+                IdGenerateLetter: this.sendLetterOutputData["IdGenerateLetter"],
+                IdBackOfficeLetters:
+                    this.sendLetterOutputData["IdBackOfficeLetters"],
+                //'DynamicValues': {
+                //    'Key': value
+                //}
+            },
+        ];
     }
 
     private getDataTest() {
         if (!this.isSAVPreview) return null;
         return {
-            'RelativePath': this.sendLetterOutputData['RelativePath'],
-            'FileName': this.sendLetterOutputData['FileName'],
-            'Values': this.sendLetterOutputData['Values']
+            RelativePath: this.sendLetterOutputData["RelativePath"],
+            FileName: this.sendLetterOutputData["FileName"],
+            Values: this.sendLetterOutputData["Values"],
         };
     }
 
@@ -5117,9 +6783,9 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         if (!this.showSendLetterDialogData) return;
 
         for (let _item of this.showSendLetterDialogData.selectedItems) {
-            let _jsonData = Uti.parseJsonString(_item['Letters']);
-            _jsonData['Status'] = 1;
-            _item['Letters'] = JSON.stringify(_jsonData);
+            let _jsonData = Uti.parseJsonString(_item["Letters"]);
+            _jsonData["Status"] = 1;
+            _item["Letters"] = JSON.stringify(_jsonData);
             this.agGridComponent.updateRowData([_item]);
         }
     }
@@ -5130,18 +6796,19 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     //#region [Download/Upload File]
     public showFileUploadPopup = false;
-    public acceptExtensionFiles = '*';
-    public uploadIdFolder = '';
+    public acceptExtensionFiles = "*";
+    public uploadIdFolder = "";
     public allowSelectDuplicateFile = false;
-    public saveFileName = '';
+    public saveFileName = "";
     public singleFile = false;
     public showUploadFile = false;
 
-
     public onDownloadFile(rowData: any) {
-        this._downloadFileService.makeDownloadFile(rowData['MediaRelativePath'] + '\\' + rowData['MediaName'],
-            rowData['MediaOriginalName'],
-            this.modalService);
+        this._downloadFileService.makeDownloadFile(
+            rowData["MediaRelativePath"] + "\\" + rowData["MediaName"],
+            rowData["MediaOriginalName"],
+            this.modalService
+        );
     }
 
     public onUploadFile(rowData: any) {
@@ -5149,11 +6816,11 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             case RepWidgetAppIdEnum.ReportType: {
                 this.showUploadFile = true;
                 setTimeout(() => {
-                    this.acceptExtensionFiles = '.xlsx';
+                    this.acceptExtensionFiles = ".xlsx";
                     this.singleFile = true;
                     this.fileUploadPopupComponent.showFileUploadPopup = true;
-                    this.uploadIdFolder = rowData['MediaRelativePath'];
-                    this.saveFileName = rowData['MediaOriginalName'];
+                    this.uploadIdFolder = rowData["MediaRelativePath"];
+                    this.saveFileName = rowData["MediaOriginalName"];
                 }, 300);
                 break;
             }
@@ -5161,7 +6828,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public onCompleteUploadItemHandler($event) {
-        this.toasterService.pop('success', 'Success', 'File is uploaded.');
+        this.toasterService.pop("success", "Success", "File is uploaded.");
     }
 
     public onCloseUploadPopupHandler($event) {
@@ -5173,7 +6840,8 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     //#region [Design Column Layout]
 
-    @ViewChild('widgetFieldBody', { read: ViewContainerRef }) widgetFieldBody: any;
+    @ViewChild("widgetFieldBody", { read: ViewContainerRef })
+    widgetFieldBody: any;
     private isColumnResizing = false;
     private onColumnResizeEndHandlerTimeout: any;
     public autoScrollUtil;
@@ -5194,7 +6862,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.isColumnResizing = true;
         if (this.onColumnResizeEndHandlerTimeout) {
             clearTimeout(this.onColumnResizeEndHandlerTimeout);
-            this.onColumnResizeEndHandlerTimeout = null
+            this.onColumnResizeEndHandlerTimeout = null;
         }
         this.onColumnResizeEndHandlerTimeout = setTimeout(() => {
             this.isColumnResizing = false;
@@ -5207,17 +6875,18 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             this.autoScrollUtil = null;
         }
         const that = this;
-        this.autoScrollUtil = autoScroll([
-            this.widgetFieldBody.element.nativeElement,
-        ], {
-            margin: 10,
-            maxSpeed: 6,
-            scrollWhenOutside: true,
-            autoScroll: function () {
-                // Only scroll when the pointer is down.
-                return this.down && !that.isColumnResizing;
+        this.autoScrollUtil = autoScroll(
+            [this.widgetFieldBody.element.nativeElement],
+            {
+                margin: 10,
+                maxSpeed: 6,
+                scrollWhenOutside: true,
+                autoScroll: function () {
+                    // Only scroll when the pointer is down.
+                    return this.down && !that.isColumnResizing;
+                },
             }
-        });
+        );
     }
 
     public fieldDragEndHandler() {
@@ -5228,8 +6897,14 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public setHiddenForSettingForm(data?: any) {
-        if (!this.contextMenuData[17] || !this.contextMenuData[17].children || !this.contextMenuData[17].children.length) {
-            this.contextMenuService.setMenuData.next({ obj: this.contextMenuData });
+        if (
+            !this.contextMenuData[17] ||
+            !this.contextMenuData[17].children ||
+            !this.contextMenuData[17].children.length
+        ) {
+            this.contextMenuService.setMenuData.next({
+                obj: this.contextMenuData,
+            });
             return;
         }
         this.contextMenuData[17].children[1].hidden = false;
@@ -5248,7 +6923,9 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         }
 
         if (data.layoutType === TypeForm.Panel) {
-            const isField = data.children.some(v => v.layoutType === TypeForm.Control);
+            const isField = data.children.some(
+                (v) => v.layoutType === TypeForm.Control
+            );
             this.contextMenuData[17].children[1].hidden = false;
             this.contextMenuData[17].children[2].hidden = !isField;
         }
@@ -5272,15 +6949,20 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private enableEditWidgetContextMenu() {
-        if (!this.contextMenuData || !this.contextMenuData.length || !this.contextMenuData[4]) return;
+        if (
+            !this.contextMenuData ||
+            !this.contextMenuData.length ||
+            !this.contextMenuData[4]
+        )
+            return;
         // Disable Edit widget form
         this.contextMenuData[4].disabled = this.disableButtonEditWidget;
     }
 
     private enableEditWidgetContextMenuForGrid(context: Array<any>) {
         for (const item of context) {
-            if (item.name !== 'Edit Widget') continue;
-            item['disabled'] = this.disableButtonEditWidget;
+            if (item.name !== "Edit Widget") continue;
+            item["disabled"] = this.disableButtonEditWidget;
             return;
         }
     }
@@ -5292,14 +6974,19 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     public makeTempPropertiesHandler(propertiesData: any) {
         // Call update properties data for separate widget
-        this.store.dispatch(this.propertyPanelActions.updateTempProperties(propertiesData, this.currentModule));
+        this.store.dispatch(
+            this.propertyPanelActions.updateTempProperties(
+                propertiesData,
+                this.currentModule
+            )
+        );
     }
 
     public toggleEditingColumnLayoutOfWidgetHandler() {
         this.modalService.unsavedWarningMessageDefault({
-            headerText: 'Reset Widget',
+            headerText: "Reset Widget",
             onModalSaveAndExit: this.onColumnLayoutModalSaveAndExit.bind(this),
-            onModalExit: this.onColumnLayoutModalExit.bind(this)
+            onModalExit: this.onColumnLayoutModalExit.bind(this),
         });
     }
 
@@ -5307,7 +6994,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         // Save setting here
         this.propertiesForSaving.properties = cloneDeep(this.properties);
         this.onChangeFieldFilter.emit({
-            widgetDetail: this.data
+            widgetDetail: this.data,
         });
         setTimeout(() => {
             this.widgetMenuStatusComponent.toggleAllToolButtons(false);
@@ -5330,7 +7017,12 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     private onColumnLayoutModalExit() {
         this.widgetFormComponent.resetColumnLayout();
         // Call reset properties for separate widget
-        this.store.dispatch(this.propertyPanelActions.updateTempProperties(this.originalProperties, this.currentModule));
+        this.store.dispatch(
+            this.propertyPanelActions.updateTempProperties(
+                this.originalProperties,
+                this.currentModule
+            )
+        );
         setTimeout(() => {
             this.widgetMenuStatusComponent.toggleAllToolButtons(false);
         }, 300);
@@ -5354,7 +7046,7 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         this.hasJustRestoredFullScreen = !$event.isMaximize;
         this.onMaximizeWidget.emit({
             data: this.data,
-            isMaximized: $event.isMaximize
+            isMaximized: $event.isMaximize,
         });
         this.ref.markForCheck();
         this.ref.detectChanges();
@@ -5369,59 +7061,96 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     public sendLetterClickHandler() {
         let value = this.getSAVIdConnectionValue();
         if (!value || !value[this.sAVIdConnectionName]) {
-            this.modalService.warningText('Modal_Message__Please_Select_Item_To_Generate_PDF');
+            this.modalService.warningText(
+                "Modal_Message__Please_Select_Item_To_Generate_PDF"
+            );
             return;
         }
         this.showSAVWidgetDialogData = {
-            widgetData: this.data, data: {
+            widgetData: this.data,
+            data: {
                 key: this.sAVIdConnectionName,
-                value: value[this.sAVIdConnectionName]
-            }
+                value: value[this.sAVIdConnectionName],
+            },
         };
         this.isShowSendLetter = true;
         this.isSAVWidget = true;
         Uti.executeFunctionWithTimeout(
-            () => { this.sendLetterDialogComponent.callShowSAVWidget(this.showSAVWidgetDialogData); },
-            () => { return !!this.sendLetterDialogComponent; }
+            () => {
+                this.sendLetterDialogComponent.callShowSAVWidget(
+                    this.showSAVWidgetDialogData
+                );
+            },
+            () => {
+                return !!this.sendLetterDialogComponent;
+            }
         );
     }
 
     public confirmSendLetterClickHandler() {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            messageType: MessageModal.MessageType.confirm,
-            headerText: 'Confirm Letter',
-            message: [{ key: '<p>' }, { key: 'Modal_Message__Do_You_Want_To_Confirm_This_Letter' },
-            { key: '</p>' }],
-            buttonType1: MessageModal.ButtonType.primary,
-            callBack1: () => {
-                this.confirmStatusForSendLetter();
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                messageType: MessageModal.MessageType.confirm,
+                headerText: "Confirm Letter",
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Confirm_This_Letter",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.primary,
+                callBack1: () => {
+                    this.confirmStatusForSendLetter();
+                },
+            })
+        );
     }
 
     public resetSendLetterStatusClickHandler(data) {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            messageType: MessageModal.MessageType.confirm,
-            headerText: 'Reset Letter',
-            message: [{ key: '<p>' }, { key: 'Modal_Message__Do_You_Want_To_Cancel_This_Running_Process' },
-            { key: '</p>' }],
-            buttonType1: MessageModal.ButtonType.primary,
-            callBack1: () => {
-                this.resetStatusForSendLetter(data);
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                messageType: MessageModal.MessageType.confirm,
+                headerText: "Reset Letter",
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Cancel_This_Running_Process",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.primary,
+                callBack1: () => {
+                    this.resetStatusForSendLetter(data);
+                },
+            })
+        );
     }
 
     public onIdLinkWidgetComboboxChanged() {
-        if (this.idLinkWidgetCombobox.isFirstTimeRender && this.currentIdLinkWidgetComboboxIndex === this.idLinkWidgetCombobox.selectedIndex) return;
-        const propSAVListenKey = this.propertyPanelService.getItemRecursiveResultNotNull(this.properties, 'SAVListenKey');
-        if (propSAVListenKey.value == this.idLinkWidgetCombobox.selectedValue) return;
+        if (
+            this.idLinkWidgetCombobox.isFirstTimeRender &&
+            this.currentIdLinkWidgetComboboxIndex ===
+                this.idLinkWidgetCombobox.selectedIndex
+        )
+            return;
+        const propSAVListenKey =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.properties,
+                "SAVListenKey"
+            );
+        if (propSAVListenKey.value == this.idLinkWidgetCombobox.selectedValue)
+            return;
         if (this.linkedSuccessWidget) {
-            this.removeLinkWidget(() => {
-                this.setValueForSAVListenKey();
-            }, () => {
-                this.idLinkWidgetCombobox.selectedIndex = this.currentIdLinkWidgetComboboxIndex;
-            });
+            this.removeLinkWidget(
+                () => {
+                    this.setValueForSAVListenKey();
+                },
+                () => {
+                    this.idLinkWidgetCombobox.selectedIndex =
+                        this.currentIdLinkWidgetComboboxIndex;
+                }
+            );
             return;
         }
         this.setValueForSAVListenKey();
@@ -5429,30 +7158,50 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     public handleSavSendLetterWidget() {
         setTimeout(() => {
-            Uti.executeFunctionWithTimeout(() => {
-                this.currentIdLinkWidgetComboboxIndex = this.idLinkWidgetCombobox.selectedIndex;
-            }, () => { return !!this.idLinkWidgetCombobox; });
+            Uti.executeFunctionWithTimeout(
+                () => {
+                    this.currentIdLinkWidgetComboboxIndex =
+                        this.idLinkWidgetCombobox.selectedIndex;
+                },
+                () => {
+                    return !!this.idLinkWidgetCombobox;
+                }
+            );
         }, 500);
     }
 
     /** PRIVATE METHODS */
 
     private setValueForSAVListenKey() {
-        const propSAVListenKey = this.propertyPanelService.getItemRecursiveResultNotNull(this.properties, 'SAVListenKey');
+        const propSAVListenKey =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.properties,
+                "SAVListenKey"
+            );
         propSAVListenKey.value = this.idLinkWidgetCombobox.selectedValue;
         this.propertiesForSaving.properties = cloneDeep(this.properties);
-        this.currentIdLinkWidgetComboboxIndex = this.idLinkWidgetCombobox.selectedIndex;
+        this.currentIdLinkWidgetComboboxIndex =
+            this.idLinkWidgetCombobox.selectedIndex;
         this.updateListenKeyForSendLetterWidget();
     }
 
     private confirmStatusForSendLetter() {
         if (!this.savSendLetterData) return;
         const idGenerateLetter = this.savSendLetterData.IdGenerateLetter;
-        this.backOfficeServiceSubscription = this.backOfficeService.confirmSalesOrderLetters(idGenerateLetter)
+        this.backOfficeServiceSubscription = this.backOfficeService
+            .confirmSalesOrderLetters(idGenerateLetter)
             .subscribe((resultData: any) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (resultData && resultData.eventType == FormSaveEvenType.Successfully && resultData.returnID) {
-                        this.toasterService.pop('success', 'Success', 'Confirm letter successfully');
+                    if (
+                        resultData &&
+                        resultData.eventType == FormSaveEvenType.Successfully &&
+                        resultData.returnID
+                    ) {
+                        this.toasterService.pop(
+                            "success",
+                            "Success",
+                            "Confirm letter successfully"
+                        );
                         this.savSendLetterData.Status = 3;
                         this.reloadWidgets.emit([this.data]);
                         this.reloadLinkWidgets.emit(this.data);
@@ -5462,13 +7211,26 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private resetStatusForSendLetter(data) {
-        const resetStatusIdGenerateLetter = data && JSON.parse(data.Letters).IdGenerateLetter;
-        const idGenerateLetter = this.savSendLetterData && this.savSendLetterData.IdGenerateLetter ? this.savSendLetterData.IdGenerateLetter : resetStatusIdGenerateLetter;
-        this.backOfficeServiceSubscription = this.backOfficeService.resetLetterStatus(idGenerateLetter)
+        const resetStatusIdGenerateLetter =
+            data && JSON.parse(data.Letters).IdGenerateLetter;
+        const idGenerateLetter =
+            this.savSendLetterData && this.savSendLetterData.IdGenerateLetter
+                ? this.savSendLetterData.IdGenerateLetter
+                : resetStatusIdGenerateLetter;
+        this.backOfficeServiceSubscription = this.backOfficeService
+            .resetLetterStatus(idGenerateLetter)
             .subscribe((resultData: any) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (resultData && resultData.eventType == FormSaveEvenType.Successfully && resultData.returnID) {
-                        this.toasterService.pop('success', 'Success', 'Reset status letter successfully');
+                    if (
+                        resultData &&
+                        resultData.eventType == FormSaveEvenType.Successfully &&
+                        resultData.returnID
+                    ) {
+                        this.toasterService.pop(
+                            "success",
+                            "Success",
+                            "Reset status letter successfully"
+                        );
                         this.savSendLetterData.Status = 0;
                         this.reloadLinkWidgets.emit(this.data);
                     }
@@ -5477,24 +7239,37 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     private updateListenKeyForSendLetterWidget() {
-        if (this.data.idRepWidgetType != this.WidgetTypeView.SAVSendLetter) return;
+        if (this.data.idRepWidgetType != this.WidgetTypeView.SAVSendLetter)
+            return;
         this.buildIdLinkWidgetList();
-        const propSAVListenKey = this.propertyPanelService.getItemRecursiveResultNotNull(this.properties, 'SAVListenKey');
-        const oldPropSAVListenKey = cloneDeep(this.propertyPanelService.getItemRecursiveResultNotNull(this.propertiesOld, 'SAVListenKey'));
+        const propSAVListenKey =
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.properties,
+                "SAVListenKey"
+            );
+        const oldPropSAVListenKey = cloneDeep(
+            this.propertyPanelService.getItemRecursiveResultNotNull(
+                this.propertiesOld,
+                "SAVListenKey"
+            )
+        );
         this.updateNewPropertiesForOldProperties();
-        if ((propSAVListenKey == oldPropSAVListenKey || propSAVListenKey.value == oldPropSAVListenKey.value)
-            && this.data.widgetDataType.listenKey.key) {
+        if (
+            (propSAVListenKey == oldPropSAVListenKey ||
+                propSAVListenKey.value == oldPropSAVListenKey.value) &&
+            this.data.widgetDataType.listenKey.key
+        ) {
             return;
         }
-        this.sAVIdConnectionName = 'NoConnection';
+        this.sAVIdConnectionName = "NoConnection";
         if (!propSAVListenKey || !propSAVListenKey.value) {
             this.data.widgetDataType.listenKey = new ListenKey({
-                key: 'NoConnection'
+                key: "NoConnection",
             });
             return;
         }
         let item = Uti.getValueFromPropertyCombobox(propSAVListenKey);
-        this.data.widgetDataType.listenKey.key = item.value || 'NoConnection';
+        this.data.widgetDataType.listenKey.key = item.value || "NoConnection";
         this.sAVIdConnectionName = this.data.widgetDataType.listenKey.key;
         // this.data.widgetDataType.listenKey = new ListenKey({
         //     key: item.value || 'NoConnection',
@@ -5511,34 +7286,55 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     private buildIdLinkWidgetList() {
         setTimeout(() => {
-            const propSAVListenKey = this.propertyPanelService.getItemRecursiveResultNotNull(this.properties, 'SAVListenKey');
-            if (this.idLinkWidgetList && this.idLinkWidgetList.length && propSAVListenKey && propSAVListenKey.value) return;
+            const propSAVListenKey =
+                this.propertyPanelService.getItemRecursiveResultNotNull(
+                    this.properties,
+                    "SAVListenKey"
+                );
+            if (
+                this.idLinkWidgetList &&
+                this.idLinkWidgetList.length &&
+                propSAVListenKey &&
+                propSAVListenKey.value
+            )
+                return;
             const options: any[] = propSAVListenKey.options || [];
-            this.idLinkWidgetList = options.map(x => {
+            this.idLinkWidgetList = options.map((x) => {
                 return {
                     idValue: x.key,
-                    textValue: x.value
-                }
+                    textValue: x.value,
+                };
             });
             this.idLinkWidgetModel = propSAVListenKey.value;
         }, 500);
     }
 
     private getSAVIdConnectionValue() {
-        return this.data.widgetDataType.listenKeyRequest(this.currentModule.moduleNameTrim) || {};
+        return (
+            this.data.widgetDataType.listenKeyRequest(
+                this.currentModule.moduleNameTrim
+            ) || {}
+        );
     }
 
     private createSavSendLetterData() {
-        if (this.data.idRepWidgetType != this.WidgetTypeView.SAVSendLetter) return;
-        let data = (() => { try { return this.data.contentDetail.data[1] || []; } catch (e) { return []; } })();
+        if (this.data.idRepWidgetType != this.WidgetTypeView.SAVSendLetter)
+            return;
+        let data = (() => {
+            try {
+                return this.data.contentDetail.data[1] || [];
+            } catch (e) {
+                return [];
+            }
+        })();
         if (data.length) {
-            data = data.filter(x => x['PDF']);
+            data = data.filter((x) => x["PDF"]);
         }
         this.savSendLetterData = {};
         if (data.length) {
             this.savSendLetterData = data[0];
         }
-        this.savSendLetterData['data'] = data;
+        this.savSendLetterData["data"] = data;
     }
 
     //#endregion [SAV Send Letter]
@@ -5546,9 +7342,13 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     public showPrinterFormDialog = false;
     //#region [Print and Confirm]
     public printWidgetClickedHandler() {
-        const selectedFile = this.dataSourceTable.data.filter(x => x.Select);
+        const selectedFile = this.dataSourceTable.data.filter((x) => x.Select);
         if (!selectedFile || !selectedFile.length) {
-            this.toasterService.pop('warning', 'Select File', 'Please select at least a file to print');
+            this.toasterService.pop(
+                "warning",
+                "Select File",
+                "Please select at least a file to print"
+            );
             return;
         }
         this.showPrinterFormDialog = true;
@@ -5563,21 +7363,37 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
     }
 
     public confirmPrintWidgetClickedHandler() {
-        const selectedFile = this.dataSourceTable.data.filter(x => x.Select);
+        const selectedFile = this.dataSourceTable.data.filter((x) => x.Select);
         if (!selectedFile || !selectedFile.length) {
-            this.toasterService.pop('warning', 'Select File', 'Please select at least a file to confirm');
+            this.toasterService.pop(
+                "warning",
+                "Select File",
+                "Please select at least a file to confirm"
+            );
             return;
         }
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            customClass: 'width-500',
-            headerText: 'Confirm Printed Files',
-            okText: 'Confirm',
-            message: [{ key: '<p>' }, { key: 'Modal_Message__Do_You_Want_To_Confirm_File_Printed_1' }, { key: '</p>' },
-            { key: '<p>' }, { key: 'Modal_Message__Do_You_Want_To_Confirm_File_Printed_2' }, { key: '</p>' }],
-            callBack1: () => {
-                this.confirmPrintedData();
-            },
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                customClass: "width-500",
+                headerText: "Confirm Printed Files",
+                okText: "Confirm",
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Confirm_File_Printed_1",
+                    },
+                    { key: "</p>" },
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Confirm_File_Printed_2",
+                    },
+                    { key: "</p>" },
+                ],
+                callBack1: () => {
+                    this.confirmPrintedData();
+                },
+            })
+        );
     }
 
     public closePrinterFormDialogHandler() {
@@ -5590,20 +7406,31 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
 
     private confirmPrintedData() {
         const saveData = {
-            'ConfirmBackOfficeLettersModels': this.dataSourceTable.data.filter(x => x.Select).map(x => {
-                return {
-                    'IdSalesOrderLetters': x.IdSalesOrderLetters
-                };
-            })
+            ConfirmBackOfficeLettersModels: this.dataSourceTable.data
+                .filter((x) => x.Select)
+                .map((x) => {
+                    return {
+                        IdSalesOrderLetters: x.IdSalesOrderLetters,
+                    };
+                }),
         };
-        this._blockedOrderService.saveSalesOrderLettersConfirm(saveData)
+        this._blockedOrderService
+            .saveSalesOrderLettersConfirm(saveData)
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
-                        this.toasterService.pop('error', 'Failed', 'Data is not confirmed');
+                        this.toasterService.pop(
+                            "error",
+                            "Failed",
+                            "Data is not confirmed"
+                        );
                         return;
                     }
-                    this.toasterService.pop('success', 'Success', 'Data is confirmed');
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "Data is confirmed"
+                    );
                     this.printerFormDialog.close();
                     this.reloadWidgets.emit([this.data]);
                     this.ref.detectChanges();
@@ -5636,23 +7463,34 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
         const originalValue = this.widgetFormComponent.originalFormValues;
 
         return {
-            firstName: formValues.B00SharingName_FirstName || originalValue.B00SharingName_FirstName,
-            lastName: formValues.B00SharingName_LastName || originalValue.B00SharingName_LastName,
-            street: formValues.B00SharingAddress_Street || originalValue.B00SharingAddress_Street,
-            idRepIsoCountryCode: formValues.B00SharingAddress_IdRepIsoCountryCode || originalValue.B00SharingAddress_IdRepIsoCountryCode,
-            zip: formValues.B00SharingAddress_Zip || originalValue.B00SharingAddress_Zip
+            firstName:
+                formValues.B00SharingName_FirstName ||
+                originalValue.B00SharingName_FirstName,
+            lastName:
+                formValues.B00SharingName_LastName ||
+                originalValue.B00SharingName_LastName,
+            street:
+                formValues.B00SharingAddress_Street ||
+                originalValue.B00SharingAddress_Street,
+            idRepIsoCountryCode:
+                formValues.B00SharingAddress_IdRepIsoCountryCode ||
+                originalValue.B00SharingAddress_IdRepIsoCountryCode,
+            zip:
+                formValues.B00SharingAddress_Zip ||
+                originalValue.B00SharingAddress_Zip,
         };
     }
-
 
     private checkFieldMatchingDataEdited(): any {
         const formValues = this.widgetFormComponent.filterValidFormField();
 
-        return has(formValues, 'B00SharingName_FirstName')
-            || has(formValues, 'B00SharingName_LastName')
-            || has(formValues, 'B00SharingAddress_Street')
-            || has(formValues, 'B00SharingAddress_IdRepIsoCountryCode')
-            || has(formValues, 'B00SharingAddress_Zip');
+        return (
+            has(formValues, "B00SharingName_FirstName") ||
+            has(formValues, "B00SharingName_LastName") ||
+            has(formValues, "B00SharingAddress_Street") ||
+            has(formValues, "B00SharingAddress_IdRepIsoCountryCode") ||
+            has(formValues, "B00SharingAddress_Zip")
+        );
     }
 
     private checkMatchingDataBeforeSaveWidgetData() {
@@ -5661,64 +7499,100 @@ export class WidgetModuleComponent extends BaseWidgetModuleInfo implements OnIni
             return;
         }
 
-        this.commonService.matchingCustomerData(this.prepareMatchingData())
-            .subscribe((response) => {
-                this.appErrorHandler.executeAction(() => {
-                    const formValues = this.widgetFormComponent.filterValidFormField();
+        this.commonService
+            .matchingCustomerData(this.prepareMatchingData())
+            .subscribe(
+                (response) => {
+                    this.appErrorHandler.executeAction(() => {
+                        const formValues =
+                            this.widgetFormComponent.filterValidFormField();
 
-                    let data: any = this.makeDataSourceData(response);
-                    if (!data || !data.length) {
-                        this.saveFormWidget();
-                        return;
-                    }
-                    data = data.filter(x => x.IdPerson != formValues.B00Person_IdPerson);
-                    if (!data || !data.length) {
-                        this.saveFormWidget();
-                        return;
-                    }
-                    this.isShowMatchingDataDialog = true;
-                    setTimeout(() => {
-                        if (this.matchingCustomerDataDialog) {
-                            this.matchingCustomerDataDialog.onShowDialog({data}, true);
+                        let data: any = this.makeDataSourceData(response);
+                        if (!data || !data.length) {
+                            this.saveFormWidget();
+                            return;
                         }
-                    }, 300);
-                });
-            }, (err) => { }
+                        data = data.filter(
+                            (x) => x.IdPerson != formValues.B00Person_IdPerson
+                        );
+                        if (!data || !data.length) {
+                            this.saveFormWidget();
+                            return;
+                        }
+                        this.isShowMatchingDataDialog = true;
+                        setTimeout(() => {
+                            if (this.matchingCustomerDataDialog) {
+                                this.matchingCustomerDataDialog.onShowDialog(
+                                    { data },
+                                    true
+                                );
+                            }
+                        }, 300);
+                    });
+                },
+                (err) => {}
             );
     }
     //#endregion Matching data
 
-    public killProcessClickHandler(event :any){
-      this.modalService.confirmDeleteMessageHtmlContent({
-        message :  [{key: 'Modal_Message__Kill_Process'}],
-        callBack1 : () => {
-          const request  = event.setting;
-          if(!request)return;
-    
-          request.IdProcess = event.data.SessionID
-    
-          this._toolsService.callbackSP(request).subscribe((response) =>  {
-            this.toasterService.pop('success','Kill process', `Process ${request.IdProcess} is stop`);
+    public killProcessClickHandler(event: any) {
+        this.modalService.confirmDeleteMessageHtmlContent({
+            message: [{ key: "Modal_Message__Kill_Process" }],
+            callBack1: () => {
+                const request = event.setting;
+                if (!request) return;
 
-            this.agGridComponent.deleteRowByRowId(event.data.DT_RowId);
-          }, (error) => {
-            this.toasterService.pop('error', 'Kill process','Kill process failed');
-          })
-        }
-      });
+                request.IdProcess = event.data.SessionID;
+
+                this._toolsService.callbackSP(request).subscribe(
+                    (response) => {
+                        this.toasterService.pop(
+                            "success",
+                            "Kill process",
+                            `Process ${request.IdProcess} is stop`
+                        );
+
+                        this.agGridComponent.deleteRowByRowId(
+                            event.data.DT_RowId
+                        );
+                    },
+                    (error) => {
+                        this.toasterService.pop(
+                            "error",
+                            "Kill process",
+                            "Kill process failed"
+                        );
+                    }
+                );
+            },
+        });
     }
 
-    public shrinkFileClickHandler(event :any){
-        const request  = event.setting;
-        if(!request)return;
-  
-  
-        this._toolsService.callbackSP(request).subscribe((response) =>  {
-          this.toasterService.pop('success','Shrink files', `Shrink files succeed`);
-          this.onRefreshWidget()
-        }, (error) => {
-          this.toasterService.pop('error', 'Shrink files','Shrink files failed');
-        })
+    public shrinkFileClickHandler(event: any) {
+        const request = event.setting;
+        if (!request) return;
+
+        this._toolsService.callbackSP(request).subscribe(
+            (response) => {
+                this.toasterService.pop(
+                    "success",
+                    "Shrink files",
+                    `Shrink files succeed`
+                );
+                this.onRefreshWidget();
+            },
+            (error) => {
+                this.toasterService.pop(
+                    "error",
+                    "Shrink files",
+                    "Shrink files failed"
+                );
+            }
+        );
     }
 
+    public onSelectCustomerODE(event: any) {
+        this.listenKeyValue = event;
+        this.disableButtonEditWidget = false;
+    }
 }

@@ -1,13 +1,16 @@
-import * as xnTab from './xn-tab';
-import { XnMediacodeDialogComponent } from './xn-mediacode-dialog';
-import * as xnAdditionalInformation from './xn-additional-information';
-import * as xnCentralPageView from './xn-central-page';
-import * as widget from './widget';
-import * as xnForm from './form';
-import * as xnControl from './xn-control';
-import * as xnFile from './xn-file';
-import * as Wijmo from './wijmo';
-import { OrderDataEntryTabComponent, OrderDataEntryTabPlusComponent } from './order-data-entry';
+import * as xnTab from "./xn-tab";
+import { XnMediacodeDialogComponent } from "./xn-mediacode-dialog";
+import * as xnAdditionalInformation from "./xn-additional-information";
+import * as xnCentralPageView from "./xn-central-page";
+import * as widget from "./widget";
+import * as xnForm from "./form";
+import * as xnControl from "./xn-control";
+import * as xnFile from "./xn-file";
+import * as Wijmo from "./wijmo";
+import {
+    OrderDataEntryTabComponent,
+    OrderDataEntryTabPlusComponent,
+} from "./order-data-entry";
 
 export const WIDGETS_COMPONENTS = [
     xnTab.XnTabComponent,
@@ -118,6 +121,7 @@ export const WIDGETS_COMPONENTS = [
     xnForm.OrderDataEntryFormComponent,
     xnForm.CustomerDataEntryFormComponent,
     xnForm.CustomerStatusDataEntryComponent,
+    xnForm.NoteFormDataEntryComponent,
     xnForm.CustomerOrderDataEntryComponent,
     xnForm.CommunicationDataEntryComponent,
     xnForm.ReferenceInformationComponent,
@@ -206,6 +210,5 @@ export const WIDGETS_COMPONENTS = [
     xnControl.CaptureLine,
     xnControl.CaptureItem,
     xnControl.CaptureItemList,
-    xnControl.NoteControlComponent
+    xnControl.NoteControlComponent,
 ];
-

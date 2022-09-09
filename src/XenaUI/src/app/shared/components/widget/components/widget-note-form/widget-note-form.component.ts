@@ -1,31 +1,52 @@
-import { DatePipe } from '@angular/common';
-import { AfterViewInit, Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Actions } from '@ngrx/effects';
-import { ReducerManagerDispatcher, Store } from '@ngrx/store';
-import { SearchResultItemModel, User } from 'app/models';
-import { Note, NoteActionEnum, NoteFormDataAction } from 'app/models/note.model';
-import { BaseComponent } from 'app/pages/private/base';
-import { AppState } from 'app/state-management/store';
-import { CustomAction } from 'app/state-management/store/actions';
-import { Uti } from 'app/utilities';
-import { Observable } from 'rxjs';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import { RepWidgetAppIdEnum } from 'app/app.constants';
+import { DatePipe } from "@angular/common";
+import {
+    AfterViewInit,
+    Component,
+    EventEmitter,
+    Injector,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+} from "@angular/core";
+import {
+    AbstractControl,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+} from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Actions } from "@ngrx/effects";
+import { ReducerManagerDispatcher, Store } from "@ngrx/store";
+import { SearchResultItemModel, User } from "app/models";
+import {
+    Note,
+    NoteActionEnum,
+    NoteFormDataAction,
+} from "app/models/note.model";
+import { BaseComponent } from "app/pages/private/base";
+import { AppState } from "app/state-management/store";
+import { CustomAction } from "app/state-management/store/actions";
+import { Uti } from "app/utilities";
+import { Observable } from "rxjs";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import { RepWidgetAppIdEnum } from "app/app.constants";
 
-const DATE_FORMAT_SAVE = 'dd-MM-yyyy';
+const DATE_FORMAT_SAVE = "dd-MM-yyyy";
 
 @Component({
-    selector: 'widget-note-form',
-    templateUrl: './widget-note-form.component.html',
-    styleUrls: ['./widget-note-form.component.scss'],
+    selector: "widget-note-form",
+    templateUrl: "./widget-note-form.component.html",
+    styleUrls: ["./widget-note-form.component.scss"],
 })
-export class WidgetNoteFormComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
+export class WidgetNoteFormComponent
+    extends BaseComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     // private service: DocumentService | InvoiceApprovalService;
 
     notes = this.fb.control([] as Note[]);
-    formFocusing: { form: FormControl, id: string } = null;
+    formFocusing: { form: FormControl; id: string } = null;
 
     currentUser: User = new User();
     idDocument: number = null;
@@ -34,7 +55,12 @@ export class WidgetNoteFormComponent extends BaseComponent implements OnInit, Af
     inited: boolean = false;
     isShowEmailBox: boolean;
 
-    settingModel: Partial<{ formName: string; idName: string; bgHeaderColor: string; hideActionButtons: boolean }> = {};
+    settingModel: Partial<{
+        formName: string;
+        idName: string;
+        bgHeaderColor: string;
+        hideActionButtons: boolean;
+    }> = {};
 
     private _selectedSearchResultState$: Observable<SearchResultItemModel>;
 
@@ -44,7 +70,9 @@ export class WidgetNoteFormComponent extends BaseComponent implements OnInit, Af
         this._dataSource = data;
 
         this.notes.patchValue([]);
-        const notes: Note[] = data.map((d) => new Note({ ...d, [this.settingModel.formName]: this.idForm }));
+        const notes: Note[] = data.map(
+            (d) => new Note({ ...d, [this.settingModel.formName]: this.idForm })
+        );
         this.notes.patchValue(notes || []);
     }
     get dataSource() {
@@ -57,7 +85,8 @@ export class WidgetNoteFormComponent extends BaseComponent implements OnInit, Af
     @Input() properties;
 
     @Output() callSaveAction: EventEmitter<any> = new EventEmitter<any>();
-    @Output() upadteEditingWidgetAction: EventEmitter<any> = new EventEmitter<any>();
+    @Output() upadteEditingWidgetAction: EventEmitter<any> =
+        new EventEmitter<any>();
 
     constructor(
         private fb: FormBuilder,
@@ -70,16 +99,23 @@ export class WidgetNoteFormComponent extends BaseComponent implements OnInit, Af
         // private administrationDocSelectors: AdministrationDocumentSelectors,
         // private administrationActions: AdministrationDocumentActions,
         private injector: Injector,
-        private dispatcher: ReducerManagerDispatcher,
+        private dispatcher: ReducerManagerDispatcher
     ) {
         super(router);
         this._selectedSearchResultState$ = this.store.select(
-            (state) => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).selectedSearchResult,
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedSearchResult
         );
     }
 
     ngOnInit() {
-        this.settingModel = { formName: 'idFormsReport', idName: 'IdSharingNotes' };
+        this.settingModel = {
+            formName: "idFormsReport",
+            idName: "IdSharingNotes",
+        };
         this.currentUser = this.uti.getUserInfo();
     }
 
@@ -87,23 +123,32 @@ export class WidgetNoteFormComponent extends BaseComponent implements OnInit, Af
         super.onDestroy();
     }
 
-    ngAfterViewInit() {
-    }
+    ngAfterViewInit() {}
 
     reset() {
         this.notes.setValue([]);
     }
 
+    refresh() {
+        this.notes.setValue([]);
+    }
+
     getDataSave(): { [key: string]: any } {
-        if (!this.notes.value.filter((note: Note) => note.Notes.trim()).length) {
+        if (
+            !this.notes.value.filter((note: Note) => note.Notes.trim()).length
+        ) {
             return;
         }
 
         const data = this.notes.value.map((note: Note) => {
-            return { ...this.transformDataForSave(note), [this.settingModel.formName.charAt(0).toUpperCase() + this.settingModel.formName.slice(1)]: this.idForm || null };
+            return {
+                ...this.transformDataForSave(note),
+                [this.settingModel.formName.charAt(0).toUpperCase() +
+                this.settingModel.formName.slice(1)]: this.idForm || null,
+            };
         });
 
-        const result = !!data && !!data.length ? [data[0]] : null
+        const result = !!data && !!data.length ? [data[0]] : null;
         return result;
     }
 
@@ -122,12 +167,12 @@ export class WidgetNoteFormComponent extends BaseComponent implements OnInit, Af
         // FormStatus
         return <any>{
             isValid: true,
-            formTitle: 'Note',
-            errorMessages: []
+            formTitle: "Note",
+            errorMessages: [],
         };
     }
 
-    setFocusOCRScan(event: { form: FormControl, id: string }) {
+    setFocusOCRScan(event: { form: FormControl; id: string }) {
         this.formFocusing = event;
 
         // const formFocus = {
@@ -165,7 +210,6 @@ export class WidgetNoteFormComponent extends BaseComponent implements OnInit, Af
         //             a.remove();
         //         }, 200);
         //     });
-
     }
 
     printForm(event) {
@@ -186,8 +230,11 @@ export class WidgetNoteFormComponent extends BaseComponent implements OnInit, Af
     private transformDataForSave(data: Note): { [key: string]: any } {
         const dataSave = {} as any;
         Object.keys(data).forEach((k: string) => {
-            if (k === 'date') {
-                dataSave.Date = this.datePipe.transform(data[k], DATE_FORMAT_SAVE);
+            if (k === "date") {
+                dataSave.Date = this.datePipe.transform(
+                    data[k],
+                    DATE_FORMAT_SAVE
+                );
                 return;
             }
             dataSave[k.charAt(0).toUpperCase() + k.slice(1)] = data[k];
