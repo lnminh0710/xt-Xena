@@ -8,6 +8,7 @@ import {
     EventEmitter,
     DoCheck,
     KeyValueDiffers,
+    ChangeDetectorRef,
 } from "@angular/core";
 import {
     WidgetTemplateSettingService,
@@ -77,7 +78,8 @@ export class NoteFormDataEntryComponent
         private datatableService: DatatableService,
         private appErrorHandler: AppErrorHandler,
         protected router: Router,
-        private differs: KeyValueDiffers
+        private differs: KeyValueDiffers,
+        private cdf: ChangeDetectorRef
     ) {
         super(router, {
             defaultTranslateText: "customerStatusData",
@@ -203,6 +205,7 @@ export class NoteFormDataEntryComponent
 
     private processDatasource(datasource) {
         this.displayItems = this.buildData(datasource);
+        this.cdf.detectChanges();
     }
 
     public rebuildTranslateText() {

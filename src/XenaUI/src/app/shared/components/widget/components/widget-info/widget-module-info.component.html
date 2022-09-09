@@ -44,6 +44,7 @@
                     widgetStyle.globalBorder === false)),
 
         'linkable-widget':
+            currentModule.idSettingsGUI !== 7 &&
             allowDesignEdit &&
             (linkableWidget || linkedWidgetCoverDisplay || linkedSuccessWidget),
         'unlinked-widget':
@@ -294,7 +295,8 @@
                 accessRight.read &&
                 !showInDialog &&
                 allowDesignEdit &&
-                supportLinkWidget
+                supportLinkWidget &&
+                currentModule.idSettingsGUI !== 7
             "
         >
             <div
@@ -2288,7 +2290,11 @@
 <div
     class="link-widget-container unlink-widget-cover-view-mode"
     *ngIf="
-        data && data.widgetDataType && !allowDesignEdit && !linkedSuccessWidget
+        currentModule.idSettingsGUI !== 7 &&
+        data &&
+        data.widgetDataType &&
+        !allowDesignEdit &&
+        !linkedSuccessWidget
     "
     [style.top]="
         data.idRepWidgetType === WidgetTypeView.SAVSendLetter ? '38px' : ''

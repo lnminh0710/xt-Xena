@@ -1,11 +1,25 @@
 import {
-    Component, OnInit, OnDestroy, Input,
-    Output, EventEmitter, OnChanges, SimpleChanges,
-    ViewChild, ViewChildren, QueryList, ChangeDetectorRef, ElementRef,
-    forwardRef
-} from '@angular/core';
-import { Router } from '@angular/router';
-import { NgGrid, NgGridItemConfig, NgGridItemEvent } from 'app/shared/components/grid-stack';
+    Component,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter,
+    OnChanges,
+    SimpleChanges,
+    ViewChild,
+    ViewChildren,
+    QueryList,
+    ChangeDetectorRef,
+    ElementRef,
+    forwardRef,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import {
+    NgGrid,
+    NgGridItemConfig,
+    NgGridItemEvent,
+} from "app/shared/components/grid-stack";
 import {
     LightWidgetDetail,
     WidgetDetail,
@@ -21,75 +35,102 @@ import {
     WidgetSettingModel,
     WidgetPropertiesStateModel,
     LayoutPageInfoModel,
-    WidgetType, WidgetKeyType,
+    WidgetType,
+    WidgetKeyType,
     IWidgetTargetRender,
     TabSummaryModel,
     ReloadMode,
     RowSetting,
     OrderDataEntryProperties,
-    SimpleTabModel
-} from 'app/models';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
+    SimpleTabModel,
+} from "app/models";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
 import {
     WidgetDetailActions,
     LayoutInfoActions,
     TabSummaryActions,
     CustomAction,
     ProcessDataActions,
-    LayoutSettingActions
-} from 'app/state-management/store/actions';
-import { WidgetTemplateActions, PropertyPanelActions, XnCommonActions } from 'app/state-management/store/actions';
-import { WidgetTemplateSettingService, DomHandler, AccessRightsService } from 'app/services';
-import { PageSettingService } from 'app/services';
-import { UUID } from 'angular2-uuid';
-import { WidgetModuleComponent } from '../../components/widget-info';
-import { WidgetDataEntryInfoComponent } from '../../components/widget-data-entry-info';
-import { Subscription } from 'rxjs/Subscription';
-import { RowData, EditingWidget, WidgetDataUpdated, RelatingWidget } from 'app/state-management/store/reducer/widget-content-detail';
+    LayoutSettingActions,
+} from "app/state-management/store/actions";
 import {
-    FilterModeEnum, MenuModuleId,
-    WidgetFormTypeEnum, SavingWidgetType, OrderDataEntryWidgetLayoutModeEnum,
-    TranslateDataTypeEnum, MouseEvent, RepWidgetAppIdEnum,
-    PropertyNameOfWidgetProperty, SignalRActionEnum
-} from 'app/app.constants';
-import { WidgetUtils } from '../../utils';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import cloneDeep from 'lodash-es/cloneDeep';
-import upperFirst from 'lodash-es/upperFirst';
-import findIndex from 'lodash-es/findIndex';
+    WidgetTemplateActions,
+    PropertyPanelActions,
+    XnCommonActions,
+} from "app/state-management/store/actions";
 import {
-    AppErrorHandler, ModalService, PropertyPanelService,
-    GlobalSettingService, ObservableShareService,
-    CommonService, LayoutSettingService, SignalRService
-} from 'app/services';
-import { Uti } from 'app/utilities';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { WidgetEditDialogComponent } from '../../components/widget-edit-dialog';
-import { BaseWidgetContainer, WidgetBox } from './base.widget-container';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import * as moduleSettingReducer from 'app/state-management/store/reducer/module-setting';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import * as commonReducer from 'app/state-management/store/reducer/xn-common';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import * as widgetContentReducer from 'app/state-management/store/reducer/widget-content-detail';
-import * as widgetTemplateReducer from 'app/state-management/store/reducer/widget-template';
-import { ModuleList } from 'app/pages/private/base';
-import isEqual from 'lodash-es/isEqual';
-import { ICommunicationWidget } from '../../components/widget-communication-dialog';
-import {of} from 'rxjs/observable/of';
-import { LocalStorageKey } from 'app/app.constants';
+    WidgetTemplateSettingService,
+    DomHandler,
+    AccessRightsService,
+} from "app/services";
+import { PageSettingService } from "app/services";
+import { UUID } from "angular2-uuid";
+import { WidgetModuleComponent } from "../../components/widget-info";
+import { WidgetDataEntryInfoComponent } from "../../components/widget-data-entry-info";
+import { Subscription } from "rxjs/Subscription";
+import {
+    RowData,
+    EditingWidget,
+    WidgetDataUpdated,
+    RelatingWidget,
+} from "app/state-management/store/reducer/widget-content-detail";
+import {
+    FilterModeEnum,
+    MenuModuleId,
+    WidgetFormTypeEnum,
+    SavingWidgetType,
+    OrderDataEntryWidgetLayoutModeEnum,
+    TranslateDataTypeEnum,
+    MouseEvent,
+    RepWidgetAppIdEnum,
+    PropertyNameOfWidgetProperty,
+    SignalRActionEnum,
+} from "app/app.constants";
+import { WidgetUtils } from "../../utils";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import cloneDeep from "lodash-es/cloneDeep";
+import upperFirst from "lodash-es/upperFirst";
+import findIndex from "lodash-es/findIndex";
+import {
+    AppErrorHandler,
+    ModalService,
+    PropertyPanelService,
+    GlobalSettingService,
+    ObservableShareService,
+    CommonService,
+    LayoutSettingService,
+    SignalRService,
+} from "app/services";
+import { Uti } from "app/utilities";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { WidgetEditDialogComponent } from "../../components/widget-edit-dialog";
+import { BaseWidgetContainer, WidgetBox } from "./base.widget-container";
+import * as tabSummaryReducer from "app/state-management/store/reducer/tab-summary";
+import * as moduleSettingReducer from "app/state-management/store/reducer/module-setting";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import * as commonReducer from "app/state-management/store/reducer/xn-common";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import * as widgetContentReducer from "app/state-management/store/reducer/widget-content-detail";
+import * as widgetTemplateReducer from "app/state-management/store/reducer/widget-template";
+import { ModuleList } from "app/pages/private/base";
+import isEqual from "lodash-es/isEqual";
+import { ICommunicationWidget } from "../../components/widget-communication-dialog";
+import { of } from "rxjs/observable/of";
+import { LocalStorageKey } from "app/app.constants";
 
 @Component({
-    selector: 'widget-container',
-    styleUrls: ['./widget-container.component.scss'],
-    templateUrl: './widget-container.component.html',
-    providers: [WidgetUtils]
+    selector: "widget-container",
+    styleUrls: ["./widget-container.component.scss"],
+    templateUrl: "./widget-container.component.html",
+    providers: [WidgetUtils],
 })
-export class WidgetContainerComponent extends BaseWidgetContainer implements OnInit, OnChanges, OnDestroy {
-
+export class WidgetContainerComponent
+    extends BaseWidgetContainer
+    implements OnInit, OnChanges, OnDestroy
+{
     @ViewChildren(forwardRef(() => WidgetDataEntryInfoComponent))
     private widgetDataEntryInfoComponents: QueryList<WidgetDataEntryInfoComponent>;
 
@@ -112,19 +153,22 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                 this.selectedEntityStateSubscription.unsubscribe();
             }
             this.ref.detach();
-        }
-        else {
+        } else {
             // console.log('PageID:' + this.pageId + ' ON');
             this.ref.reattach();
             this.restoreMaximizeWidget();
             if (this.isViewInitialized) {
                 this.subscribeSelectedEntityState();
                 if (!this.currentWidgetStateKey) {
-                    this.updateWidgetContent(this.currentPageSetting, false, false);
+                    this.updateWidgetContent(
+                        this.currentPageSetting,
+                        false,
+                        false
+                    );
                 }
             }
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
@@ -139,7 +183,7 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     private idSettingsPage?: number = null;
     public widgetEditInPopupId: string;
     private currentPageSetting: PageSetting = null;
-    private modulePrimaryKey = '';
+    private modulePrimaryKey = "";
     private mainWidgetTemplateSettings: WidgetTemplateSettingModel[];
     public activeSubModule: Module;
     public toolbarSetting: any;
@@ -192,7 +236,9 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     private requestSaveState: Observable<any>;
     private requestReloadState: Observable<any>;
     private widgetListenKeyState: Observable<string>;
-    private widgetTemplateSettingModelState: Observable<WidgetTemplateSettingModel[]>;
+    private widgetTemplateSettingModelState: Observable<
+        WidgetTemplateSettingModel[]
+    >;
     private layoutPageInfoModelState: Observable<LayoutPageInfoModel[]>;
     private modulePrimaryKeyState: Observable<string>;
     private globalPropertiesState: Observable<any>;
@@ -201,7 +247,7 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     private selectedTabHeaderModel: Observable<TabSummaryModel>;
     private selectedSimpleTabState: Observable<SimpleTabModel>;
 
-    public onAfterChangeSize = '';
+    public onAfterChangeSize = "";
     public isDesignUpdating: boolean;
     public showEmailSettingDialog = false;
     public emailSettingData: any = {};
@@ -209,8 +255,8 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     public widgetMouseEvent: MouseEvent = MouseEvent.None;
     public mouseEvent = MouseEvent;
 
-
-    constructor(protected store: Store<AppState>,
+    constructor(
+        protected store: Store<AppState>,
         protected widgetDetailActions: WidgetDetailActions,
         private propertyPanelActions: PropertyPanelActions,
         private widgetTemplateActions: WidgetTemplateActions,
@@ -237,28 +283,142 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         private layoutSettingService: LayoutSettingService,
         private signalRService: SignalRService
     ) {
-        super(store, widgetDetailActions, widgetUtils, widgetTemplateSettingService, obserableShareService, propertyPanelService, xnCommonActions, router, accessRightService);
+        super(
+            store,
+            widgetDetailActions,
+            widgetUtils,
+            widgetTemplateSettingService,
+            obserableShareService,
+            propertyPanelService,
+            xnCommonActions,
+            router,
+            accessRightService
+        );
     }
 
     private initState() {
-        this.widgetListenKeyState = this.store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).widgetListenKey);
-        this.activeSubModuleState = this.store.select(state => state.mainModule.activeSubModule);
-        this.selectedTabHeaderModel = this.store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedTab);
-        this.enableWidgetTemplateState = this.store.select(state => widgetTemplateReducer.getWidgetTemplateState(state, this.ofModule.moduleNameTrim).enableWidgetTemplate);
-        this.toolbarSettingState = this.store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).toolbarSetting);
-        this.selectedEntityState = this.store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).selectedEntity);
-        this.rowDataState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).rowData);
-        this.tabHeaderTableFilterState = this.store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).tabHeaderTableFilter);
-        this.widgetDataUpdatedState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).widgetDataUpdated);
-        this.requestSaveState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).requestSave);
-        this.requestReloadState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).requestReload);
-        this.widgetTemplateSettingModelState = this.store.select(state => widgetTemplateReducer.getWidgetTemplateState(state, this.ofModule.moduleNameTrim).mainWidgetTemplateSettings);
-        this.relatingWidgetState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).relatingWidget);
-        this.layoutPageInfoModelState = this.store.select(state => commonReducer.getCommonState(state, this.ofModule.moduleNameTrim).layoutPageInfo);
-        this.modulePrimaryKeyState = this.store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).modulePrimaryKey);
-        this.globalPropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, ModuleList.Base.moduleNameTrim).globalProperties);
-        this.isExpandPropertyPanelState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, this.ofModule.moduleNameTrim).isExpand);
-        this.selectedSimpleTabState = this.store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedSimpleTab);
+        this.widgetListenKeyState = this.store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).widgetListenKey
+        );
+        this.activeSubModuleState = this.store.select(
+            (state) => state.mainModule.activeSubModule
+        );
+        this.selectedTabHeaderModel = this.store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedTab
+        );
+        this.enableWidgetTemplateState = this.store.select(
+            (state) =>
+                widgetTemplateReducer.getWidgetTemplateState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).enableWidgetTemplate
+        );
+        this.toolbarSettingState = this.store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).toolbarSetting
+        );
+        this.selectedEntityState = this.store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedEntity
+        );
+        this.rowDataState = this.store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).rowData
+        );
+        this.tabHeaderTableFilterState = this.store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).tabHeaderTableFilter
+        );
+        this.widgetDataUpdatedState = this.store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).widgetDataUpdated
+        );
+        this.requestSaveState = this.store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).requestSave
+        );
+        this.requestReloadState = this.store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).requestReload
+        );
+        this.widgetTemplateSettingModelState = this.store.select(
+            (state) =>
+                widgetTemplateReducer.getWidgetTemplateState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).mainWidgetTemplateSettings
+        );
+        this.relatingWidgetState = this.store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).relatingWidget
+        );
+        this.layoutPageInfoModelState = this.store.select(
+            (state) =>
+                commonReducer.getCommonState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).layoutPageInfo
+        );
+        this.modulePrimaryKeyState = this.store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).modulePrimaryKey
+        );
+        this.globalPropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    ModuleList.Base.moduleNameTrim
+                ).globalProperties
+        );
+        this.isExpandPropertyPanelState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).isExpand
+        );
+        this.selectedSimpleTabState = this.store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedSimpleTab
+        );
     }
 
     /**
@@ -266,16 +426,22 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      */
     private confirmSavingWhenChangeStatus() {
         this.modalService.unsavedWarningMessageDefault({
-            headerText: 'Saving Changes',
+            headerText: "Saving Changes",
             onModalSaveAndExit: () => {
-                this.store.dispatch(this.widgetTemplateActions.saveWidget(this.ofModule));
+                this.store.dispatch(
+                    this.widgetTemplateActions.saveWidget(this.ofModule)
+                );
             },
             onModalExit: () => {
-                this.store.dispatch(this.widgetTemplateActions.resetWidget(this.ofModule));
+                this.store.dispatch(
+                    this.widgetTemplateActions.resetWidget(this.ofModule)
+                );
             },
             onModalCancel: () => {
-                this.store.dispatch(this.widgetTemplateActions.resetWidget(this.ofModule));
-            }
+                this.store.dispatch(
+                    this.widgetTemplateActions.resetWidget(this.ofModule)
+                );
+            },
         });
     }
 
@@ -328,11 +494,14 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     }
 
     private subscribeSelectedSimpleTabState() {
-        this.selectedSimpleTabStateSubscription = this.selectedSimpleTabState.subscribe((selectedSimpleTabState: SimpleTabModel) => {
-            this.appErrorHandler.executeAction(() => {
-                this.selectedSimpleTab = selectedSimpleTabState;
-            });
-        });
+        this.selectedSimpleTabStateSubscription =
+            this.selectedSimpleTabState.subscribe(
+                (selectedSimpleTabState: SimpleTabModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.selectedSimpleTab = selectedSimpleTabState;
+                    });
+                }
+            );
     }
 
     private subscribeIsExpandPropertyPanelState() {
@@ -340,11 +509,12 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
             this.isExpandPropertyPanelStateSubscription.unsubscribe();
         }
 
-        this.isExpandPropertyPanelStateSubscription = this.isExpandPropertyPanelState.subscribe((isExpand: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.isExpandedPropertyPanel = isExpand;
+        this.isExpandPropertyPanelStateSubscription =
+            this.isExpandPropertyPanelState.subscribe((isExpand: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.isExpandedPropertyPanel = isExpand;
+                });
             });
-        });
     }
 
     /**
@@ -354,11 +524,12 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.modulePrimaryKeyStateSubscription) {
             this.modulePrimaryKeyStateSubscription.unsubscribe();
         }
-        this.modulePrimaryKeyStateSubscription = this.modulePrimaryKeyState.subscribe((key: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.modulePrimaryKey = key;
+        this.modulePrimaryKeyStateSubscription =
+            this.modulePrimaryKeyState.subscribe((key: string) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.modulePrimaryKey = key;
+                });
             });
-        });
     }
 
     /**
@@ -368,16 +539,19 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.selectedTabHeaderModelSubscription) {
             this.selectedTabHeaderModelSubscription.unsubscribe();
         }
-        this.selectedTabHeaderModelSubscription = this.selectedTabHeaderModel.subscribe((selectedTabHeader: TabSummaryModel) => {
-            this.appErrorHandler.executeAction(() => {
-                this.selectedTabHeader = selectedTabHeader;
+        this.selectedTabHeaderModelSubscription =
+            this.selectedTabHeaderModel.subscribe(
+                (selectedTabHeader: TabSummaryModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.selectedTabHeader = selectedTabHeader;
 
-                //clear all maximize widgets
-                this.resetMaximizeWidget();
-                //restore the current maximized widget
-                this.restoreMaximizeWidget();
-            });
-        });
+                        //clear all maximize widgets
+                        this.resetMaximizeWidget();
+                        //restore the current maximized widget
+                        this.restoreMaximizeWidget();
+                    });
+                }
+            );
     }
 
     /**
@@ -387,11 +561,14 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.widgetListenKeyStateSubscription) {
             this.widgetListenKeyStateSubscription.unsubscribe();
         }
-        this.widgetListenKeyStateSubscription = this.widgetListenKeyState.subscribe((widgetListenKeyState: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.widgetListenKey = widgetListenKeyState;
-            });
-        });
+        this.widgetListenKeyStateSubscription =
+            this.widgetListenKeyState.subscribe(
+                (widgetListenKeyState: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.widgetListenKey = widgetListenKeyState;
+                    });
+                }
+            );
     }
 
     /**
@@ -401,11 +578,14 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.activeSubModuleStateSubscription) {
             this.activeSubModuleStateSubscription.unsubscribe();
         }
-        this.activeSubModuleStateSubscription = this.activeSubModuleState.subscribe((activeSubModuleState: Module) => {
-            this.appErrorHandler.executeAction(() => {
-                this.activeSubModule = activeSubModuleState;
-            });
-        });
+        this.activeSubModuleStateSubscription =
+            this.activeSubModuleState.subscribe(
+                (activeSubModuleState: Module) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.activeSubModule = activeSubModuleState;
+                    });
+                }
+            );
     }
 
     /**
@@ -415,11 +595,12 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.toolbarSettingStateSubscription) {
             this.toolbarSettingStateSubscription.unsubscribe();
         }
-        this.toolbarSettingStateSubscription = this.toolbarSettingState.subscribe((toolbarSettingState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.toolbarSetting = toolbarSettingState;
+        this.toolbarSettingStateSubscription =
+            this.toolbarSettingState.subscribe((toolbarSettingState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.toolbarSetting = toolbarSettingState;
+                });
             });
-        });
     }
 
     /**
@@ -429,25 +610,26 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.enableWidgetTemplateStateSubscription) {
             this.enableWidgetTemplateStateSubscription.unsubscribe();
         }
-        this.enableWidgetTemplateStateSubscription = this.enableWidgetTemplateState.subscribe((status: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                // clear all maximize widgets
-                this.resetMaximizeWidget();
-                if (this.currentMaximizeWidgetData.isMaximizedWidget) {
-                    this.restoreMaximizeWidget(!status, true); // true: Edit mode -> must minimize widget
-                } else {
-                    this.restoreMaximizeWidget(false, false);
-                }
-                setTimeout(() => {
-                    this.allowDesignEdit = status;
-                    this.ngGrid.setDesignMode(this.allowDesignEdit);
-                    // View mode && any changes on Widget
-                    if (!status && this.isWidgetDesignChanged()) {
-                        this.confirmSavingWhenChangeStatus();
+        this.enableWidgetTemplateStateSubscription =
+            this.enableWidgetTemplateState.subscribe((status: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    // clear all maximize widgets
+                    this.resetMaximizeWidget();
+                    if (this.currentMaximizeWidgetData.isMaximizedWidget) {
+                        this.restoreMaximizeWidget(!status, true); // true: Edit mode -> must minimize widget
+                    } else {
+                        this.restoreMaximizeWidget(false, false);
                     }
+                    setTimeout(() => {
+                        this.allowDesignEdit = status;
+                        this.ngGrid.setDesignMode(this.allowDesignEdit);
+                        // View mode && any changes on Widget
+                        if (!status && this.isWidgetDesignChanged()) {
+                            this.confirmSavingWhenChangeStatus();
+                        }
+                    });
                 });
             });
-        });
     }
 
     /**
@@ -457,42 +639,74 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.saveWidgetStateSubscription) {
             this.saveWidgetStateSubscription.unsubscribe();
         }
-        this.saveWidgetStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WidgetTemplateActions.SAVE_WIDGET && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.isWidgetDesignChanged()) {
-                    const widgetBoxesDirty = this.widgetBoxes.filter(p => (p.isDirty || p.isDeleted));
-                    for (let i = 0; i < widgetBoxesDirty.length; i++) {
-                        const widgetBox: WidgetBox = widgetBoxesDirty[i];
-                        const widgetDetail: WidgetDetail = Object.assign({}, widgetBox.data);
-                        const widgetModuleComponents = this.widgetModuleComponents.filter(p => p.data.id === widgetDetail.id);
-                        for (let j = 0; j < widgetModuleComponents.length; j++) {
-                            if (widgetModuleComponents[j].data.idRepWidgetType === WidgetType.Chart) {
-                                widgetModuleComponents[j].propertiesForSaving.properties = cloneDeep(widgetModuleComponents[j].properties);
+        this.saveWidgetStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === WidgetTemplateActions.SAVE_WIDGET &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.isWidgetDesignChanged()) {
+                        const widgetBoxesDirty = this.widgetBoxes.filter(
+                            (p) => p.isDirty || p.isDeleted
+                        );
+                        for (let i = 0; i < widgetBoxesDirty.length; i++) {
+                            const widgetBox: WidgetBox = widgetBoxesDirty[i];
+                            const widgetDetail: WidgetDetail = Object.assign(
+                                {},
+                                widgetBox.data
+                            );
+                            const widgetModuleComponents =
+                                this.widgetModuleComponents.filter(
+                                    (p) => p.data.id === widgetDetail.id
+                                );
+                            for (
+                                let j = 0;
+                                j < widgetModuleComponents.length;
+                                j++
+                            ) {
+                                if (
+                                    widgetModuleComponents[j].data
+                                        .idRepWidgetType === WidgetType.Chart
+                                ) {
+                                    widgetModuleComponents[
+                                        j
+                                    ].propertiesForSaving.properties = cloneDeep(
+                                        widgetModuleComponents[j].properties
+                                    );
+                                }
                             }
                         }
-                    }
 
-                    setTimeout(() => {
-                        this.saveWidgetPage();
-                    });
-                }
+                        setTimeout(() => {
+                            this.saveWidgetPage();
+                        });
+                    }
+                });
             });
-        });
     }
 
     private subscribeRequestRefreshWidgetsInTabState() {
         if (this.requestRefreshWidgetsInTabStateSubscription) {
             this.requestRefreshWidgetsInTabStateSubscription.unsubscribe();
         }
-        this.requestRefreshWidgetsInTabStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WidgetDetailActions.REQUEST_REFRESH_WIDGETS_IN_TAB && action.module.idSettingsGUI == this.ofModule.idSettingsGUI && action.payload == this.tabID;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                this.reloadAllWidgetsByPageId();
+        this.requestRefreshWidgetsInTabStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        WidgetDetailActions.REQUEST_REFRESH_WIDGETS_IN_TAB &&
+                    action.module.idSettingsGUI ==
+                        this.ofModule.idSettingsGUI &&
+                    action.payload == this.tabID
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.reloadAllWidgetsByPageId();
+                });
             });
-        });
     }
 
     /**
@@ -502,31 +716,60 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.connectForChildFromParentWidgetSubscription) {
             this.connectForChildFromParentWidgetSubscription.unsubscribe();
         }
-        this.connectForChildFromParentWidgetSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WidgetDetailActions.SET_CONNECT_FOR_CHILD_FROM_PARENT_WIDGET && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                if (data.payload) {
-                    const communicationWidget = (data.payload as ICommunicationWidget);
-                    if (communicationWidget.childrenRelatingWidgetInfos
-                        && communicationWidget.childrenRelatingWidgetInfos.length) {
-                        if (this.widgetModuleComponents && this.widgetModuleComponents.length) {
-                            communicationWidget.childrenRelatingWidgetInfos.forEach(child => {
-                                const widgetModuleComponent = this.widgetModuleComponents.find(p => p.data.id == child.id);
-                                if (widgetModuleComponent) {
-                                    this.widgetUtils.buildListenKeyConfigForWidgetDetail(widgetModuleComponent.data, false);
-                                    widgetModuleComponent.data.widgetDataType.parentWidgetIds = [communicationWidget.srcWidgetDetail.id];
-                                    // Fix bug 2740 : [BLOCKED ORDER] blue background is shown after clicking on connection button
-                                    widgetModuleComponent.linkedWidgetCoverDisplay = false;
-                                    widgetModuleComponent.supportLinkedWidgetCoverDisplay = false;
-                                    this.onSuccessLinkingWidget(widgetModuleComponent.data);
-                                }
-                            });
+        this.connectForChildFromParentWidgetSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        WidgetDetailActions.SET_CONNECT_FOR_CHILD_FROM_PARENT_WIDGET &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (data.payload) {
+                        const communicationWidget =
+                            data.payload as ICommunicationWidget;
+                        if (
+                            communicationWidget.childrenRelatingWidgetInfos &&
+                            communicationWidget.childrenRelatingWidgetInfos
+                                .length
+                        ) {
+                            if (
+                                this.widgetModuleComponents &&
+                                this.widgetModuleComponents.length
+                            ) {
+                                communicationWidget.childrenRelatingWidgetInfos.forEach(
+                                    (child) => {
+                                        const widgetModuleComponent =
+                                            this.widgetModuleComponents.find(
+                                                (p) => p.data.id == child.id
+                                            );
+                                        if (widgetModuleComponent) {
+                                            this.widgetUtils.buildListenKeyConfigForWidgetDetail(
+                                                widgetModuleComponent.data,
+                                                false
+                                            );
+                                            widgetModuleComponent.data.widgetDataType.parentWidgetIds =
+                                                [
+                                                    communicationWidget
+                                                        .srcWidgetDetail.id,
+                                                ];
+                                            // Fix bug 2740 : [BLOCKED ORDER] blue background is shown after clicking on connection button
+                                            widgetModuleComponent.linkedWidgetCoverDisplay =
+                                                false;
+                                            widgetModuleComponent.supportLinkedWidgetCoverDisplay =
+                                                false;
+                                            this.onSuccessLinkingWidget(
+                                                widgetModuleComponent.data
+                                            );
+                                        }
+                                    }
+                                );
+                            }
                         }
                     }
-                }
+                });
             });
-        });
     }
 
     /**
@@ -536,27 +779,50 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.connectForSameTypeWidgetSubscription) {
             this.connectForSameTypeWidgetSubscription.unsubscribe();
         }
-        this.connectForSameTypeWidgetSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WidgetDetailActions.SET_CONNECT_FOR_SAME_TYPE_WIDGET && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                if (data.payload) {
-                    const communicationWidget = (data.payload as ICommunicationWidget);
-                    if (communicationWidget.sameTypeWidgetInfos
-                        && communicationWidget.sameTypeWidgetInfos.length) {
-                        if (this.widgetModuleComponents && this.widgetModuleComponents.length) {
-                            communicationWidget.sameTypeWidgetInfos.forEach(child => {
-                                const widgetModuleComponent = this.widgetModuleComponents.find(p => p.data.id == child.id);
-                                if (widgetModuleComponent) {
-                                    widgetModuleComponent.data.syncWidgetIds = [communicationWidget.srcWidgetDetail.id];
-                                    this.onSuccessLinkingWidget(widgetModuleComponent.data);
-                                }
-                            });
+        this.connectForSameTypeWidgetSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        WidgetDetailActions.SET_CONNECT_FOR_SAME_TYPE_WIDGET &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (data.payload) {
+                        const communicationWidget =
+                            data.payload as ICommunicationWidget;
+                        if (
+                            communicationWidget.sameTypeWidgetInfos &&
+                            communicationWidget.sameTypeWidgetInfos.length
+                        ) {
+                            if (
+                                this.widgetModuleComponents &&
+                                this.widgetModuleComponents.length
+                            ) {
+                                communicationWidget.sameTypeWidgetInfos.forEach(
+                                    (child) => {
+                                        const widgetModuleComponent =
+                                            this.widgetModuleComponents.find(
+                                                (p) => p.data.id == child.id
+                                            );
+                                        if (widgetModuleComponent) {
+                                            widgetModuleComponent.data.syncWidgetIds =
+                                                [
+                                                    communicationWidget
+                                                        .srcWidgetDetail.id,
+                                                ];
+                                            this.onSuccessLinkingWidget(
+                                                widgetModuleComponent.data
+                                            );
+                                        }
+                                    }
+                                );
+                            }
                         }
                     }
-                }
+                });
             });
-        });
     }
 
     /**
@@ -566,27 +832,45 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.connectForParentFromChildWidgetSubscription) {
             this.connectForParentFromChildWidgetSubscription.unsubscribe();
         }
-        this.connectForParentFromChildWidgetSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WidgetDetailActions.SET_CONNECT_FOR_PARENT_FROM_CHILD_WIDGET && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                if (data.payload) {
-                    const communicationWidget = (data.payload as ICommunicationWidget);
-                    if (communicationWidget.relatingWidgetInfos
-                        && communicationWidget.relatingWidgetInfos.length) {
-                        if (this.widgetModuleComponents && this.widgetModuleComponents.length) {
-                            communicationWidget.relatingWidgetInfos.forEach(child => {
-                                const widgetModuleComponent = this.widgetModuleComponents.find(p => p.data.id == child.id);
-                                if (widgetModuleComponent) {
-                                    widgetModuleComponent.linkedSuccessWidget = true;
-                                    widgetModuleComponent.reattach();
-                                }
-                            });
+        this.connectForParentFromChildWidgetSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        WidgetDetailActions.SET_CONNECT_FOR_PARENT_FROM_CHILD_WIDGET &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (data.payload) {
+                        const communicationWidget =
+                            data.payload as ICommunicationWidget;
+                        if (
+                            communicationWidget.relatingWidgetInfos &&
+                            communicationWidget.relatingWidgetInfos.length
+                        ) {
+                            if (
+                                this.widgetModuleComponents &&
+                                this.widgetModuleComponents.length
+                            ) {
+                                communicationWidget.relatingWidgetInfos.forEach(
+                                    (child) => {
+                                        const widgetModuleComponent =
+                                            this.widgetModuleComponents.find(
+                                                (p) => p.data.id == child.id
+                                            );
+                                        if (widgetModuleComponent) {
+                                            widgetModuleComponent.linkedSuccessWidget =
+                                                true;
+                                            widgetModuleComponent.reattach();
+                                        }
+                                    }
+                                );
+                            }
                         }
                     }
-                }
+                });
             });
-        });
     }
 
     /**
@@ -596,58 +880,80 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.resetWidgetStateSubscription) {
             this.resetWidgetStateSubscription.unsubscribe();
         }
-        this.resetWidgetStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WidgetTemplateActions.RESET_WIDGET && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                this.isWidgetDesignDirty = false;
-                if (!this.isActivated) {
-                    return;
-                }
-                this.reloadAllWidgetsByPageId();
+        this.resetWidgetStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === WidgetTemplateActions.RESET_WIDGET &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.isWidgetDesignDirty = false;
+                    if (!this.isActivated) {
+                        return;
+                    }
+                    this.reloadAllWidgetsByPageId();
+                });
             });
-        });
     }
 
     /**
      * subscribeResizeSplitterState
      */
     private subscribeResizeSplitterState() {
-        this.resizeSplitterStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === LayoutInfoActions.RESIZE_SPLITTER && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!this.isActivated) {
-                    return;
-                }
-                // if widget element is not visible, do nothing
-                if (this.elementRef && this.elementRef.nativeElement &&
-                    this.elementRef.nativeElement.offsetParent == null) {
-                    return;
-                }
+        this.resizeSplitterStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === LayoutInfoActions.RESIZE_SPLITTER &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!this.isActivated) {
+                        return;
+                    }
+                    // if widget element is not visible, do nothing
+                    if (
+                        this.elementRef &&
+                        this.elementRef.nativeElement &&
+                        this.elementRef.nativeElement.offsetParent == null
+                    ) {
+                        return;
+                    }
 
-                if (this.allowDesignEdit) {
-                    this.isWidgetDesignDirty = true;
-                }
+                    if (this.allowDesignEdit) {
+                        this.isWidgetDesignDirty = true;
+                    }
 
-                // let splitterMode: SplitterDirectionMode = data.payload;
-                setTimeout(() => {
-                    this.ngGrid.triggerResize();
-                    this.onAfterChangeSize = 'spliter-' + (new Date()).getTime();
-                    this.resizeChartWidget();
-                    this.refreshPdfWidget();
-                }, 200);
+                    // let splitterMode: SplitterDirectionMode = data.payload;
+                    setTimeout(() => {
+                        this.ngGrid.triggerResize();
+                        this.onAfterChangeSize =
+                            "spliter-" + new Date().getTime();
+                        this.resizeChartWidget();
+                        this.refreshPdfWidget();
+                    }, 200);
+                });
             });
-        });
     }
 
     private resizeChartWidget() {
         for (let i = 0; i < this.widgetBoxes.length; i++) {
             const widgetBox: WidgetBox = this.widgetBoxes[i];
-            const widgetDetail: WidgetDetail = Object.assign({}, widgetBox.data);
-            const widgetModuleComponents = this.widgetModuleComponents.filter(p => p.data.id === widgetDetail.id);
+            const widgetDetail: WidgetDetail = Object.assign(
+                {},
+                widgetBox.data
+            );
+            const widgetModuleComponents = this.widgetModuleComponents.filter(
+                (p) => p.data.id === widgetDetail.id
+            );
             for (let j = 0; j < widgetModuleComponents.length; j++) {
-                if (widgetModuleComponents[j].data.idRepWidgetType === WidgetType.Chart) {
+                if (
+                    widgetModuleComponents[j].data.idRepWidgetType ===
+                    WidgetType.Chart
+                ) {
                     widgetModuleComponents[j].chartWidget.refresh();
                 }
             }
@@ -657,10 +963,18 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     private refreshPdfWidget() {
         for (let i = 0; i < this.widgetBoxes.length; i++) {
             const widgetBox: WidgetBox = this.widgetBoxes[i];
-            const widgetDetail: WidgetDetail = Object.assign({}, widgetBox.data);
-            const widgetModuleComponents = this.widgetModuleComponents.filter(p => p.data.id === widgetDetail.id);
+            const widgetDetail: WidgetDetail = Object.assign(
+                {},
+                widgetBox.data
+            );
+            const widgetModuleComponents = this.widgetModuleComponents.filter(
+                (p) => p.data.id === widgetDetail.id
+            );
             for (let j = 0; j < widgetModuleComponents.length; j++) {
-                if (widgetModuleComponents[j].data.idRepWidgetType === WidgetType.PdfViewer) {
+                if (
+                    widgetModuleComponents[j].data.idRepWidgetType ===
+                    WidgetType.PdfViewer
+                ) {
                     widgetModuleComponents[j].pdfWidget.refresh();
                 }
             }
@@ -674,10 +988,12 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.layoutPageInfoModelStateSubscription) {
             this.layoutPageInfoModelStateSubscription.unsubscribe();
         }
-        this.layoutPageInfoModelStateSubscription = this.layoutPageInfoModelState.subscribe((layoutInfoState: LayoutPageInfoModel[]) => {
-            if (layoutInfoState)
-                this.layoutPageInfo = layoutInfoState;
-        });
+        this.layoutPageInfoModelStateSubscription =
+            this.layoutPageInfoModelState.subscribe(
+                (layoutInfoState: LayoutPageInfoModel[]) => {
+                    if (layoutInfoState) this.layoutPageInfo = layoutInfoState;
+                }
+            );
     }
 
     /**
@@ -687,31 +1003,56 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.selectedEntityStateSubscription) {
             this.selectedEntityStateSubscription.unsubscribe();
         }
-        this.selectedEntityStateSubscription = this.selectedEntityState.subscribe((selectedEntityState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.selectedEntity = selectedEntityState;
+        this.selectedEntityStateSubscription =
+            this.selectedEntityState.subscribe((selectedEntityState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.selectedEntity = selectedEntityState;
 
-                if (isEmpty(selectedEntityState) || !selectedEntityState[this.modulePrimaryKey]) {
-                    return;
-                }
+                    if (
+                        isEmpty(selectedEntityState) ||
+                        !selectedEntityState[this.modulePrimaryKey]
+                    ) {
+                        return;
+                    }
 
-                // this.widgetUtils.clearWidgetDataTypeValues();
+                    // this.widgetUtils.clearWidgetDataTypeValues();
 
-                // this.resetWidgetTableOnEntityChanged();
+                    // this.resetWidgetTableOnEntityChanged();
 
-                this.widgetUtils.updateWidgetDataTypeValuesFromSelectedEntity(this.ofModule.moduleNameTrim, selectedEntityState, this.widgetListenKey);
+                    this.widgetUtils.updateWidgetDataTypeValuesFromSelectedEntity(
+                        this.ofModule.moduleNameTrim,
+                        selectedEntityState,
+                        this.widgetListenKey
+                    );
 
-                //
-                this.currentWidgetStateKey = this.widgetUtils.getWidgetStateKey(selectedEntityState, this.widgetListenKey);
+                    //
+                    this.currentWidgetStateKey =
+                        this.widgetUtils.getWidgetStateKey(
+                            selectedEntityState,
+                            this.widgetListenKey
+                        );
 
-                if (this.currentPageSetting) {
-                    this.store.dispatch(this.widgetDetailActions.clearWidgetTypeDetail(this.ofModule));
-                    this.store.dispatch(this.widgetDetailActions.clearWidgetTypeDetailForCampaignMedia(this.ofModule,this.tabID));
-                    this.reloadMode = ReloadMode.ListenKey;
-                    this.updateWidgetContent(this.currentPageSetting, false, false);
-                }
+                    if (this.currentPageSetting) {
+                        this.store.dispatch(
+                            this.widgetDetailActions.clearWidgetTypeDetail(
+                                this.ofModule
+                            )
+                        );
+                        this.store.dispatch(
+                            this.widgetDetailActions.clearWidgetTypeDetailForCampaignMedia(
+                                this.ofModule,
+                                this.tabID
+                            )
+                        );
+                        this.reloadMode = ReloadMode.ListenKey;
+                        this.updateWidgetContent(
+                            this.currentPageSetting,
+                            false,
+                            false
+                        );
+                    }
+                });
             });
-        });
     }
 
     /**
@@ -722,147 +1063,257 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
             this.rowDataStateSubscription.unsubscribe();
         }
 
-        this.rowDataStateSubscription = this.rowDataState.subscribe((rowData: RowData) => {
-            this.appErrorHandler.executeAction(() => {
-                this.rowDataChange = rowData;
-                if (!this.isActivated || !this.widgetModuleComponents) {
-                    return;
-                }
+        this.rowDataStateSubscription = this.rowDataState.subscribe(
+            (rowData: RowData) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.rowDataChange = rowData;
+                    if (!this.isActivated || !this.widgetModuleComponents) {
+                        return;
+                    }
 
-                const primayIdValueCells = Uti.getPrimaryValueFromKey(rowData);
-                if (!primayIdValueCells.length) {
-                    return;
-                }
+                    const primayIdValueCells =
+                        Uti.getPrimaryValueFromKey(rowData);
+                    if (!primayIdValueCells.length) {
+                        return;
+                    }
 
-                let isDirty: boolean;
-                const widgetDirtyList: Array<WidgetModuleComponent> = [];
-                let widgetDetail;
-                if (rowData.widgetDetail && rowData.widgetDetail.id) {
-                    widgetDetail = this.widgetUtils.getWidgetDetailById(this.layoutPageInfo, rowData.widgetDetail.id);
-                }
-                widgetDetail = widgetDetail ? widgetDetail : rowData.widgetDetail;
+                    let isDirty: boolean;
+                    const widgetDirtyList: Array<WidgetModuleComponent> = [];
+                    let widgetDetail;
+                    if (rowData.widgetDetail && rowData.widgetDetail.id) {
+                        widgetDetail = this.widgetUtils.getWidgetDetailById(
+                            this.layoutPageInfo,
+                            rowData.widgetDetail.id
+                        );
+                    }
+                    widgetDetail = widgetDetail
+                        ? widgetDetail
+                        : rowData.widgetDetail;
 
-                // Find other widgets with the same type that was synced with it self.
-                const foundWidgetDetails = this.findValidSyncSameTypeWidgets(widgetDetail);
-                if (foundWidgetDetails && foundWidgetDetails.length) {
-                    const filterObj = {};
-                    primayIdValueCells.forEach(primayIdValueCell => {
-                        filterObj[primayIdValueCell.key] = primayIdValueCell.value;
-                    });
+                    // Find other widgets with the same type that was synced with it self.
+                    const foundWidgetDetails =
+                        this.findValidSyncSameTypeWidgets(widgetDetail);
+                    if (foundWidgetDetails && foundWidgetDetails.length) {
+                        const filterObj = {};
+                        primayIdValueCells.forEach((primayIdValueCell) => {
+                            filterObj[primayIdValueCell.key] =
+                                primayIdValueCell.value;
+                        });
 
-                    this.widgetModuleComponents.forEach(widgetModuleComponent => {
-                        const isWidgetDataEdited = widgetModuleComponent.isWidgetDataEdited;
-                        // Find edited widgets which listen from the current row state.
-                        if (isWidgetDataEdited) {
-                            if (widgetModuleComponent.data.id != rowData.widgetDetail.id) {
-                                if (widgetModuleComponent.data.widgetDataType
-                                    && widgetModuleComponent.data.widgetDataType.listenKey
-                                    && widgetModuleComponent.data.widgetDataType.listenKey.key) {
-                                    const keyArr: Array<string> = widgetModuleComponent.data.widgetDataType.listenKey.key.split(',');
-                                    let count = 0;
-                                    if (keyArr && keyArr.length) {
-                                        keyArr.forEach(key => {
-                                            const iRet = primayIdValueCells.find(p => p.key == key);
-                                            if (iRet) {
-                                                count++;
+                        this.widgetModuleComponents.forEach(
+                            (widgetModuleComponent) => {
+                                const isWidgetDataEdited =
+                                    widgetModuleComponent.isWidgetDataEdited;
+                                // Find edited widgets which listen from the current row state.
+                                if (isWidgetDataEdited) {
+                                    if (
+                                        widgetModuleComponent.data.id !=
+                                        rowData.widgetDetail.id
+                                    ) {
+                                        if (
+                                            widgetModuleComponent.data
+                                                .widgetDataType &&
+                                            widgetModuleComponent.data
+                                                .widgetDataType.listenKey &&
+                                            widgetModuleComponent.data
+                                                .widgetDataType.listenKey.key
+                                        ) {
+                                            const keyArr: Array<string> =
+                                                widgetModuleComponent.data.widgetDataType.listenKey.key.split(
+                                                    ","
+                                                );
+                                            let count = 0;
+                                            if (keyArr && keyArr.length) {
+                                                keyArr.forEach((key) => {
+                                                    const iRet =
+                                                        primayIdValueCells.find(
+                                                            (p) => p.key == key
+                                                        );
+                                                    if (iRet) {
+                                                        count++;
+                                                    }
+                                                });
                                             }
-                                        });
+                                            if (
+                                                count &&
+                                                count == keyArr.length
+                                            ) {
+                                                isDirty = true;
+                                                widgetDirtyList.push(
+                                                    widgetModuleComponent
+                                                );
+                                            }
+                                        }
                                     }
-                                    if (count && count == keyArr.length) {
-                                        isDirty = true;
-                                        widgetDirtyList.push(widgetModuleComponent);
+                                }
+                                const iRet = foundWidgetDetails.filter(
+                                    (p) => p.id == widgetModuleComponent.data.id
+                                );
+                                if (iRet.length) {
+                                    if (
+                                        (widgetModuleComponent.data.id !=
+                                            rowData.widgetDetail.id ||
+                                            (widgetModuleComponent.data.id ==
+                                                rowData.widgetDetail.id &&
+                                                (widgetModuleComponent.isOpeningOnPopup ||
+                                                    widgetModuleComponent.onPopup))) &&
+                                        widgetModuleComponent.agGridComponent
+                                    ) {
+                                        const createObserve = of(filterObj);
+                                        createObserve
+                                            .throttleTime(200)
+                                            .distinctUntilChanged()
+                                            .subscribe((value) => {
+                                                widgetModuleComponent.agGridComponent.setActiveRowByCondition(
+                                                    value
+                                                );
+                                                widgetModuleComponent.buildFormDataForReadonlyGrid(
+                                                    value
+                                                );
+                                            });
+
+                                        Object.keys(filterObj).forEach(
+                                            (key) => {
+                                                this.widgetUtils.updateWidgetDataTypeValues(
+                                                    this.ofModule
+                                                        .moduleNameTrim,
+                                                    key,
+                                                    filterObj[key],
+                                                    WidgetKeyType.Sub,
+                                                    widgetModuleComponent.data,
+                                                    this.pageId
+                                                );
+                                            }
+                                        );
                                     }
                                 }
                             }
-                        }
-                        const iRet = foundWidgetDetails.filter(p => p.id == widgetModuleComponent.data.id);
-                        if (iRet.length) {
-                            if ((widgetModuleComponent.data.id != rowData.widgetDetail.id
-                                    || (widgetModuleComponent.data.id == rowData.widgetDetail.id
-                                        && (widgetModuleComponent.isOpeningOnPopup
-                                            || widgetModuleComponent.onPopup)
-                                        )
-                                )
-                                && widgetModuleComponent.agGridComponent) {
-                                const createObserve = of(filterObj);
-                                createObserve.throttleTime(200).distinctUntilChanged().subscribe(value => {
-                                    widgetModuleComponent.agGridComponent.setActiveRowByCondition(value);
-                                    widgetModuleComponent.buildFormDataForReadonlyGrid(value);
-                                });
-
-                                Object.keys(filterObj).forEach(key => {
-                                    this.widgetUtils.updateWidgetDataTypeValues(this.ofModule.moduleNameTrim, key, filterObj[key], WidgetKeyType.Sub, widgetModuleComponent.data, this.pageId);
-                                });
-                            }
-                        }
-                    });
-                }
-
-                this.resetWidgetModuleInfoDataBaseOnParent(rowData, this.widgetModuleComponents);
-
-                if (WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim])
-                    WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor = [];
-
-                primayIdValueCells.forEach(primayIdValueCell => {
-                    const value = primayIdValueCell.value;
-                    const key = primayIdValueCell.key;
-                    this.widgetUtils.updateWidgetDataTypeValues(this.ofModule.moduleNameTrim, key, value, WidgetKeyType.Sub, widgetDetail, this.pageId);
-
-                    const widgetTargetRender: IWidgetTargetRender = {
-                        key: key,
-                        widgetKeyType: WidgetKeyType.Sub,
-                        srcWidgetId: rowData.widgetDetail.id,
-                        syncWidgetIds: (!foundWidgetDetails || foundWidgetDetails && !foundWidgetDetails.length)
-                            ? null : foundWidgetDetails.map(p => p.id)
-                    };
-
-                    if (WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim] && !WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor)
-                        WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor = [];
-
-                    WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor.push(widgetTargetRender);
-                });
-
-                if (this.currentPageSetting) {
-                    this.reloadMode = ReloadMode.ListenKey;
-                    // Check dirty before reload widgets.
-                    if (isDirty) {
-                        this.modalService.unsavedWarningMessageDefault({
-                            headerText: 'Saving Changes',
-                            onModalSaveAndExit: () => {
-                                widgetDirtyList.forEach(widgetDirty => {
-                                    widgetDirty.saveWidget(true);
-                                });
-                                setTimeout(() => {
-                                    this.updateWidgetContent(this.currentPageSetting, false, false);
-                                }, 500);
-                            },
-                            onModalExit: () => {
-                                widgetDirtyList.forEach(widgetDirty => {
-                                    widgetDirty.resetEditingWidget();
-                                });
-                                this.updateWidgetContent(this.currentPageSetting, false, false);
-                            },
-                            onModalCancel: () => {
-                                widgetDirtyList.forEach(widgetDirty => {
-                                    widgetDirty.resetEditingWidget();
-                                });
-                                this.updateWidgetContent(this.currentPageSetting, false, false);
-                            }
-                        });
-                    } else {
-                        this.updateWidgetContent(this.currentPageSetting, false, false);
+                        );
                     }
-                }
-            });
-        });
+
+                    this.resetWidgetModuleInfoDataBaseOnParent(
+                        rowData,
+                        this.widgetModuleComponents
+                    );
+
+                    if (
+                        WidgetUtils.widgetDataTypeValues[
+                            this.ofModule.moduleNameTrim
+                        ]
+                    )
+                        WidgetUtils.widgetDataTypeValues[
+                            this.ofModule.moduleNameTrim
+                        ].renderFor = [];
+
+                    primayIdValueCells.forEach((primayIdValueCell) => {
+                        const value = primayIdValueCell.value;
+                        const key = primayIdValueCell.key;
+                        this.widgetUtils.updateWidgetDataTypeValues(
+                            this.ofModule.moduleNameTrim,
+                            key,
+                            value,
+                            WidgetKeyType.Sub,
+                            widgetDetail,
+                            this.pageId
+                        );
+
+                        const widgetTargetRender: IWidgetTargetRender = {
+                            key: key,
+                            widgetKeyType: WidgetKeyType.Sub,
+                            srcWidgetId: rowData.widgetDetail.id,
+                            syncWidgetIds:
+                                !foundWidgetDetails ||
+                                (foundWidgetDetails &&
+                                    !foundWidgetDetails.length)
+                                    ? null
+                                    : foundWidgetDetails.map((p) => p.id),
+                        };
+
+                        if (
+                            WidgetUtils.widgetDataTypeValues[
+                                this.ofModule.moduleNameTrim
+                            ] &&
+                            !WidgetUtils.widgetDataTypeValues[
+                                this.ofModule.moduleNameTrim
+                            ].renderFor
+                        )
+                            WidgetUtils.widgetDataTypeValues[
+                                this.ofModule.moduleNameTrim
+                            ].renderFor = [];
+
+                        WidgetUtils.widgetDataTypeValues[
+                            this.ofModule.moduleNameTrim
+                        ].renderFor.push(widgetTargetRender);
+                    });
+
+                    if (this.currentPageSetting) {
+                        this.reloadMode = ReloadMode.ListenKey;
+                        // Check dirty before reload widgets.
+                        if (isDirty) {
+                            this.modalService.unsavedWarningMessageDefault({
+                                headerText: "Saving Changes",
+                                onModalSaveAndExit: () => {
+                                    widgetDirtyList.forEach((widgetDirty) => {
+                                        widgetDirty.saveWidget(true);
+                                    });
+                                    setTimeout(() => {
+                                        this.updateWidgetContent(
+                                            this.currentPageSetting,
+                                            false,
+                                            false
+                                        );
+                                    }, 500);
+                                },
+                                onModalExit: () => {
+                                    widgetDirtyList.forEach((widgetDirty) => {
+                                        widgetDirty.resetEditingWidget();
+                                    });
+                                    this.updateWidgetContent(
+                                        this.currentPageSetting,
+                                        false,
+                                        false
+                                    );
+                                },
+                                onModalCancel: () => {
+                                    widgetDirtyList.forEach((widgetDirty) => {
+                                        widgetDirty.resetEditingWidget();
+                                    });
+                                    this.updateWidgetContent(
+                                        this.currentPageSetting,
+                                        false,
+                                        false
+                                    );
+                                },
+                            });
+                        } else {
+                            this.updateWidgetContent(
+                                this.currentPageSetting,
+                                false,
+                                false
+                            );
+                        }
+                    }
+                });
+            }
+        );
     }
 
-    private resetWidgetModuleInfoDataBaseOnParent(rowData: RowData, widgetModuleComponents: QueryList<WidgetModuleComponent>) {
+    private resetWidgetModuleInfoDataBaseOnParent(
+        rowData: RowData,
+        widgetModuleComponents: QueryList<WidgetModuleComponent>
+    ) {
         if (this.widgetUtils.isTemplateWidget(rowData.widgetDetail)) {
-            widgetModuleComponents.forEach(widgetModuleComponent => {
-                if (this.widgetUtils.isValidWidgetToConnectOfParent(rowData.widgetDetail, widgetModuleComponent.data)) {
+            widgetModuleComponents.forEach((widgetModuleComponent) => {
+                if (
+                    this.widgetUtils.isValidWidgetToConnectOfParent(
+                        rowData.widgetDetail,
+                        widgetModuleComponent.data
+                    )
+                ) {
                     widgetModuleComponent.templateId = null;
-                    widgetModuleComponent.widgetMenuStatusComponent.toggleEditTemplateMode(false);
+                    widgetModuleComponent.widgetMenuStatusComponent.toggleEditTemplateMode(
+                        false
+                    );
                 }
             });
         }
@@ -875,11 +1326,14 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.tabHeaderTableFilterStateSubscription) {
             this.tabHeaderTableFilterStateSubscription.unsubscribe();
         }
-        this.tabHeaderTableFilterStateSubscription = this.tabHeaderTableFilterState.subscribe((tabHeaderTableFilter: any) => {
-            if (tabHeaderTableFilter) {
-                this.tabHeaderTableFilter = tabHeaderTableFilter;
-            }
-        });
+        this.tabHeaderTableFilterStateSubscription =
+            this.tabHeaderTableFilterState.subscribe(
+                (tabHeaderTableFilter: any) => {
+                    if (tabHeaderTableFilter) {
+                        this.tabHeaderTableFilter = tabHeaderTableFilter;
+                    }
+                }
+            );
     }
 
     /**
@@ -889,62 +1343,111 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.widgetDataUpdatedSubscription) {
             this.widgetDataUpdatedSubscription.unsubscribe();
         }
-        this.widgetDataUpdatedSubscription = this.widgetDataUpdatedState.subscribe((widgetDataUpdated: WidgetDataUpdated) => {
-            this.appErrorHandler.executeAction(() => {
-                // Fix bug 0001115: Load too much request Get for widget infor when user update a widget Customer info
-                if (!this.isActivated) {
-                    return;
-                }
-                if (widgetDataUpdated && this.widgetModuleComponents) {
-
-                    const widgetDetailUpdates: Array<WidgetDetail> = [];
-                    const widgetDetail: LightWidgetDetail = widgetDataUpdated.widgetDetail;
-
-                    if (!widgetDetail.widgetDataType) {
-                        return;
-                    }
-
-                    // Loop to find valid widget need to update
-                    this.widgetModuleComponents.forEach((widgetModuleComponent) => {
-
-                        if (!widgetModuleComponent.data || !widgetModuleComponent.data.widgetDataType) {
+        this.widgetDataUpdatedSubscription =
+            this.widgetDataUpdatedState.subscribe(
+                (widgetDataUpdated: WidgetDataUpdated) => {
+                    this.appErrorHandler.executeAction(() => {
+                        // Fix bug 0001115: Load too much request Get for widget infor when user update a widget Customer info
+                        if (!this.isActivated) {
                             return;
                         }
+                        if (widgetDataUpdated && this.widgetModuleComponents) {
+                            const widgetDetailUpdates: Array<WidgetDetail> = [];
+                            const widgetDetail: LightWidgetDetail =
+                                widgetDataUpdated.widgetDetail;
 
-                        // Only update widget with the same listenKey
-                        if (isEqual(widgetDetail.widgetDataType.listenKey, widgetModuleComponent.data.widgetDataType.listenKey)) {
-                            if (widgetDetail.id !== widgetModuleComponent.data.id || widgetDataUpdated.isSelfUpdated) {
-                                this.widgetUtils.replaceEditModeForTreeView(widgetModuleComponent.data);
-                                // ****** Keeping State ******
-                                widgetDetailUpdates.push(new WidgetDetail(widgetModuleComponent.data));
+                            if (!widgetDetail.widgetDataType) {
+                                return;
                             }
-                        }
 
-                        //Also update parent widget
-                        if (widgetDataUpdated.isReloadForParent) {
-                            if (widgetDetail.widgetDataType.parentWidgetIds
-                                && widgetDetail.widgetDataType.parentWidgetIds.length
-                                && isEqual(widgetDetail.widgetDataType.parentWidgetIds[0], widgetModuleComponent.data.id)) {
+                            // Loop to find valid widget need to update
+                            this.widgetModuleComponents.forEach(
+                                (widgetModuleComponent) => {
+                                    if (
+                                        !widgetModuleComponent.data ||
+                                        !widgetModuleComponent.data
+                                            .widgetDataType
+                                    ) {
+                                        return;
+                                    }
 
-                                widgetDetailUpdates.push(new WidgetDetail(widgetModuleComponent.data));
+                                    // Only update widget with the same listenKey
+                                    if (
+                                        isEqual(
+                                            widgetDetail.widgetDataType
+                                                .listenKey,
+                                            widgetModuleComponent.data
+                                                .widgetDataType.listenKey
+                                        )
+                                    ) {
+                                        if (
+                                            widgetDetail.id !==
+                                                widgetModuleComponent.data.id ||
+                                            widgetDataUpdated.isSelfUpdated
+                                        ) {
+                                            this.widgetUtils.replaceEditModeForTreeView(
+                                                widgetModuleComponent.data
+                                            );
+                                            // ****** Keeping State ******
+                                            widgetDetailUpdates.push(
+                                                new WidgetDetail(
+                                                    widgetModuleComponent.data
+                                                )
+                                            );
+                                        }
+                                    }
+
+                                    //Also update parent widget
+                                    if (widgetDataUpdated.isReloadForParent) {
+                                        if (
+                                            widgetDetail.widgetDataType
+                                                .parentWidgetIds &&
+                                            widgetDetail.widgetDataType
+                                                .parentWidgetIds.length &&
+                                            isEqual(
+                                                widgetDetail.widgetDataType
+                                                    .parentWidgetIds[0],
+                                                widgetModuleComponent.data.id
+                                            )
+                                        ) {
+                                            widgetDetailUpdates.push(
+                                                new WidgetDetail(
+                                                    widgetModuleComponent.data
+                                                )
+                                            );
+                                        }
+                                    }
+                                }
+                            );
+
+                            // need to clear from cache of observable
+                            if (widgetDetailUpdates.length) {
+                                widgetDetailUpdates.forEach((widgetUpdated) => {
+                                    let key =
+                                        this.widgetUtils.getWidgetDetailKeyForObservable(
+                                            widgetUpdated,
+                                            this.ofModule.moduleNameTrim
+                                        );
+                                    if (key) {
+                                        this.obserableShareService.deleteObservable(
+                                            key
+                                        );
+                                    }
+                                });
                             }
+                            this.reloadMode = ReloadMode.UpdatingData;
+                            this.reloadWidgetDetails(
+                                widgetDetailUpdates,
+                                (widgetDetail) => {
+                                    this.callbackActionsAfterReloadWidgetDetail(
+                                        widgetDetail
+                                    );
+                                }
+                            );
                         }
                     });
-
-                    // need to clear from cache of observable
-                    if (widgetDetailUpdates.length) {
-                        widgetDetailUpdates.forEach(widgetUpdated => {
-                            let key = this.widgetUtils.getWidgetDetailKeyForObservable(widgetUpdated, this.ofModule.moduleNameTrim);
-                            if (key) {
-                                this.obserableShareService.deleteObservable(key);
-                            }
-                        });
-                    }
-                    this.reloadMode = ReloadMode.UpdatingData;
-                    this.reloadWidgetDetails(widgetDetailUpdates, (widgetDetail) => { this.callbackActionsAfterReloadWidgetDetail(widgetDetail) });
                 }
-            });
-        });
+            );
     }
 
     /**
@@ -954,16 +1457,18 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.requestSaveStateSubscription) {
             this.requestSaveStateSubscription.unsubscribe();
         }
-        this.requestSaveStateSubscription = this.requestSaveState.subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!this.isActivated) {
-                    return;
-                }
-                if (requestSaveState) {
-                    this.saveAllWidget();
-                }
-            });
-        });
+        this.requestSaveStateSubscription = this.requestSaveState.subscribe(
+            (requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!this.isActivated) {
+                        return;
+                    }
+                    if (requestSaveState) {
+                        this.saveAllWidget();
+                    }
+                });
+            }
+        );
     }
 
     /**
@@ -973,16 +1478,22 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.requestReloadStateSubscription) {
             this.requestReloadStateSubscription.unsubscribe();
         }
-        this.requestReloadStateSubscription = this.requestReloadState.subscribe((requestReloadState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!this.isActivated) {
-                    return;
-                }
-                if (requestReloadState) {
-                    this.updateWidgetContent(this.currentPageSetting, false, false);
-                }
-            });
-        });
+        this.requestReloadStateSubscription = this.requestReloadState.subscribe(
+            (requestReloadState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!this.isActivated) {
+                        return;
+                    }
+                    if (requestReloadState) {
+                        this.updateWidgetContent(
+                            this.currentPageSetting,
+                            false,
+                            false
+                        );
+                    }
+                });
+            }
+        );
     }
 
     /**
@@ -992,11 +1503,15 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.widgetTemplateSettingSubscription) {
             this.widgetTemplateSettingSubscription.unsubscribe();
         }
-        this.widgetTemplateSettingSubscription = this.widgetTemplateSettingModelState.subscribe((mainWidgetTemplateSettings: WidgetTemplateSettingModel[]) => {
-            this.appErrorHandler.executeAction(() => {
-                this.mainWidgetTemplateSettings = mainWidgetTemplateSettings;
-            });
-        });
+        this.widgetTemplateSettingSubscription =
+            this.widgetTemplateSettingModelState.subscribe(
+                (mainWidgetTemplateSettings: WidgetTemplateSettingModel[]) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.mainWidgetTemplateSettings =
+                            mainWidgetTemplateSettings;
+                    });
+                }
+            );
     }
 
     /**
@@ -1006,57 +1521,89 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.relatingWidgetSubscription) {
             this.relatingWidgetSubscription.unsubscribe();
         }
-        this.relatingWidgetSubscription = this.relatingWidgetState.subscribe((relatingWidget: RelatingWidget) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!this.isActivated) {
-                    return;
-                }
-                if (relatingWidget && this.widgetModuleComponents) {
-                    if (relatingWidget.mode == 'hover') {
-                        this.widgetModuleComponents.forEach((widgetModuleComponent) => {
-                            if (!widgetModuleComponent.data) {
-                                return;
-                            }
-                            if (widgetModuleComponent.data.id != relatingWidget.scrWidgetDetail.id) {
-                                // Active for connected widgets
-                                relatingWidget.relatingWidgetIds.forEach(widgetId => {
-                                    if (widgetId === widgetModuleComponent.data.id) {
-                                        widgetModuleComponent.linkedWidgetCoverDisplay = true;
-                                        widgetModuleComponent.reattach();
+        this.relatingWidgetSubscription = this.relatingWidgetState.subscribe(
+            (relatingWidget: RelatingWidget) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!this.isActivated) {
+                        return;
+                    }
+                    if (relatingWidget && this.widgetModuleComponents) {
+                        if (relatingWidget.mode == "hover") {
+                            this.widgetModuleComponents.forEach(
+                                (widgetModuleComponent) => {
+                                    if (!widgetModuleComponent.data) {
+                                        return;
                                     }
-                                });
-                            }
+                                    if (
+                                        widgetModuleComponent.data.id !=
+                                        relatingWidget.scrWidgetDetail.id
+                                    ) {
+                                        // Active for connected widgets
+                                        relatingWidget.relatingWidgetIds.forEach(
+                                            (widgetId) => {
+                                                if (
+                                                    widgetId ===
+                                                    widgetModuleComponent.data
+                                                        .id
+                                                ) {
+                                                    widgetModuleComponent.linkedWidgetCoverDisplay =
+                                                        true;
+                                                    widgetModuleComponent.reattach();
+                                                }
+                                            }
+                                        );
+                                    }
 
-                            // Find and active widgets that can be connected with scrWidgetDetail which not in relatingWidgetIds
-                            const isFound = relatingWidget.relatingWidgetIds.find(p => p == widgetModuleComponent.data.id);
-                            if (!isFound) {
-                                let status = this.widgetUtils.isValidWidgetToConnect(relatingWidget.scrWidgetDetail, widgetModuleComponent.data);
-                                if (status.isValid) {
-                                    if (status.connected) {
-                                        widgetModuleComponent.linkedWidgetCoverDisplay = true;
-                                        widgetModuleComponent.linkedSuccessWidget = true;
+                                    // Find and active widgets that can be connected with scrWidgetDetail which not in relatingWidgetIds
+                                    const isFound =
+                                        relatingWidget.relatingWidgetIds.find(
+                                            (p) =>
+                                                p ==
+                                                widgetModuleComponent.data.id
+                                        );
+                                    if (!isFound) {
+                                        let status =
+                                            this.widgetUtils.isValidWidgetToConnect(
+                                                relatingWidget.scrWidgetDetail,
+                                                widgetModuleComponent.data
+                                            );
+                                        if (status.isValid) {
+                                            if (status.connected) {
+                                                widgetModuleComponent.linkedWidgetCoverDisplay =
+                                                    true;
+                                                widgetModuleComponent.linkedSuccessWidget =
+                                                    true;
+                                            } else {
+                                                widgetModuleComponent.supportLinkedWidgetCoverDisplay =
+                                                    true;
+                                            }
+                                            widgetModuleComponent.reattach();
+                                        }
                                     }
-                                    else {
-                                        widgetModuleComponent.supportLinkedWidgetCoverDisplay = true;
-                                    }
+                                }
+                            );
+                        } else {
+                            this.widgetModuleComponents.forEach(
+                                (widgetModuleComponent) => {
+                                    widgetModuleComponent.linkedWidgetCoverDisplay =
+                                        false;
+                                    widgetModuleComponent.supportLinkedWidgetCoverDisplay =
+                                        false;
                                     widgetModuleComponent.reattach();
                                 }
-                            }
-                        });
+                            );
+                            this.store.dispatch(
+                                this.widgetDetailActions.hoverAndDisplayRelatingWidget(
+                                    null,
+                                    this.ofModule
+                                )
+                            );
+                        }
                     }
-                    else {
-                        this.widgetModuleComponents.forEach((widgetModuleComponent) => {
-                            widgetModuleComponent.linkedWidgetCoverDisplay = false;
-                            widgetModuleComponent.supportLinkedWidgetCoverDisplay = false;
-                            widgetModuleComponent.reattach();
-                        });
-                        this.store.dispatch(this.widgetDetailActions.hoverAndDisplayRelatingWidget(null, this.ofModule));
-                    }
-                }
-            });
-        });
+                });
+            }
+        );
     }
-
 
     /**
      * subscribeGlobalProperties
@@ -1065,60 +1612,84 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (this.globalPropertiesStateSubscription) {
             this.globalPropertiesStateSubscription.unsubscribe();
         }
-        this.globalPropertiesStateSubscription = this.globalPropertiesState.subscribe((globalProperties: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!globalProperties) {
-                    return;
-                }
-                this.setBoxShadow(globalProperties);
-                // 0001151: The widget is not effect immediately when user change something in properties panel
-                if (!this.widgetModuleComponents) {
-                    return;
-                }
-                this.widgetModuleComponents.forEach(widgetModuleComponent => {
-                    widgetModuleComponent.reattach();
-                    widgetModuleComponent.detach(500);
+        this.globalPropertiesStateSubscription =
+            this.globalPropertiesState.subscribe((globalProperties: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!globalProperties) {
+                        return;
+                    }
+                    this.setBoxShadow(globalProperties);
+                    // 0001151: The widget is not effect immediately when user change something in properties panel
+                    if (!this.widgetModuleComponents) {
+                        return;
+                    }
+                    this.widgetModuleComponents.forEach(
+                        (widgetModuleComponent) => {
+                            widgetModuleComponent.reattach();
+                            widgetModuleComponent.detach(500);
+                        }
+                    );
                 });
             });
-        });
     }
-
 
     /**
      * subcribeRequestAddToDoubletState
      **/
     private subcribeRequestAddToDoubletState() {
-        this.requestAddToDoubletSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_ADD_TO_DOUBLET
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                const widgetModuleComponent = this.widgetModuleComponents.find(p => p && p.data && p.data.idRepWidgetApp == RepWidgetAppIdEnum.CustomerDoublette);
-                if (widgetModuleComponent) {
-                    widgetModuleComponent.addToDoubletWidget(data.payload);
-                }
+        this.requestAddToDoubletSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_ADD_TO_DOUBLET
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    const widgetModuleComponent =
+                        this.widgetModuleComponents.find(
+                            (p) =>
+                                p &&
+                                p.data &&
+                                p.data.idRepWidgetApp ==
+                                    RepWidgetAppIdEnum.CustomerDoublette
+                        );
+                    if (widgetModuleComponent) {
+                        widgetModuleComponent.addToDoubletWidget(data.payload);
+                    }
+                });
             });
-        });
     }
 
     private subscribeToggleDesignPageLayout() {
         // Called when clicking on 'Design Page Layout' --> Init all Tabs
-        this.requestEditLayoutTogglePanelStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === LayoutSettingActions.REQUEST_TOGGLE_PANEL && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((data: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (data) {
-                    //clear all maximize widgets
-                    this.resetMaximizeWidget();
-                    //true: minimize widget, else: restore to the previous state
-                    this.restoreMaximizeWidget(data.payload ? false : null, true);//restore to the previous state
-                }
+        this.requestEditLayoutTogglePanelStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === LayoutSettingActions.REQUEST_TOGGLE_PANEL &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((data: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (data) {
+                        //clear all maximize widgets
+                        this.resetMaximizeWidget();
+                        //true: minimize widget, else: restore to the previous state
+                        this.restoreMaximizeWidget(
+                            data.payload ? false : null,
+                            true
+                        ); //restore to the previous state
+                    }
+                });
             });
-        });
     }
 
     private setBoxShadow(globalProperties: any) {
-        const displayShadow = this.propertyPanelService.getItemRecursive(globalProperties, 'DisplayShadow');
-        const borderStatus = displayShadow ? (displayShadow.value || '') : 'None';
+        const displayShadow = this.propertyPanelService.getItemRecursive(
+            globalProperties,
+            "DisplayShadow"
+        );
+        const borderStatus = displayShadow ? displayShadow.value || "" : "None";
         switch (borderStatus.toLowerCase()) {
             case MouseEvent.Hover:
                 this.widgetMouseEvent = MouseEvent.Hover;
@@ -1143,7 +1714,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     public onResetWidgetTranslation($event: any) {
         const widgetDetailUpdates: Array<WidgetDetail> = [];
         this.widgetModuleComponents.forEach((widgetModuleComponent) => {
-            if (!widgetModuleComponent.data || !widgetModuleComponent.data.widgetDataType) {
+            if (
+                !widgetModuleComponent.data ||
+                !widgetModuleComponent.data.widgetDataType
+            ) {
                 return;
             }
             if ($event === widgetModuleComponent.data.id) {
@@ -1153,33 +1727,46 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
 
         const observables = new Array<Observable<WidgetDetail>>();
 
-        widgetDetailUpdates.forEach(widgetDetailUpdate => {
+        widgetDetailUpdates.forEach((widgetDetailUpdate) => {
             const widgetDetail = Object.assign({}, widgetDetailUpdate);
-            observables.push(this.widgetTemplateSettingService.getWidgetDetailByRequestString(widgetDetail, widgetDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim)));
+            observables.push(
+                this.widgetTemplateSettingService.getWidgetDetailByRequestString(
+                    widgetDetail,
+                    widgetDetail.widgetDataType.listenKeyRequest(
+                        this.ofModule.moduleNameTrim
+                    )
+                )
+            );
         });
 
         // Excute request
         for (let i = 0; i < observables.length; i++) {
-            observables[i].subscribe((widgetDetail: WidgetDetail) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (widgetDetail) {
-                        for (let j = 0; j < this.widgetBoxes.length; j++) {
-                            if (this.widgetBoxes[j].id === widgetDetail.id) {
-                                this.widgetBoxes[j].data = widgetDetail;
-                                break;
+            observables[i].subscribe(
+                (widgetDetail: WidgetDetail) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (widgetDetail) {
+                            for (let j = 0; j < this.widgetBoxes.length; j++) {
+                                if (
+                                    this.widgetBoxes[j].id === widgetDetail.id
+                                ) {
+                                    this.widgetBoxes[j].data = widgetDetail;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    this.dispatchActionSetWidgetboxesInfo();
-                });
-            }, err => {
-            });
+                        this.dispatchActionSetWidgetboxesInfo();
+                    });
+                },
+                (err) => {}
+            );
         }
     }
 
     public handleTranslateWidgetDialog(event) {
         if (event && event.isHidden && event.isUpdated) {
-            WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor = null;
+            WidgetUtils.widgetDataTypeValues[
+                this.ofModule.moduleNameTrim
+            ].renderFor = null;
             // this.updateWidgetContent(this.currentPageSetting, true, true);
             // Fix bug translate title on dialiog but not effect after closing dialog
             this.reloadAllWidgetsByPageId();
@@ -1191,10 +1778,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      * @param changes
      */
     public ngOnChanges(changes: SimpleChanges) {
-        if (!changes['pageId']) {
+        if (!changes["pageId"]) {
             return;
         }
-        const hasChanges = this.hasChanges(changes['pageId']);
+        const hasChanges = this.hasChanges(changes["pageId"]);
         if (hasChanges) {
             this.reloadAllWidgetsByPageId();
         }
@@ -1207,10 +1794,19 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         this.isWidgetDesignDirty = false;
         this.isReloadAll = true;
         if (WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim]) {
-            WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor = null;
+            WidgetUtils.widgetDataTypeValues[
+                this.ofModule.moduleNameTrim
+            ].renderFor = null;
         }
-        this.store.dispatch(this.widgetDetailActions.clearWidgetTypeDetail(this.ofModule));
-        this.store.dispatch(this.widgetDetailActions.clearWidgetTypeDetailForCampaignMedia(this.ofModule, this.tabID));
+        this.store.dispatch(
+            this.widgetDetailActions.clearWidgetTypeDetail(this.ofModule)
+        );
+        this.store.dispatch(
+            this.widgetDetailActions.clearWidgetTypeDetailForCampaignMedia(
+                this.ofModule,
+                this.tabID
+            )
+        );
         this.widgetBoxes = [];
         setTimeout(() => {
             this.updatePageSetting((pageSetting) => {
@@ -1226,23 +1822,28 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      * @param callback
      */
     private updatePageSetting(callback?: any) {
-        this.widgetTemplateSettingServiceSubscription = this.widgetTemplateSettingService.getWidgetSetting('ObjectNr', this.pageId).subscribe(rs => {
-            this.appErrorHandler.executeAction(() => {
-                if (!rs) {
-                    this.isReloadAll = false;
-                    return;
-                }
-                const pageSetting: PageSetting = this.widgetUtils.buildPageSettingData(rs.data);
-                if (!pageSetting) {
-                    this.currentPageSetting = this.createEmptyPageSetting();
-                    return;
-                }
-                this.currentPageSetting = pageSetting;
-                if (callback) {
-                    callback(pageSetting);
-                }
-            });
-        });
+        this.widgetTemplateSettingServiceSubscription =
+            this.widgetTemplateSettingService
+                .getWidgetSetting("ObjectNr", this.pageId)
+                .subscribe((rs) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (!rs) {
+                            this.isReloadAll = false;
+                            return;
+                        }
+                        const pageSetting: PageSetting =
+                            this.widgetUtils.buildPageSettingData(rs.data);
+                        if (!pageSetting) {
+                            this.currentPageSetting =
+                                this.createEmptyPageSetting();
+                            return;
+                        }
+                        this.currentPageSetting = pageSetting;
+                        if (callback) {
+                            callback(pageSetting);
+                        }
+                    });
+                });
     }
 
     /**
@@ -1254,9 +1855,8 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     }
 
     private createEmptyPageSetting(): PageSetting {
-
         const data: WidgetDetailPageSetting = new WidgetDetailPageSetting({
-            pageId: this.pageId
+            pageId: this.pageId,
         });
 
         const pageSetting = this.createPageSettingModel(data);
@@ -1268,17 +1868,35 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      * @param widgetDetail
      */
     updateWidgetSetting(widgetDetail: WidgetDetail) {
-        if (this.mainWidgetTemplateSettings && this.mainWidgetTemplateSettings.length > 0) {
-            const rs = this.mainWidgetTemplateSettings.filter(p => p.idRepWidgetApp === widgetDetail.idRepWidgetApp);
+        if (
+            this.mainWidgetTemplateSettings &&
+            this.mainWidgetTemplateSettings.length > 0
+        ) {
+            const rs = this.mainWidgetTemplateSettings.filter(
+                (p) => p.idRepWidgetApp === widgetDetail.idRepWidgetApp
+            );
             if (rs.length > 0) {
-                const widgetTemplateSettingModel: WidgetTemplateSettingModel = rs[0];
-                const wgTemplateDetail = this.widgetUtils.mapWidgetDetailFromWidgetTemplateSetting(widgetTemplateSettingModel);
+                const widgetTemplateSettingModel: WidgetTemplateSettingModel =
+                    rs[0];
+                const wgTemplateDetail =
+                    this.widgetUtils.mapWidgetDetailFromWidgetTemplateSetting(
+                        widgetTemplateSettingModel
+                    );
 
                 // Merge setting from the last saving to template setting.
-                if (wgTemplateDetail.widgetDataType && widgetDetail.widgetDataType) {
-                    wgTemplateDetail.widgetDataType.parentWidgetIds = Object.assign([], widgetDetail.widgetDataType.parentWidgetIds);
-                    wgTemplateDetail.widgetDataType.listenKey.main = widgetDetail.widgetDataType.listenKey.main;
-                    wgTemplateDetail.widgetDataType.listenKey.sub = widgetDetail.widgetDataType.listenKey.sub;
+                if (
+                    wgTemplateDetail.widgetDataType &&
+                    widgetDetail.widgetDataType
+                ) {
+                    wgTemplateDetail.widgetDataType.parentWidgetIds =
+                        Object.assign(
+                            [],
+                            widgetDetail.widgetDataType.parentWidgetIds
+                        );
+                    wgTemplateDetail.widgetDataType.listenKey.main =
+                        widgetDetail.widgetDataType.listenKey.main;
+                    wgTemplateDetail.widgetDataType.listenKey.sub =
+                        widgetDetail.widgetDataType.listenKey.sub;
                 }
 
                 Object.assign(widgetDetail, wgTemplateDetail, {
@@ -1286,9 +1904,9 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                     idSettingsWidget: widgetDetail.idSettingsWidget,
                     title: widgetDetail.title,
                     moduleName: this.ofModule.moduleName,
-                    defaultProperties: rs[0].defaultProperties || '',
+                    defaultProperties: rs[0].defaultProperties || "",
                     extensionData: widgetDetail.extensionData,
-                    syncWidgetIds: widgetDetail.syncWidgetIds
+                    syncWidgetIds: widgetDetail.syncWidgetIds,
                 });
             }
         }
@@ -1300,14 +1918,19 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      * @param redrawWidgetBoxes
      * @param clearData
      */
-    updateWidgetContent(pageSetting: PageSetting, redrawWidgetBoxes: boolean, clearData?: boolean) {
+    updateWidgetContent(
+        pageSetting: PageSetting,
+        redrawWidgetBoxes: boolean,
+        clearData?: boolean
+    ) {
         if (!pageSetting) return;
         this.idSettingsPage = pageSetting.idSettingsPage;
         const jsonSettingsData = pageSetting.jsonSettings;
         const jsObj: WidgetDetailPageSetting = JSON.parse(jsonSettingsData);
 
         if (jsObj.gridConfig) {
-            this.gridConfig.design_size_diff_percentage = jsObj.gridConfig.designSizeDiffPercentage;
+            this.gridConfig.design_size_diff_percentage =
+                jsObj.gridConfig.designSizeDiffPercentage;
         }
 
         let widgets: Array<WidgetDetailPage> = pageSetting.widgets;
@@ -1317,8 +1940,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         }
         // Filter widgets if any
         if (this.filterWidgetIds && this.filterWidgetIds.length) {
-            widgets = widgets.filter(p => {
-                let item = this.filterWidgetIds.find(id => id == p.widgetDetail.id);
+            widgets = widgets.filter((p) => {
+                let item = this.filterWidgetIds.find(
+                    (id) => id == p.widgetDetail.id
+                );
                 return item ? true : false;
             });
         }
@@ -1341,31 +1966,40 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                 widget.filterData = new FilterData({
                     filterMode: FilterModeEnum.ShowAll,
                     subFilterMode: FilterModeEnum.ShowAll,
-                    fieldFilters: []
-                })
+                    fieldFilters: [],
+                });
             }
 
             if (redrawWidgetBoxes) {
-                const properties = this.propertyPanelService.mergeProperties(widget.properties, widget.widgetDetail.defaultProperties);
+                const properties = this.propertyPanelService.mergeProperties(
+                    widget.properties,
+                    widget.widgetDetail.defaultProperties
+                );
                 if (properties) {
-                    let propTitleText = this.propertyPanelService.getItemRecursive(properties.properties, 'TitleText');
+                    let propTitleText =
+                        this.propertyPanelService.getItemRecursive(
+                            properties.properties,
+                            "TitleText"
+                        );
                     if (propTitleText) {
                         propTitleText.value = widget.widgetDetail.title;
                     }
                 }
 
                 // Create empty boxes
-                this.widgetBoxes.push(new WidgetBox({
-                    id: widget.widgetDetail.id,
-                    config: widget.config,
-                    //data: new WidgetDetail(),
-                    widgetStates: [],
-                    filterData: widget.filterData,
-                    properties: properties,
-                    columnsLayoutSettings: widget.columnsLayoutSettings,
-                    promiseList: [],
-                    payload: widget.widgetDetail
-                }));
+                this.widgetBoxes.push(
+                    new WidgetBox({
+                        id: widget.widgetDetail.id,
+                        config: widget.config,
+                        //data: new WidgetDetail(),
+                        widgetStates: [],
+                        filterData: widget.filterData,
+                        properties: properties,
+                        columnsLayoutSettings: widget.columnsLayoutSettings,
+                        promiseList: [],
+                        payload: widget.widgetDetail,
+                    })
+                );
             }
 
             if (clearData) {
@@ -1379,9 +2013,14 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
             if (this.checkWidgetIgnoreDefaultRequest(widget.widgetDetail)) {
                 if (this.widgetBoxes[i]) {
                     // this.widgetBoxes[i].data = cloneDeep(widget.widgetDetail);
-                    this.updateContentForWidgetBox(this.widgetBoxes[i], cloneDeep(widget.widgetDetail));
+                    this.updateContentForWidgetBox(
+                        this.widgetBoxes[i],
+                        cloneDeep(widget.widgetDetail)
+                    );
                 }
-                this.callbackActionsAfterReloadWidgetDetail(widget.widgetDetail);
+                this.callbackActionsAfterReloadWidgetDetail(
+                    widget.widgetDetail
+                );
                 continue;
             }
 
@@ -1389,42 +2028,97 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                 continue;
             }
 
-            if (!WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim]) {
-                WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim] = {};
+            if (
+                !WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim]
+            ) {
+                WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim] =
+                    {};
             }
 
             // Render All
-            if (!WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor || this.isReloadAll) {
-                this.widgetUtils.replaceEditModeForTreeView(widget.widgetDetail);
+            if (
+                !WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim]
+                    .renderFor ||
+                this.isReloadAll
+            ) {
+                this.widgetUtils.replaceEditModeForTreeView(
+                    widget.widgetDetail
+                );
                 if (widget.widgetDetail.widgetDataType) {
-                    widgetDetailsNeedToUpdate.push(new WidgetDetail(widget.widgetDetail));
+                    widgetDetailsNeedToUpdate.push(
+                        new WidgetDetail(widget.widgetDetail)
+                    );
                 }
             } else {
                 // Render for specific type
-                if (WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor.length > 0) {
+                if (
+                    WidgetUtils.widgetDataTypeValues[
+                        this.ofModule.moduleNameTrim
+                    ].renderFor.length > 0
+                ) {
                     let isValidWidget = false;
-                    if (widget.widgetDetail.widgetDataType && widget.widgetDetail.widgetDataType.listenKeyCount === 1) {
-                        for (let k = 0; k < WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor.length; k++) {
-                            if (this.widgetUtils.isValidWidgetForRender(WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor[k], widget.widgetDetail)) {
+                    if (
+                        widget.widgetDetail.widgetDataType &&
+                        widget.widgetDetail.widgetDataType.listenKeyCount === 1
+                    ) {
+                        for (
+                            let k = 0;
+                            k <
+                            WidgetUtils.widgetDataTypeValues[
+                                this.ofModule.moduleNameTrim
+                            ].renderFor.length;
+                            k++
+                        ) {
+                            if (
+                                this.widgetUtils.isValidWidgetForRender(
+                                    WidgetUtils.widgetDataTypeValues[
+                                        this.ofModule.moduleNameTrim
+                                    ].renderFor[k],
+                                    widget.widgetDetail
+                                )
+                            ) {
                                 isValidWidget = true;
                                 break;
                             }
                         }
                     } else {
                         let count = 0;
-                        for (let k = 0; k < WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor.length; k++) {
-                            if (this.widgetUtils.isValidWidgetForRender(WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor[k], widget.widgetDetail)) {
+                        for (
+                            let k = 0;
+                            k <
+                            WidgetUtils.widgetDataTypeValues[
+                                this.ofModule.moduleNameTrim
+                            ].renderFor.length;
+                            k++
+                        ) {
+                            if (
+                                this.widgetUtils.isValidWidgetForRender(
+                                    WidgetUtils.widgetDataTypeValues[
+                                        this.ofModule.moduleNameTrim
+                                    ].renderFor[k],
+                                    widget.widgetDetail
+                                )
+                            ) {
                                 count += 1;
                             }
                         }
-                        if (count && count === widget.widgetDetail.widgetDataType.listenKeyCount) {
+                        if (
+                            count &&
+                            count ===
+                                widget.widgetDetail.widgetDataType
+                                    .listenKeyCount
+                        ) {
                             isValidWidget = true;
                         }
                     }
                     if (isValidWidget) {
-                        this.widgetUtils.replaceEditModeForTreeView(widget.widgetDetail);
+                        this.widgetUtils.replaceEditModeForTreeView(
+                            widget.widgetDetail
+                        );
                         if (widget.widgetDetail.widgetDataType) {
-                            widgetDetailsNeedToUpdate.push(new WidgetDetail(widget.widgetDetail));
+                            widgetDetailsNeedToUpdate.push(
+                                new WidgetDetail(widget.widgetDetail)
+                            );
                         }
                     }
                 }
@@ -1432,7 +2126,12 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         }
 
         if (widgetDetailsNeedToUpdate.length) {
-            this.reloadWidgetDetails(widgetDetailsNeedToUpdate, (widgetDetail) => { this.callbackActionsAfterReloadWidgetDetail(widgetDetail) });
+            this.reloadWidgetDetails(
+                widgetDetailsNeedToUpdate,
+                (widgetDetail) => {
+                    this.callbackActionsAfterReloadWidgetDetail(widgetDetail);
+                }
+            );
         }
         this.rebuildWidgetProperty();
     }
@@ -1447,26 +2146,35 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     }
 
     private detectPropertyGetAsynData(property: any) {
-        let comboboxConstant: string = '';
+        let comboboxConstant: string = "";
         for (let item of property) {
             comboboxConstant += this.getComboboxConstantString(item);
         }
         if (!comboboxConstant) return;
-        comboboxConstant = comboboxConstant.substring(0, comboboxConstant.length - 1);
-        this._commonService.getListComboBox(comboboxConstant)
+        comboboxConstant = comboboxConstant.substring(
+            0,
+            comboboxConstant.length - 1
+        );
+        this._commonService
+            .getListComboBox(comboboxConstant)
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
                         return;
                     }
                     for (let prop in response.item) {
-                        let propertyItem = this.propertyPanelService.getItemRecursive(property, Uti.upperCaseFirstLetter(prop), PropertyNameOfWidgetProperty.ComboboxStoreObject);
+                        let propertyItem =
+                            this.propertyPanelService.getItemRecursive(
+                                property,
+                                Uti.upperCaseFirstLetter(prop),
+                                PropertyNameOfWidgetProperty.ComboboxStoreObject
+                            );
                         if (!propertyItem) continue;
-                        propertyItem.options = response.item[prop].map(x => {
+                        propertyItem.options = response.item[prop].map((x) => {
                             return {
                                 key: x.idValue,
-                                value: x.textValue
-                            }
+                                value: x.textValue,
+                            };
                         });
                     }
                 });
@@ -1474,18 +2182,17 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     }
 
     private getComboboxConstantString(property: any) {
-        let comboboxConstant: string = '';
+        let comboboxConstant: string = "";
         if (property.comboboxStoreObject) {
-            comboboxConstant = property.comboboxStoreObject + ',';
+            comboboxConstant = property.comboboxStoreObject + ",";
         }
-        if (!property.children || !property.children.length) return comboboxConstant;
+        if (!property.children || !property.children.length)
+            return comboboxConstant;
         for (let item of property.children) {
             comboboxConstant += this.getComboboxConstantString(item);
         }
         return comboboxConstant;
     }
-
-
 
     /**
      * buildWidgetBox
@@ -1493,15 +2200,19 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      * @param id
      * @param config
      */
-    private buildWidgetBox(widgetDetail: WidgetDetail, id: string, config: NgGridItemConfig = null): WidgetBox {
+    private buildWidgetBox(
+        widgetDetail: WidgetDetail,
+        id: string,
+        config: NgGridItemConfig = null
+    ): WidgetBox {
         let conf: NgGridItemConfig;
         if (!config) {
-            const defaultConf: NgGridItemConfig = this._generateDefaultItemConfig();
+            const defaultConf: NgGridItemConfig =
+                this._generateDefaultItemConfig();
             conf = Object.assign({}, defaultConf, { payload: id });
 
             conf.sizex = 0; // WidgetContainerComponent.DEFAULT_SIZE_X;
             conf.sizey = 0; // WidgetContainerComponent.DEFAULT_SIZE_Y;
-
         } else {
             conf = config;
         }
@@ -1510,8 +2221,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
             config: conf,
             // data: widgetDetail,
             widgetStates: [],
-            columnsLayoutSettings: { settings: '' },
-            properties: widgetDetail.defaultProperties ? JSON.parse(widgetDetail.defaultProperties) : []
+            columnsLayoutSettings: { settings: "" },
+            properties: widgetDetail.defaultProperties
+                ? JSON.parse(widgetDetail.defaultProperties)
+                : [],
         });
         this.updateContentForWidgetBox(widgetBox, widgetDetail);
         return widgetBox;
@@ -1542,7 +2255,9 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      * isWidgetDesignChanged
      */
     private isWidgetDesignChanged() {
-        const widgetBoxesDirty = this.widgetBoxes.filter(p => (p.isDirty || p.isDeleted));
+        const widgetBoxesDirty = this.widgetBoxes.filter(
+            (p) => p.isDirty || p.isDeleted
+        );
         if (widgetBoxesDirty.length > 0) {
             return true;
         }
@@ -1554,14 +2269,16 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      */
     private isWidgetDesignModified(box: WidgetBox, event: NgGridItemEvent) {
         if (this.isWidgetDesignDirty) {
-            if (box.config.col !== event.col
-                || box.config.row !== event.row
-                || box.config.sizex !== event.sizex
-                || box.config.sizey !== event.sizey
-                || box.config.leftPercentage !== event.leftPercentage
-                || box.config.topPercentage !== event.topPercentage
-                || box.config.widthPercentage !== event.widthPercentage
-                || box.config.heightPercentage !== event.heightPercentage) {
+            if (
+                box.config.col !== event.col ||
+                box.config.row !== event.row ||
+                box.config.sizex !== event.sizex ||
+                box.config.sizey !== event.sizey ||
+                box.config.leftPercentage !== event.leftPercentage ||
+                box.config.topPercentage !== event.topPercentage ||
+                box.config.widthPercentage !== event.widthPercentage ||
+                box.config.heightPercentage !== event.heightPercentage
+            ) {
                 return true;
             }
         }
@@ -1577,22 +2294,29 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         this.isDesignUpdating = false;
         if (box.data) {
             this.widgetModuleComponents.forEach((widgetModuleComponent) => {
-                if (widgetModuleComponent && widgetModuleComponent.data.id === box.data.id) {
+                if (
+                    widgetModuleComponent &&
+                    widgetModuleComponent.data.id === box.data.id
+                ) {
                     widgetModuleComponent.onResizeStop();
                 }
             });
 
-            this.widgetDataEntryInfoComponents.forEach((widgetDataEntryInfoComponent) => {
-                if (widgetDataEntryInfoComponent && widgetDataEntryInfoComponent.data.id === box.data.id) {
-                    widgetDataEntryInfoComponent.onResizeStop();
+            this.widgetDataEntryInfoComponents.forEach(
+                (widgetDataEntryInfoComponent) => {
+                    if (
+                        widgetDataEntryInfoComponent &&
+                        widgetDataEntryInfoComponent.data.id === box.data.id
+                    ) {
+                        widgetDataEntryInfoComponent.onResizeStop();
+                    }
                 }
-            });
+            );
 
-            this.onAfterChangeSize = 'stop-' + box.data.id + '-' + (new Date()).getTime();
+            this.onAfterChangeSize =
+                "stop-" + box.data.id + "-" + new Date().getTime();
         }
     }
-
-
 
     /**
      * onResizeStart
@@ -1603,7 +2327,8 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         this.isWidgetDesignDirty = true;
         this.isDesignUpdating = true;
         if (box.data) {
-            this.onAfterChangeSize = 'start-' + box.data.id + '-' + (new Date()).getTime();
+            this.onAfterChangeSize =
+                "start-" + box.data.id + "-" + new Date().getTime();
         }
     }
 
@@ -1633,9 +2358,13 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     onRemoveWidget($event: WidgetDetail): void {
         this.isWidgetDesignDirty = true;
         if (!$event.idSettingsWidget) {
-            this.widgetBoxes = this.widgetBoxes.filter(item => item.id !== $event.id);
+            this.widgetBoxes = this.widgetBoxes.filter(
+                (item) => item.id !== $event.id
+            );
         } else {
-            const widgetBox = this.widgetBoxes.filter(item => item.id === $event.id);
+            const widgetBox = this.widgetBoxes.filter(
+                (item) => item.id === $event.id
+            );
             if (widgetBox.length) {
                 widgetBox[0].isDeleted = true;
             }
@@ -1643,12 +2372,18 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         this.dispatchActionSetWidgetboxesInfo();
 
         // Remove listen key from IWidgetDataTypeValues
-        this.widgetUtils.removeListenKeyFromWidgetDataTypeValues(this.ofModule.moduleNameTrim, $event.id);
+        this.widgetUtils.removeListenKeyFromWidgetDataTypeValues(
+            this.ofModule.moduleNameTrim,
+            $event.id
+        );
 
         // Update currentPageSetting if any
         if (this.currentPageSetting && this.currentPageSetting.widgets) {
-            const widgets: Array<WidgetDetailPage> = this.currentPageSetting.widgets;
-            this.currentPageSetting.widgets = widgets.filter(item => item.widgetDetail.id !== $event.id);
+            const widgets: Array<WidgetDetailPage> =
+                this.currentPageSetting.widgets;
+            this.currentPageSetting.widgets = widgets.filter(
+                (item) => item.widgetDetail.id !== $event.id
+            );
         }
 
         setTimeout(() => {
@@ -1663,11 +2398,13 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      * @param e
      */
     private getMousePosition(e) {
-        const refPos: any = this.elementRef.nativeElement ? this.elementRef.nativeElement.getBoundingClientRect() : { left: 0, top: 0 };
+        const refPos: any = this.elementRef.nativeElement
+            ? this.elementRef.nativeElement.getBoundingClientRect()
+            : { left: 0, top: 0 };
         // Get top, left of mouse in this current widget
         return {
             left: e.clientX - refPos.left,
-            top: e.clientY - refPos.top
+            top: e.clientY - refPos.top,
         };
     }
 
@@ -1688,7 +2425,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         // So we need to check these special cases
         if ($event && $event.mouseEvent && $event.mouseEvent.fromElement) {
             // Check if mouse still inside parent ,  then do nothing if still inside parent
-            const parent = this.domHandler.findParent($event.mouseEvent.fromElement, '*[data-pageid="' + this.pageId + '"]');
+            const parent = this.domHandler.findParent(
+                $event.mouseEvent.fromElement,
+                '*[data-pageid="' + this.pageId + '"]'
+            );
             // If drag out of zone of this container
             if (!parent || (parent && parent.length == 0)) {
                 this.ngGrid.destroyPlaceholderRefForNewWidget();
@@ -1718,23 +2458,28 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
 
         this.isWidgetDesignDirty = true;
 
-        const widgetTemplateSettingModel: WidgetTemplateSettingModel = $event.dragData;
+        const widgetTemplateSettingModel: WidgetTemplateSettingModel =
+            $event.dragData;
 
         // Create widget detail
-        const wgDetail = this.widgetUtils.mapWidgetDetailFromWidgetTemplateSetting(widgetTemplateSettingModel);
+        const wgDetail =
+            this.widgetUtils.mapWidgetDetailFromWidgetTemplateSetting(
+                widgetTemplateSettingModel
+            );
         const widgetDetail: WidgetDetail = Object.assign({}, wgDetail, {
             id: null,
             title: $event.dragData.WidgetName,
             moduleName: this.ofModule.moduleName,
-            defaultProperties: $event.dragData.defaultProperties || ''
+            defaultProperties: $event.dragData.defaultProperties || "",
         });
 
         let isDisplayDialog: boolean = false;
 
         if (this.checkWidgetIgnoreDefaultRequest(widgetDetail)) {
-
             // Check & set listen key from default config
-            isDisplayDialog = this.detectListenKeyAfterDrag(widgetDetail);
+            isDisplayDialog =
+                this.detectListenKeyAfterDrag(widgetDetail) &&
+                this.currentModule.idSettingsGUI !== 7;
 
             const widgetId = UUID.UUID();
             widgetDetail.id = widgetId;
@@ -1748,7 +2493,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
             }
             widgetBox.payload = widgetDetail;
 
-            this.updateWidgetTitlePropertyFromWidgetBox(widgetBox, widgetDetail);
+            this.updateWidgetTitlePropertyFromWidgetBox(
+                widgetBox,
+                widgetDetail
+            );
 
             this.addDelay(widgetBox);
             this.widgetBoxes.push(widgetBox);
@@ -1768,7 +2516,13 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         let rsObservable: Observable<WidgetDetail>;
 
         if (widgetDetail.widgetDataType) {
-            rsObservable = this.widgetTemplateSettingService.getWidgetDetailByRequestString(widgetDetail, widgetDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim));
+            rsObservable =
+                this.widgetTemplateSettingService.getWidgetDetailByRequestString(
+                    widgetDetail,
+                    widgetDetail.widgetDataType.listenKeyRequest(
+                        this.ofModule.moduleNameTrim
+                    )
+                );
         }
 
         if (!rsObservable) {
@@ -1778,7 +2532,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
 
         rsObservable.subscribe((widgetDetailData: WidgetDetail) => {
             this.appErrorHandler.executeAction(() => {
-                if (widgetDetailData && Object.keys(widgetDetailData).length > 0) {
+                if (
+                    widgetDetailData &&
+                    Object.keys(widgetDetailData).length > 0
+                ) {
                     // Update Id, Title for Widget Detail
                     const widgetId = UUID.UUID();
                     widgetDetailData.id = widgetId;
@@ -1786,7 +2543,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                     // Build widget box
                     // After run this, widgetDetailData and widgetBox.data may have difference from memory
                     // So we need to work on widgetBox.data
-                    const widgetBox = this.buildWidgetBox(widgetDetailData, widgetId);
+                    const widgetBox = this.buildWidgetBox(
+                        widgetDetailData,
+                        widgetId
+                    );
                     if (sizePos) {
                         widgetBox.config.sizex = sizePos.size.x;
                         widgetBox.config.sizey = sizePos.size.y;
@@ -1795,7 +2555,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                     }
                     widgetBox.payload = widgetDetailData;
 
-                    this.updateWidgetTitlePropertyFromWidgetBox(widgetBox, widgetDetailData);
+                    this.updateWidgetTitlePropertyFromWidgetBox(
+                        widgetBox,
+                        widgetDetailData
+                    );
 
                     this.addDelay(widgetBox);
                     this.widgetBoxes.push(widgetBox);
@@ -1803,17 +2566,22 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                     this.dispatchActionSetWidgetboxesInfo();
                     this.getWidgetTitleTranslation(widgetDetailData, true);
                     // Update currentPageSetting if any
-                    if (this.currentPageSetting && this.currentPageSetting.jsonSettings) {
-                        let widgets: Array<WidgetDetailPage> = this.currentPageSetting.widgets;
+                    if (
+                        this.currentPageSetting &&
+                        this.currentPageSetting.jsonSettings
+                    ) {
+                        let widgets: Array<WidgetDetailPage> =
+                            this.currentPageSetting.widgets;
 
                         if (!widgets) {
                             widgets = [];
                         }
 
-                        const widgetDetailPage: WidgetDetailPage = new WidgetDetailPage({
-                            widgetDetail: Object.assign({}, widgetBox.data),
-                            config: widgetBox.config
-                        });
+                        const widgetDetailPage: WidgetDetailPage =
+                            new WidgetDetailPage({
+                                widgetDetail: Object.assign({}, widgetBox.data),
+                                config: widgetBox.config,
+                            });
                         widgets.push(widgetDetailPage);
                     }
 
@@ -1824,12 +2592,13 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                     // Check & set listen key from default config
                     // We moved this code from outside to this section because we need to get the latest
                     // memory WidgetDetail from widgetBox
-                    isDisplayDialog = this.detectListenKeyAfterDrag(widgetBox.data);
+                    isDisplayDialog =
+                        this.detectListenKeyAfterDrag(widgetBox.data) &&
+                        this.currentModule.idSettingsGUI !== 7;
 
                     if (isDisplayDialog) {
                         this.displayConnectedWidgetDialog = true;
-                    }
-                    else {
+                    } else {
                         // Get data after getting valid listen key
                         this.reloadWidgetDetails([widgetBox.data]);
                     }
@@ -1844,18 +2613,38 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     /**
      * updateWidgetTitlePropertyFromWidgetBox
      * */
-    private updateWidgetTitlePropertyFromWidgetBox(widgetBox: WidgetBox, widgetDetail: WidgetDetail) {
-        const widgetBoxProperties = widgetBox.properties ? widgetBox.properties.properties : null;
+    private updateWidgetTitlePropertyFromWidgetBox(
+        widgetBox: WidgetBox,
+        widgetDetail: WidgetDetail
+    ) {
+        const widgetBoxProperties = widgetBox.properties
+            ? widgetBox.properties.properties
+            : null;
         if (widgetBoxProperties) {
             if (!this.layoutPageInfo || !this.layoutPageInfo.length)
-                widgetBox.properties.properties = this.updateDefaultWidgetTitleFromProperty(widgetBoxProperties, widgetDetail.title);
+                widgetBox.properties.properties =
+                    this.updateDefaultWidgetTitleFromProperty(
+                        widgetBoxProperties,
+                        widgetDetail.title
+                    );
             else {
-                const pagesInfo = this.layoutPageInfo.filter((page) => page.moduleName === this.ofModule.moduleName);
+                const pagesInfo = this.layoutPageInfo.filter(
+                    (page) => page.moduleName === this.ofModule.moduleName
+                );
                 pagesInfo.forEach((page) => {
-                    widgetBox.properties.properties = this.updateDefaultWidgetTitleFromProperty(widgetBoxProperties, widgetDetail.title, page);
-                })
+                    widgetBox.properties.properties =
+                        this.updateDefaultWidgetTitleFromProperty(
+                            widgetBoxProperties,
+                            widgetDetail.title,
+                            page
+                        );
+                });
             }
-            const propTitleText: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(widgetBox.properties.properties, 'TitleText');
+            const propTitleText: WidgetPropertyModel =
+                this.propertyPanelService.getItemRecursive(
+                    widgetBox.properties.properties,
+                    "TitleText"
+                );
             if (propTitleText && propTitleText.value)
                 widgetBox.data.title = propTitleText.value;
         }
@@ -1872,9 +2661,14 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         const layoutPageInfo = new LayoutPageInfoModel({
             id: this.pageId,
             moduleName: this.ofModule.moduleName,
-            widgetboxesTitle: this.buildArrayWidgetBoxTitle(widgetDetail)
+            widgetboxesTitle: this.buildArrayWidgetBoxTitle(widgetDetail),
         });
-        this.store.dispatch(this.xnCommonActions.setWidgetboxesInfo(layoutPageInfo, this.ofModule));
+        this.store.dispatch(
+            this.xnCommonActions.setWidgetboxesInfo(
+                layoutPageInfo,
+                this.ofModule
+            )
+        );
     }
 
     /**
@@ -1883,26 +2677,39 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      * @param fallback :
      *
      */
-    private getWidgetTitleTranslation(widgetDetail: WidgetDetail, fallback?: boolean) {
-        if (!widgetDetail || widgetDetail.idRepWidgetType === WidgetType.OrderDataEntry)
+    private getWidgetTitleTranslation(
+        widgetDetail: WidgetDetail,
+        fallback?: boolean
+    ) {
+        if (
+            !widgetDetail ||
+            widgetDetail.idRepWidgetType === WidgetType.OrderDataEntry
+        )
             return;
 
-        const box = this.widgetBoxes.find((item) => item.id === widgetDetail.id);
-        if (!box)
-            return;
+        const box = this.widgetBoxes.find(
+            (item) => item.id === widgetDetail.id
+        );
+        if (!box) return;
 
         if (!box.properties || !box.data.defaultProperties) {
             return;
         }
 
-        let properties = this.propertyPanelService.mergeProperties(box.properties, box.data.defaultProperties);
+        let properties = this.propertyPanelService.mergeProperties(
+            box.properties,
+            box.data.defaultProperties
+        );
         if (!properties) {
             return;
         }
 
-        const propTitleText: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(properties.properties, 'TitleText');
-        if (!propTitleText || !propTitleText.value)
-            return;
+        const propTitleText: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                properties.properties,
+                "TitleText"
+            );
+        if (!propTitleText || !propTitleText.value) return;
 
         const translatedTitle = widgetDetail.title; // this.widgetUtils.getTranslatedTitle(widgetDetail);
         propTitleText.translatedValue = translatedTitle || propTitleText.value;
@@ -1910,13 +2717,18 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         if (!fallback) {
             if (propTitleText && propTitleText.value)
                 box.data.title = propTitleText.translatedValue;
-            const widgetPropertiesStateModel: WidgetPropertiesStateModel = new WidgetPropertiesStateModel({
-                widgetData: widgetDetail,
-                widgetProperties: properties
-            });
-            this.store.dispatch(this.propertyPanelActions.updateProperties(widgetPropertiesStateModel, this.ofModule));
-        }
-        else {
+            const widgetPropertiesStateModel: WidgetPropertiesStateModel =
+                new WidgetPropertiesStateModel({
+                    widgetData: widgetDetail,
+                    widgetProperties: properties,
+                });
+            this.store.dispatch(
+                this.propertyPanelActions.updateProperties(
+                    widgetPropertiesStateModel,
+                    this.ofModule
+                )
+            );
+        } else {
             const accessToken = this.uti.decodeAccessToken();
             let language = 1;
             if (accessToken && accessToken.appinfo) {
@@ -1925,34 +2737,66 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                     language = appInfo.Language;
                 }
             }
-            this.globalSettingServiceSubscription = this.globalSettingService.getTranslateLabelText(propTitleText.value, widgetDetail.idRepWidgetApp + '', widgetDetail.id, TranslateDataTypeEnum.Data + '').subscribe(
-                (response) => {
+            this.globalSettingServiceSubscription = this.globalSettingService
+                .getTranslateLabelText(
+                    propTitleText.value,
+                    widgetDetail.idRepWidgetApp + "",
+                    widgetDetail.id,
+                    TranslateDataTypeEnum.Data + ""
+                )
+                .subscribe((response) => {
                     this.appErrorHandler.executeAction(
                         // successfully
                         () => {
-                            if (response && response.data && response.data.length > 1) {
-                                const tranlateItem = (response.data[1] as Array<any>).find((item) => item.IdRepLanguage == language);
-                                if (!tranlateItem || (!tranlateItem.AllTranslateText && !tranlateItem.OnlyThisWidgetTranslateText)) {
-                                    propTitleText.translatedValue = propTitleText.value;
+                            if (
+                                response &&
+                                response.data &&
+                                response.data.length > 1
+                            ) {
+                                const tranlateItem = (
+                                    response.data[1] as Array<any>
+                                ).find(
+                                    (item) => item.IdRepLanguage == language
+                                );
+                                if (
+                                    !tranlateItem ||
+                                    (!tranlateItem.AllTranslateText &&
+                                        !tranlateItem.OnlyThisWidgetTranslateText)
+                                ) {
+                                    propTitleText.translatedValue =
+                                        propTitleText.value;
                                 } else {
-                                    if (tranlateItem.OnlyThisWidgetTranslateText)
-                                        propTitleText.translatedValue = tranlateItem.OnlyThisWidgetTranslateText;
+                                    if (
+                                        tranlateItem.OnlyThisWidgetTranslateText
+                                    )
+                                        propTitleText.translatedValue =
+                                            tranlateItem.OnlyThisWidgetTranslateText;
                                     else
-                                        propTitleText.translatedValue = tranlateItem.AllTranslateText;
+                                        propTitleText.translatedValue =
+                                            tranlateItem.AllTranslateText;
                                 }
                                 if (propTitleText && propTitleText.value)
-                                    box.data.title = propTitleText.translatedValue;
-                                const widgetPropertiesStateModel: WidgetPropertiesStateModel = new WidgetPropertiesStateModel({
-                                    widgetData: widgetDetail,
-                                    widgetProperties: properties
-                                });
-                                this.store.dispatch(this.propertyPanelActions.updateProperties(widgetPropertiesStateModel, this.ofModule));
+                                    box.data.title =
+                                        propTitleText.translatedValue;
+                                const widgetPropertiesStateModel: WidgetPropertiesStateModel =
+                                    new WidgetPropertiesStateModel({
+                                        widgetData: widgetDetail,
+                                        widgetProperties: properties,
+                                    });
+                                this.store.dispatch(
+                                    this.propertyPanelActions.updateProperties(
+                                        widgetPropertiesStateModel,
+                                        this.ofModule
+                                    )
+                                );
                             }
                         },
                         // failed
-                        () => propTitleText.translatedValue = propTitleText.value
+                        () =>
+                            (propTitleText.translatedValue =
+                                propTitleText.value)
                     );
-                })
+                });
         }
     }
 
@@ -1960,8 +2804,12 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         const array = [];
         this.widgetBoxes.forEach((box) => {
             if (!box.isDeleted && box.properties) {
-                const propTitleText: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(box.properties.properties, 'TitleText');
-                let title = '';
+                const propTitleText: WidgetPropertyModel =
+                    this.propertyPanelService.getItemRecursive(
+                        box.properties.properties,
+                        "TitleText"
+                    );
+                let title = "";
                 if (propTitleText && propTitleText.value) {
                     title = propTitleText.value;
                 } else {
@@ -1972,62 +2820,88 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                 array.push({
                     id: box.id,
                     title: title,
-                    widgetDetail: editingWidget || box.data
+                    widgetDetail: editingWidget || box.data,
                 });
             }
         });
         return array;
     }
 
-    private updateDefaultWidgetTitleFromProperty(properties: any, title: string, pageInfo?: LayoutPageInfoModel): any {
+    private updateDefaultWidgetTitleFromProperty(
+        properties: any,
+        title: string,
+        pageInfo?: LayoutPageInfoModel
+    ): any {
         if (properties) {
-            const propTitleText: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(properties, 'TitleText');
+            const propTitleText: WidgetPropertyModel =
+                this.propertyPanelService.getItemRecursive(
+                    properties,
+                    "TitleText"
+                );
             if (propTitleText) {
-                if ((!this.widgetBoxes || !this.widgetBoxes.length) &&
-                    (!pageInfo || !pageInfo.widgetboxesTitle || !pageInfo.widgetboxesTitle.length))
+                if (
+                    (!this.widgetBoxes || !this.widgetBoxes.length) &&
+                    (!pageInfo ||
+                        !pageInfo.widgetboxesTitle ||
+                        !pageInfo.widgetboxesTitle.length)
+                )
                     propTitleText.value = title;
                 else {
                     let _number = 0;
                     if (pageInfo) {
-                        if (propTitleText.value.trim().indexOf(title + '(') === 0) {
+                        if (
+                            propTitleText.value.trim().indexOf(title + "(") ===
+                            0
+                        ) {
                             try {
-                                _number = parseInt(propTitleText.value.replace(title + '(', '').replace(')', '').trim());
-                            } catch (ex) { };
+                                _number = parseInt(
+                                    propTitleText.value
+                                        .replace(title + "(", "")
+                                        .replace(")", "")
+                                        .trim()
+                                );
+                            } catch (ex) {}
                         }
                         pageInfo.widgetboxesTitle.forEach((_boxTitle) => {
                             const _title = _boxTitle.title;
-                            if (_title.trim().indexOf(title + '(') === 0) {
+                            if (_title.trim().indexOf(title + "(") === 0) {
                                 try {
-                                    const tempNumber = parseInt(_title.replace(title + '(', '').replace(')', '').trim()) + 1;
+                                    const tempNumber =
+                                        parseInt(
+                                            _title
+                                                .replace(title + "(", "")
+                                                .replace(")", "")
+                                                .trim()
+                                        ) + 1;
                                     if (tempNumber > _number)
                                         _number = tempNumber;
-                                } catch (ex) { };
-                            }
-                            else if (_title.trim() === title)
-                                _number = 1;
-                        })
-                    }
-                    else {
+                                } catch (ex) {}
+                            } else if (_title.trim() === title) _number = 1;
+                        });
+                    } else {
                         this.widgetBoxes.forEach((item) => {
                             if (item.data && item.data.title) {
                                 const _title = item.data.title;
-                                if (_title.trim().indexOf(title + '(') === 0) {
+                                if (_title.trim().indexOf(title + "(") === 0) {
                                     try {
-                                        const tempNumber = parseInt(_title.replace(title + '(', '').replace(')', '').trim()) + 1;
+                                        const tempNumber =
+                                            parseInt(
+                                                _title
+                                                    .replace(title + "(", "")
+                                                    .replace(")", "")
+                                                    .trim()
+                                            ) + 1;
                                         if (tempNumber > _number)
                                             _number = tempNumber;
-                                    } catch (ex) { };
-                                }
-                                else if (_title.trim() === title)
-                                    _number = 1;
+                                    } catch (ex) {}
+                                } else if (_title.trim() === title) _number = 1;
                             }
                         });
                     }
 
                     if (_number > 0)
-                        propTitleText.value = title + '(' + _number + ')';
-                    else
-                        propTitleText.value = title;
+                        propTitleText.value = title + "(" + _number + ")";
+                    else propTitleText.value = title;
                 }
             }
             return properties;
@@ -2040,15 +2914,22 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
      * @param parmWidgetDetail
      * @param isClosePropertyPanel
      */
-    saveWidgetPage(parmWidgetDetail?: WidgetDetail, isClosePropertyPanel?: boolean) {
-
+    saveWidgetPage(
+        parmWidgetDetail?: WidgetDetail,
+        isClosePropertyPanel?: boolean
+    ) {
         let widgets: Array<WidgetDetailPage> = [];
         let currentFilterData: FilterData;
-        const widgetBoxesDirty = this.widgetBoxes.filter(p => (p.isDirty || p.isDeleted));
+        const widgetBoxesDirty = this.widgetBoxes.filter(
+            (p) => p.isDirty || p.isDeleted
+        );
         for (let i = 0; i < widgetBoxesDirty.length; i++) {
             const widgetBox: WidgetBox = widgetBoxesDirty[i];
 
-            const widgetDetail: WidgetDetail = Object.assign({}, widgetBox.data);
+            const widgetDetail: WidgetDetail = Object.assign(
+                {},
+                widgetBox.data
+            );
             let filterMode: FilterModeEnum = FilterModeEnum.ShowAll;
             let subFilterMode: FilterModeEnum = FilterModeEnum.ShowAll;
             let fieldFilters: Array<FieldFilter>;
@@ -2056,24 +2937,35 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
             let rowSetting: RowSetting = null;
             let widgetFormType: WidgetFormTypeEnum = null;
             let widgetProperties: any = {};
-            let orderDataEntryWidgetLayoutMode: OrderDataEntryWidgetLayoutModeEnum = null;
-            let orderDataEntryProperties: OrderDataEntryProperties = new OrderDataEntryProperties();
+            let orderDataEntryWidgetLayoutMode: OrderDataEntryWidgetLayoutModeEnum =
+                null;
+            let orderDataEntryProperties: OrderDataEntryProperties =
+                new OrderDataEntryProperties();
             if (widgetDetail.idRepWidgetType !== WidgetType.OrderDataEntry) {
-                const widgetModuleComponents = this.widgetModuleComponents.filter(p => p.data.id === widgetDetail.id);
+                const widgetModuleComponents =
+                    this.widgetModuleComponents.filter(
+                        (p) => p.data.id === widgetDetail.id
+                    );
 
                 if (widgetModuleComponents.length > 0) {
                     // adjust property [{WithParkedItem: true},....] before save
-                    const propertyIsValue = Uti.filterValueWhenSaveWidget(widgetModuleComponents[0].propertiesForSaving.properties);
+                    const propertyIsValue = Uti.filterValueWhenSaveWidget(
+                        widgetModuleComponents[0].propertiesForSaving.properties
+                    );
                     filterMode = widgetModuleComponents[0].selectedFilter;
                     subFilterMode = widgetModuleComponents[0].selectedSubFilter;
                     fieldFilters = widgetModuleComponents[0].fieldFilters;
-                    columnLayoutsetting = widgetModuleComponents[0].columnLayoutsetting;
+                    columnLayoutsetting =
+                        widgetModuleComponents[0].columnLayoutsetting;
                     rowSetting = widgetModuleComponents[0].rowSetting;
                     widgetFormType = widgetModuleComponents[0].widgetFormType;
                     widgetProperties = propertyIsValue;
                 }
             } else {
-                const widgetDataEntryInfoComponents = this.widgetDataEntryInfoComponents.find(p => p.data.id === widgetDetail.id);
+                const widgetDataEntryInfoComponents =
+                    this.widgetDataEntryInfoComponents.find(
+                        (p) => p.data.id === widgetDetail.id
+                    );
 
                 if (widgetDataEntryInfoComponents) {
                     filterMode = widgetDataEntryInfoComponents.selectedFilter;
@@ -2081,10 +2973,13 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                     columnLayoutsetting = null;
                     rowSetting = null;
                     fieldFilters = widgetDataEntryInfoComponents.fieldFilters;
-                    orderDataEntryWidgetLayoutMode = widgetDataEntryInfoComponents.orderDataEntryWidgetLayoutMode;
-                    orderDataEntryProperties = widgetDataEntryInfoComponents.orderDataEntryProperties;
+                    orderDataEntryWidgetLayoutMode =
+                        widgetDataEntryInfoComponents.orderDataEntryWidgetLayoutMode;
+                    orderDataEntryProperties =
+                        widgetDataEntryInfoComponents.orderDataEntryProperties;
                     widgetFormType = 0;
-                    widgetProperties = widgetDataEntryInfoComponents.propertiesForSaving;
+                    widgetProperties =
+                        widgetDataEntryInfoComponents.propertiesForSaving;
                 }
             }
 
@@ -2092,7 +2987,7 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                 widgetDetail: widgetDetail,
                 config: widgetBox.config,
                 properties: widgetProperties,
-                columnsLayoutSettings: widgetBox.columnsLayoutSettings
+                columnsLayoutSettings: widgetBox.columnsLayoutSettings,
             });
 
             if (widgetDetail.idRepWidgetType === WidgetType.OrderDataEntry) {
@@ -2103,15 +2998,20 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                     rowSetting: rowSetting,
                     fieldFilters: fieldFilters,
                     widgetFormType: widgetFormType,
-                    orderDataEntryWidgetLayoutMode: orderDataEntryWidgetLayoutMode,
+                    orderDataEntryWidgetLayoutMode:
+                        orderDataEntryWidgetLayoutMode,
                     orderDataEntryProperties: orderDataEntryProperties,
                 });
                 // build property for order data entry summary table
                 if (fieldFilters && fieldFilters.length) {
-                    widgetDetailPage.properties = this.buildPropertiesForOrderDataEntryWidget(filterMode, fieldFilters);
+                    widgetDetailPage.properties =
+                        this.buildPropertiesForOrderDataEntryWidget(
+                            filterMode,
+                            fieldFilters
+                        );
                     widgetBox.properties = {
-                        version: '1.0',
-                        properties: widgetDetailPage.properties
+                        version: "1.0",
+                        properties: widgetDetailPage.properties,
                     };
                 }
             }
@@ -2122,26 +3022,47 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
 
         const observableBatch = [];
         widgets.forEach((widget: WidgetDetailPage) => {
-            const rs = widgetBoxesDirty.filter(p => p.data.id == widget.widgetDetail.id);
+            const rs = widgetBoxesDirty.filter(
+                (p) => p.data.id == widget.widgetDetail.id
+            );
             if (rs.length) {
                 let widgetSettingModel: WidgetSettingModel;
                 widgetSettingModel = new WidgetSettingModel({
                     idSettingsWidget: rs[0].data.idSettingsWidget,
                     idRepWidgetApp: rs[0].data.idRepWidgetApp,
-                    widgetName: typeof rs[0].data.title == 'string' ? rs[0].data.title : '',
-                    widgetType: (rs[0].data.idRepWidgetType) ? rs[0].data.idRepWidgetType.toString() : '',
+                    widgetName:
+                        typeof rs[0].data.title == "string"
+                            ? rs[0].data.title
+                            : "",
+                    widgetType: rs[0].data.idRepWidgetType
+                        ? rs[0].data.idRepWidgetType.toString()
+                        : "",
                     objectNr: this.pageId,
                     jsonSettings: JSON.stringify(widget),
-                    idSettingsGUI: this.ofModule ? this.ofModule.idSettingsGUI : null
+                    idSettingsGUI: this.ofModule
+                        ? this.ofModule.idSettingsGUI
+                        : null,
                 });
 
                 if (rs[0].isDeleted) {
-                    observableBatch.push(this.widgetTemplateSettingService.deleteWidgetSetting(widgetSettingModel));
+                    observableBatch.push(
+                        this.widgetTemplateSettingService.deleteWidgetSetting(
+                            widgetSettingModel
+                        )
+                    );
                 } else {
                     if (widgetSettingModel.idSettingsWidget) {
-                        observableBatch.push(this.widgetTemplateSettingService.updateWidgetSetting(widgetSettingModel));
+                        observableBatch.push(
+                            this.widgetTemplateSettingService.updateWidgetSetting(
+                                widgetSettingModel
+                            )
+                        );
                     } else {
-                        observableBatch.push(this.widgetTemplateSettingService.createWidgetSetting(widgetSettingModel));
+                        observableBatch.push(
+                            this.widgetTemplateSettingService.createWidgetSetting(
+                                widgetSettingModel
+                            )
+                        );
                     }
                 }
             }
@@ -2151,112 +3072,162 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
 
         const data: WidgetDetailPageSetting = new WidgetDetailPageSetting({
             gridConfig: {
-                designSizeDiffPercentage: size
-            }
+                designSizeDiffPercentage: size,
+            },
         });
 
-        observableBatch.push(this.pageSettingService.savePageSetting(this.createPageSettingModel(data)));
+        observableBatch.push(
+            this.pageSettingService.savePageSetting(
+                this.createPageSettingModel(data)
+            )
+        );
 
-        Observable.forkJoin(observableBatch).finally(() => {
-            this.isWidgetDesignDirty = false;
-            this.updatePageSetting();
-        }).subscribe((results: Array<any>) => {
-            this.appErrorHandler.executeAction(() => {
-                for (let i = 0; i < results.length - 1; i++) {
-                    widgets[i].widgetDetail.idSettingsWidget = results[i].returnValue;
-                    const box = this.widgetBoxes.filter(p => p.data.id === widgets[i].widgetDetail.id);
-                    if (box.length) {
-                        box[0].data.idSettingsWidget = results[i].returnValue;
-                        box[0].isDirty = false;
-                        this.getWidgetTitleTranslation(box[0].data, true);
+        Observable.forkJoin(observableBatch)
+            .finally(() => {
+                this.isWidgetDesignDirty = false;
+                this.updatePageSetting();
+            })
+            .subscribe((results: Array<any>) => {
+                this.appErrorHandler.executeAction(() => {
+                    for (let i = 0; i < results.length - 1; i++) {
+                        widgets[i].widgetDetail.idSettingsWidget =
+                            results[i].returnValue;
+                        const box = this.widgetBoxes.filter(
+                            (p) => p.data.id === widgets[i].widgetDetail.id
+                        );
+                        if (box.length) {
+                            box[0].data.idSettingsWidget =
+                                results[i].returnValue;
+                            box[0].isDirty = false;
+                            this.getWidgetTitleTranslation(box[0].data, true);
+                        }
                     }
-                }
 
-                // Remove deleted widget from widgetBoxes & setting after successfully submit.
-                this.widgetBoxes = this.widgetBoxes.filter(p => !p.isDeleted);
-                this.dispatchActionSetWidgetboxesInfo();
+                    // Remove deleted widget from widgetBoxes & setting after successfully submit.
+                    this.widgetBoxes = this.widgetBoxes.filter(
+                        (p) => !p.isDeleted
+                    );
+                    this.dispatchActionSetWidgetboxesInfo();
 
-                const pageSettingRs: any = results[results.length - 1];
-                this.idSettingsPage = pageSettingRs.returnValue;
+                    const pageSettingRs: any = results[results.length - 1];
+                    this.idSettingsPage = pageSettingRs.returnValue;
 
-                if (parmWidgetDetail &&
-                    (parmWidgetDetail.idRepWidgetType === WidgetType.FieldSet || parmWidgetDetail.idRepWidgetType === WidgetType.Combination ||
-                        parmWidgetDetail.idRepWidgetType === WidgetType.DataGrid || parmWidgetDetail.idRepWidgetType === WidgetType.EditableGrid ||
-                        parmWidgetDetail.idRepWidgetType === WidgetType.TableWithFilter)) {
+                    if (
+                        parmWidgetDetail &&
+                        (parmWidgetDetail.idRepWidgetType ===
+                            WidgetType.FieldSet ||
+                            parmWidgetDetail.idRepWidgetType ===
+                                WidgetType.Combination ||
+                            parmWidgetDetail.idRepWidgetType ===
+                                WidgetType.DataGrid ||
+                            parmWidgetDetail.idRepWidgetType ===
+                                WidgetType.EditableGrid ||
+                            parmWidgetDetail.idRepWidgetType ===
+                                WidgetType.TableWithFilter)
+                    ) {
                         // parmWidgetDetail.idRepWidgetType === WidgetType.EditableTable || parmWidgetDetail.idRepWidgetType === WidgetType.TableWithFilter)) {
-                    const filterBox = this.widgetBoxes.find((item) => item.data.id === parmWidgetDetail.id);
-                    if (filterBox)
-                        filterBox.filterData = currentFilterData;
-                }
+                        const filterBox = this.widgetBoxes.find(
+                            (item) => item.data.id === parmWidgetDetail.id
+                        );
+                        if (filterBox) filterBox.filterData = currentFilterData;
+                    }
 
-                if (!Uti.dontShowSuccessMessage) {
-                    this.toasterService.pop('success', 'Success', 'Widget saved successfully');
-                }
-                Uti.dontShowSuccessMessage = false;
+                    if (!Uti.dontShowSuccessMessage) {
+                        this.toasterService.pop(
+                            "success",
+                            "Success",
+                            "Widget saved successfully"
+                        );
+                    }
+                    Uti.dontShowSuccessMessage = false;
 
-                if (isClosePropertyPanel !== false) {
-                    this.store.dispatch(this.propertyPanelActions.togglePanel(this.ofModule, false));
-                    this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.ofModule));
-                }
-                this.store.dispatch(this.propertyPanelActions.requestClearPropertiesSuccess(this.ofModule));
+                    if (isClosePropertyPanel !== false) {
+                        this.store.dispatch(
+                            this.propertyPanelActions.togglePanel(
+                                this.ofModule,
+                                false
+                            )
+                        );
+                        this.store.dispatch(
+                            this.layoutInfoActions.setRightPropertyPanelWidth(
+                                "0",
+                                this.ofModule
+                            )
+                        );
+                    }
+                    this.store.dispatch(
+                        this.propertyPanelActions.requestClearPropertiesSuccess(
+                            this.ofModule
+                        )
+                    );
 
-                this.sendMessageWhenWidgetCustomizationSavedSuccessfully();
-                if (parmWidgetDetail) {
-                    this.handleWidgetModuleInforAfterSavingData(parmWidgetDetail.id);
-                }
+                    this.sendMessageWhenWidgetCustomizationSavedSuccessfully();
+                    if (parmWidgetDetail) {
+                        this.handleWidgetModuleInforAfterSavingData(
+                            parmWidgetDetail.id
+                        );
+                    }
+                });
             });
-        });
     }
 
     private handleWidgetModuleInforAfterSavingData(parmWidgetDetailId) {
-        const widgetModuleComponent = this.widgetModuleComponents.find(p => p.data.id === parmWidgetDetailId);
+        const widgetModuleComponent = this.widgetModuleComponents.find(
+            (p) => p.data.id === parmWidgetDetailId
+        );
         if (widgetModuleComponent) {
             widgetModuleComponent.setOriginalProperties();
         }
     }
 
-    private buildPropertiesForOrderDataEntryWidget(filterMode, fieldFilters): any {
-        return [new WidgetPropertyModel({
-            children: [
-                {
-                    'id': 'ShowData',
-                    'name': 'ShowData',
-                    'value': (isNil(filterMode) ? 1 : filterMode),
-                    'disabled': false,
-                    'collapsed': true,
-                    'dataType': 'Object',
-                    'options': [
-                        {
-                            'key': 1,
-                            'value': 'Show All'
-                        },
-                        {
-                            'key': 2,
-                            'value': 'Only has data'
-                        },
-                        {
-                            'key': 3,
-                            'value': 'Only empty data'
-                        },
-                    ],
-                    'children': []
-                }],
-            dataType: 'MultiSelect',
-            dirty: false,
-            disabled: false,
-            id: 'DisplayColumn',
-            name: 'DisplayColumn',
-            options: fieldFilters.map(x => {
-                return {
-                    isEditable: x.isEditable,
-                    isHidden: x.isHidden,
-                    key: x.fieldName,
-                    selected: x.selected,
-                    value: x.fieldDisplayName
-                };
+    private buildPropertiesForOrderDataEntryWidget(
+        filterMode,
+        fieldFilters
+    ): any {
+        return [
+            new WidgetPropertyModel({
+                children: [
+                    {
+                        id: "ShowData",
+                        name: "ShowData",
+                        value: isNil(filterMode) ? 1 : filterMode,
+                        disabled: false,
+                        collapsed: true,
+                        dataType: "Object",
+                        options: [
+                            {
+                                key: 1,
+                                value: "Show All",
+                            },
+                            {
+                                key: 2,
+                                value: "Only has data",
+                            },
+                            {
+                                key: 3,
+                                value: "Only empty data",
+                            },
+                        ],
+                        children: [],
+                    },
+                ],
+                dataType: "MultiSelect",
+                dirty: false,
+                disabled: false,
+                id: "DisplayColumn",
+                name: "DisplayColumn",
+                options: fieldFilters.map((x) => {
+                    return {
+                        isEditable: x.isEditable,
+                        isHidden: x.isHidden,
+                        key: x.fieldName,
+                        selected: x.selected,
+                        value: x.fieldDisplayName,
+                    };
+                }),
+                value: null,
             }),
-            value: null
-        })];
+        ];
     }
 
     private createPageSettingModel(data: any): PageSetting {
@@ -2264,24 +3235,27 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         pageSetting = new PageSetting({
             idSettingsPage: this.idSettingsPage,
             objectNr: this.pageId,
-            isActive: 'true',
+            isActive: "true",
             jsonSettings: JSON.stringify(data),
             widgets: [],
-            idSettingsGUI: this.ofModule ? this.ofModule.idSettingsGUI : null
+            idSettingsGUI: this.ofModule ? this.ofModule.idSettingsGUI : null,
         });
         return pageSetting;
     }
 
     private _generateDefaultItemConfig(): NgGridItemConfig {
         return {
-            'dragHandle': '.handle',
-            'col': 1,
-            'row': 1
+            dragHandle: ".handle",
+            col: 1,
+            row: 1,
         };
     }
 
     private hasChanges(changes) {
-        return changes.hasOwnProperty('currentValue') && changes.hasOwnProperty('previousValue');
+        return (
+            changes.hasOwnProperty("currentValue") &&
+            changes.hasOwnProperty("previousValue")
+        );
     }
 
     onRowTableClick($event: any) {
@@ -2290,34 +3264,77 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
 
         const rowData: RowData = {
             data: cellInfos,
-            widgetDetail: new LightWidgetDetail(widgetDetail)
+            widgetDetail: new LightWidgetDetail(widgetDetail),
         };
-        this.store.dispatch(this.widgetDetailActions.loadWidgetTypeDetail(rowData, this.ofModule));
+        this.store.dispatch(
+            this.widgetDetailActions.loadWidgetTypeDetail(
+                rowData,
+                this.ofModule
+            )
+        );
 
-        if (this.ofModule && this.ofModule.idSettingsGUI == MenuModuleId.warehouseMovement
-            && !isEmpty(cellInfos)) {
-            let warehouseId = cellInfos.find(c => c.key == upperFirst(this.modulePrimaryKey));
+        if (
+            this.ofModule &&
+            this.ofModule.idSettingsGUI == MenuModuleId.warehouseMovement &&
+            !isEmpty(cellInfos)
+        ) {
+            let warehouseId = cellInfos.find(
+                (c) => c.key == upperFirst(this.modulePrimaryKey)
+            );
             if (warehouseId && warehouseId.value) {
-                this.store.dispatch(this.tabSummaryActions.requestUpdateTabHeader(warehouseId.value, this.ofModule));
+                this.store.dispatch(
+                    this.tabSummaryActions.requestUpdateTabHeader(
+                        warehouseId.value,
+                        this.ofModule
+                    )
+                );
             }
         }
-        this.storeTableCurrentRowData(cellInfos, widgetDetail.idRepWidgetApp, widgetDetail);
+        this.storeTableCurrentRowData(
+            cellInfos,
+            widgetDetail.idRepWidgetApp,
+            widgetDetail
+        );
 
         // Set data for Campaign Media T2 form
-        if (!Uti.checkKeynameExistInArray(cellInfos, 'key', 'IdSalesCampaignWizardItems')) return;
-        this.store.dispatch(this.widgetDetailActions.loadWidgetTypeDetailForCampaignMedia(rowData, this.ofModule,this.tabID));
+        if (
+            !Uti.checkKeynameExistInArray(
+                cellInfos,
+                "key",
+                "IdSalesCampaignWizardItems"
+            )
+        )
+            return;
+        this.store.dispatch(
+            this.widgetDetailActions.loadWidgetTypeDetailForCampaignMedia(
+                rowData,
+                this.ofModule,
+                this.tabID
+            )
+        );
     }
 
-    private storeTableCurrentRowData(rowData: any, widgetDetailId: any, widgetDetail?: WidgetDetail) {
-        this.store.dispatch(this.widgetDetailActions.loadWidgetTableDataRows({
-            rowData: rowData,
-            widgetDetailId: widgetDetailId,
-            widgetDetail: new LightWidgetDetail(widgetDetail)
-        }, this.ofModule));
+    private storeTableCurrentRowData(
+        rowData: any,
+        widgetDetailId: any,
+        widgetDetail?: WidgetDetail
+    ) {
+        this.store.dispatch(
+            this.widgetDetailActions.loadWidgetTableDataRows(
+                {
+                    rowData: rowData,
+                    widgetDetailId: widgetDetailId,
+                    widgetDetail: new LightWidgetDetail(widgetDetail),
+                },
+                this.ofModule
+            )
+        );
     }
 
     onChangeFieldFilter($event: any) {
-        const box = this.widgetBoxes.filter(p => p.data.id === $event.widgetDetail.id);
+        const box = this.widgetBoxes.filter(
+            (p) => p.data.id === $event.widgetDetail.id
+        );
         if (box.length) {
             box[0].isDirty = true;
         }
@@ -2327,34 +3344,57 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
 
     onEditingWidget(widgetDetail: WidgetDetail, isOrderDataEntry?: boolean) {
         // Use LightWidgetDetail to avoid unnescessary param that causing huge memmory in store.
-        const editingWidgetDettail: LightWidgetDetail = new LightWidgetDetail(widgetDetail);
-        const tabID = this.selectedTabHeader ? this.selectedTabHeader.tabSummaryInfor.tabID : this.tabID;
+        const editingWidgetDettail: LightWidgetDetail = new LightWidgetDetail(
+            widgetDetail
+        );
+        const tabID = this.selectedTabHeader
+            ? this.selectedTabHeader.tabSummaryInfor.tabID
+            : this.tabID;
         const editingWidget: EditingWidget = {
             widgetDetail: editingWidgetDettail,
             pageId: this.pageId,
             selectedEntity: this.selectedEntity,
-            tabId: tabID
+            tabId: tabID,
         };
-        if (widgetDetail['gridSelectedRow'] && widgetDetail['gridSelectedRow'].length)
-            widgetDetail['dataChanged'] = [...widgetDetail['gridSelectedRow']];
+        if (
+            widgetDetail["gridSelectedRow"] &&
+            widgetDetail["gridSelectedRow"].length
+        )
+            widgetDetail["dataChanged"] = [...widgetDetail["gridSelectedRow"]];
 
         this.dispatchActionSetWidgetboxesInfo(widgetDetail);
-        this.store.dispatch(this.widgetDetailActions.addWidgetEditing(editingWidget, isOrderDataEntry ? ModuleList.OrderDataEntry : this.ofModule));
+        this.store.dispatch(
+            this.widgetDetailActions.addWidgetEditing(
+                editingWidget,
+                isOrderDataEntry ? ModuleList.OrderDataEntry : this.ofModule
+            )
+        );
     }
 
     onCancelEditingWidget(widgetDetail: WidgetDetail) {
         // Use LightWidgetDetail to avoid unnescessary param that causing huge memmory in store.
-        const cancelEditingWidgetDettail: LightWidgetDetail = new LightWidgetDetail(widgetDetail);
+        const cancelEditingWidgetDettail: LightWidgetDetail =
+            new LightWidgetDetail(widgetDetail);
         const editingWidget: EditingWidget = {
             widgetDetail: cancelEditingWidgetDettail,
-            pageId: this.pageId
+            pageId: this.pageId,
         };
-        this.store.dispatch(this.widgetDetailActions.cancelWidgetEditing(editingWidget, this.ofModule));
+        this.store.dispatch(
+            this.widgetDetailActions.cancelWidgetEditing(
+                editingWidget,
+                this.ofModule
+            )
+        );
     }
 
     onUpdateTitle(widgetDetail: WidgetDetail) {
-        this.widgetUtils.updateWidgetTitleDataTypeValues(this.ofModule.moduleNameTrim, widgetDetail);
-        const box = this.widgetBoxes.filter(p => p.data.id === widgetDetail.id);
+        this.widgetUtils.updateWidgetTitleDataTypeValues(
+            this.ofModule.moduleNameTrim,
+            widgetDetail
+        );
+        const box = this.widgetBoxes.filter(
+            (p) => p.data.id === widgetDetail.id
+        );
         if (box.length) {
             box[0].isDirty = true;
         }
@@ -2368,31 +3408,52 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     onSaveSuccessWidget(widgetDetail: WidgetDetail, widgetEditDialog) {
         let updateInfo = null;
         if (widgetDetail.idRepWidgetType === WidgetType.FieldSet) {
-            updateInfo = this.widgetUtils.getKeyValueListFromFieldSetWidget(widgetDetail);
-        }
-        else if (widgetDetail.idRepWidgetType === WidgetType.Translation) {
+            updateInfo =
+                this.widgetUtils.getKeyValueListFromFieldSetWidget(
+                    widgetDetail
+                );
+        } else if (widgetDetail.idRepWidgetType === WidgetType.Translation) {
             this.saveWidgetPage();
             this.onCancelEditingWidget(widgetDetail);
         }
 
         // Use LightWidgetDetail to avoid unnescessary param that causing huge memmory in store.
-        const updatedWidgetDettail: LightWidgetDetail = new LightWidgetDetail(widgetDetail);
+        const updatedWidgetDettail: LightWidgetDetail = new LightWidgetDetail(
+            widgetDetail
+        );
 
         const widgetDataUpdated: WidgetDataUpdated = {
             widgetDetail: updatedWidgetDettail,
             isSelfUpdated: true,
-            isReloadForParent: this.widgetUtils.isReloadForParentAfterUpdating(widgetDetail),
-            updateInfo: updateInfo
+            isReloadForParent:
+                this.widgetUtils.isReloadForParentAfterUpdating(widgetDetail),
+            updateInfo: updateInfo,
         };
-        this.toasterService.pop('success', 'Success', 'Widget saved successfully');
+        this.toasterService.pop(
+            "success",
+            "Success",
+            "Widget saved successfully"
+        );
         // if (!widgetEditDialog) {
         //     this.store.dispatch(this.widgetDetailActions.syncUpdateDataWidget(widgetDataUpdated, this.ofModule));
         // }
         if (widgetDataUpdated.widgetDetail.id === widgetDetail.id) {
-            this.store.dispatch(this.widgetDetailActions.syncUpdateDataWidget(widgetDataUpdated, this.ofModule));
+            this.store.dispatch(
+                this.widgetDetailActions.syncUpdateDataWidget(
+                    widgetDataUpdated,
+                    this.ofModule
+                )
+            );
         }
-        this.store.dispatch(this.widgetDetailActions.requestReloadWidget(widgetDetail.id, this.ofModule));
-        this.store.dispatch(this.widgetDetailActions.clearRequestSave(this.ofModule));
+        this.store.dispatch(
+            this.widgetDetailActions.requestReloadWidget(
+                widgetDetail.id,
+                this.ofModule
+            )
+        );
+        this.store.dispatch(
+            this.widgetDetailActions.clearRequestSave(this.ofModule)
+        );
     }
 
     saveAllWidget() {
@@ -2400,7 +3461,10 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
             this.widgetModuleComponents.forEach((widgetModuleComponent) => {
                 if (widgetModuleComponent.data) {
                     // If Edit status, then save.
-                    if (widgetModuleComponent.isWidgetDataEdited || widgetModuleComponent.isTableEdited) {
+                    if (
+                        widgetModuleComponent.isWidgetDataEdited ||
+                        widgetModuleComponent.isTableEdited
+                    ) {
                         let savingWidgetType: SavingWidgetType = null;
                         switch (widgetModuleComponent.data.idRepWidgetType) {
                             case WidgetType.FieldSet:
@@ -2408,8 +3472,9 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                                 break;
 
                             case WidgetType.EditableGrid:
-                            // case WidgetType.EditableTable:
-                                savingWidgetType = SavingWidgetType.EditableTable;
+                                // case WidgetType.EditableTable:
+                                savingWidgetType =
+                                    SavingWidgetType.EditableTable;
                                 break;
 
                             case WidgetType.Combination:
@@ -2417,7 +3482,8 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                                 break;
 
                             case WidgetType.CombinationCreditCard:
-                                savingWidgetType = SavingWidgetType.CombinationCreditCard;
+                                savingWidgetType =
+                                    SavingWidgetType.CombinationCreditCard;
                                 break;
 
                             case WidgetType.Country:
@@ -2426,15 +3492,18 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
 
                             case WidgetType.FileExplorer:
                             case WidgetType.ToolFileTemplate:
-                                savingWidgetType = SavingWidgetType.FileExplorer;
+                                savingWidgetType =
+                                    SavingWidgetType.FileExplorer;
                                 break;
 
                             case WidgetType.FileExplorerWithLabel:
-                                savingWidgetType = SavingWidgetType.FileExplorerWithLabel;
+                                savingWidgetType =
+                                    SavingWidgetType.FileExplorerWithLabel;
                                 break;
 
                             case WidgetType.FileTemplate:
-                                savingWidgetType = SavingWidgetType.FileTemplate;
+                                savingWidgetType =
+                                    SavingWidgetType.FileTemplate;
                                 break;
 
                             case WidgetType.TreeView:
@@ -2442,7 +3511,6 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
                                 break;
                         }
                         widgetModuleComponent.saveWidget(savingWidgetType);
-
                     } else {
                         // widgetModuleComponent.resetWidget();
                     }
@@ -2457,19 +3525,36 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
             setTimeout(() => {
                 if (this.widgetEditDialogs && this.widgetEditDialogs.length)
                     this.widgetEditDialogs.forEach((widgetEditDialog) => {
-                        if (widgetEditDialog && widgetEditDialog.widgetData.id === eventData.id) {
+                        if (
+                            widgetEditDialog &&
+                            widgetEditDialog.widgetData.id === eventData.id
+                        ) {
                             widgetEditDialog.showDialog = true;
 
-                            if (widgetEditDialog.widgetData.data.idRepWidgetType == WidgetType.DataGrid
-                                || widgetEditDialog.widgetData.data.idRepWidgetType == WidgetType.EditableGrid
+                            if (
+                                widgetEditDialog.widgetData.data
+                                    .idRepWidgetType == WidgetType.DataGrid ||
+                                widgetEditDialog.widgetData.data
+                                    .idRepWidgetType ==
+                                    WidgetType.EditableGrid ||
                                 // || widgetEditDialog.widgetData.data.idRepWidgetType == WidgetType.EditableTable
-                                || widgetEditDialog.widgetData.data.idRepWidgetType == WidgetType.Combination
-                                || widgetEditDialog.widgetData.data.idRepWidgetType == WidgetType.GroupTable
-                                || widgetEditDialog.widgetData.data.idRepWidgetType == WidgetType.Translation
-                                || widgetEditDialog.widgetData.data.idRepWidgetType == WidgetType.TableWithFilter) {
-                                $(document).on('keydown', this.preventTabKey.bind(this));
+                                widgetEditDialog.widgetData.data
+                                    .idRepWidgetType ==
+                                    WidgetType.Combination ||
+                                widgetEditDialog.widgetData.data
+                                    .idRepWidgetType == WidgetType.GroupTable ||
+                                widgetEditDialog.widgetData.data
+                                    .idRepWidgetType ==
+                                    WidgetType.Translation ||
+                                widgetEditDialog.widgetData.data
+                                    .idRepWidgetType ==
+                                    WidgetType.TableWithFilter
+                            ) {
+                                $(document).on(
+                                    "keydown",
+                                    this.preventTabKey.bind(this)
+                                );
                             }
-
                         }
                     });
             }, 100);
@@ -2477,15 +3562,18 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     }
 
     public onHideWidgetEditDialog(event) {
-        this.widgetEditInPopupId = '';
+        this.widgetEditInPopupId = "";
 
-        $(document).off('keydown');
+        $(document).off("keydown");
 
         if (event && event.willReloadWidget) {
             this.onSaveSuccessWidget(event.widgetData.data, null);
             if (this.widgetEditDialogs && this.widgetEditDialogs.length)
                 this.widgetEditDialogs.forEach((widgetEditDialog) => {
-                    if (widgetEditDialog && widgetEditDialog.widgetData.id === event.widgetData.id) {
+                    if (
+                        widgetEditDialog &&
+                        widgetEditDialog.widgetData.id === event.widgetData.id
+                    ) {
                         widgetEditDialog.willReloadWidget = false;
                     }
                 });
@@ -2493,19 +3581,33 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     }
 
     private preventTabKey(objEvent) {
-        if (objEvent.keyCode == 9) {  //tab pressed
+        if (objEvent.keyCode == 9) {
+            //tab pressed
             objEvent.preventDefault(); // stops its action
         }
     }
 
     onClickOutsideWidget($event) {
-        const index = findIndex(this.widgetArray, { 'widgetApp': $event.widgetApp, 'id': $event.id });
+        const index = findIndex(this.widgetArray, {
+            widgetApp: $event.widgetApp,
+            id: $event.id,
+        });
         if (index >= 0) {
             if ($event.isActive) {
-                if (this.isExpandedPropertyPanel && !this.widgetArray[index].isActive) {
+                if (
+                    this.isExpandedPropertyPanel &&
+                    !this.widgetArray[index].isActive
+                ) {
                     this.widgetModuleComponents.forEach((item) => {
-                        if (item.data.idRepWidgetApp === $event.widgetApp && item.data.id === $event.id) {
-                            this.store.dispatch(this.propertyPanelActions.clearProperties(this.ofModule));
+                        if (
+                            item.data.idRepWidgetApp === $event.widgetApp &&
+                            item.data.id === $event.id
+                        ) {
+                            this.store.dispatch(
+                                this.propertyPanelActions.clearProperties(
+                                    this.ofModule
+                                )
+                            );
                             item.onPropertiesItemClickHandler(true);
                         }
                     });
@@ -2522,7 +3624,8 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     }
 
     public onLinkingWidgetClicked(widgetDetail: WidgetDetail) {
-        this.displayConnectedWidgetDialog = this.detectListenKeyAfterDrag(widgetDetail);
+        this.displayConnectedWidgetDialog =
+            this.detectListenKeyAfterDrag(widgetDetail);
         // this.reloadWidgetDetails([widgetDetail]);
     }
 
@@ -2531,7 +3634,8 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     }
 
     private setActivatedForWidgetModuleInfo(status: boolean) {
-        if (!this.widgetModuleComponents || !this.widgetModuleComponents.length) return;
+        if (!this.widgetModuleComponents || !this.widgetModuleComponents.length)
+            return;
         this.widgetModuleComponents.forEach((widgetModuleComponent) => {
             widgetModuleComponent.setActivatedForThisComponent(status);
         });
@@ -2540,8 +3644,8 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     //#region Maximize Widget
     private currentMaximizeWidgetData: any = {
         boxDataId: null,
-        isMaximizedWidget: false
-    }
+        isMaximizedWidget: false,
+    };
 
     public maximizeWidget($event, currentBoxData) {
         const eventData = $event.data;
@@ -2549,7 +3653,7 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
             currentBoxData.isMaximizedWidget = $event.isMaximized;
             this.currentMaximizeWidgetData = {
                 boxDataId: currentBoxData.id,
-                isMaximizedWidget: currentBoxData.isMaximizedWidget
+                isMaximizedWidget: currentBoxData.isMaximizedWidget,
             };
             this.setMaximizeWidget($event.isMaximized);
         }
@@ -2557,73 +3661,96 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
 
     public setMaximizeWidget(isMaximized) {
         if (isMaximized) {
-            $('gs-main .faked-heading, gs-main .global-search').addClass('gs-split-area-maximize');
+            $("gs-main .faked-heading, gs-main .global-search").addClass(
+                "gs-split-area-maximize"
+            );
 
-            let $curentBox = $(this.elementRef.nativeElement).closest('split-area.split-area-content:not(.xn__tab-content__split)');
+            let $curentBox = $(this.elementRef.nativeElement).closest(
+                "split-area.split-area-content:not(.xn__tab-content__split)"
+            );
             if (!$curentBox.length) return;
 
             //Hide all split-area
             $(this.elementRef.nativeElement)
-                .closest('xn-tab-content')
-                .find('.tab-pane.active split-area.split-area-content')
-                .addClass('split-area-hide');
+                .closest("xn-tab-content")
+                .find(".tab-pane.active split-area.split-area-content")
+                .addClass("split-area-hide");
 
             //Show current split-area
             $curentBox
-                .removeClass('split-area-hide')
-                .addClass('split-area-maximize');
+                .removeClass("split-area-hide")
+                .addClass("split-area-maximize");
 
             //Show all parents of current
             $curentBox
-                .parents('split-area.split-area-content:not(.xn__tab-content__split)')
-                .removeClass('split-area-hide')
-                .addClass('split-area-maximize');
+                .parents(
+                    "split-area.split-area-content:not(.xn__tab-content__split)"
+                )
+                .removeClass("split-area-hide")
+                .addClass("split-area-maximize");
 
             //Hide all split-gutter
-            $curentBox.siblings('split-gutter').addClass('split-gutter-hide');
-        }
-        else {
+            $curentBox.siblings("split-gutter").addClass("split-gutter-hide");
+        } else {
             this.resetMaximizeWidget();
         }
     }
 
     private resetMaximizeWidget() {
         //Restore to original state
-        $('split-area.split-area-content').removeClass('split-area-maximize split-area-hide');
-        $('gs-main .faked-heading, gs-main .global-search').removeClass('gs-split-area-maximize');
-        $('split-gutter.split-gutter-hide').removeClass('split-gutter-hide');
+        $("split-area.split-area-content").removeClass(
+            "split-area-maximize split-area-hide"
+        );
+        $("gs-main .faked-heading, gs-main .global-search").removeClass(
+            "gs-split-area-maximize"
+        );
+        $("split-gutter.split-gutter-hide").removeClass("split-gutter-hide");
     }
 
     private restoreMaximizeWidgetTimeout;
-    private restoreMaximizeWidget(isMaximized?: boolean, forceMaximize?: boolean) {
-        if (!this.currentMaximizeWidgetData.boxDataId || !this.isCurrentTab()) return;
+    private restoreMaximizeWidget(
+        isMaximized?: boolean,
+        forceMaximize?: boolean
+    ) {
+        if (!this.currentMaximizeWidgetData.boxDataId || !this.isCurrentTab())
+            return;
 
         var needToSetMaximizeWidget = false;
         for (let i = 0; i < this.widgetBoxes.length; i++) {
             const widgetBox: WidgetBox = this.widgetBoxes[i];
-            if (widgetBox.data.id == this.currentMaximizeWidgetData.boxDataId && (!widgetBox.data['isMaximizedWidget'] || forceMaximize)) {
+            if (
+                widgetBox.data.id == this.currentMaximizeWidgetData.boxDataId &&
+                (!widgetBox.data["isMaximizedWidget"] || forceMaximize)
+            ) {
                 //if isMaximized is null -> keep the previous state
                 if (isMaximized == undefined) {
-                    isMaximized = this.currentMaximizeWidgetData.isMaximizedWidget;
+                    isMaximized =
+                        this.currentMaximizeWidgetData.isMaximizedWidget;
                 }
-                widgetBox.data['isMaximizedWidget'] = isMaximized;
+                widgetBox.data["isMaximizedWidget"] = isMaximized;
                 needToSetMaximizeWidget = true;
                 break;
             }
-        }//for
+        } //for
 
         if (needToSetMaximizeWidget || forceMaximize) {
             clearTimeout(this.restoreMaximizeWidgetTimeout);
             this.restoreMaximizeWidgetTimeout = null;
             this.restoreMaximizeWidgetTimeout = setTimeout(() => {
                 //console.log('restoreMaximizeWidget: ' + new Date().getTime());
-                this.setMaximizeWidget(needToSetMaximizeWidget ? isMaximized : false);
+                this.setMaximizeWidget(
+                    needToSetMaximizeWidget ? isMaximized : false
+                );
             }, 100);
         }
     }
 
     private isCurrentTab() {
-        return this.selectedTabHeader && this.selectedTabHeader.tabSummaryInfor && this.selectedTabHeader.tabSummaryInfor.tabID == this.tabID;
+        return (
+            this.selectedTabHeader &&
+            this.selectedTabHeader.tabSummaryInfor &&
+            this.selectedTabHeader.tabSummaryInfor.tabID == this.tabID
+        );
     }
     //#endregion
 
@@ -2632,38 +3759,71 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
     private sendMessageWhenWidgetCustomizationSavedSuccessfully() {
         if (!this.signalRService.designLayoutIsWorking) return;
 
-        this.signalRService.sendMessageDesignLayout(SignalRActionEnum.DesignLayout_SavedSuccessfully, this.ofModule.idSettingsGUI);
+        this.signalRService.sendMessageDesignLayout(
+            SignalRActionEnum.DesignLayout_SavedSuccessfully,
+            this.ofModule.idSettingsGUI
+        );
     }
     //#endregion
 
     private syncStateSubscription: Subscription;
     private browserTabId: string = Uti.defineBrowserTabId();
     public watchingPopupEffectedData() {
-        const LocalStorageWidgetRowDataFromPopup = LocalStorageKey.buildKey(LocalStorageKey.LocalStorageWidgetRowDataFromPopup, this.browserTabId);
-        this.syncStateSubscription = Observable.fromEvent<StorageEvent>(window, 'storage').filter((evt) => {
-            return ((evt.key == LocalStorageWidgetRowDataFromPopup)
-                    && evt.newValue !== null
-                    && evt.newValue != 'undefined');
-        }).subscribe(evt => {
-            if (!this.isActivated ||!evt.newValue) return;
+        const LocalStorageWidgetRowDataFromPopup = LocalStorageKey.buildKey(
+            LocalStorageKey.LocalStorageWidgetRowDataFromPopup,
+            this.browserTabId
+        );
+        this.syncStateSubscription = Observable.fromEvent<StorageEvent>(
+            window,
+            "storage"
+        )
+            .filter((evt) => {
+                return (
+                    evt.key == LocalStorageWidgetRowDataFromPopup &&
+                    evt.newValue !== null &&
+                    evt.newValue != "undefined"
+                );
+            })
+            .subscribe((evt) => {
+                if (!this.isActivated || !evt.newValue) return;
 
-            const newValue = JSON.parse(evt.newValue);
-            if (!newValue || !newValue.data || (newValue.browserTabId && newValue.browserTabId != this.browserTabId)) return;
-            switch (evt.key) {
-                case LocalStorageWidgetRowDataFromPopup:
-                    this.handleRelatingWidget(newValue.data, this.getLinkWidgetIdsByWidgetId(newValue.data.widgetDetail));
-                    break;
-            }
-        });
+                const newValue = JSON.parse(evt.newValue);
+                if (
+                    !newValue ||
+                    !newValue.data ||
+                    (newValue.browserTabId &&
+                        newValue.browserTabId != this.browserTabId)
+                )
+                    return;
+                switch (evt.key) {
+                    case LocalStorageWidgetRowDataFromPopup:
+                        this.handleRelatingWidget(
+                            newValue.data,
+                            this.getLinkWidgetIdsByWidgetId(
+                                newValue.data.widgetDetail
+                            )
+                        );
+                        break;
+                }
+            });
     }
 
     private handleRelatingWidget(data: any, relatingWidgetIds: Array<string>) {
         let i = 0;
         this.widgetModuleComponents.forEach((widgetModuleComponent) => {
-            if (i > 0 || !widgetModuleComponent.data || relatingWidgetIds.indexOf(widgetModuleComponent.data.id) === -1) {
+            if (
+                i > 0 ||
+                !widgetModuleComponent.data ||
+                relatingWidgetIds.indexOf(widgetModuleComponent.data.id) === -1
+            ) {
                 return;
             }
-            this.store.dispatch(this.widgetDetailActions.loadWidgetTypeDetail(data, this.ofModule));
+            this.store.dispatch(
+                this.widgetDetailActions.loadWidgetTypeDetail(
+                    data,
+                    this.ofModule
+                )
+            );
             i++;
         });
     }
@@ -2672,9 +3832,12 @@ export class WidgetContainerComponent extends BaseWidgetContainer implements OnI
         const relatingWidgetIds = this.getLinkWidgetIdsByWidgetId(data);
         let reloadWidget: Array<WidgetDetail> = [];
         this.widgetModuleComponents.forEach((widgetModuleComponent) => {
-            if (!widgetModuleComponent.data
-                || relatingWidgetIds.indexOf(widgetModuleComponent.data.id) === -1
-                || data.id == widgetModuleComponent.data.id) {
+            if (
+                !widgetModuleComponent.data ||
+                relatingWidgetIds.indexOf(widgetModuleComponent.data.id) ===
+                    -1 ||
+                data.id == widgetModuleComponent.data.id
+            ) {
                 return;
             }
             reloadWidget.push(widgetModuleComponent.data);
