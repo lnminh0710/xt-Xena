@@ -8,6 +8,7 @@ namespace XenaUI.Service
         Task<WSDataReturn> GetCampaigns(PrintingGetCampaignData data);
 
         Task<WSDataReturn> ConfirmGetData(PrintingCampaignConfirmData data);
+        Task<WSDataReturn> GetTemplateInfo(RequestTemplateData data);
     }    
 }
 

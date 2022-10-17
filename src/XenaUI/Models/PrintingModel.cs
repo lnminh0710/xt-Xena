@@ -16,6 +16,9 @@ namespace XenaUI.Models
         public string IdFolder { get; set; }
         public IList<PrintingTemplateItem> Templates { get; set; }
 
+        public string IdSalesCampaignWizardItems { get; set; }
+        public string ExternalParam { get; set; }
+
         public PrintingDownloadTemplatesModel()
         {
             Templates = new List<PrintingTemplateItem>();
@@ -94,6 +97,12 @@ namespace XenaUI.Models
         /// FilePaths
         /// </summary>
         public IList<string> FilePaths { get; set; }
+    }
+
+    public class RequestTemplateModel
+    {
+        public string IdSalesCampaignWizardItems { get; set; }
+        public string ExternalParam { get; set; }
     }
 
 }

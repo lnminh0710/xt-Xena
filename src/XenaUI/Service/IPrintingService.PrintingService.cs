@@ -69,5 +69,29 @@ namespace XenaUI.Service
             var response = (await Service.Post(body: bodyRquest, expectedReturn: null, mappingType: Constants.EExecuteMappingType.None))[0];
             return response != null ? new WSDataReturn { Data = (JArray)response } : null;
         }
+
+        public async Task<WSDataReturn> GetTemplateInfo(RequestTemplateData data)
+        {
+            data.MethodName = "SpAppWgGetSalesCampaignAddOn";
+            data.Object = "DocumentTemplate";
+            data.IdLogin = "2";
+            data.LoginLanguage = "1";
+            data.IdApplicationOwner = "1";
+
+            data.GUID = Guid.NewGuid().ToString();
+
+            UniqueBody uniq = new UniqueBody
+            {
+                ModuleName = "GlobalModule",
+                ServiceName = "GlobalService",
+                Data = JsonConvert.SerializeObject(data)
+            };
+            BodyRequest bodyRquest = new BodyRequest { Request = uniq };
+
+            var expectedReturn = new Dictionary<int, Type>();
+            expectedReturn.Add(0, typeof(WSDataReturn));
+            var response = (await Service.Post(body: bodyRquest, expectedReturn: null, mappingType: Constants.EExecuteMappingType.None))[0];
+            return response != null ? new WSDataReturn { Data = (JArray)response } : null;
+        }
     }
 }

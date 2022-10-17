@@ -53,4 +53,10 @@ namespace XenaUI.Utils
         /// </summary>
         public string DateRecivedFromClient { get; set; }
     }
+
+    public class RequestTemplateData : Data
+    {
+        public string IdSalesCampaignWizardItems { get; set; }
+        public string ExternalParam { get; set; }
+    }
 }
