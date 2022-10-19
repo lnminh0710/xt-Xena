@@ -53,6 +53,15 @@ namespace XenaUI.Business
             return result;
         }
 
+        public async Task<object> ReGetNewTemplate(RequestTemplateModel model)
+        {
+            var data = (RequestTemplateData)ServiceDataRequest.ConvertToRelatedType(typeof(RequestTemplateData));
+            data.IdSalesCampaignWizardItems = model.IdSalesCampaignWizardItems;
+            data.ExternalParam = model.ExternalParam;
+            var result = await _printingService.GetTemplateInfo(data);
+            return result;
+        }
+
         /// <summary>
         /// DownloadTemplates
         /// </summary>
