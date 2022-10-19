@@ -1,189 +1,249 @@
-<div class="box box-default handle widget-data-entry-info"
-     [ngStyle]="{'border': widgetBorderColor}"
-     *ngIf="isLoad"
-     [ngClass]="{'edit-mode':allowEdit}">
+<div
+    class="box box-default handle widget-data-entry-info"
+    [ngStyle]="{ border: widgetBorderColor }"
+    *ngIf="isLoad"
+    [ngClass]="{ 'edit-mode': allowEdit }"
+>
     <div class="box-header" *ngIf="allowEdit">
         <div class="box-header-btns">
             <a *ngIf="dataEntryWidgetType == 66"></a>
             <div>
-              <a class="widget-button-style translate-widget-button-style"
-                 title="Translate widget"
-                 (click)="translateWidget()"
-                 *ngIf="dataEntryWidgetType != 66">
-                  <i class="fa fa-language" aria-hidden="true"></i>
-              </a>
-              <a class="widget-button-style translate-widget-button-style"
-                 (click)="propertyClicked()"
-                 *ngIf="data && data.idRepWidgetApp == 61"> <!-- Order Data Entry widget -->
-                  <i class="fa fa-cog"></i>
-              </a>
+                <a
+                    class="widget-button-style translate-widget-button-style"
+                    title="Translate widget"
+                    (click)="translateWidget()"
+                    *ngIf="dataEntryWidgetType != 66"
+                >
+                    <i class="fa fa-language" aria-hidden="true"></i>
+                </a>
+                <a
+                    class="widget-button-style translate-widget-button-style"
+                    (click)="propertyClicked()"
+                    *ngIf="data && data.idRepWidgetApp == 61"
+                >
+                    <!-- Order Data Entry widget -->
+                    <i class="fa fa-cog"></i>
+                </a>
             </div>
             <a class="main-title">
-                {{data.title}}
+                {{ data.title }}
             </a>
-            <a class="widget-button-style remove-widget-button-style" title="Remove widget" (click)="removeWidget();">
+            <a
+                class="widget-button-style remove-widget-button-style"
+                title="Remove widget"
+                (click)="removeWidget()"
+            >
                 <i class="fa fa-times"></i>
             </a>
         </div>
         <div class="widget-menu-status-main-container">
-            <xn-widget-menu-status *ngIf="isShowMenuStatus"
-                                   [dataInput]="initwidgetMenuStatusData"
-                                   [accessRight]="{orderDataEntry:true}"
-                                   [allowEdit]="allowEdit"
-                                   [isShowedFilterModes]="true"
-                                   [isShowWidgetSetting]="false"
-                                   [isShowProperties]="false"
-                                   [isShowOrderDataEntryPaymentSetting]="isShowODEWidgetLayoutMode"
-                                   (onChangeDisplayMode)="changeDisplayMode($event)"
-                                   (onChangeFieldFilter)="changeFieldFilter($event)"
-                                   (onChangeODEProperties)="changeODEProperties($event)">
+            <xn-widget-menu-status
+                *ngIf="isShowMenuStatus"
+                [dataInput]="initwidgetMenuStatusData"
+                [accessRight]="{ orderDataEntry: true }"
+                [allowEdit]="allowEdit"
+                [isShowedFilterModes]="true"
+                [isShowWidgetSetting]="false"
+                [isShowProperties]="false"
+                [isShowOrderDataEntryPaymentSetting]="isShowODEWidgetLayoutMode"
+                (onChangeDisplayMode)="changeDisplayMode($event)"
+                (onChangeFieldFilter)="changeFieldFilter($event)"
+                (onChangeODEProperties)="changeODEProperties($event)"
+            >
             </xn-widget-menu-status>
         </div>
     </div>
-    <div class="box-body widget-data-entry-container"
-         [ngSwitch]="dataEntryWidgetType"
-         [perfect-scrollbar]="perfectScrollbarConfig">
+    <div
+        class="box-body widget-data-entry-container"
+        [ngSwitch]="dataEntryWidgetType"
+        [perfect-scrollbar]="perfectScrollbarConfig"
+    >
         <div *ngSwitchCase="60">
-            <app-customer-data-entry-form #currentComponent
-                                          [translatedSource]="translatedSource"
-                                          [ngClass]="{'width300': (widgetContainerW <= 300 && widgetContainerW > 0),'width475': (widgetContainerW <= 475 && widgetContainerW > 300),'width500': (widgetContainerW <= 515 && widgetContainerW > 475)}"
-                                          [formFieldsData]="fieldFilters"
-                                          [tabID]="tabID"
-                                          (outputData)="outputDataHandler($event)"
-                                          (outputWidgetFields)="getFieldFiltersFromWidgetInfo($event)">
+            <app-customer-data-entry-form
+                #currentComponent
+                [translatedSource]="translatedSource"
+                [ngClass]="{
+                    width300: widgetContainerW <= 300 && widgetContainerW > 0,
+                    width475: widgetContainerW <= 475 && widgetContainerW > 300,
+                    width500: widgetContainerW <= 515 && widgetContainerW > 475
+                }"
+                [formFieldsData]="fieldFilters"
+                [tabID]="tabID"
+                (outputData)="outputDataHandler($event)"
+                (outputWidgetFields)="getFieldFiltersFromWidgetInfo($event)"
+            >
             </app-customer-data-entry-form>
         </div>
         <div *ngSwitchCase="62" class="communication-data-entry">
-            <app-communication-data-entry #currentComponent
-                                          [translatedSource]="translatedSource"
-                                          [resized]="_resized"
-                                          [tabID]="tabID"
-                                          (outputData)="outputDataHandler($event)">
+            <app-communication-data-entry
+                #currentComponent
+                [translatedSource]="translatedSource"
+                [resized]="_resized"
+                [tabID]="tabID"
+                (outputData)="outputDataHandler($event)"
+            >
             </app-communication-data-entry>
         </div>
         <div *ngSwitchCase="61">
-            <app-order-data-entry-form #currentComponent
-                                       [ngClass]="{'width375': (widgetContainerW <= 390 && widgetContainerW > 0)}"
-                                       [translatedSource]="translatedSource"
-                                       [formFieldsData]="fieldFilters"
-                                       [tabID]="tabID"
-                                       [widgetProperties]="properties"
-                                       (outputData)="outputDataHandler($event)"
-                                       (outputWidgetFields)="getFieldFiltersFromWidgetInfo($event)"
-                                       (callSavePropertiesAction)="callSavePropertiesHandler()">
+            <app-order-data-entry-form
+                #currentComponent
+                [ngClass]="{
+                    width375: widgetContainerW <= 390 && widgetContainerW > 0
+                }"
+                [translatedSource]="translatedSource"
+                [formFieldsData]="fieldFilters"
+                [tabID]="tabID"
+                [widgetProperties]="properties"
+                (outputData)="outputDataHandler($event)"
+                (outputWidgetFields)="getFieldFiltersFromWidgetInfo($event)"
+                (callSavePropertiesAction)="callSavePropertiesHandler()"
+            >
             </app-order-data-entry-form>
         </div>
         <div *ngSwitchCase="64">
-            <data-entry-customer-address #currentComponent
-                                         [translatedSource]="translatedSource"
-                                         [tabID]="tabID"
-                                         (outputData)="outputDataHandler($event)">
+            <data-entry-customer-address
+                #currentComponent
+                [translatedSource]="translatedSource"
+                [tabID]="tabID"
+                (outputData)="outputDataHandler($event)"
+            >
             </data-entry-customer-address>
         </div>
-        <div *ngSwitchCase="65"
-             class="height-pc-100">
-            <data-entry-order-total-summary #currentComponent
-                                            [translatedSource]="translatedSource"
-                                            [tabID]="tabID"
-                                            [globalProperties]="globalProperties"
-                                            (outputData)="outputDataHandler($event)">
+        <div *ngSwitchCase="65" class="height-pc-100">
+            <data-entry-order-total-summary
+                #currentComponent
+                [translatedSource]="translatedSource"
+                [tabID]="tabID"
+                [globalProperties]="globalProperties"
+                (outputData)="outputDataHandler($event)"
+            >
             </data-entry-order-total-summary>
         </div>
         <div *ngSwitchCase="63" class="data-entry-article-grid">
-            <data-entry-article-grid #currentComponent
-                                     [articleOrderGridId]="'73a84b26-a637-4f43-bc24-51c99b457ae0'"
-                                     [articleUsedInCampaignId]="'d4851d0b-dc68-431a-932e-b165097ebb5d'"
-                                     [translatedSource]="translatedSource"
-                                     [tabID]="tabID"
-                                     [globalProperties]="globalProperties"
-                                     (outputData)="outputDataHandler($event)">
+            <data-entry-article-grid
+                #currentComponent
+                [articleOrderGridId]="'73a84b26-a637-4f43-bc24-51c99b457ae0'"
+                [articleUsedInCampaignId]="
+                    'd4851d0b-dc68-431a-932e-b165097ebb5d'
+                "
+                [translatedSource]="translatedSource"
+                [tabID]="tabID"
+                [globalProperties]="globalProperties"
+                (outputData)="outputDataHandler($event)"
+            >
             </data-entry-article-grid>
         </div>
         <div *ngSwitchCase="151" class="data-entry-article-grid">
-            <data-entry-article-grid-campaign #currentComponent
-                                     [articleOrderGridId]="'73a84b26-a637-4f43-bc24-51c99b457ae0'"
-                                     [articleUsedInCampaignId]="'d4851d0b-dc68-431a-932e-b165097ebb5d'"
-                                     [translatedSource]="translatedSource"
-                                     [tabID]="tabID"
-                                     [globalProperties]="globalProperties"
-                                     (outputData)="outputDataHandler($event)">
+            <data-entry-article-grid-campaign
+                #currentComponent
+                [articleOrderGridId]="'73a84b26-a637-4f43-bc24-51c99b457ae0'"
+                [articleUsedInCampaignId]="
+                    'd4851d0b-dc68-431a-932e-b165097ebb5d'
+                "
+                [translatedSource]="translatedSource"
+                [tabID]="tabID"
+                [globalProperties]="globalProperties"
+                (outputData)="outputDataHandler($event)"
+            >
             </data-entry-article-grid-campaign>
         </div>
         <div *ngSwitchCase="68">
-            <data-entry-order-payment-type #currentComponent
-                                           [translatedSource]="translatedSource"
-                                           [layoutViewMode]="orderDataEntryWidgetLayoutMode"
-                                           [tabID]="tabID"
-                                           (outputData)="outputDataHandler($event)">
+            <data-entry-order-payment-type
+                #currentComponent
+                [translatedSource]="translatedSource"
+                [layoutViewMode]="orderDataEntryWidgetLayoutMode"
+                [tabID]="tabID"
+                (outputData)="outputDataHandler($event)"
+            >
             </data-entry-order-payment-type>
         </div>
         <div *ngSwitchCase="66" class="full-height">
             <image-zoomer [tabID]="tabID"></image-zoomer>
         </div>
         <div *ngSwitchCase="67">
-            <data-entry-scanning-status #currentComponent
-                                        [translatedSource]="translatedSource"
-                                        [tabID]="tabID">
+            <data-entry-scanning-status
+                #currentComponent
+                [translatedSource]="translatedSource"
+                [tabID]="tabID"
+            >
             </data-entry-scanning-status>
         </div>
         <div *ngSwitchCase="101">
-            <number-data-entry-order-summary #currentComponent
-                                             [globalProperties]="globalProperties"
-                                             [tabID]="tabID"
-                                             [translatedSource]="translatedSource">
+            <number-data-entry-order-summary
+                #currentComponent
+                [globalProperties]="globalProperties"
+                [tabID]="tabID"
+                [translatedSource]="translatedSource"
+            >
             </number-data-entry-order-summary>
         </div>
         <div *ngSwitchCase="102">
-            <order-list-summary #currentComponent
-                                [gridId]="'d75edd57-8535-42f2-96cb-2d8f6fe65477'"
-                                [tabID]="tabID"
-                                [fieldFilters]="fieldFilters"
-                                [selectedFilter]="selectedFilter"
-                                [globalProperties]="globalProperties"
-                                (onHeaderColsUpdated)="onHeaderColsUpdatedHandler($event)"
-                                [translatedSource]="translatedSource">
+            <order-list-summary
+                #currentComponent
+                [gridId]="'d75edd57-8535-42f2-96cb-2d8f6fe65477'"
+                [tabID]="tabID"
+                [fieldFilters]="fieldFilters"
+                [selectedFilter]="selectedFilter"
+                [globalProperties]="globalProperties"
+                (onHeaderColsUpdated)="onHeaderColsUpdatedHandler($event)"
+                [translatedSource]="translatedSource"
+            >
             </order-list-summary>
         </div>
-        <div *ngSwitchCase="119"
-             class="customer-status-widget">
-            <customer-status-data-entry #currentComponent
-                                        [tabID]="tabID"
-                                        [translatedSource]="translatedSource">
+        <div *ngSwitchCase="119" class="customer-status-widget">
+            <customer-status-data-entry
+                #currentComponent
+                [tabID]="tabID"
+                [translatedSource]="translatedSource"
+            >
             </customer-status-data-entry>
         </div>
-        <div *ngSwitchCase="120"
-             class="customer-status-widget">
-            <customer-status-data-entry #currentComponent
-                                        [tabID]="tabID"
-                                        [isCustomerBusinessStatus]="true"
-                                        [translatedSource]="translatedSource">
+        <div *ngSwitchCase="120" class="customer-status-widget">
+            <customer-status-data-entry
+                #currentComponent
+                [tabID]="tabID"
+                [isCustomerBusinessStatus]="true"
+                [translatedSource]="translatedSource"
+            >
             </customer-status-data-entry>
         </div>
-        <div *ngSwitchCase="125"
-             class="customer-order-widget">
-            <customer-order-data-entry #currentComponent
-                                       [tabID]="tabID"
-                                       [gridId]="'cbcfcd93-5ea3-4697-ad8d-fe40127f180f'"
-                                       [translatedSource]="translatedSource"
-                                       (onHeaderColsUpdated)="onHeaderColsUpdatedHandler($event)">
+        <div *ngSwitchCase="125" class="customer-order-widget">
+            <customer-order-data-entry
+                #currentComponent
+                [tabID]="tabID"
+                [gridId]="'cbcfcd93-5ea3-4697-ad8d-fe40127f180f'"
+                [translatedSource]="translatedSource"
+                (onHeaderColsUpdated)="onHeaderColsUpdatedHandler($event)"
+            >
             </customer-order-data-entry>
         </div>
-        <div *ngSwitchCase="146"
-             class="customer-status-widget">
-            <scan-item-comment #currentComponent
-                               [tabID]="tabID"
-                               [translatedSource]="translatedSource">
+        <div *ngSwitchCase="146" class="customer-status-widget">
+            <scan-item-comment
+                #currentComponent
+                [tabID]="tabID"
+                [translatedSource]="translatedSource"
+            >
             </scan-item-comment>
+        </div>
+        <div *ngSwitchCase="172" class="customer-status-widget">
+            <open-invoice-status-data-entry
+                #currentComponent
+                [tabID]="tabID"
+                [translatedSource]="translatedSource"
+            >
+            </open-invoice-status-data-entry>
         </div>
     </div>
 
     <div class="cover-edit-mode" *ngIf="allowEdit">&nbsp;</div>
 </div>
-<widget-module-info-translation *ngIf="isShowTranslateDialog"
-                                [translateTextGridId]="'55ede6bf-3ec9-4fc4-af47-038eb042dd1b'"
-                                [data]="data"
-                                [isOrderDataEntry]="true"
-                                [isTranslateDataTextOnly]="false"
-                                (onHide)="onHiddenWidgetInfoTranslation($event)"
-                                #widgetInfoTranslation>
+<widget-module-info-translation
+    *ngIf="isShowTranslateDialog"
+    [translateTextGridId]="'55ede6bf-3ec9-4fc4-af47-038eb042dd1b'"
+    [data]="data"
+    [isOrderDataEntry]="true"
+    [isTranslateDataTextOnly]="false"
+    (onHide)="onHiddenWidgetInfoTranslation($event)"
+    #widgetInfoTranslation
+>
 </widget-module-info-translation>

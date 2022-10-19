@@ -121,6 +121,7 @@ export const WIDGETS_COMPONENTS = [
     xnForm.OrderDataEntryFormComponent,
     xnForm.CustomerDataEntryFormComponent,
     xnForm.CustomerStatusDataEntryComponent,
+    xnForm.OpenInvoiceStatusDataEntryComponent,
     xnForm.NoteFormDataEntryComponent,
     xnForm.CustomerOrderDataEntryComponent,
     xnForm.CommunicationDataEntryComponent,
