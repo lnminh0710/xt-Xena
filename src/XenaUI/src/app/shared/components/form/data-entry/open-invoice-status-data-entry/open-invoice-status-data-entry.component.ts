@@ -58,7 +58,7 @@ export class OpenInvoiceStatusDataEntryComponent
 
     private idPerson = null;
     public datasource: any;
-    public displayItems: any[] = [];
+    public displayItems: any;
     public hasDanger = false;
     private differ: any;
 
@@ -128,7 +128,7 @@ export class OpenInvoiceStatusDataEntryComponent
                         !customerDataState.formValue ||
                         !customerDataState.formValue.idPerson
                     ) {
-                        this.displayItems.length = 0;
+                        this.displayItems = null;
                         return;
                     }
 
@@ -179,12 +179,15 @@ export class OpenInvoiceStatusDataEntryComponent
             this.widgetTemplateSettingService
                 .getWidgetDetailByRequestString(widgetDetail, {
                     IdPerson: this.idPerson,
-                    IsShowOnlyActivated: "1",
                 })
                 .subscribe((response: WidgetDetail) => {
                     this.appErrorHandler.executeAction(() => {
                         this.datasource = this.datatableService.buildDataSource(
                             response.contentDetail
+                        );
+                        console.log(
+                            `Author:minh.lam , file: open-invoice-status-data-entry.component.ts , line 188 , this.appErrorHandler.executeAction , response.contentDetail`,
+                            this.datasource
                         );
                         this.processDatasource(this.datasource);
                     });
@@ -192,9 +195,7 @@ export class OpenInvoiceStatusDataEntryComponent
     }
 
     private processDatasource(datasource) {
-        this.hasDanger = false;
         this.displayItems = this.buildData(datasource);
-        this.hasDanger = this.checkHasDanger(this.displayItems);
     }
 
     public rebuildTranslateText() {
@@ -203,27 +204,9 @@ export class OpenInvoiceStatusDataEntryComponent
 
     private buildData(datasource) {
         if (!datasource || !datasource.data || !datasource.data.length) {
-            return [];
+            return null;
         }
 
-        return datasource.data
-            .filter((item) => {
-                return item.IsActive;
-            })
-            .map((item) => {
-                return {
-                    text: item.DefaultValue,
-                    isActive: item.IsActive,
-                    isDanger: item.IsDanger,
-                };
-            });
-    }
-
-    private checkHasDanger(displayItems) {
-        if (!displayItems || !displayItems.length) {
-            return false;
-        }
-
-        return !!displayItems.find((x) => x.isDanger);
+        return datasource.data[0];
     }
 }

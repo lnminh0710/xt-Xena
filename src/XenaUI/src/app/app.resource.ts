@@ -365,6 +365,11 @@ export const defaultLanguage = {
     Customer_Status_Data__Customer_Business_Status: "Customer Business Status",
     Customer_Status_Data__Customer_Status: "Customer Status",
     Open_Invoice_Status_Data__Open_Invoice_Status: "Open Invoice Status",
+    Open_Invoice_Status_Data__Total_Invoice: "Total Invoice :",
+    Open_Invoice_Status_Data__Total_Open_Invoice: "Total open invoice :",
+    Open_Invoice_Status_Data__Total_Open_Amount: "Total open amount:",
+    Open_Invoice_Status_Data__Highest_Reminder_Level:
+        "Highest reminder level :",
 
     // data-entry-order-summary.component.html
     Data_Entry_Order_Sum__From: "From",

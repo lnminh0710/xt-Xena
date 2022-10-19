@@ -36,3 +36,9 @@
 .white-color {
     color: white;
 }
+
+.row-item {
+    display: grid;
+    grid-template-columns: 130px max-content;
+    grid-gap: 16px;
+}

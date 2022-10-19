@@ -37,13 +37,14 @@ export enum WidgetType {
     EditPaymentType = 37,
     SAVLetter = 38,
     SAVSendLetter = 39,
-    NoteForm = 40
+    NoteForm = 40,
+    OpenInvoiceStatus = 172,
 }
 
 export enum WidgetKeyType {
     None = 0,
     Main = 1,
-    Sub = 2
+    Sub = 2,
 }
 
 export class WidgetConstant {
@@ -57,18 +58,16 @@ export class WidgetConstant {
         WidgetType.FileExplorer,
         WidgetType.ToolFileTemplate,
         WidgetType.EditableRoleTreeGrid,
-        WidgetType.FileExplorerWithLabel
+        WidgetType.FileExplorerWithLabel,
     ];
 
     static WidgetTypeIdAllowWidgetInfoTranslation: any[] = [
-        ...WidgetConstant.WidgetTypeIdCommon, ...[
-            WidgetType.FieldSet,
-            WidgetType.DataGrid
-        ]];
+        ...WidgetConstant.WidgetTypeIdCommon,
+        ...[WidgetType.FieldSet, WidgetType.DataGrid],
+    ];
 
     static WidgetTypeIdUpdateProperty: any[] = [
-        ...WidgetConstant.WidgetTypeIdCommon, ...[
-            WidgetType.Translation,
-            WidgetType.CustomerHistory
-        ]];
+        ...WidgetConstant.WidgetTypeIdCommon,
+        ...[WidgetType.Translation, WidgetType.CustomerHistory],
+    ];
 }
