@@ -1,41 +1,51 @@
-import { Input, Injectable, ViewChildren, QueryList } from '@angular/core';
-import { Router } from '@angular/router';
+import { Input, Injectable, ViewChildren, QueryList } from "@angular/core";
+import { Router } from "@angular/router";
 import {
-  NgGridConfig,
-  NgGridItemConfig,
-} from 'app/shared/components/grid-stack';
+    NgGridConfig,
+    NgGridItemConfig,
+} from "app/shared/components/grid-stack";
 import {
-  WidgetDetail,
-  FilterData,
-  VersionPropertiesModel,
-  LayoutPageInfoModel,
-  WidgetType,
-  WidgetKeyType,
-  WidgetState,
-  Module,
-  LightWidgetDetail,
-  WidgetPropertyModel,
-} from 'app/models';
+    WidgetDetail,
+    FilterData,
+    VersionPropertiesModel,
+    LayoutPageInfoModel,
+    WidgetType,
+    WidgetKeyType,
+    WidgetState,
+    Module,
+    LightWidgetDetail,
+    WidgetPropertyModel,
+} from "app/models";
 
 import {
     PropertyPanelService,
     ObservableShareService,
     AccessRightsService,
-} from 'app/services';
-import { WidgetUtils } from '../../utils';
-import { WidgetTemplateSettingService } from 'app/services';
-import { Subscription } from 'rxjs/Subscription';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { WidgetDetailActions, XnCommonActions } from 'app/state-management/store/actions';
-import { ICommunicationWidget, IWidgetInfo } from '../../components/widget-communication-dialog';
-import cloneDeep from 'lodash-es/cloneDeep';
-import uniqBy from 'lodash-es/uniqBy';
-import { BaseComponent } from 'app/pages/private/base';
-import { WidgetModuleComponent } from '../../components/widget-info';
-import { Observable } from 'rxjs/Observable';
-import { Uti } from 'app/utilities';
-import { ComboBoxTypeConstant, LocalStorageKey, PropertyNameOfWidgetProperty } from 'app/app.constants';
+} from "app/services";
+import { WidgetUtils } from "../../utils";
+import { WidgetTemplateSettingService } from "app/services";
+import { Subscription } from "rxjs/Subscription";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import {
+    WidgetDetailActions,
+    XnCommonActions,
+} from "app/state-management/store/actions";
+import {
+    ICommunicationWidget,
+    IWidgetInfo,
+} from "../../components/widget-communication-dialog";
+import cloneDeep from "lodash-es/cloneDeep";
+import uniqBy from "lodash-es/uniqBy";
+import { BaseComponent } from "app/pages/private/base";
+import { WidgetModuleComponent } from "../../components/widget-info";
+import { Observable } from "rxjs/Observable";
+import { Uti } from "app/utilities";
+import {
+    ComboBoxTypeConstant,
+    LocalStorageKey,
+    PropertyNameOfWidgetProperty,
+} from "app/app.constants";
 
 /**
  * WidgetBox
@@ -62,7 +72,7 @@ export class WidgetBox {
     // Get selected data
     public get data() {
         if (this.widgetStates && this.widgetStates.length) {
-            const selectedState = this.widgetStates.find(p => p.selected);
+            const selectedState = this.widgetStates.find((p) => p.selected);
             if (selectedState) {
                 return selectedState.data;
             }
@@ -73,7 +83,7 @@ export class WidgetBox {
     // Set selected data
     public set data(data) {
         if (this.widgetStates && this.widgetStates.length) {
-            const selectedState = this.widgetStates.find(p => p.selected);
+            const selectedState = this.widgetStates.find((p) => p.selected);
             if (selectedState) {
                 selectedState.data = data;
             }
@@ -98,7 +108,6 @@ interface IPromiseTrackerOptions {
  */
 @Injectable()
 export abstract class BaseWidgetContainer extends BaseComponent {
-
     @Input() currentModule: Module;
     @Input() filterWidgetIds: Array<string>;
 
@@ -117,7 +126,7 @@ export abstract class BaseWidgetContainer extends BaseComponent {
 
     // Collection of widgets
     protected widgetBoxes: Array<WidgetBox> = [];
-    protected moduleName = '';
+    protected moduleName = "";
     // Display related widget dialog
     public displayConnectedWidgetDialog = false;
     // Communication Widget Info
@@ -125,37 +134,37 @@ export abstract class BaseWidgetContainer extends BaseComponent {
 
     // Grid config
     public gridConfig: NgGridConfig = <NgGridConfig>{
-        'margins': [5],
-        'draggable': false,
-        'resizable': false,
-        'max_cols': 0,
-        'max_rows': 0,
-        'visible_cols': 0,
-        'visible_rows': 0,
-        'min_cols': 1,
-        'min_rows': 1,
-        'col_width': 1,
-        'row_height': 1,
-        'cascade': 'up-left',
-        'min_width': 2,
-        'min_height': 2,
-        'fix_to_grid': false,
-        'auto_style': true,
-        'auto_resize': false,
-        'maintain_ratio': false,
-        'prefer_new': false,
-        'zoom_on_drag': false,
-        'limit_to_screen': true
+        margins: [5],
+        draggable: false,
+        resizable: false,
+        max_cols: 0,
+        max_rows: 0,
+        visible_cols: 0,
+        visible_rows: 0,
+        min_cols: 1,
+        min_rows: 1,
+        col_width: 1,
+        row_height: 1,
+        cascade: "up-left",
+        min_width: 2,
+        min_height: 2,
+        fix_to_grid: false,
+        auto_style: true,
+        auto_resize: false,
+        maintain_ratio: false,
+        prefer_new: false,
+        zoom_on_drag: false,
+        limit_to_screen: true,
     };
 
     /**
      * widgetBoxesView
      */
     public get widgetBoxesView(): Array<WidgetBox> {
-        return this.widgetBoxes.filter(p => !p.isDeleted);
+        return this.widgetBoxes.filter((p) => !p.isDeleted);
     }
 
-    protected widgetListenKey = '';
+    protected widgetListenKey = "";
 
     protected layoutPageInfo: LayoutPageInfoModel[];
 
@@ -169,7 +178,7 @@ export abstract class BaseWidgetContainer extends BaseComponent {
     // Set False after saving or reset page
     protected isWidgetDesignDirty: boolean;
 
-    public currentWidgetStateKey = '';
+    public currentWidgetStateKey = "";
 
     constructor(
         protected store: Store<AppState>,
@@ -186,8 +195,8 @@ export abstract class BaseWidgetContainer extends BaseComponent {
 
         this.iPromiseTrackerOptions = {
             minDuration: 500,
-            delay: 2000
-        }
+            delay: 2000,
+        };
     }
 
     protected abstract saveWidgetPage(parmWidgetDetail?: WidgetDetail);
@@ -202,16 +211,26 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * destroy
      */
     protected destroy() {
-        this.widgetUtils.clearWidgetDataTypeValuesByPageId(this.ofModule.moduleNameTrim, this.pageId);
+        this.widgetUtils.clearWidgetDataTypeValuesByPageId(
+            this.ofModule.moduleNameTrim,
+            this.pageId
+        );
         if (WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim]) {
-            WidgetUtils.widgetDataTypeValues[this.ofModule.moduleNameTrim].renderFor = null;
+            WidgetUtils.widgetDataTypeValues[
+                this.ofModule.moduleNameTrim
+            ].renderFor = null;
         }
         const layoutPageInfo = new LayoutPageInfoModel({
             id: this.pageId,
             moduleName: this.moduleName,
-            widgetboxesTitle: []
+            widgetboxesTitle: [],
         });
-        this.store.dispatch(this.xnCommonActions.setWidgetboxesInfo(layoutPageInfo, this.ofModule));
+        this.store.dispatch(
+            this.xnCommonActions.setWidgetboxesInfo(
+                layoutPageInfo,
+                this.ofModule
+            )
+        );
     }
 
     /**
@@ -247,8 +266,14 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param widgetBox
      * @param promise
      */
-    protected addPromise(widgetBox: WidgetBox, promise: Promise<any> | Subscription) {
-        if (widgetBox.promiseList && widgetBox.promiseList.indexOf(promise) !== -1) {
+    protected addPromise(
+        widgetBox: WidgetBox,
+        promise: Promise<any> | Subscription
+    ) {
+        if (
+            widgetBox.promiseList &&
+            widgetBox.promiseList.indexOf(promise) !== -1
+        ) {
             return;
         }
 
@@ -268,8 +293,11 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param widgetBox
      * @param promise
      */
-    private finishPromise(widgetBox: WidgetBox, promise: Promise<any> | Subscription) {
-        promise['busyFulfilled'] = true;
+    private finishPromise(
+        widgetBox: WidgetBox,
+        promise: Promise<any> | Subscription
+    ) {
+        promise["busyFulfilled"] = true;
         const index = widgetBox.promiseList.indexOf(promise);
         if (index === -1) {
             return;
@@ -282,13 +310,13 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param widgetBox
      */
     protected addDelay(widgetBox: WidgetBox) {
-        if (!widgetBox)
-            return;
+        if (!widgetBox) return;
         widgetBox.delayPromise = setTimeout(
             (wgBox: WidgetBox) => {
                 wgBox.delayPromise = null;
             },
-            this.iPromiseTrackerOptions.delay, widgetBox
+            this.iPromiseTrackerOptions.delay,
+            widgetBox
         );
 
         widgetBox.isLoading = function () {
@@ -296,7 +324,7 @@ export abstract class BaseWidgetContainer extends BaseComponent {
                 return false;
             }
             return this.promiseList && this.promiseList.length > 0;
-        }
+        };
     }
 
     /**
@@ -307,9 +335,17 @@ export abstract class BaseWidgetContainer extends BaseComponent {
         // Fieldset widget not raise listen key
         if (!this.widgetUtils.isFieldsetWidget(widgetDetail)) {
             if (widgetDetail.widgetDataType.primaryKey) {
-                const primayIdValues = widgetDetail.widgetDataType.primaryKey.split(',');
-                primayIdValues.forEach(primayId => {
-                    this.widgetUtils.updateWidgetDataTypeValues(this.ofModule.moduleNameTrim, primayId, '', WidgetKeyType.Sub, widgetDetail, this.pageId);
+                const primayIdValues =
+                    widgetDetail.widgetDataType.primaryKey.split(",");
+                primayIdValues.forEach((primayId) => {
+                    this.widgetUtils.updateWidgetDataTypeValues(
+                        this.ofModule.moduleNameTrim,
+                        primayId,
+                        "",
+                        WidgetKeyType.Sub,
+                        widgetDetail,
+                        this.pageId
+                    );
                 });
             }
         }
@@ -321,12 +357,18 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      */
     protected checkEditStatusOfWidget(widgetDetail: WidgetDetail): boolean {
         let isEdited = false;
-        if (!this.widgetModuleComponents || !this.widgetModuleComponents.length) {
+        if (
+            !this.widgetModuleComponents ||
+            !this.widgetModuleComponents.length
+        ) {
             return isEdited;
         }
         // Loop to find valid widget need to check
         this.widgetModuleComponents.forEach((widgetModuleComponent) => {
-            if (!widgetModuleComponent.data || !widgetModuleComponent.data.widgetDataType) {
+            if (
+                !widgetModuleComponent.data ||
+                !widgetModuleComponent.data.widgetDataType
+            ) {
                 return;
             }
             if (widgetDetail.id == widgetModuleComponent.data.id) {
@@ -337,7 +379,8 @@ export abstract class BaseWidgetContainer extends BaseComponent {
                 // If this widget is parent of the others , and one of this widget's children is on edit mode
                 // Consider this widget is on edit mode.
                 if (!isEdited) {
-                    isEdited = widgetModuleComponent.checkCurrentWidgetHasChildrenInEditMode();
+                    isEdited =
+                        widgetModuleComponent.checkCurrentWidgetHasChildrenInEditMode();
                 }
             }
         });
@@ -349,11 +392,16 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param widgetDetail
      */
     protected resetToViewModeForWidgetDetail(widgetDetail: WidgetDetail) {
-        if (!this.widgetModuleComponents || !this.widgetModuleComponents.length) {
+        if (
+            !this.widgetModuleComponents ||
+            !this.widgetModuleComponents.length
+        ) {
             return;
         }
 
-        const widgetModuleComponent = this.widgetModuleComponents.find(p => (p.data && p.data.id == widgetDetail.id));
+        const widgetModuleComponent = this.widgetModuleComponents.find(
+            (p) => p.data && p.data.id == widgetDetail.id
+        );
         if (widgetModuleComponent) {
             widgetModuleComponent.resetWidgetToViewMode(true);
         }
@@ -364,21 +412,30 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param widgetBox
      * @param widgetDetail
      */
-    protected updateContentForWidgetBox(widgetBox: WidgetBox, widgetDetail: WidgetDetail) {
+    protected updateContentForWidgetBox(
+        widgetBox: WidgetBox,
+        widgetDetail: WidgetDetail
+    ) {
         if (this.currentWidgetStateKey) {
-
             // Find & Remove the current selected widget which not edited yet.
             let isEditedCurrentState: boolean;
-            const currentWidgetState = widgetBox.widgetStates.find(p => p.selected);
+            const currentWidgetState = widgetBox.widgetStates.find(
+                (p) => p.selected
+            );
             if (currentWidgetState) {
-                isEditedCurrentState = this.checkEditStatusOfWidget(widgetDetail);
+                isEditedCurrentState =
+                    this.checkEditStatusOfWidget(widgetDetail);
                 if (!isEditedCurrentState) {
-                    widgetBox.widgetStates = widgetBox.widgetStates.filter(p => p.key != currentWidgetState.key);
+                    widgetBox.widgetStates = widgetBox.widgetStates.filter(
+                        (p) => p.key != currentWidgetState.key
+                    );
                 }
             }
 
-            widgetBox.widgetStates.forEach(el => el.selected = false);
-            const nextState = widgetBox.widgetStates.find(p => p.key == this.currentWidgetStateKey);
+            widgetBox.widgetStates.forEach((el) => (el.selected = false));
+            const nextState = widgetBox.widgetStates.find(
+                (p) => p.key == this.currentWidgetStateKey
+            );
             if (nextState) {
                 // Default Keeping the current reference to keep UI.
                 nextState.selected = true;
@@ -387,16 +444,18 @@ export abstract class BaseWidgetContainer extends BaseComponent {
                     const isEdited = this.checkEditStatusOfWidget(widgetDetail);
                     if (isEdited) {
                         // Keeping the current reference to keep UI.
-                        nextState.data.contentDetail = widgetDetail.contentDetail;
-                    }
-                    else {
+                        nextState.data.contentDetail =
+                            widgetDetail.contentDetail;
+                    } else {
                         // Create new reference to redraw new data.
-                        nextState.data = cloneDeep(widgetDetail)
+                        nextState.data = cloneDeep(widgetDetail);
                     }
-                    widgetBox.widgetStates = Object.assign([], widgetBox.widgetStates);
+                    widgetBox.widgetStates = Object.assign(
+                        [],
+                        widgetBox.widgetStates
+                    );
                 });
-            }
-            else {
+            } else {
                 //widgetBox.widgetStates.push(new WidgetState({
                 //    key: this.currentWidgetStateKey,
                 //    data: cloneDeep(widgetDetail),
@@ -404,11 +463,13 @@ export abstract class BaseWidgetContainer extends BaseComponent {
                 //}));
 
                 if (!currentWidgetState || isEditedCurrentState) {
-                    widgetBox.widgetStates.push(new WidgetState({
-                        key: this.currentWidgetStateKey,
-                        data: cloneDeep(widgetDetail),
-                        selected: true
-                    }));
+                    widgetBox.widgetStates.push(
+                        new WidgetState({
+                            key: this.currentWidgetStateKey,
+                            data: cloneDeep(widgetDetail),
+                            selected: true,
+                        })
+                    );
                 }
                 // Reuse widgetState to redraw data on the existing component (to avoid re-new the new component)
                 else {
@@ -420,19 +481,25 @@ export abstract class BaseWidgetContainer extends BaseComponent {
                     widgetBox.widgetStates.push(currentWidgetState);
                 }
 
-                widgetBox.widgetStates = Object.assign([], widgetBox.widgetStates);
+                widgetBox.widgetStates = Object.assign(
+                    [],
+                    widgetBox.widgetStates
+                );
             }
-        }
-        else {
+        } else {
             // Fix bug auto refresh widget Return & Refund
-            if (!widgetBox.widgetStates || (widgetBox.widgetStates && !widgetBox.widgetStates.length)) {
+            if (
+                !widgetBox.widgetStates ||
+                (widgetBox.widgetStates && !widgetBox.widgetStates.length)
+            ) {
                 widgetBox.widgetStates = [];
-                widgetBox.widgetStates.push(new WidgetState({
-                    data: cloneDeep(widgetDetail),
-                    selected: true
-                }));
-            }
-            else {
+                widgetBox.widgetStates.push(
+                    new WidgetState({
+                        data: cloneDeep(widgetDetail),
+                        selected: true,
+                    })
+                );
+            } else {
                 const state = widgetBox.widgetStates[0];
                 state.data = cloneDeep(widgetDetail);
             }
@@ -445,7 +512,10 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * Only call 1 request for all the same type widgets
      * @param widgetDetails
      */
-    public reloadSharingWidgetDetails(widgetDetails: Array<WidgetDetail>, callback?: any) {
+    public reloadSharingWidgetDetails(
+        widgetDetails: Array<WidgetDetail>,
+        callback?: any
+    ) {
         // Should not cancel request
 
         // for (let index = 0; index < this.subscriptionArray.length; index++) {
@@ -453,50 +523,98 @@ export abstract class BaseWidgetContainer extends BaseComponent {
         // }
         // this.subscriptionArray = [];
 
-        const requestWidgetDetails = uniqBy(widgetDetails, (widgetDetail: WidgetDetail) => {
-            const filterParam = widgetDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
-            return widgetDetail.idRepWidgetApp + '_' + widgetDetail.idRepWidgetType + '_' + JSON.stringify(filterParam);
-        });
+        const requestWidgetDetails = uniqBy(
+            widgetDetails,
+            (widgetDetail: WidgetDetail) => {
+                const filterParam =
+                    widgetDetail.widgetDataType.listenKeyRequest(
+                        this.ofModule.moduleNameTrim
+                    );
+                return (
+                    widgetDetail.idRepWidgetApp +
+                    "_" +
+                    widgetDetail.idRepWidgetType +
+                    "_" +
+                    JSON.stringify(filterParam)
+                );
+            }
+        );
 
         requestWidgetDetails.forEach((wgDetail: WidgetDetail) => {
-            const key = this.widgetUtils.getWidgetDetailKeyForObservable(wgDetail, this.ofModule.moduleNameTrim);
-            const filterParam = wgDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
-            const observable: Observable<WidgetDetail> = this.widgetTemplateSettingService.getWidgetDetailByRequestString(wgDetail, filterParam);
+            const key = this.widgetUtils.getWidgetDetailKeyForObservable(
+                wgDetail,
+                this.ofModule.moduleNameTrim
+            );
+            const filterParam = wgDetail.widgetDataType.listenKeyRequest(
+                this.ofModule.moduleNameTrim
+            );
+            const observable: Observable<WidgetDetail> =
+                this.widgetTemplateSettingService.getWidgetDetailByRequestString(
+                    wgDetail,
+                    filterParam
+                );
             this.obserableShareService.setObservable(key, observable);
         });
 
         requestWidgetDetails.forEach((wgDetail: WidgetDetail) => {
-            const key = this.widgetUtils.getWidgetDetailKeyForObservable(wgDetail, this.ofModule.moduleNameTrim);
+            const key = this.widgetUtils.getWidgetDetailKeyForObservable(
+                wgDetail,
+                this.ofModule.moduleNameTrim
+            );
             const observable$ = this.obserableShareService.getObservable(key);
             if (observable$) {
-                const subscription = observable$.subscribe((widgetDetail: WidgetDetail) => {
-                    if (widgetDetail) {
-                        //
-                        const filterParam = widgetDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
-                        widgetDetails.forEach((data: WidgetDetail) => {
-                            const filterParamTarget = data.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
-                            if (
-                                (data.idRepWidgetApp == widgetDetail.idRepWidgetApp) &&
-                                (data.idRepWidgetType == widgetDetail.idRepWidgetType) &&
-                                JSON.stringify(filterParam) == JSON.stringify(filterParamTarget)) {
-                                data.contentDetail = widgetDetail.contentDetail;
-                                this.initListenKeyFromPrimaryKey(data);
-                                for (let j = 0; j < this.widgetBoxes.length; j++) {
-                                    if (this.widgetBoxes[j].id === data.id) {
-                                        this.updateContentForWidgetBox(this.widgetBoxes[j], data);
-                                        break;
+                const subscription = observable$.subscribe(
+                    (widgetDetail: WidgetDetail) => {
+                        if (widgetDetail) {
+                            //
+                            const filterParam =
+                                widgetDetail.widgetDataType.listenKeyRequest(
+                                    this.ofModule.moduleNameTrim
+                                );
+                            widgetDetails.forEach((data: WidgetDetail) => {
+                                const filterParamTarget =
+                                    data.widgetDataType.listenKeyRequest(
+                                        this.ofModule.moduleNameTrim
+                                    );
+                                if (
+                                    data.idRepWidgetApp ==
+                                        widgetDetail.idRepWidgetApp &&
+                                    data.idRepWidgetType ==
+                                        widgetDetail.idRepWidgetType &&
+                                    JSON.stringify(filterParam) ==
+                                        JSON.stringify(filterParamTarget)
+                                ) {
+                                    data.contentDetail =
+                                        widgetDetail.contentDetail;
+                                    this.initListenKeyFromPrimaryKey(data);
+                                    for (
+                                        let j = 0;
+                                        j < this.widgetBoxes.length;
+                                        j++
+                                    ) {
+                                        if (
+                                            this.widgetBoxes[j].id === data.id
+                                        ) {
+                                            this.updateContentForWidgetBox(
+                                                this.widgetBoxes[j],
+                                                data
+                                            );
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
+                        if (callback) {
+                            callback(wgDetail);
+                        }
                     }
-                    if (callback) {
-                        callback(wgDetail);
-                    }
-                });
+                );
                 // Should not cancel request
                 this.subscriptionArray.push(subscription);
-                const widgetBox = this.widgetBoxes.filter(p => p.id == wgDetail.id);
+                const widgetBox = this.widgetBoxes.filter(
+                    (p) => p.id == wgDetail.id
+                );
                 if (widgetBox.length) {
                     this.addPromise(widgetBox[0], subscription);
                 }
@@ -508,7 +626,10 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * reloadWidgetDetails
      * @param widgetDetails
      */
-    public reloadWidgetDetails(widgetDetails: Array<WidgetDetail>, callback?: any) {
+    public reloadWidgetDetails(
+        widgetDetails: Array<WidgetDetail>,
+        callback?: any
+    ) {
         // Should not cancel request
 
         // for (let index = 0; index < this.subscriptionArray.length; index++) {
@@ -524,13 +645,16 @@ export abstract class BaseWidgetContainer extends BaseComponent {
             }
 
             let accessRight: any;
-            if (wgDetail.idRepWidgetType === WidgetType.Translation || wgDetail.idRepWidgetType === WidgetType.BlankWidget) {
+            if (
+                wgDetail.idRepWidgetType === WidgetType.Translation ||
+                wgDetail.idRepWidgetType === WidgetType.BlankWidget
+            ) {
                 accessRight = this.accessRightService.createFullAccessRight();
             } else {
                 accessRight = this.accessRightService.SetAccessRightsForWidget({
                     idSettingsGUIParent: this.ofModule.idSettingsGUIParent,
                     idSettingsGUI: this.ofModule.idSettingsGUI,
-                    idRepWidgetApp: wgDetail.idRepWidgetApp
+                    idRepWidgetApp: wgDetail.idRepWidgetApp,
                 });
             }
 
@@ -538,70 +662,91 @@ export abstract class BaseWidgetContainer extends BaseComponent {
                 return;
             }
 
-            let filterParam = wgDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
+            let filterParam = wgDetail.widgetDataType.listenKeyRequest(
+                this.ofModule.moduleNameTrim
+            );
             const externalParam = this.getExternalParam(wgDetail);
             filterParam = Object.assign(filterParam, externalParam);
-            if (this.widgetModuleComponents && this.widgetModuleComponents.length) {
-                const widgetModuleComponent = this.widgetModuleComponents.find(p => p.data.id == wgDetail.id);
+            if (
+                this.widgetModuleComponents &&
+                this.widgetModuleComponents.length
+            ) {
+                const widgetModuleComponent = this.widgetModuleComponents.find(
+                    (p) => p.data.id == wgDetail.id
+                );
                 if (widgetModuleComponent && widgetModuleComponent.templateId) {
-                    filterParam['IsSetAsDefault'] = 1;
-                    filterParam['IdRepSalesCampaignAddOnTemplate'] = widgetModuleComponent.templateId;
+                    filterParam["IsSetAsDefault"] = 1;
+                    filterParam["IdRepSalesCampaignAddOnTemplate"] =
+                        widgetModuleComponent.templateId;
 
-                    if (!widgetModuleComponent.widgetMenuStatusComponent.isEditTemplateMode) {
-                        filterParam['IsLoadTemplate'] = 1;
+                    if (
+                        !widgetModuleComponent.widgetMenuStatusComponent
+                            .isEditTemplateMode
+                    ) {
+                        filterParam["IsLoadTemplate"] = 1;
                     }
                 }
 
-                if (widgetModuleComponent && widgetModuleComponent.data &&
-                    (widgetModuleComponent.data.idRepWidgetApp == 116 || widgetModuleComponent.data.idRepWidgetApp == 117)) {
+                if (
+                    widgetModuleComponent &&
+                    widgetModuleComponent.data &&
+                    (widgetModuleComponent.data.idRepWidgetApp == 116 ||
+                        widgetModuleComponent.data.idRepWidgetApp == 117)
+                ) {
                     if (widgetModuleComponent.isCustomerStatusWidgetEdit) {
-                        filterParam['IsShowOnlyActivated'] = '0';
+                        filterParam["IsShowOnlyActivated"] = "0";
                     } else {
-                        filterParam['IsShowOnlyActivated'] = '1';
+                        filterParam["IsShowOnlyActivated"] = "1";
                     }
                 }
             } else {
-                if (wgDetail.idRepWidgetApp == 116 || wgDetail.idRepWidgetApp == 117) {
-                    filterParam['IsShowOnlyActivated'] = '1';
-        }
-      }
-
-      if (wgDetail.idRepWidgetType === WidgetType.Chart) {
-        const box = this.widgetBoxes.find((item) => item.id === wgDetail.id);
-        if (box) {
-          const properties = this.propertyPanelService.mergeProperties(
-            box.properties,
-            wgDetail.defaultProperties
-          );
-          const dataSourceObject: WidgetPropertyModel =
-            this.propertyPanelService.getItemRecursive(
-              properties.properties,
-              ComboBoxTypeConstant.chartDataSourceObject,
-              PropertyNameOfWidgetProperty.ComboboxStoreObject
-            );
-          if (dataSourceObject && dataSourceObject.value) {
-            wgDetail.request = wgDetail.request.replace(
-              '<<ObjectName>>',
-              dataSourceObject.value
-            );
-          }
-        }
-      }
-
-      const subscription = this.widgetTemplateSettingService
-        .getWidgetDetailByRequestString(wgDetail, filterParam)
-        .subscribe((widgetDetail: WidgetDetail) => {
-          if (widgetDetail) {
-            this.initListenKeyFromPrimaryKey(widgetDetail);
-            for (let j = 0; j < this.widgetBoxes.length; j++) {
-              if (this.widgetBoxes[j].id === widgetDetail.id) {
-                this.updateContentForWidgetBox(
-                  this.widgetBoxes[j],
-                  widgetDetail
-                );
-                break;
-              }
+                if (
+                    wgDetail.idRepWidgetApp == 116 ||
+                    wgDetail.idRepWidgetApp == 117
+                ) {
+                    filterParam["IsShowOnlyActivated"] = "1";
+                }
             }
+
+            if (wgDetail.idRepWidgetType === WidgetType.Chart) {
+                const box = this.widgetBoxes.find(
+                    (item) => item.id === wgDetail.id
+                );
+                if (box) {
+                    const properties =
+                        this.propertyPanelService.mergeProperties(
+                            box.properties,
+                            wgDetail.defaultProperties
+                        );
+                    const dataSourceObject: WidgetPropertyModel =
+                        this.propertyPanelService.getItemRecursive(
+                            properties.properties,
+                            ComboBoxTypeConstant.chartDataSourceObject,
+                            PropertyNameOfWidgetProperty.ComboboxStoreObject
+                        );
+                    if (dataSourceObject && dataSourceObject.value) {
+                        wgDetail.request = wgDetail.request.replace(
+                            "<<ObjectName>>",
+                            dataSourceObject.value
+                        );
+                    }
+                }
+            }
+
+            const subscription = this.widgetTemplateSettingService
+                .getWidgetDetailByRequestString(wgDetail, filterParam)
+                .subscribe((widgetDetail: WidgetDetail) => {
+                    if (widgetDetail) {
+                        this.initListenKeyFromPrimaryKey(widgetDetail);
+                        for (let j = 0; j < this.widgetBoxes.length; j++) {
+                            if (this.widgetBoxes[j].id === widgetDetail.id) {
+                                this.updateContentForWidgetBox(
+                                    this.widgetBoxes[j],
+                                    widgetDetail
+                                );
+                                break;
+                            }
+                        }
                     }
                     if (callback) {
                         callback(wgDetail);
@@ -610,7 +755,9 @@ export abstract class BaseWidgetContainer extends BaseComponent {
 
             // Should not cancel request
             // this.subscriptionArray.push(subscription);
-            const widgetBox = this.widgetBoxes.filter(p => p.id == wgDetail.id);
+            const widgetBox = this.widgetBoxes.filter(
+                (p) => p.id == wgDetail.id
+            );
             if (widgetBox.length) {
                 this.addPromise(widgetBox[0], subscription);
             }
@@ -623,20 +770,23 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      */
     protected getExternalParam(widgetDetail: WidgetDetail) {
         const filterParam = {};
-        const widgetBox = this.widgetBoxes.find(p => p.id == widgetDetail.id);
+        const widgetBox = this.widgetBoxes.find((p) => p.id == widgetDetail.id);
         if (widgetBox && widgetBox.properties) {
             const properties = widgetBox.properties.properties;
             if (properties) {
-                const externalParam = this.propertyPanelService.getItemRecursive(properties, 'ExternalParam');
+                const externalParam =
+                    this.propertyPanelService.getItemRecursive(
+                        properties,
+                        "ExternalParam"
+                    );
                 if (externalParam && externalParam.value) {
                     if (Uti.isJsonString(externalParam.value)) {
                         const s1 = JSON.stringify(externalParam.value);
                         const s2 = JSON.stringify(s1);
                         const s3 = s2.substring(1, s2.length - 1);
-                        filterParam['ExternalParam'] = s3;
-                    }
-                    else {
-                        filterParam['ExternalParam'] = externalParam.value;
+                        filterParam["ExternalParam"] = s3;
+                    } else {
+                        filterParam["ExternalParam"] = externalParam.value;
                     }
                 }
             }
@@ -653,7 +803,6 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param widgetDetail
      */
     protected detectListenKeyAfterDrag(widgetDetail: WidgetDetail): boolean {
-
         let listenToAny: boolean;
         let parentOfAny: boolean;
 
@@ -665,7 +814,10 @@ export abstract class BaseWidgetContainer extends BaseComponent {
             return false;
         }
 
-        if (widgetDetail.widgetDataType.listenKey && widgetDetail.widgetDataType.listenKey.key) {
+        if (
+            widgetDetail.widgetDataType.listenKey &&
+            widgetDetail.widgetDataType.listenKey.key
+        ) {
             listenToAny = true;
         }
 
@@ -693,12 +845,14 @@ export abstract class BaseWidgetContainer extends BaseComponent {
 
         if (listenToAny && this.widgetListenKey) {
             const listenKey = widgetDetail.widgetDataType.listenKey.key;
-            const listenKeyArr = listenKey.split(',');
+            const listenKeyArr = listenKey.split(",");
 
-            const parkedItemKeyArr = this.widgetListenKey.split(',');
+            const parkedItemKeyArr = this.widgetListenKey.split(",");
             for (const listenkey of listenKeyArr) {
                 for (const parkedItemKey of parkedItemKeyArr) {
-                    if (listenkey.toLowerCase() == parkedItemKey.toLowerCase()) {
+                    if (
+                        listenkey.toLowerCase() == parkedItemKey.toLowerCase()
+                    ) {
                         mainCount += 1;
                         break;
                     }
@@ -718,45 +872,55 @@ export abstract class BaseWidgetContainer extends BaseComponent {
 
         // Check for subs
         if (this.layoutPageInfo && this.layoutPageInfo.length) {
-            this.layoutPageInfo.forEach((layoutPageInfoModel: LayoutPageInfoModel) => {
-                if (layoutPageInfoModel.widgetboxesTitle && layoutPageInfoModel.widgetboxesTitle.length) {
-                    layoutPageInfoModel.widgetboxesTitle.forEach(box => {
-                        const targetWidgetDetail: WidgetDetail = box.widgetDetail;
-                        if (targetWidgetDetail) {
-                            const status = this.widgetUtils.isValidWidgetToConnect(widgetDetail, targetWidgetDetail);
-                            if (status && status.isValid) {
-                                subCount++;
-                                switch (status.mode) {
-                                    case 'child->parent':
-                                        relatingWidgetInfos.push({
-                                            id: targetWidgetDetail.id,
-                                            title: targetWidgetDetail.title
-                                        });
-                                        break;
-                                    case 'parent->child':
-                                        childrenRelatingWidgetInfos.push({
-                                            id: targetWidgetDetail.id,
-                                            title: targetWidgetDetail.title
-                                        });
-                                        break;
-                                    case 'same-widget':
-                                        sameTypeWidgetIds.push({
-                                            id: targetWidgetDetail.id,
-                                            title: targetWidgetDetail.title
-                                        });
-                                        break;
-                                    case 'chart-table':
-                                        chartLinkTableInfos.push({
-                                            id: targetWidgetDetail.id,
-                                            title: targetWidgetDetail.title
-                                        });
-                                        break;
+            this.layoutPageInfo.forEach(
+                (layoutPageInfoModel: LayoutPageInfoModel) => {
+                    if (
+                        layoutPageInfoModel.widgetboxesTitle &&
+                        layoutPageInfoModel.widgetboxesTitle.length
+                    ) {
+                        layoutPageInfoModel.widgetboxesTitle.forEach((box) => {
+                            const targetWidgetDetail: WidgetDetail =
+                                box.widgetDetail;
+                            if (targetWidgetDetail) {
+                                const status =
+                                    this.widgetUtils.isValidWidgetToConnect(
+                                        widgetDetail,
+                                        targetWidgetDetail
+                                    );
+                                if (status && status.isValid) {
+                                    subCount++;
+                                    switch (status.mode) {
+                                        case "child->parent":
+                                            relatingWidgetInfos.push({
+                                                id: targetWidgetDetail.id,
+                                                title: targetWidgetDetail.title,
+                                            });
+                                            break;
+                                        case "parent->child":
+                                            childrenRelatingWidgetInfos.push({
+                                                id: targetWidgetDetail.id,
+                                                title: targetWidgetDetail.title,
+                                            });
+                                            break;
+                                        case "same-widget":
+                                            sameTypeWidgetIds.push({
+                                                id: targetWidgetDetail.id,
+                                                title: targetWidgetDetail.title,
+                                            });
+                                            break;
+                                        case "chart-table":
+                                            chartLinkTableInfos.push({
+                                                id: targetWidgetDetail.id,
+                                                title: targetWidgetDetail.title,
+                                            });
+                                            break;
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-            });
+            );
         }
 
         // Check if listen from sub.
@@ -770,20 +934,31 @@ export abstract class BaseWidgetContainer extends BaseComponent {
             widgetDetailNeedToConnect = widgetDetail;
             isConnectToMainSupport = true;
             isDisplayDialog = true;
-        }
-        else {
+        } else {
             // Only listen on Main
             if (isListenOnMain) {
-                this.widgetUtils.buildListenKeyConfigForWidgetDetail(widgetDetail, true);
+                this.widgetUtils.buildListenKeyConfigForWidgetDetail(
+                    widgetDetail,
+                    true
+                );
             }
             // Only listen on Sub
             else if (isListenOnSub) {
                 // Only listen from 1 parent
                 // then connect without display dialog
-                if ((relatingWidgetInfos && relatingWidgetInfos.length == 1) &&
-                    (!childrenRelatingWidgetInfos || childrenRelatingWidgetInfos.length == 0)) {
-                    this.widgetUtils.buildListenKeyConfigForWidgetDetail(widgetDetail, false);
-                    widgetDetail.widgetDataType.parentWidgetIds = [relatingWidgetInfos[0].id];
+                if (
+                    relatingWidgetInfos &&
+                    relatingWidgetInfos.length == 1 &&
+                    (!childrenRelatingWidgetInfos ||
+                        childrenRelatingWidgetInfos.length == 0)
+                ) {
+                    this.widgetUtils.buildListenKeyConfigForWidgetDetail(
+                        widgetDetail,
+                        false
+                    );
+                    widgetDetail.widgetDataType.parentWidgetIds = [
+                        relatingWidgetInfos[0].id,
+                    ];
 
                     // Set connect status for parent
                     const communicationWidget: ICommunicationWidget = {
@@ -791,24 +966,37 @@ export abstract class BaseWidgetContainer extends BaseComponent {
                         childrenRelatingWidgetInfos: null,
                         relatingWidgetInfos: relatingWidgetInfos,
                         isConnectToMainSupport: null,
-                        sameTypeWidgetInfos: null
+                        sameTypeWidgetInfos: null,
                     };
-                    this.store.dispatch(this.widgetDetailActions.setConnectForParentFromChildWidget(communicationWidget, this.ofModule));
+                    this.store.dispatch(
+                        this.widgetDetailActions.setConnectForParentFromChildWidget(
+                            communicationWidget,
+                            this.ofModule
+                        )
+                    );
                 }
                 // Only listen from 1 child
                 // then connect without display dialog
-                else if ((childrenRelatingWidgetInfos && childrenRelatingWidgetInfos.length == 1) &&
-                    (!relatingWidgetInfos || relatingWidgetInfos.length == 0)) {
+                else if (
+                    childrenRelatingWidgetInfos &&
+                    childrenRelatingWidgetInfos.length == 1 &&
+                    (!relatingWidgetInfos || relatingWidgetInfos.length == 0)
+                ) {
                     const communicationWidget: ICommunicationWidget = {
                         srcWidgetDetail: widgetDetail,
-                        childrenRelatingWidgetInfos: childrenRelatingWidgetInfos,
+                        childrenRelatingWidgetInfos:
+                            childrenRelatingWidgetInfos,
                         relatingWidgetInfos: null,
                         isConnectToMainSupport: null,
-                        sameTypeWidgetInfos: null
+                        sameTypeWidgetInfos: null,
                     };
-                    this.store.dispatch(this.widgetDetailActions.setConnectForChildFromParentWidget(communicationWidget, this.ofModule));
-                }
-                else {
+                    this.store.dispatch(
+                        this.widgetDetailActions.setConnectForChildFromParentWidget(
+                            communicationWidget,
+                            this.ofModule
+                        )
+                    );
+                } else {
                     // Display dialog
                     widgetDetailNeedToConnect = widgetDetail;
                     isDisplayDialog = true;
@@ -830,7 +1018,7 @@ export abstract class BaseWidgetContainer extends BaseComponent {
                 srcWidgetDetail: widgetDetailNeedToConnect || widgetDetail,
                 isConnectToMainSupport: isConnectToMainSupport,
                 sameTypeWidgetInfos: sameTypeWidgetIds,
-                chartLinkTableInfos: chartLinkTableInfos
+                chartLinkTableInfos: chartLinkTableInfos,
             };
         }
 
@@ -850,13 +1038,16 @@ export abstract class BaseWidgetContainer extends BaseComponent {
 
         // Fix bug: [CAMPAIGN] number after title of Campaign Countries Table widget is lost after closing module and open again
         // We need to find and get WidgetDetail from WigetBox to have valid title
-        const box = this.widgetBoxes.find(p => p.data.id === widgetDetail.id);
+        const box = this.widgetBoxes.find((p) => p.data.id === widgetDetail.id);
         if (box) {
             box.isDirty = true;
         }
 
-        if (widgetDetail.idRepWidgetType != WidgetType.Translation
-            && (!box.data.widgetDataType.otherSetting || !box.data.widgetDataType.otherSetting.doesNotHasGetSP)) {
+        if (
+            widgetDetail.idRepWidgetType != WidgetType.Translation &&
+            (!box.data.widgetDataType.otherSetting ||
+                !box.data.widgetDataType.otherSetting.doesNotHasGetSP)
+        ) {
             this.reloadWidgetDetails([box.data]);
         }
 
@@ -866,7 +1057,9 @@ export abstract class BaseWidgetContainer extends BaseComponent {
         //}
         //
         if (this.widgetModuleComponents && this.widgetModuleComponents.length) {
-            const widgetModuleComponent = this.widgetModuleComponents.find(p => p.data.id == widgetDetail.id);
+            const widgetModuleComponent = this.widgetModuleComponents.find(
+                (p) => p.data.id == widgetDetail.id
+            );
             if (widgetModuleComponent) {
                 widgetModuleComponent.linkedSuccessWidget = true;
                 widgetModuleComponent.reattach();
@@ -879,23 +1072,39 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param widgetDetail
      */
     public onRemoveLinkingWidget(eventData: any) {
-        if (!eventData.widgetDetail.widgetDataType.otherSetting || !eventData.widgetDetail.widgetDataType.otherSetting.doesNotHasGetSP) {
+        if (
+            !eventData.widgetDetail.widgetDataType.otherSetting ||
+            !eventData.widgetDetail.widgetDataType.otherSetting.doesNotHasGetSP
+        ) {
             this.reloadWidgetDetails([eventData.widgetDetail]);
         }
 
-        const box = this.widgetBoxes.filter(p => p.data.id === eventData.widgetDetail.id);
+        const box = this.widgetBoxes.filter(
+            (p) => p.data.id === eventData.widgetDetail.id
+        );
+
         if (box.length) {
             box[0].isDirty = true;
         }
 
         // Remove connection for children widgets
         if (!eventData.notRemoveChildrenConnection) {
-            this.store.dispatch(this.widgetDetailActions.requestRemoveConnectionFromParentWidget(eventData.widgetDetail.id, this.ofModule));
+            this.store.dispatch(
+                this.widgetDetailActions.requestRemoveConnectionFromParentWidget(
+                    eventData.widgetDetail.id,
+                    this.ofModule
+                )
+            );
         }
 
         // Remove connection for parent widgets
         if (eventData.parentWidgetIds && eventData.parentWidgetIds.length) {
-            this.store.dispatch(this.widgetDetailActions.requestRemoveConnectionFromChildWidget(eventData.parentWidgetIds, this.ofModule));
+            this.store.dispatch(
+                this.widgetDetailActions.requestRemoveConnectionFromChildWidget(
+                    eventData.parentWidgetIds,
+                    this.ofModule
+                )
+            );
         }
     }
 
@@ -904,27 +1113,37 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param Array
      */
     onConnectedWidgetLinkHover(data: WidgetDetail) {
-        if (!data)
-            return;
+        if (!data) return;
 
         let widgetIds = this.getLinkWidgetIdsByWidgetId(data);
 
-        this.store.dispatch(this.widgetDetailActions.hoverAndDisplayRelatingWidget({
-            mode: 'hover',
-            relatingWidgetIds: widgetIds,
-            scrWidgetDetail: data
-        }, this.ofModule));
+        this.store.dispatch(
+            this.widgetDetailActions.hoverAndDisplayRelatingWidget(
+                {
+                    mode: "hover",
+                    relatingWidgetIds: widgetIds,
+                    scrWidgetDetail: data,
+                },
+                this.ofModule
+            )
+        );
     }
 
-    protected getLinkWidgetIdsByWidgetId(data: WidgetDetail | LightWidgetDetail): Array<string> {
+    protected getLinkWidgetIdsByWidgetId(
+        data: WidgetDetail | LightWidgetDetail
+    ): Array<string> {
         let widgetIds: Array<string> = [];
 
         const foundWidgetDetails = this.findValidSyncSameTypeWidgets(data);
         if (foundWidgetDetails && foundWidgetDetails.length) {
-            widgetIds = foundWidgetDetails.map(p => p.id);
+            widgetIds = foundWidgetDetails.map((p) => p.id);
         }
 
-        if (data.widgetDataType && data.widgetDataType.parentWidgetIds && data.widgetDataType.parentWidgetIds.length) {
+        if (
+            data.widgetDataType &&
+            data.widgetDataType.parentWidgetIds &&
+            data.widgetDataType.parentWidgetIds.length
+        ) {
             widgetIds = widgetIds.concat(data.widgetDataType.parentWidgetIds);
         }
         return widgetIds;
@@ -934,21 +1153,34 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * onConnectedWidgetLinkUnHover
      */
     onConnectedWidgetLinkUnHover() {
-        this.store.dispatch(this.widgetDetailActions.hoverAndDisplayRelatingWidget({
-            mode: 'unHover',
-            relatingWidgetIds: null,
-            scrWidgetDetail: null
-        }, this.ofModule));
+        this.store.dispatch(
+            this.widgetDetailActions.hoverAndDisplayRelatingWidget(
+                {
+                    mode: "unHover",
+                    relatingWidgetIds: null,
+                    scrWidgetDetail: null,
+                },
+                this.ofModule
+            )
+        );
     }
 
     /**
      * findValidSyncSameTypeWidgets
      * @param widgetDetail
      */
-    findValidSyncSameTypeWidgets(widgetDetail: WidgetDetail | LightWidgetDetail) {
+    findValidSyncSameTypeWidgets(
+        widgetDetail: WidgetDetail | LightWidgetDetail
+    ) {
         const idx = 0;
-        const foundWidgetDetails: Array<WidgetDetail | LightWidgetDetail> = [widgetDetail];
-        this.findValidSyncWidgetRecursive(widgetDetail, foundWidgetDetails, idx);
+        const foundWidgetDetails: Array<WidgetDetail | LightWidgetDetail> = [
+            widgetDetail,
+        ];
+        this.findValidSyncWidgetRecursive(
+            widgetDetail,
+            foundWidgetDetails,
+            idx
+        );
         return foundWidgetDetails;
     }
 
@@ -958,8 +1190,11 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param foundWidgetDetails
      * @param index
      */
-    private findValidSyncWidgetRecursive(widgetDetail: WidgetDetail | LightWidgetDetail, foundWidgetDetails: Array<WidgetDetail | LightWidgetDetail>, index: number) {
-
+    private findValidSyncWidgetRecursive(
+        widgetDetail: WidgetDetail | LightWidgetDetail,
+        foundWidgetDetails: Array<WidgetDetail | LightWidgetDetail>,
+        index: number
+    ) {
         const lengthBeforeFind = foundWidgetDetails.length;
 
         this.findValidSyncWidgetFromParent(widgetDetail, foundWidgetDetails);
@@ -968,15 +1203,17 @@ export abstract class BaseWidgetContainer extends BaseComponent {
         const lengthAfterFind = foundWidgetDetails.length;
 
         if (lengthAfterFind > lengthBeforeFind) {
-
             foundWidgetDetails.forEach((foundWidgetDetail, idx) => {
                 if (idx > index) {
                     index = idx;
-                    this.findValidSyncWidgetRecursive(foundWidgetDetail, foundWidgetDetails, index);
+                    this.findValidSyncWidgetRecursive(
+                        foundWidgetDetail,
+                        foundWidgetDetails,
+                        index
+                    );
                 }
             });
-        }
-        else {
+        } else {
             return;
         }
     }
@@ -986,22 +1223,29 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param widgetDetail
      * @param foundWidgetDetail
      */
-    private findValidSyncWidgetFromParent(widgetDetail: WidgetDetail | LightWidgetDetail, foundWidgetDetail: Array<WidgetDetail | LightWidgetDetail>) {
+    private findValidSyncWidgetFromParent(
+        widgetDetail: WidgetDetail | LightWidgetDetail,
+        foundWidgetDetail: Array<WidgetDetail | LightWidgetDetail>
+    ) {
         if (!this.layoutPageInfo) {
             return;
         }
         if (widgetDetail.syncWidgetIds && widgetDetail.syncWidgetIds.length) {
-            this.layoutPageInfo.forEach(pageInfo => {
-                pageInfo.widgetboxesTitle.forEach(widgetbox => {
-                    const iRet = widgetDetail.syncWidgetIds.filter(p => p == widgetbox.widgetDetail.id);
+            this.layoutPageInfo.forEach((pageInfo) => {
+                pageInfo.widgetboxesTitle.forEach((widgetbox) => {
+                    const iRet = widgetDetail.syncWidgetIds.filter(
+                        (p) => p == widgetbox.widgetDetail.id
+                    );
                     if (iRet.length) {
-                        const rs = foundWidgetDetail.filter(p => p.id == widgetbox.widgetDetail.id);
+                        const rs = foundWidgetDetail.filter(
+                            (p) => p.id == widgetbox.widgetDetail.id
+                        );
                         if (!rs.length) {
                             foundWidgetDetail.push(widgetbox.widgetDetail);
                         }
                     }
                 });
-            })
+            });
         }
     }
 
@@ -1010,23 +1254,33 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      * @param widgetDetail
      * @param foundWidgetDetail
      */
-    private findValidSyncWidgetFromChild(widgetDetail: WidgetDetail | LightWidgetDetail, foundWidgetDetail: Array<WidgetDetail | LightWidgetDetail>) {
+    private findValidSyncWidgetFromChild(
+        widgetDetail: WidgetDetail | LightWidgetDetail,
+        foundWidgetDetail: Array<WidgetDetail | LightWidgetDetail>
+    ) {
         if (!this.layoutPageInfo) {
             return;
         }
-        this.layoutPageInfo.forEach(pageInfo => {
-            pageInfo.widgetboxesTitle.forEach(widgetbox => {
-                if (widgetbox.widgetDetail.syncWidgetIds && widgetbox.widgetDetail.syncWidgetIds.length) {
-                    const iRet = widgetbox.widgetDetail.syncWidgetIds.filter(p => p == widgetDetail.id);
+        this.layoutPageInfo.forEach((pageInfo) => {
+            pageInfo.widgetboxesTitle.forEach((widgetbox) => {
+                if (
+                    widgetbox.widgetDetail.syncWidgetIds &&
+                    widgetbox.widgetDetail.syncWidgetIds.length
+                ) {
+                    const iRet = widgetbox.widgetDetail.syncWidgetIds.filter(
+                        (p) => p == widgetDetail.id
+                    );
                     if (iRet.length) {
-                        const rs = foundWidgetDetail.filter(p => p.id == widgetbox.widgetDetail.id);
+                        const rs = foundWidgetDetail.filter(
+                            (p) => p.id == widgetbox.widgetDetail.id
+                        );
                         if (!rs.length) {
                             foundWidgetDetail.push(widgetbox.widgetDetail);
                         }
                     }
                 }
             });
-        })
+        });
     }
 
     /**
@@ -1044,7 +1298,9 @@ export abstract class BaseWidgetContainer extends BaseComponent {
      */
     onInitializedGrid(event) {
         // console.log('onInitializedGrid');
-        this.store.dispatch(this.widgetDetailActions.initializedWidgetContainer(this.ofModule));
+        this.store.dispatch(
+            this.widgetDetailActions.initializedWidgetContainer(this.ofModule)
+        );
     }
 
     /**
@@ -1053,10 +1309,18 @@ export abstract class BaseWidgetContainer extends BaseComponent {
     protected resetWidgetTableOnEntityChanged() {
         if (this.widgetModuleComponents && this.widgetModuleComponents.length) {
             this.widgetModuleComponents.forEach((widgetModuleComponent) => {
-                if (!widgetModuleComponent.data || !widgetModuleComponent.data.widgetDataType) {
+                if (
+                    !widgetModuleComponent.data ||
+                    !widgetModuleComponent.data.widgetDataType
+                ) {
                     return;
                 }
-                if (this.widgetUtils.isTableWidgetDataType(widgetModuleComponent.data) && widgetModuleComponent.agGridComponent) {
+                if (
+                    this.widgetUtils.isTableWidgetDataType(
+                        widgetModuleComponent.data
+                    ) &&
+                    widgetModuleComponent.agGridComponent
+                ) {
                     widgetModuleComponent.agGridComponent.deselectRow();
                 }
             });
@@ -1072,24 +1336,33 @@ export abstract class BaseWidgetContainer extends BaseComponent {
     }
 
     public subscribeWidgetActionStorageState() {
-        const LocalStorageWidgetActionKey = LocalStorageKey.buildKey(LocalStorageKey.LocalStorageWidgetActionKey, Uti.defineBrowserTabId());
+        const LocalStorageWidgetActionKey = LocalStorageKey.buildKey(
+            LocalStorageKey.LocalStorageWidgetActionKey,
+            Uti.defineBrowserTabId()
+        );
 
-        this.actionStorageStateSubscription = Observable.fromEvent<StorageEvent>(window, 'storage').filter((evt) => {
-            return (evt.key == LocalStorageWidgetActionKey)
-                && evt.newValue !== null && evt.newValue != 'undefined';
-        }).subscribe(evt => {
-            if (evt.newValue) {
-                const newState = JSON.parse(evt.newValue);
-                if (newState) {
-                    const widgetBox = this.widgetBoxes.find(p => p.data.id == newState.payload);
-                    if (widgetBox) {
-                        this.reloadWidgetDetails([widgetBox.data]);
+        this.actionStorageStateSubscription =
+            Observable.fromEvent<StorageEvent>(window, "storage")
+                .filter((evt) => {
+                    return (
+                        evt.key == LocalStorageWidgetActionKey &&
+                        evt.newValue !== null &&
+                        evt.newValue != "undefined"
+                    );
+                })
+                .subscribe((evt) => {
+                    if (evt.newValue) {
+                        const newState = JSON.parse(evt.newValue);
+                        if (newState) {
+                            const widgetBox = this.widgetBoxes.find(
+                                (p) => p.data.id == newState.payload
+                            );
+                            if (widgetBox) {
+                                this.reloadWidgetDetails([widgetBox.data]);
+                            }
+                        }
                     }
-
-                }
-            }
-            // console.log('updateState:' + evt);
-        });
+                    // console.log('updateState:' + evt);
+                });
     }
-
 }

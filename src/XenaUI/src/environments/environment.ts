@@ -6,13 +6,14 @@
 export const environment = {
     production: true,
     silent: false,
+    fakeServer: "",
     googleAnalytics: {
         active: true,
-        uaId: '',
-        logging : {
+        uaId: "",
+        logging: {
             debug: true,
             exceptions: true,
             verbose: true,
-        }
-    }
+        },
+    },
 };

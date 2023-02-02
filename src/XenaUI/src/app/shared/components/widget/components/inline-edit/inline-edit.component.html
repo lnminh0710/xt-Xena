@@ -57,10 +57,9 @@
 
             <div *ngSwitchCase="'textbox'"
                  class="v"
-                 [style.font-weight]="isSAVLetter ?  'bold' : ''"
                  [ngClass]="{'align-self-top': alignVerticalTop,
                              'align-self-center': alignVerticalCenter,
-                             'align-self-bottom': alignVerticalBottom}"
+                             'align-self-bottom': alignVerticalBottom,'font--bold' :isSAVLetter}"
                  [ngStyle]="editing ? '' : dataStyle">
                 <label class="control-label"
                        id="{{labelId}}"

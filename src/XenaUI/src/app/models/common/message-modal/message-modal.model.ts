@@ -20,20 +20,20 @@ export class MessageModalModel {
 }
 
 export class MessageModel {
-    messageType: string = '';
-    modalSize: string = '';
-    headerText: string = '';
+    messageType: string = "";
+    modalSize: string = "";
+    headerText: string = "";
     message = [];
-    okText: string = '';
-    cancelText: string = '';
+    okText: string = "";
+    cancelText: string = "";
     callBackCloseButton: any = null;
     callBack: any = null;
     callBack1: any = null;
     callBack2: any = null;
-    buttonType1: string = '';
-    buttonType2: string = '';
-    buttonType3: string = '';
-    customClass: string = '';
+    buttonType1: string = "";
+    buttonType2: string = "";
+    buttonType3: string = "";
+    customClass: string = "";
     showCloseButton: any = false;
     isOnTop: boolean = false;
 
@@ -63,6 +63,7 @@ export class MessageModalBodyModel {
 
 export class MessageModalFooterModel {
     public buttonList: ButtonList[] = null;
+    public isFocus: boolean = false;
 
     public constructor(init?: Partial<MessageModalFooterModel>) {
         Object.assign(this, init);
@@ -75,6 +76,7 @@ export class ButtonList {
     public customClass: string = null;
     public callBackFunc: any = null;
     public disabled = false;
+    public focus = false;
 
     public constructor(init?: Partial<ButtonList>) {
         Object.assign(this, init);

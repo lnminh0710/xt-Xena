@@ -1,12 +1,32 @@
 import {
-    Component, OnInit, Input, Output, OnChanges, SimpleChanges,
-    EventEmitter, ViewChild, OnDestroy, ElementRef, Injectable,
-    ComponentFactoryResolver, ViewContainerRef, ComponentRef, ViewChildren, QueryList, ChangeDetectorRef,
-    forwardRef
-} from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { MessageModal, FilterModeEnum, PropertyNameOfWidgetProperty, ComboBoxTypeConstant, RepWidgetAppIdEnum } from 'app/app.constants';
+    Component,
+    OnInit,
+    Input,
+    Output,
+    OnChanges,
+    SimpleChanges,
+    EventEmitter,
+    ViewChild,
+    OnDestroy,
+    ElementRef,
+    Injectable,
+    ComponentFactoryResolver,
+    ViewContainerRef,
+    ComponentRef,
+    ViewChildren,
+    QueryList,
+    ChangeDetectorRef,
+    forwardRef,
+} from "@angular/core";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import {
+    MessageModal,
+    FilterModeEnum,
+    PropertyNameOfWidgetProperty,
+    ComboBoxTypeConstant,
+    RepWidgetAppIdEnum,
+} from "app/app.constants";
 import {
     WidgetDetail,
     IListenKeyConfig,
@@ -20,8 +40,8 @@ import {
     TabSummaryModel,
     WidgetState,
     ReloadMode,
-    OtherSetting
-} from 'app/models';
+    OtherSetting,
+} from "app/models";
 
 import {
     ModalService,
@@ -32,38 +52,50 @@ import {
     WidgetTemplateSettingService,
     DatatableService,
     GlobalSettingService,
-    ArticleService, PersonService
-} from 'app/services';
+    ArticleService,
+    PersonService,
+} from "app/services";
 
-import { WidgetUtils } from '../../utils';
+import { WidgetUtils } from "../../utils";
 
-import * as wijmo from 'wijmo/wijmo';
-import * as wjcInput from 'wijmo/wijmo.input';
-import { WijmoGridComponent } from 'app/shared/components/wijmo';
-import { PaperworkComponent } from '../paperwork';
-import { WidgetTranslationComponent } from '../widget-translation';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
-import * as Ps from 'perfect-scrollbar';
-import { BaseWidgetModuleInfoMixin } from './mixins';
-import { XnWidgetMenuStatusComponent } from '../xn-widget-menu-status';
-import { WidgetArticleTranslationDialogComponent } from '../widget-article-translation';
-import { WidgetFormComponent } from '../widget-form';
-import { XnCountryCheckListComponent, XnCreditCardComponent } from 'app/shared/components/xn-control/';
-import { EditingWidget } from 'app/state-management/store/reducer/widget-content-detail';
-import { ArticleMediaManagerComponent } from 'app/shared/components/xn-control';
+import * as wijmo from "wijmo/wijmo";
+import * as wjcInput from "wijmo/wijmo.input";
+import { WijmoGridComponent } from "app/shared/components/wijmo";
+import { PaperworkComponent } from "../paperwork";
+import { WidgetTranslationComponent } from "../widget-translation";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import { PerfectScrollbarDirective } from "ngx-perfect-scrollbar";
+import * as Ps from "perfect-scrollbar";
+import { BaseWidgetModuleInfoMixin } from "./mixins";
+import { XnWidgetMenuStatusComponent } from "../xn-widget-menu-status";
+import { WidgetArticleTranslationDialogComponent } from "../widget-article-translation";
+import { WidgetFormComponent } from "../widget-form";
 import {
-    XnTreeViewComponent
-} from 'app/shared/components/xn-control';
-import { WidgetRoleTreeGridComponent } from '../widget-role-tree-grid';
-import { HistoryContainerComponent } from 'app/shared/components/customer-history';
-import { ICommunicationWidget, IWidgetInfo } from '../../components/widget-communication-dialog';
-import { WidgetDetailActions, PropertyPanelActions } from 'app/state-management/store/actions';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { XnFileExplorerComponent, XnUploadTemplateFileComponent, FileUploadPopupComponent } from 'app/shared/components/xn-file';
-import { Uti } from 'app/utilities';
-import { NoteActionEnum } from 'app/models/note.model';
+    XnCountryCheckListComponent,
+    XnCreditCardComponent,
+} from "app/shared/components/xn-control/";
+import { EditingWidget } from "app/state-management/store/reducer/widget-content-detail";
+import { ArticleMediaManagerComponent } from "app/shared/components/xn-control";
+import { XnTreeViewComponent } from "app/shared/components/xn-control";
+import { WidgetRoleTreeGridComponent } from "../widget-role-tree-grid";
+import { HistoryContainerComponent } from "app/shared/components/customer-history";
+import {
+    ICommunicationWidget,
+    IWidgetInfo,
+} from "../../components/widget-communication-dialog";
+import {
+    WidgetDetailActions,
+    PropertyPanelActions,
+} from "app/state-management/store/actions";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import {
+    XnFileExplorerComponent,
+    XnUploadTemplateFileComponent,
+    FileUploadPopupComponent,
+} from "app/shared/components/xn-file";
+import { Uti } from "app/utilities";
+import { NoteActionEnum } from "app/models/note.model";
 
 /**
  * BaseWidgetModuleInfo
@@ -95,17 +127,17 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     public hoverBox = false;
     //Toggle: true: maximize, false: restore
     @Input() isMaximized: boolean = undefined;
-    public hasJustRestoredFullScreen: boolean = false;//has just restored full screen
+    public hasJustRestoredFullScreen: boolean = false; //has just restored full screen
 
     public get data(): WidgetDetail {
         if (this.widgetStates && this.widgetStates.length) {
-            const selectedState = this.widgetStates.find(p => p.selected);
+            const selectedState = this.widgetStates.find((p) => p.selected);
             if (selectedState) {
                 return selectedState.data;
             }
         }
         return new WidgetDetail();
-    };
+    }
 
     // Callback function for communicate between widgets
     public dragDataTransferCallback: any;
@@ -125,7 +157,7 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
         this.checkLinkedWidgetStatus();
         if (!status) return;
         this.handleSavSendLetterWidget();
-    };
+    }
 
     get allowDesignEdit() {
         return this._allowDesignEdit;
@@ -145,17 +177,28 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     @Output() onSearch = new EventEmitter<boolean>();
     @Output() onExportExcel = new EventEmitter<boolean>();
 
-    @ViewChild(HistoryContainerComponent) historyContainerComponent: HistoryContainerComponent;
-    @ViewChild(FileUploadPopupComponent) fileUploadPopupComponent: FileUploadPopupComponent;
-    @ViewChild(WidgetArticleTranslationDialogComponent) widgetArticleTranslationDialogComponent: WidgetArticleTranslationDialogComponent;
-    @ViewChild(PerfectScrollbarDirective) directiveScroll: PerfectScrollbarDirective;
-    @ViewChild(XnWidgetMenuStatusComponent) widgetMenuStatusComponent: XnWidgetMenuStatusComponent;
-    @ViewChild('xnFileExplorerComponent') fileExplorerCmp: XnFileExplorerComponent;
-    @ViewChildren(XnUploadTemplateFileComponent) xnUploadTemplateFileCmp: QueryList<XnUploadTemplateFileComponent>;
-    @ViewChild(ArticleMediaManagerComponent) articleMediaManagerCmp: ArticleMediaManagerComponent;
-    @ViewChildren(XnAgGridComponent) widgetAgGridComponents: QueryList<XnAgGridComponent>;
-    @ViewChildren(XnTreeViewComponent) xnTreeViewCmps: QueryList<XnTreeViewComponent>;
-    @ViewChildren(WidgetRoleTreeGridComponent) widgetTreeGridComponents: QueryList<WidgetRoleTreeGridComponent>;
+    @ViewChild(HistoryContainerComponent)
+    historyContainerComponent: HistoryContainerComponent;
+    @ViewChild(FileUploadPopupComponent)
+    fileUploadPopupComponent: FileUploadPopupComponent;
+    @ViewChild(WidgetArticleTranslationDialogComponent)
+    widgetArticleTranslationDialogComponent: WidgetArticleTranslationDialogComponent;
+    @ViewChild(PerfectScrollbarDirective)
+    directiveScroll: PerfectScrollbarDirective;
+    @ViewChild(XnWidgetMenuStatusComponent)
+    widgetMenuStatusComponent: XnWidgetMenuStatusComponent;
+    @ViewChild("xnFileExplorerComponent")
+    fileExplorerCmp: XnFileExplorerComponent;
+    @ViewChildren(XnUploadTemplateFileComponent)
+    xnUploadTemplateFileCmp: QueryList<XnUploadTemplateFileComponent>;
+    @ViewChild(ArticleMediaManagerComponent)
+    articleMediaManagerCmp: ArticleMediaManagerComponent;
+    @ViewChildren(XnAgGridComponent)
+    widgetAgGridComponents: QueryList<XnAgGridComponent>;
+    @ViewChildren(XnTreeViewComponent)
+    xnTreeViewCmps: QueryList<XnTreeViewComponent>;
+    @ViewChildren(WidgetRoleTreeGridComponent)
+    widgetTreeGridComponents: QueryList<WidgetRoleTreeGridComponent>;
 
     // Widget Form Component
     @ViewChildren(forwardRef(() => WidgetFormComponent))
@@ -170,11 +213,13 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     // mode = 'table' : Translate for table widget
     public combinationTranslateMode: string;
 
-    public widgetBorderColor = '';
+    public widgetBorderColor = "";
 
     get widgetFormComponent(): WidgetFormComponent {
         if (this.widgetFormComponents && this.widgetFormComponents.length) {
-            const widgetForm = this.widgetFormComponents.find(p => p.isActivated);
+            const widgetForm = this.widgetFormComponents.find(
+                (p) => p.isActivated
+            );
             if (widgetForm) {
                 return widgetForm;
             }
@@ -187,8 +232,13 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     widgetCountryComponents: QueryList<XnCountryCheckListComponent>;
 
     get widgetCountryComponent(): XnCountryCheckListComponent {
-        if (this.widgetCountryComponents && this.widgetCountryComponents.length) {
-            const countryForm = this.widgetCountryComponents.find(p => p.isActivated);
+        if (
+            this.widgetCountryComponents &&
+            this.widgetCountryComponents.length
+        ) {
+            const countryForm = this.widgetCountryComponents.find(
+                (p) => p.isActivated
+            );
             if (countryForm) {
                 return countryForm;
             }
@@ -202,7 +252,7 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
 
     get creditCardComponent(): XnCreditCardComponent {
         if (this.creditCardComponents && this.creditCardComponents.length) {
-            const widget = this.creditCardComponents.find(p => p.isActivated);
+            const widget = this.creditCardComponents.find((p) => p.isActivated);
             if (widget) {
                 return widget;
             }
@@ -215,8 +265,13 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     widgetTranslationComponents: QueryList<WidgetTranslationComponent>;
 
     get widgetTranslationComponent(): WidgetTranslationComponent {
-        if (this.widgetTranslationComponents && this.widgetTranslationComponents.length) {
-            const widget = this.widgetTranslationComponents.find(p => p.isActivated);
+        if (
+            this.widgetTranslationComponents &&
+            this.widgetTranslationComponents.length
+        ) {
+            const widget = this.widgetTranslationComponents.find(
+                (p) => p.isActivated
+            );
             if (widget) {
                 return widget;
             }
@@ -228,13 +283,16 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
         top: false,
         left: false,
         right: false,
-        bottom: false
+        bottom: false,
     };
 
     private _scrollUtils: ScrollUtils;
     protected get scrollUtils() {
         if (!this._scrollUtils) {
-            this._scrollUtils = new ScrollUtils(this.scrollBodyContainer, this.domHandler);
+            this._scrollUtils = new ScrollUtils(
+                this.scrollBodyContainer,
+                this.domHandler
+            );
         }
         return this._scrollUtils;
     }
@@ -242,8 +300,8 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     public isActiveWidget: boolean;
 
     /*
-    * Check if widget changed data.
-    */
+     * Check if widget changed data.
+     */
     public get isWidgetDataEdited() {
         let isEdited: boolean;
         switch (this.data.idRepWidgetType) {
@@ -302,13 +360,19 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
                 }
                 break;
             case WidgetType.NoteForm:
-                if (this['widgetNoteFormComponent'] && this['noteFormDataAction'] && !!this['noteFormDataAction'].action) {
-                    isEdited = this['noteFormDataAction'].action !== NoteActionEnum.VIEW_MODE;
+                if (
+                    this["widgetNoteFormComponent"] &&
+                    this["noteFormDataAction"] &&
+                    !!this["noteFormDataAction"].action
+                ) {
+                    isEdited =
+                        this["noteFormDataAction"].action !==
+                        NoteActionEnum.VIEW_MODE;
                 }
                 break;
         }
         return isEdited;
-    };
+    }
 
     public set isWidgetDataEdited(status) {
         switch (this.data.idRepWidgetType) {
@@ -366,14 +430,16 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     }
 
     /*
-    * Check if widget is edit mode
-    */
+     * Check if widget is edit mode
+     */
     public get isWidgetEditMode() {
         let isEditMode: boolean;
         switch (this.data.idRepWidgetType) {
             case WidgetType.FieldSet:
                 if (this.widgetFormComponent) {
-                    isEditMode = this.widgetFormComponent.editFieldMode || this.widgetFormComponent.editFormMode;
+                    isEditMode =
+                        this.widgetFormComponent.editFieldMode ||
+                        this.widgetFormComponent.editFormMode;
                 }
                 break;
 
@@ -383,7 +449,9 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
 
             case WidgetType.Combination:
                 if (this.widgetFormComponent) {
-                    isEditMode = this.widgetFormComponent.editFieldMode || this.widgetFormComponent.editFormMode;
+                    isEditMode =
+                        this.widgetFormComponent.editFieldMode ||
+                        this.widgetFormComponent.editFormMode;
                 }
                 if (!isEditMode) {
                     isEditMode = this.isOnEditingTable;
@@ -392,7 +460,9 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
 
             case WidgetType.CombinationCreditCard:
                 if (this.widgetFormComponent) {
-                    isEditMode = this.widgetFormComponent.editFieldMode || this.widgetFormComponent.editFormMode;
+                    isEditMode =
+                        this.widgetFormComponent.editFieldMode ||
+                        this.widgetFormComponent.editFormMode;
                 }
                 if (!isEditMode) {
                     if (this.creditCardComponent) {
@@ -421,7 +491,8 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
 
             case WidgetType.FileTemplate:
                 if (this.xnUploadTemplateFileComponent) {
-                    isEditMode = this.xnUploadTemplateFileComponent.isOnEditting;
+                    isEditMode =
+                        this.xnUploadTemplateFileComponent.isOnEditting;
                 }
                 break;
             case WidgetType.EditPaymentType:
@@ -429,7 +500,7 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
                 break;
         }
         return isEditMode;
-    };
+    }
 
     /**
      * Get isOnEditingCountry: Edit Mode
@@ -459,9 +530,24 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
         public personService: PersonService,
         public ref: ChangeDetectorRef,
         protected widgetDetailActions: WidgetDetailActions,
-        public propertyPanelActions: PropertyPanelActions) {
-        super(store, widgetUtils, propertyPanelService, modalService, widgetTemplateSettingService, treeViewService, datatableService, globalSettingService, articleService, personService, ref, propertyPanelActions);
-        this.dragDataTransferCallback = this.connectWidgetSuccessCallback.bind(this);
+        public propertyPanelActions: PropertyPanelActions
+    ) {
+        super(
+            store,
+            widgetUtils,
+            propertyPanelService,
+            modalService,
+            widgetTemplateSettingService,
+            treeViewService,
+            datatableService,
+            globalSettingService,
+            articleService,
+            personService,
+            ref,
+            propertyPanelActions
+        );
+        this.dragDataTransferCallback =
+            this.connectWidgetSuccessCallback.bind(this);
     }
 
     /**
@@ -583,7 +669,6 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
         return this.xnUploadTemplateFileCmp;
     }
 
-
     /**
      * Override from abstract class
      */
@@ -614,10 +699,13 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     }
 
     /**
-    * Override from abstract class
-    */
+     * Override from abstract class
+     */
     get widgetEditedStatus(): boolean {
-        return this.isWidgetDataEdited || this.checkCurrentWidgetHasChildrenInEditMode();
+        return (
+            this.isWidgetDataEdited ||
+            this.checkCurrentWidgetHasChildrenInEditMode()
+        );
     }
 
     /**
@@ -634,15 +722,12 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
      * @param event
      */
     public onWidgetEdited(event): void {
-        if (isNil(event) || this.isWidgetDataEdited === event)
-            return;
+        if (isNil(event) || this.isWidgetDataEdited === event) return;
         this.isWidgetDataEdited = event;
         if (event) {
             this.onEditingWidget.emit(this.data);
             this.controlMenuStatusToolButtons(true);
-        }
-        else
-            this.onCancelEditingWidget.emit(this.data);
+        } else this.onCancelEditingWidget.emit(this.data);
     }
 
     /**
@@ -650,7 +735,9 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
      * Default config set here (icon status, color, UI, ...)
      */
     protected initConfig() {
-        this.supportLinkWidget = this.widgetUtils.isSupportLinkWidget(this.data);
+        this.supportLinkWidget = this.widgetUtils.isSupportLinkWidget(
+            this.data
+        );
     }
 
     /**
@@ -679,35 +766,49 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     protected checkLinkedWidgetStatus() {
         // Check both at design mode or view mode
         if (this.data.widgetDataType) {
-            const hasListenKeyAndMainKey = !isNil(this.data.widgetDataType.listenKey)
-                && !isEmpty(this.data.widgetDataType.listenKey.key)
-                && !isEmpty(this.data.widgetDataType.listenKey.main);
+            const hasListenKeyAndMainKey =
+                !isNil(this.data.widgetDataType.listenKey) &&
+                !isEmpty(this.data.widgetDataType.listenKey.key) &&
+                !isEmpty(this.data.widgetDataType.listenKey.main);
 
-            const standAloneWidget = !isNil(this.data.widgetDataType.listenKey)
-                && isEmpty(this.data.widgetDataType.listenKey.key)
-                && isEmpty(this.data.widgetDataType.listenKey.main)
-                && isEmpty(this.data.widgetDataType.listenKey.sub)
-                && (!this.data.widgetDataType.primaryKey || !this.allowDesignEdit);
+            const standAloneWidget =
+                !isNil(this.data.widgetDataType.listenKey) &&
+                isEmpty(this.data.widgetDataType.listenKey.key) &&
+                isEmpty(this.data.widgetDataType.listenKey.main) &&
+                isEmpty(this.data.widgetDataType.listenKey.sub) &&
+                (!this.data.widgetDataType.primaryKey || !this.allowDesignEdit);
 
-            const hasConnectedWithParentWidget = this.data.widgetDataType.parentWidgetIds && this.data.widgetDataType.parentWidgetIds.length;
-            const hasSyncToSameTypeWidget = this.data.syncWidgetIds && this.data.syncWidgetIds.length;
-            this.linkedSuccessWidget = !!(hasConnectedWithParentWidget
-                || hasSyncToSameTypeWidget
-                || hasListenKeyAndMainKey
-                || standAloneWidget);
+            const hasConnectedWithParentWidget =
+                this.data.widgetDataType.parentWidgetIds &&
+                this.data.widgetDataType.parentWidgetIds.length;
+            const hasSyncToSameTypeWidget =
+                this.data.syncWidgetIds && this.data.syncWidgetIds.length;
+            this.linkedSuccessWidget = !!(
+                hasConnectedWithParentWidget ||
+                hasSyncToSameTypeWidget ||
+                hasListenKeyAndMainKey ||
+                standAloneWidget
+            );
 
             if (hasConnectedWithParentWidget) {
                 const communicationWidget: ICommunicationWidget = {
                     srcWidgetDetail: this.data,
-                    relatingWidgetInfos: [{
-                        id: this.data.widgetDataType.parentWidgetIds[0],
-                        title: ''
-                    }],
+                    relatingWidgetInfos: [
+                        {
+                            id: this.data.widgetDataType.parentWidgetIds[0],
+                            title: "",
+                        },
+                    ],
                     childrenRelatingWidgetInfos: null,
                     isConnectToMainSupport: null,
-                    sameTypeWidgetInfos: null
+                    sameTypeWidgetInfos: null,
                 };
-                this.store.dispatch(this.widgetDetailActions.setConnectForParentFromChildWidget(communicationWidget, this.currentModule));
+                this.store.dispatch(
+                    this.widgetDetailActions.setConnectForParentFromChildWidget(
+                        communicationWidget,
+                        this.currentModule
+                    )
+                );
             }
 
             if (standAloneWidget && this.allowDesignEdit) {
@@ -716,12 +817,17 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
 
             if (this.data.idRepWidgetType == WidgetType.SAVSendLetter) {
                 if (this.widgetMenuStatusComponent) {
-                    this.widgetMenuStatusComponent.managePrintAndConfirmButtonStatus(!this.linkedSuccessWidget, !this.linkedSuccessWidget);
-                }
-                else {
+                    this.widgetMenuStatusComponent.managePrintAndConfirmButtonStatus(
+                        !this.linkedSuccessWidget,
+                        !this.linkedSuccessWidget
+                    );
+                } else {
                     setTimeout(() => {
                         if (this.widgetMenuStatusComponent) {
-                            this.widgetMenuStatusComponent.managePrintAndConfirmButtonStatus(!this.linkedSuccessWidget, !this.linkedSuccessWidget);
+                            this.widgetMenuStatusComponent.managePrintAndConfirmButtonStatus(
+                                !this.linkedSuccessWidget,
+                                !this.linkedSuccessWidget
+                            );
                         }
                     });
                 }
@@ -733,10 +839,15 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
      * removeLinkWidgetSuccess
      * Override from abstract method of parent
      */
-    protected removeLinkWidgetSuccess(notRemoveChildrenConnection?) {
+    protected removeLinkWidgetSuccess(
+        notRemoveChildrenConnection?,
+        linkWithParkedItem?
+    ) {
         const parentWidgetIds = this.data.widgetDataType.parentWidgetIds;
-        this.data.widgetDataType.listenKey.main = null;
-        this.data.widgetDataType.listenKey.sub = null;
+        if (!linkWithParkedItem) {
+            this.data.widgetDataType.listenKey.main = null;
+            this.data.widgetDataType.listenKey.sub = null;
+        }
         this.data.widgetDataType.parentWidgetIds = [];
         this.data.syncWidgetIds = [];
 
@@ -746,14 +857,14 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
             this.initwidgetMenuStatusData = {
                 ...this.initwidgetMenuStatusData,
                 widgetDetail: this.data,
-                fieldFilters: this.fieldFilters
+                fieldFilters: this.fieldFilters,
             };
         }
 
         this.onRemoveLinkingWidget.emit({
             widgetDetail: this.data,
             notRemoveChildrenConnection: notRemoveChildrenConnection,
-            parentWidgetIds: parentWidgetIds
+            parentWidgetIds: parentWidgetIds,
         });
     }
 
@@ -766,7 +877,10 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
      * Override from abstract method of parent
      */
     protected isWidgetTranslationInEditMode() {
-        if (this.widgetTranslationComponent.editMode || this.isToolbarButtonsShowed) {
+        if (
+            this.widgetTranslationComponent.editMode ||
+            this.isToolbarButtonsShowed
+        ) {
             // Turn translate widget to edit mode
             this.controlMenuStatusToolButtons(true);
             setTimeout(() => {
@@ -782,8 +896,14 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
      * onWidgetLinkUnHovering
      */
     public onWidgetLinkUnHovering(event) {
-        const hasToElement_IsLinkBox = event.toElement && event.toElement.className && event.toElement.className.indexOf('link-box') >= 0;
-        const hasRelatedTarget_IsLinkBox = event.relatedTarget && event.relatedTarget.className && event.relatedTarget.className.indexOf('link-box') >= 0;
+        const hasToElement_IsLinkBox =
+            event.toElement &&
+            event.toElement.className &&
+            event.toElement.className.indexOf("link-box") >= 0;
+        const hasRelatedTarget_IsLinkBox =
+            event.relatedTarget &&
+            event.relatedTarget.className &&
+            event.relatedTarget.className.indexOf("link-box") >= 0;
         if (hasToElement_IsLinkBox || hasRelatedTarget_IsLinkBox) {
             return;
         }
@@ -809,7 +929,9 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     /**
      * onUpdateTranslationWidget
      */
-    onUpdateTranslationWidget(dragDropCommunicationData: IDragDropCommunicationData) {
+    onUpdateTranslationWidget(
+        dragDropCommunicationData: IDragDropCommunicationData
+    ) {
         // this.data.extensionData = dragDropCommunicationData;
         this.onSuccessLinkingWidget.emit(this.data);
     }
@@ -818,8 +940,12 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
      * printWidget
      */
     public printWidget(): void {
-        const factory = this.componentFactoryResolver.resolveComponentFactory(PaperworkComponent);
-        var componentRef: ComponentRef<PaperworkComponent> = this.containerRef.createComponent(factory);
+        const factory =
+            this.componentFactoryResolver.resolveComponentFactory(
+                PaperworkComponent
+            );
+        var componentRef: ComponentRef<PaperworkComponent> =
+            this.containerRef.createComponent(factory);
         const paperworkComponent: PaperworkComponent = componentRef.instance;
         paperworkComponent.registerWidgetModuleInfo(this);
         paperworkComponent.print();
@@ -828,7 +954,17 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
 
     public isOpeningOnPopup = false;
     public openNewWindow() {
-        Uti.openPopupCenter('/widget?pageId=' + this.pageId + '&widgetId=' + this.data.id + '&moduleId=' + this.currentModule.idSettingsGUI, 'Widget Standalone', 1280, 700);
+        Uti.openPopupCenter(
+            "/widget?pageId=" +
+                this.pageId +
+                "&widgetId=" +
+                this.data.id +
+                "&moduleId=" +
+                this.currentModule.idSettingsGUI,
+            "Widget Standalone",
+            1280,
+            700
+        );
         this.isOpeningOnPopup = true;
     }
 
@@ -892,12 +1028,23 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
      */
     onClickOutside(event: any) {
         this.eventClick = event;
-        if (this.widgetPropertyEditing && this.propertyPanelService.isDirty(this.widgetPropertyEditing.widgetProperties)) {
-            if (!event.value && this.widgetPropertyEditing.widgetProperties != this.properties) {
-                this.store.dispatch(this.propertyPanelActions.requestClearProperties(this.currentModule));
+        if (
+            this.widgetPropertyEditing &&
+            this.propertyPanelService.isDirty(
+                this.widgetPropertyEditing.widgetProperties
+            )
+        ) {
+            if (
+                !event.value &&
+                this.widgetPropertyEditing.widgetProperties != this.properties
+            ) {
+                this.store.dispatch(
+                    this.propertyPanelActions.requestClearProperties(
+                        this.currentModule
+                    )
+                );
             }
-        }
-        else {
+        } else {
             this.afterCheckDirtyWhenClickOutSide();
         }
         // if (this.propertyPanelService.isDirty(this.properties) && this.isChildOfWidgetModuleInfo(event.target)) {
@@ -908,10 +1055,16 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     }
 
     private isChildOfWidgetModuleInfo(target: any): boolean {
-        if (!target ||
-            !target.parentElement) return false;
-        if ((target.className ? target.className : '').indexOf('xn-widget-module-info') > -1 ||
-            (target.parentElement && target.parentElement.className.indexOf('xn-widget-module-info') > -1)) {
+        if (!target || !target.parentElement) return false;
+        if (
+            (target.className ? target.className : "").indexOf(
+                "xn-widget-module-info"
+            ) > -1 ||
+            (target.parentElement &&
+                target.parentElement.className.indexOf(
+                    "xn-widget-module-info"
+                ) > -1)
+        ) {
             return true;
         }
         return this.isChildOfWidgetModuleInfo(target.parentElement);
@@ -919,38 +1072,40 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
 
     protected afterCheckDirtyWhenClickOutSide() {
         // Outside
-        if (this.eventClick && this.eventClick['value'] === true) {
+        if (this.eventClick && this.eventClick["value"] === true) {
             if (!this.isClickInsideSpecialCase(this.eventClick.target)) {
                 // console.log('Outside');
                 if (!this.isRenderWidgetInfoTranslation) {
                     if (this.isMaximized) {
                         this.isActiveWidget = true;
                         this.hoverBox = true;
-                    }
-                    else {
+                    } else {
                         this.isActiveWidget = false;
                         if (this.hasJustRestoredFullScreen) {
                             this.hoverBox = true;
                             this.hasJustRestoredFullScreen = false;
-                        }
-                        else {
+                        } else {
                             this.hoverBox = false;
                         }
                     }
                     this.onClickOutsideWidget.emit({
                         widgetApp: this.data.idRepWidgetApp,
                         isActive: this.isActiveWidget,
-                        id: this.data.id
+                        id: this.data.id,
                     });
-                    this.widgetBorderColor = '';
+                    this.widgetBorderColor = "";
                     this.reattach();
                     if (!this.isWidgetEditMode) {
                         this.detach();
                     }
-                    this.store.dispatch(this.widgetDetailActions.activeWidget(null, this.currentModule));
+                    this.store.dispatch(
+                        this.widgetDetailActions.activeWidget(
+                            null,
+                            this.currentModule
+                        )
+                    );
                 }
-            }
-            else {
+            } else {
                 this.reattach();
             }
         }
@@ -961,19 +1116,24 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
             this.onClickOutsideWidget.emit({
                 widgetApp: this.data.idRepWidgetApp,
                 isActive: this.isActiveWidget,
-                id: this.data.id
+                id: this.data.id,
             });
             this.reattach();
             // Use timeout here to ensure all other widgets is inactived before active for this widget
             setTimeout(() => {
-                this.store.dispatch(this.widgetDetailActions.activeWidget(this.data, this.currentModule));
+                this.store.dispatch(
+                    this.widgetDetailActions.activeWidget(
+                        this.data,
+                        this.currentModule
+                    )
+                );
             });
         }
 
         if (this.isMaximized) {
             this.hoverBox = true;
         }
-        $('.xn-tooltip-d').remove();
+        $(".xn-tooltip-d").remove();
     }
 
     /**
@@ -982,13 +1142,13 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
     private isClickInsideSpecialCase(target) {
         let iRet: boolean = false;
         const selectorArray = [
-            'wj-popup.menu-widget-status-ddl',
-            'wj-popup.edit-widget-ddl',
-            '.ui-widget-overlay',
-            '.ui-dialog',
-            'widget-translate',
-            '.property-panel',
-            '.widget-combination-translation'
+            "wj-popup.menu-widget-status-ddl",
+            "wj-popup.edit-widget-ddl",
+            ".ui-widget-overlay",
+            ".ui-dialog",
+            "widget-translate",
+            ".property-panel",
+            ".widget-combination-translation",
         ];
 
         for (let i = 0; i < selectorArray.length; i++) {
@@ -1012,8 +1172,7 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
         if (this.agGridComponent) {
             if (event) {
                 this.agGridComponent.collapseGroupsToLevel(1);
-            }
-            else {
+            } else {
                 this.agGridComponent.collapseGroupsToLevel(0);
             }
         }
@@ -1041,8 +1200,7 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
             //setTimeout(() => {
             //    this.ref.detach();
             //});
-        }
-        else {
+        } else {
             this.reattach();
         }
 
@@ -1063,7 +1221,10 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
      * detach
      */
     public detach(timeOut?: number) {
-        if (this.isWidgetEditMode || this.widgetUtils.isIgnoreDetachWidget(this.data)) {
+        if (
+            this.isWidgetEditMode ||
+            this.widgetUtils.isIgnoreDetachWidget(this.data)
+        ) {
             return;
         }
         if (timeOut) {
@@ -1071,8 +1232,7 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
                 this.ref.detach();
                 //console.log('detach timeOut :' + this.data.id);
             }, timeOut);
-        }
-        else {
+        } else {
             setTimeout(() => {
                 this.ref.detach();
                 //console.log('detach :' + this.data.id);
@@ -1093,22 +1253,37 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
      */
     public checkCurrentWidgetHasChildrenInEditMode() {
         let isFound = false;
-        if (this.editingWidgets && this.editingWidgets.length && this.data.widgetDataType.primaryKey) {
-            const primaryKeys: Array<string> = this.data.widgetDataType.primaryKey.split(',');
+        if (
+            this.editingWidgets &&
+            this.editingWidgets.length &&
+            this.data.widgetDataType.primaryKey
+        ) {
+            const primaryKeys: Array<string> =
+                this.data.widgetDataType.primaryKey.split(",");
             this.editingWidgets.forEach((editingWidget: EditingWidget) => {
-                const listenKeys: Array<string> = editingWidget.widgetDetail.widgetDataType.listenKey.key.split(',');
-                const parentWidgetIds: Array<string> = editingWidget.widgetDetail.widgetDataType.parentWidgetIds;
+                const listenKeys: Array<string> =
+                    editingWidget.widgetDetail.widgetDataType.listenKey.key.split(
+                        ","
+                    );
+                const parentWidgetIds: Array<string> =
+                    editingWidget.widgetDetail.widgetDataType.parentWidgetIds;
                 if (parentWidgetIds) {
                     let count = 0;
                     if (listenKeys && listenKeys.length) {
-                        listenKeys.forEach(key => {
-                            const iRet = primaryKeys.find(p => p == key);
+                        listenKeys.forEach((key) => {
+                            const iRet = primaryKeys.find((p) => p == key);
                             if (iRet) {
                                 count++;
                             }
                         });
-                        let foundParent = parentWidgetIds.find(p => p == this.data.id);
-                        if (count && count == primaryKeys.length && foundParent) {
+                        let foundParent = parentWidgetIds.find(
+                            (p) => p == this.data.id
+                        );
+                        if (
+                            count &&
+                            count == primaryKeys.length &&
+                            foundParent
+                        ) {
                             isFound = true;
                         }
                     }
@@ -1128,23 +1303,35 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
             this.data.contentDetail = null;
         }
 
-        this.clearChartProperties(this.properties, 'SingleXSerie');
-        this.clearChartProperties(this.properties, 'SingleYSerie');
-        this.clearChartProperties(this.properties, 'MultiXSerie');
-        this.clearChartProperties(this.properties, 'MultiYSeries', true);
-        this.clearChartProperties(this.properties, 'ComboSingleXSerie');
-        this.clearChartProperties(this.properties, 'ComboSingleYSerie');
-        this.clearChartProperties(this.properties, 'ComboMultiXSerie');
-        this.clearChartProperties(this.properties, 'ComboMultiYSeries', true);
+        this.clearChartProperties(this.properties, "SingleXSerie");
+        this.clearChartProperties(this.properties, "SingleYSerie");
+        this.clearChartProperties(this.properties, "MultiXSerie");
+        this.clearChartProperties(this.properties, "MultiYSeries", true);
+        this.clearChartProperties(this.properties, "ComboSingleXSerie");
+        this.clearChartProperties(this.properties, "ComboSingleYSerie");
+        this.clearChartProperties(this.properties, "ComboMultiXSerie");
+        this.clearChartProperties(this.properties, "ComboMultiYSeries", true);
 
-        let dataSourceObject: WidgetPropertyModel = this.propertyPanelService.getItemRecursive(this.properties, ComboBoxTypeConstant.chartDataSourceObject, PropertyNameOfWidgetProperty.ComboboxStoreObject);
+        let dataSourceObject: WidgetPropertyModel =
+            this.propertyPanelService.getItemRecursive(
+                this.properties,
+                ComboBoxTypeConstant.chartDataSourceObject,
+                PropertyNameOfWidgetProperty.ComboboxStoreObject
+            );
         if (dataSourceObject) {
             dataSourceObject.value = null;
         }
     }
 
-    private clearChartProperties(properties, propName, isMultiCombobox?: boolean) {
-        let prop = this.propertyPanelService.getItemRecursive(this.properties, propName);
+    private clearChartProperties(
+        properties,
+        propName,
+        isMultiCombobox?: boolean
+    ) {
+        let prop = this.propertyPanelService.getItemRecursive(
+            this.properties,
+            propName
+        );
         if (prop) {
             prop.options = [];
             prop.value = isMultiCombobox ? [] : null;
@@ -1153,14 +1340,18 @@ export abstract class BaseWidgetModuleInfo extends BaseWidgetModuleInfoMixin {
 
     private rebuildFieldFiltersForChart() {
         Object.keys(this.data.contentDetail.columnSettings).forEach((key) => {
-            this.fieldFilters.push(new FieldFilter({
-                fieldDisplayName: this.data.contentDetail.columnSettings[key].ColumnName,
-                fieldName: this.data.contentDetail.columnSettings[key].OriginalColumnName,
-                selected: false,
-                isHidden: false,
-                isEditable: false
-            }));
+            this.fieldFilters.push(
+                new FieldFilter({
+                    fieldDisplayName:
+                        this.data.contentDetail.columnSettings[key].ColumnName,
+                    fieldName:
+                        this.data.contentDetail.columnSettings[key]
+                            .OriginalColumnName,
+                    selected: false,
+                    isHidden: false,
+                    isEditable: false,
+                })
+            );
         });
     }
 }
-

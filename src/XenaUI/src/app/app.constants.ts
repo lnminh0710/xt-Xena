@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { environment } from "environments/environment";
 
 @Injectable()
 export class Configuration {
@@ -161,7 +162,7 @@ export class Configuration {
 
 @Injectable()
 export class ServiceUrl {
-    public apiUrl = "/api/";
+    public apiUrl = environment.fakeServer + "/api/";
 
     // User Control Api URL
     public serviceAuthenticateUrl = "/api/authenticate";

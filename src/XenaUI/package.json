@@ -13,7 +13,8 @@
         "client_aot": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --prod --aot",
         "test": "ng test",
         "lint": "ng lint",
-        "e2e": "ng e2e"
+        "e2e": "ng e2e",
+        "deploy": "npm run client_aot && dotnet restore XenaUI.csproj && dotnet build XenaUI.csproj --configuration Release && dotnet publish XenaUI.csproj --configuration Release"
     },
     "private": true,
     "dependencies": {
