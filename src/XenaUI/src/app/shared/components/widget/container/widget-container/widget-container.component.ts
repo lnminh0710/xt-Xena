@@ -673,9 +673,10 @@ export class WidgetContainerComponent
                                 ) {
                                     widgetModuleComponents[
                                         j
-                                    ].propertiesForSaving.properties = cloneDeep(
-                                        widgetModuleComponents[j].properties
-                                    );
+                                    ].propertiesForSaving.properties =
+                                        cloneDeep(
+                                            widgetModuleComponents[j].properties
+                                        );
                                 }
                             }
                         }
@@ -1575,7 +1576,8 @@ export class WidgetContainerComponent
                                                     true;
                                             } else {
                                                 widgetModuleComponent.supportLinkedWidgetCoverDisplay =
-                                                    true;
+                                                    status.mode !==
+                                                    "parent->child";
                                             }
                                             widgetModuleComponent.reattach();
                                         }
@@ -2479,6 +2481,8 @@ export class WidgetContainerComponent
             // Check & set listen key from default config
             isDisplayDialog =
                 this.detectListenKeyAfterDrag(widgetDetail) &&
+                this.currentModule &&
+                this.currentModule.idSettingsGUI &&
                 this.currentModule.idSettingsGUI !== 7;
 
             const widgetId = UUID.UUID();
@@ -2594,6 +2598,8 @@ export class WidgetContainerComponent
                     // memory WidgetDetail from widgetBox
                     isDisplayDialog =
                         this.detectListenKeyAfterDrag(widgetBox.data) &&
+                        this.currentModule &&
+                        this.currentModule.idSettingsGUI &&
                         this.currentModule.idSettingsGUI !== 7;
 
                     if (isDisplayDialog) {

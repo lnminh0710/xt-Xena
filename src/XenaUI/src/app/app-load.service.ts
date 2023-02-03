@@ -1,25 +1,26 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import 'rxjs/add/operator/toPromise';
-import { Configuration } from './app.constants';
-import * as Raven from 'raven-js';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import "rxjs/add/operator/toPromise";
+import { Configuration } from "./app.constants";
+import * as Raven from "raven-js";
+import { environment } from "environments/environment";
 
 @Injectable()
 export class AppLoadService {
-
-    constructor(private httpClient: HttpClient) {
-    }
+    constructor(private httpClient: HttpClient) {}
 
     initializeApp(): Promise<any> {
         return new Promise((resolve, reject) => {
             //console.log(`initializeApp:: inside promise`);
             //console.log(location);
 
-            this.httpClient.get('/api/common/GetPublicSetting')
+            this.httpClient
+                .get(environment.fakeServer + "/api/common/GetPublicSetting")
                 .toPromise()
-                .then(settings => {//success
+                .then((settings) => {
+                    //success
                     //console.log(`Settings from API: `, settings);
-                    Configuration.PublicSettings = settings['item'];
+                    Configuration.PublicSettings = settings["item"];
                     //console.log(`PublicSettings: `, Configuration.PublicSettings);
 
                     //With this stage, there are many errors with Selection Project, so we will not write sentry
@@ -28,8 +29,7 @@ export class AppLoadService {
                         const sentry = Configuration.PublicSettings.sentry;
                         if (sentry && sentry.clientDsn) {
                             Raven.config(sentry.clientDsn).install();
-                        }
-                        else {
+                        } else {
                             console.log(`Please config sentry with clientDsn`);
                         }
                     }
@@ -42,7 +42,7 @@ export class AppLoadService {
                     //    .then(data => {//success
                     //        if (data && data['ip']) {
                     //            Configuration.PublicSettings.clientIpAddress = data['ip'];
-                    //        }                                
+                    //        }
 
                     //        resolve();
 
@@ -52,15 +52,14 @@ export class AppLoadService {
 
                     //        this.handleError(error);
                     //    });
-
-                }).catch(this.handleError());
-
-        });//Promise
+                })
+                .catch(this.handleError());
+        }); //Promise
     }
 
     private handleError(data?: any) {
         return (error: any) => {
-            console.log(error)
-        }
+            console.log(error);
+        };
     }
 }

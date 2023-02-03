@@ -185,10 +185,6 @@ export class OpenInvoiceStatusDataEntryComponent
                         this.datasource = this.datatableService.buildDataSource(
                             response.contentDetail
                         );
-                        console.log(
-                            `Author:minh.lam , file: open-invoice-status-data-entry.component.ts , line 188 , this.appErrorHandler.executeAction , response.contentDetail`,
-                            this.datasource
-                        );
                         this.processDatasource(this.datasource);
                     });
                 });

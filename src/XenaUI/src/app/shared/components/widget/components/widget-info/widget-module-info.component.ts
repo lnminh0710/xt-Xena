@@ -389,7 +389,7 @@ export class WidgetModuleComponent
 
     public readonlyGridFormData: WidgetDetail;
     private readonlyGridAutoSwitchToDetailProp = false;
-    //private readonlyGridMultipleRowDisplayProp = false;
+    private readonlyGridMultipleRowDisplayProp = false;
     public resizedLocal: string;
     public isSelectedCountryActive = false;
     public isSelectionProject = false;
@@ -1049,8 +1049,19 @@ export class WidgetModuleComponent
                                         parentWidgetId
                                     ) !== -1))
                         ) {
-                            this.removeLinkWidgetSuccess(true);
-                            this.linkedSuccessWidget = false;
+                            const withParkedItemProp =
+                                this.propertyPanelService.getItemRecursive(
+                                    cloneDeep(this.properties),
+                                    "WithParkedItem"
+                                );
+                            this.removeLinkWidgetSuccess(
+                                true,
+                                !!withParkedItemProp && withParkedItemProp.value
+                            );
+
+                            this.linkedSuccessWidget =
+                                !!withParkedItemProp &&
+                                withParkedItemProp.value;
                         }
                     });
                 });
@@ -3094,9 +3105,10 @@ export class WidgetModuleComponent
             this._buildFormDataForReadonlyGridCounter = 0;
 
             setTimeout(() => {
+                this.readonlyGridMultipleRowDisplayProp =
+                    this.checkForReadonlyGridMultipleRowDisplay();
                 this.updateRowDisplayMode();
                 this.buildFormDataForReadonlyGrid();
-                //this.readonlyGridMultipleRowDisplayProp = this.checkForReadonlyGridMultipleRowDisplay();
             }, 200);
         }
 
@@ -4760,6 +4772,7 @@ export class WidgetModuleComponent
             if (isNil(item.idArticleExcludeCountries)) {
                 _newItem[key] = value;
                 _newItem["IdCountrylanguage"] = item.idValue;
+                _newItem["IdRepIsoCountryCode"] = item.idValue;
                 _newItem["IdPersonInterfaceContactCountries"] =
                     item.idValueExtra;
                 _newItem["IsActive"] = item.isActive == true ? 1 : 0;
@@ -5303,16 +5316,23 @@ export class WidgetModuleComponent
                     gridSelectedRow && gridSelectedRow.length > 0
                         ? gridSelectedRow
                         : this.agGridComponent.gridOptions.rowData;
-                this.readonlyGridFormData.contentDetail.data[1] =
-                    this.widgetUtils.buildReadonlyGridFormColumns(
-                        this.data.contentDetail.columnSettings,
-                        this.readonlyGridFormData.contentDetail.data[1]
-                    );
-                this.readonlyGridFormData.contentDetail.data[1] =
-                    this.widgetUtils.buildReadonlyGridFormColumnsValue(
-                        rowDataChange,
-                        this.readonlyGridFormData.contentDetail.data[1]
-                    );
+                if (rowDataChange.length === 1) {
+                    this.readonlyGridFormData.contentDetail.data[1] =
+                        this.widgetUtils.buildReadonlyGridFormColumns(
+                            this.data.contentDetail.columnSettings,
+                            this.readonlyGridFormData.contentDetail.data[1]
+                        );
+                    this.readonlyGridFormData.contentDetail.data[1] =
+                        this.widgetUtils.buildReadonlyGridFormColumnsValue(
+                            rowDataChange,
+                            this.readonlyGridFormData.contentDetail.data[1]
+                        );
+                } else {
+                    this.displayReadonlyGridAsForm = false;
+                    if (this.agGridComponent) {
+                        this.agGridComponent.refresh();
+                    }
+                }
             } else {
                 this.displayReadonlyGridAsForm = false;
                 if (this.agGridComponent) {
