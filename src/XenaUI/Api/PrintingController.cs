@@ -59,6 +59,27 @@ namespace XenaUI.Api
             {
                 try
                 {
+                    if (!string.IsNullOrEmpty(model.ExternalParam) && model.ExternalParam.ToLower() == "colissimo")
+                    {                        
+                        foreach (var items in model.Templates)
+                        {
+                            string uploadFolders = _pathProvider.GetFullUploadFolderPath(UploadMode.Printing, model.IdFolder.Replace(items.Filename, ""));
+                            items.Path = uploadFolders;
+                        }//for
+
+                        var responses = await _printingBusiness.DownloadTemplates(model);
+
+                        if (!string.IsNullOrEmpty(responses.FullFileName))
+                        {
+                            return File(responses.Content, System.Net.Mime.MediaTypeNames.Application.Octet, responses.FileName);
+                        }
+
+                        return new
+                        {
+                            Message = "Create zip file failed"
+                        };
+                    }
+
                     RequestTemplateModel requrestModel = new RequestTemplateModel()
                     {
                         IdSalesCampaignWizardItems = model.IdSalesCampaignWizardItems,

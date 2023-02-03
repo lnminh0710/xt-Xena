@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using XenaUI.Constants;
 using XenaUI.Models;
 using XenaUI.Service;
 using XenaUI.Utils;
@@ -15,12 +18,19 @@ namespace XenaUI.Business
         private readonly IOrderDataEntryService _orderDataEntryService;
         private readonly IElasticSearchSyncBusiness _elasticSearchSyncBusiness;
         private readonly ICommonService _commonService;
+        private readonly IShipmentBusiness _shipmentBusiness;
+        private readonly AppSettings _appSettings;
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(Assembly.GetEntryAssembly(), "api");
+
         public OrderDataEntryBusiness(IHttpContextAccessor context, IOrderDataEntryService orderDataEntryService,
-                              IElasticSearchSyncBusiness elasticSearchSyncBusiness, ICommonService commonService) : base(context)
+                              IElasticSearchSyncBusiness elasticSearchSyncBusiness, ICommonService commonService, IOptions<AppSettings> appSettings,
+                              IShipmentBusiness shipmentBusiness) : base(context)
         {
             _orderDataEntryService = orderDataEntryService;
             _elasticSearchSyncBusiness = elasticSearchSyncBusiness;
             _commonService = commonService;
+            _shipmentBusiness = shipmentBusiness;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<object> GetMainCurrencyAndPaymentType(string mediacode, string campaignNr)
@@ -148,7 +158,37 @@ namespace XenaUI.Business
 
         public async Task<object> SaveOrderDataEntryData(OrderDataEntryCustomerForSaveModel model)
         {
-            return await SavePaymentData(model, "SaveCustomerOrder");
+            _logger.Debug("start SaveOrderDataEntryData ");
+            var rs = await SavePaymentData(model, "SaveCustomerOrder");
+            if (rs == null)
+            {
+                return rs;
+            }
+            WSEditReturn rsUpdate = (WSEditReturn)rs;
+            if (rsUpdate.ReturnID == "-1") return rs;
+
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            Dictionary<string, object> rsSaveOrder = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(rsUpdate));
+            result.Add("resultSaveOrder", rsSaveOrder);
+
+
+            _logger.Debug("SaveOrderDataEntryData resultSaving: " + rsUpdate.ReturnID + "       request IdSalesOrder: " + model.IdSalesOrder);
+
+            if (_appSettings.ColissimoConfig != null) {
+                /** call Colissimo shipment for case CREATE Order **/
+                if (string.IsNullOrEmpty(model.IdSalesOrder) && model.Orders.Count > 0 && !model.Orders.First().IdSalesOrder.HasValue && model.Orders.First().IdRepSalesOrderShipper.HasValue)
+                {
+                    if (int.Parse(model.Orders.First().IdRepSalesOrderShipper.ToString()) == EShipper.Colissimo)
+                    {
+                        var resultShipment = await _shipmentBusiness.ProcessRequestShipment(rsUpdate.ReturnID, null);
+                        Dictionary<string, object> rsSM = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(resultShipment));
+                        //rsSaveOrder.Add("resultShipment", rsSM);
+                        rsUpdate.resultShipment = rsSM;
+                    }
+                }
+            }
+            _logger.Debug("end SaveOrderDataEntryData ");
+            return rsUpdate;
         }
 
         public async Task<object> DeleteOrderDataEntryData(Dictionary<string, object> data)
@@ -299,6 +339,11 @@ namespace XenaUI.Business
             OrderDataEntryGetSalesOrderByIdData data = (OrderDataEntryGetSalesOrderByIdData)ServiceDataRequest.ConvertToRelatedType(typeof(OrderDataEntryGetSalesOrderByIdData));
             data.IdSalesOrder = idSalesOrder;
             return await _orderDataEntryService.GetSalesOrderById(data);
+        }
+
+        public async Task<object> TestColissimo(string idSaleOrder, Dictionary<string, object> datax)
+        {
+            return await _shipmentBusiness.ProcessRequestShipment(idSaleOrder, datax);
         }
     }
 }

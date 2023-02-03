@@ -224,6 +224,16 @@ namespace XenaUI.Utils
         public AppSettings()
         {
         }
+
+        public ColissimoConfig ColissimoConfig { get; set; }
+    }
+
+    public class ColissimoConfig
+    {
+        public string ContractNumber { get; set; }
+        public string Key { get; set; }
+        public string URLGenerateLabel { get; set; }
+        public string UploadFolder { get; set; }
     }
 
     /// <summary>

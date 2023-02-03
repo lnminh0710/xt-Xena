@@ -407,4 +407,11 @@ namespace XenaUI.Utils
     {
         public string IdSalesOrder { get; set; }
     }
+
+    public class SaveResponseFromColissimoData : Data
+    {
+        public string IdSalesOrder { get; set; }
+        public string PackageNr { get; set; }
+        public string JSONText { get; set; }
+    }
 }

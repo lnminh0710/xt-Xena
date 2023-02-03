@@ -128,7 +128,8 @@ namespace XenaUI.Utils
                  */
 
                 //Relative Path from UploadFolder
-                if (!string.IsNullOrEmpty(subFolder) && subFolder.StartsWith(UploadFolder))
+                if (!string.IsNullOrEmpty(subFolder) && (subFolder.StartsWith(UploadFolder)
+                            || (_appSettings.ColissimoConfig != null && subFolder.StartsWith(_appSettings.ColissimoConfig.UploadFolder))))
                 {
                     fullFolderPath = FileShare + "\\" + subFolder;
                 }

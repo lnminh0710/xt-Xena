@@ -164,6 +164,8 @@ namespace XenaUI.Utils
         }
 
         public string IdGenerateLetter { get; set; }
+
+        public object resultShipment { get; set; }
     }
 
     public class WSDataReturnValue

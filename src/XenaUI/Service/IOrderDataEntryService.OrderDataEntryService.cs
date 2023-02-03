@@ -422,5 +422,33 @@ namespace XenaUI.Service
             data.Object = "OrderDataEntryByIdSalesOrder";
             return GetDataWithMapTypeIsNone(data);
         }
+
+        public async Task<WSEditReturn> SaveOrderFileFromColissimo(SaveResponseFromColissimoData data)
+        {
+            data.MethodName = "SpCallOrderDataEntry";
+            data.GUID = Guid.NewGuid().ToString();
+            data.Object = "SaveResponseFromColissimo";
+            data.AppModus = "1";
+            UniqueBody uniq = new UniqueBody
+            {
+                ModuleName = "GlobalModule",
+                ServiceName = "GlobalService",
+                Data = JsonConvert.SerializeObject(
+                            data,
+                            Newtonsoft.Json.Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore
+                            })
+            };
+            BodyRequest bodyRquest = new BodyRequest
+            {
+                Request = uniq
+            };
+            var expectedReturn = new Dictionary<int, Type>();
+            expectedReturn.Add(0, typeof(WSEditReturn));
+            var response = (await Service.Post(body: bodyRquest, expectedReturn: expectedReturn))[0];
+            return response != null ? ((IList<WSEditReturn>)response).FirstOrDefault() : null;
+        }
     }
 }

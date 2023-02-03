@@ -160,4 +160,34 @@ namespace XenaUI.Constants
         ById = 1,
         ObjectNr = 2
     }
+
+    public static class EShipper
+    {
+        public static int Colissimo = 1;
+    }
+
+    public enum EDynamicDataGetReturnType
+    {
+        /// <summary>
+        /// None: return JArray
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// One Row
+        /// </summary>
+        OneRow,
+
+        /// <summary>
+        /// Datatable
+        /// </summary>
+        Datatable
+    }
+
+    public enum EumPlatform
+    {
+        None = 0,
+        Linux = 1,
+        Windows = 2
+    }
 }

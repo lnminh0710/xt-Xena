@@ -34,5 +34,6 @@ namespace XenaUI.Utils
         Dictionary<int, object> GetSync(Dictionary<int, Type> expectedReturn, EExecuteMappingType mappingType = EExecuteMappingType.Normal, string resource = "", Dictionary<string, object> parameter = null, object body = null, string version = "");
         Dictionary<int, object> PostSync(Dictionary<int, Type> expectedReturn, EExecuteMappingType mappingType = EExecuteMappingType.Normal, string resource = "", Dictionary<string, object> parameter = null, object body = null, string version = "");
         #endregion
+        //Task<T> ExecutePost<T>(object body, EExecuteMappingType mappingType, Dictionary<string, object> parameter = null, string resource = "", string version = "", int resultIndexForParsing = 0) where T : class;
     }
 }

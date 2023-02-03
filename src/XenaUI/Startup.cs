@@ -174,6 +174,9 @@ namespace XenaUI
             services.AddTransient<IEmailBusiness, EmailBusiness>();
             services.AddTransient<IInventoryBusiness, InventoryBusiness>();
 
+            services.AddTransient<IDynamicDataService, DynamicDataService>();
+            services.AddTransient<IShipmentBusiness, ShipmentBusiness>();
+
             #region Selection
             services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<IProjectBusiness, ProjectBusiness>();

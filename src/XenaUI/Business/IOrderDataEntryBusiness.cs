@@ -114,6 +114,8 @@ namespace XenaUI.Business
         Task<object> GetRejectPayments(string idPerson);
 
         Task<object> GetSalesOrderById(string idSalesOrder);
+
+        Task<object> TestColissimo(string idSaleOrder, Dictionary<string, object> model);
     }
 }
 

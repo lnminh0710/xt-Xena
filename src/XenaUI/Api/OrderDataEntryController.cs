@@ -233,5 +233,14 @@ namespace XenaUI.Api
         {
             return await _orderDataEntryBusiness.GetSalesOrderById(idSalesOrder);
         }
+
+        [HttpPost]
+        [Route("TestColissimo")]
+        [AllowAnonymous]
+        public async Task<object> TestColissimo(string idSaleOrder, [FromBody] Dictionary<string, object> datax)
+        {
+            return await _orderDataEntryBusiness.TestColissimo(idSaleOrder, datax);
+
+        }
     }
 }
