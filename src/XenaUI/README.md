@@ -26,3 +26,11 @@ Before running the tests make sure you are serving the app via `ng serve`.
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+### Script
+
+Install : `npm i` or `yarn`
+
+Build Angular: `npm run client` or `yarn client`
+
+Build Server: `npm run server` or `yarn server`
