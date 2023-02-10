@@ -3596,12 +3596,12 @@ export class OrderDataEntryFormComponent
                 this.storeFormControlValue();
             }
             if (ctrlPackageNr) {
-                ctrlPackageNr.setValidators([Validators.required]);
+                // ctrlPackageNr.setValidators([Validators.required]);
                 ctrlPackageNr.updateValueAndValidity();
             }
         } else {
             if (ctrlPackageNr) {
-                ctrlPackageNr.clearValidators();
+                // ctrlPackageNr.clearValidators();
                 ctrlPackageNr.updateValueAndValidity();
                 ctrlPackageNr.setValue("");
             }
