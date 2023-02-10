@@ -165,7 +165,7 @@ export class ServiceUrl {
     public apiUrl = environment.fakeServer + "/api/";
 
     // User Control Api URL
-    public serviceAuthenticateUrl = "/api/authenticate";
+    public serviceAuthenticateUrl = environment.fakeServer +"/api/authenticate";
     public serviceForgotPasswordUrl =
         this.serviceAuthenticateUrl + "/resetpassword";
     public serviceUpdatePasswordUrl =
