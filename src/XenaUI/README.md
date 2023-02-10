@@ -29,7 +29,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### Script
 
-Install : `npm i` or `yarn`
+Install : `npm i` or `yarn 2`
 
 Build Angular: `npm run client` or `yarn client`
 
