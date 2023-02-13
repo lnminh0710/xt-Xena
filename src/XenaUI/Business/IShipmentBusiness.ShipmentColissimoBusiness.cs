@@ -62,6 +62,11 @@ namespace XenaUI.Business
                 ////"{\r\n  \"OrderNr\": \"202081000088\",\r\n  \"RefDecommand\": \"0811VCTC11-000021-4-202081000088\",\r\n  \"TagUtili\": \"\",\r\n  \"PoidsKg\": 0.158,\r\n  \"EnCasDeNonLivrasion\": \"Ne pas me retourner le colis\",\r\n  \"DimDuColis\": \"8,10,12\"\r\n}"    string
                 ShipmentColissimoModel data = TransformData(orderInfo, articles, senderAddress, receiverAddress);
 
+                if (string.IsNullOrEmpty(_appSettings.ColissimoConfig.ContractNumber) || string.IsNullOrEmpty(_appSettings.ColissimoConfig.Key))
+                {
+                    _logger.Debug("Stop Colissimo - IdSaleOrder:" + idSaleOrder + " \r\n (unknow acc)  \r\n CallAPIGenerateLabel:" + JsonConvert.SerializeObject(data));
+                    return response;
+                }
                 response = await CallAPIGenerateLabel(idSaleOrder + "",
                         JsonConvert.DeserializeObject<ShipmentColissimoModel>(JsonConvert.SerializeObject(data)));
 
@@ -378,7 +383,18 @@ namespace XenaUI.Business
             }            
             letter.service.depositDate = DateTime.Now.ToString("yyyy-MM-dd");
             letter.service.orderNumber = orderIno.OrderNr;
-            letter.service.totalAmount = orderIno.TotalAmount;
+            if (!string.IsNullOrEmpty(orderIno.TotalAmount)) {
+                try
+                {
+                    string tmp = orderIno.TotalAmount;
+                    if (tmp.Contains(",")) tmp = tmp.Replace(",", ".");
+                    letter.service.totalAmount = double.Parse(tmp);
+                } catch (Exception eConvert)
+                {
+                    _logger.Debug("error convert TotalAmount from orderIno: " + JsonConvert.SerializeObject(orderIno), eConvert);
+                }
+            }
+            
             letter.service.returnTypeChoice = 3;
 
             ColissimoParcelModel parcel = new ColissimoParcelModel();

@@ -16,7 +16,7 @@ namespace XenaUI.Models
 
         public string DimDuColis { get; set; }
 
-        public double? TotalAmount { get; set; }
+        public string TotalAmount { get; set; }
     }
 
     public class ShipmentArticleModel
