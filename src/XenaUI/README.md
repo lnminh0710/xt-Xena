@@ -1,4 +1,4 @@
-# XenaUI 
+# XenaUI
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0-rc.2.
 
@@ -26,3 +26,23 @@ Before running the tests make sure you are serving the app via `ng serve`.
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## SETUP IN NEW MACHINE
+
+### Install environment:
+
+```
+Node 14.17.0
+Git
+ASP.Net
+```
+
+### Script
+
+Install : `npm i` or `yarn`
+
+Build Angular (DEV): `npm run client` or `yarn client`
+
+Build Server (DEV): `npm run server` or `yarn server`
+
+Build release (PRODUCTION): `npm run deploy` or `yarn deploy`
