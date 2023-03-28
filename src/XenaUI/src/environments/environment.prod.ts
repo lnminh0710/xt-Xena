@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    fakeServer: "",
+    apiEndpoint: "",
     googleAnalytics: {
         active: true,
         uaId: "UA-xxxxx",

@@ -6,7 +6,7 @@
 export const environment = {
     production: true,
     silent: false,
-    fakeServer: "",
+    apiEndpoint: "https://gammon.xoontec.vn",
     googleAnalytics: {
         active: true,
         uaId: "",

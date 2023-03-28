@@ -21,7 +21,7 @@ import { environment } from "environments/environment";
     styleUrls: ["./request-tracking.component.scss"],
 })
 export class RequestTrackingComponent implements OnInit {
-    public requestItems = environment.fakeServer;
+    public requestItems = environment.apiEndpoint;
     public requestItemList = [];
     public successItems = [];
     public loadFunction = "0";

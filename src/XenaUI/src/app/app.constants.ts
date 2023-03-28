@@ -162,10 +162,10 @@ export class Configuration {
 
 @Injectable()
 export class ServiceUrl {
-    public apiUrl = environment.fakeServer + "/api/";
+    public apiUrl = environment.apiEndpoint + "/api/";
 
     // User Control Api URL
-    public serviceAuthenticateUrl = environment.fakeServer +"/api/authenticate";
+    public serviceAuthenticateUrl = environment.apiEndpoint +"/api/authenticate";
     public serviceForgotPasswordUrl =
         this.serviceAuthenticateUrl + "/resetpassword";
     public serviceUpdatePasswordUrl =

@@ -15,7 +15,7 @@ export class AppLoadService {
             //console.log(location);
 
             this.httpClient
-                .get(environment.fakeServer + "/api/common/GetPublicSetting")
+                .get(environment.apiEndpoint + "/api/common/GetPublicSetting")
                 .toPromise()
                 .then((settings) => {
                     //success
