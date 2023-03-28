@@ -1,53 +1,56 @@
 import {
-    Component, Input, Output,
-    EventEmitter, OnInit, OnDestroy,
-    AfterViewInit, ElementRef, ViewChild,
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
     ChangeDetectorRef,
-
     SimpleChanges,
-    OnChanges
+    OnChanges,
 } from "@angular/core";
-import {
-    ApiResultResponse, GlobalSettingModel,
-} from 'app/models';
+import { ApiResultResponse, GlobalSettingModel } from "app/models";
 import {
     DatabaseService,
     AppErrorHandler,
     DatatableService,
     ModalService,
-
-    GlobalSettingService
-} from 'app/services';
+    GlobalSettingService,
+} from "app/services";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import isEqual from "lodash-es/isEqual";
+import camelCase from "lodash-es/camelCase";
+import cloneDeep from "lodash-es/cloneDeep";
+import { Uti } from "app/utilities";
 import {
-    Store,
-    ReducerManagerDispatcher
-} from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import isEqual from 'lodash-es/isEqual';
-import camelCase from 'lodash-es/camelCase';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { Uti } from 'app/utilities';
-import {
-    ProcessDataActions, CustomAction,
-} from 'app/state-management/store/actions';
-import * as uti from 'app/utilities';
+    ProcessDataActions,
+    CustomAction,
+} from "app/state-management/store/actions";
+import * as uti from "app/utilities";
 import { BaseComponent } from "app/pages/private/base";
 import { Router } from "@angular/router";
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import * as moduleSettingReducer from 'app/state-management/store/reducer/module-setting';
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import * as moduleSettingReducer from "app/state-management/store/reducer/module-setting";
 import { XnAgGridComponent } from "../xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 import { SplitComponent } from "angular-split";
 
 @Component({
-    selector: 'database-combine-grid',
-    templateUrl: './database-combine-grid.component.html',
-    styleUrls: ['./database-combine-grid.component.scss']
+    selector: "database-combine-grid",
+    templateUrl: "./database-combine-grid.component.html",
+    styleUrls: ["./database-combine-grid.component.scss"],
 })
-export class DatabaseCombineGridComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+export class DatabaseCombineGridComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit, OnChanges
+{
     public countryGridData: any;
     public countryGridAnotherData: any;
     public databaseGridData: any;
@@ -59,7 +62,7 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
     public splitterConfig = {
         leftHorizontal: 50,
         rightHorizontal: 50,
-    }
+    };
     public showAnotherCountryGrid = false;
 
     private widgetListenKey: string = null;
@@ -76,14 +79,16 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
     private widgetListenKeyState: Observable<string>;
     private requestSaveWidgetState: Observable<any>;
 
-    @ViewChild('databaseGrid') databaseGrid: XnAgGridComponent;
+    @ViewChild("databaseGrid") databaseGrid: XnAgGridComponent;
 
     private countryGrid: XnAgGridComponent;
-    @ViewChild('countryGrid') set countryGridIns(countryGridIns: XnAgGridComponent) {
+    @ViewChild("countryGrid") set countryGridIns(
+        countryGridIns: XnAgGridComponent
+    ) {
         this.countryGrid = countryGridIns;
     }
 
-    @ViewChild('horizontalSplit') horizontalSplit: SplitComponent;
+    @ViewChild("horizontalSplit") horizontalSplit: SplitComponent;
 
     @Input() readOnly = true;
     @Input() databaseGridId: string;
@@ -112,8 +117,20 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
     ) {
         super(router);
 
-        this.selectedEntityState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).selectedEntity);
-        this.widgetListenKeyState = store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).widgetListenKey);
+        this.selectedEntityState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedEntity
+        );
+        this.widgetListenKeyState = store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).widgetListenKey
+        );
     }
 
     /**
@@ -131,7 +148,7 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
 
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
 
@@ -145,150 +162,218 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
     /**
      * ngAfterViewInit
      */
-    public ngAfterViewInit() {
-    }
+    public ngAfterViewInit() {}
 
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes['readOnly']) {
+        if (changes["readOnly"]) {
             this.validateCountryGrid();
         }
     }
 
     private loadColumnLayoutSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
             .subscribe((data: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (data && data.length) {
-                        let gridColLayoutSettings = data.filter(p => p.globalType == 'GridColLayout');
-                        if (gridColLayoutSettings && gridColLayoutSettings.length) {
-                            gridColLayoutSettings.forEach(setting => {
-                                this.columnsLayoutSettings[setting.globalName] = JSON.parse(setting.jsonSettings);
+                        let gridColLayoutSettings = data.filter(
+                            (p) => p.globalType == "GridColLayout"
+                        );
+                        if (
+                            gridColLayoutSettings &&
+                            gridColLayoutSettings.length
+                        ) {
+                            gridColLayoutSettings.forEach((setting) => {
+                                this.columnsLayoutSettings[setting.globalName] =
+                                    JSON.parse(setting.jsonSettings);
                             });
                         }
 
                         this.changeDetectorRef.detectChanges();
                     }
-                })
-            })
+                });
+            });
     }
 
     private loadSplitterSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
             .subscribe((data: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (data && data.length) {
-                        let selectionWidgetSplitterSettings = data.filter(p => p.globalName == this.idRepWidgetApp && p.globalType == 'WidgetSplitter');
-                        if (selectionWidgetSplitterSettings && selectionWidgetSplitterSettings.length) {
-                            selectionWidgetSplitterSettings.forEach(setting => {
-                                this.splitterConfig = JSON.parse(setting.jsonSettings);
-                                this.horizontalSplit.updateArea(this.horizontalSplit.areas[0].component, 1, this.splitterConfig.leftHorizontal, 20);
-                                this.horizontalSplit.updateArea(this.horizontalSplit.areas[1].component, 1, this.splitterConfig.rightHorizontal, 20);
-                            });
+                        let selectionWidgetSplitterSettings = data.filter(
+                            (p) =>
+                                p.globalName == this.idRepWidgetApp &&
+                                p.globalType == "WidgetSplitter"
+                        );
+                        if (
+                            selectionWidgetSplitterSettings &&
+                            selectionWidgetSplitterSettings.length
+                        ) {
+                            selectionWidgetSplitterSettings.forEach(
+                                (setting) => {
+                                    this.splitterConfig = JSON.parse(
+                                        setting.jsonSettings
+                                    );
+                                    this.horizontalSplit.updateArea(
+                                        this.horizontalSplit.areas[0].component,
+                                        1,
+                                        this.splitterConfig.leftHorizontal,
+                                        20
+                                    );
+                                    this.horizontalSplit.updateArea(
+                                        this.horizontalSplit.areas[1].component,
+                                        1,
+                                        this.splitterConfig.rightHorizontal,
+                                        20
+                                    );
+                                }
+                            );
                         }
 
                         this.changeDetectorRef.detectChanges();
                     }
-                })
-            })
+                });
+            });
     }
 
     private saveSplitterSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
-            .subscribe(getAllGlobalSettings => {
-                let selectionWidgetSplitterSettings = getAllGlobalSettings.find(x => x.globalName == this.idRepWidgetApp && x.globalType == 'WidgetSplitter')
-                if (!selectionWidgetSplitterSettings || !selectionWidgetSplitterSettings.idSettingsGlobal || !selectionWidgetSplitterSettings.globalName) {
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
+            .subscribe((getAllGlobalSettings) => {
+                let selectionWidgetSplitterSettings = getAllGlobalSettings.find(
+                    (x) =>
+                        x.globalName == this.idRepWidgetApp &&
+                        x.globalType == "WidgetSplitter"
+                );
+                if (
+                    !selectionWidgetSplitterSettings ||
+                    !selectionWidgetSplitterSettings.idSettingsGlobal ||
+                    !selectionWidgetSplitterSettings.globalName
+                ) {
                     selectionWidgetSplitterSettings = new GlobalSettingModel({
                         globalName: this.idRepWidgetApp,
-                        globalType: 'WidgetSplitter',
-                        description: 'WidgetSplitter',
-                        isActive: true
+                        globalType: "WidgetSplitter",
+                        description: "WidgetSplitter",
+                        isActive: true,
                     });
                 }
                 selectionWidgetSplitterSettings.idSettingsGUI = -1;
-                selectionWidgetSplitterSettings.jsonSettings = JSON.stringify(this.splitterConfig)
+                selectionWidgetSplitterSettings.jsonSettings = JSON.stringify(
+                    this.splitterConfig
+                );
                 selectionWidgetSplitterSettings.isActive = true;
 
-                this.globalSettingService.saveGlobalSetting(selectionWidgetSplitterSettings)
-                    .subscribe(data => {
-                        this.globalSettingService.saveUpdateCache('-1', selectionWidgetSplitterSettings, data);
+                this.globalSettingService
+                    .saveGlobalSetting(selectionWidgetSplitterSettings)
+                    .subscribe((data) => {
+                        this.globalSettingService.saveUpdateCache(
+                            "-1",
+                            selectionWidgetSplitterSettings,
+                            data
+                        );
                     });
             });
     }
 
     private subscribeWidgetListenKeyState() {
-        this.widgetListenKeyStateSubscription = this.widgetListenKeyState.subscribe((widgetListenKeyState: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.widgetListenKey = widgetListenKeyState;
+        this.widgetListenKeyStateSubscription =
+            this.widgetListenKeyState.subscribe(
+                (widgetListenKeyState: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.widgetListenKey = widgetListenKeyState;
 
-                this.changeDetectorRef.detectChanges();
-            });
-        });
+                        this.changeDetectorRef.detectChanges();
+                    });
+                }
+            );
     }
 
     private subscribeSelectedEntityState() {
-        this.selectedEntityStateSubscription = this.selectedEntityState.subscribe((selectedEntityState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.cacheData = {};
+        this.selectedEntityStateSubscription =
+            this.selectedEntityState.subscribe((selectedEntityState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.cacheData = {};
 
-                if (this.countryGrid) {
-                    if (this.isAnotherCountryGrid()) {
-                        let columns = this.countryGridAnotherData.columns;
-                        this.countryGridAnotherData = null;
-                        this.countryGridAnotherData = {
-                            columns: columns,
-                            data: []
-                        }
-                    } else {
-                        let columns = this.countryGridData.columns;
-                        this.countryGridData = null;
-                        this.countryGridData = {
-                            columns: columns,
-                            data: []
+                    if (this.countryGrid) {
+                        if (this.isAnotherCountryGrid()) {
+                            let columns = this.countryGridAnotherData.columns;
+                            this.countryGridAnotherData = null;
+                            this.countryGridAnotherData = {
+                                columns: columns,
+                                data: [],
+                            };
+                        } else {
+                            let columns = this.countryGridData.columns;
+                            this.countryGridData = null;
+                            this.countryGridData = {
+                                columns: columns,
+                                data: [],
+                            };
                         }
                     }
 
-                }
+                    if (
+                        isEmpty(selectedEntityState) &&
+                        !isEmpty(this.selectedEntity)
+                    ) {
+                        this.selectedEntity = null;
 
-                if (isEmpty(selectedEntityState) && !isEmpty(this.selectedEntity)) {
-                    this.selectedEntity = null;
-
-                    this.changeDetectorRef.detectChanges();
-                    return;
-                }
-
-                if (isEqual(this.selectedEntity, selectedEntityState)) {
-                    return;
-                }
-
-                this.selectedEntity = selectedEntityState;
-
-                this.initDatabaseGrid();
-
-                this.changeDetectorRef.detectChanges();
-            });
-        });
-    }
-
-    private subscribeRequestSaveWidgetState() {
-        this.requestSaveWidgetStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE_WIDGET && action.module.idSettingsGUI == this.ofModule.idSettingsGUI && this._eref.nativeElement.offsetParent != null;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.saveData();
-            });
-        });
-    }
-
-    private initDatabaseGrid() {
-        this.databaseServiceSubscription = this.databaseService.getListOfDatabaseNames(this.selectedEntity[camelCase(this.widgetListenKey)])
-            .subscribe((response: ApiResultResponse) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.length || isNil(response.item[1])) {
+                        this.changeDetectorRef.detectChanges();
                         return;
                     }
 
-                    let tableData = this.datatableService.formatDataTableFromRawData(response.item);
-                    tableData = this.datatableService.buildDataSource(tableData);
+                    if (isEqual(this.selectedEntity, selectedEntityState)) {
+                        return;
+                    }
+
+                    this.selectedEntity = selectedEntityState;
+
+                    this.initDatabaseGrid();
+
+                    this.changeDetectorRef.detectChanges();
+                });
+            });
+    }
+
+    private subscribeRequestSaveWidgetState() {
+        this.requestSaveWidgetStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE_WIDGET &&
+                    action.module.idSettingsGUI ==
+                        this.ofModule.idSettingsGUI &&
+                    this._eref.nativeElement.offsetParent != null
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.saveData();
+                });
+            });
+    }
+
+    private initDatabaseGrid() {
+        this.databaseServiceSubscription = this.databaseService
+            .getListOfDatabaseNames(
+                this.selectedEntity[camelCase(this.widgetListenKey)]
+            )
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.length ||
+                        isNil(response.item[1])
+                    ) {
+                        return;
+                    }
+
+                    let tableData =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item
+                        );
+                    tableData =
+                        this.datatableService.buildDataSource(tableData);
 
                     this.databaseGridData = tableData;
 
@@ -302,14 +387,16 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
 
     public onChangeSelectedItemsChanged() {
         if (!this.databaseGrid || !this.databaseGrid.selectedNode) return;
-        const itemId = this.databaseGrid.selectedNode.data['IdSelectionDatabaseName'];
+        const itemId =
+            this.databaseGrid.selectedNode.data["IdSelectionDatabaseName"];
 
         if (itemId) {
             this.showAnotherCountryGrid = this.isAnotherCountryGrid();
             setTimeout(() => {
                 if (this.cacheData[itemId]) {
                     if (this.isAnotherCountryGrid()) {
-                        this.countryGridAnotherData = this.cacheData[itemId].gridData;
+                        this.countryGridAnotherData =
+                            this.cacheData[itemId].gridData;
                     } else {
                         this.countryGridData = this.cacheData[itemId].gridData;
                     }
@@ -322,26 +409,47 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
                     this.removeDisableGrid();
                     this.validateCountryGrid();
                 } else {
-                    this.databaseServiceSubscription = this.databaseService.getListOfDatabaseCountry(this.selectedEntity[camelCase(this.widgetListenKey)], itemId)
+                    this.databaseServiceSubscription = this.databaseService
+                        .getListOfDatabaseCountry(
+                            this.selectedEntity[
+                                camelCase(this.widgetListenKey)
+                            ],
+                            itemId
+                        )
                         .subscribe((response: ApiResultResponse) => {
                             this.appErrorHandler.executeAction(() => {
-                                if (!Uti.isResquestSuccess(response) || !response.item.length || isNil(response.item[1])) {
+                                if (
+                                    !Uti.isResquestSuccess(response) ||
+                                    !response.item.length ||
+                                    isNil(response.item[1])
+                                ) {
                                     return;
                                 }
 
-                                let countryTableData = this.datatableService.formatDataTableFromRawData(response.item);
-                                countryTableData = this.datatableService.buildDataSource(countryTableData);
+                                let countryTableData =
+                                    this.datatableService.formatDataTableFromRawData(
+                                        response.item
+                                    );
+                                countryTableData =
+                                    this.datatableService.buildDataSource(
+                                        countryTableData
+                                    );
 
                                 if (this.isAnotherCountryGrid()) {
-                                    this.countryGridAnotherData = countryTableData;
+                                    this.countryGridAnotherData =
+                                        countryTableData;
                                 } else {
                                     this.countryGridData = countryTableData;
                                 }
 
                                 this.cacheData[itemId] = {
-                                    gridData: cloneDeep(this.isAnotherCountryGrid() ? this.countryGridAnotherData : this.countryGridData),
+                                    gridData: cloneDeep(
+                                        this.isAnotherCountryGrid()
+                                            ? this.countryGridAnotherData
+                                            : this.countryGridData
+                                    ),
                                     isDirty: false,
-                                    isDeleted: false
+                                    isDeleted: false,
                                 };
 
                                 if (this.willUpdateCache) {
@@ -374,9 +482,13 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
     private updateCache() {
         let currentDatabaseItem = this.databaseGrid.selectedNode.data;
 
-        if (this.cacheData[currentDatabaseItem['IdSelectionDatabaseName']]) {
-            this.cacheData[currentDatabaseItem['IdSelectionDatabaseName']].isDirty = true;
-            this.cacheData[currentDatabaseItem['IdSelectionDatabaseName']].isDeleted = !this.databaseGrid.selectedNode.data.IsActive;
+        if (this.cacheData[currentDatabaseItem["IdSelectionDatabaseName"]]) {
+            this.cacheData[
+                currentDatabaseItem["IdSelectionDatabaseName"]
+            ].isDirty = true;
+            this.cacheData[
+                currentDatabaseItem["IdSelectionDatabaseName"]
+            ].isDeleted = !this.databaseGrid.selectedNode.data.IsActive;
 
             this.emitAllTableEvents();
         } else {
@@ -399,9 +511,11 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
 
     public saveData() {
         if (this.isValidationError()) {
-            this.modalService.warningMessage([{
-                key: 'Modal_Message__The_Value_You_Entered_Is_Not_Valid'
-            }]);
+            this.modalService.warningMessage([
+                {
+                    key: "Modal_Message__The_Value_You_Entered_Is_Not_Valid",
+                },
+            ]);
             return;
         }
 
@@ -413,7 +527,7 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
             databaseItems: any = {},
             cacheDataKeys = Object.keys(this.cacheData);
 
-        cacheDataKeys.forEach(key => {
+        cacheDataKeys.forEach((key) => {
             if (this.cacheData[key].isDirty) {
                 databaseItems[key] = this.cacheData[key];
             }
@@ -423,42 +537,61 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
             return;
         }
 
-        Object.keys(databaseItems).forEach(key => {
+        Object.keys(databaseItems).forEach((key) => {
             if (databaseItems[key].isDeleted) {
                 saveData.push({
                     _DataBase_IsActive: 0,
                     IdSelectionDatabaseName: key,
-                    IdSelectionProject: this.selectedEntity[camelCase(this.widgetListenKey)]
+                    IdSelectionProject:
+                        this.selectedEntity[camelCase(this.widgetListenKey)],
                 });
             } else {
-                databaseItems[key].gridData.data.forEach(country => {
+                databaseItems[key].gridData.data.forEach((country) => {
                     let saveItem: any = {
                         IsActive: 1,
                         IdSelectionDatabaseName: key,
-                        IdSelectionProject: this.selectedEntity[camelCase(this.widgetListenKey)],
-                        Priority: this.databaseGrid.getCurrentNodeItems().find(x => x.IdSelectionDatabaseName == key).Priority,
-                        QtyToNeeded: typeof country.QtyToNeeded === 'object' ? null : country.QtyToNeeded,
-                        IdSelectionProjectCountry: country.IdSelectionProjectCountry
+                        IdSelectionProject:
+                            this.selectedEntity[
+                                camelCase(this.widgetListenKey)
+                            ],
+                        Priority: this.databaseGrid
+                            .getCurrentNodeItems()
+                            .find((x) => x.IdSelectionDatabaseName == key)
+                            .Priority,
+                        QtyToNeeded:
+                            typeof country.QtyToNeeded === "object"
+                                ? null
+                                : country.QtyToNeeded,
+                        IdSelectionProjectCountry:
+                            country.IdSelectionProjectCountry,
                     };
-                    if (!country.hasOwnProperty('IdSelectionProjectDatabase') || isNil(country['IdSelectionProjectDatabase']) || typeof country['IdSelectionProjectDatabase'] === 'object') {
+                    if (
+                        !country.hasOwnProperty("IdSelectionProjectDatabase") ||
+                        isNil(country["IdSelectionProjectDatabase"]) ||
+                        typeof country["IdSelectionProjectDatabase"] ===
+                            "object"
+                    ) {
                         saveData.push(saveItem);
                     } else {
-                        saveItem['IdSelectionProjectDatabase'] = country['IdSelectionProjectDatabase'];
+                        saveItem["IdSelectionProjectDatabase"] =
+                            country["IdSelectionProjectDatabase"];
                         saveData.push(saveItem);
                     }
                 });
             }
         });
 
-
-        this.databaseServiceSubscription = this.databaseService.saveProjectDatabase(saveData)
+        this.databaseServiceSubscription = this.databaseService
+            .saveProjectDatabase(saveData)
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
                         return;
                     }
 
-                    this.store.dispatch(this.processDataActions.saveWidgetSuccess(this.ofModule));
+                    this.store.dispatch(
+                        this.processDataActions.saveWidgetSuccess(this.ofModule)
+                    );
                     this.reset();
                     this.onSaveSuccess.emit();
 
@@ -471,12 +604,26 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
 
     public onCountryGridEditEnded(editingItem) {
         if (this.cacheData && editingItem) {
-            let selectingDatabaseItem = this.cacheData[this.databaseGrid.selectedNode.data['IdSelectionDatabaseName']];
+            let selectingDatabaseItem =
+                this.cacheData[
+                    this.databaseGrid.selectedNode.data[
+                        "IdSelectionDatabaseName"
+                    ]
+                ];
             selectingDatabaseItem.isDirty = true;
 
-            let currentItemIndex = selectingDatabaseItem.gridData.data.findIndex(dt => dt.IdSelectionProjectCountry == editingItem.IdSelectionProjectCountry);
+            let currentItemIndex =
+                selectingDatabaseItem.gridData.data.findIndex(
+                    (dt) =>
+                        dt.IdSelectionProjectCountry ==
+                        editingItem.IdSelectionProjectCountry
+                );
             if (currentItemIndex != -1) {
-                selectingDatabaseItem.gridData.data.splice(currentItemIndex, 1, editingItem);
+                selectingDatabaseItem.gridData.data.splice(
+                    currentItemIndex,
+                    1,
+                    editingItem
+                );
             }
 
             this.emitAllTableEvents();
@@ -535,12 +682,14 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
 
     public onDatabasePriotityChanged($event) {
         if (this.cacheData) {
-            let databaseItems = this.databaseGrid.getCurrentNodeItems().filter(x => x.IsActive);
-            databaseItems = databaseItems.map(dt => {
-                return dt['IdSelectionDatabaseName'];
+            let databaseItems = this.databaseGrid
+                .getCurrentNodeItems()
+                .filter((x) => x.IsActive);
+            databaseItems = databaseItems.map((dt) => {
+                return dt["IdSelectionDatabaseName"];
             });
 
-            databaseItems.forEach(dbId => {
+            databaseItems.forEach((dbId) => {
                 if (this.cacheData[dbId]) {
                     this.cacheData[dbId].isDirty = true;
                 }
@@ -575,7 +724,10 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
             let readOnly = this.checkCountryGridReadOnly();
             let disabled = this.checkCountryGridDisabled();
 
-            if (readOnly !== this.isCountryGridReadOnly || disabled !== this.isCountryGridDisabled) {
+            if (
+                readOnly !== this.isCountryGridReadOnly ||
+                disabled !== this.isCountryGridDisabled
+            ) {
                 this.isCountryGridReadOnly = readOnly;
                 this.isCountryGridDisabled = disabled;
                 this.changeDetectorRef.detectChanges();
@@ -586,12 +738,20 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
         }, 200);
     }
     public checkCountryGridReadOnly() {
-        return this.readOnly || (this.databaseGrid != null && this.databaseGrid.selectedNode != null && !this.databaseGrid.selectedNode.data['IsActive']);
-
+        return (
+            this.readOnly ||
+            (this.databaseGrid != null &&
+                this.databaseGrid.selectedNode != null &&
+                !this.databaseGrid.selectedNode.data["IsActive"])
+        );
     }
 
     public checkCountryGridDisabled() {
-        return this.databaseGrid != null && this.databaseGrid.selectedNode != null && !this.databaseGrid.selectedNode.data['IsActive'];
+        return (
+            this.databaseGrid != null &&
+            this.databaseGrid.selectedNode != null &&
+            !this.databaseGrid.selectedNode.data["IsActive"]
+        );
     }
 
     public onDatabaseRowChecked(cellData) {
@@ -600,6 +760,10 @@ export class DatabaseCombineGridComponent extends BaseComponent implements OnIni
     }
 
     private isAnotherCountryGrid() {
-        return this.databaseGrid && this.databaseGrid.selectedNode && this.databaseGrid.selectedNode.data['IdSelectionDatabaseName'] != 1;
+        return (
+            this.databaseGrid &&
+            this.databaseGrid.selectedNode &&
+            this.databaseGrid.selectedNode.data["IdSelectionDatabaseName"] != 1
+        );
     }
 }

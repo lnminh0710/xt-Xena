@@ -5,18 +5,14 @@ import {
     Output,
     EventEmitter,
     ViewChild,
-    OnDestroy
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
+    OnDestroy,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
 @Component({
-    selector: 'xn-capture-line',
-    styleUrls: ['./xn-capture-line.component.scss'],
-    templateUrl: './xn-capture-line.component.html'
+    selector: "xn-capture-line",
+    styleUrls: ["./xn-capture-line.component.scss"],
+    templateUrl: "./xn-capture-line.component.html",
 })
 export class CaptureLine extends BaseComponent implements OnInit, OnDestroy {
     public escStyle: any;
@@ -26,9 +22,9 @@ export class CaptureLine extends BaseComponent implements OnInit, OnDestroy {
     private rectangle: any = {};
     private original: any = {};
     @Input() isShowCapture: boolean;
-    @Output() addImage = new EventEmitter < any > ();
-    @Output() hideCapture = new EventEmitter < any > ();
-    constructor(router ? : Router) {
+    @Output() addImage = new EventEmitter<any>();
+    @Output() hideCapture = new EventEmitter<any>();
+    constructor(router?: Router) {
         super(router);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -49,34 +45,30 @@ export class CaptureLine extends BaseComponent implements OnInit, OnDestroy {
         document.removeEventListener("keyup", this.handleKeyUp);
         document.removeEventListener("mousemove", this.onMouseMove);
     }
-    public handleKeyUp = e => {
+    public handleKeyUp = (e) => {
         e.stopPropagation();
         if (e.keyCode === 27) {
             this.hideCapture.emit();
             this.original = null;
             this.rectangle = null;
         }
-    }
+    };
     private getMouse(e) {
         const left = e.pageX;
         const top = e.pageY;
         return {
             left,
-            top
+            top,
         };
     }
-    public updateCoordinateLines({
-        top,
-        left,
-        original
-    }) {
+    public updateCoordinateLines({ top, left, original }) {
         const y = top > original.top ? original.top : top;
         const x = left > original.left ? original.left : left;
         const rectangle = {
             top: y,
             left: x,
             width: Math.abs(left - original.left),
-            height: Math.abs(top - original.top)
+            height: Math.abs(top - original.top),
         };
         return rectangle;
     }
@@ -85,17 +77,12 @@ export class CaptureLine extends BaseComponent implements OnInit, OnDestroy {
             return;
         }
         if (this.rectangle) {
-            const {
-                width,
-                height,
-                top,
-                left
-            } = this.rectangle;
+            const { width, height, top, left } = this.rectangle;
             this.addImage.emit({
                 top,
                 left,
                 width: width < 48 ? 48 : width,
-                height: height < 48 ? 48 : height
+                height: height < 48 ? 48 : height,
             });
         }
         this.original = null;
@@ -105,13 +92,10 @@ export class CaptureLine extends BaseComponent implements OnInit, OnDestroy {
         if (!this.isShowCapture) {
             return;
         }
-        const {
-            top,
-            left
-        } = this.getMouse(e);
+        const { top, left } = this.getMouse(e);
         const original = {
             top,
-            left
+            left,
         };
         this.top = top;
         this.left = left;
@@ -119,14 +103,11 @@ export class CaptureLine extends BaseComponent implements OnInit, OnDestroy {
         this.rectangle = this.updateCoordinateLines({
             top,
             left,
-            original
+            original,
         });
     }
     public onMouseMove(e) {
-        const {
-            top,
-            left
-        } = this.getMouse(e);
+        const { top, left } = this.getMouse(e);
         this.top = top;
         this.left = left;
         if (!this.isShowCapture) {
@@ -138,7 +119,7 @@ export class CaptureLine extends BaseComponent implements OnInit, OnDestroy {
             const rectangle = this.updateCoordinateLines({
                 top,
                 left,
-                original
+                original,
             });
             this.original = original;
             this.rectangle = rectangle;

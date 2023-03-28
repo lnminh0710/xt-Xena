@@ -1,24 +1,37 @@
 <div class="form-group" style="margin-bottom: 0px !important">
-    <span class="display-block"><label-translation [keyword]="'RangeControl__From'"></label-translation></span>
+    <span class="display-block"
+        ><label-translation [keyword]="'RangeControl__From'"></label-translation
+    ></span>
     <ng-container [ngSwitch]="control.type">
-        <input #fromNumberControl *ngSwitchDefault
-                           [value]="fromValue"
-                           format="n0"
-                           type="text"
-                           xn-numeric
-                           class="custom-wj-input-control xn-input fix-width-control"
-                           [ngClass]="{'ng-invalid': !fromNumberControl._pristine && !fromNumberControl.value}"
-                           [placeholder]="'From'"
-                           (focusout)="setMinMaxValueForControls()">
-        <wj-input-date #fromDateControl
-                       class="custom-wj-input-control xn-input no-padding-left fix-width-control"
-                       [ngClass]="{'ng-invalid': !fromDateControl._pristine && !fromDateControl.value}"
-                       [format]="'MM/dd/yyyy'"
-                       [placeholder]="'From'"
-                       [isRequired]="false"
-                       [value]="fromValue"
-                       (lostFocus)="setMinMaxValueForControls()"
-                       *ngSwitchCase="'dates'">
+        <input
+            #fromNumberControl
+            *ngSwitchDefault
+            [value]="fromValue"
+            format="n0"
+            type="text"
+            xn-numeric
+            class="custom-wj-input-control xn-input fix-width-control"
+            [ngClass]="{
+                'ng-invalid':
+                    !fromNumberControl._pristine && !fromNumberControl.value
+            }"
+            [placeholder]="'From'"
+            (focusout)="setMinMaxValueForControls()"
+        />
+        <wj-input-date
+            #fromDateControl
+            class="custom-wj-input-control xn-input no-padding-left fix-width-control"
+            [ngClass]="{
+                'ng-invalid':
+                    !fromDateControl._pristine && !fromDateControl.value
+            }"
+            [format]="'MM/dd/yyyy'"
+            [placeholder]="'From'"
+            [isRequired]="false"
+            [value]="fromValue"
+            (lostFocus)="setMinMaxValueForControls()"
+            *ngSwitchCase="'dates'"
+        >
         </wj-input-date>
     </ng-container>
 </div>
@@ -26,26 +39,38 @@
     <i class="fa fa-window-minimize horizontal-line"></i>
 </div>
 <div class="form-group" style="margin-bottom: 0px !important">
-    <span class="display-block"><label-translation [keyword]="'RangeControl__To'"></label-translation></span>
+    <span class="display-block"
+        ><label-translation [keyword]="'RangeControl__To'"></label-translation
+    ></span>
     <ng-container [ngSwitch]="control.type">
-        <input #toNumberControl *ngSwitchDefault
-                           [value]="toValue"
-                           format="n0"
-                           type="text"
-                           xn-numeric
-                           class="custom-wj-input-control xn-input fix-width-control"
-                           [ngClass]="{'ng-invalid': !toNumberControl._pristine && !toNumberControl.value}"
-                           [placeholder]="'To'"
-                           (focusout)="setMinMaxValueForControls()">
-        <wj-input-date #toDateControl
-                       class="custom-wj-input-control xn-input no-padding-left fix-width-control"
-                       [ngClass]="{'ng-invalid': !toDateControl._pristine && !toDateControl.value}"
-                       [value]="toValue"
-                       [format]="'MM/dd/yyyy'"
-                       [placeholder]="'To'"
-                       [isRequired]="false"
-                       (lostFocus)="setMinMaxValueForControls()"
-                       *ngSwitchCase="'dates'">
+        <input
+            #toNumberControl
+            *ngSwitchDefault
+            [value]="toValue"
+            format="n0"
+            type="text"
+            xn-numeric
+            class="custom-wj-input-control xn-input fix-width-control"
+            [ngClass]="{
+                'ng-invalid':
+                    !toNumberControl._pristine && !toNumberControl.value
+            }"
+            [placeholder]="'To'"
+            (focusout)="setMinMaxValueForControls()"
+        />
+        <wj-input-date
+            #toDateControl
+            class="custom-wj-input-control xn-input no-padding-left fix-width-control"
+            [ngClass]="{
+                'ng-invalid': !toDateControl._pristine && !toDateControl.value
+            }"
+            [value]="toValue"
+            [format]="'MM/dd/yyyy'"
+            [placeholder]="'To'"
+            [isRequired]="false"
+            (lostFocus)="setMinMaxValueForControls()"
+            *ngSwitchCase="'dates'"
+        >
         </wj-input-date>
     </ng-container>
 </div>

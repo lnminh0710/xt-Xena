@@ -1,10 +1,16 @@
-import * as wjcChart from 'wijmo/wijmo.chart';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector } from '@angular/core';
-import { OnInit, OnDestroy } from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcChart from "wijmo/wijmo.chart";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import { ElementRef, Injector } from "@angular/core";
+import { OnInit, OnDestroy } from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjFlexChartMeta: IWjComponentMeta;
-export declare class WjFlexChart extends wjcChart.FlexChart implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexChart
+    extends wjcChart.FlexChart
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -23,12 +29,20 @@ export declare class WjFlexChart extends wjcChart.FlexChart implements OnInit, O
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
     tooltipContent: any;
     labelContent: any;
 }
 export declare var wjFlexPieMeta: IWjComponentMeta;
-export declare class WjFlexPie extends wjcChart.FlexPie implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexPie
+    extends wjcChart.FlexPie
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -44,12 +58,20 @@ export declare class WjFlexPie extends wjcChart.FlexPie implements OnInit, OnDes
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
     tooltipContent: any;
     labelContent: any;
 }
 export declare var wjFlexChartAxisMeta: IWjComponentMeta;
-export declare class WjFlexChartAxis extends wjcChart.Axis implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexChartAxis
+    extends wjcChart.Axis
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -63,7 +85,10 @@ export declare class WjFlexChartAxis extends wjcChart.Axis implements OnInit, On
     ngOnDestroy(): void;
 }
 export declare var wjFlexChartLegendMeta: IWjComponentMeta;
-export declare class WjFlexChartLegend extends wjcChart.Legend implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexChartLegend
+    extends wjcChart.Legend
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -76,7 +101,10 @@ export declare class WjFlexChartLegend extends wjcChart.Legend implements OnInit
     ngOnDestroy(): void;
 }
 export declare var wjFlexChartDataLabelMeta: IWjComponentMeta;
-export declare class WjFlexChartDataLabel extends wjcChart.DataLabel implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexChartDataLabel
+    extends wjcChart.DataLabel
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -90,7 +118,10 @@ export declare class WjFlexChartDataLabel extends wjcChart.DataLabel implements 
     ngOnDestroy(): void;
 }
 export declare var wjFlexPieDataLabelMeta: IWjComponentMeta;
-export declare class WjFlexPieDataLabel extends wjcChart.PieDataLabel implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexPieDataLabel
+    extends wjcChart.PieDataLabel
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -104,7 +135,10 @@ export declare class WjFlexPieDataLabel extends wjcChart.PieDataLabel implements
     ngOnDestroy(): void;
 }
 export declare var wjFlexChartSeriesMeta: IWjComponentMeta;
-export declare class WjFlexChartSeries extends wjcChart.Series implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexChartSeries
+    extends wjcChart.Series
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -121,7 +155,10 @@ export declare class WjFlexChartSeries extends wjcChart.Series implements OnInit
     ngOnDestroy(): void;
 }
 export declare var wjFlexChartLineMarkerMeta: IWjComponentMeta;
-export declare class WjFlexChartLineMarker extends wjcChart.LineMarker implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexChartLineMarker
+    extends wjcChart.LineMarker
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -135,7 +172,10 @@ export declare class WjFlexChartLineMarker extends wjcChart.LineMarker implement
     ngOnDestroy(): void;
 }
 export declare var wjFlexChartDataPointMeta: IWjComponentMeta;
-export declare class WjFlexChartDataPoint extends wjcChart.DataPoint implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexChartDataPoint
+    extends wjcChart.DataPoint
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -148,7 +188,10 @@ export declare class WjFlexChartDataPoint extends wjcChart.DataPoint implements 
     ngOnDestroy(): void;
 }
 export declare var wjFlexChartPlotAreaMeta: IWjComponentMeta;
-export declare class WjFlexChartPlotArea extends wjcChart.PlotArea implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexChartPlotArea
+    extends wjcChart.PlotArea
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -160,5 +203,4 @@ export declare class WjFlexChartPlotArea extends wjcChart.PlotArea implements On
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
 }
-export declare class WjChartModule {
-}
+export declare class WjChartModule {}

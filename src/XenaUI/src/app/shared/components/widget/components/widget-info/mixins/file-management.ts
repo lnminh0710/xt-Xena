@@ -1,28 +1,39 @@
-import { ViewChildren, QueryList } from '@angular/core';
+import { ViewChildren, QueryList } from "@angular/core";
 import {
     WidgetDetail,
     WidgetType,
     Module,
     WidgetPropertyModel,
-    WidgetState
-} from 'app/models';
+    WidgetState,
+} from "app/models";
+import { ModalService, WidgetTemplateSettingService } from "app/services";
+import { Constructor } from "./constructor";
+import { WidgetDetailInfo, WidgetAction } from "./widget-base-mixin";
 import {
-    ModalService,
-    WidgetTemplateSettingService,
-} from 'app/services';
-import { Constructor } from './constructor';
-import { WidgetDetailInfo, WidgetAction } from './widget-base-mixin';
-import { XnFileExplorerComponent, XnUploadTemplateFileComponent } from 'app/shared/components/xn-file';
+    XnFileExplorerComponent,
+    XnUploadTemplateFileComponent,
+} from "app/shared/components/xn-file";
 
 export interface FileManagmentServiceInjector {
     widgetTemplateSettingService: WidgetTemplateSettingService;
 }
 
-export function MixinWidgetFileManagement<T extends Constructor<FileManagmentServiceInjector>>(base: T) {
-    abstract class AbstractWidgetFileManagementBase extends base implements WidgetDetailInfo, WidgetAction {
+export function MixinWidgetFileManagement<
+    T extends Constructor<FileManagmentServiceInjector>
+>(base: T) {
+    abstract class AbstractWidgetFileManagementBase
+        extends base
+        implements WidgetDetailInfo, WidgetAction
+    {
         get xnUploadTemplateFileComponent(): XnUploadTemplateFileComponent {
-            if (this.xnUploadTemplateFileComponents && this.xnUploadTemplateFileComponents.length) {
-                const xnUploadTemplateFileComponent = this.xnUploadTemplateFileComponents.find(p => p.isActivated);
+            if (
+                this.xnUploadTemplateFileComponents &&
+                this.xnUploadTemplateFileComponents.length
+            ) {
+                const xnUploadTemplateFileComponent =
+                    this.xnUploadTemplateFileComponents.find(
+                        (p) => p.isActivated
+                    );
                 if (xnUploadTemplateFileComponent) {
                     return xnUploadTemplateFileComponent;
                 }
@@ -87,6 +98,6 @@ export function MixinWidgetFileManagement<T extends Constructor<FileManagmentSer
         protected toggleFileEditMode(toggle: boolean) {
             this.controlMenuStatusToolButtons(toggle);
         }
-    };
+    }
     return AbstractWidgetFileManagementBase;
 }

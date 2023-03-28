@@ -1,1 +1,1 @@
-export * from './history-footer.component';
+export * from "./history-footer.component";

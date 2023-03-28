@@ -1,1 +1,1 @@
-export * from './dialog-user-role.component';
+export * from "./dialog-user-role.component";

@@ -1,4 +1,4 @@
-import * as wjcCore from 'wijmo/wijmo';
+import * as wjcCore from "wijmo/wijmo";
 export declare class ODataCollectionView extends wjcCore.CollectionView {
     _url: string;
     _tbl: string;

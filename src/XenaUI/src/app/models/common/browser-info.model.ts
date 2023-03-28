@@ -20,8 +20,8 @@ export class BrowserInfoModel {
     public Url: string = null;
     public CaptureTime: string = null;
     public IdScansContainerItems: string = null;
-    public SendToAdminImage: string = null;    
-    
+    public SendToAdminImage: string = null;
+
     public constructor(init?: Partial<BrowserInfoModel>) {
         Object.assign(this, init);
     }

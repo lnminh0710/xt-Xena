@@ -1,32 +1,37 @@
 import {
-    Component, Input, Output,
-    EventEmitter, OnInit, OnDestroy,
-    AfterViewInit, ElementRef, ViewChild,
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
     ChangeDetectorRef,
-
     OnChanges,
-    SimpleChanges
+    SimpleChanges,
 } from "@angular/core";
 import {
-    ControlGridColumnModel, ExtendedFilterRule,
+    ControlGridColumnModel,
+    ExtendedFilterRule,
     ApiResultResponse,
     GlobalSettingModel,
-} from 'app/models';
-import isNil from 'lodash/isNil';
-import camelCase from 'lodash/camelCase';
-import isEmpty from 'lodash/isEmpty';
-import isEqual from 'lodash/isEqual';
-import cloneDeep from 'lodash/cloneDeep';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
+} from "app/models";
+import isNil from "lodash/isNil";
+import camelCase from "lodash/camelCase";
+import isEmpty from "lodash/isEmpty";
+import isEqual from "lodash/isEqual";
+import cloneDeep from "lodash/cloneDeep";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
 import {
     ProcessDataActions,
     FilterActions,
-
-    CustomAction
-} from 'app/state-management/store/actions';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+    CustomAction,
+} from "app/state-management/store/actions";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 import {
     AppErrorHandler,
     CountrySelectionService,
@@ -34,45 +39,49 @@ import {
     DatatableService,
     ModalService,
     GlobalSettingService,
-
-    ProjectService
-} from 'app/services';
-import { QueryBuilderConfig, Rule, RuleSet } from 'app/shared/components/xn-control/query-builder';
+    ProjectService,
+} from "app/services";
+import {
+    QueryBuilderConfig,
+    Rule,
+    RuleSet,
+} from "app/shared/components/xn-control/query-builder";
 import {
     RuleEnum,
     MapFromWidgetAppToFilterId,
     GlobalSettingConstant,
-} from 'app/app.constants';
-import { Uti } from 'app/utilities';
-import { GuidHelper } from 'app/utilities/guild.helper';
-import {
-    QueryObject
-} from 'app/app.constants';
+} from "app/app.constants";
+import { Uti } from "app/utilities";
+import { GuidHelper } from "app/utilities/guild.helper";
+import { QueryObject } from "app/app.constants";
 import { BaseComponent } from "app/pages/private/base";
 import { Router } from "@angular/router";
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import * as moduleSettingReducer from 'app/state-management/store/reducer/module-setting';
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import * as moduleSettingReducer from "app/state-management/store/reducer/module-setting";
 import { XnAgGridComponent } from "../xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 import { ToasterService } from "angular2-toaster";
 import { SplitComponent } from "angular-split";
 
 const ID_STRING = {
-    COUNTRY_ID: 'IdSelectionProjectCountry',
-    COUNTRY_LANGUAGE_ID: 'IdCountrylanguage',
-    ID_SELECTION_PROJECT_RULES: 'IdSelectionProjectRules',
-    PRIORITY: 'Priority',
-    MEDIACODE_LABEL: 'MediaCodeLabel',
-    MEDIACODE: 'MediaCode',
-    PRICING: 'Pricing',
-}
+    COUNTRY_ID: "IdSelectionProjectCountry",
+    COUNTRY_LANGUAGE_ID: "IdCountrylanguage",
+    ID_SELECTION_PROJECT_RULES: "IdSelectionProjectRules",
+    PRIORITY: "Priority",
+    MEDIACODE_LABEL: "MediaCodeLabel",
+    MEDIACODE: "MediaCode",
+    PRICING: "Pricing",
+};
 
 @Component({
-    selector: 'mediacode-pricing-grid',
-    templateUrl: './mediacode-pricing-grid.component.html',
-    styleUrls: ['./mediacode-pricing-grid.component.scss']
+    selector: "mediacode-pricing-grid",
+    templateUrl: "./mediacode-pricing-grid.component.html",
+    styleUrls: ["./mediacode-pricing-grid.component.scss"],
 })
-export class MediacodePricingGridComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
-    public listComboBox: any = {}
+export class MediacodePricingGridComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit, OnChanges
+{
+    public listComboBox: any = {};
     public showDialog = false;
     public countryGridData: any;
     public mediacodeGridData: any;
@@ -81,7 +90,7 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
     public splitterConfig = {
         leftHorizontal: 40,
         rightHorizontal: 60,
-    }
+    };
     private isForAllCountry: boolean = false;
     private widgetListenKey = null;
     private selectedEntity: any = null;
@@ -92,9 +101,9 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
     private isMediaCodeGridDisabled = false;
     private showCountriesUpdatedWarning = false;
 
-    @ViewChild('countryGrid') countryGrid: XnAgGridComponent;
-    @ViewChild('mediacodeGrid') mediacodeGrid: XnAgGridComponent;
-    @ViewChild('horizontalSplit') horizontalSplit: SplitComponent;
+    @ViewChild("countryGrid") countryGrid: XnAgGridComponent;
+    @ViewChild("mediacodeGrid") mediacodeGrid: XnAgGridComponent;
+    @ViewChild("horizontalSplit") horizontalSplit: SplitComponent;
 
     @Input() countryGridId: string;
     @Input() mediacodeGridId: string;
@@ -139,8 +148,20 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
     ) {
         super(router);
 
-        this.selectedEntityState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).selectedEntity);
-        this.widgetListenKeyState = store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).widgetListenKey);
+        this.selectedEntityState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedEntity
+        );
+        this.widgetListenKeyState = store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).widgetListenKey
+        );
     }
 
     /**
@@ -149,7 +170,7 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
     public ngOnInit() {
         this.mediacodeGridData = {
             data: [],
-            columns: this.initMediacodeGridSetting()
+            columns: this.initMediacodeGridSetting(),
         };
 
         this.loadColumnLayoutSettings();
@@ -165,7 +186,7 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
 
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
 
         this.changeDetectorRef.detectChanges();
@@ -181,175 +202,258 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
     /**
      * ngAfterViewInit
      */
-    public ngAfterViewInit() {
-    }
+    public ngAfterViewInit() {}
 
     ngAfterContentChecked(): void {
-        if (this._eref.nativeElement.offsetParent != null && this.showCountriesUpdatedWarning) {
+        if (
+            this._eref.nativeElement.offsetParent != null &&
+            this.showCountriesUpdatedWarning
+        ) {
             this.reload();
             this.showCountriesUpdatedWarning = false;
         }
     }
 
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes['readOnly']) {
+        if (changes["readOnly"]) {
             this.validateMediaCodeGrid();
         }
     }
 
     private loadColumnLayoutSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
             .subscribe((data: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (data && data.length) {
-                        let gridColLayoutSettings = data.filter(p => p.globalType == 'GridColLayout');
-                        if (gridColLayoutSettings && gridColLayoutSettings.length) {
-                            gridColLayoutSettings.forEach(setting => {
-                                this.columnsLayoutSettings[setting.globalName] = JSON.parse(setting.jsonSettings);
+                        let gridColLayoutSettings = data.filter(
+                            (p) => p.globalType == "GridColLayout"
+                        );
+                        if (
+                            gridColLayoutSettings &&
+                            gridColLayoutSettings.length
+                        ) {
+                            gridColLayoutSettings.forEach((setting) => {
+                                this.columnsLayoutSettings[setting.globalName] =
+                                    JSON.parse(setting.jsonSettings);
                             });
                         }
 
                         this.changeDetectorRef.detectChanges();
                     }
-                })
-            })
+                });
+            });
     }
 
     private loadSplitterSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
             .subscribe((data: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (data && data.length) {
-                        let selectionWidgetSplitterSettings = data.filter(p => p.globalName == this.idRepWidgetApp && p.globalType == 'WidgetSplitter');
-                        if (selectionWidgetSplitterSettings && selectionWidgetSplitterSettings.length) {
-                            selectionWidgetSplitterSettings.forEach(setting => {
-                                this.splitterConfig = JSON.parse(setting.jsonSettings);
-                                this.horizontalSplit.updateArea(this.horizontalSplit.areas[0].component, 1, this.splitterConfig.leftHorizontal, 20);
-                                this.horizontalSplit.updateArea(this.horizontalSplit.areas[1].component, 1, this.splitterConfig.rightHorizontal, 20);
-                            });
+                        let selectionWidgetSplitterSettings = data.filter(
+                            (p) =>
+                                p.globalName == this.idRepWidgetApp &&
+                                p.globalType == "WidgetSplitter"
+                        );
+                        if (
+                            selectionWidgetSplitterSettings &&
+                            selectionWidgetSplitterSettings.length
+                        ) {
+                            selectionWidgetSplitterSettings.forEach(
+                                (setting) => {
+                                    this.splitterConfig = JSON.parse(
+                                        setting.jsonSettings
+                                    );
+                                    this.horizontalSplit.updateArea(
+                                        this.horizontalSplit.areas[0].component,
+                                        1,
+                                        this.splitterConfig.leftHorizontal,
+                                        20
+                                    );
+                                    this.horizontalSplit.updateArea(
+                                        this.horizontalSplit.areas[1].component,
+                                        1,
+                                        this.splitterConfig.rightHorizontal,
+                                        20
+                                    );
+                                }
+                            );
                         }
 
                         this.changeDetectorRef.detectChanges();
                     }
-                })
-            })
+                });
+            });
     }
 
     private saveSplitterSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
-            .subscribe(getAllGlobalSettings => {
-                let selectionWidgetSplitterSettings = getAllGlobalSettings.find(x => x.globalName == this.idRepWidgetApp && x.globalType == 'WidgetSplitter')
-                if (!selectionWidgetSplitterSettings || !selectionWidgetSplitterSettings.idSettingsGlobal || !selectionWidgetSplitterSettings.globalName) {
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
+            .subscribe((getAllGlobalSettings) => {
+                let selectionWidgetSplitterSettings = getAllGlobalSettings.find(
+                    (x) =>
+                        x.globalName == this.idRepWidgetApp &&
+                        x.globalType == "WidgetSplitter"
+                );
+                if (
+                    !selectionWidgetSplitterSettings ||
+                    !selectionWidgetSplitterSettings.idSettingsGlobal ||
+                    !selectionWidgetSplitterSettings.globalName
+                ) {
                     selectionWidgetSplitterSettings = new GlobalSettingModel({
                         globalName: this.idRepWidgetApp,
-                        globalType: 'WidgetSplitter',
-                        description: 'WidgetSplitter',
-                        isActive: true
+                        globalType: "WidgetSplitter",
+                        description: "WidgetSplitter",
+                        isActive: true,
                     });
                 }
                 selectionWidgetSplitterSettings.idSettingsGUI = -1;
-                selectionWidgetSplitterSettings.jsonSettings = JSON.stringify(this.splitterConfig)
+                selectionWidgetSplitterSettings.jsonSettings = JSON.stringify(
+                    this.splitterConfig
+                );
                 selectionWidgetSplitterSettings.isActive = true;
 
-                this.globalSettingService.saveGlobalSetting(selectionWidgetSplitterSettings)
-                    .subscribe(data => {
-                        this.globalSettingService.saveUpdateCache('-1', selectionWidgetSplitterSettings, data);
+                this.globalSettingService
+                    .saveGlobalSetting(selectionWidgetSplitterSettings)
+                    .subscribe((data) => {
+                        this.globalSettingService.saveUpdateCache(
+                            "-1",
+                            selectionWidgetSplitterSettings,
+                            data
+                        );
                     });
             });
     }
 
     private _subscribeWidgetListenKeyState() {
-        this.widgetListenKeyStateSubscription = this.widgetListenKeyState.subscribe((widgetListenKeyState: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.widgetListenKey = widgetListenKeyState;
+        this.widgetListenKeyStateSubscription =
+            this.widgetListenKeyState.subscribe(
+                (widgetListenKeyState: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.widgetListenKey = widgetListenKeyState;
 
-                this.changeDetectorRef.detectChanges();
-            });
-        });
+                        this.changeDetectorRef.detectChanges();
+                    });
+                }
+            );
     }
 
     private _subscribeSelectedEntityState() {
-        this.selectedEntityStateSubscription = this.selectedEntityState.subscribe((selectedEntityState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (isEmpty(selectedEntityState) && !isEmpty(this.selectedEntity)) {
-                    this.selectedEntity = null;
+        this.selectedEntityStateSubscription =
+            this.selectedEntityState.subscribe((selectedEntityState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        isEmpty(selectedEntityState) &&
+                        !isEmpty(this.selectedEntity)
+                    ) {
+                        this.selectedEntity = null;
 
-                    this.changeDetectorRef.detectChanges();
-                    return;
-                }
-
-                //if (this.countryGrid) {
-                //    this.countryGrid.flex.select(new wjcGrid.CellRange(-1, -1, -1, -1));
-                //}
-
-                if (this.mediacodeGrid) {
-                    let columns = this.mediacodeGridData.columns;
-                    this.mediacodeGridData = null;
-                    this.mediacodeGridData = {
-                        columns: columns,
-                        data: []
+                        this.changeDetectorRef.detectChanges();
+                        return;
                     }
-                }
 
-                if (isEqual(this.selectedEntity, selectedEntityState)) {
+                    //if (this.countryGrid) {
+                    //    this.countryGrid.flex.select(new wjcGrid.CellRange(-1, -1, -1, -1));
+                    //}
+
+                    if (this.mediacodeGrid) {
+                        let columns = this.mediacodeGridData.columns;
+                        this.mediacodeGridData = null;
+                        this.mediacodeGridData = {
+                            columns: columns,
+                            data: [],
+                        };
+                    }
+
+                    if (isEqual(this.selectedEntity, selectedEntityState)) {
+                        this.changeDetectorRef.detectChanges();
+                        return;
+                    }
+
+                    this.selectedEntity = selectedEntityState;
+                    this.cacheData = {};
+                    this.cacheDataForAllCountry = [];
+
+                    this.initCountryGridData();
+
                     this.changeDetectorRef.detectChanges();
-                    return;
-                }
-
-                this.selectedEntity = selectedEntityState;
-                this.cacheData = {};
-                this.cacheDataForAllCountry = [];
-
-                this.initCountryGridData();
-
-                this.changeDetectorRef.detectChanges();
+                });
             });
-        });
     }
 
     private _subscribeRequestSaveWidgetState() {
-        this.requestSaveWidgetStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE_WIDGET && action.module.idSettingsGUI == this.ofModule.idSettingsGUI && this._eref.nativeElement.offsetParent != null;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.submit();
+        this.requestSaveWidgetStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE_WIDGET &&
+                    action.module.idSettingsGUI ==
+                        this.ofModule.idSettingsGUI &&
+                    this._eref.nativeElement.offsetParent != null
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.submit();
+                });
             });
-        });
     }
 
     private _subscribeRequestSyncMediacodeState() {
-        this.requestSyncMediacodeStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SYNC_MEDIACODE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.insertMediaCodeToCampaign();
+        this.requestSyncMediacodeStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SYNC_MEDIACODE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.insertMediaCodeToCampaign();
+                });
             });
-        });
     }
 
     private _subscribeSelectionCountriesAreUpdatedState() {
-        this.selectionCountriesAreUpdatedStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.SELECTION_COUNTRIES_ARE_UPDATED && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.showCountriesUpdatedWarning = true;
+        this.selectionCountriesAreUpdatedStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        ProcessDataActions.SELECTION_COUNTRIES_ARE_UPDATED &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.showCountriesUpdatedWarning = true;
+                });
             });
-        });
     }
 
     /**
      * initCountryGridData
      */
     private initCountryGridData(callBack?: any) {
-        this.countrySelectionServiceSubscription = this.countrySelectionService.getSelectionProjectCountry(this.selectedEntity[camelCase(this.widgetListenKey)])
+        this.countrySelectionServiceSubscription = this.countrySelectionService
+            .getSelectionProjectCountry(
+                this.selectedEntity[camelCase(this.widgetListenKey)]
+            )
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.length || isNil(response.item[1])) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.length ||
+                        isNil(response.item[1])
+                    ) {
                         return;
                     }
 
-                    let tableData: any = this.datatableService.formatDataTableFromRawData(response.item);
-                    tableData = this.datatableService.buildDataSource(tableData);
+                    let tableData: any =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item
+                        );
+                    tableData =
+                        this.datatableService.buildDataSource(tableData);
 
                     const config = {
                         allowDelete: false,
@@ -357,10 +461,13 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
                         allowDownload: false,
                         allowSelectAll: false,
                         hasDisableRow: false,
-                        hasCountrySelectAll: true
-                    }
+                        hasCountrySelectAll: true,
+                    };
 
-                    tableData = this.datatableService.buildWijmoDataSource(tableData, config);
+                    tableData = this.datatableService.buildWijmoDataSource(
+                        tableData,
+                        config
+                    );
 
                     this.countryGridData = tableData;
                     if (callBack) {
@@ -391,7 +498,7 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
                 this.mediacodeGridData = null;
                 this.mediacodeGridData = {
                     data: [],
-                    columns: this.initMediacodeGridSetting()
+                    columns: this.initMediacodeGridSetting(),
                 };
             }
 
@@ -403,30 +510,44 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
 
             // load data from cached
             if (!forceLoadFromService && this.cacheData[countryLanguageId]) {
-                this.cacheData[countryLanguageId].gridData.data = this.cacheData[countryLanguageId].gridData.data.filter(dt => !dt.willDelete);
-                this.mediacodeGridData = this.addMoreCachedDataWithAllCountryFromOtherItemAdded(cloneDeep(this.cacheData[countryLanguageId].gridData));
+                this.cacheData[countryLanguageId].gridData.data =
+                    this.cacheData[countryLanguageId].gridData.data.filter(
+                        (dt) => !dt.willDelete
+                    );
+                this.mediacodeGridData =
+                    this.addMoreCachedDataWithAllCountryFromOtherItemAdded(
+                        cloneDeep(this.cacheData[countryLanguageId].gridData)
+                    );
 
                 this.validateMediaCodeGrid();
                 this.changeDetectorRef.detectChanges();
             }
             // load data from service when data is empty
             else {
-                this.projectService.getMediaCodePricing(this.selectedEntity[camelCase(this.widgetListenKey)], countryId)
+                this.projectService
+                    .getMediaCodePricing(
+                        this.selectedEntity[camelCase(this.widgetListenKey)],
+                        countryId
+                    )
                     .subscribe((response: ApiResultResponse) => {
                         this.appErrorHandler.executeAction(() => {
-                            if (!response || !response.item || !response.item.length) {
+                            if (
+                                !response ||
+                                !response.item ||
+                                !response.item.length
+                            ) {
                                 if (this.cacheData) {
                                     delete this.cacheData[countryLanguageId];
                                 }
 
                                 this.mediacodeGridData = {
                                     data: [],
-                                    columns: this.mediacodeGridData.columns
+                                    columns: this.mediacodeGridData.columns,
                                 };
 
                                 this.cacheData[countryLanguageId] = {
                                     gridData: cloneDeep(this.mediacodeGridData),
-                                    isDirty: false
+                                    isDirty: false,
                                 };
 
                                 this.validateMediaCodeGrid();
@@ -434,11 +555,14 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
                                 return;
                             }
 
-                            this.mediacodeGridData = this.datatableService.buildEditableDataSource(response.item);
+                            this.mediacodeGridData =
+                                this.datatableService.buildEditableDataSource(
+                                    response.item
+                                );
 
                             this.cacheData[countryLanguageId] = {
                                 gridData: cloneDeep(this.mediacodeGridData),
-                                isDirty: false
+                                isDirty: false,
                             };
 
                             this.validateMediaCodeGrid();
@@ -451,12 +575,15 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
         }
     }
 
-    private addMoreCachedDataWithAllCountryFromOtherItemAdded(currentData: any): any {
+    private addMoreCachedDataWithAllCountryFromOtherItemAdded(
+        currentData: any
+    ): any {
         let newData = [];
         if (currentData && currentData.data && currentData.data.length) {
-
             for (let item of this.cacheDataForAllCountry) {
-                const currentItem = currentData.data.find(x => x.DT_RowId === item.DT_RowId);
+                const currentItem = currentData.data.find(
+                    (x) => x.DT_RowId === item.DT_RowId
+                );
                 if (!currentItem || !currentItem.DT_RowId) {
                     newData.push(cloneDeep(item));
                 }
@@ -471,17 +598,17 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
     private initMediacodeGridSetting(): ControlGridColumnModel[] {
         const colSetting = [
             new ControlGridColumnModel({
-                title: 'DT_RowId',
-                data: 'DT_RowId',
+                title: "DT_RowId",
+                data: "DT_RowId",
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
                 title: ID_STRING.COUNTRY_ID,
@@ -490,11 +617,11 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
                 title: ID_STRING.COUNTRY_LANGUAGE_ID,
@@ -503,11 +630,11 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
                 title: ID_STRING.MEDIACODE_LABEL,
@@ -516,11 +643,11 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
                 title: ID_STRING.MEDIACODE,
@@ -529,19 +656,19 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
                 title: ID_STRING.PRICING,
                 data: ID_STRING.PRICING,
                 setting: {
-                    Setting: []
-                }
-            })
+                    Setting: [],
+                },
+            }),
         ];
         return colSetting;
     }
@@ -566,12 +693,23 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
 
     public onMediacodeGridEditEnded(editingItem) {
         if (this.cacheData && editingItem) {
-            let selectingCountryItem = this.cacheData[this.countryGrid.selectedNode.data[ID_STRING.COUNTRY_LANGUAGE_ID]];
+            let selectingCountryItem =
+                this.cacheData[
+                    this.countryGrid.selectedNode.data[
+                        ID_STRING.COUNTRY_LANGUAGE_ID
+                    ]
+                ];
             selectingCountryItem.isDirty = true;
 
-            let currentItemIndex = selectingCountryItem.gridData.data.findIndex(dt => dt['DT_RowId'] == editingItem['DT_RowId']);
+            let currentItemIndex = selectingCountryItem.gridData.data.findIndex(
+                (dt) => dt["DT_RowId"] == editingItem["DT_RowId"]
+            );
             if (currentItemIndex != -1) {
-                selectingCountryItem.gridData.data.splice(currentItemIndex, 1, editingItem);
+                selectingCountryItem.gridData.data.splice(
+                    currentItemIndex,
+                    1,
+                    editingItem
+                );
             }
 
             this.emitAllTableEvents();
@@ -583,9 +721,11 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
 
     public submit(callback?: any) {
         if (this.isValidationError()) {
-            this.modalService.warningMessage([{
-                key: 'Modal_Message__The_Value_You_Entered_Is_Not_Valid'
-            }]);
+            this.modalService.warningMessage([
+                {
+                    key: "Modal_Message__The_Value_You_Entered_Is_Not_Valid",
+                },
+            ]);
             return;
         }
 
@@ -595,7 +735,8 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
             return;
         }
 
-        this.projectService.saveMediaCodePricing(saveData)
+        this.projectService
+            .saveMediaCodePricing(saveData)
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
@@ -606,7 +747,9 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
                     }
 
                     //this.reset();
-                    this.store.dispatch(this.processDataActions.saveWidgetSuccess(this.ofModule));
+                    this.store.dispatch(
+                        this.processDataActions.saveWidgetSuccess(this.ofModule)
+                    );
                     //this.loadFilterFromSeletedCountry(true);
                     this.onSaveSuccess.emit();
 
@@ -658,7 +801,7 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
         let countryItems: any = {},
             cacheDataKeys = Object.keys(this.cacheData);
 
-        cacheDataKeys.forEach(key => {
+        cacheDataKeys.forEach((key) => {
             if (this.cacheData[key].isDirty) {
                 countryItems[key] = this.cacheData[key];
             }
@@ -669,19 +812,24 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
         }
 
         saveData = {
-            IdSelectionProject: this.selectedEntity[camelCase(this.widgetListenKey)],
-            MediaCodePricing: []
+            IdSelectionProject:
+                this.selectedEntity[camelCase(this.widgetListenKey)],
+            MediaCodePricing: [],
         };
 
-        Object.keys(countryItems).forEach(countryLanguageId => {
+        Object.keys(countryItems).forEach((countryLanguageId) => {
             let mediacodes = countryItems[countryLanguageId].gridData.data;
             mediacodes.forEach((mediacode) => {
-                if (!saveData.MediaCodePricing.find(x => x.MediaCode == mediacode.MediaCode)) {
+                if (
+                    !saveData.MediaCodePricing.find(
+                        (x) => x.MediaCode == mediacode.MediaCode
+                    )
+                ) {
                     saveData.MediaCodePricing.push({
                         MediaCode: mediacode.MediaCode,
                         MediaCodeLabel: mediacode.MediaCodeLabel,
-                        MediaCodePrice: mediacode.MediaCodePrice
-                    })
+                        MediaCodePrice: mediacode.MediaCodePrice,
+                    });
                 }
             });
         });
@@ -708,7 +856,10 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
             let readOnly = this.checkGroupPriorityGridReadOnly();
             let disabled = this.checkGroupPriorityGridDisabled();
 
-            if (readOnly !== this.isMediaCodeGridReadOnly || disabled !== this.isMediaCodeGridDisabled) {
+            if (
+                readOnly !== this.isMediaCodeGridReadOnly ||
+                disabled !== this.isMediaCodeGridDisabled
+            ) {
                 this.isMediaCodeGridReadOnly = readOnly;
                 this.isMediaCodeGridDisabled = disabled;
                 this.changeDetectorRef.detectChanges();
@@ -720,18 +871,34 @@ export class MediacodePricingGridComponent extends BaseComponent implements OnIn
         }, 200);
     }
     public checkGroupPriorityGridReadOnly() {
-        return this.readOnly || (this.countryGrid != null && this.countryGrid.selectedNode != null && !this.countryGrid.selectedNode.data['IsActive']);
+        return (
+            this.readOnly ||
+            (this.countryGrid != null &&
+                this.countryGrid.selectedNode != null &&
+                !this.countryGrid.selectedNode.data["IsActive"])
+        );
     }
 
     public checkGroupPriorityGridDisabled() {
-        return this.countryGrid != null && this.countryGrid.selectedNode != null && !this.countryGrid.selectedNode.data['IsActive'];
+        return (
+            this.countryGrid != null &&
+            this.countryGrid.selectedNode != null &&
+            !this.countryGrid.selectedNode.data["IsActive"]
+        );
     }
 
     private insertMediaCodeToCampaign() {
-        this.projectService.insertMediaCodeToCampaign(this.selectedEntity[camelCase(this.widgetListenKey)], MapFromWidgetAppToFilterId[this.idRepWidgetApp])
+        this.projectService
+            .insertMediaCodeToCampaign(
+                this.selectedEntity[camelCase(this.widgetListenKey)],
+                MapFromWidgetAppToFilterId[this.idRepWidgetApp]
+            )
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    this.toasterService.pop('success', 'Insert media code to Campaign successfully')
+                    this.toasterService.pop(
+                        "success",
+                        "Insert media code to Campaign successfully"
+                    );
 
                     this.changeDetectorRef.detectChanges();
                 });

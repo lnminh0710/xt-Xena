@@ -1,30 +1,32 @@
 import {
-    Component, Input, Output, EventEmitter, OnInit, OnDestroy, ViewChild
-} from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { ModalActions } from 'app/state-management/store/actions';
-import * as models from 'app/models';
-import { MessageModal } from 'app/app.constants';
-import { Uti } from 'app/utilities/uti';
-import { Subscription } from 'rxjs/Subscription';
-import {
-    RuleService,
-    AppErrorHandler,
-    DatatableService
-} from 'app/services';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+} from "@angular/core";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { ModalActions } from "app/state-management/store/actions";
+import * as models from "app/models";
+import { MessageModal } from "app/app.constants";
+import { Uti } from "app/utilities/uti";
+import { Subscription } from "rxjs/Subscription";
+import { RuleService, AppErrorHandler, DatatableService } from "app/services";
+import cloneDeep from "lodash-es/cloneDeep";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 
 @Component({
-    selector: 'widget-profile-saving',
-    styleUrls: ['./widget-profile-saving.component.scss'],
-    templateUrl: './widget-profile-saving.component.html'
+    selector: "widget-profile-saving",
+    styleUrls: ["./widget-profile-saving.component.scss"],
+    templateUrl: "./widget-profile-saving.component.html",
 })
 export class WidgetProfileSavingComponent implements OnInit, OnDestroy {
     public showDialog = false;
     public templateName: any;
-    public requiredMessage = 'required';
+    public requiredMessage = "required";
     public showRequired = false;
     public profileDatasource = [];
     public showUpdateDialog = false;
@@ -38,7 +40,7 @@ export class WidgetProfileSavingComponent implements OnInit, OnDestroy {
     @Input() profileSelectedData: any;
     @Output() onSavingData: EventEmitter<any> = new EventEmitter();
     @Output() onSavedData: EventEmitter<any> = new EventEmitter();
-    @ViewChild('selectProfile') selectProfile: AngularMultiSelect;
+    @ViewChild("selectProfile") selectProfile: AngularMultiSelect;
 
     constructor(
         private datatableService: DatatableService,
@@ -46,11 +48,9 @@ export class WidgetProfileSavingComponent implements OnInit, OnDestroy {
         private modalActions: ModalActions,
         private appErrorHandler: AppErrorHandler,
         private ruleService: RuleService
-    ) {
-    }
+    ) {}
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
@@ -61,66 +61,74 @@ export class WidgetProfileSavingComponent implements OnInit, OnDestroy {
             messageType: MessageModal.MessageType.warning,
             modalSize: MessageModal.ModalSize.small,
             header: new models.MessageModalHeaderModel({
-                text: 'Save template'
+                text: "Save template",
             }),
             body: new models.MessageModalBodyModel({
                 isHtmlContent: true,
-                content: 'Do you want to save a new template or update in current template?'
+                content:
+                    "Do you want to save a new template or update in current template?",
             }),
             footer: new models.MessageModalFooterModel({
                 buttonList: [
                     new models.ButtonList({
                         buttonType: MessageModal.ButtonType.success,
-                        text: 'Add New',
-                        customClass: '',
+                        text: "Add New",
+                        customClass: "",
                         callBackFunc: () => {
                             this.hideModal();
-                            this.templateName = '';
+                            this.templateName = "";
                             this.showDialog = true;
                             setTimeout(() => {
-                                $('#template-name').focus();
+                                $("#template-name").focus();
                             }, 200);
-                        }
+                        },
                     }),
                     new models.ButtonList({
                         buttonType: MessageModal.ButtonType.warning,
-                        text: 'Update',
-                        customClass: '',
+                        text: "Update",
+                        customClass: "",
                         callBackFunc: () => {
                             this.onUpdateClicked();
-                        }
+                        },
                     }),
                     new models.ButtonList({
                         buttonType: MessageModal.ButtonType.default,
-                        text: 'Cancel',
-                        customClass: '',
+                        text: "Cancel",
+                        customClass: "",
                         callBackFunc: () => {
                             this.hideModal();
-                        }
-                    })]
-            })
+                        },
+                    }),
+                ],
+            }),
         });
         this.store.dispatch(this.modalActions.setDataForModal(messageOption));
         this.store.dispatch(this.modalActions.modalShowMessage(true));
     }
 
-    public openUpdateWithoutSelectProfile(idSelectionWidget: any, jsonData: any) {
+    public openUpdateWithoutSelectProfile(
+        idSelectionWidget: any,
+        jsonData: any
+    ) {
         this.showDialog = false;
         this.hideModal();
         this.savingJsonData = jsonData;
-        this.loadProfileSubscription = this.ruleService.getTemplate(idSelectionWidget)
+        this.loadProfileSubscription = this.ruleService
+            .getTemplate(idSelectionWidget)
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
                         return;
                     }
-                    response = this.datatableService.formatDataTableFromRawData(response.item);
+                    response = this.datatableService.formatDataTableFromRawData(
+                        response.item
+                    );
                     response = this.datatableService.buildDataSource(response);
                     this.cachedProfiles = cloneDeep(response.data);
-                    this.profileDatasource = response.data.map(x => {
+                    this.profileDatasource = response.data.map((x) => {
                         return {
                             idValue: x.IdSelectionWidgetTemplate,
-                            textValue: x.Description
+                            textValue: x.Description,
                         };
                     });
                     this.showUpdateDialog = true;
@@ -130,7 +138,10 @@ export class WidgetProfileSavingComponent implements OnInit, OnDestroy {
 
     public changeProfile() {
         if (!this.cachedProfiles || !this.cachedProfiles.length) return;
-        const currentItem = this.cachedProfiles.find(x => x.IdSelectionWidgetTemplate == this.selectProfile.selectedValue);
+        const currentItem = this.cachedProfiles.find(
+            (x) =>
+                x.IdSelectionWidgetTemplate == this.selectProfile.selectedValue
+        );
         if (!currentItem || !currentItem.IdSelectionWidgetTemplate) return;
         this.onSavedData.emit(currentItem);
     }
@@ -172,35 +183,37 @@ export class WidgetProfileSavingComponent implements OnInit, OnDestroy {
 
     public callSavingData(jsonData) {
         let savingData: any = {
-            IsActive: '1',
+            IsActive: "1",
             Description: this.profileSelectedData.Description,
             IdSelectionWidget: this.profileSelectedData.IdSelectionWidget,
-            TemplateData: JSON.stringify(jsonData)
+            TemplateData: JSON.stringify(jsonData),
         };
         if (!this.isNew) {
-            savingData['IdSelectionWidgetTemplate'] = this.profileSelectedData.IdSelectionWidgetTemplate;
+            savingData["IdSelectionWidgetTemplate"] =
+                this.profileSelectedData.IdSelectionWidgetTemplate;
         } else {
-            savingData['Description'] = this.templateName;
+            savingData["Description"] = this.templateName;
         }
         savingData = [savingData];
         this.saveData(savingData);
     }
 
     private saveData(savingData: any) {
-        this.saveProfileSubscription = this.ruleService.saveBlackListProfile(savingData)
+        this.saveProfileSubscription = this.ruleService
+            .saveBlackListProfile(savingData)
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
                         return;
                     }
-                    if (this.isNew)
-                        this.showDialog = false;
+                    if (this.isNew) this.showDialog = false;
                     else {
                         this.hideModal();
                         this.showUpdateDialog = false;
                     }
                     this.profileSelectedData = savingData[0];
-                    this.profileSelectedData['IdSelectionWidgetTemplate'] = response.item.returnID;
+                    this.profileSelectedData["IdSelectionWidgetTemplate"] =
+                        response.item.returnID;
                     this.onSavedData.emit(this.profileSelectedData);
                 });
             });
@@ -210,9 +223,7 @@ export class WidgetProfileSavingComponent implements OnInit, OnDestroy {
         this.onSavingData.emit(this.isNew);
     }
 
-    public onUpdate() {
-
-    }
+    public onUpdate() {}
 
     public onTemplateNameKeydown(e) {
         if (e.which == 13) {

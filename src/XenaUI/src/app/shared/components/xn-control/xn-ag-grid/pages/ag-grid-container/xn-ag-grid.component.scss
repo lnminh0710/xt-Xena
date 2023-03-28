@@ -14,7 +14,8 @@
         border-bottom: solid 1px #beb7b7;
     }
 
-    .editable-col.editing, .translation-col {
+    .editable-col.editing,
+    .translation-col {
         border-bottom: solid 1px orange;
     }
 
@@ -26,7 +27,10 @@
         background-color: #d3eeef;
     }
 
-    .ag-ltr .ag-cell-focus:not(.invalid-cell):not(.positive-qty):not(.negative-qty) {
+    .ag-ltr
+        .ag-cell-focus:not(.invalid-cell):not(.positive-qty):not(
+            .negative-qty
+        ) {
         border: none !important;
     }
 

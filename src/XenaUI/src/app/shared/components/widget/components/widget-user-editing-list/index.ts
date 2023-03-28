@@ -1,1 +1,1 @@
-export { WidgetUserEditingListComponent } from './widget-user-editing-list.component';
+export { WidgetUserEditingListComponent } from "./widget-user-editing-list.component";

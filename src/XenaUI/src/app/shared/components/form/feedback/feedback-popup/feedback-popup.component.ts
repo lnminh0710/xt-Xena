@@ -4,36 +4,20 @@ import {
     Input,
     Output,
     EventEmitter,
-    ViewChild
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    Uti
-} from 'app/utilities/uti';
-import {
-    FeedbackFormComponent
-} from 'app/shared/components/form';
-import {
-    ToasterService
-} from 'angular2-toaster/angular2-toaster';
-import {
-    ModalService
-} from 'app/services';
-import {
-    MessageModel
-} from 'app/models';
-import {
-    MessageModal
-} from 'app/app.constants';
+    ViewChild,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Uti } from "app/utilities/uti";
+import { FeedbackFormComponent } from "app/shared/components/form";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { ModalService } from "app/services";
+import { MessageModel } from "app/models";
+import { MessageModal } from "app/app.constants";
 @Component({
-    selector: 'feedback-popup',
-    styleUrls: ['./feedback-popup.component.scss'],
-    templateUrl: './feedback-popup.component.html'
+    selector: "feedback-popup",
+    styleUrls: ["./feedback-popup.component.scss"],
+    templateUrl: "./feedback-popup.component.html",
 })
 export class FeedbackPopupComponent extends BaseComponent implements OnInit {
     private POPUP_WIDTH_SMAIL: number = 500;
@@ -50,14 +34,18 @@ export class FeedbackPopupComponent extends BaseComponent implements OnInit {
     @Input() feedbackStoreData: any = {};
     @Input() browserInfo: any = {};
 
-    @Output() outputData: EventEmitter < any > = new EventEmitter();
-    @Output() makeCaptureArea: EventEmitter < any > = new EventEmitter();
-    @Output() closePopup: EventEmitter < any > = new EventEmitter();
-    @Output() sendMail: EventEmitter < any > = new EventEmitter();
-    @Output() removeItem: EventEmitter < any > = new EventEmitter();
-    @Output() showImageReview: EventEmitter < any > = new EventEmitter();
-    @ViewChild('feedbackForm') feedbackForm: FeedbackFormComponent;
-    constructor(private toasterService: ToasterService, private modalService: ModalService, router ? : Router) {
+    @Output() outputData: EventEmitter<any> = new EventEmitter();
+    @Output() makeCaptureArea: EventEmitter<any> = new EventEmitter();
+    @Output() closePopup: EventEmitter<any> = new EventEmitter();
+    @Output() sendMail: EventEmitter<any> = new EventEmitter();
+    @Output() removeItem: EventEmitter<any> = new EventEmitter();
+    @Output() showImageReview: EventEmitter<any> = new EventEmitter();
+    @ViewChild("feedbackForm") feedbackForm: FeedbackFormComponent;
+    constructor(
+        private toasterService: ToasterService,
+        private modalService: ModalService,
+        router?: Router
+    ) {
         super(router);
     }
     public ngOnInit() {}
@@ -71,18 +59,24 @@ export class FeedbackPopupComponent extends BaseComponent implements OnInit {
         this.savePopupPosition();
     }
     public closeDialogInside() {
-        if ((this.imageTemps && this.imageTemps.length) || this.feedbackData.isDirty) {
+        if (
+            (this.imageTemps && this.imageTemps.length) ||
+            this.feedbackData.isDirty
+        ) {
             this.modalService.unsavedWarningMessage({
-                headerText: 'Saving Changes',
-                message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Send_Data'},
-                    {key: '</p>'}],
+                headerText: "Saving Changes",
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Send_Data" },
+                    { key: "</p>" },
+                ],
                 onModalSaveAndExit: () => {
                     this.sendToAdmin();
                 },
                 onModalExit: () => {
                     this.closeDialog();
                 },
-                isOnTop: true
+                isOnTop: true,
             });
         } else {
             this.closeDialog();
@@ -101,7 +95,11 @@ export class FeedbackPopupComponent extends BaseComponent implements OnInit {
         this.feedbackForm.submit();
         setTimeout(() => {
             if (!this.feedbackData.isValid) {
-                this.toasterService.pop('warning', 'Validation Fail', 'There are some fields do not pass validation.');
+                this.toasterService.pop(
+                    "warning",
+                    "Validation Fail",
+                    "There are some fields do not pass validation."
+                );
                 return;
             }
             this.outputData.emit(this.feedbackData);
@@ -118,25 +116,25 @@ export class FeedbackPopupComponent extends BaseComponent implements OnInit {
     }
     public resetForm() {
         if (!this.feedbackForm) return;
-        this.feedbackForm.resetForm()
+        this.feedbackForm.resetForm();
     }
     public makePopupSize() {
         setTimeout(() => {
-            if ((this.imageTemps && this.imageTemps.length)) {
+            if (this.imageTemps && this.imageTemps.length) {
                 this.popupWidth = this.POPUP_WIDTH_LARGE;
                 this.popupHeight = this.POPUP_HEIGHT_LARGE;
             } else {
                 this.popupWidth = this.POPUP_WIDTH_SMAIL;
                 this.popupHeight = this.POPUP_HEIGHT_SMAIL;
             }
-            let popup = $('.prime-dialog-feedback');
+            let popup = $(".prime-dialog-feedback");
             if (!popup || !popup.length) return;
-            popup.css('width', this.popupWidth);
-            popup.css('height', this.popupHeight);
+            popup.css("width", this.popupWidth);
+            popup.css("height", this.popupHeight);
             if (this.popupWidth === this.POPUP_WIDTH_LARGE) {
-                popup.css('top', 15);
+                popup.css("top", 15);
             } else {
-                popup.css('top', 150);
+                popup.css("top", 150);
             }
         }, 150);
     }
@@ -164,29 +162,29 @@ export class FeedbackPopupComponent extends BaseComponent implements OnInit {
     /***************************************PRIVATE METHOD********************************************/
     private setPopupPosition() {
         if (!this.popupPosition) return;
-        const dialog = $('.prime-dialog-feedback');
+        const dialog = $(".prime-dialog-feedback");
         if (!dialog.length) return;
-        dialog.addClass('hide-hard');
+        dialog.addClass("hide-hard");
         setTimeout(() => {
             dialog.css({
-                display: 'block',
-                top: (this.popupPosition.top || 0) + 'px',
-                left: (this.popupPosition.left || 0) + 'px'
+                display: "block",
+                top: (this.popupPosition.top || 0) + "px",
+                left: (this.popupPosition.left || 0) + "px",
             });
-            dialog.removeClass('hide-hard');
+            dialog.removeClass("hide-hard");
         }, 100);
     }
     private savePopupPosition() {
-        const dialog = $('.prime-dialog-feedback');
+        const dialog = $(".prime-dialog-feedback");
         if (!dialog.length) return;
         this.popupPosition = Object.assign({}, dialog.offset());
     }
     private removeOverlay() {
         setTimeout(() => {
-            let overlay = $('.ui-widget-overlay');
+            let overlay = $(".ui-widget-overlay");
             if (!overlay || !overlay.length) return;
             $(overlay[overlay.length - 1]).css({
-                opacity: 0
+                opacity: 0,
             });
         }, 200);
     }

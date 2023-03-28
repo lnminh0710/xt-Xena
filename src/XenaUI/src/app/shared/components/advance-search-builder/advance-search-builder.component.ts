@@ -1,15 +1,28 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewChild, AfterViewInit, ViewChildren } from '@angular/core';
-import { Uti } from 'app/utilities';
-import { AdvanceSearchConditionComponent } from './components';
-import { SearchService } from 'app/services';
-import { AdvanceSearchFilter } from 'app/models';
+import {
+    Component,
+    Input,
+    Output,
+    ElementRef,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    AfterViewInit,
+    ViewChildren,
+} from "@angular/core";
+import { Uti } from "app/utilities";
+import { AdvanceSearchConditionComponent } from "./components";
+import { SearchService } from "app/services";
+import { AdvanceSearchFilter } from "app/models";
 
 @Component({
-    selector: 'advance-search-builder',
-    templateUrl: './advance-search-builder.component.html',
-    styleUrls: ['./advance-search-builder.component.scss']
+    selector: "advance-search-builder",
+    templateUrl: "./advance-search-builder.component.html",
+    styleUrls: ["./advance-search-builder.component.scss"],
 })
-export class AdvanceSearchBuilderComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AdvanceSearchBuilderComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     public fields;
 
     private executeFunctionCounter = 0;
@@ -26,10 +39,13 @@ export class AdvanceSearchBuilderComponent implements OnInit, OnDestroy, AfterVi
         return this._moduleId;
     }
 
-    @ViewChildren(AdvanceSearchConditionComponent) advanceSearchConditionComponents: Array<AdvanceSearchConditionComponent>;
+    @ViewChildren(AdvanceSearchConditionComponent)
+    advanceSearchConditionComponents: Array<AdvanceSearchConditionComponent>;
 
     private popup: any;
-    private _builderList: Array<AdvanceSearchFilter> = [new AdvanceSearchFilter({})];
+    private _builderList: Array<AdvanceSearchFilter> = [
+        new AdvanceSearchFilter({}),
+    ];
 
     @Input() set builderList(data) {
         this.unbuildLastControlKeyupEvent();
@@ -37,7 +53,9 @@ export class AdvanceSearchBuilderComponent implements OnInit, OnDestroy, AfterVi
 
         this.executeFunctionCounter = 0;
         this.executeFunctionForWaitingControl(this.focusOnFistValue.bind(this));
-        this.executeFunctionForWaitingControl(this.buildControlFocus.bind(this));
+        this.executeFunctionForWaitingControl(
+            this.buildControlFocus.bind(this)
+        );
     }
 
     get builderList() {
@@ -47,42 +65,41 @@ export class AdvanceSearchBuilderComponent implements OnInit, OnDestroy, AfterVi
     @Output() onDirtyAction = new EventEmitter<any>();
     @Output() onMeetLastInputAction = new EventEmitter<any>();
 
-    constructor(private searchService: SearchService) {
+    constructor(private searchService: SearchService) {}
 
-    }
+    ngAfterViewInit(): void {}
 
-    ngAfterViewInit(): void {
-    }
+    ngOnDestroy(): void {}
 
-    ngOnDestroy(): void {
-
-    }
-
-    ngOnInit(): void {
-    }
+    ngOnInit(): void {}
 
     getFields() {
-        this.searchService.getColumnSetting(this.moduleId).subscribe(data => {
-            const columnSetting = JSON.parse(data[0][0].SettingColumnName)[1].ColumnsName;
-            const fields : Array<any> = columnSetting.map((item) => {
+        this.searchService.getColumnSetting(this.moduleId).subscribe((data) => {
+            const columnSetting = JSON.parse(data[0][0].SettingColumnName)[1]
+                .ColumnsName;
+            const fields: Array<any> = columnSetting.map((item) => {
                 return {
                     key: item.ColumnName,
                     value: item.ColumnHeader,
                     dataType: item.DataType,
                     hidden: this.isHiddenField(item),
-                    setting: item.Setting
-                }
-            })
+                    setting: item.Setting,
+                };
+            });
 
-            this.fields = fields.filter(p => !p.hidden);
-        })
+            this.fields = fields.filter((p) => !p.hidden);
+        });
     }
 
     private isHiddenField(item) {
         let isHidden: boolean = false;
         if (item.Setting && item.Setting.length) {
-            (item.Setting as Array<any>).forEach(setting => {
-                if (setting.DisplayField && (setting.DisplayField.Hidden == '1' || setting.DisplayField.HiddenAdvanceSearch == '1')) {
+            (item.Setting as Array<any>).forEach((setting) => {
+                if (
+                    setting.DisplayField &&
+                    (setting.DisplayField.Hidden == "1" ||
+                        setting.DisplayField.HiddenAdvanceSearch == "1")
+                ) {
                     isHidden = true;
                 }
             });
@@ -95,7 +112,9 @@ export class AdvanceSearchBuilderComponent implements OnInit, OnDestroy, AfterVi
         this.builderList.splice(index, 0, new AdvanceSearchFilter({}));
 
         this.executeFunctionCounter = 0;
-        this.executeFunctionForWaitingControl(this.buildControlFocus.bind(this));
+        this.executeFunctionForWaitingControl(
+            this.buildControlFocus.bind(this)
+        );
     }
 
     addLast() {
@@ -112,16 +131,24 @@ export class AdvanceSearchBuilderComponent implements OnInit, OnDestroy, AfterVi
         this.builderList.splice(index, 1);
 
         this.executeFunctionCounter = 0;
-        this.executeFunctionForWaitingControl(this.buildControlFocus.bind(this));
+        this.executeFunctionForWaitingControl(
+            this.buildControlFocus.bind(this)
+        );
     }
 
     getData() {
         let arr = [];
-        if (this.advanceSearchConditionComponents && this.advanceSearchConditionComponents.length) {
-            this.advanceSearchConditionComponents.forEach((advanceSearchConditionComponent) => {
-                let formData = advanceSearchConditionComponent.getFormData();
-                arr.push(formData);
-            })
+        if (
+            this.advanceSearchConditionComponents &&
+            this.advanceSearchConditionComponents.length
+        ) {
+            this.advanceSearchConditionComponents.forEach(
+                (advanceSearchConditionComponent) => {
+                    let formData =
+                        advanceSearchConditionComponent.getFormData();
+                    arr.push(formData);
+                }
+            );
         }
         return arr;
     }
@@ -131,13 +158,15 @@ export class AdvanceSearchBuilderComponent implements OnInit, OnDestroy, AfterVi
     }
 
     public onFieldChangeHandler() {
-        this.executeFunctionForWaitingControl(this.buildControlFocus.bind(this));
+        this.executeFunctionForWaitingControl(
+            this.buildControlFocus.bind(this)
+        );
     }
 
     private executeFunctionForWaitingControl(func: Function) {
         if (this.executeFunctionCounter > 200) return;
         setTimeout(() => {
-            const valueInput = $('#advance-search-condition-value-0');
+            const valueInput = $("#advance-search-condition-value-0");
             if (!valueInput || !valueInput.length) {
                 this.executeFunctionForWaitingControl(func);
                 return;
@@ -147,21 +176,23 @@ export class AdvanceSearchBuilderComponent implements OnInit, OnDestroy, AfterVi
     }
 
     private focusOnFistValue() {
-        $('#advance-search-condition-value-0').focus();
+        $("#advance-search-condition-value-0").focus();
     }
 
     private buildControlFocus() {
-        let controlList: any = $('*[id*=advance-search-condition-value]:visible');
+        let controlList: any = $(
+            "*[id*=advance-search-condition-value]:visible"
+        );
         for (let i = 0; i < controlList.length; i++) {
             const control = $(controlList[i]);
-            control.unbind('keyup');
+            control.unbind("keyup");
             control.keyup(($event) => {
                 if (!($event.which === 13 || $event.keyCode === 13)) return;
-                if (i === (controlList.length - 1)) {
+                if (i === controlList.length - 1) {
                     this.onMeetLastInputAction.emit();
                     return;
                 }
-                $(controlList[i+1]).focus();
+                $(controlList[i + 1]).focus();
             });
         }
     }
@@ -169,7 +200,7 @@ export class AdvanceSearchBuilderComponent implements OnInit, OnDestroy, AfterVi
     private unbuildLastControlKeyupEvent() {
         if (!this._builderList || !this._builderList.length) return;
         for (let i = 0; i < this._builderList.length; i++) {
-            $('#advance-search-condition-value-' + i).unbind('keyup');
+            $("#advance-search-condition-value-" + i).unbind("keyup");
         }
     }
 }

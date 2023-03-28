@@ -1,26 +1,38 @@
-import { Component, Input, EventEmitter, Output, ElementRef, OnInit, OnDestroy, TemplateRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
-import { ModalService } from 'app/services';
-import * as message from 'app/models/common/message-modal';
-import { FileUploader, FileItem, FileType } from '../xn-file-upload';
-import { MessageModal, UploadFileMode, Configuration } from 'app/app.constants';
-import union from 'lodash-es/union';
-import { BaseComponent } from 'app/pages/private/base';
-import { Uti, SerializationHelper } from 'app/utilities';
-import { UserAuthentication } from 'app/models';
+import {
+    Component,
+    Input,
+    EventEmitter,
+    Output,
+    ElementRef,
+    OnInit,
+    OnDestroy,
+    TemplateRef,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { Subject } from "rxjs/Subject";
+import { Subscription } from "rxjs/Subscription";
+import { ModalService } from "app/services";
+import * as message from "app/models/common/message-modal";
+import { FileUploader, FileItem, FileType } from "../xn-file-upload";
+import { MessageModal, UploadFileMode, Configuration } from "app/app.constants";
+import union from "lodash-es/union";
+import { BaseComponent } from "app/pages/private/base";
+import { Uti, SerializationHelper } from "app/utilities";
+import { UserAuthentication } from "app/models";
 
 declare var zip: any;
 declare var XLSX: any;
 
 @Component({
-    selector: 'file-upload',
-    styleUrls: ['./file-upload.component.scss'],
-    templateUrl: './file-upload.component.html'
+    selector: "file-upload",
+    styleUrls: ["./file-upload.component.scss"],
+    templateUrl: "./file-upload.component.html",
 })
-export class FileUploadComponent extends BaseComponent implements OnInit, OnDestroy {
-    public actionText = 'Upload';
+export class FileUploadComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
+    public actionText = "Upload";
     public perfectScrollbarConfig: any = {};
     public uploader: FileUploader = null;
     public hasBaseDropZoneOver = false;
@@ -38,10 +50,10 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
     @Input() title: string = "Select files";
     @Input() allowSelectDuplicateFile = true;
     @Input() checkFileCorrect: any;
-    @Input() maxNumOfFiles: number;//Maximum number of files
+    @Input() maxNumOfFiles: number; //Maximum number of files
 
-    @Input() acceptExtensionFiles = '*';
-    @Input() saveFileName: string = '';
+    @Input() acceptExtensionFiles = "*";
+    @Input() saveFileName: string = "";
 
     @Input()
     set uploadFileMode(val: any) {
@@ -67,16 +79,19 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
     onCompleteItem = new EventEmitter<any>();
 
     @Output() onCompleteAll = new EventEmitter<any>();
-    @Output() public fileDuplicateAction: EventEmitter<any> = new EventEmitter();
-    @Output() public fileDuplicateOnQueueAction: EventEmitter<any> = new EventEmitter();
-    @Output() public onFileChangedAction: EventEmitter<any> = new EventEmitter();
+    @Output() public fileDuplicateAction: EventEmitter<any> =
+        new EventEmitter();
+    @Output() public fileDuplicateOnQueueAction: EventEmitter<any> =
+        new EventEmitter();
+    @Output() public onFileChangedAction: EventEmitter<any> =
+        new EventEmitter();
 
     @Input()
     set readDataMode(value) {
         this._readDataMode = value;
-        this.actionText = 'Upload';
+        this.actionText = "Upload";
         if (this._readDataMode) {
-            this.actionText = 'Import';
+            this.actionText = "Import";
         }
         this.initUploader(true);
         this.uploader.options.readDataMode = value;
@@ -102,13 +117,15 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
     ) {
         super(router);
         this.perfectScrollbarConfig = {
-            suppressScrollX: false
-        }
+            suppressScrollX: false,
+        };
         // this.initForConfirmDeleteModal(MessageModal.MessageType.warning);
 
-        this.subscription = this.subject.debounceTime(100).subscribe(event => {
-            this.sortQueueList();
-        });
+        this.subscription = this.subject
+            .debounceTime(100)
+            .subscribe((event) => {
+                this.sortQueueList();
+            });
     }
 
     public ngOnInit() {
@@ -121,52 +138,53 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
     }
     public fileDuplicateHandler(file: any) {
         this.modalService.warningHTMLText([
-            { key: '<p>' },
-            { key: 'Modal_Message__This_File_Is_Already_Uploaded' },
-            { key: '</p><p>' },
+            { key: "<p>" },
+            { key: "Modal_Message__This_File_Is_Already_Uploaded" },
+            { key: "</p><p>" },
             { key: file.name },
-            { key: '</p>' }
+            { key: "</p>" },
         ]);
         this.fileDuplicateAction.emit(file);
     }
     public fileDuplicateOnQueueHandler(file: any) {
         this.modalService.warningHTMLText([
-            { key: '<p>' },
-            { key: 'Modal_Message__This_File_Is_Already_Selected' },
-            { key: '</p><p>' },
+            { key: "<p>" },
+            { key: "Modal_Message__This_File_Is_Already_Selected" },
+            { key: "</p><p>" },
             { key: file.name },
-            { key: '</p>' }
+            { key: "</p>" },
         ]);
         this.fileDuplicateOnQueueAction.emit(file);
     }
 
     public dontAllowFileExtensionHander() {
         this.modalService.warningHTMLText([
-            { key: '<p>' },
-            { key: 'Modal_Message__You_Should_Upload_File_That_Has_Extensions' },
-            { key: '</p></p>' },
+            { key: "<p>" },
+            {
+                key: "Modal_Message__You_Should_Upload_File_That_Has_Extensions",
+            },
+            { key: "</p></p>" },
             { key: this.acceptExtensionFiles },
-            { key: '</p>' }
+            { key: "</p>" },
         ]);
     }
 
     public dontAllowFileSize() {
-        this.modalService.warningHTMLText(
-            [
-                { key: '<p>' },
-                { key: 'Modal_Message__The_File_Size_Limit' },
-                { key: Uti.formatBytes(this.maxSizeLimit) },
-                { key: 'Modal_Message__Exceeded' },
-                { key: '</p>' }
-            ]);
+        this.modalService.warningHTMLText([
+            { key: "<p>" },
+            { key: "Modal_Message__The_File_Size_Limit" },
+            { key: Uti.formatBytes(this.maxSizeLimit) },
+            { key: "Modal_Message__Exceeded" },
+            { key: "</p>" },
+        ]);
     }
 
     public exceedMaximumNumOfFilesHander() {
         this.modalService.warningHTMLText([
-            { key: '<p>' },
-            { key: 'Modal_Message__Exceed_the_maximum_numbers_of_files' },
-            { key: ': ' + this.maxNumOfFiles + '' },
-            { key: '</p>' }
+            { key: "<p>" },
+            { key: "Modal_Message__Exceed_the_maximum_numbers_of_files" },
+            { key: ": " + this.maxNumOfFiles + "" },
+            { key: "</p>" },
         ]);
     }
 
@@ -177,18 +195,26 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
     private initXlsx() {
         if (!this._readDataMode) return;
 
-        zip.installJS("public/assets/lib/xlsx.zip", ["xlsx.full.min.js"], () => {
-            console.log('load xlsx completed');
-        });
+        zip.installJS(
+            "public/assets/lib/xlsx.zip",
+            ["xlsx.full.min.js"],
+            () => {
+                console.log("load xlsx completed");
+            }
+        );
     }
 
     private reBuildUrl() {
         if (!this._idFolder) return;
-        this.uploader['options']['url'] = this.getUploadUrl();
+        this.uploader["options"]["url"] = this.getUploadUrl();
     }
 
     private getUploadUrl(): string {
-        return Uti.getUploadFileUrl(this.uploadFileMode, this._idFolder, this.saveFileName);
+        return Uti.getUploadFileUrl(
+            this.uploadFileMode,
+            this._idFolder,
+            this.saveFileName
+        );
     }
 
     /**
@@ -200,49 +226,67 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
             this.uploader = new FileUploader({
                 url: this.getUploadUrl(),
                 removeAfterUpload: false,
-                queueLimit : this.maxNumOfFiles
+                queueLimit: this.maxNumOfFiles,
             });
         } else {
             if (!this.uploader) {
                 this.uploader = new FileUploader({
                     url: this.getUploadUrl(),
                     removeAfterUpload: false,
-                    queueLimit: this.maxNumOfFiles
+                    queueLimit: this.maxNumOfFiles,
                 });
             }
         }
 
         if (this.setAuthToken) {
-            const currentUserJson = localStorage.getItem(this.configuration.localStorageCurrentUser);
+            const currentUserJson = localStorage.getItem(
+                this.configuration.localStorageCurrentUser
+            );
             if (currentUserJson) {
-                const currentUserAuthentication = SerializationHelper.toInstance(new UserAuthentication(), currentUserJson);
-                if (currentUserAuthentication && currentUserAuthentication.access_token) {
-                    const authorizationString = currentUserAuthentication.token_type + ' ' + currentUserAuthentication.access_token;
+                const currentUserAuthentication =
+                    SerializationHelper.toInstance(
+                        new UserAuthentication(),
+                        currentUserJson
+                    );
+                if (
+                    currentUserAuthentication &&
+                    currentUserAuthentication.access_token
+                ) {
+                    const authorizationString =
+                        currentUserAuthentication.token_type +
+                        " " +
+                        currentUserAuthentication.access_token;
                     this.uploader.authToken = authorizationString;
                 }
             }
         }
 
-        this.uploader.onCompleteItem = (item: FileItem, response: any, status: any, headers: any) => {
+        this.uploader.onCompleteItem = (
+            item: FileItem,
+            response: any,
+            status: any,
+            headers: any
+        ) => {
             try {
                 // Upload mode
                 if (!this._readDataMode) {
                     response = JSON.parse(response);
-                } else { // Read data mode
+                } else {
+                    // Read data mode
                     const mimeType = FileType.getMimeClass(item._file);
-                    if (mimeType === 'text') {
+                    if (mimeType === "text") {
                         response = JSON.parse(response);
-                    } else if (mimeType === 'xls') {
+                    } else if (mimeType === "xls") {
                         response = this.convertExcelToJson(response);
                     }
                 }
                 this.subject.next();
                 // this.sortQueueList();
-            } catch (e) { }
+            } catch (e) {}
 
             this.templateContext[item.id] = {
-                $implicit: { item, response, status, headers }
-            }
+                $implicit: { item, response, status, headers },
+            };
 
             this.onCompleteItem.emit({ item, response, status, headers });
         };
@@ -277,16 +321,20 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
         if (!this.uploader.queue || !this.uploader.queue.length) {
             return;
         }
-        const notCompletedUploadItems = this.uploader.queue.filter(p => !p.isUploaded);
-        const completedUploadItems = this.uploader.queue.filter(p => p.isUploaded);
+        const notCompletedUploadItems = this.uploader.queue.filter(
+            (p) => !p.isUploaded
+        );
+        const completedUploadItems = this.uploader.queue.filter(
+            (p) => p.isUploaded
+        );
         let arr = [];
         if (notCompletedUploadItems && notCompletedUploadItems.length) {
-            notCompletedUploadItems.forEach(item => {
+            notCompletedUploadItems.forEach((item) => {
                 arr.push(item);
             });
         }
         if (completedUploadItems && completedUploadItems.length) {
-            completedUploadItems.forEach(item => {
+            completedUploadItems.forEach((item) => {
                 arr.push(item);
             });
         }
@@ -298,12 +346,12 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
     }
 
     private convertExcelToJson(data: any) {
-        const wb: any = XLSX.read(data, { type: 'binary' });
+        const wb: any = XLSX.read(data, { type: "binary" });
         let result = [];
         wb.SheetNames.forEach(function (sheetName) {
             // Obtain The Current Row As CSV
             const oJS = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
-            result = union(oJS, result)
+            result = union(oJS, result);
         });
         return result;
     }
@@ -324,19 +372,20 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
             this.modalService.showModal();
             return;
         }
-        $('#input-uploader', $(this._eref.nativeElement)).click();
+        $("#input-uploader", $(this._eref.nativeElement)).click();
         // 0001145: Can not close message when press cancel in Upload Dialog
         //this.addOverlayToBody();
     }
 
     private addOverlayToBody() {
-        const templateHtml = '<div id="upload-overlay" style="position:absolute;left:0px;right:0px;top:0px;bottom:0px;background-color:rgba(90, 90, 90, 0.8);display:flex;justify-content:center;align-items:center;z-index:2000">' +
+        const templateHtml =
+            '<div id="upload-overlay" style="position:absolute;left:0px;right:0px;top:0px;bottom:0px;background-color:rgba(90, 90, 90, 0.8);display:flex;justify-content:center;align-items:center;z-index:2000">' +
             '<div style="font-size:24pt;font-weight:800;color:#fff;">Please select files to UPLOAD!</div></div>';
-        $('body').append(templateHtml);
+        $("body").append(templateHtml);
     }
 
     private removeOverlayToBody() {
-        $('#upload-overlay').remove();
+        $("#upload-overlay").remove();
     }
 
     private initForConfirmDeleteModal(messageType: any) {
@@ -345,23 +394,24 @@ export class FileUploadComponent extends BaseComponent implements OnInit, OnDest
             messageType: messageType,
             modalSize: MessageModal.ModalSize.small,
             header: new message.MessageModalHeaderModel({
-                text: 'Alert'
+                text: "Alert",
             }),
             body: new message.MessageModalBodyModel({
                 isHtmlContent: true,
-                content: [{ key: 'Modal_Message__Can_Not_Drop_File' }]
+                content: [{ key: "Modal_Message__Can_Not_Drop_File" }],
             }),
             footer: new message.MessageModalFooterModel({
                 buttonList: [
                     new message.ButtonList({
                         buttonType: MessageModal.ButtonType.default,
-                        text: 'Ok',
-                        customClass: 'btn-sm',
+                        text: "Ok",
+                        customClass: "btn-sm",
                         callBackFunc: () => {
                             this.modalService.hideModal();
-                        }
-                    })]
-            })
+                        },
+                    }),
+                ],
+            }),
         });
         this.modalService.createModal(this.messageWarnOption);
     }

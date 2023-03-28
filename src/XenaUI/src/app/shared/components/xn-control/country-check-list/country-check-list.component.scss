@@ -33,10 +33,11 @@
     .main-list {
         max-height: 250px !important;
         position: relative;
-        transition: max-height 0.5s ease-out;        
+        transition: max-height 0.5s ease-out;
     }
 
-    .fa-chevron-circle-down, .fa-chevron-circle-up {
+    .fa-chevron-circle-down,
+    .fa-chevron-circle-up {
         font-size: 20px;
     }
 
@@ -68,7 +69,7 @@
         transition: max-height 0.8s ease-out !important;
     }
 
-    .sub-list-container {        
+    .sub-list-container {
     }
 }
 
@@ -76,7 +77,8 @@
     margin-left: -10px !important;
 }
 
-.checkbox .no-checkbox::before, .radio .no-checkbox::before {
+.checkbox .no-checkbox::before,
+.radio .no-checkbox::before {
     display: none !important;
 }
 
@@ -101,9 +103,8 @@
     display: inline-block;
     width: 25px;
     height: 15px;
-    background: url('~/public/assets/lib/flag/flags.png') no-repeat !important;
+    background: url("~/public/assets/lib/flag/flags.png") no-repeat !important;
 }
-
 
 .flag.flag-aw {
     background-position: -325px 0 !important;

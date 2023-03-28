@@ -1,7 +1,36 @@
-import { Directive, Input, ComponentRef, ElementRef, ViewContainerRef, Renderer, ChangeDetectorRef, ComponentFactoryResolver, forwardRef, EventEmitter, Output, SimpleChanges, OnChanges, HostListener, OnDestroy } from "@angular/core";
-import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from "@angular/forms";
+import {
+    Directive,
+    Input,
+    ComponentRef,
+    ElementRef,
+    ViewContainerRef,
+    Renderer,
+    ChangeDetectorRef,
+    ComponentFactoryResolver,
+    forwardRef,
+    EventEmitter,
+    Output,
+    SimpleChanges,
+    OnChanges,
+    HostListener,
+    OnDestroy,
+} from "@angular/core";
+import {
+    AbstractControl,
+    ControlValueAccessor,
+    NG_VALIDATORS,
+    NG_VALUE_ACCESSOR,
+    Validator,
+} from "@angular/forms";
 
-import { IMyDate, IMyOptions, IMyDateModel, IMyCalendarViewChanged, IMyInputFieldChanged, IMySelectorPosition } from "./interfaces/index";
+import {
+    IMyDate,
+    IMyOptions,
+    IMyDateModel,
+    IMyCalendarViewChanged,
+    IMyInputFieldChanged,
+    IMySelectorPosition,
+} from "./interfaces/index";
 import { NgxMyDatePicker } from "./ngx-my-date-picker.component";
 import { UtilService } from "./services/ngx-my-date-picker.util.service";
 import { NgxMyDatePickerConfig } from "./services/ngx-my-date-picker.config";
@@ -12,29 +41,34 @@ import { KeyCode } from "./enums/key-code.enum";
 const NGX_DP_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => NgxMyDatePickerDirective),
-    multi: true
+    multi: true,
 };
 
 const NGX_DP_VALIDATORS = {
     provide: NG_VALIDATORS,
     useExisting: forwardRef(() => NgxMyDatePickerDirective),
-    multi: true
+    multi: true,
 };
 
 @Directive({
     selector: "[ngx-mydatepicker]",
     exportAs: "ngx-mydatepicker",
-    providers: [UtilService, NGX_DP_VALUE_ACCESSOR, NGX_DP_VALIDATORS]
+    providers: [UtilService, NGX_DP_VALUE_ACCESSOR, NGX_DP_VALIDATORS],
 })
-export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlValueAccessor, Validator {
+export class NgxMyDatePickerDirective
+    implements OnChanges, OnDestroy, ControlValueAccessor, Validator
+{
     @Input() options: IMyOptions;
     @Input() defaultMonth: string;
     @Input() haveFirstIcon: any = false;
 
-    @Output() setFocusWhenChooseDate: EventEmitter<any> = new EventEmitter<any>();
+    @Output() setFocusWhenChooseDate: EventEmitter<any> =
+        new EventEmitter<any>();
     @Output() dateChanged: EventEmitter<string> = new EventEmitter<string>();
-    @Output() inputFieldChanged: EventEmitter<IMyInputFieldChanged> = new EventEmitter<IMyInputFieldChanged>();
-    @Output() calendarViewChanged: EventEmitter<IMyCalendarViewChanged> = new EventEmitter<IMyCalendarViewChanged>();
+    @Output() inputFieldChanged: EventEmitter<IMyInputFieldChanged> =
+        new EventEmitter<IMyInputFieldChanged>();
+    @Output() calendarViewChanged: EventEmitter<IMyCalendarViewChanged> =
+        new EventEmitter<IMyCalendarViewChanged>();
     @Output() calendarToggle: EventEmitter<number> = new EventEmitter<number>();
 
     private cRef: ComponentRef<NgxMyDatePicker> = null;
@@ -44,16 +78,18 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
 
     private opts: IMyOptions;
 
-    onChangeCb: (_: any) => void = () => { };
-    onTouchedCb: () => void = () => { };
+    onChangeCb: (_: any) => void = () => {};
+    onTouchedCb: () => void = () => {};
 
-    constructor(private utilService: UtilService,
-                private vcRef: ViewContainerRef,
-                private cfr: ComponentFactoryResolver,
-                private renderer: Renderer,
-                private cdr: ChangeDetectorRef,
-                private elem: ElementRef,
-                private config: NgxMyDatePickerConfig) {
+    constructor(
+        private utilService: UtilService,
+        private vcRef: ViewContainerRef,
+        private cfr: ComponentFactoryResolver,
+        private renderer: Renderer,
+        private cdr: ChangeDetectorRef,
+        private elem: ElementRef,
+        private config: NgxMyDatePickerConfig
+    ) {
         this.opts = Object.assign({}, config);
         this.parseOptions(config);
     }
@@ -61,32 +97,48 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
     @HostListener("keyup", ["$event"]) onKeyUp(evt: KeyboardEvent) {
         if (this.ignoreKeyPress(evt.keyCode)) {
             return;
-        }
-        else if (evt.keyCode === KeyCode.esc) {
+        } else if (evt.keyCode === KeyCode.esc) {
             this.closeSelector(CalToggle.CloseByEsc);
-        }
-        else {
-            let date: IMyDate = this.utilService.isDateValid(this.elem.nativeElement.value, this.opts.dateFormat, this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.monthLabels, this.opts.enableDates);
+        } else {
+            let date: IMyDate = this.utilService.isDateValid(
+                this.elem.nativeElement.value,
+                this.opts.dateFormat,
+                this.opts.minYear,
+                this.opts.maxYear,
+                this.opts.disableUntil,
+                this.opts.disableSince,
+                this.opts.disableWeekends,
+                this.opts.disableDates,
+                this.opts.disableDateRanges,
+                this.opts.disableWeekdays,
+                this.opts.monthLabels,
+                this.opts.enableDates
+            );
             if (this.utilService.isInitializedDate(date)) {
-                let dateModel: IMyDateModel = this.utilService.getDateModel(date, this.opts.dateFormat, this.opts.monthLabels, this.elem.nativeElement.value);
+                let dateModel: IMyDateModel = this.utilService.getDateModel(
+                    date,
+                    this.opts.dateFormat,
+                    this.opts.monthLabels,
+                    this.elem.nativeElement.value
+                );
                 this.emitDateChanged(dateModel);
                 this.updateModel(dateModel);
                 this.emitInputFieldChanged(dateModel.formatted, true);
                 if (this.opts.closeSelectorOnDateSelect) {
                     this.closeSelector(CalToggle.CloseByDateSel);
-                }
-                else if (this.cRef !== null) {
+                } else if (this.cRef !== null) {
                     this.cRef.instance.setCalendarView(date);
                 }
-            }
-            else {
+            } else {
                 if (this.inputText !== this.elem.nativeElement.value) {
                     if (this.elem.nativeElement.value === "") {
                         this.clearDate();
-                    }
-                    else {
+                    } else {
                         this.onChangeCb(null);
-                        this.emitInputFieldChanged(this.elem.nativeElement.value, false);
+                        this.emitInputFieldChanged(
+                            this.elem.nativeElement.value,
+                            false
+                        );
                     }
                 }
             }
@@ -99,10 +151,20 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
     }
 
     // wrapper with arrow function to preserve the use of 'this' word
-    private onClickWrapper = (ev: MouseEvent) => { this.onClick(ev); };
+    private onClickWrapper = (ev: MouseEvent) => {
+        this.onClick(ev);
+    };
 
     onClick(evt: MouseEvent) {
-        if (this.opts.closeSelectorOnDocumentClick && !this.preventClose && evt.target && this.cRef !== null && this.elem.nativeElement !== evt.target && !this.cRef.location.nativeElement.contains(evt.target) && !this.disabled) {
+        if (
+            this.opts.closeSelectorOnDocumentClick &&
+            !this.preventClose &&
+            evt.target &&
+            this.cRef !== null &&
+            this.elem.nativeElement !== evt.target &&
+            !this.cRef.location.nativeElement.contains(evt.target) &&
+            !this.disabled
+        ) {
             this.closeSelector(CalToggle.CloseByOutClick);
         }
     }
@@ -141,13 +203,35 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
 
     public writeValue(value: any): void {
         if (!this.disabled) {
-            if (value && (value["date"] || typeof value.getMonth === 'function')) {
-                let formatted: string = this.utilService.formatDate(value["date"] ? value["date"] : this.jsDateToMyDate(value), this.opts.dateFormat, this.opts.monthLabels);
-                let date: IMyDate = this.utilService.isDateValid(formatted, this.opts.dateFormat, this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.monthLabels, this.opts.enableDates);
+            if (
+                value &&
+                (value["date"] || typeof value.getMonth === "function")
+            ) {
+                let formatted: string = this.utilService.formatDate(
+                    value["date"] ? value["date"] : this.jsDateToMyDate(value),
+                    this.opts.dateFormat,
+                    this.opts.monthLabels
+                );
+                let date: IMyDate = this.utilService.isDateValid(
+                    formatted,
+                    this.opts.dateFormat,
+                    this.opts.minYear,
+                    this.opts.maxYear,
+                    this.opts.disableUntil,
+                    this.opts.disableSince,
+                    this.opts.disableWeekends,
+                    this.opts.disableDates,
+                    this.opts.disableDateRanges,
+                    this.opts.disableWeekdays,
+                    this.opts.monthLabels,
+                    this.opts.enableDates
+                );
                 this.setInputValue(formatted);
-                this.emitInputFieldChanged(formatted, this.utilService.isInitializedDate(date));
-            }
-            else if (value === null || value === "") {
+                this.emitInputFieldChanged(
+                    formatted,
+                    this.utilService.isInitializedDate(date)
+                );
+            } else if (value === null || value === "") {
                 this.setInputValue("");
                 this.emitInputFieldChanged("", false);
             }
@@ -164,7 +248,11 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
 
     public setDisabledState(isDisabled: boolean): void {
         this.disabled = isDisabled;
-        this.renderer.setElementProperty(this.elem.nativeElement, "disabled", isDisabled);
+        this.renderer.setElementProperty(
+            this.elem.nativeElement,
+            "disabled",
+            isDisabled
+        );
 
         if (isDisabled) {
             this.closeCalendar();
@@ -172,12 +260,28 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
     }
 
     public validate(c: AbstractControl): { [p: string]: any } {
-        if (this.elem.nativeElement.value === null || this.elem.nativeElement.value === "") {
+        if (
+            this.elem.nativeElement.value === null ||
+            this.elem.nativeElement.value === ""
+        ) {
             return null;
         }
-        let date: IMyDate = this.utilService.isDateValid(this.elem.nativeElement.value, this.opts.dateFormat, this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.monthLabels, this.opts.enableDates);
+        let date: IMyDate = this.utilService.isDateValid(
+            this.elem.nativeElement.value,
+            this.opts.dateFormat,
+            this.opts.minYear,
+            this.opts.maxYear,
+            this.opts.disableUntil,
+            this.opts.disableSince,
+            this.opts.disableWeekends,
+            this.opts.disableDates,
+            this.opts.disableDateRanges,
+            this.opts.disableWeekdays,
+            this.opts.monthLabels,
+            this.opts.enableDates
+        );
         if (!this.utilService.isInitializedDate(date)) {
-            return {invalidDateFormat: true};
+            return { invalidDateFormat: true };
         }
         return null;
     }
@@ -189,7 +293,9 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
         this.preventClose = true;
         this.cdr.detectChanges();
         if (this.cRef === null) {
-            this.cRef = this.vcRef.createComponent(this.cfr.resolveComponentFactory(NgxMyDatePicker));
+            this.cRef = this.vcRef.createComponent(
+                this.cfr.resolveComponentFactory(NgxMyDatePicker)
+            );
             this.appendSelector(this.cRef.location.nativeElement);
             this.cRef.instance.initialize(
                 this.opts,
@@ -198,7 +304,10 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
                 this.elem.nativeElement.value,
                 (dm: IMyDateModel, close: boolean, keyCode?: number) => {
                     this.focusToInput();
-                    if (!this.opts.dontAutoFillDateWhenEnter || keyCode !== KeyCode.enter) {
+                    if (
+                        !this.opts.dontAutoFillDateWhenEnter ||
+                        keyCode !== KeyCode.enter
+                    ) {
                         this.emitDateChanged(dm);
                         this.emitInputFieldChanged(dm.formatted, true);
                         this.updateModel(dm);
@@ -232,8 +341,7 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
         if (this.cRef === null) {
             document.addEventListener("click", this.onClickWrapper);
             this.openCalendar();
-        }
-        else {
+        } else {
             document.removeEventListener("click", this.onClickWrapper);
             this.closeSelector(CalToggle.CloseByCalBtn);
         }
@@ -245,7 +353,12 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
         }
         this.setInputValue("");
         this.emitInputFieldChanged("", false);
-        this.emitDateChanged({date: {year: 0, month: 0, day: 0}, jsdate: null, formatted: "", epoc: 0});
+        this.emitDateChanged({
+            date: { year: 0, month: 0, day: 0 },
+            jsdate: null,
+            formatted: "",
+            epoc: 0,
+        });
         this.onChangeCb(null);
         this.onTouchedCb();
         this.closeSelector(CalToggle.CloseByCalBtn);
@@ -254,7 +367,20 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
     public isDateValid(value?: any): boolean {
         value = value || this.elem.nativeElement.value;
         if (value) {
-            let date: IMyDate = this.utilService.isDateValid(value, this.opts.dateFormat, this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.monthLabels, this.opts.enableDates);
+            let date: IMyDate = this.utilService.isDateValid(
+                value,
+                this.opts.dateFormat,
+                this.opts.minYear,
+                this.opts.maxYear,
+                this.opts.disableUntil,
+                this.opts.disableSince,
+                this.opts.disableWeekends,
+                this.opts.disableDates,
+                this.opts.disableDateRanges,
+                this.opts.disableWeekdays,
+                this.opts.monthLabels,
+                this.opts.enableDates
+            );
             if (this.utilService.isInitializedDate(date)) {
                 this.emitInputFieldChanged(value, true);
                 return true;
@@ -265,7 +391,14 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
     }
 
     private ignoreKeyPress(keyCode: number): boolean {
-        return keyCode === KeyCode.leftArrow || keyCode === KeyCode.rightArrow || keyCode === KeyCode.upArrow || keyCode === KeyCode.downArrow || keyCode === KeyCode.tab || keyCode === KeyCode.shift;
+        return (
+            keyCode === KeyCode.leftArrow ||
+            keyCode === KeyCode.rightArrow ||
+            keyCode === KeyCode.upArrow ||
+            keyCode === KeyCode.downArrow ||
+            keyCode === KeyCode.tab ||
+            keyCode === KeyCode.shift
+        );
     }
 
     private closeSelector(reason: number): void {
@@ -285,7 +418,11 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
 
     private setInputValue(value: string): void {
         this.inputText = value;
-        this.renderer.setElementProperty(this.elem.nativeElement, "value", value);
+        this.renderer.setElementProperty(
+            this.elem.nativeElement,
+            "value",
+            value
+        );
     }
 
     private focusToInput(): void {
@@ -302,7 +439,11 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
     }
 
     private emitInputFieldChanged(value: string, valid: boolean): void {
-        this.inputFieldChanged.emit({value: value, dateFormat: this.opts.dateFormat, valid: valid});
+        this.inputFieldChanged.emit({
+            value: value,
+            dateFormat: this.opts.dateFormat,
+            valid: valid,
+        });
     }
 
     private emitCalendarChanged(cvc: IMyCalendarViewChanged) {
@@ -314,7 +455,11 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
     }
 
     private jsDateToMyDate(date: Date): IMyDate {
-        return {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate()};
+        return {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate(),
+        };
     }
 
     private appendSelector(elem: any): void {
@@ -329,8 +474,12 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
         let left: number = 0;
 
         if (this.opts.appendSelectorToBody) {
-            let b: any = (document.body ? document.body.getBoundingClientRect() : {top: 0, left: 0});
-            let e: any = elem ? elem.getBoundingClientRect() : {top: 0, left: 0};
+            let b: any = document.body
+                ? document.body.getBoundingClientRect()
+                : { top: 0, left: 0 };
+            let e: any = elem
+                ? elem.getBoundingClientRect()
+                : { top: 0, left: 0 };
             top = e.top - b.top;
             left = e.left - b.left;
         }
@@ -338,21 +487,28 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
         const documentBody = $(document.body);
         const fullHeight = documentBody.height();
 
-        const isOverButton = ((fullHeight - calendarHeight) < (top + elem.offsetHeight));
+        const isOverButton =
+            fullHeight - calendarHeight < top + elem.offsetHeight;
 
         if (this.opts.openSelectorTopOfInput || isOverButton) {
             top = top - this.getSelectorDimension(this.opts.selectorHeight) - 2;
-        }
-        else {
-            top = top + elem.offsetHeight + (this.opts.showSelectorArrow ? 12 : 2);
+        } else {
+            top =
+                top +
+                elem.offsetHeight +
+                (this.opts.showSelectorArrow ? 12 : 2);
         }
         const plusValue = this.getPlusWidthValue(elem);
         if (this.opts.alignSelectorRight) {
-            left = left + elem.offsetWidth - this.getSelectorDimension(this.opts.selectorWidth) + plusValue;
+            left =
+                left +
+                elem.offsetWidth -
+                this.getSelectorDimension(this.opts.selectorWidth) +
+                plusValue;
         } else {
             left -= plusValue;
         }
-        return {top: top + "px", left: left + "px"};
+        return { top: top + "px", left: left + "px" };
     }
 
     private getPlusWidthValue(elem: any): number {
@@ -360,9 +516,13 @@ export class NgxMyDatePickerDirective implements OnChanges, OnDestroy, ControlVa
             if (!this.haveFirstIcon) {
                 return 4;
             }
-            const firstButton = $(elem.parentNode.parentNode.parentNode).find('.input-group-addon');
-            return (firstButton && firstButton.length) ? firstButton.outerWidth() + 4 : 4;
-        } catch(e) {
+            const firstButton = $(elem.parentNode.parentNode.parentNode).find(
+                ".input-group-addon"
+            );
+            return firstButton && firstButton.length
+                ? firstButton.outerWidth() + 4
+                : 4;
+        } catch (e) {
             return 4;
         }
     }

@@ -1,32 +1,28 @@
-
 import {
     Component,
     OnInit,
     Input,
     Output,
     OnDestroy,
-    EventEmitter
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    SignalRNotifyModel
-} from 'app/models';
+    EventEmitter,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { SignalRNotifyModel } from "app/models";
 
 @Component({
-    selector: 'widget-reload-message',
-    styleUrls: ['./widget-reload-message.component.scss'],
-    templateUrl: './widget-reload-message.component.html',
+    selector: "widget-reload-message",
+    styleUrls: ["./widget-reload-message.component.scss"],
+    templateUrl: "./widget-reload-message.component.html",
     host: {
-        '(mouseleave)': 'mouseout($event)',
-        '(mouseenter)': 'mouseenter($event)',
-    }
+        "(mouseleave)": "mouseout($event)",
+        "(mouseenter)": "mouseenter($event)",
+    },
 })
-export class WidgetReloadMessageComponent extends BaseComponent implements OnInit, OnDestroy {
+export class WidgetReloadMessageComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     @Input() userJustSaved: SignalRNotifyModel = new SignalRNotifyModel();
     @Input() isBlockUI: boolean = true;
     @Input() isShowReloadButton: boolean = true;
@@ -38,15 +34,14 @@ export class WidgetReloadMessageComponent extends BaseComponent implements OnIni
 
     public isBlur: boolean = false;
 
-    constructor(router ? : Router) {
+    constructor(router?: Router) {
         super(router);
     }
     public ngOnInit() {
         this.mouseout = this.mouseout.bind(this);
         this.isBlur = !this.isShowReloadButton;
     }
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     public reloadClicked() {
         this.reload.emit();

@@ -1,13 +1,20 @@
-﻿<div class="parked-item-guide text-center"
-     *ngIf="usingModule && usingModule.moduleName">
+﻿<div
+    class="parked-item-guide text-center"
+    *ngIf="usingModule && usingModule.moduleName"
+>
     <div class="panel col-xs-offset-4 col-xs-4">
         <div class="panel-body text-center">
             <h1>
-                <i aria-hidden="true" class="fa {{usingModule.iconName}}"></i>
+                <i aria-hidden="true" class="fa {{ usingModule.iconName }}"></i>
             </h1>
         </div>
     </div>
     <div class="col-xs-12">
-        <h5><label-translation [keyword]="'Parked_item_guide__Drag_Here'"></label-translation><br>{{usingModule.moduleName}}</h5>
+        <h5>
+            <label-translation
+                [keyword]="'Parked_item_guide__Drag_Here'"
+            ></label-translation
+            ><br />{{ usingModule.moduleName }}
+        </h5>
     </div>
 </div>

@@ -1,32 +1,55 @@
-<div [ngClass]="{'submitted': submitted}"
-     class="form-container">
-    <form [formGroup]="formGroup"
-          id="newProjectFormGroup" class="form-horizontal  height-pc-100">
-        <control-focus formName="newProjectFormGroup"
-                       [isFocusOnFirstControl]="true"></control-focus>
+<div [ngClass]="{ submitted: submitted }" class="form-container">
+    <form
+        [formGroup]="formGroup"
+        id="newProjectFormGroup"
+        class="form-horizontal height-pc-100"
+    >
+        <control-focus
+            formName="newProjectFormGroup"
+            [isFocusOnFirstControl]="true"
+        ></control-focus>
         <div class="col-xs-12 col-md-offset-3 col-md-6 height-pc-100">
             <div class="form-group">
-                <label class="col-sm-3 control-label"><label-translation [keyword]="'New_project_form__Create_Date'"></label-translation></label>
+                <label class="col-sm-3 control-label"
+                    ><label-translation
+                        [keyword]="'New_project_form__Create_Date'"
+                    ></label-translation
+                ></label>
                 <div class="col-sm-9">
-                    <p class="form-control-static">{{formatDate(formGroup.controls.createDate.value, globalDateFormat)}}</p>
+                    <p class="form-control-static">
+                        {{
+                            formatDate(
+                                formGroup.controls.createDate.value,
+                                globalDateFormat
+                            )
+                        }}
+                    </p>
                 </div>
             </div>
             <div class="form-group">
-                <label for="campaignNr" class="control-label  col-sm-3"><label-translation [keyword]="'New_project_form__Campaign_Number'"></label-translation></label>
+                <label for="campaignNr" class="control-label col-sm-3"
+                    ><label-translation
+                        [keyword]="'New_project_form__Campaign_Number'"
+                    ></label-translation
+                ></label>
                 <div class="col-sm-9">
                     <div class="full-width">
-                        <wj-combo-box #campaignNrCombobox
-                                      wjDropdownHelper
-                                      formControlName="campaignNr"
-                                      name="campaignNr"
-                                      class="custom-wj-input-control xn-select"
-                                      [itemsSource]="campaigns"
-                                      [displayMemberPath]="'textValue'"
-                                      [selectedValuePath]="'idValue'"
-                                      [isRequired]="false"
-                                      [placeholder]="'Please select'"
-                                      [isEditable]="true"
-                                      (selectedIndexChanged)="campaignChanged(campaignNrCombobox)">
+                        <wj-combo-box
+                            #campaignNrCombobox
+                            wjDropdownHelper
+                            formControlName="campaignNr"
+                            name="campaignNr"
+                            class="custom-wj-input-control xn-select"
+                            [itemsSource]="campaigns"
+                            [displayMemberPath]="'textValue'"
+                            [selectedValuePath]="'idValue'"
+                            [isRequired]="false"
+                            [placeholder]="'Please select'"
+                            [isEditable]="true"
+                            (selectedIndexChanged)="
+                                campaignChanged(campaignNrCombobox)
+                            "
+                        >
                         </wj-combo-box>
 
                         <!--<xn-combo-box #campaignNrCombobox
@@ -43,43 +66,71 @@
                                       [isEditable]="true"
                                       (selectedIndexChanged)="campaignChanged(campaignNrCombobox)">
                         </xn-combo-box>-->
-                        <control-messages [xn-trigger-click-inside-cbo]="campaignNrCombobox"
-                                          [control]="formGroup.controls.campaignNr"
-                                          icon="umbrella"></control-messages>
+                        <control-messages
+                            [xn-trigger-click-inside-cbo]="campaignNrCombobox"
+                            [control]="formGroup.controls.campaignNr"
+                            icon="umbrella"
+                        ></control-messages>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label"><label-translation [keyword]="'New_project_form__Project_Name'"></label-translation></label>
+                <label class="col-sm-3 control-label"
+                    ><label-translation
+                        [keyword]="'New_project_form__Project_Name'"
+                    ></label-translation
+                ></label>
                 <div class="col-sm-9">
-                    <input type="text"
-                           class="form-control  xn-input"
-                           name="name"
-                           formControlName="name"
-                           autocomplete="off" />
-                    <control-messages [type]="'textbox'"
-                                      [control]="formGroup.controls.name"
-                                      [icon]="'file-o'">
+                    <input
+                        type="text"
+                        class="form-control xn-input"
+                        name="name"
+                        formControlName="name"
+                        autocomplete="off"
+                    />
+                    <control-messages
+                        [type]="'textbox'"
+                        [control]="formGroup.controls.name"
+                        [icon]="'file-o'"
+                    >
                     </control-messages>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label"><label-translation [keyword]="'New_project_form__Is_Active'"></label-translation></label>
+                <label class="col-sm-3 control-label"
+                    ><label-translation
+                        [keyword]="'New_project_form__Is_Active'"
+                    ></label-translation
+                ></label>
                 <div class="col-sm-9">
-                    <i class="fa fa-check" [ngClass]="{'active' : formGroup.controls.isActive.value, 'in-active' :  !formGroup.controls.isActive.value }"></i>
+                    <i
+                        class="fa fa-check"
+                        [ngClass]="{
+                            active: formGroup.controls.isActive.value,
+                            'in-active': !formGroup.controls.isActive.value
+                        }"
+                    ></i>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label"><label-translation [keyword]="'New_project_form__Notes'"></label-translation></label>
+                <label class="col-sm-3 control-label"
+                    ><label-translation
+                        [keyword]="'New_project_form__Notes'"
+                    ></label-translation
+                ></label>
                 <div class="col-sm-9">
-                    <input type="text"
-                           class="form-control  xn-input"
-                           name="notes"
-                           formControlName="notes"
-                           autocomplete="off" />
-                    <control-messages [type]="'textbox'"
-                                      [control]="formGroup.controls.notes"
-                                      [icon]="'sticky-note-o'">
+                    <input
+                        type="text"
+                        class="form-control xn-input"
+                        name="notes"
+                        formControlName="notes"
+                        autocomplete="off"
+                    />
+                    <control-messages
+                        [type]="'textbox'"
+                        [control]="formGroup.controls.notes"
+                        [icon]="'sticky-note-o'"
+                    >
                     </control-messages>
                 </div>
             </div>

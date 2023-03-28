@@ -6,36 +6,32 @@ import {
     OnDestroy,
     EventEmitter,
     ChangeDetectorRef,
-
-    ViewChild
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    ControlGridModel
-} from 'app/models';
-import { Uti } from 'app/utilities/uti';
+    ViewChild,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { ControlGridModel } from "app/models";
+import { Uti } from "app/utilities/uti";
 import {
     ModalService,
     SearchService,
     AppErrorHandler,
     DatatableService,
-    CommonService
-} from 'app/services';
-import { MenuModuleId } from 'app/app.constants';
-import camelCase from 'lodash-es/camelCase';
-import { GlobalSearchResultComponent } from 'app/shared/components/global-search/components';
+    CommonService,
+} from "app/services";
+import { MenuModuleId } from "app/app.constants";
+import camelCase from "lodash-es/camelCase";
+import { GlobalSearchResultComponent } from "app/shared/components/global-search/components";
 
 @Component({
-    selector: 'matching-customer-data-dialog',
-    styleUrls: ['./matching-customer-data-dialog.component.scss'],
-    templateUrl: './matching-customer-data-dialog.component.html'
+    selector: "matching-customer-data-dialog",
+    styleUrls: ["./matching-customer-data-dialog.component.scss"],
+    templateUrl: "./matching-customer-data-dialog.component.html",
 })
-export class MatchingCustomerDataDialogComponent extends BaseComponent implements OnInit, OnDestroy {
+export class MatchingCustomerDataDialogComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public showDialog: boolean = false;
     public allowApply: boolean = false;
     public dataSource: ControlGridModel = new ControlGridModel();
@@ -43,9 +39,10 @@ export class MatchingCustomerDataDialogComponent extends BaseComponent implement
     private _customerData: any;
 
     @Input() gridId: string;
-    @Input() isVerticalLayout = false;//True: use for ODE
+    @Input() isVerticalLayout = false; //True: use for ODE
 
-    @ViewChild(GlobalSearchResultComponent) public globalSearchResult: GlobalSearchResultComponent;
+    @ViewChild(GlobalSearchResultComponent)
+    public globalSearchResult: GlobalSearchResultComponent;
 
     @Output() onCloseAction: EventEmitter<any> = new EventEmitter();
     @Output() onSelectedItemAction: EventEmitter<any> = new EventEmitter();
@@ -58,36 +55,39 @@ export class MatchingCustomerDataDialogComponent extends BaseComponent implement
         private _datatableService: DatatableService,
         private _commonService: CommonService,
         private _ref: ChangeDetectorRef,
-        router?: Router) {
+        router?: Router
+    ) {
         super(router);
     }
-    public ngOnInit() {
-    }
-    public ngOnDestroy() {
-    }
-    public onShowDialog(data: any, disableApply?:boolean) {
+    public ngOnInit() {}
+    public ngOnDestroy() {}
+    public onShowDialog(data: any, disableApply?: boolean) {
         this.showDialog = true;
         this._customerData = null;
         this.allowApply = !disableApply;
-        this.dataSource = {...this.dataSource ,...data};
+        this.dataSource = { ...this.dataSource, ...data };
         this.autoSizeColumns();
         this.executeMatchedCustomerData(data.data);
     }
     private autoSizeColumns(count?: number) {
         count = count || 1;
         if (count > 30) return;
-                
-        if (this.globalSearchResult &&
+
+        if (
+            this.globalSearchResult &&
             this.globalSearchResult.agGridComponent &&
-            this.globalSearchResult.agGridComponent.columnApi) {
+            this.globalSearchResult.agGridComponent.columnApi
+        ) {
             setTimeout(() => {
-                const columns = this.globalSearchResult.agGridComponent.columnApi.getAllDisplayedColumns();
+                const columns =
+                    this.globalSearchResult.agGridComponent.columnApi.getAllDisplayedColumns();
                 if (columns && columns.length) {
-                    this.globalSearchResult.agGridComponent.columnApi.autoSizeColumns(columns.slice(1));
+                    this.globalSearchResult.agGridComponent.columnApi.autoSizeColumns(
+                        columns.slice(1)
+                    );
                 }
             });
-        }
-        else {
+        } else {
             //if component still haven't loaded, wait 0.5s
             setTimeout(() => {
                 this.autoSizeColumns(++count);
@@ -109,7 +109,9 @@ export class MatchingCustomerDataDialogComponent extends BaseComponent implement
     }
     public apply() {
         if (!this._customerData || !this._customerData.personNr) {
-            this._modalService.warningText('Modal_Message__Select_At_Least_Item_Apply');
+            this._modalService.warningText(
+                "Modal_Message__Select_At_Least_Item_Apply"
+            );
             return;
         }
         this.onSelectedItemAction.emit(this._customerData);
@@ -129,22 +131,26 @@ export class MatchingCustomerDataDialogComponent extends BaseComponent implement
         if (this.dataSource.columns && this.dataSource.columns.length) {
             this.dataSource = new ControlGridModel({
                 columns: this.dataSource.columns,
-                data: data
+                data: data,
             });
             return;
         }
         this.getColumnsSettingForGrid(data);
     }
     private getColumnsSettingForGrid(data: Array<any>) {
-        this._commonService.getCustomerColumnsSetting('MatchingCustomer')
+        this._commonService
+            .getCustomerColumnsSetting("MatchingCustomer")
             .subscribe((response: any) => {
                 this._appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) return;
-                    let dataResult = this._datatableService.buildEditableDataSource(response.item.data);
+                    let dataResult =
+                        this._datatableService.buildEditableDataSource(
+                            response.item.data
+                        );
                     dataResult.data = data;
                     this.dataSource = new ControlGridModel({
                         data: dataResult.data,
-                        columns: dataResult.columns
+                        columns: dataResult.columns,
                     });
                     this._ref.detectChanges();
                 });

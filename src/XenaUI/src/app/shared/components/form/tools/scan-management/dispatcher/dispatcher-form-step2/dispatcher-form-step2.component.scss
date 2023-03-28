@@ -2,7 +2,7 @@ $spacing: 5px;
 $command-height: 30px;
 
 .dispatcher-step2 {
-    padding-top: ($spacing*2);
+    padding-top: ($spacing * 2);
     height: 100%;
 
     .table-border {
@@ -20,11 +20,11 @@ $command-height: 30px;
 
     .dispatcher-form__step2__left {
         height: calc(100% - #{($command-height + $spacing)});
-        min-height: ($spacing*40);
+        min-height: ($spacing * 40);
     }
 
     .pool-grid,
     .pool-grid--left {
-        height: calc(100% - #{($command-height + ($spacing*2))});
+        height: calc(100% - #{($command-height + ($spacing * 2))});
     }
 }

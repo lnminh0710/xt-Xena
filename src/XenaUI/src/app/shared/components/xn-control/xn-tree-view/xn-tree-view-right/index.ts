@@ -1,1 +1,1 @@
-export * from './xn-tree-view-right.component';
+export * from "./xn-tree-view-right.component";

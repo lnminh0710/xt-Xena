@@ -1,4 +1,4 @@
-@import './variables';
+@import "./variables";
 
 .additional-information {
     .tab-content {
@@ -28,12 +28,15 @@ xn-tab-content-simple-tabs {
 
     .tab-content {
         border: none !important;
-        height: calc(100% - 30px);  
+        height: calc(100% - 30px);
         /*height: 100% !important;*/
     }
 }
 
-app-xn-ai-tab, xn-tab-content-simple-tabs, order-data-entry-tab, global-search {
+app-xn-ai-tab,
+xn-tab-content-simple-tabs,
+order-data-entry-tab,
+global-search {
     ul.nav > li > a {
         padding-top: 5px;
         padding-bottom: 5px;

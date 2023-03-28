@@ -23,7 +23,8 @@
         transition: max-height 0.5s ease-out;
     }
 
-    .fa-chevron-circle-down, .fa-chevron-circle-up {
+    .fa-chevron-circle-down,
+    .fa-chevron-circle-up {
         font-size: 20px;
     }
 }
@@ -35,7 +36,6 @@
     }
 }
 
-
 /*!
  * Generated with CSS Flag Sprite generator (https://www.flag-sprites.com/)
  */
@@ -44,9 +44,8 @@
     display: inline-block;
     width: 25px;
     height: 15px;
-    background: url('~/public/assets/lib/flag/flags.png') no-repeat;
+    background: url("~/public/assets/lib/flag/flags.png") no-repeat;
 }
-
 
 .flag.flag-aw {
     background-position: -325px 0;

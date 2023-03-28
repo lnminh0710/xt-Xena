@@ -1,4 +1,3 @@
-
 import {
     Component,
     OnInit,
@@ -7,20 +6,17 @@ import {
     OnDestroy,
     ViewChild,
     ElementRef,
-    EventEmitter
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {Uti} from 'app/utilities';
+    EventEmitter,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Uti } from "app/utilities";
 import {
     ModalService,
     GlobalSettingService,
     UserService,
-    AppErrorHandler } from 'app/services';
+    AppErrorHandler,
+} from "app/services";
 import {
     MessageModel,
     GlobalSettingModel,
@@ -29,26 +25,31 @@ import {
     MessageModalHeaderModel,
     MessageModalBodyModel,
     MessageModalFooterModel,
-    ButtonList
-} from 'app/models';
-import { ConfirmNewProfileComponent } from './confirm-new-profile';
-import { GlobalSettingConstant, MessageModal } from 'app/app.constants';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { ActivatedRoute, Params } from '@angular/router';
-import cloneDeep from 'lodash-es/cloneDeep';
-import {XnAgGridComponent} from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
+    ButtonList,
+} from "app/models";
+import { ConfirmNewProfileComponent } from "./confirm-new-profile";
+import { GlobalSettingConstant, MessageModal } from "app/app.constants";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { ActivatedRoute, Params } from "@angular/router";
+import cloneDeep from "lodash-es/cloneDeep";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 
 @Component({
-    selector: 'advance-search-profile',
-    styleUrls: ['./advance-search-profile.component.scss'],
-    templateUrl: './advance-search-profile.component.html'
+    selector: "advance-search-profile",
+    styleUrls: ["./advance-search-profile.component.scss"],
+    templateUrl: "./advance-search-profile.component.html",
 })
-export class AdvanceSearchProfileComponent extends BaseComponent implements OnInit, OnDestroy {
-    private EMPTY_CONDITION = [{condition:'And', field:'',operator:'',value:''}];
+export class AdvanceSearchProfileComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
+    private EMPTY_CONDITION = [
+        { condition: "And", field: "", operator: "", value: "" },
+    ];
 
     public profileListData: any = {
         columns: this.createColumnForGrid(),
-        data: []
+        data: [],
     };
     public selectedProfile: any = {};
     public hasProfileNameError = false;
@@ -66,7 +67,8 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
     private nextSelectItem: any = {};
     private _reselectPreviousItem = false;
 
-    @ViewChild('confirmNewProfile') confirmNewProfile: ConfirmNewProfileComponent;
+    @ViewChild("confirmNewProfile")
+    confirmNewProfile: ConfirmNewProfileComponent;
     @ViewChild(XnAgGridComponent) public xnAgGridComponent: XnAgGridComponent;
 
     @Input() formData: any;
@@ -84,12 +86,13 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
         private _toasterService: ToasterService,
         private _elementRef: ElementRef,
         private _route: ActivatedRoute,
-        router ? : Router) {
+        router?: Router
+    ) {
         super(router);
     }
 
     public ngOnInit() {
-        this.moduleId = this._route.snapshot.queryParams['moduleId'];
+        this.moduleId = this._route.snapshot.queryParams["moduleId"];
         this.getProfileData();
         this._userService.currentUser.subscribe((user: User) => {
             this._appErrorHandler.executeAction(() => {
@@ -98,8 +101,7 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
         });
     }
 
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     public profileListRowClick(item: any) {
         if (this._reselectPreviousItem) {
@@ -110,10 +112,11 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
             this.isClickingNewItem = true;
             this.nextSelectItem = Uti.mapArrayToObject(item);
             this._modalService.unsavedWarningMessageDefault({
-                headerText: 'Save Data',
-                onModalSaveAndExit: this.callSaveDataWhenClickingNewItem.bind(this),
+                headerText: "Save Data",
+                onModalSaveAndExit:
+                    this.callSaveDataWhenClickingNewItem.bind(this),
                 onModalExit: this.callExitClickingNewItem.bind(this),
-                onModalCancel: this.callCancelClickingNewItem.bind(this)
+                onModalCancel: this.callCancelClickingNewItem.bind(this),
             });
             return;
         }
@@ -134,20 +137,29 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
         this.isDirty = false;
         this.selectedProfile = {};
         this.xnAgGridComponent.selectRowIndex(-1);
-        this.isDisableUpdate = this.isDisableSaveNewProfile = this.isDisableDelete = true;
+        this.isDisableUpdate =
+            this.isDisableSaveNewProfile =
+            this.isDisableDelete =
+                true;
     }
 
     public callSaveWhenClickNew() {
         this.isCreating = true;
-        this.callSavingProfile(!this.selectedProfile || !this.selectedProfile.idSettingsGlobal);
+        this.callSavingProfile(
+            !this.selectedProfile || !this.selectedProfile.idSettingsGlobal
+        );
     }
 
     public onClickDelete() {
         this._modalService.confirmDeleteMessageHtmlContent({
-            headerText: 'Delete Profile',
-            message: [{key: '<p>'},
-                {key: 'Modal_Message__Do_You_Want_To_Delete_Selected_Profile'},
-                {key: '</p>'}],
+            headerText: "Delete Profile",
+            message: [
+                { key: "<p>" },
+                {
+                    key: "Modal_Message__Do_You_Want_To_Delete_Selected_Profile",
+                },
+                { key: "</p>" },
+            ],
             callBack1: () => {
                 this.deleteProfile();
             },
@@ -192,40 +204,44 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
     }
 
     public isEditingOnOtherUserProfile() {
-        if (!this.selectedProfile || !this.selectedProfile.idLogin) return false;
-        return (this.selectedProfile.idLogin != this.currentUser.id);
+        if (!this.selectedProfile || !this.selectedProfile.idLogin)
+            return false;
+        return this.selectedProfile.idLogin != this.currentUser.id;
     }
 
     /*************************************************************************************************/
     /***************************************PRIVATE METHOD********************************************/
 
     private getProfileData() {
-        this._globalSettingService.getAdvanceSearchProfile(this.moduleId)
-        .subscribe((resutl: any) => {
-            this._appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(resutl)) {
+        this._globalSettingService
+            .getAdvanceSearchProfile(this.moduleId)
+            .subscribe((resutl: any) => {
+                this._appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(resutl)) {
+                        this.profileListData = {
+                            columns: this.createColumnForGrid(),
+                            data: [],
+                        };
+                        return;
+                    }
                     this.profileListData = {
                         columns: this.createColumnForGrid(),
-                        data: []
+                        data: this.makeDataForGrid(resutl.item[0]),
                     };
-                    return;
-                }
-                this.profileListData = {
-                    columns: this.createColumnForGrid(),
-                    data: this.makeDataForGrid(resutl.item[0])
-                };
 
-                // Make selected right item
-                this.selectDefaultItem();
+                    // Make selected right item
+                    this.selectDefaultItem();
+                });
             });
-        });
     }
 
     private relectNextRow() {
         if (this.isClickingNewItem && this.nextSelectItem) {
             // this.selectGridItem(this.nextSelectItem);
             setTimeout(() => {
-                this.selectRightItemWithId(this.nextSelectItem.idSettingsGlobal);
+                this.selectRightItemWithId(
+                    this.nextSelectItem.idSettingsGlobal
+                );
             }, 700);
             this.isClickingNewItem = false;
             return true;
@@ -258,7 +274,8 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
             return;
         }
         setTimeout(() => {
-            if (!this.profileListData.data || !this.profileListData.data.length) return;
+            if (!this.profileListData.data || !this.profileListData.data.length)
+                return;
             if (!this.currentIdSettingsGlobal) {
                 this.xnAgGridComponent.selectRowIndex(0);
                 return;
@@ -269,7 +286,8 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
 
     private selectRightItemWithId(idSettingsGlobal: any) {
         for (let i = 0; i < this.profileListData.data.length; i++) {
-            const _idSettingsGlobal = this.profileListData.data[i].idSettingsGlobal;
+            const _idSettingsGlobal =
+                this.profileListData.data[i].idSettingsGlobal;
             if (_idSettingsGlobal !== idSettingsGlobal) continue;
             this.xnAgGridComponent.selectRowIndex(-1);
             setTimeout(() => {
@@ -287,7 +305,9 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
     }
 
     private makeDataForEdit() {
-        this.selectedProfile.description = this.selectedProfile.isGlobal ? '1' : '0';
+        this.selectedProfile.description = this.selectedProfile.isGlobal
+            ? "1"
+            : "0";
         this.selectedProfile.idSettingsGUI = this.moduleId;
     }
 
@@ -295,7 +315,9 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
         if (this.isSaveAs) {
             return this.makeNewData(profile);
         }
-        this.selectedProfile.jsonSettings = this.makeJsonForSaving(profile.isSaveWithValue);
+        this.selectedProfile.jsonSettings = this.makeJsonForSaving(
+            profile.isSaveWithValue
+        );
         this.makeDataForEdit();
         return this.selectedProfile;
     }
@@ -303,19 +325,19 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
     private makeNewData(profile: any) {
         return new GlobalSettingModel({
             globalName: profile.profileName,
-            description: profile.isGlobal ? '1' : '0', // use for global or private
+            description: profile.isGlobal ? "1" : "0", // use for global or private
             jsonSettings: this.makeJsonForSaving(profile.isSaveWithValue),
             globalType: this._globalSettingConstant.searchProfile,
             isActive: true,
             idSettingsGUI: this.moduleId, // use Description column to store module Id
-            idLogin: this.currentUser.id
+            idLogin: this.currentUser.id,
         });
     }
 
     private makeJsonForSaving(isSaveWithValue: boolean) {
         if (this.formData && this.formData.length) {
             this.formData.forEach((formItem) => {
-                if (formItem.dataType === 'date') {
+                if (formItem.dataType === "date") {
                     formItem.value = Uti.parseDateToDBString(formItem.value);
                 }
             });
@@ -325,20 +347,25 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
         }
         let result = cloneDeep(this.formData);
         for (let item of result) {
-            item.value = '';
+            item.value = "";
         }
         return JSON.stringify(result);
     }
 
     private saveProfileData(currentData: any) {
         this._globalSettingService.saveGlobalSetting(currentData).subscribe(
-            result => this.saveProfileDataSuccess(result),
-            error => this.serviceError(error));
+            (result) => this.saveProfileDataSuccess(result),
+            (error) => this.serviceError(error)
+        );
     }
 
     private saveProfileDataSuccess(result: any) {
         this.currentIdSettingsGlobal = result.returnValue;
-        this._toasterService.pop('success', 'Success', 'Saving data is successful');
+        this._toasterService.pop(
+            "success",
+            "Success",
+            "Saving data is successful"
+        );
 
         // Re-get data for grid
         this.getProfileData();
@@ -352,7 +379,7 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
     }
 
     private serviceError(error) {
-        this._toasterService.pop('error', "Error", 'Saving data is fail');
+        this._toasterService.pop("error", "Error", "Saving data is fail");
         console.log(error);
     }
 
@@ -361,21 +388,31 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
     }
 
     private deleteProfile() {
-        this._globalSettingService.deleteGlobalSettingById(this.selectedProfile.idSettingsGlobal).subscribe(
-            result => this.deleteProfileDataSuccess(result),
-            error => this.serviceError(error));
+        this._globalSettingService
+            .deleteGlobalSettingById(this.selectedProfile.idSettingsGlobal)
+            .subscribe(
+                (result) => this.deleteProfileDataSuccess(result),
+                (error) => this.serviceError(error)
+            );
     }
 
     private deleteProfileDataSuccess(result) {
-        this._toasterService.pop('success', 'Success', 'Deleting data is successful');
+        this._toasterService.pop(
+            "success",
+            "Success",
+            "Deleting data is successful"
+        );
         this.profileListData = {
             columns: this.profileListData.columns,
-            data: this.profileListData.data.filter(x => x.idSettingsGlobal !== this.selectedProfile.idSettingsGlobal)
-        }
+            data: this.profileListData.data.filter(
+                (x) =>
+                    x.idSettingsGlobal !== this.selectedProfile.idSettingsGlobal
+            ),
+        };
         if (this.profileListData.data.length > 1) {
             this.xnAgGridComponent.selectRowIndex(0);
-        }else {
-          this.isDisableDelete =true
+        } else {
+            this.isDisableDelete = true;
         }
         this.selectedProfile = {};
         this.selectDefaultItem();
@@ -390,11 +427,12 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
             return;
         }
         // When profile was created by other then do not update and delete
-        this.isDisableUpdate = this.isDisableDelete = (selectedProfile.description == '1');
+        this.isDisableUpdate = this.isDisableDelete =
+            selectedProfile.description == "1";
     }
 
     private makeDataForGrid(rawData: Array<any>) {
-        return rawData.map(x => {
+        return rawData.map((x) => {
             return {
                 idSettingsGlobal: x.IdSettingsGlobal,
                 description: x.Description,
@@ -403,19 +441,21 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
                 idLogin: x.IdLogin,
                 globalName: x.GlobalName,
                 loginName: x.LoginName,
-                isGlobal: x.Description == '1',
-                IsActive: this.makeIsActiveData(x)
-            }
+                isGlobal: x.Description == "1",
+                IsActive: this.makeIsActiveData(x),
+            };
         });
     }
 
     private makeIsActiveData(itemData: any) {
         if (itemData.IdLogin == this.currentUser.id) return true;
-        return !(itemData.Description == '1');
+        return !(itemData.Description == "1");
     }
 
     private callSaveDataWhenClickingNewItem() {
-        this.callSavingProfile(!this.selectedProfile || !this.selectedProfile.idSettingsGlobal);
+        this.callSavingProfile(
+            !this.selectedProfile || !this.selectedProfile.idSettingsGlobal
+        );
     }
 
     private callExitClickingNewItem() {
@@ -439,153 +479,161 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
     }
 
     private confirmSaveExistedItem() {
-        this._modalService.showMessageModal(new MessageModalModel({
-            customClass: 'dialog-saving-existed-profile-item',
-            messageType: MessageModal.MessageType.warning,
-            modalSize: MessageModal.ModalSize.middle,
-            showCloseButton: false,
-            header: new MessageModalHeaderModel({
-                text: 'Save profile'
-            }),
-            body: new MessageModalBodyModel({
-                isHtmlContent: true,
-                content: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Save_Profile_With'},
-                    {key: '</p>'}]
-            }),
-            footer: new MessageModalFooterModel({
-                buttonList: [
-                    new ButtonList({
-                        buttonType: MessageModal.ButtonType.warning,
-                        text: 'Save with value',
-                        customClass: '',
-                        callBackFunc: () => {
-                            this.onSaveHandler({
-                                isSaveWithValue: true
-                            });
-                        }
-                    }),
-                    new ButtonList({
-                        buttonType: MessageModal.ButtonType.warning,
-                        text: 'Save without value',
-                        customClass: '',
-                        callBackFunc: () => {
-                            this.onSaveHandler({
-                                isSaveWithValue: false
-                            });
-                        }
-                    }),
-                    new ButtonList({
-                        buttonType: MessageModal.ButtonType.default,
-                        text: "Don't save",
-                        customClass: '',
-                        callBackFunc: () => {
-                            this._modalService.hideModal();
-                            this.isDirty = false;
-                            this.selectGridItem(this.nextSelectItem);
-                        }
-                    })]
+        this._modalService.showMessageModal(
+            new MessageModalModel({
+                customClass: "dialog-saving-existed-profile-item",
+                messageType: MessageModal.MessageType.warning,
+                modalSize: MessageModal.ModalSize.middle,
+                showCloseButton: false,
+                header: new MessageModalHeaderModel({
+                    text: "Save profile",
+                }),
+                body: new MessageModalBodyModel({
+                    isHtmlContent: true,
+                    content: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Save_Profile_With",
+                        },
+                        { key: "</p>" },
+                    ],
+                }),
+                footer: new MessageModalFooterModel({
+                    buttonList: [
+                        new ButtonList({
+                            buttonType: MessageModal.ButtonType.warning,
+                            text: "Save with value",
+                            customClass: "",
+                            callBackFunc: () => {
+                                this.onSaveHandler({
+                                    isSaveWithValue: true,
+                                });
+                            },
+                        }),
+                        new ButtonList({
+                            buttonType: MessageModal.ButtonType.warning,
+                            text: "Save without value",
+                            customClass: "",
+                            callBackFunc: () => {
+                                this.onSaveHandler({
+                                    isSaveWithValue: false,
+                                });
+                            },
+                        }),
+                        new ButtonList({
+                            buttonType: MessageModal.ButtonType.default,
+                            text: "Don't save",
+                            customClass: "",
+                            callBackFunc: () => {
+                                this._modalService.hideModal();
+                                this.isDirty = false;
+                                this.selectGridItem(this.nextSelectItem);
+                            },
+                        }),
+                    ],
+                }),
             })
-        }));
+        );
     }
 
     private createColumnForGrid() {
         return [
             {
-                title: 'idSettingsGlobal',
-                data: 'idSettingsGlobal',
+                title: "idSettingsGlobal",
+                data: "idSettingsGlobal",
                 visible: false,
                 readOnly: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'description',
-                data: 'description',
+                title: "description",
+                data: "description",
                 visible: false,
                 readOnly: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'jsonSettings',
-                data: 'jsonSettings',
+                title: "jsonSettings",
+                data: "jsonSettings",
                 visible: false,
                 readOnly: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'globalType',
-                data: 'globalType',
+                title: "globalType",
+                data: "globalType",
                 visible: false,
                 readOnly: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'idLogin',
-                data: 'idLogin',
+                title: "idLogin",
+                data: "idLogin",
                 visible: false,
                 readOnly: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'IsActive',
-                data: 'IsActive',
+                title: "IsActive",
+                data: "IsActive",
                 visible: false,
                 readOnly: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
+                                Hidden: "1",
                             },
                             ControlType: {
-                                Type: 'Checkbox'
-                            }
-                        }
-                    ]
-                }
+                                Type: "Checkbox",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Profile',
-                data: 'globalName',
+                title: "Profile",
+                data: "globalName",
                 visible: true,
                 readOnly: false,
                 setting: {
@@ -593,52 +641,51 @@ export class AdvanceSearchProfileComponent extends BaseComponent implements OnIn
                         {
                             DisplayField: {
                                 Width: 120,
-                                ReadOnly: '0'
+                                ReadOnly: "0",
                             },
                             ControlType: {
-                                Type: 'Textbox'
-                            }
-                        }
+                                Type: "Textbox",
+                            },
+                        },
                     ],
-                    width: 120
-                }
+                    width: 120,
+                },
             },
             {
-                title: 'LoginName',
-                data: 'loginName',
+                title: "LoginName",
+                data: "loginName",
                 visible: true,
                 readOnly: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
+                                ReadOnly: "1",
+                            },
+                        },
                     ],
-                    width: 120
-                }
+                    width: 120,
+                },
             },
             {
-                title: 'Global',
-                data: 'isGlobal',
+                title: "Global",
+                data: "isGlobal",
                 visible: true,
                 readOnly: false,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Width: 80
+                                Width: 80,
                             },
                             ControlType: {
-                                Type: 'Checkbox'
-                            }
-                        }
+                                Type: "Checkbox",
+                            },
+                        },
                     ],
-                    width: 80
-                }
-            }
+                    width: 80,
+                },
+            },
         ];
     }
 }
-

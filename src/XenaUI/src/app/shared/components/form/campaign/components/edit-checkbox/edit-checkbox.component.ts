@@ -1,10 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 @Component({
-    selector: 'edit-checkbox-component',
-    templateUrl: './edit-checkbox.component.html',
-    styleUrls: ['./edit-checkbox.component.scss'],
-
+    selector: "edit-checkbox-component",
+    templateUrl: "./edit-checkbox.component.html",
+    styleUrls: ["./edit-checkbox.component.scss"],
 })
 export class EditCheckBoxComponent {
     @Input()

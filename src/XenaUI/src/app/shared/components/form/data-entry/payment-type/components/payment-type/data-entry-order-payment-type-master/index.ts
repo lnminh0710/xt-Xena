@@ -1,1 +1,1 @@
-export * from './data-entry-order-payment-type-master.component';
+export * from "./data-entry-order-payment-type-master.component";

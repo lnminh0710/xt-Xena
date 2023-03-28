@@ -1,6 +1,5 @@
-@import '../core/style/variables';
-@import '../core/ripple/ripple';
-
+@import "../core/style/variables";
+@import "../core/ripple/ripple";
 
 $mat-radio-size: $mat-toggle-size !default;
 $mat-radio-ripple-size: $mat-radio-size * 0.75;
@@ -86,7 +85,7 @@ $mat-radio-ripple-size: $mat-radio-size * 0.75;
     padding-left: $mat-toggle-padding;
     padding-right: 0;
 
-    [dir='rtl'] & {
+    [dir="rtl"] & {
         padding-right: $mat-toggle-padding;
         padding-left: 0;
     }
@@ -98,14 +97,15 @@ $mat-radio-ripple-size: $mat-radio-size * 0.75;
     padding-left: 0;
     padding-right: $mat-toggle-padding;
 
-    [dir='rtl'] & {
+    [dir="rtl"] & {
         padding-right: 0;
         padding-left: $mat-toggle-padding;
     }
 }
 
 // Basic disabled state.
-.mat-radio-disabled, .mat-radio-disabled .mat-radio-label {
+.mat-radio-disabled,
+.mat-radio-disabled .mat-radio-label {
     cursor: default;
 }
 

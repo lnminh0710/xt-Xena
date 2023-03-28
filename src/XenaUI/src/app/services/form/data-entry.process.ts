@@ -1,5 +1,5 @@
-import { Injectable, Injector } from '@angular/core';
-import { Uti } from 'app/utilities';
+import { Injectable, Injector } from "@angular/core";
+import { Uti } from "app/utilities";
 
 @Injectable()
 export class DataEntryProcess {
@@ -54,7 +54,10 @@ export class DataEntryProcess {
             if (payments.CreditCard) {
                 const jsonCreditCard = JSON.parse(payments.CreditCard);
                 if (jsonCreditCard && jsonCreditCard.CreditCard) {
-                    Array.prototype.push.apply(result, jsonCreditCard.CreditCard);
+                    Array.prototype.push.apply(
+                        result,
+                        jsonCreditCard.CreditCard
+                    );
                 }
             }
         }
@@ -62,7 +65,11 @@ export class DataEntryProcess {
         return result;
     }
 
-    public buildEditOrderModel(data: Array<any>, mainCurrency, mainPaymenTypeList) {
+    public buildEditOrderModel(
+        data: Array<any>,
+        mainCurrency,
+        mainPaymenTypeList
+    ) {
         if (!data || data.length <= 2) return;
 
         //1. Order, 2. Payments, 3. Articles
@@ -71,10 +78,10 @@ export class DataEntryProcess {
             mainPaymenTypeList: mainPaymenTypeList,
             order: {},
             totalSummaryData: {
-                isFreeShipping: false
+                isFreeShipping: false,
             },
             paymentType: [],
-            articleData: []
+            articleData: [],
         };
 
         //1. Order
@@ -94,13 +101,14 @@ export class DataEntryProcess {
             orderType: order.IdRepSalesOrderType,
             orderBy: order.IdRepSalesOrderProvenanceType,
             orderDate: orderDate,
-            orderDay: this.uti.formatLocale(orderDate, 'dd'),
-            orderMonth: this.uti.formatLocale(orderDate, 'MM'),
-            orderYear: this.uti.formatLocale(orderDate, 'yyyy'),
+            orderDay: this.uti.formatLocale(orderDate, "dd"),
+            orderMonth: this.uti.formatLocale(orderDate, "MM"),
+            orderYear: this.uti.formatLocale(orderDate, "yyyy"),
             packageNr: order.PackageNr,
-            idRepSalesOrderShipper: order.IdRepSalesOrderShipper
+            idRepSalesOrderShipper: order.IdRepSalesOrderShipper,
         };
-        editOrderData.totalSummaryData.isFreeShipping = order.IsFreeShipping || false;
+        editOrderData.totalSummaryData.isFreeShipping =
+            order.IsFreeShipping || false;
 
         //2. Payments
         const payments = data[1];
@@ -109,17 +117,18 @@ export class DataEntryProcess {
         //3. Articles
         const articles = data[2];
         if (articles && articles.length) {
-            editOrderData.totalSummaryData.isFreeShipping = articles[0].IsFreeOfCharge || false;
+            editOrderData.totalSummaryData.isFreeShipping =
+                articles[0].IsFreeOfCharge || false;
 
             articles.forEach((item) => {
                 editOrderData.articleData.push({
-                    "IdArticle": item.IdArticle,
-                    "ArticleNr": item.ArticleNr,
-                    "ArticleNameShort": item.ArticleNameShort,
-                    "Quantity": item.Quantity,
-                    "SalesPrice": item.SellingPrice,
-                    "TotalPrice": item.SalesAmount,
-                    "IsAllArticle": false
+                    IdArticle: item.IdArticle,
+                    ArticleNr: item.ArticleNr,
+                    ArticleNameShort: item.ArticleNameShort,
+                    Quantity: item.Quantity,
+                    SalesPrice: item.SellingPrice,
+                    TotalPrice: item.SalesAmount,
+                    IsAllArticle: false,
                 });
             });
         }
@@ -128,14 +137,13 @@ export class DataEntryProcess {
 
     public loadOrderFinished(callback: Function, count?: number) {
         count = count || 1;
-        if (count > 30) return;//retry 30 times, each time 500ms -> 15s
+        if (count > 30) return; //retry 30 times, each time 500ms -> 15s
 
         if (!this.isProcessingLoadEditOrder) {
             setTimeout(() => {
                 this.loadOrderFinished(callback, ++count);
             }, 500);
-        }
-        else {
+        } else {
             this.isProcessingLoadEditOrder = false;
             callback();
         }

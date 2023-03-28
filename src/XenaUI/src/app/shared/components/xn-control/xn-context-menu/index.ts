@@ -1,1 +1,1 @@
-export * from './xn-context-menu.component'
+export * from "./xn-context-menu.component";

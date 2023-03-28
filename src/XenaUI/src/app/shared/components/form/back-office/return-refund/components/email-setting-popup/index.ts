@@ -1,1 +1,1 @@
-export * from './email-setting-popup.component';
+export * from "./email-setting-popup.component";

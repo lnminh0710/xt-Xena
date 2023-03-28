@@ -1,10 +1,16 @@
-import * as wjcOlap from 'wijmo/wijmo.olap';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector } from '@angular/core';
-import { OnInit, OnDestroy } from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcOlap from "wijmo/wijmo.olap";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import { ElementRef, Injector } from "@angular/core";
+import { OnInit, OnDestroy } from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjPivotGridMeta: IWjComponentMeta;
-export declare class WjPivotGrid extends wjcOlap.PivotGrid implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjPivotGrid
+    extends wjcOlap.PivotGrid
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -63,10 +69,18 @@ export declare class WjPivotGrid extends wjcOlap.PivotGrid implements OnInit, On
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjPivotChartMeta: IWjComponentMeta;
-export declare class WjPivotChart extends wjcOlap.PivotChart implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjPivotChart
+    extends wjcOlap.PivotChart
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -79,10 +93,18 @@ export declare class WjPivotChart extends wjcOlap.PivotChart implements OnInit, 
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjPivotPanelMeta: IWjComponentMeta;
-export declare class WjPivotPanel extends wjcOlap.PivotPanel implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjPivotPanel
+    extends wjcOlap.PivotPanel
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -99,7 +121,11 @@ export declare class WjPivotPanel extends wjcOlap.PivotPanel implements OnInit, 
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
-export declare class WjOlapModule {
-}
+export declare class WjOlapModule {}

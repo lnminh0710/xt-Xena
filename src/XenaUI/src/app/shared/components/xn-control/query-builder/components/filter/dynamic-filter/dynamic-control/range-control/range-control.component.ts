@@ -1,12 +1,31 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from "@angular/core";
-import toNumber from 'lodash-es/toNumber';
-import { ControlBase, TextboxControl, DropdownControl, RangeControl } from 'app/models';
-import { WjComboBox, WjInputDate, WjInputNumber } from 'wijmo/wijmo.angular2.input';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
+} from "@angular/core";
+import toNumber from "lodash-es/toNumber";
+import {
+    ControlBase,
+    TextboxControl,
+    DropdownControl,
+    RangeControl,
+} from "app/models";
+import {
+    WjComboBox,
+    WjInputDate,
+    WjInputNumber,
+} from "wijmo/wijmo.angular2.input";
 
 @Component({
-    selector: 'range-control',
-    templateUrl: './range-control.component.html',
-    styleUrls: ['./range-control.component.scss']
+    selector: "range-control",
+    templateUrl: "./range-control.component.html",
+    styleUrls: ["./range-control.component.scss"],
 })
 export class RangeControlComponent implements OnInit, OnDestroy, AfterViewInit {
     private _control: ControlBase<any>;
@@ -25,35 +44,30 @@ export class RangeControlComponent implements OnInit, OnDestroy, AfterViewInit {
         return this._control;
     }
 
-    @ViewChild('fromDateControl') fromDateControl: WjInputDate;
-    @ViewChild('toDateControl') toDateControl: WjInputDate;
-    @ViewChild('fromNumberControl') fromNumberControl: ElementRef;
-    @ViewChild('toNumberControl') toNumberControl: ElementRef;
+    @ViewChild("fromDateControl") fromDateControl: WjInputDate;
+    @ViewChild("toDateControl") toDateControl: WjInputDate;
+    @ViewChild("fromNumberControl") fromNumberControl: ElementRef;
+    @ViewChild("toNumberControl") toNumberControl: ElementRef;
     @Output() public onUpdateValue: EventEmitter<any> = new EventEmitter();
 
     public today = new Date();
 
-    constructor(private _eref: ElementRef) {
-
-    }
+    constructor(private _eref: ElementRef) {}
 
     /**
      * ngOnInit
      */
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     /**
      * ngOnDestroy
      */
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     /**
      * ngAfterViewInit
      */
-    ngAfterViewInit() {
-    }
+    ngAfterViewInit() {}
 
     /**
      * setMinMaxValueForControls
@@ -61,14 +75,18 @@ export class RangeControlComponent implements OnInit, OnDestroy, AfterViewInit {
     public setMinMaxValueForControls() {
         let fromValue;
         let toValue;
-        if ((this.control as RangeControl).type == 'dates') {
+        if ((this.control as RangeControl).type == "dates") {
             if (this.fromDateControl) {
                 fromValue = this.fromDateControl.value;
-                this.fromDateControl.max = !this.toDateControl.value ? this.today : this.toDateControl.value;
+                this.fromDateControl.max = !this.toDateControl.value
+                    ? this.today
+                    : this.toDateControl.value;
             }
             if (this.toDateControl) {
                 toValue = this.toDateControl.value;
-                this.toDateControl.min = !this.fromDateControl.value ? null : this.fromDateControl.value;
+                this.toDateControl.min = !this.fromDateControl.value
+                    ? null
+                    : this.fromDateControl.value;
                 this.toDateControl.max = this.today;
             }
         } else {
@@ -95,12 +113,11 @@ export class RangeControlComponent implements OnInit, OnDestroy, AfterViewInit {
             if (this.toNumberControl) {
                 this.toNumberControl.min = !fromValue ? 0 : fromValue;
             }*/
-
         }
 
         this.onUpdateValue.emit({
             fromValue: fromValue,
-            toValue: toValue
+            toValue: toValue,
         });
     }
 }

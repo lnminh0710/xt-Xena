@@ -1,10 +1,16 @@
-import * as wjcNav from 'wijmo/wijmo.nav';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector } from '@angular/core';
-import { OnInit, OnDestroy } from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcNav from "wijmo/wijmo.nav";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import { ElementRef, Injector } from "@angular/core";
+import { OnInit, OnDestroy } from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjTreeViewMeta: IWjComponentMeta;
-export declare class WjTreeView extends wjcNav.TreeView implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjTreeView
+    extends wjcNav.TreeView
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -40,7 +46,11 @@ export declare class WjTreeView extends wjcNav.TreeView implements OnInit, OnDes
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
-export declare class WjNavModule {
-}
+export declare class WjNavModule {}

@@ -20,12 +20,13 @@ tbody {
     overflow: auto;
 }
 
-thead, tbody tr {
+thead,
+tbody tr {
     display: table;
     width: 100%;
     table-layout: fixed;
 }
 
 thead {
-    width: calc( 100% - 18px );
+    width: calc(100% - 18px);
 }

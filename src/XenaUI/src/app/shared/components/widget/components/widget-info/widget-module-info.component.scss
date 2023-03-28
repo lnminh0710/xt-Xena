@@ -184,7 +184,8 @@
 
     &.wg-menu {
         ul {
-            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2),
+                0 3px 10px 0 rgba(0, 0, 0, 0.19);
             color: #000;
 
             label {
@@ -277,8 +278,6 @@
     font-size: 21px !important;
 }
 
-
-
 .box-default.hover-box,
 .edit-country-mode:hover,
 .edit-table-mode:hover,
@@ -318,7 +317,7 @@
 .edit-form-mode,
 .edit-country-mode {
     .box-header {
-        border-bottom: 1px solid #FB8C00;
+        border-bottom: 1px solid #fb8c00;
     }
 }
 
@@ -384,7 +383,8 @@
     align-items: center;
 }
 
-.link-widget-container, .link-icon {
+.link-widget-container,
+.link-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -418,7 +418,7 @@
 }
 
 .support-link-widget-cover-mode {
-    background-color: #BCF1F9 !important;
+    background-color: #bcf1f9 !important;
 }
 
 .unlink-widget-cover-mode {
@@ -469,7 +469,8 @@
 .widget-compile-container {
 }
 
-.linkable-widget, .edit-mode.linkable-widget {
+.linkable-widget,
+.edit-mode.linkable-widget {
     border: solid 1px #55d770 !important;
     border-top: solid 3px #55d770 !important;
     background-color: #ebfce3;

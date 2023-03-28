@@ -1,1 +1,1 @@
-export * from './advance-search.model';
+export * from "./advance-search.model";

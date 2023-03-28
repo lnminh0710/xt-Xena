@@ -1,15 +1,21 @@
-import { Component, ElementRef, AfterViewChecked, AfterViewInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import {
-    DomHandler
-} from 'app/services';
+    Component,
+    ElementRef,
+    AfterViewChecked,
+    AfterViewInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter,
+} from "@angular/core";
+import { DomHandler } from "app/services";
 
 @Component({
-    selector: 'xn-galleria',
-    templateUrl: './xn-galleria.component.html',
-    styleUrls: ['./xn-galleria.component.scss']
+    selector: "xn-galleria",
+    templateUrl: "./xn-galleria.component.html",
+    styleUrls: ["./xn-galleria.component.scss"],
 })
 export class XnGalleria implements AfterViewChecked, AfterViewInit, OnDestroy {
-
     @Input() style: any;
     @Input() styleClass: string;
     @Input() panelWidth = 600;
@@ -21,7 +27,7 @@ export class XnGalleria implements AfterViewChecked, AfterViewInit, OnDestroy {
     @Input() autoPlay = true;
     @Input() transitionInterval = 4000;
     @Input() showCaption = true;
-    @Input() imageShowPrefixId = '';
+    @Input() imageShowPrefixId = "";
     @Input() sourceIsBase64: boolean = false;
 
     @Output() onImageClicked = new EventEmitter<any>();
@@ -40,7 +46,7 @@ export class XnGalleria implements AfterViewChecked, AfterViewInit, OnDestroy {
     public imagesChanged: boolean;
     public initialized: boolean;
 
-    constructor(public el: ElementRef, public domHandler: DomHandler) { }
+    constructor(public el: ElementRef, public domHandler: DomHandler) {}
 
     ngAfterViewChecked() {
         if (this.imagesChanged) {
@@ -64,17 +70,30 @@ export class XnGalleria implements AfterViewChecked, AfterViewInit, OnDestroy {
             }
         }
         this.imagesChanged = true;
-        this.onImageClicked.emit({ originalEvent: null, image: this.images[this.activeIndex], index: this.activeIndex });
+        this.onImageClicked.emit({
+            originalEvent: null,
+            image: this.images[this.activeIndex],
+            index: this.activeIndex,
+        });
     }
 
     ngAfterViewInit() {
         this.container = this.el.nativeElement.children[0];
-        this.panelWrapper = this.domHandler.findSingle(this.el.nativeElement, 'ul.ui-galleria-panel-wrapper');
+        this.panelWrapper = this.domHandler.findSingle(
+            this.el.nativeElement,
+            "ul.ui-galleria-panel-wrapper"
+        );
         this.initialized = true;
 
         if (this.showFilmstrip) {
-            this.stripWrapper = this.domHandler.findSingle(this.container, 'div.ui-galleria-filmstrip-wrapper');
-            this.strip = this.domHandler.findSingle(this.stripWrapper, 'ul.ui-galleria-filmstrip');
+            this.stripWrapper = this.domHandler.findSingle(
+                this.container,
+                "div.ui-galleria-filmstrip-wrapper"
+            );
+            this.strip = this.domHandler.findSingle(
+                this.stripWrapper,
+                "ul.ui-galleria-filmstrip"
+            );
         }
 
         if (this.images && this.images.length) {
@@ -83,25 +102,38 @@ export class XnGalleria implements AfterViewChecked, AfterViewInit, OnDestroy {
     }
 
     render() {
-        this.panels = this.domHandler.find(this.panelWrapper, 'li.ui-galleria-panel');
+        this.panels = this.domHandler.find(
+            this.panelWrapper,
+            "li.ui-galleria-panel"
+        );
 
         if (this.showFilmstrip) {
-            this.frames = this.domHandler.find(this.strip, 'li.ui-galleria-frame');
-            this.stripWrapper.style.width = this.domHandler.width(this.panelWrapper) - 50 + 'px';
-            this.stripWrapper.style.height = this.frameHeight + 'px';
+            this.frames = this.domHandler.find(
+                this.strip,
+                "li.ui-galleria-frame"
+            );
+            this.stripWrapper.style.width =
+                this.domHandler.width(this.panelWrapper) - 50 + "px";
+            this.stripWrapper.style.height = this.frameHeight + "px";
         }
 
         if (this.showCaption) {
-            this.caption = this.domHandler.findSingle(this.container, 'div.ui-galleria-caption');
-            this.caption.style.bottom = this.showFilmstrip ? this.domHandler.getOuterHeight(this.stripWrapper, true) + 'px' : 0 + 'px';
-            this.caption.style.width = this.domHandler.width(this.panelWrapper) + 'px';
+            this.caption = this.domHandler.findSingle(
+                this.container,
+                "div.ui-galleria-caption"
+            );
+            this.caption.style.bottom = this.showFilmstrip
+                ? this.domHandler.getOuterHeight(this.stripWrapper, true) + "px"
+                : 0 + "px";
+            this.caption.style.width =
+                this.domHandler.width(this.panelWrapper) + "px";
         }
 
         if (this.autoPlay) {
             this.startSlideshow();
         }
 
-        this.container.style.visibility = 'visible';
+        this.container.style.visibility = "visible";
     }
 
     startSlideshow() {
@@ -140,24 +172,36 @@ export class XnGalleria implements AfterViewChecked, AfterViewInit, OnDestroy {
         }
 
         this.select(this.domHandler.index(frame), false);
-        this.onImageClicked.emit({ originalEvent: null, image: this.images[this.activeIndex], index: this.activeIndex });
+        this.onImageClicked.emit({
+            originalEvent: null,
+            image: this.images[this.activeIndex],
+            index: this.activeIndex,
+        });
     }
 
     prev() {
         if (this.activeIndex !== 0) {
             this.select(this.activeIndex - 1, true);
-            this.onImageClicked.emit({ originalEvent: null, image: this.images[this.activeIndex], index: this.activeIndex });
+            this.onImageClicked.emit({
+                originalEvent: null,
+                image: this.images[this.activeIndex],
+                index: this.activeIndex,
+            });
         }
     }
 
     next() {
-        if (this.activeIndex !== (this.panels.length - 1)) {
+        if (this.activeIndex !== this.panels.length - 1) {
             this.select(this.activeIndex + 1, true);
         } else {
             this.select(0, false);
             this.stripLeft = 0;
         }
-        this.onImageClicked.emit({ originalEvent: null, image: this.images[this.activeIndex], index: this.activeIndex });
+        this.onImageClicked.emit({
+            originalEvent: null,
+            image: this.images[this.activeIndex],
+            index: this.activeIndex,
+        });
     }
 
     select(index, reposition) {
@@ -171,12 +215,21 @@ export class XnGalleria implements AfterViewChecked, AfterViewInit, OnDestroy {
 
                 if (reposition === undefined || reposition === true) {
                     const frameLeft = newFrame.offsetLeft,
-                        stepFactor = this.frameWidth + parseInt(getComputedStyle(newFrame)['margin-right'], 10),
+                        stepFactor =
+                            this.frameWidth +
+                            parseInt(
+                                getComputedStyle(newFrame)["margin-right"],
+                                10
+                            ),
                         stripLeft = this.strip.offsetLeft,
                         frameViewportLeft = frameLeft + stripLeft,
-                        frameViewportRight = frameViewportLeft + this.frameWidth;
+                        frameViewportRight =
+                            frameViewportLeft + this.frameWidth;
 
-                    if (frameViewportRight > this.domHandler.width(this.stripWrapper))
+                    if (
+                        frameViewportRight >
+                        this.domHandler.width(this.stripWrapper)
+                    )
                         this.stripLeft -= stepFactor;
                     else if (frameViewportLeft < 0)
                         this.stripLeft += stepFactor;
@@ -188,7 +241,11 @@ export class XnGalleria implements AfterViewChecked, AfterViewInit, OnDestroy {
     }
 
     clickImage(event, image, i) {
-        this.onImageClicked.emit({ originalEvent: event, image: image, index: i });
+        this.onImageClicked.emit({
+            originalEvent: event,
+            image: image,
+            index: i,
+        });
     }
 
     ngOnDestroy() {
@@ -197,6 +254,6 @@ export class XnGalleria implements AfterViewChecked, AfterViewInit, OnDestroy {
 
     public getRightImageURL(source: string, width: number) {
         if (this.sourceIsBase64) return source;
-        return source + '&w=' + width;
+        return source + "&w=" + width;
     }
 }

@@ -1,30 +1,38 @@
 import {
-    Component, OnInit, Input, Output, EventEmitter,
-    ChangeDetectorRef, OnDestroy,
-    SimpleChanges, OnChanges, ViewChild
-} from '@angular/core';
-import { Subject } from 'rxjs/Rx';
-import { Uti } from 'app/utilities';
-import { ModalService } from 'app/services';
-import { MessageModel } from 'app/models';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import { WjTreeView } from 'wijmo/wijmo.angular2.nav';
-import * as Ps from 'perfect-scrollbar';
-import cloneDeep from 'lodash-es/cloneDeep';
-import {
-    MessageModal
-} from 'app/app.constants';
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    ChangeDetectorRef,
+    OnDestroy,
+    SimpleChanges,
+    OnChanges,
+    ViewChild,
+} from "@angular/core";
+import { Subject } from "rxjs/Rx";
+import { Uti } from "app/utilities";
+import { ModalService } from "app/services";
+import { MessageModel } from "app/models";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { WjTreeView } from "wijmo/wijmo.angular2.nav";
+import * as Ps from "perfect-scrollbar";
+import cloneDeep from "lodash-es/cloneDeep";
+import { MessageModal } from "app/app.constants";
 
 @Component({
-    selector: 'app-file-tree-view',
-    styleUrls: ['./file-tree-view.component.scss'],
-    templateUrl: './file-tree-view.component.html',
+    selector: "app-file-tree-view",
+    styleUrls: ["./file-tree-view.component.scss"],
+    templateUrl: "./file-tree-view.component.html",
     host: {
-        '(contextmenu)': 'onRightClick($event)'
-    }
+        "(contextmenu)": "onRightClick($event)",
+    },
 })
-export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDestroy, OnChanges {
+export class FileTreeViewComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, OnChanges
+{
     public contextMenuData: any;
     public treeViewData: any;
 
@@ -38,10 +46,11 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
     @Input() data: any;
 
     @Output() dataChangeAction: EventEmitter<any> = new EventEmitter();
-    @Output() showFileUploadDialogAction: EventEmitter<any> = new EventEmitter();
+    @Output() showFileUploadDialogAction: EventEmitter<any> =
+        new EventEmitter();
     @Output() outputDataAction: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('tvEdit') wjTreeView: WjTreeView;
+    @ViewChild("tvEdit") wjTreeView: WjTreeView;
 
     constructor(
         private ref: ChangeDetectorRef,
@@ -66,7 +75,7 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
     }
 
     public ngOnChanges(changes: SimpleChanges) {
-        const hasChangesData = this.hasChanges(changes['data']);
+        const hasChangesData = this.hasChanges(changes["data"]);
         if (hasChangesData) {
             this.makeData();
         }
@@ -89,7 +98,7 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
     public nodeEditEnded(tvEdit: any, event: any) {
         if (event.node.dataItem.header == this.editingItem.header) return;
         const header: string = event.node.dataItem.header;
-        if (!header || !(header.trim())) {
+        if (!header || !header.trim()) {
             event.node.dataItem.header = this.editingItem.header;
             this.resetTreeViewData();
             return;
@@ -100,7 +109,7 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
     }
 
     public updateIdForAddItem(realId: any, addedId: any) {
-        this.updateDataForAddItem(realId, addedId, 'id');
+        this.updateDataForAddItem(realId, addedId, "id");
     }
 
     public resetDataAfterSaving() {
@@ -116,11 +125,11 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
         for (let item of this.treeViewData) {
             if (item.id === addedId) {
                 item.id = realId;
-                if (prop === 'id') {
+                if (prop === "id") {
                     this.data.push({
                         id: realId,
                         text: item.header,
-                        parentId: null
+                        parentId: null,
                     });
                 }
                 return;
@@ -129,16 +138,22 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
         }
     }
 
-    private setDataForChildren(treeNode: any, id: any, prop: string, data: any): boolean {
-        if (!treeNode || !treeNode.items || !treeNode.items.length) return false;
+    private setDataForChildren(
+        treeNode: any,
+        id: any,
+        prop: string,
+        data: any
+    ): boolean {
+        if (!treeNode || !treeNode.items || !treeNode.items.length)
+            return false;
         for (let item of treeNode.items) {
             if (item.id == id) {
                 item[prop] = data;
-                if (prop === 'id') {
+                if (prop === "id") {
                     this.data.push({
                         id: data,
                         text: item.header,
-                        parentId: treeNode.id
+                        parentId: treeNode.id,
                     });
                 }
                 return true;
@@ -148,9 +163,7 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
         return false;
     }
 
-    private pushAddItemToData() {
-
-    }
+    private pushAddItemToData() {}
 
     private addPerfectScrollbar() {
         setTimeout(() => {
@@ -160,15 +173,25 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
                 Ps.initialize(wijmoGridElm.get(0));
 
                 setTimeout(() => {
-                    $('.ps-scrollbar-x-rail', this.wjTreeView.hostElement).css('z-index', 9999);
-                    $('.ps-scrollbar-y-rail', this.wjTreeView.hostElement).css('z-index', 9999);
+                    $(".ps-scrollbar-x-rail", this.wjTreeView.hostElement).css(
+                        "z-index",
+                        9999
+                    );
+                    $(".ps-scrollbar-y-rail", this.wjTreeView.hostElement).css(
+                        "z-index",
+                        9999
+                    );
                 }, 200);
             }
         });
     }
 
     private hasChanges(changes) {
-        return changes && changes.hasOwnProperty('currentValue') && changes.hasOwnProperty('previousValue');
+        return (
+            changes &&
+            changes.hasOwnProperty("currentValue") &&
+            changes.hasOwnProperty("previousValue")
+        );
     }
 
     //#region Make Data Tree
@@ -190,26 +213,32 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
         this.makeParentTreeViewData();
         let child: any;
         for (const item of this.tempData) {
-            child = this.data.filter(x => x.parentId === item.id);
+            child = this.data.filter((x) => x.parentId === item.id);
             this.makeChildrenTreeViewData(item, child, 1);
         }
     }
 
     private makeParentTreeViewData() {
-        const parent = this.data.filter(x => !x.parentId);
-        this.tempData = parent.map(x => {
+        const parent = this.data.filter((x) => !x.parentId);
+        this.tempData = parent.map((x) => {
             return {
                 id: x.id,
                 header: x.text,
-                img: '',
+                img: "",
                 parentId: 0,
-                level: 0
+                level: 0,
             };
         });
     }
 
-    private makeChildrenTreeViewData(parent: any, children: any, level: number) {
-        if (!children || !children.length) { return; }
+    private makeChildrenTreeViewData(
+        parent: any,
+        children: any,
+        level: number
+    ) {
+        if (!children || !children.length) {
+            return;
+        }
         parent.items = [];
         let _children: any;
         for (const item of children) {
@@ -217,13 +246,13 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
             const child: any = {
                 id: item.id,
                 header: item.text,
-                img: '',
+                img: "",
                 parentId: parent.id,
-                level: level
+                level: level,
             };
             parent.items.push(child);
-            _children = this.data.filter(x => x.parentId === item.id);
-            this.makeChildrenTreeViewData(child, _children, (level + 1));
+            _children = this.data.filter((x) => x.parentId === item.id);
+            this.makeChildrenTreeViewData(child, _children, level + 1);
         }
     }
     //#endregion
@@ -234,7 +263,7 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
         this.outputDataAction.emit({
             addItems: this.addItems,
             editItems: this.editItems,
-            deleteItems: this.deleteItems
+            deleteItems: this.deleteItems,
         });
     }
     private rebindContextMenu(isDisable) {
@@ -246,55 +275,62 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
     private createMenuContextData(isDisable: boolean) {
         return [
             {
-                id: 'campaign-file-tree-view-add-folder',
-                title: 'Add Folder',
-                iconName: 'fa-plus',
-                callback: () => { this.addFolder(false); },
+                id: "campaign-file-tree-view-add-folder",
+                title: "Add Folder",
+                iconName: "fa-plus",
+                callback: () => {
+                    this.addFolder(false);
+                },
                 subject: new Subject(),
                 disabled: isDisable,
-                children: []
+                children: [],
             },
             {
-                id: 'campaign-file-tree-view-delete',
-                title: 'Delete Folder',
-                iconName: 'fa-trash-o',
-                callback: () => { this.deleteFolder(); },
+                id: "campaign-file-tree-view-delete",
+                title: "Delete Folder",
+                iconName: "fa-trash-o",
+                callback: () => {
+                    this.deleteFolder();
+                },
                 subject: new Subject(),
                 disabled: isDisable,
-                children: []
+                children: [],
             },
             {
-                id: 'campaign-file-tree-view-add-to-root',
-                title: 'Add Folder To Root',
-                iconName: 'fa-plus-circle',
-                callback: () => { this.addFolder(true); },
+                id: "campaign-file-tree-view-add-to-root",
+                title: "Add Folder To Root",
+                iconName: "fa-plus-circle",
+                callback: () => {
+                    this.addFolder(true);
+                },
                 subject: new Subject(),
                 disabled: false,
-                children: []
+                children: [],
             },
             {
-                id: 'campaign-file-tree-view-add-to-root',
-                title: 'Upload File',
-                iconName: 'fa-upload',
-                callback: (event) => { this.uploadFile(event); },
+                id: "campaign-file-tree-view-add-to-root",
+                title: "Upload File",
+                iconName: "fa-upload",
+                callback: (event) => {
+                    this.uploadFile(event);
+                },
                 subject: new Subject(),
                 disabled: isDisable,
-                children: []
-            }
+                children: [],
+            },
         ];
     }
 
     private addFolder(isRoot: boolean) {
         const addedItemId = this.getTempId();
         const addItem = {
-            header: 'New Folder',
-            id: addedItemId
-        }
+            header: "New Folder",
+            id: addedItemId,
+        };
         if (this.currentTreeNodeItem && !isRoot) {
             this.addToNode(addItem);
             this.addToAddItems(addedItemId, this.currentTreeNodeItem.id);
-        }
-        else {
+        } else {
             this.addToRoot(addItem);
             this.addToAddItems(addedItemId, null);
         }
@@ -316,16 +352,21 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
 
     private addToAddItems(addedItemId: any, parentId: any) {
         this.addItems.push({
-            text: 'New Folder',
+            text: "New Folder",
             id: addedItemId,
-            parentId: parentId
+            parentId: parentId,
         });
     }
 
     private selectAddedItem(addedItemId: any) {
-        if (this.wjTreeView.selectedNode && this.wjTreeView.selectedNode.nodes) {
-                setTimeout(() => {
-                const nodeIndex = this.wjTreeView.selectedNode.nodes.findIndex(n => n.dataItem.id == addedItemId);
+        if (
+            this.wjTreeView.selectedNode &&
+            this.wjTreeView.selectedNode.nodes
+        ) {
+            setTimeout(() => {
+                const nodeIndex = this.wjTreeView.selectedNode.nodes.findIndex(
+                    (n) => n.dataItem.id == addedItemId
+                );
                 if (nodeIndex >= 0)
                     this.wjTreeView.selectedNode.nodes[nodeIndex].select();
             }, 100);
@@ -333,24 +374,46 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
     }
 
     private deleteFolder() {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            messageType: MessageModal.MessageType.error,
-            headerText: 'Delete Iolder',
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_This_Items'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.deleteAfterConfirm();
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                messageType: MessageModal.MessageType.error,
+                headerText: "Delete Iolder",
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Delete_This_Items" },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.deleteAfterConfirm();
+                },
+            })
+        );
     }
 
     private deleteAfterConfirm() {
-        Uti.removeItemInArray(this.addItems, cloneDeep(this.currentTreeNodeItem), 'id');
-        Uti.removeItemInArray(this.editItems, cloneDeep(this.currentTreeNodeItem), 'id');
-        Uti.removeItemInArray(this.data, cloneDeep(this.currentTreeNodeItem), 'id');
+        Uti.removeItemInArray(
+            this.addItems,
+            cloneDeep(this.currentTreeNodeItem),
+            "id"
+        );
+        Uti.removeItemInArray(
+            this.editItems,
+            cloneDeep(this.currentTreeNodeItem),
+            "id"
+        );
+        Uti.removeItemInArray(
+            this.data,
+            cloneDeep(this.currentTreeNodeItem),
+            "id"
+        );
         this.deleteItems.push(cloneDeep(this.currentTreeNodeItem));
-        Uti.removeItemInTreeArray(this.treeViewData, this.currentTreeNodeItem, 'id', 'items');
+        Uti.removeItemInTreeArray(
+            this.treeViewData,
+            this.currentTreeNodeItem,
+            "id",
+            "items"
+        );
         this.resetDataForTreeView(true);
         this.setOutputData();
     }
@@ -405,11 +468,11 @@ export class FileTreeViewComponent extends BaseComponent implements OnInit, OnDe
 
     //#region Helpers
     private getTempId(): number {
-        let newId = Math.round(((Math.random() * 100000) * -1));
-        let currentItem = this.treeViewData.find(x => x.id === newId);
+        let newId = Math.round(Math.random() * 100000 * -1);
+        let currentItem = this.treeViewData.find((x) => x.id === newId);
         while (currentItem && currentItem.id) {
-            newId = Math.round(((Math.random() * 100000) * -1));
-            currentItem = this.treeViewData.find(x => x.id === newId);
+            newId = Math.round(Math.random() * 100000 * -1);
+            currentItem = this.treeViewData.find((x) => x.id === newId);
         }
         return newId;
     }

@@ -10,53 +10,60 @@ import {
     ChangeDetectorRef,
     HostListener,
     Input,
-
-    ViewChild
-} from '@angular/core';
-import { Router } from '@angular/router';
-import { GlobalSearchConstant, PageSize, Configuration, MenuModuleId } from 'app/app.constants';
+    ViewChild,
+} from "@angular/core";
+import { Router } from "@angular/router";
 import {
-    TabModel,
-    Module,
-    SearchResultItemModel
-} from 'app/models';
-import { ResizeEvent } from 'angular-resizable-element';
+    GlobalSearchConstant,
+    PageSize,
+    Configuration,
+    MenuModuleId,
+} from "app/app.constants";
+import { TabModel, Module, SearchResultItemModel } from "app/models";
+import { ResizeEvent } from "angular-resizable-element";
+import { AppErrorHandler } from "app/services";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { AppState } from "app/state-management/store";
+import { SubLayoutInfoState } from "app/state-management/store/reducer";
+import { TabSummaryActions } from "app/state-management/store/actions";
+import { LayoutInfoActions } from "app/state-management/store/actions";
 import {
-    AppErrorHandler
-} from 'app/services';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { AppState } from 'app/state-management/store';
-import { SubLayoutInfoState } from 'app/state-management/store/reducer';
-import { TabSummaryActions } from 'app/state-management/store/actions';
-import { LayoutInfoActions } from 'app/state-management/store/actions';
-import { SearchResultActions, XnCommonActions, GlobalSearchActions, CustomAction, ProcessDataActions } from 'app/state-management/store/actions';
-import { Uti } from 'app/utilities';
-import { GlobalSearchTabComponent } from '../../components/gs-tab';
-import { BaseComponent } from 'app/pages/private/base';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import * as layoutInfoReducer from 'app/state-management/store/reducer/layout-info';
-import * as commonReducer from 'app/state-management/store/reducer/xn-common';
-import * as moduleSettingReducer from 'app/state-management/store/reducer/module-setting';
-import { TabDirective } from 'ngx-bootstrap';
-import { UUID } from 'angular2-uuid';
-import { ModuleService, ModalService } from 'app/services';
-import { LocalStorageKey } from 'app/app.constants';
+    SearchResultActions,
+    XnCommonActions,
+    GlobalSearchActions,
+    CustomAction,
+    ProcessDataActions,
+} from "app/state-management/store/actions";
+import { Uti } from "app/utilities";
+import { GlobalSearchTabComponent } from "../../components/gs-tab";
+import { BaseComponent } from "app/pages/private/base";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import * as layoutInfoReducer from "app/state-management/store/reducer/layout-info";
+import * as commonReducer from "app/state-management/store/reducer/xn-common";
+import * as moduleSettingReducer from "app/state-management/store/reducer/module-setting";
+import { TabDirective } from "ngx-bootstrap";
+import { UUID } from "angular2-uuid";
+import { ModuleService, ModalService } from "app/services";
+import { LocalStorageKey } from "app/app.constants";
 
 @Component({
-    selector: 'gs-main',
-    styleUrls: ['./gs-main.component.scss'],
-    templateUrl: './gs-main.component.html',
+    selector: "gs-main",
+    styleUrls: ["./gs-main.component.scss"],
+    templateUrl: "./gs-main.component.html",
     host: {
         //'(document:keydown)': 'onKeyDown($event)',
-        '(mouseenter)': 'onMouseEnter()'
+        "(mouseenter)": "onMouseEnter()",
     },
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GlobalSearchMainComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-    public static PIN_CLASS_NAME = 'global-search__pin';
-    public static UN_PIN_CLASS_NAME = 'global-search__unpin';
+export class GlobalSearchMainComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
+    public static PIN_CLASS_NAME = "global-search__pin";
+    public static UN_PIN_CLASS_NAME = "global-search__unpin";
 
     public isCollapsed = true;
     public showFakedHeading = true;
@@ -66,10 +73,14 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     public activeModule: Module = null;
     public activeSubModule: Module = null;
     public mainModules: Module[] = [];
-    public pinIconClassName: string = GlobalSearchMainComponent.UN_PIN_CLASS_NAME;
+    public pinIconClassName: string =
+        GlobalSearchMainComponent.UN_PIN_CLASS_NAME;
     public mainContainerStyle: Object = {};
-    public mainContentStyle: Object = { height: this.pageSize.GlobalSearchDefaultSize + 'px' };
-    public enableGSNewWindow: boolean = Configuration.PublicSettings.enableGSNewWindow;
+    public mainContentStyle: Object = {
+        height: this.pageSize.GlobalSearchDefaultSize + "px",
+    };
+    public enableGSNewWindow: boolean =
+        Configuration.PublicSettings.enableGSNewWindow;
     public mainModulesState: Observable<Module[]>;
     public subModulesState: Observable<Module[]>;
     public activeModuleState: Observable<Module>;
@@ -81,7 +92,7 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     private isPopupOpening: boolean = false;
     private removeTabHander = false;
     private isPinGroup = false;
-    private modulePrimaryKey = '';
+    private modulePrimaryKey = "";
     private willSelectSearchResult: SearchResultItemModel = null;
 
     private isViewMode = true;
@@ -118,18 +129,18 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     private loadParkedItemsCompletedSubscription: Subscription;
     private modulePrimaryKeyStateSubscription: Subscription;
 
-    @ViewChild('searchContainer')
+    @ViewChild("searchContainer")
     private searchContainerRef: ElementRef;
 
-    @ViewChildren('globalSearchTabForm')
+    @ViewChildren("globalSearchTabForm")
     private globalSearchTabForms: QueryList<GlobalSearchTabComponent>;
 
-    @HostListener('document:mousedown', ['$event'])
+    @HostListener("document:mousedown", ["$event"])
     onDocumentClick($event) {
         this.onClick($event);
     }
 
-    @HostListener('document:keydown.out-zone', ['$event'])
+    @HostListener("document:keydown.out-zone", ["$event"])
     onKeyDown($event) {
         this.pushIntoBuffer($event.keyCode);
         if (Uti.arraysEqual(this.keyCombinate, this.keyBuffer)) {
@@ -142,7 +153,6 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
             this.changeDetectorRef();
         }
     }
-
 
     @Input() set showFullPage(data: boolean) {
         this._showFullPage = data;
@@ -161,7 +171,12 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
         if (!data || !data.length) return;
 
         setTimeout(() => {
-            if ((!this.globalSearchTabForms || this.globalSearchTabForms.length != 1) && !this._tabs[0].active) return;
+            if (
+                (!this.globalSearchTabForms ||
+                    this.globalSearchTabForms.length != 1) &&
+                !this._tabs[0].active
+            )
+                return;
 
             this.globalSearchTabForms.first.search(this.tabs[0].textSearch);
             this.changeDetectorRef();
@@ -194,17 +209,51 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     ) {
         super(router);
 
-        this.layoutInfoModel = store.select(state => layoutInfoReducer.getLayoutInfoState(state, this.ofModule.moduleNameTrim));
-        this.mainModulesState = store.select(state => state.mainModule.mainModules);
-        this.subModulesState = store.select(state => state.mainModule.subModules);
-        this.activeModuleState = store.select(state => state.mainModule.activeModule);
-        this.activeSubModuleState = store.select(state => state.mainModule.activeSubModule);
-        this.searchingModuleState = store.select(state => state.mainModule.searchingModule);
-        this.xnContextMenuClickedState = this.store.select(state => commonReducer.getCommonState(state, this.ofModule.moduleNameTrim).contextMenuClicked);
-        this.requestTogglePanelState = this.store.select(state => state.searchResult.requestTogglePanel);
-        this.isViewModeState = this.store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).isViewMode);
-        this.modulePrimaryKeyState = this.store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).modulePrimaryKey);
-
+        this.layoutInfoModel = store.select((state) =>
+            layoutInfoReducer.getLayoutInfoState(
+                state,
+                this.ofModule.moduleNameTrim
+            )
+        );
+        this.mainModulesState = store.select(
+            (state) => state.mainModule.mainModules
+        );
+        this.subModulesState = store.select(
+            (state) => state.mainModule.subModules
+        );
+        this.activeModuleState = store.select(
+            (state) => state.mainModule.activeModule
+        );
+        this.activeSubModuleState = store.select(
+            (state) => state.mainModule.activeSubModule
+        );
+        this.searchingModuleState = store.select(
+            (state) => state.mainModule.searchingModule
+        );
+        this.xnContextMenuClickedState = this.store.select(
+            (state) =>
+                commonReducer.getCommonState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).contextMenuClicked
+        );
+        this.requestTogglePanelState = this.store.select(
+            (state) => state.searchResult.requestTogglePanel
+        );
+        this.isViewModeState = this.store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).isViewMode
+        );
+        this.modulePrimaryKeyState = this.store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).modulePrimaryKey
+        );
     }
 
     onRouteChanged() {
@@ -232,7 +281,7 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     private timeScan = 0;
     private clearTextFixForEdge() {
         if (this.timeScan > 50) return;
-        const txt = $('#txt-global-search-0');
+        const txt = $("#txt-global-search-0");
         if (!txt.length) {
             this.timeScan++;
             setTimeout(() => {
@@ -240,88 +289,117 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
             }, 100);
             return;
         }
-        txt.val('');
+        txt.val("");
     }
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
     }
 
-    public ngAfterViewInit() {
-    }
+    public ngAfterViewInit() {}
 
     private subscibeData() {
-        this.layoutInfoModelSubscription = this.layoutInfoModel.subscribe((layoutInfo: SubLayoutInfoState) => {
-            this.appErrorHandler.executeAction(() => {
-                // this.globalSearchHeight = layoutInfo.globalSearchHeight;
-                this.parkedItemHeight = layoutInfo.parkedItemHeight;
-                this.mainContentHeight = layoutInfo.mainContentHeight;
-                this.layoutInfo = layoutInfo;
+        this.layoutInfoModelSubscription = this.layoutInfoModel.subscribe(
+            (layoutInfo: SubLayoutInfoState) => {
+                this.appErrorHandler.executeAction(() => {
+                    // this.globalSearchHeight = layoutInfo.globalSearchHeight;
+                    this.parkedItemHeight = layoutInfo.parkedItemHeight;
+                    this.mainContentHeight = layoutInfo.mainContentHeight;
+                    this.layoutInfo = layoutInfo;
 
-                this.mainContainerStyle['width'] = `calc(100vw - ${layoutInfo.rightMenuWidth}px)`;
+                    this.mainContainerStyle[
+                        "width"
+                    ] = `calc(100vw - ${layoutInfo.rightMenuWidth}px)`;
+                });
+            }
+        );
+        this.xnContextMenuClickedStateSubcription =
+            this.xnContextMenuClickedState.subscribe((data: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!data) {
+                        return;
+                    }
+                    this.contextMenuClicked = !!data.contextMenuClicked;
+                });
             });
-        });
-        this.xnContextMenuClickedStateSubcription = this.xnContextMenuClickedState.subscribe((data: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!data) { return; }
-                this.contextMenuClicked = !!data.contextMenuClicked;
-            });
-        });
 
-        this.requestTogglePanelStateSubscription = this.requestTogglePanelState.subscribe((requestTogglePanelState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (requestTogglePanelState && this.isCollapsed !== !this.requestTogglePanelState['isShow']) {
-                    this.headerClick(null, true);
-                }
-            });
-        });
-
-        this.searchingModuleStateSubcription = this.searchingModuleState.subscribe((searchModule: Module) => {
-            this.appErrorHandler.executeAction(() => {
-                if (searchModule && searchModule.searchKeyword) {
-                    setTimeout(() => {
-                        this.collapse(false);
-                        // this.isPinGroup = true;
-                        // this.pinIconClassName = GlobalSearchMainComponent.PIN_CLASS_NAME;
-                        // Search All
-                        if (searchModule.idSettingsGUI == -1) {
-                            if (this.tabs && this.tabs.length) {
-                                this.tabs[0].textSearch = searchModule.searchKeyword;
-                                this.tabs[0].active = true;
-                                if (this.globalSearchTabForms && this.globalSearchTabForms.length) {
-                                    this.search(this.tabs[0], this.globalSearchTabForms.first, this.tabs[0].textSearch);
-                                }
-                            }
+        this.requestTogglePanelStateSubscription =
+            this.requestTogglePanelState.subscribe(
+                (requestTogglePanelState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            requestTogglePanelState &&
+                            this.isCollapsed !==
+                                !this.requestTogglePanelState["isShow"]
+                        ) {
+                            this.headerClick(null, true);
                         }
-                        this.markForCheck();
                     });
                 }
-            });
-        });
+            );
 
-        this.isViewModeStateSubscription = this.isViewModeState.subscribe((isViewModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.isViewMode = isViewModeState;
+        this.searchingModuleStateSubcription =
+            this.searchingModuleState.subscribe((searchModule: Module) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (searchModule && searchModule.searchKeyword) {
+                        setTimeout(() => {
+                            this.collapse(false);
+                            // this.isPinGroup = true;
+                            // this.pinIconClassName = GlobalSearchMainComponent.PIN_CLASS_NAME;
+                            // Search All
+                            if (searchModule.idSettingsGUI == -1) {
+                                if (this.tabs && this.tabs.length) {
+                                    this.tabs[0].textSearch =
+                                        searchModule.searchKeyword;
+                                    this.tabs[0].active = true;
+                                    if (
+                                        this.globalSearchTabForms &&
+                                        this.globalSearchTabForms.length
+                                    ) {
+                                        this.search(
+                                            this.tabs[0],
+                                            this.globalSearchTabForms.first,
+                                            this.tabs[0].textSearch
+                                        );
+                                    }
+                                }
+                            }
+                            this.markForCheck();
+                        });
+                    }
+                });
             });
-        });
 
-        this.activeModuleStateSubscription = this.activeModuleState.subscribe(data => {
-            this.appErrorHandler.executeAction(() => {
-                this.activeModule = data;
-            });
-        });
+        this.isViewModeStateSubscription = this.isViewModeState.subscribe(
+            (isViewModeState: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.isViewMode = isViewModeState;
+                });
+            }
+        );
 
-        this.activeSubModuleStateSubscription = this.activeSubModuleState.subscribe(data => {
-            this.appErrorHandler.executeAction(() => {
-                this.activeSubModule = data;
-            });
-        });
+        this.activeModuleStateSubscription = this.activeModuleState.subscribe(
+            (data) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.activeModule = data;
+                });
+            }
+        );
 
-        this.mainModulesStateSubscription = this.mainModulesState.subscribe(data => {
-            this.appErrorHandler.executeAction(() => {
-                this.mainModules = data;
+        this.activeSubModuleStateSubscription =
+            this.activeSubModuleState.subscribe((data) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.activeSubModule = data;
+                });
             });
-        });
+
+        this.mainModulesStateSubscription = this.mainModulesState.subscribe(
+            (data) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.mainModules = data;
+                });
+            }
+        );
 
         // Used for local storage sync
         if (Configuration.PublicSettings.enableGSNewWindow) {
@@ -335,22 +413,30 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     }
 
     private subscribeClosePopupLocalStorageState() {
-        this.activeModuleTabLocalStorageSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === GlobalSearchActions.CLOSE_POPUP_STORAGE;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
+        this.activeModuleTabLocalStorageSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return action.type === GlobalSearchActions.CLOSE_POPUP_STORAGE;
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        data.browserTabId &&
+                        data.browserTabId != this.browserTabId
+                    )
+                        return;
 
-                if (data.browserTabId && data.browserTabId != this.browserTabId) return;
-
-                this.handleAfterPopupClosed();
-                this.restoreTab();
+                    this.handleAfterPopupClosed();
+                    this.restoreTab();
+                });
             });
-        });
     }
 
     private handleAfterPopupClosed(isPopupOpening?: boolean) {
         this.isCollapsed = !this.isCollapsed;
-        this.isPopupOpening = isPopupOpening !== undefined ? isPopupOpening : !this.isPopupOpening;
+        this.isPopupOpening =
+            isPopupOpening !== undefined
+                ? isPopupOpening
+                : !this.isPopupOpening;
         this.showFakedHeading = !this.showFakedHeading;
         this.changeDetectorRef();
     }
@@ -359,34 +445,69 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
      * restoreTab
      **/
     public restoreTab() {
-        const data = localStorage.getItem(LocalStorageKey.buildKey(LocalStorageKey.LocalStorageGSTabKey, this.browserTabId));
+        const data = localStorage.getItem(
+            LocalStorageKey.buildKey(
+                LocalStorageKey.LocalStorageGSTabKey,
+                this.browserTabId
+            )
+        );
         if (data) {
             this.tabs = JSON.parse(data).tabs;
         }
     }
 
     private subscribeMenuContextActionLocalStorageState() {
-        this.menuContextActionLocalStorageSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === GlobalSearchActions.MENU_CONTEXT_ACTION_STORAGE;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!data || !data.payload || !data.payload.action || !data.payload.data) return;
+        this.menuContextActionLocalStorageSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                    GlobalSearchActions.MENU_CONTEXT_ACTION_STORAGE
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !data ||
+                        !data.payload ||
+                        !data.payload.action ||
+                        !data.payload.data
+                    )
+                        return;
 
-                if (data.browserTabId && data.browserTabId != this.browserTabId) return;
+                    if (
+                        data.browserTabId &&
+                        data.browserTabId != this.browserTabId
+                    )
+                        return;
 
-                switch (data.payload.action) {
-                    case 'AddToParkedItem':
-                        this.store.dispatch(this.processDataActions.requestAddToParkedItems(data.payload.data, this.ofModule));
-                        break;
-                    case 'RemoveFromParkedItem':
-                        this.store.dispatch(this.processDataActions.requestRemoveFromParkedItems(data.payload.data, this.ofModule));
-                        break;
-                    case 'AddToDoublet':
-                        this.store.dispatch(this.processDataActions.requestAddToDoublet(data.payload.data, this.ofModule));
-                        break;
-                }
+                    switch (data.payload.action) {
+                        case "AddToParkedItem":
+                            this.store.dispatch(
+                                this.processDataActions.requestAddToParkedItems(
+                                    data.payload.data,
+                                    this.ofModule
+                                )
+                            );
+                            break;
+                        case "RemoveFromParkedItem":
+                            this.store.dispatch(
+                                this.processDataActions.requestRemoveFromParkedItems(
+                                    data.payload.data,
+                                    this.ofModule
+                                )
+                            );
+                            break;
+                        case "AddToDoublet":
+                            this.store.dispatch(
+                                this.processDataActions.requestAddToDoublet(
+                                    data.payload.data,
+                                    this.ofModule
+                                )
+                            );
+                            break;
+                    }
+                });
             });
-        });
     }
 
     /**
@@ -395,87 +516,147 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     private subscribeChangeItemLocalStorageState() {
         if (!Configuration.PublicSettings.enableGSNewWindow) return;
 
-        this.changeItemLocalStorageSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === GlobalSearchActions.CHANGE_MODULE_TAB_STORAGE;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
+        this.changeItemLocalStorageSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                    GlobalSearchActions.CHANGE_MODULE_TAB_STORAGE
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        data &&
+                        data.browserTabId &&
+                        data.browserTabId != this.browserTabId
+                    )
+                        return;
 
-                if (data && data.browserTabId && data.browserTabId != this.browserTabId) return;
-
-                const selectedModule = new Module(data.payload);
-                this.moduleService.loadContentDetailBySelectedModule(selectedModule, this.activeModule, this.activeSubModule, this.mainModules);
+                    const selectedModule = new Module(data.payload);
+                    this.moduleService.loadContentDetailBySelectedModule(
+                        selectedModule,
+                        this.activeModule,
+                        this.activeSubModule,
+                        this.mainModules
+                    );
+                });
             });
-        });
     }
 
     private subscribeRowDoubleClickLocalStorageState() {
         if (!Configuration.PublicSettings.enableGSNewWindow) return;
 
-        this.rowDoubleClickLocalStorageSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === GlobalSearchActions.ROW_DOUBLE_CLICK_STORAGE;
-        }).subscribe((action: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                if (action && action.payload) {
+        this.rowDoubleClickLocalStorageSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === GlobalSearchActions.ROW_DOUBLE_CLICK_STORAGE
+                );
+            })
+            .subscribe((action: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (action && action.payload) {
+                        if (
+                            action.browserTabId &&
+                            action.browserTabId != this.browserTabId
+                        )
+                            return;
 
-                    if (action.browserTabId && action.browserTabId != this.browserTabId) return;
-
-                    const selectedModule = action.payload.selectedModule;
-                    const data = action.payload.data;
-                    const status = this.moduleService.loadContentDetailBySelectedModule(selectedModule, this.activeModule, this.activeSubModule, this.mainModules);
-                    if (status) {
-                        this.willSelectSearchResult = data;
+                        const selectedModule = action.payload.selectedModule;
+                        const data = action.payload.data;
+                        const status =
+                            this.moduleService.loadContentDetailBySelectedModule(
+                                selectedModule,
+                                this.activeModule,
+                                this.activeSubModule,
+                                this.mainModules
+                            );
+                        if (status) {
+                            this.willSelectSearchResult = data;
+                        } else {
+                            this.addSearchResultDataToStore(
+                                Object.assign({}, data)
+                            );
+                        }
                     }
-                    else {
-                        this.addSearchResultDataToStore(Object.assign({}, data));
-                    }
-                }
+                });
             });
-        });
     }
 
     private subcribeLoadParkedItemsCompletedState() {
-        this.loadParkedItemsCompletedSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.LOAD_PARKED_ITEMS_COMPLETED;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.willSelectSearchResult) {
-                    this.addSearchResultDataToStore(this.willSelectSearchResult);
+        this.loadParkedItemsCompletedSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                    ProcessDataActions.LOAD_PARKED_ITEMS_COMPLETED
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.willSelectSearchResult) {
+                        this.addSearchResultDataToStore(
+                            this.willSelectSearchResult
+                        );
 
-                    if (this.ofModule && this.ofModule.idSettingsGUI == MenuModuleId.warehouseMovement) {
-                        this.store.dispatch(this.tabSummaryActions.requestUpdateTabHeader(this.willSelectSearchResult[this.modulePrimaryKey], this.ofModule));
+                        if (
+                            this.ofModule &&
+                            this.ofModule.idSettingsGUI ==
+                                MenuModuleId.warehouseMovement
+                        ) {
+                            this.store.dispatch(
+                                this.tabSummaryActions.requestUpdateTabHeader(
+                                    this.willSelectSearchResult[
+                                        this.modulePrimaryKey
+                                    ],
+                                    this.ofModule
+                                )
+                            );
+                        }
+
+                        this.willSelectSearchResult = null;
                     }
-
-                    this.willSelectSearchResult = null;
-                }
+                });
             });
-        });
     }
 
     private subcribeModulePrimaryKeyState() {
-        this.modulePrimaryKeyStateSubscription = this.modulePrimaryKeyState.subscribe((modulePrimaryKeyState: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.modulePrimaryKey = modulePrimaryKeyState;
-            });
-        });
+        this.modulePrimaryKeyStateSubscription =
+            this.modulePrimaryKeyState.subscribe(
+                (modulePrimaryKeyState: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.modulePrimaryKey = modulePrimaryKeyState;
+                    });
+                }
+            );
     }
-
 
     private addSearchResultDataToStore(data) {
         let module: Module = this.ofModule;
-        if (this.ofModule.idSettingsGUIParent && this.ofModule.idSettingsGUIParent == MenuModuleId.administration) {
-            module = this.mainModules.find(m => m.idSettingsGUI == MenuModuleId.administration);
+        if (
+            this.ofModule.idSettingsGUIParent &&
+            this.ofModule.idSettingsGUIParent == MenuModuleId.administration
+        ) {
+            module = this.mainModules.find(
+                (m) => m.idSettingsGUI == MenuModuleId.administration
+            );
         }
 
-        this.store.dispatch(this.processDataActions.selectSearchResult(data, module));
+        this.store.dispatch(
+            this.processDataActions.selectSearchResult(data, module)
+        );
     }
 
     private isClickInsideRect(mouseEvent) {
         const clientX = mouseEvent.clientX;
         const clientY = mouseEvent.clientY;
         if (this.searchContainerRef) {
-            const rect = this.searchContainerRef.nativeElement.getBoundingClientRect();
-            if ((clientX >= rect.left && clientX <= rect.left + rect.width) &&
-                (clientY >= rect.top && clientY <= rect.top + rect.height)) {
+            const rect =
+                this.searchContainerRef.nativeElement.getBoundingClientRect();
+            if (
+                clientX >= rect.left &&
+                clientX <= rect.left + rect.width &&
+                clientY >= rect.top &&
+                clientY <= rect.top + rect.height
+            ) {
                 return true;
             }
         }
@@ -483,10 +664,11 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     }
 
     public onClick(event) {
-        if (this.isPinGroup || (event && event.defaultPrevented))
-            return;
+        if (this.isPinGroup || (event && event.defaultPrevented)) return;
         if (this.contextMenuClicked) {
-            this.store.dispatch(this.xnCommonActions.contextMenuClicked(false, this.ofModule));
+            this.store.dispatch(
+                this.xnCommonActions.contextMenuClicked(false, this.ofModule)
+            );
             return;
         }
 
@@ -494,22 +676,47 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
             return;
         }
 
-        if (!this._eref.nativeElement.contains(event.target) &&
-            !this.isCollapsed && !this.removeTabHander) {
-
+        if (
+            !this._eref.nativeElement.contains(event.target) &&
+            !this.isCollapsed &&
+            !this.removeTabHander
+        ) {
             //prevent collapse if existing the modal dialog
-            if (event && event.target && event.target.className && typeof event.target.className.indexOf === 'function') {
-                if (event.target.className.indexOf('xn-modal') !== -1
-                    || event.target.className.indexOf('ag-menu-option-icon') !== -1
-                    || (event.target.parentNode && event.target.parentNode.className.indexOf('ag-menu-option-icon') !== -1)
-                    || event.target.className.indexOf('ag-menu-option-text') !== -1
-                    || (event.target.parentNode && event.target.parentNode.className && event.target.parentNode.className.indexOf('ag-menu-option-text') !== -1)
-                    || event.target.className.indexOf('ag-menu-option-shortcut') !== -1
-                    || event.target.className.indexOf('ag-menu-option-popup-pointer') !== -1
-                    || (event.target.download && event.target.download === 'export.csv')
-                    || (event.target.download && event.target.download === 'export.xlsx')
-                    || (event.target.download && event.target.download === 'export.xlm')
-                    || $(event.target).parents('.modal-dialog').length) {
+            if (
+                event &&
+                event.target &&
+                event.target.className &&
+                typeof event.target.className.indexOf === "function"
+            ) {
+                if (
+                    event.target.className.indexOf("xn-modal") !== -1 ||
+                    event.target.className.indexOf("ag-menu-option-icon") !==
+                        -1 ||
+                    (event.target.parentNode &&
+                        event.target.parentNode.className.indexOf(
+                            "ag-menu-option-icon"
+                        ) !== -1) ||
+                    event.target.className.indexOf("ag-menu-option-text") !==
+                        -1 ||
+                    (event.target.parentNode &&
+                        event.target.parentNode.className &&
+                        event.target.parentNode.className.indexOf(
+                            "ag-menu-option-text"
+                        ) !== -1) ||
+                    event.target.className.indexOf(
+                        "ag-menu-option-shortcut"
+                    ) !== -1 ||
+                    event.target.className.indexOf(
+                        "ag-menu-option-popup-pointer"
+                    ) !== -1 ||
+                    (event.target.download &&
+                        event.target.download === "export.csv") ||
+                    (event.target.download &&
+                        event.target.download === "export.xlsx") ||
+                    (event.target.download &&
+                        event.target.download === "export.xlm") ||
+                    $(event.target).parents(".modal-dialog").length
+                ) {
                     this.removeTabHander = false;
                     return;
                 }
@@ -535,11 +742,14 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
         this.removeTabHander = false;
     }
 
-
     private pushIntoBuffer(keyCode) {
-        if (!this.keyBuffer || this.keyBuffer.indexOf(keyCode) > -1 ||
+        if (
+            !this.keyBuffer ||
+            this.keyBuffer.indexOf(keyCode) > -1 ||
             this.keyCombinate.indexOf(keyCode) < 0 ||
-            (keyCode === this.fKeyNumber && this.keyBuffer.indexOf(this.controlKeyNumber) < 0))
+            (keyCode === this.fKeyNumber &&
+                this.keyBuffer.indexOf(this.controlKeyNumber) < 0)
+        )
             return;
         this.keyBuffer.push(keyCode);
         setTimeout(() => {
@@ -548,12 +758,14 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     }
 
     private focusSearchTextbox() {
-        const searchInputs = $('.gs__search-text-input');
-        if (!searchInputs || !searchInputs.length) { return; }
+        const searchInputs = $(".gs__search-text-input");
+        if (!searchInputs || !searchInputs.length) {
+            return;
+        }
         let input: any;
-        for (const item of (<any>searchInputs)) {
+        for (const item of <any>searchInputs) {
             input = $(item);
-            if (input.is(':visible')) {
+            if (input.is(":visible")) {
                 setTimeout(() => {
                     input.focus();
                 }, 100);
@@ -563,7 +775,9 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     }
 
     public onMouseEnter() {
-        this.store.dispatch(this.tabSummaryActions.toggleTabButton(false, this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.toggleTabButton(false, this.ofModule)
+        );
     }
 
     public collapsed(event: any): void {
@@ -580,14 +794,15 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
             title: this.globalSearchConsts.searchAll,
             active: true,
             removable: false,
-            textSearch: '*',
+            textSearch: "*",
             module: null,
-            searchIndex: '',
+            searchIndex: "",
             isLoading: false,
             isWithStar: this.isWithStar,
             histories: [],
-            activeAdvanceSearchStatus: false
-        }];
+            activeAdvanceSearchStatus: false,
+        },
+    ];
 
     //public tabs: TabModel[] = [
     //    {
@@ -616,8 +831,12 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
 
         if (Configuration.PublicSettings.enableGSNewWindow) {
             if (!fromStorage) {
-                this.store.dispatch(this.globalSearchActions.closeModuleTab(tabz));
-                this.store.dispatch(this.globalSearchActions.updateTab(this.tabs));
+                this.store.dispatch(
+                    this.globalSearchActions.closeModuleTab(tabz)
+                );
+                this.store.dispatch(
+                    this.globalSearchActions.updateTab(this.tabs)
+                );
             }
             this.changeDetectorRef();
         }
@@ -625,19 +844,23 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
 
     public globalSearchItemClicked(event: any) {
         this.mainContainerStyle = {
-            position: 'fixed',
-            left: '0',
-            top: '',
+            position: "fixed",
+            left: "0",
+            top: "",
             width: `${event.rectangle.width}px`,
-            height: `${event.rectangle.height}px`
+            height: `${event.rectangle.height}px`,
         };
     }
 
     public onResizeEnd(event: ResizeEvent) {
-        if (this.isCollapsed || !this.allowResize) { return; }
+        if (this.isCollapsed || !this.allowResize) {
+            return;
+        }
 
         let newTop, newHeight;
-        if (event.rectangle.top <= parseInt(this.layoutInfo.headerHeight, null)) {
+        if (
+            event.rectangle.top <= parseInt(this.layoutInfo.headerHeight, null)
+        ) {
             newTop = parseInt(this.layoutInfo.headerHeight, null) + 10;
             newHeight = event.rectangle.bottom - newTop;
         } else {
@@ -646,14 +869,16 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
         }
 
         this.mainContainerStyle = {
-            position: 'fixed',
+            position: "fixed",
             left: `${event.rectangle.left}px`,
             top: `${newTop}px`,
             width: `${event.rectangle.width}px`,
-            height: `${newHeight}px`
+            height: `${newHeight}px`,
         };
 
-        this.mainContentStyle['height'] = `${newHeight - this.pageSize.GlobalSearchHeaderSize}px`;
+        this.mainContentStyle["height"] = `${
+            newHeight - this.pageSize.GlobalSearchHeaderSize
+        }px`;
 
         setTimeout(() => {
             this.reCalculateHeightForGlobalSearchContent();
@@ -663,16 +888,25 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
     }
 
     private reCalculateHeightForGlobalSearchContent() {
-        const gsMainHeight = $('#global-search-container').innerHeight();
-        const gsHeadingHeight = $('#global-search-heading').innerHeight();
-        const gsSearchInputHeight = $('#gs__search-input').innerHeight();
-        const gsTabContent = $('#gs-tab-content');
+        const gsMainHeight = $("#global-search-container").innerHeight();
+        const gsHeadingHeight = $("#global-search-heading").innerHeight();
+        const gsSearchInputHeight = $("#gs__search-input").innerHeight();
+        const gsTabContent = $("#gs-tab-content");
         const headerSpacing = 15;
         const tabSize = 45;
         const tabSpacing = 5;
         const footerSpacing = 15;
         const history = 11;
-        gsTabContent.height(gsMainHeight - gsHeadingHeight - gsSearchInputHeight - headerSpacing - tabSpacing - footerSpacing - tabSize - history);
+        gsTabContent.height(
+            gsMainHeight -
+                gsHeadingHeight -
+                gsSearchInputHeight -
+                headerSpacing -
+                tabSpacing -
+                footerSpacing -
+                tabSize -
+                history
+        );
     }
 
     public headerClick(event: any, force?: boolean) {
@@ -732,7 +966,9 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
 
     public pinGlobalSearchGroup() {
         this.isPinGroup = !this.isPinGroup;
-        this.pinIconClassName = this.isPinGroup ? GlobalSearchMainComponent.PIN_CLASS_NAME : GlobalSearchMainComponent.UN_PIN_CLASS_NAME;
+        this.pinIconClassName = this.isPinGroup
+            ? GlobalSearchMainComponent.PIN_CLASS_NAME
+            : GlobalSearchMainComponent.UN_PIN_CLASS_NAME;
 
         if (!this.isPinGroup) {
             this.headerClick(null);
@@ -751,7 +987,7 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
      */
     public markForCheck() {
         if (this.globalSearchTabForms) {
-            this.globalSearchTabForms.forEach(item => {
+            this.globalSearchTabForms.forEach((item) => {
                 item._changeDetectorRef.markForCheck();
             });
         }
@@ -770,12 +1006,21 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
      * @param globalSearchTabComponent
      * @param value
      */
-    public search(tab: TabModel, globalSearchTabComponent: GlobalSearchTabComponent, value: string, searchFromLocalStorage?) {
-        if (value.indexOf(',') !== -1 && value.indexOf('+') !== -1) {
+    public search(
+        tab: TabModel,
+        globalSearchTabComponent: GlobalSearchTabComponent,
+        value: string,
+        searchFromLocalStorage?
+    ) {
+        if (value.indexOf(",") !== -1 && value.indexOf("+") !== -1) {
             this.modalService.warningMessageWithOption({
-                text: 'Keyword Search',
-                message: [{ key: 'Modal_Message__You_can_not_combine_comma_and_plus_in_one_keyword_search' }],
-                closeText: 'OK'
+                text: "Keyword Search",
+                message: [
+                    {
+                        key: "Modal_Message__You_can_not_combine_comma_and_plus_in_one_keyword_search",
+                    },
+                ],
+                closeText: "OK",
             });
             return;
         }
@@ -786,7 +1031,9 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
 
         if (Configuration.PublicSettings.enableGSNewWindow) {
             if (!searchFromLocalStorage) {
-                this.store.dispatch(this.globalSearchActions.searchKeyword(value));
+                this.store.dispatch(
+                    this.globalSearchActions.searchKeyword(value)
+                );
             }
             this.store.dispatch(this.globalSearchActions.updateTab(this.tabs));
         }
@@ -811,7 +1058,7 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
         //if (!(ev instanceof TabDirective))
         //    return;
 
-        const item = this.tabs.find(p => p.title == tab.title);
+        const item = this.tabs.find((p) => p.title == tab.title);
         if (item) {
             item.active = true;
             item.isWithStar = this.isWithStar;
@@ -819,7 +1066,9 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
 
         if (Configuration.PublicSettings.enableGSNewWindow && !fromStorage) {
             setTimeout(() => {
-                this.store.dispatch(this.globalSearchActions.updateTab(this.tabs));
+                this.store.dispatch(
+                    this.globalSearchActions.updateTab(this.tabs)
+                );
             });
         }
     }
@@ -840,7 +1089,12 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
         //].join(',');
         //this.popup = window.open('/search', 'windowName', params);
 
-        this.popup = Uti.openPopupCenter('/search', 'globalSearchPopup', 1024, 600);
+        this.popup = Uti.openPopupCenter(
+            "/search",
+            "globalSearchPopup",
+            1024,
+            600
+        );
 
         this.isPopupOpening = true;
         this.isCollapsed = true;
@@ -859,7 +1113,7 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
                 this.openPopup();
                 return;
             }
-            window.open('', 'globalSearchPopup');
+            window.open("", "globalSearchPopup");
             return;
         }
         this.headerClick(null);
@@ -890,5 +1144,4 @@ export class GlobalSearchMainComponent extends BaseComponent implements OnInit, 
             this._changeDetectorRef.detectChanges();
         }, 300);
     }
-
 }

@@ -1,9 +1,14 @@
-import { Directive, ElementRef, Renderer, AfterViewInit, Input } from "@angular/core";
+import {
+    Directive,
+    ElementRef,
+    Renderer,
+    AfterViewInit,
+    Input,
+} from "@angular/core";
 
 @Directive({
-    selector: "[ngxfocus]"
+    selector: "[ngxfocus]",
 })
-
 export class FocusDirective implements AfterViewInit {
     @Input("ngxfocus") value: string;
 

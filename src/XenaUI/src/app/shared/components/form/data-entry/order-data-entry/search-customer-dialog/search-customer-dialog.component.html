@@ -1,57 +1,79 @@
-﻿<p-dialog header=""
-          width="1024"
-          height="630"
-          [(visible)]="showDialog"
-          modal="true"
-          responsive="true"
-          appendTo="body">
+﻿<p-dialog
+    header=""
+    width="1024"
+    height="630"
+    [(visible)]="showDialog"
+    modal="true"
+    responsive="true"
+    appendTo="body"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="header-text"><label-translation [keyword]="'Search_Customer__Search_Customer'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="onCancel()">
+            <span class="header-text"
+                ><label-translation
+                    [keyword]="'Search_Customer__Search_Customer'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="onCancel()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
     <div class="row">
         <div class="col-xs-12 no-padding table-source" *ngIf="dataSourceTable">
-            <wijmo-grid #wjgridCustomerSearching
-                        [dataSource]="dataSourceTable"
-                        [hightlightKeywords]="keyword"
-                        [serverPaging]="true"
-                        [readOnly]="true"
-                        [allowDelete]="false"
-                        [hasSearch]="true"
-                        (onRowDoubleClick)="onRowDoubleClick($event)"
-                        (onTableSearch)="onTableSearch($event)"
-                        (onPageChanged)="onPageChanged($event)"
-                        (onRowClick)="customerTableRowClick($event)"
-                        (pageNumberChanged)="onPageNumberChanged($event)">
+            <wijmo-grid
+                #wjgridCustomerSearching
+                [dataSource]="dataSourceTable"
+                [hightlightKeywords]="keyword"
+                [serverPaging]="true"
+                [readOnly]="true"
+                [allowDelete]="false"
+                [hasSearch]="true"
+                (onRowDoubleClick)="onRowDoubleClick($event)"
+                (onTableSearch)="onTableSearch($event)"
+                (onPageChanged)="onPageChanged($event)"
+                (onRowClick)="customerTableRowClick($event)"
+                (pageNumberChanged)="onPageNumberChanged($event)"
+            >
             </wijmo-grid>
         </div>
     </div>
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button label="Ok"
-                    pbutton=""
-                    type="button"
-                    mat-raised-button
-                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                    (click)="onClose()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Search_Customer__Ok'"></label-translation></span>
+            <button
+                label="Ok"
+                pbutton=""
+                type="button"
+                mat-raised-button
+                class="mat-btn-blue ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                (click)="onClose()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'Search_Customer__Ok'"
+                    ></label-translation
+                ></span>
             </button>
-            <button label="Cancel"
-                    pbutton=""
-                    type="button"
-                    mat-raised-button
-                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                    (click)="onCancel()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Search_Customer__Cancel'"></label-translation></span>
+            <button
+                label="Cancel"
+                pbutton=""
+                type="button"
+                mat-raised-button
+                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                (click)="onCancel()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'Search_Customer__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>

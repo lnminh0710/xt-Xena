@@ -1,6 +1,13 @@
 import {
-    Component, Input, Output, EventEmitter, OnInit, OnDestroy,
-    AfterViewInit, ElementRef, ViewChild
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
 } from "@angular/core";
 
 import {
@@ -8,40 +15,45 @@ import {
     IDragDropCommunicationData,
     DragMode,
     LayoutPageInfoModel,
-    ApiResultResponse
-} from 'app/models';
+    ApiResultResponse,
+} from "app/models";
 
-import { TranslateModeEnum, TranslateDataTypeEnum } from 'app/app.constants';
-import { UUID } from 'angular2-uuid';
+import { TranslateModeEnum, TranslateDataTypeEnum } from "app/app.constants";
+import { UUID } from "angular2-uuid";
 import {
-    GlobalSettingService, AppErrorHandler,
-    ModalService, WidgetTemplateSettingService, ArticleService
-} from 'app/services';
-import isNil from 'lodash-es/isNil';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isEmpty from 'lodash-es/isEmpty';
-import { WijmoGridComponent } from 'app/shared/components/wijmo';
-import { WidgetUtils } from '../../utils';
-import { LayoutInfoState } from 'app/state-management/store/reducer/layout-info';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { Uti } from 'app/utilities';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
+    GlobalSettingService,
+    AppErrorHandler,
+    ModalService,
+    WidgetTemplateSettingService,
+    ArticleService,
+} from "app/services";
+import isNil from "lodash-es/isNil";
+import cloneDeep from "lodash-es/cloneDeep";
+import isEmpty from "lodash-es/isEmpty";
+import { WijmoGridComponent } from "app/shared/components/wijmo";
+import { WidgetUtils } from "../../utils";
+import { LayoutInfoState } from "app/state-management/store/reducer/layout-info";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { Uti } from "app/utilities";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
 
 @Component({
-    selector: 'widget-article-translation',
-    templateUrl: './widget-article-translation.component.html',
-    styleUrls: ['./widget-article-translation.component.scss']
+    selector: "widget-article-translation",
+    templateUrl: "./widget-article-translation.component.html",
+    styleUrls: ["./widget-article-translation.component.scss"],
 })
-export class WidgetArticleTranslationComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-
+export class WidgetArticleTranslationComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     public isTableEdited = false;
     public originalValue: string;
 
-    @ViewChild('translateTextGrid')
+    @ViewChild("translateTextGrid")
     public wijmoGridComponent: WijmoGridComponent;
 
     // Default : Readonly Mode
@@ -58,15 +70,22 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
 
     private _idArticle;
     private widgetDetail: WidgetDetail;
-    private originalField: string = 'ArticleNameShort';
-    private tableName: string = 'B00ArticleName';
+    private originalField: string = "ArticleNameShort";
+    private tableName: string = "B00ArticleName";
 
     @Input()
     set data(widgetDetail: WidgetDetail) {
-        if (widgetDetail && widgetDetail.widgetDataType &&
-            widgetDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim)) {
+        if (
+            widgetDetail &&
+            widgetDetail.widgetDataType &&
+            widgetDetail.widgetDataType.listenKeyRequest(
+                this.ofModule.moduleNameTrim
+            )
+        ) {
             this.widgetDetail = widgetDetail;
-            this.idArticle = widgetDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim)['IdArticle'];
+            this.idArticle = widgetDetail.widgetDataType.listenKeyRequest(
+                this.ofModule.moduleNameTrim
+            )["IdArticle"];
             //this.loadData();
         }
     }
@@ -103,29 +122,31 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
 
     public gridData: any = {
         data: [],
-        columns: this.initColumnSetting()
-    }
+        columns: this.initColumnSetting(),
+    };
 
     public guid = UUID.UUID();
     public translateDataType = TranslateDataTypeEnum.Data;
 
     private gridDataModeAll: any = {
         data: [],
-        columns: []
+        columns: [],
     };
 
     private gridDataModeWidgetOnly: any = {
         data: [],
-        columns: []
+        columns: [],
     };
 
-    constructor(private store: Store<AppState>,
+    constructor(
+        private store: Store<AppState>,
         private _eref: ElementRef,
         private globalSettingService: GlobalSettingService,
         private appErrorHandler: AppErrorHandler,
         private widgetTemplateSettingService: WidgetTemplateSettingService,
         private articleService: ArticleService,
-        protected router: Router) {
+        protected router: Router
+    ) {
         super(router);
         this.loadData();
     }
@@ -149,30 +170,24 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
      * reset
      */
     private reset() {
-        this.originalValue = '';
+        this.originalValue = "";
         this.resetGridData();
     }
 
     /**
      * ngOnInit
      */
-    public ngOnInit() {
-
-    }
+    public ngOnInit() {}
 
     /**
      * ngOnDestroy
      */
-    public ngOnDestroy() {
-
-    }
-
+    public ngOnDestroy() {}
 
     /**
      * ngAfterViewInit
      */
-    ngAfterViewInit() {
-    }
+    ngAfterViewInit() {}
 
     /**
      * checkProperties
@@ -180,8 +195,7 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
      */
     private checkProperties(obj) {
         for (const key in obj) {
-            if (obj[key])
-                return true;
+            if (obj[key]) return true;
         }
         return false;
     }
@@ -191,20 +205,22 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
      */
     private getOriginalValue() {
         return new Promise<any>((resolve, reject) => {
-            this.articleService.getArticleById(this.idArticle, '-1').subscribe((response: ApiResultResponse) => {
-                this.appErrorHandler.executeAction(() => {
-                    let orgValue = '';
-                    if (Uti.isResquestSuccess(response)) {
-                        const item = response.item;
-                        if (item && item.articleNameShort) {
-                            orgValue = item.articleNameShort.value
+            this.articleService
+                .getArticleById(this.idArticle, "-1")
+                .subscribe((response: ApiResultResponse) => {
+                    this.appErrorHandler.executeAction(() => {
+                        let orgValue = "";
+                        if (Uti.isResquestSuccess(response)) {
+                            const item = response.item;
+                            if (item && item.articleNameShort) {
+                                orgValue = item.articleNameShort.value;
+                            }
                         }
-                    }
-                    resolve({
-                        orgValue: orgValue
+                        resolve({
+                            orgValue: orgValue,
+                        });
                     });
-                })
-            });
+                });
         });
     }
 
@@ -214,75 +230,74 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
     private initColumnSetting() {
         const colSetting = [
             {
-                title: 'IdTranslateLabelText',
-                data: 'IdTranslateLabelText',
+                title: "IdTranslateLabelText",
+                data: "IdTranslateLabelText",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'IdRepLanguage',
-                data: 'IdRepLanguage',
+                title: "IdRepLanguage",
+                data: "IdRepLanguage",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Mode',
-                data: 'Mode',
+                title: "Mode",
+                data: "Mode",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Language Name',
-                data: 'LanguageName',
+                title: "Language Name",
+                data: "LanguageName",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Readonly: '1',
-                                AutoSize: '1'
-                            }
-                        }
-                    ]
-                }
+                                Readonly: "1",
+                                AutoSize: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Translate Text',
-                data: 'TranslateText',
+                title: "Translate Text",
+                data: "TranslateText",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
-                            DisplayField: {
-                            }
-                        }
-                    ]
-                }
-            }
+                            DisplayField: {},
+                        },
+                    ],
+                },
+            },
         ];
         return colSetting;
     }
@@ -305,20 +320,41 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
         //let widgetCloneID = this.widgetDetail.id;
         //let widgetMainID = '' + this.widgetDetail.idRepWidgetApp;
         if (originalValue) {
-            this.globalSettingService.getTranslateLabelText(originalValue, '', '', this.translateDataType + '', this.idArticle, this.originalField, this.tableName).subscribe(
-                (response) => {
+            this.globalSettingService
+                .getTranslateLabelText(
+                    originalValue,
+                    "",
+                    "",
+                    this.translateDataType + "",
+                    this.idArticle,
+                    this.originalField,
+                    this.tableName
+                )
+                .subscribe((response) => {
                     this.appErrorHandler.executeAction(() => {
-                        if (response && response.data && response.data.length >= 1) {
+                        if (
+                            response &&
+                            response.data &&
+                            response.data.length >= 1
+                        ) {
                             const dataIndex = 1;
                             if (response.data[dataIndex]) {
-                                this.gridData = this.initData(response.data[dataIndex]);
+                                this.gridData = this.initData(
+                                    response.data[dataIndex]
+                                );
                             }
-                            const hasTranslatedTextModeWidgetOnly = !isNil(this.gridDataModeWidgetOnly.data.find((item) =>
-                                !isNil(item.IdTranslateLabelText) &&
-                                item.IdTranslateLabelText > 0));
+                            const hasTranslatedTextModeWidgetOnly = !isNil(
+                                this.gridDataModeWidgetOnly.data.find(
+                                    (item) =>
+                                        !isNil(item.IdTranslateLabelText) &&
+                                        item.IdTranslateLabelText > 0
+                                )
+                            );
                             if (hasTranslatedTextModeWidgetOnly) {
                                 this.applyFor = TranslateModeEnum.WidgetOnly;
-                                this.gridData = cloneDeep(this.gridDataModeWidgetOnly);
+                                this.gridData = cloneDeep(
+                                    this.gridDataModeWidgetOnly
+                                );
                             } else {
                                 this.applyFor = TranslateModeEnum.All;
                                 this.gridData = cloneDeep(this.gridDataModeAll);
@@ -329,9 +365,8 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
                             }
                         }
                     });
-                })
-        }
-        else {
+                });
+        } else {
             this.resetGridData();
         }
     }
@@ -350,10 +385,9 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
         if (!this.gridData) {
             this.gridData = {
                 data: [],
-                columns: this.initColumnSetting()
-            }
-        }
-        else {
+                columns: this.initColumnSetting(),
+            };
+        } else {
             this.gridData.data = [];
         }
     }
@@ -368,12 +402,18 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
         (data as Array<any>).forEach((item) => {
             let allTranslateText = item.AllTranslateText;
             let onlyThisWidgetTranslateText = item.OnlyThisWidgetTranslateText;
-            if (this.translatedDataGrid && this.translatedDataGrid.data &&
-                this.translatedDataGrid.data.length) {
-                const translatedItem = this.translatedDataGrid.data.find(p => p.IdRepLanguage == item.IdRepLanguage);
+            if (
+                this.translatedDataGrid &&
+                this.translatedDataGrid.data &&
+                this.translatedDataGrid.data.length
+            ) {
+                const translatedItem = this.translatedDataGrid.data.find(
+                    (p) => p.IdRepLanguage == item.IdRepLanguage
+                );
                 if (translatedItem) {
                     allTranslateText = translatedItem.ArticleNameShort;
-                    onlyThisWidgetTranslateText = translatedItem.ArticleNameShort;
+                    onlyThisWidgetTranslateText =
+                        translatedItem.ArticleNameShort;
                 }
             }
             this.gridDataModeAll.data.push({
@@ -381,20 +421,24 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
                 IdRepLanguage: item.IdRepLanguage,
                 LanguageName: item.DefaultValue,
                 TranslateText: allTranslateText,
-                Mode: TranslateModeEnum.All
+                Mode: TranslateModeEnum.All,
             });
             this.gridDataModeWidgetOnly.data.push({
                 IdTranslateLabelText: item.OnlyThisWidgetIdTranslateLabelText,
                 IdRepLanguage: item.IdRepLanguage,
                 LanguageName: item.DefaultValue,
                 TranslateText: onlyThisWidgetTranslateText,
-                Mode: TranslateModeEnum.WidgetOnly
+                Mode: TranslateModeEnum.WidgetOnly,
             });
         });
         const cols = this.initColumnSetting();
         this.gridDataModeAll.columns = cols;
         this.gridDataModeWidgetOnly.columns = cols;
-        return cloneDeep(this.applyFor === TranslateModeEnum.All ? this.gridDataModeAll : this.gridDataModeWidgetOnly);
+        return cloneDeep(
+            this.applyFor === TranslateModeEnum.All
+                ? this.gridDataModeAll
+                : this.gridDataModeWidgetOnly
+        );
     }
 
     /**
@@ -456,7 +500,9 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
      */
     private prepareDataForSaving(): any {
         const result = [];
-        const items: Array<any> = this.wijmoGridComponent && this.wijmoGridComponent.flex.itemsSource.itemsEdited;
+        const items: Array<any> =
+            this.wijmoGridComponent &&
+            this.wijmoGridComponent.flex.itemsSource.itemsEdited;
         let editData = cloneDeep(items);
         (editData as Array<any>).forEach((item) => {
             const isDeleted = isEmpty(item.TranslateText);
@@ -467,22 +513,25 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
                 const originalValue = this.originalValue;
                 let idTable = this.idArticle;
                 result.push({
-                    'IdTranslateLabelText': item.IdTranslateLabelText > 0 ? item.IdTranslateLabelText : null,
-                    'IdRepTranslateModuleType': this.translateDataType,
-                    'IdRepLanguage': item.IdRepLanguage,
-                    'WidgetMainID': null,
-                    'WidgetCloneID': null,
-                    'OriginalText': originalValue,
-                    'TranslatedText': item.TranslateText,
-                    'IsDeleted': isDeleted ? '1' : null,
-                    'IdTable': idTable,
-                    'FieldName': this.originalField,
-                    'TableName': this.tableName
+                    IdTranslateLabelText:
+                        item.IdTranslateLabelText > 0
+                            ? item.IdTranslateLabelText
+                            : null,
+                    IdRepTranslateModuleType: this.translateDataType,
+                    IdRepLanguage: item.IdRepLanguage,
+                    WidgetMainID: null,
+                    WidgetCloneID: null,
+                    OriginalText: originalValue,
+                    TranslatedText: item.TranslateText,
+                    IsDeleted: isDeleted ? "1" : null,
+                    IdTable: idTable,
+                    FieldName: this.originalField,
+                    TableName: this.tableName,
                 });
             }
         });
 
-        return { 'Translations': result };
+        return { Translations: result };
     }
 
     /**
@@ -490,7 +539,11 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
      */
     public submit(callback?: any) {
         const saveData = this.prepareDataForSaving();
-        if (!saveData || !saveData.Translations || !saveData.Translations.length) {
+        if (
+            !saveData ||
+            !saveData.Translations ||
+            !saveData.Translations.length
+        ) {
             this.isTableEdited = false;
             this.editMode = false;
             if (callback) {
@@ -498,18 +551,18 @@ export class WidgetArticleTranslationComponent extends BaseComponent implements 
             }
             return;
         }
-        this.globalSettingService.saveTranslateLabelText(saveData).subscribe(
-            (response) => {
+        this.globalSettingService
+            .saveTranslateLabelText(saveData)
+            .subscribe((response) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (response && response.eventType === 'Successfully') {
+                    if (response && response.eventType === "Successfully") {
                         this.saveSuccessCallBack();
                         if (callback) {
                             callback();
                         }
                     }
                 });
-            }
-        );
+            });
     }
 
     /**

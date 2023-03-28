@@ -1,7 +1,7 @@
-import { NgModule, Optional, SkipSelf } from '@angular/core';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-import { reducers } from './store';
+import { NgModule, Optional, SkipSelf } from "@angular/core";
+import { EffectsModule } from "@ngrx/effects";
+import { StoreModule } from "@ngrx/store";
+import { reducers } from "./store";
 import {
     AdditionalInformationActions,
     ModuleActions,
@@ -25,8 +25,8 @@ import {
     ModalActions,
     LayoutSettingActions,
     FilterActions,
-    GlobalSearchActions
-} from './store/actions';
+    GlobalSearchActions,
+} from "./store/actions";
 import {
     MainModuleEffects,
     TabSummaryEffects,
@@ -35,15 +35,12 @@ import {
     ModuleSettingEffects,
     XnCommonEffects,
     HotkeySettingEffects,
-    GlobalSearchEffects
-} from './effects';
+    GlobalSearchEffects,
+} from "./effects";
 
 @NgModule({
-    imports: [
-        StoreModule.forRoot(reducers)
-    ],
-    declarations: [
-    ],
+    imports: [StoreModule.forRoot(reducers)],
+    declarations: [],
     providers: [
         AdditionalInformationActions,
         ModuleActions,
@@ -67,10 +64,9 @@ import {
         ModalActions,
         LayoutSettingActions,
         FilterActions,
-        GlobalSearchActions
-    ]
+        GlobalSearchActions,
+    ],
 })
 export class StateManagementModule {
-    constructor(@Optional() @SkipSelf() parentModule: StateManagementModule) {
-    }
+    constructor(@Optional() @SkipSelf() parentModule: StateManagementModule) {}
 }

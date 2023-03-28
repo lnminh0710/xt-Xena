@@ -1,1 +1,1 @@
-export { WfFieldComponent } from './wf-field.component';
+export { WfFieldComponent } from "./wf-field.component";

@@ -1,15 +1,9 @@
-import {
-    FileLikeObject
-} from './file-like-object.class';
-import {
-    FileItem
-} from './file-item.class';
-import {
-    FileType
-} from './file-type.class';
+import { FileLikeObject } from "./file-like-object.class";
+import { FileItem } from "./file-item.class";
+import { FileType } from "./file-type.class";
 
 function isFile(value: any): boolean {
-    return (File && value instanceof File);
+    return File && value instanceof File;
 }
 export interface Headers {
     name: string;
@@ -17,21 +11,21 @@ export interface Headers {
 }
 
 export interface ParsedResponseHeaders {
-    [headerFieldName: string]: string
+    [headerFieldName: string]: string;
 }
 
 export interface FilterFunction {
-    name: string,
-    fn: (item?: FileLikeObject, options?: FileUploaderOptions) => boolean
+    name: string;
+    fn: (item?: FileLikeObject, options?: FileUploaderOptions) => boolean;
 }
 
 export interface FileUploaderOptions {
-    allowedMimeType?: Array < string > ;
-    allowedFileType?: Array < string > ;
+    allowedMimeType?: Array<string>;
+    allowedFileType?: Array<string>;
     autoUpload?: boolean;
     isHTML5?: boolean;
-    filters?: Array < FilterFunction > ;
-    headers?: Array < Headers > ;
+    filters?: Array<FilterFunction>;
+    headers?: Array<Headers>;
     method?: string;
     authToken?: string;
     maxFileSize?: number;
@@ -42,17 +36,16 @@ export interface FileUploaderOptions {
     itemAlias?: string;
     authTokenHeader?: string;
     additionalParameter?: {
-        [key: string]: any
+        [key: string]: any;
     };
     // If true, only read data from client without uploading.
     readDataMode?: boolean;
 }
 
 export class FileUploader {
-
     public authToken: string;
     public isUploading = false;
-    public queue: Array < FileItem > = [];
+    public queue: Array<FileItem> = [];
     public progress = 0;
     public _nextIndex = 0;
     public autoUpload: any;
@@ -64,7 +57,7 @@ export class FileUploader {
         filters: [],
         removeAfterUpload: false,
         disableMultipart: false,
-        readDataMode: false
+        readDataMode: false,
     };
 
     protected _failFilterIndex: number;
@@ -77,31 +70,31 @@ export class FileUploader {
         this.options = Object.assign(this.options, options);
 
         this.authToken = options.authToken;
-        this.authTokenHeader = options.authTokenHeader || 'Authorization';
+        this.authTokenHeader = options.authTokenHeader || "Authorization";
         this.autoUpload = options.autoUpload;
         this.options.filters.unshift({
-            name: 'queueLimit',
-            fn: this._queueLimitFilter
+            name: "queueLimit",
+            fn: this._queueLimitFilter,
         });
 
         if (this.options.maxFileSize) {
             this.options.filters.unshift({
-                name: 'fileSize',
-                fn: this._fileSizeFilter
+                name: "fileSize",
+                fn: this._fileSizeFilter,
             });
         }
 
         if (this.options.allowedFileType) {
             this.options.filters.unshift({
-                name: 'fileType',
-                fn: this._fileTypeFilter
+                name: "fileType",
+                fn: this._fileTypeFilter,
             });
         }
 
         if (this.options.allowedMimeType) {
             this.options.filters.unshift({
-                name: 'mimeType',
-                fn: this._mimeTypeFilter
+                name: "mimeType",
+                fn: this._mimeTypeFilter,
             });
         }
 
@@ -110,7 +103,11 @@ export class FileUploader {
         }
     }
 
-    public addToQueue(files: File[], options?: FileUploaderOptions, filters?: FilterFunction[] | string): void {
+    public addToQueue(
+        files: File[],
+        options?: FileUploaderOptions,
+        filters?: FilterFunction[] | string
+    ): void {
         const list: File[] = [];
         for (const file of files) {
             list.push(file);
@@ -178,7 +175,9 @@ export class FileUploader {
         if (this.options.readDataMode) {
             this.readDataFile(item);
         } else {
-            const transport = this.options.isHTML5 ? '_xhrTransport' : '_iframeTransport';
+            const transport = this.options.isHTML5
+                ? "_xhrTransport"
+                : "_iframeTransport";
             (this as any)[transport](item);
         }
     }
@@ -193,7 +192,9 @@ export class FileUploader {
     }
 
     public uploadAll(): void {
-        const items = this.getNotUploadedItems().filter((item: FileItem) => !item.isUploading);
+        const items = this.getNotUploadedItems().filter(
+            (item: FileItem) => !item.isUploading
+        );
         if (!items.length) {
             return;
         }
@@ -215,16 +216,16 @@ export class FileUploader {
     }
 
     public getIndexOfItem(value: any): number {
-        return typeof value === 'number' ? value : this.queue.indexOf(value);
+        return typeof value === "number" ? value : this.queue.indexOf(value);
     }
 
-    public getNotUploadedItems(): Array < any > {
+    public getNotUploadedItems(): Array<any> {
         return this.queue.filter((item: FileItem) => !item.isUploaded);
     }
 
-    public getReadyItems(): Array < any > {
+    public getReadyItems(): Array<any> {
         return this.queue
-            .filter((item: FileItem) => (item.isReady && !item.isUploading))
+            .filter((item: FileItem) => item.isReady && !item.isUploading)
             .sort((item1: any, item2: any) => item1.index - item2.index);
     }
 
@@ -239,83 +240,107 @@ export class FileUploader {
 
     public onAfterAddingAll(fileItems: any): any {
         return {
-            fileItems
+            fileItems,
         };
     }
 
     public onBuildItemForm(fileItem: FileItem, form: any): any {
         return {
             fileItem,
-            form
+            form,
         };
     }
 
     public onAfterAddingFile(fileItem: FileItem): any {
         return {
-            fileItem
+            fileItem,
         };
     }
 
-    public onWhenAddingFileFailed(item: FileLikeObject, filter: any, options: any): any {
+    public onWhenAddingFileFailed(
+        item: FileLikeObject,
+        filter: any,
+        options: any
+    ): any {
         return {
             item,
             filter,
-            options
+            options,
         };
     }
 
     public onBeforeUploadItem(fileItem: FileItem): any {
         return {
-            fileItem
+            fileItem,
         };
     }
 
     public onProgressItem(fileItem: FileItem, progress: any): any {
         return {
             fileItem,
-            progress
+            progress,
         };
     }
 
     public onProgressAll(progress: any): any {
         return {
-            progress
+            progress,
         };
     }
 
-    public onSuccessItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+    public onSuccessItem(
+        item: FileItem,
+        response: string,
+        status: number,
+        headers: ParsedResponseHeaders
+    ): any {
         return {
             item,
             response,
             status,
-            headers
+            headers,
         };
     }
 
-    public onErrorItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+    public onErrorItem(
+        item: FileItem,
+        response: string,
+        status: number,
+        headers: ParsedResponseHeaders
+    ): any {
         return {
             item,
             response,
             status,
-            headers
+            headers,
         };
     }
 
-    public onCancelItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+    public onCancelItem(
+        item: FileItem,
+        response: string,
+        status: number,
+        headers: ParsedResponseHeaders
+    ): any {
         return {
             item,
             response,
             status,
-            headers
+            headers,
         };
     }
 
-    public onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+    public onCompleteItem(
+        item: FileItem,
+        response: string,
+        status: number,
+        headers: ParsedResponseHeaders
+    ): any {
         return {
             item,
             response,
             status,
-            headers
+            headers,
         };
     }
 
@@ -324,24 +349,43 @@ export class FileUploader {
     }
 
     public _mimeTypeFilter(item: FileLikeObject): boolean {
-        return !(this.options.allowedMimeType && this.options.allowedMimeType.indexOf(item.type) === -1);
+        return !(
+            this.options.allowedMimeType &&
+            this.options.allowedMimeType.indexOf(item.type) === -1
+        );
     }
 
     public _fileSizeFilter(item: FileLikeObject): boolean {
-        return !(this.options.maxFileSize && item.size > this.options.maxFileSize);
+        return !(
+            this.options.maxFileSize && item.size > this.options.maxFileSize
+        );
     }
 
     public _fileTypeFilter(item: FileLikeObject): boolean {
-        return !(this.options.allowedFileType &&
-            this.options.allowedFileType.indexOf(FileType.getMimeClass(item)) === -1);
+        return !(
+            this.options.allowedFileType &&
+            this.options.allowedFileType.indexOf(
+                FileType.getMimeClass(item)
+            ) === -1
+        );
     }
 
-    public _onErrorItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
+    public _onErrorItem(
+        item: FileItem,
+        response: string,
+        status: number,
+        headers: ParsedResponseHeaders
+    ): void {
         item._onError(response, status, headers);
         this.onErrorItem(item, response, status, headers);
     }
 
-    public _onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
+    public _onCompleteItem(
+        item: FileItem,
+        response: string,
+        status: number,
+        headers: ParsedResponseHeaders
+    ): void {
         item._onComplete(response, status, headers);
         this.onCompleteItem(item, response, status, headers);
         const nextItem = this.getReadyItems()[0];
@@ -371,10 +415,10 @@ export class FileUploader {
             const response = reader.result;
             this._onSuccessItem(item, response, 200, null);
             this._onCompleteItem(item, response, 200, null);
-        }
+        };
 
         const mimeType = FileType.getMimeClass(item._file);
-        if (mimeType == 'text') {
+        if (mimeType == "text") {
             reader.readAsText(item._file);
         } else {
             reader.readAsBinaryString(item._file);
@@ -382,7 +426,7 @@ export class FileUploader {
     }
 
     protected _xhrTransport(item: FileItem): any {
-        const xhr = item._xhr = new XMLHttpRequest();
+        const xhr = (item._xhr = new XMLHttpRequest());
         let sendable: any;
         this._onBeforeUploadItem(item);
         // todo
@@ -391,8 +435,8 @@ export class FileUploader {
          form.append(key, value);
          });
          });*/
-        if (typeof item._file.size !== 'number') {
-            throw new TypeError('The file specified is no longer valid');
+        if (typeof item._file.size !== "number") {
+            throw new TypeError("The file specified is no longer valid");
         }
         if (!this.options.disableMultipart) {
             sendable = new FormData();
@@ -401,23 +445,30 @@ export class FileUploader {
             sendable.append(item.alias, item._file, item.file.name);
 
             if (this.options.additionalParameter !== undefined) {
-                Object.keys(this.options.additionalParameter).forEach((key: string) => {
-                    sendable.append(key, this.options.additionalParameter[key]);
-                });
+                Object.keys(this.options.additionalParameter).forEach(
+                    (key: string) => {
+                        sendable.append(
+                            key,
+                            this.options.additionalParameter[key]
+                        );
+                    }
+                );
             }
         } else {
             sendable = item._file;
         }
 
         xhr.upload.onprogress = (event: any) => {
-            const progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+            const progress = Math.round(
+                event.lengthComputable ? (event.loaded * 100) / event.total : 0
+            );
             this._onProgressItem(item, progress);
         };
         xhr.onload = () => {
             const headers = this._parseHeaders(xhr.getAllResponseHeaders());
             const response = this._transformResponse(xhr.response, headers);
-            const gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
-            const method = '_on' + gist + 'Item';
+            const gist = this._isSuccessCode(xhr.status) ? "Success" : "Error";
+            const method = "_on" + gist + "Item";
             (this as any)[method](item, response, xhr.status, headers);
             this._onCompleteItem(item, response, xhr.status, headers);
         };
@@ -457,23 +508,28 @@ export class FileUploader {
             return value;
         }
         const notUploaded = this.getNotUploadedItems().length;
-        const uploaded = notUploaded ? this.queue.length - notUploaded : this.queue.length;
+        const uploaded = notUploaded
+            ? this.queue.length - notUploaded
+            : this.queue.length;
         const ratio = 100 / this.queue.length;
-        const current = value * ratio / 100;
+        const current = (value * ratio) / 100;
         return Math.round(uploaded * ratio + current);
     }
 
-    protected _getFilters(filters: FilterFunction[] | string): FilterFunction[] {
+    protected _getFilters(
+        filters: FilterFunction[] | string
+    ): FilterFunction[] {
         if (!filters) {
             return this.options.filters;
         }
         if (Array.isArray(filters)) {
             return filters;
         }
-        if (typeof filters === 'string') {
+        if (typeof filters === "string") {
             const names = filters.match(/[^\s,]+/g);
-            return this.options.filters
-                .filter((filter: any) => names.indexOf(filter.name) !== -1);
+            return this.options.filters.filter(
+                (filter: any) => names.indexOf(filter.name) !== -1
+            );
         }
         return this.options.filters;
     }
@@ -483,15 +539,24 @@ export class FileUploader {
     }
 
     protected _queueLimitFilter(): boolean {
-        return this.options.queueLimit === undefined || this.queue.length < this.options.queueLimit;
+        return (
+            this.options.queueLimit === undefined ||
+            this.queue.length < this.options.queueLimit
+        );
     }
 
-    protected _isValidFile(file: FileLikeObject, filters: FilterFunction[], options: FileUploaderOptions): boolean {
+    protected _isValidFile(
+        file: FileLikeObject,
+        filters: FilterFunction[],
+        options: FileUploaderOptions
+    ): boolean {
         this._failFilterIndex = -1;
-        return !filters.length ? true : filters.every((filter: FilterFunction) => {
-            this._failFilterIndex++;
-            return filter.fn.call(this, file, options);
-        });
+        return !filters.length
+            ? true
+            : filters.every((filter: FilterFunction) => {
+                  this._failFilterIndex++;
+                  return filter.fn.call(this, file, options);
+              });
     }
 
     protected _isSuccessCode(status: number): boolean {
@@ -499,7 +564,10 @@ export class FileUploader {
     }
 
     /* tslint: disable */
-    protected _transformResponse(response: string, headers: ParsedResponseHeaders): string {
+    protected _transformResponse(
+        response: string,
+        headers: ParsedResponseHeaders
+    ): string {
         // todo:  ?
         /*var headersGetter = this._headersGetter(headers);
          forEach($http.defaults.transformResponse, (transformFn) => {
@@ -517,12 +585,12 @@ export class FileUploader {
         if (!headers) {
             return parsed;
         }
-        headers.split('\n').map((line: any) => {
-            i = line.indexOf(': ');
+        headers.split("\n").map((line: any) => {
+            i = line.indexOf(": ");
             key = line.slice(0, i).trim().toLowerCase();
             val = line.slice(i + 1).trim();
             if (key) {
-                parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+                parsed[key] = parsed[key] ? parsed[key] + ", " + val : val;
             }
         });
         return parsed;
@@ -532,7 +600,11 @@ export class FileUploader {
      // todo:  implement it later
      }*/
 
-    protected _onWhenAddingFileFailed(item: FileLikeObject, filter: any, options: any): void {
+    protected _onWhenAddingFileFailed(
+        item: FileLikeObject,
+        filter: any,
+        options: any
+    ): void {
         this.onWhenAddingFileFailed(item, filter, options);
     }
 
@@ -564,13 +636,23 @@ export class FileUploader {
     }
 
     /* tslint: disable */
-    protected _onSuccessItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
+    protected _onSuccessItem(
+        item: FileItem,
+        response: string,
+        status: number,
+        headers: ParsedResponseHeaders
+    ): void {
         item._onSuccess(response, status, headers);
         this.onSuccessItem(item, response, status, headers);
     }
 
     /* tslint: enable */
-    protected _onCancelItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
+    protected _onCancelItem(
+        item: FileItem,
+        response: string,
+        status: number,
+        headers: ParsedResponseHeaders
+    ): void {
         item._onCancel(response, status, headers);
         this.onCancelItem(item, response, status, headers);
     }

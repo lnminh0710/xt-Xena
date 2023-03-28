@@ -1,10 +1,27 @@
 export declare class ControlMetaFactory {
-    static CreateProp(propertyName: string, propertyType: PropertyType, changeEvent?: string, enumType?: any, isNativeControlProperty?: boolean, priority?: number): PropDescBase;
-    static CreateEvent(eventName: string, isPropChanged?: boolean): EventDescBase;
-    static CreateComplexProp(propertyName: string, isArray: boolean, ownsObject?: boolean): ComplexPropDescBase;
+    static CreateProp(
+        propertyName: string,
+        propertyType: PropertyType,
+        changeEvent?: string,
+        enumType?: any,
+        isNativeControlProperty?: boolean,
+        priority?: number
+    ): PropDescBase;
+    static CreateEvent(
+        eventName: string,
+        isPropChanged?: boolean
+    ): EventDescBase;
+    static CreateComplexProp(
+        propertyName: string,
+        isArray: boolean,
+        ownsObject?: boolean
+    ): ComplexPropDescBase;
     static findProp(propName: string, props: PropDescBase[]): PropDescBase;
     static findEvent(eventName: string, events: EventDescBase[]): EventDescBase;
-    static findComplexProp(propName: string, props: ComplexPropDescBase[]): ComplexPropDescBase;
+    static findComplexProp(
+        propName: string,
+        props: ComplexPropDescBase[]
+    ): ComplexPropDescBase;
     static getMetaData(metaDataId: any): MetaDataBase;
     static getClassName(classRef: any): string;
     static toCamelCase(s: any): any;
@@ -17,7 +34,14 @@ export declare class PropDescBase {
     private _enumType;
     private _isNativeControlProperty;
     private _priority;
-    constructor(propertyName: string, propertyType: PropertyType, changeEvent?: string, enumType?: any, isNativeControlProperty?: boolean, priority?: number);
+    constructor(
+        propertyName: string,
+        propertyType: PropertyType,
+        changeEvent?: string,
+        enumType?: any,
+        isNativeControlProperty?: boolean,
+        priority?: number
+    );
     readonly propertyName: string;
     readonly propertyType: PropertyType;
     readonly changeEvent: string;
@@ -69,11 +93,29 @@ export declare class MetaDataBase {
     ownsObject: boolean;
     parentReferenceProperty: string;
     ngModelProperty: string;
-    constructor(props: PropDescBase[], events?: EventDescBase[], complexProps?: ComplexPropDescBase[], parentProperty?: string, isParentPropertyArray?: boolean, ownsObject?: boolean, parentReferenceProperty?: string, ngModelProperty?: string);
+    constructor(
+        props: PropDescBase[],
+        events?: EventDescBase[],
+        complexProps?: ComplexPropDescBase[],
+        parentProperty?: string,
+        isParentPropertyArray?: boolean,
+        ownsObject?: boolean,
+        parentReferenceProperty?: string,
+        ngModelProperty?: string
+    );
     props: PropDescBase[];
     events: EventDescBase[];
     complexProps: ComplexPropDescBase[];
-    add(props: PropDescBase[], events?: EventDescBase[], complexProps?: ComplexPropDescBase[], parentProperty?: string, isParentPropertyArray?: boolean, ownsObject?: boolean, parentReferenceProperty?: string, ngModelProperty?: string): MetaDataBase;
+    add(
+        props: PropDescBase[],
+        events?: EventDescBase[],
+        complexProps?: ComplexPropDescBase[],
+        parentProperty?: string,
+        isParentPropertyArray?: boolean,
+        ownsObject?: boolean,
+        parentReferenceProperty?: string,
+        ngModelProperty?: string
+    ): MetaDataBase;
     addOptions(options: any): this;
     prepare(): void;
 }

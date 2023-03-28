@@ -1,1 +1,1 @@
-export * from './scan-item-comment.component';
+export * from "./scan-item-comment.component";

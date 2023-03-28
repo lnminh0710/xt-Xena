@@ -4,35 +4,28 @@ import {
     Input,
     Output,
     OnDestroy,
-    EventEmitter
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    ModalService
-} from 'app/services';
-import { ResizeEvent } from 'angular-resizable-element';
+    EventEmitter,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { ModalService } from "app/services";
+import { ResizeEvent } from "angular-resizable-element";
 import { DragulaService } from "ng2-dragula";
-import {
-    MessageModal
-} from 'app/app.constants';
-import {
-    MessageModel
-} from 'app/models';
+import { MessageModal } from "app/app.constants";
+import { MessageModel } from "app/models";
 
 @Component({
-    selector: 'wf-line-break',
-    styleUrls: ['./wf-line-break.component.scss'],
-    templateUrl: './wf-line-break.component.html',
+    selector: "wf-line-break",
+    styleUrls: ["./wf-line-break.component.scss"],
+    templateUrl: "./wf-line-break.component.html",
     host: {
-        '(mousedown)': 'mouseDownEventHandler($event)'
-    }
+        "(mousedown)": "mouseDownEventHandler($event)",
+    },
 })
-export class WfLineBreakComponent extends BaseComponent implements OnInit, OnDestroy {
+export class WfLineBreakComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     @Input() isEditingLayout = false;
     @Input() lineBreak: any;
     @Input() isControlPressing = false;
@@ -52,27 +45,33 @@ export class WfLineBreakComponent extends BaseComponent implements OnInit, OnDes
     constructor(
         private modalService: ModalService,
         private dragulaService: DragulaService,
-        router ?: Router) {
+        router?: Router
+    ) {
         super(router);
     }
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     public onDelete() {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Delete Line Break',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_This_Line_Break'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.onDeleteAction.emit(this.lineBreak);
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Delete Line Break",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Delete_This_Line_Break",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.onDeleteAction.emit(this.lineBreak);
+                },
+            })
+        );
     }
 
     public onToggleHandler($event) {
@@ -123,7 +122,9 @@ export class WfLineBreakComponent extends BaseComponent implements OnInit, OnDes
         if (this.isSettingDialog || this.isDuplicatedDialogForm) return;
         this.lineBreak.isResizing = false;
         if (this.isJustDragged) return;
-        this.lineBreak.height = this.getHeightAfterResize(event.rectangle.height);
+        this.lineBreak.height = this.getHeightAfterResize(
+            event.rectangle.height
+        );
         this.onLineBreakResizeEndAction.emit();
     }
 
@@ -133,9 +134,10 @@ export class WfLineBreakComponent extends BaseComponent implements OnInit, OnDes
     private minLineBreakHeight = 20;
     private maxLineBreakHeight = 250;
 
-    private getHeightAfterResize(elementHeight: number)  {
-        return elementHeight < this.minLineBreakHeight ? this.minLineBreakHeight
-                // : elementHeight > this.maxLineBreakHeight ? this.maxLineBreakHeight
-                : elementHeight;
+    private getHeightAfterResize(elementHeight: number) {
+        return elementHeight < this.minLineBreakHeight
+            ? this.minLineBreakHeight
+            : // : elementHeight > this.maxLineBreakHeight ? this.maxLineBreakHeight
+              elementHeight;
     }
 }

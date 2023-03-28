@@ -1,1 +1,1 @@
-export * from './range-control.component';
+export * from "./range-control.component";

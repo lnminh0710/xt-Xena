@@ -1,38 +1,47 @@
-import { Component, OnInit, OnDestroy,
-    ViewChild,
-    HostListener } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { ModuleActions, ParkedItemActions,
-    ModuleSettingActions, PropertyPanelActions} from 'app/state-management/store/actions';
-import { Observable, Subscription } from 'rxjs/Rx';
-import { LocalStorageKey, ModuleType, GlobalSettingConstant } from 'app/app.constants';
-import { AdvanceSearchBuilderComponent } from 'app/shared/components/advance-search-builder';
-import { AdvanceSearchProfileComponent } from 'app/shared/components/advance-search-profile';
-import { ActivatedRoute } from '@angular/router';
 import {
-    GlobalSettingModel,
-    WidgetPropertyModel,
-    User
-} from 'app/models';
+    Component,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    HostListener,
+} from "@angular/core";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import {
+    ModuleActions,
+    ParkedItemActions,
+    ModuleSettingActions,
+    PropertyPanelActions,
+} from "app/state-management/store/actions";
+import { Observable, Subscription } from "rxjs/Rx";
+import {
+    LocalStorageKey,
+    ModuleType,
+    GlobalSettingConstant,
+} from "app/app.constants";
+import { AdvanceSearchBuilderComponent } from "app/shared/components/advance-search-builder";
+import { AdvanceSearchProfileComponent } from "app/shared/components/advance-search-profile";
+import { ActivatedRoute } from "@angular/router";
+import { GlobalSettingModel, WidgetPropertyModel, User } from "app/models";
 import {
     UserService,
     AppErrorHandler,
     ModalService,
     ModuleSettingService,
     GlobalSettingService,
-    PropertyPanelService } from 'app/services';
-import {Uti} from 'app/utilities';
-import {ToasterConfig} from 'angular2-toaster';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { ModuleList } from 'app/pages/private/base';
+    PropertyPanelService,
+} from "app/services";
+import { Uti } from "app/utilities";
+import { ToasterConfig } from "angular2-toaster";
+import cloneDeep from "lodash-es/cloneDeep";
+import { ModuleList } from "app/pages/private/base";
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './advance-search.component.html',
-    styleUrls: ['./advance-search.component.scss'],
+    selector: "app-root",
+    templateUrl: "./advance-search.component.html",
+    styleUrls: ["./advance-search.component.scss"],
     host: {
-        '(window:resize)': 'resizeEventHandler($event)'
+        "(window:resize)": "resizeEventHandler($event)",
     },
 })
 export class AdvanceSearchComponent implements OnInit, OnDestroy {
@@ -45,7 +54,9 @@ export class AdvanceSearchComponent implements OnInit, OnDestroy {
 
     private orgGlobalProperties: any;
     private propertiesSettings: any;
-    private EMPTY_CONDITION = [{condition:'And', field:'',operator:'',value:''}];
+    private EMPTY_CONDITION = [
+        { condition: "And", field: "", operator: "", value: "" },
+    ];
     private paramSubscription: Subscription;
     private currentUser: User;
     private keyBuffer: any = [];
@@ -54,7 +65,7 @@ export class AdvanceSearchComponent implements OnInit, OnDestroy {
     private keyCombinate: any = [this.controlKeyNumber, this.fKeyNumber]; // alt + s
     private isDirty = false;
 
-    @HostListener('document:keydown.out-zone', ['$event'])
+    @HostListener("document:keydown.out-zone", ["$event"])
     onKeyDown($event) {
         this.pushIntoBuffer($event.keyCode);
         if (Uti.arraysEqual(this.keyCombinate, this.keyBuffer)) {
@@ -66,10 +77,13 @@ export class AdvanceSearchComponent implements OnInit, OnDestroy {
         }
     }
 
-    @ViewChild(AdvanceSearchBuilderComponent) advanceSearchBuilderComponent: AdvanceSearchBuilderComponent;
-    @ViewChild(AdvanceSearchProfileComponent) advanceSearchProfileComponent: AdvanceSearchProfileComponent;
+    @ViewChild(AdvanceSearchBuilderComponent)
+    advanceSearchBuilderComponent: AdvanceSearchBuilderComponent;
+    @ViewChild(AdvanceSearchProfileComponent)
+    advanceSearchProfileComponent: AdvanceSearchProfileComponent;
 
-    constructor(private store: Store<AppState>,
+    constructor(
+        private store: Store<AppState>,
         private _appErrorHandler: AppErrorHandler,
         private _userService: UserService,
         private _modalService: ModalService,
@@ -79,21 +93,24 @@ export class AdvanceSearchComponent implements OnInit, OnDestroy {
         private appErrorHandler: AppErrorHandler,
         private propertyPanelActions: PropertyPanelActions,
         private globalSettingConstant: GlobalSettingConstant,
-        private activatedRoute: ActivatedRoute) {
+        private activatedRoute: ActivatedRoute
+    ) {
         this.toastrConfig = new ToasterConfig({
             newestOnTop: true,
             showCloseButton: true,
             tapToDismiss: true,
             limit: 1,
-            positionClass: 'toast-top-center'
+            positionClass: "toast-top-center",
         });
     }
 
     public ngOnInit() {
-        $('#page-loading').remove();
-        this.paramSubscription = this.activatedRoute.queryParams.subscribe(params => {
-            this.moduleId = params['moduleId'];
-        });
+        $("#page-loading").remove();
+        this.paramSubscription = this.activatedRoute.queryParams.subscribe(
+            (params) => {
+                this.moduleId = params["moduleId"];
+            }
+        );
         this._userService.currentUser.subscribe((user: User) => {
             this._appErrorHandler.executeAction(() => {
                 this.currentUser = user;
@@ -116,34 +133,38 @@ export class AdvanceSearchComponent implements OnInit, OnDestroy {
         let formData = this.advanceSearchBuilderComponent.getData();
         if (formData && formData.length) {
             formData.forEach((formItem) => {
-                if (formItem.dataType === 'date') {
+                if (formItem.dataType === "date") {
                     formItem.value = Uti.parseDateToDBString(formItem.value);
                 }
             });
         }
 
-        localStorage.setItem(LocalStorageKey.buildKey(LocalStorageKey.LocalStorageGSFieldCondition, this.browserTabId), JSON.stringify({
-            moduleId: this.moduleId,
-            formData: formData,
-            timestamp: new Date().toTimeString(),
-            browserTabId: this.browserTabId
-        }));
+        localStorage.setItem(
+            LocalStorageKey.buildKey(
+                LocalStorageKey.LocalStorageGSFieldCondition,
+                this.browserTabId
+            ),
+            JSON.stringify({
+                moduleId: this.moduleId,
+                formData: formData,
+                timestamp: new Date().toTimeString(),
+                browserTabId: this.browserTabId,
+            })
+        );
     }
 
     public getProfileData(): any {
         return this.advanceSearchBuilderComponent.getData();
     }
 
-    public resizeEventHandler(event: any) {
-
-    }
+    public resizeEventHandler(event: any) {}
 
     public onClickNewSearch() {
         if (this.isDirty) {
             this._modalService.unsavedWarningMessageDefault({
-                headerText: 'Save Data',
+                headerText: "Save Data",
                 onModalSaveAndExit: this.saveAndExit.bind(this),
-                onModalExit: this.newSearch.bind(this)
+                onModalExit: this.newSearch.bind(this),
             });
             return;
         }
@@ -152,7 +173,7 @@ export class AdvanceSearchComponent implements OnInit, OnDestroy {
 
     public onExposeDataHandler(selectedProfile: any) {
         if (!selectedProfile) return;
-        this.formData = JSON.parse(selectedProfile.jsonSettings || '[]');
+        this.formData = JSON.parse(selectedProfile.jsonSettings || "[]");
         this.isDisableNewSearch = this.isDisableSearch = false;
         this.isDirty = false;
     }
@@ -189,10 +210,13 @@ export class AdvanceSearchComponent implements OnInit, OnDestroy {
 
     private timeoutKey: any;
     private pushIntoBuffer(keyCode) {
-        if (!this.keyBuffer ||
+        if (
+            !this.keyBuffer ||
             this.keyBuffer.indexOf(keyCode) > -1 ||
             this.keyCombinate.indexOf(keyCode) === -1 ||
-            (keyCode === this.fKeyNumber && this.keyBuffer.indexOf(this.controlKeyNumber) < 0))
+            (keyCode === this.fKeyNumber &&
+                this.keyBuffer.indexOf(this.controlKeyNumber) < 0)
+        )
             return;
         this.keyBuffer.push(keyCode);
         if (this.timeoutKey) {
@@ -205,40 +229,83 @@ export class AdvanceSearchComponent implements OnInit, OnDestroy {
     }
 
     private getGlobalPropertiesFromSetting() {
-        this.moduleSettingService.getModuleSetting(null, null, '-1', ModuleType.GLOBAL_PROPERTIES, '-1')
+        this.moduleSettingService
+            .getModuleSetting(
+                null,
+                null,
+                "-1",
+                ModuleType.GLOBAL_PROPERTIES,
+                "-1"
+            )
             .subscribe((response) => {
                 let globalPropsDefault: any;
                 if (Uti.isResquestSuccess(response) && response.item.length) {
-                    let jsonSettings = Uti.tryParseJson(response.item[0].jsonSettings);
-                    globalPropsDefault = !Uti.isEmptyObject(jsonSettings) ? jsonSettings : null;
+                    let jsonSettings = Uti.tryParseJson(
+                        response.item[0].jsonSettings
+                    );
+                    globalPropsDefault = !Uti.isEmptyObject(jsonSettings)
+                        ? jsonSettings
+                        : null;
                 }
-                this.globalSettingSer.getAllGlobalSettings().subscribe((data: any) => {
-                    this.appErrorHandler.executeAction(() => {
-                        this.properties = this.buildPropertiesFromGlobalSetting(data, globalPropsDefault);
-                        this.updateGlobalProperties();
+                this.globalSettingSer
+                    .getAllGlobalSettings()
+                    .subscribe((data: any) => {
+                        this.appErrorHandler.executeAction(() => {
+                            this.properties =
+                                this.buildPropertiesFromGlobalSetting(
+                                    data,
+                                    globalPropsDefault
+                                );
+                            this.updateGlobalProperties();
+                        });
                     });
-                });
             });
     }
 
     private updateGlobalProperties() {
         this.orgGlobalProperties = cloneDeep(this.properties);
         this.propertyPanelService.globalProperties = this.orgGlobalProperties;
-        this.store.dispatch(this.propertyPanelActions.requestUpdateGlobalProperty(this.properties, ModuleList.Base));
+        this.store.dispatch(
+            this.propertyPanelActions.requestUpdateGlobalProperty(
+                this.properties,
+                ModuleList.Base
+            )
+        );
     }
 
-    private buildPropertiesFromGlobalSetting(data: GlobalSettingModel[], defaultProperties?): any[] {
+    private buildPropertiesFromGlobalSetting(
+        data: GlobalSettingModel[],
+        defaultProperties?
+    ): any[] {
         if (!data)
-            return defaultProperties ? defaultProperties.properties : this.propertyPanelService.createDefaultGlobalSettings();
+            return defaultProperties
+                ? defaultProperties.properties
+                : this.propertyPanelService.createDefaultGlobalSettings();
 
-        this.propertiesSettings = data.find(x => x.globalName === this.globalSettingConstant.globalWidgetProperties);
-        if (!this.propertiesSettings || !this.propertiesSettings.idSettingsGlobal)
-            return defaultProperties ? defaultProperties.properties : this.propertyPanelService.createDefaultGlobalSettings();
+        this.propertiesSettings = data.find(
+            (x) =>
+                x.globalName ===
+                this.globalSettingConstant.globalWidgetProperties
+        );
+        if (
+            !this.propertiesSettings ||
+            !this.propertiesSettings.idSettingsGlobal
+        )
+            return defaultProperties
+                ? defaultProperties.properties
+                : this.propertyPanelService.createDefaultGlobalSettings();
 
-        const properties = JSON.parse(this.propertiesSettings.jsonSettings) as GlobalSettingModel[];
+        const properties = JSON.parse(
+            this.propertiesSettings.jsonSettings
+        ) as GlobalSettingModel[];
         if (!properties || !properties.length)
-            return defaultProperties ? defaultProperties.properties : this.propertyPanelService.createDefaultGlobalSettings();
+            return defaultProperties
+                ? defaultProperties.properties
+                : this.propertyPanelService.createDefaultGlobalSettings();
 
-        return this.propertyPanelService.mergeProperties(properties, defaultProperties).properties;
+        return this.propertyPanelService.mergeProperties(
+            properties,
+            defaultProperties
+        ).properties;
     }
 }

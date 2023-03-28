@@ -1,29 +1,54 @@
-<xn-tab-button [ngClass]="{'design-mode': isDesignMode}"></xn-tab-button>
+<xn-tab-button [ngClass]="{ 'design-mode': isDesignMode }"></xn-tab-button>
 
-<parked-item-list *ngIf="ofModuleLocal && ofModuleLocal.idSettingsGUI != -1"
-                  [module]="ofModuleLocal"></parked-item-list>
+<parked-item-list
+    *ngIf="ofModuleLocal && ofModuleLocal.idSettingsGUI != -1"
+    [module]="ofModuleLocal"
+></parked-item-list>
 
 <div class="dashboard-container">
-
     <ng-template [ngIf]="tabList.length">
-        <xn-tab *ngIf="ofModuleLocal && ofModuleLocal.idSettingsGUI != 7"
-                class="xn-tab--general"
-                [headerData]="tabList"
-                [tabSetting]="tabSetting"
-                [subTabSetting]="subTabSetting"
-                [newTabConfig]="newTabConfig"
-                [selectedEntity]="selectedEntity"></xn-tab>
+        <xn-tab
+            *ngIf="ofModuleLocal && ofModuleLocal.idSettingsGUI != 7"
+            class="xn-tab--general"
+            [headerData]="tabList"
+            [tabSetting]="tabSetting"
+            [subTabSetting]="subTabSetting"
+            [newTabConfig]="newTabConfig"
+            [selectedEntity]="selectedEntity"
+        ></xn-tab>
 
-        <order-data-entry-tab *ngIf="ofModuleLocal && ofModuleLocal.idSettingsGUI == 7"
-                              class="xn-tab--general"
-                              [tabSetting]="tabSetting"></order-data-entry-tab>
+        <order-data-entry-tab
+            *ngIf="ofModuleLocal && ofModuleLocal.idSettingsGUI == 7"
+            class="xn-tab--general"
+            [tabSetting]="tabSetting"
+        ></order-data-entry-tab>
     </ng-template>
 
-    <ng-template [ngIf]="(!tabList || !tabList.length) && ofModuleLocal && ofModuleLocal.idSettingsGUI != 7 && (ofModuleLocal.idSettingsGUI < 11 || ofModuleLocal.idSettingsGUI == 32 || ofModuleLocal.idSettingsGUI == 46 || isSelectionProject)">
-        <module-welcome [activeModule]="ofModuleLocal"
-                        [canSearch]="ofModuleLocal.idSettingsGUI < 7 || ofModuleLocal.idSettingsGUI == 32"
-                        [showParkedItem]="ofModuleLocal.idSettingsGUI != 5 && (ofModuleLocal.idSettingsGUI < 7 || ofModuleLocal.idSettingsGUI == 32 || (isSelectionProject && ofModuleLocal.idSettingsGUI != 9))"
-                        [subModules]="(subModulesState | async)"></module-welcome>
+    <ng-template
+        [ngIf]="
+            (!tabList || !tabList.length) &&
+            ofModuleLocal &&
+            ofModuleLocal.idSettingsGUI != 7 &&
+            (ofModuleLocal.idSettingsGUI < 11 ||
+                ofModuleLocal.idSettingsGUI == 32 ||
+                ofModuleLocal.idSettingsGUI == 46 ||
+                isSelectionProject)
+        "
+    >
+        <module-welcome
+            [activeModule]="ofModuleLocal"
+            [canSearch]="
+                ofModuleLocal.idSettingsGUI < 7 ||
+                ofModuleLocal.idSettingsGUI == 32
+            "
+            [showParkedItem]="
+                ofModuleLocal.idSettingsGUI != 5 &&
+                (ofModuleLocal.idSettingsGUI < 7 ||
+                    ofModuleLocal.idSettingsGUI == 32 ||
+                    (isSelectionProject && ofModuleLocal.idSettingsGUI != 9))
+            "
+            [subModules]="subModulesState | async"
+        ></module-welcome>
     </ng-template>
 </div>
 

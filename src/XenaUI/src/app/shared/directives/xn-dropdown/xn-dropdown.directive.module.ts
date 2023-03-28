@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { XnDropdownDirective } from './xn-dropdown.directive';
+import { NgModule } from "@angular/core";
+import { XnDropdownDirective } from "./xn-dropdown.directive";
 
 @NgModule({
     imports: [],
     declarations: [XnDropdownDirective],
     exports: [XnDropdownDirective],
-    providers: []
+    providers: [],
 })
-export class XnDropdownModule { }
+export class XnDropdownModule {}

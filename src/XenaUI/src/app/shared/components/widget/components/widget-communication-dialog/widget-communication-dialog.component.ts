@@ -1,23 +1,24 @@
 import {
-    Component, Input, Output,
-    EventEmitter, OnInit, OnDestroy
-} from '@angular/core';
-import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import {  AppErrorHandler } from 'app/services';
-import {
-    WidgetDetail,
-    LayoutPageInfoModel, WidgetType
-} from 'app/models';
-import { WidgetUtils } from '../../utils';
-import * as commonReducer from 'app/state-management/store/reducer/xn-common';
-import { BaseComponent } from 'app/pages/private/base';
-import { Uti } from 'app/utilities';
-import { WidgetDetailActions } from 'app/state-management/store/actions';
-import {ChartTypeNgx} from "../widget-chart";
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { AppErrorHandler } from "app/services";
+import { WidgetDetail, LayoutPageInfoModel, WidgetType } from "app/models";
+import { WidgetUtils } from "../../utils";
+import * as commonReducer from "app/state-management/store/reducer/xn-common";
+import { BaseComponent } from "app/pages/private/base";
+import { Uti } from "app/utilities";
+import { WidgetDetailActions } from "app/state-management/store/actions";
+import { ChartTypeNgx } from "../widget-chart";
 
 /**
  * IWidgetInfo
@@ -51,12 +52,14 @@ export interface ICommunicationWidget {
 }
 
 @Component({
-    selector: 'widget-communication-dialog',
-    styleUrls: ['./widget-communication-dialog.component.scss'],
-    templateUrl: './widget-communication-dialog.component.html'
+    selector: "widget-communication-dialog",
+    styleUrls: ["./widget-communication-dialog.component.scss"],
+    templateUrl: "./widget-communication-dialog.component.html",
 })
-export class WidgetCommunicationDialogComponent extends BaseComponent implements OnInit, OnDestroy {
-
+export class WidgetCommunicationDialogComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     @Input() communicationWidgetInfo: ICommunicationWidget;
     @Output() onSuccessLinkingWidget = new EventEmitter<WidgetDetail>();
 
@@ -79,7 +82,13 @@ export class WidgetCommunicationDialogComponent extends BaseComponent implements
         protected router: Router
     ) {
         super(router);
-        this.layoutPageInfoModelState = store.select(state => commonReducer.getCommonState(state, this.ofModule.moduleNameTrim).layoutPageInfo);
+        this.layoutPageInfoModelState = store.select(
+            (state) =>
+                commonReducer.getCommonState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).layoutPageInfo
+        );
     }
 
     /**
@@ -100,17 +109,26 @@ export class WidgetCommunicationDialogComponent extends BaseComponent implements
      * subscribe
      */
     public subscribe() {
-        this.layoutPageInfoModelStateSubscription = this.layoutPageInfoModelState.subscribe((layoutInfoState: LayoutPageInfoModel[]) => {
-            this.appErrorHandler.executeAction(() => {
-                this.layoutPageInfo = layoutInfoState;
-                if (this.layoutPageInfo && this.layoutPageInfo.length) {
-                    if (this.communicationWidgetInfo) {
-                        this.updateTitle(this.communicationWidgetInfo.sameTypeWidgetInfos);
-                        this.updateTitle(this.communicationWidgetInfo.relatingWidgetInfos);
-                    }
+        this.layoutPageInfoModelStateSubscription =
+            this.layoutPageInfoModelState.subscribe(
+                (layoutInfoState: LayoutPageInfoModel[]) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.layoutPageInfo = layoutInfoState;
+                        if (this.layoutPageInfo && this.layoutPageInfo.length) {
+                            if (this.communicationWidgetInfo) {
+                                this.updateTitle(
+                                    this.communicationWidgetInfo
+                                        .sameTypeWidgetInfos
+                                );
+                                this.updateTitle(
+                                    this.communicationWidgetInfo
+                                        .relatingWidgetInfos
+                                );
+                            }
+                        }
+                    });
                 }
-            });
-        });
+            );
     }
 
     /**
@@ -121,8 +139,14 @@ export class WidgetCommunicationDialogComponent extends BaseComponent implements
         if (widgetInfos && widgetInfos.length) {
             widgetInfos.forEach((widgetInfo: IWidgetInfo) => {
                 for (let i = 0; i < this.layoutPageInfo.length; i++) {
-                    if (this.layoutPageInfo[i] && this.layoutPageInfo[i].widgetboxesTitle && this.layoutPageInfo[i].widgetboxesTitle.length) {
-                        let widgetBox = this.layoutPageInfo[i].widgetboxesTitle.find(p => p.id == widgetInfo.id);
+                    if (
+                        this.layoutPageInfo[i] &&
+                        this.layoutPageInfo[i].widgetboxesTitle &&
+                        this.layoutPageInfo[i].widgetboxesTitle.length
+                    ) {
+                        let widgetBox = this.layoutPageInfo[
+                            i
+                        ].widgetboxesTitle.find((p) => p.id == widgetInfo.id);
                         if (widgetBox) {
                             widgetInfo.title = widgetBox.title;
                             break;
@@ -140,21 +164,33 @@ export class WidgetCommunicationDialogComponent extends BaseComponent implements
     save() {
         let isConnected: boolean;
         if (this.parentSelectedEntry) {
-            this.widgetUtils.buildListenKeyConfigForWidgetDetail(this.communicationWidgetInfo.srcWidgetDetail, false);
-            this.communicationWidgetInfo.srcWidgetDetail.widgetDataType.parentWidgetIds = [this.parentSelectedEntry.id];
+            this.widgetUtils.buildListenKeyConfigForWidgetDetail(
+                this.communicationWidgetInfo.srcWidgetDetail,
+                false
+            );
+            this.communicationWidgetInfo.srcWidgetDetail.widgetDataType.parentWidgetIds =
+                [this.parentSelectedEntry.id];
             isConnected = true;
             const communicationWidget: ICommunicationWidget = {
                 srcWidgetDetail: this.communicationWidgetInfo.srcWidgetDetail,
                 childrenRelatingWidgetInfos: null,
                 relatingWidgetInfos: [this.parentSelectedEntry],
                 isConnectToMainSupport: null,
-                sameTypeWidgetInfos: null
+                sameTypeWidgetInfos: null,
             };
-            this.store.dispatch(this.widgetDetailActions.setConnectForParentFromChildWidget(communicationWidget, this.ofModule));
+            this.store.dispatch(
+                this.widgetDetailActions.setConnectForParentFromChildWidget(
+                    communicationWidget,
+                    this.ofModule
+                )
+            );
         }
 
         if (this.connectWithParkedItem) {
-            this.widgetUtils.buildListenKeyConfigForWidgetDetail(this.communicationWidgetInfo.srcWidgetDetail, true);
+            this.widgetUtils.buildListenKeyConfigForWidgetDetail(
+                this.communicationWidgetInfo.srcWidgetDetail,
+                true
+            );
             isConnected = true;
         }
 
@@ -164,48 +200,73 @@ export class WidgetCommunicationDialogComponent extends BaseComponent implements
                 childrenRelatingWidgetInfos: [this.childSelectedEntry],
                 relatingWidgetInfos: null,
                 isConnectToMainSupport: null,
-                sameTypeWidgetInfos: null
+                sameTypeWidgetInfos: null,
             };
-            this.store.dispatch(this.widgetDetailActions.setConnectForChildFromParentWidget(communicationWidget, this.ofModule));
+            this.store.dispatch(
+                this.widgetDetailActions.setConnectForChildFromParentWidget(
+                    communicationWidget,
+                    this.ofModule
+                )
+            );
             isConnected = true;
         }
 
         if (this.sameTypeSelectedEntry) {
-            this.communicationWidgetInfo.srcWidgetDetail.syncWidgetIds = [this.sameTypeSelectedEntry.id];
+            this.communicationWidgetInfo.srcWidgetDetail.syncWidgetIds = [
+                this.sameTypeSelectedEntry.id,
+            ];
             isConnected = true;
             const communicationWidget: ICommunicationWidget = {
                 srcWidgetDetail: this.communicationWidgetInfo.srcWidgetDetail,
                 childrenRelatingWidgetInfos: null,
                 relatingWidgetInfos: null,
                 isConnectToMainSupport: null,
-                sameTypeWidgetInfos: [this.sameTypeSelectedEntry]
+                sameTypeWidgetInfos: [this.sameTypeSelectedEntry],
             };
-            this.store.dispatch(this.widgetDetailActions.setConnectForSameTypeWidget(communicationWidget, this.ofModule));
+            this.store.dispatch(
+                this.widgetDetailActions.setConnectForSameTypeWidget(
+                    communicationWidget,
+                    this.ofModule
+                )
+            );
         }
         if (this.chartLinkTableEntry) {
-            this.communicationWidgetInfo.srcWidgetDetail.syncWidgetIds = [this.chartLinkTableEntry.id];
-            const data = this.layoutPageInfo.reduce((total, current) => {
-
-                if (current.widgetboxesTitle.length > 0) {
-                    current.widgetboxesTitle.forEach(item => total.push(item))
-
-                }
-                return total
-            }, []).find(v => v.id === this.chartLinkTableEntry.id);
-            this.communicationWidgetInfo.srcWidgetDetail.contentDetail = {...data.widgetDetail.contentDetail};
+            this.communicationWidgetInfo.srcWidgetDetail.syncWidgetIds = [
+                this.chartLinkTableEntry.id,
+            ];
+            const data = this.layoutPageInfo
+                .reduce((total, current) => {
+                    if (current.widgetboxesTitle.length > 0) {
+                        current.widgetboxesTitle.forEach((item) =>
+                            total.push(item)
+                        );
+                    }
+                    return total;
+                }, [])
+                .find((v) => v.id === this.chartLinkTableEntry.id);
+            this.communicationWidgetInfo.srcWidgetDetail.contentDetail = {
+                ...data.widgetDetail.contentDetail,
+            };
             isConnected = true;
             const communicationWidget: ICommunicationWidget = {
                 srcWidgetDetail: this.communicationWidgetInfo.srcWidgetDetail,
                 childrenRelatingWidgetInfos: null,
                 relatingWidgetInfos: null,
                 isConnectToMainSupport: null,
-                chartLinkTableInfos: [this.chartLinkTableEntry]
+                chartLinkTableInfos: [this.chartLinkTableEntry],
             };
-            this.store.dispatch(this.widgetDetailActions.setConnectForSameTypeWidget(communicationWidget, this.ofModule));
+            this.store.dispatch(
+                this.widgetDetailActions.setConnectForSameTypeWidget(
+                    communicationWidget,
+                    this.ofModule
+                )
+            );
         }
 
         if (isConnected) {
-            this.onSuccessLinkingWidget.emit(this.communicationWidgetInfo.srcWidgetDetail);
+            this.onSuccessLinkingWidget.emit(
+                this.communicationWidgetInfo.srcWidgetDetail
+            );
         } else {
             this.onSuccessLinkingWidget.emit(null);
         }
@@ -248,7 +309,6 @@ export class WidgetCommunicationDialogComponent extends BaseComponent implements
      */
     connectToChart(entry: IWidgetInfo) {
         this.chartLinkTableEntry = entry;
-
     }
 
     /**

@@ -1,4 +1,5 @@
-.plus, .remove {
+.plus,
+.remove {
     font-size: 18px;
     padding-right: 1px;
     cursor: pointer;
@@ -17,7 +18,6 @@
     padding-left: 2px;
     line-height: 1.67;
 }
-
 
 .value ::ng-deep {
     xn-date-picker {

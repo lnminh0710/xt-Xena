@@ -1,73 +1,99 @@
 <div class="gallery-container">
-    <a class="image-box cursor-pointer"
-       [ngClass]="{'gallery-container__img-main' : image.isMain}"
-       *ngFor="let image of galleryImages"
-       (dblclick)="onDblclick(image)">
-        <img [imageLoader]="image.source+ '&w=300'" alt=""
-            (click)="openImageDetail(image)" />
+    <a
+        class="image-box cursor-pointer"
+        [ngClass]="{ 'gallery-container__img-main': image.isMain }"
+        *ngFor="let image of galleryImages"
+        (dblclick)="onDblclick(image)"
+    >
+        <img
+            [imageLoader]="image.source + '&w=300'"
+            alt=""
+            (click)="openImageDetail(image)"
+        />
         <div class="image-remove">
             <ng-template #popTemplate>
                 <div class="list-group">
-                    <a *ngIf="!image.isMain && isShowIsMain"
-                       class="list-group-item list-group-item-action cursor-pointer"
-                       (click)="onMainChange(image, pop)">
+                    <a
+                        *ngIf="!image.isMain && isShowIsMain"
+                        class="list-group-item list-group-item-action cursor-pointer"
+                        (click)="onMainChange(image, pop)"
+                    >
                         <i class="fa fa-check main" aria-hidden="true"></i>
-                        <label-translation [keyword]="'ArticleImageGallery__Set_as_Main'"></label-translation>
+                        <label-translation
+                            [keyword]="'ArticleImageGallery__Set_as_Main'"
+                        ></label-translation>
                     </a>
-                    <a class="list-group-item list-group-item-action cursor-pointer"
-                       (click)="removeImage(image, pop)">
+                    <a
+                        class="list-group-item list-group-item-action cursor-pointer"
+                        (click)="removeImage(image, pop)"
+                    >
                         <i class="fa fa-times delete" aria-hidden="true"></i>
-                        <label-translation [keyword]="'ArticleImageGallery__Delete'"></label-translation>
+                        <label-translation
+                            [keyword]="'ArticleImageGallery__Delete'"
+                        ></label-translation>
                     </a>
                 </div>
             </ng-template>
 
-            <a class="cursor-pointer"
-               triggers="click"
-               [popover]="popTemplate"
-               placement="right"
-               #pop="bs-popover"
-               [outsideClick]="true"
-               container="body"
-               containerClass="gallery-container__header-menu">
+            <a
+                class="cursor-pointer"
+                triggers="click"
+                [popover]="popTemplate"
+                placement="right"
+                #pop="bs-popover"
+                [outsideClick]="true"
+                container="body"
+                containerClass="gallery-container__header-menu"
+            >
                 <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
             </a>
         </div>
         <div class="gallery-image-overlay" *ngIf="isShowIsMain">
             <div class="description">
-                <label class="title"> {{image.title}} </label>
+                <label class="title"> {{ image.title }} </label>
                 <br />
-                <label class="description"> {{image.description}} </label>
+                <label class="description"> {{ image.description }} </label>
             </div>
         </div>
     </a>
 </div>
 
-<p-dialog header="" [(visible)]="displayImageDialog" [styleClass]="'prime-dialog'"
-          *ngIf="displayImageDialog"
-          appendTo="body"
-          modal="true"
-          [draggable]="true"
-          [resizable]="false"
-          responsive="true"
-          [width]="isShowIsMain ? 1000 : 500"
-          [height]="490">
+<p-dialog
+    header=""
+    [(visible)]="displayImageDialog"
+    [styleClass]="'prime-dialog'"
+    *ngIf="displayImageDialog"
+    appendTo="body"
+    modal="true"
+    [draggable]="true"
+    [resizable]="false"
+    responsive="true"
+    [width]="isShowIsMain ? 1000 : 500"
+    [height]="490"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="header-text"><label-translation [keyword]="'ArticleImageGallery__Detail'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="close()">
+            <span class="header-text"
+                ><label-translation
+                    [keyword]="'ArticleImageGallery__Detail'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="close()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <article-gallery-form [galleryImages]="galleryImages"
-                          *ngIf="galleryImages && galleryImages.length > 0"
-                          [isShowEditForm]="isShowIsMain"
-                          (onSaveFormSuccess)="onSaveFormSuccess($event)">
+    <article-gallery-form
+        [galleryImages]="galleryImages"
+        *ngIf="galleryImages && galleryImages.length > 0"
+        [isShowEditForm]="isShowIsMain"
+        (onSaveFormSuccess)="onSaveFormSuccess($event)"
+    >
     </article-gallery-form>
-
 </p-dialog>

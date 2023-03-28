@@ -1,6 +1,10 @@
-import { CustomAction } from 'app/state-management/store/actions/base';
+import { CustomAction } from "app/state-management/store/actions/base";
 
-export function getFeature(action: CustomAction, state: any, initialState: any) {
+export function getFeature(
+    action: CustomAction,
+    state: any,
+    initialState: any
+) {
     let feature: any;
     const moduleId = action.module ? action.module.moduleNameTrim : null;
     if (state.features && state.features[moduleId]) {
@@ -14,14 +18,23 @@ export function getFeature(action: CustomAction, state: any, initialState: any) 
     return feature;
 }
 
-export function updateStateData(action: CustomAction, feature, state, newStateData) {
+export function updateStateData(
+    action: CustomAction,
+    feature,
+    state,
+    newStateData
+) {
     const moduleId = action.module ? action.module.moduleNameTrim : null;
     feature = Object.assign({}, feature, newStateData);
     state.features[moduleId] = feature;
     return state;
 }
 
-export function getFeatureFromArea(action: CustomAction, state: any, initialState: any) {
+export function getFeatureFromArea(
+    action: CustomAction,
+    state: any,
+    initialState: any
+) {
     let feature: any;
     const area = action.area;
     if (state.features && state.features[area]) {
@@ -35,11 +48,14 @@ export function getFeatureFromArea(action: CustomAction, state: any, initialStat
     return feature;
 }
 
-export function updateStateDataFromArea(action: CustomAction, feature, state, newStateData) {
+export function updateStateDataFromArea(
+    action: CustomAction,
+    feature,
+    state,
+    newStateData
+) {
     const area = action.area;
     feature = Object.assign({}, feature, newStateData);
     state.features[area] = feature;
     return state;
 }
-
-

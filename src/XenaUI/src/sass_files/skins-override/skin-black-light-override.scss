@@ -92,11 +92,11 @@
                     }
 
                     .star-icon {
-                        color: #0004FF;
+                        color: #0004ff;
                     }
 
                     .check-icon {
-                        color: #00B80F;
+                        color: #00b80f;
                     }
                 }
             }
@@ -169,7 +169,9 @@
             background-color: $skin-black-row-hover;
         }
 
-        .ui-datatable tbody.ui-datatable-hoverable-rows > tr.ui-widget-content:not(.ui-state-highlight):hover {
+        .ui-datatable
+            tbody.ui-datatable-hoverable-rows
+            > tr.ui-widget-content:not(.ui-state-highlight):hover {
             background: $skin-black-row-hover;
         }
 

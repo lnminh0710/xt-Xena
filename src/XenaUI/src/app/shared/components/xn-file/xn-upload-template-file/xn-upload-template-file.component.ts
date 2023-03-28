@@ -7,14 +7,10 @@ import {
     ViewChild,
     EventEmitter,
     ChangeDetectorRef,
-    ElementRef
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
+    ElementRef,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
 import {
     CampaignService,
     AppErrorHandler,
@@ -22,52 +18,54 @@ import {
     CommonService,
     ModalService,
     UserService,
-    DatatableService
-} from 'app/services';
-import {
-    FileUploadComponent
-} from '../file-upload';
+    DatatableService,
+} from "app/services";
+import { FileUploadComponent } from "../file-upload";
 import {
     ApiResultResponse,
     MessageModel,
     User,
     ControlGridModel,
-    ControlGridColumnModel
-} from 'app/models';
+    ControlGridColumnModel,
+} from "app/models";
 import {
     ComboBoxTypeConstant,
     Configuration,
     UploadFileMode,
-    MessageModal
-} from 'app/app.constants';
-import {Uti} from 'app/utilities';
-import cloneDeep from 'lodash-es/cloneDeep';
-import {ToasterService} from 'angular2-toaster/angular2-toaster';
-import isEmpty from 'lodash-es/isEmpty';
-import {XnFileUti} from '../xn-file.uti';
-import {XnAgGridComponent} from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+    MessageModal,
+} from "app/app.constants";
+import { Uti } from "app/utilities";
+import cloneDeep from "lodash-es/cloneDeep";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import isEmpty from "lodash-es/isEmpty";
+import { XnFileUti } from "../xn-file.uti";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 
 @Component({
-    selector: 'xn-upload-template-file',
-    styleUrls: ['./xn-upload-template-file.component.scss'],
-    templateUrl: './xn-upload-template-file.component.html'
+    selector: "xn-upload-template-file",
+    styleUrls: ["./xn-upload-template-file.component.scss"],
+    templateUrl: "./xn-upload-template-file.component.html",
 })
-export class XnUploadTemplateFileComponent extends BaseComponent implements OnInit, OnDestroy {
+export class XnUploadTemplateFileComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public countryCheckListData: Array<any>;
     public templates: Array<any> = [];
     public templateFileMenus: Array<any> = [];
     public showDialog = false;
     public showDialogTemplateName = false;
     public isDisableUploadButton = true;
-    public templateFileName = '';
-    public sqlTemplate = '';
-    public templateTile = '';
-    public templateName = '';
-    public templateNameSavingMode = '';
+    public templateFileName = "";
+    public sqlTemplate = "";
+    public templateTile = "";
+    public templateName = "";
+    public templateNameSavingMode = "";
     public submitTemplateName = false;
     public uploadFileMode = UploadFileMode.Printing;
-    public printingUploadTemplateFolderName = (new Configuration()).printingUploadTemplateFolderName;
+    public printingUploadTemplateFolderName = new Configuration()
+        .printingUploadTemplateFolderName;
     public columnViewMode = false;
     public user: User = new User();
     public sqlColumnsDataSourceTable: ControlGridModel = new ControlGridModel();
@@ -82,8 +80,11 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     private _countriesOutput: any = [];
     private _isDirtyTemplateName = false;
     private _preventTemplateChange = false;
-    private _sQLQueryColumnName = '';
-    private _REG_GET_FIELDS = new RegExp('(?<=select\\s*)[\\s\\S]*(?=\\s*from)', 'gi');
+    private _sQLQueryColumnName = "";
+    private _REG_GET_FIELDS = new RegExp(
+        "(?<=select\\s*)[\\s\\S]*(?=\\s*from)",
+        "gi"
+    );
     // private _REG_REPLACE_SQL = new RegExp('\\,\\s?(?![^\\(]*\\))');
     // private _REG_REPLACE_FIELD = new RegExp('\\.\\s?(?![^\\(]*\\))');
 
@@ -98,14 +99,14 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
         } else {
             this._changeDetectorRef.reattach();
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
     }
 
-    @ViewChild('fileUpload') fileUpload: FileUploadComponent;
-    @ViewChild('templateCtr') templateCtr: AngularMultiSelect;
+    @ViewChild("fileUpload") fileUpload: FileUploadComponent;
+    @ViewChild("templateCtr") templateCtr: AngularMultiSelect;
     @ViewChild(XnAgGridComponent) xnAgGridComponent: XnAgGridComponent;
 
     @Output() outputDataAction = new EventEmitter<any>();
@@ -122,7 +123,8 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
         private _userService: UserService,
         private _datatableService: DatatableService,
         private _elementRef: ElementRef,
-        router: Router) {
+        router: Router
+    ) {
         super(router);
     }
 
@@ -136,7 +138,10 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
-        $('#txt-template-name-for-upload-file', this._elementRef.nativeElement).unbind('keyup');
+        $(
+            "#txt-template-name-for-upload-file",
+            this._elementRef.nativeElement
+        ).unbind("keyup");
         if (this.countryCheckListData) {
             this.countryCheckListData.length = 0;
         }
@@ -188,21 +193,25 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
 
     public dropdownItemClickedHandler($event: any) {
         switch ($event.TabName) {
-            case 'New Template':
+            case "New Template":
                 this.newTemplate();
                 this.registerEnterForTemplateName();
                 break;
-            case 'Rename Template':
+            case "Rename Template":
                 if (!this.templateCtr || !this.templateCtr.selectedItem) {
-                    this._modalService.warningText('Modal_Message__Select_Template_To_Rename');
+                    this._modalService.warningText(
+                        "Modal_Message__Select_Template_To_Rename"
+                    );
                     return;
                 }
                 this.renameTemplate();
                 this.registerEnterForTemplateName();
                 break;
-            case 'Delete Template':
+            case "Delete Template":
                 if (!this.templateCtr || !this.templateCtr.selectedItem) {
-                    this._modalService.warningText('Modal_Message__Select_Template_To_Delete');
+                    this._modalService.warningText(
+                        "Modal_Message__Select_Template_To_Delete"
+                    );
                     return;
                 }
                 this.deleteTemplate();
@@ -212,19 +221,26 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
 
     public closeDialogTemplateName() {
         if (this._isDirtyTemplateName) {
-            this._modalService.confirmMessageHtmlContent(new MessageModel({
-                headerText: 'Saving Data',
-                messageType: MessageModal.MessageType.confirm,
-                message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Save_Changed_Data'},
-                    {key: '</p>'}],
-                buttonType1: MessageModal.ButtonType.primary,
-                callBack1: () => {
-                    this.saveTemplateName(this.templateNameSavingMode);
-                },
-                callBack2: () => {
-                    this.closeTemplateNamePopup();
-                },
-            }));
+            this._modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    headerText: "Saving Data",
+                    messageType: MessageModal.MessageType.confirm,
+                    message: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Save_Changed_Data",
+                        },
+                        { key: "</p>" },
+                    ],
+                    buttonType1: MessageModal.ButtonType.primary,
+                    callBack1: () => {
+                        this.saveTemplateName(this.templateNameSavingMode);
+                    },
+                    callBack2: () => {
+                        this.closeTemplateNamePopup();
+                    },
+                })
+            );
         } else {
             this.closeTemplateNamePopup();
         }
@@ -240,7 +256,7 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
         }
         if (!this.templateCtr || !this.templateCtr.selectedValue) return;
         this.outputEditingAction();
-        this.pushDataToCached(this.sqlTemplate, 'sqlTemplate');
+        this.pushDataToCached(this.sqlTemplate, "sqlTemplate");
         this.updateIsEditingForCachedData();
         this.updateDataForSqlQueryColumnNameWhenChangeTextbox();
     }
@@ -248,8 +264,8 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     public resetData() {
         this._cachedData.length = 0;
         this.resetCountryCheckListData();
-        this.sqlTemplate = '';
-        this._sQLQueryColumnName = '';
+        this.sqlTemplate = "";
+        this._sQLQueryColumnName = "";
         this.resetGridData();
         this.sqlColumnsDataSourceTable = new ControlGridModel();
         this.detectChanges();
@@ -258,12 +274,14 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
 
     public saveTemplateName(mode: string) {
         this.submitTemplateName = true;
-        ;
-        if (mode !== 'Delete' && !this.templateName.trim()) {
+        if (mode !== "Delete" && !this.templateName.trim()) {
             this.focusOnTemplateName();
             return;
         }
-        this._campaignService.saveAppSystemColumnNameTemplate(this.buildSavingDataForTemplateName(mode))
+        this._campaignService
+            .saveAppSystemColumnNameTemplate(
+                this.buildSavingDataForTemplateName(mode)
+            )
             .subscribe((response: ApiResultResponse) => {
                 this._appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
@@ -271,7 +289,11 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
                     }
                     this.handleWhenSavingTemplateNameSuccess(response, mode);
                     this.closeTemplateNamePopup();
-                    this._toasterService.pop('success', 'Success', 'Data is saved successfully');
+                    this._toasterService.pop(
+                        "success",
+                        "Success",
+                        "Data is saved successfully"
+                    );
                     this.detectChanges();
                 });
             });
@@ -287,13 +309,20 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
                 this.onSavingDataCompletedAction.emit(true);
                 return;
             }
-            this._campaignService.saveDocumentTemplateSampleDataFile(data)
+            this._campaignService
+                .saveDocumentTemplateSampleDataFile(data)
                 .subscribe(() => {
                     this._appErrorHandler.executeAction(() => {
-                        this.requesetTreeMediaData(this.templateCtr.selectedValue);
+                        this.requesetTreeMediaData(
+                            this.templateCtr.selectedValue
+                        );
                         this.resetEditing();
                         this.onSavingDataCompletedAction.emit(true);
-                        this._toasterService.pop('success', 'Success', 'Data is saved successfully');
+                        this._toasterService.pop(
+                            "success",
+                            "Success",
+                            "Data is saved successfully"
+                        );
                     });
                 });
         }, 200);
@@ -305,22 +334,29 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     public reloadSqlTemplateColumnsNameClick() {
-        this._modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Confirmation',
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Reload_Sql_Query_Columns_Name'},
-                {key: '</p>'}],
-            callBack1: () => {
-                // const sqlTemp = this.sqlTemplate.match(this._REG_GET_FIELDS);
-                // this._sQLQueryColumnName = (sqlTemp && sqlTemp.length) ? sqlTemp[0] : '';
-                // this.pushDataToCached([this._sQLQueryColumnName, false]
-                //     ,['sQLQueryColumnName', 'isChangeFromColumnViewMode']
-                //     ,true);
-                // this.buildSqlColumnDataGrid();
-                this.updateDataForSqlQueryColumnName();
-                this.outputEditingAction();
-                this.updateIsEditingForCachedData();
-            }
-        }));
+        this._modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Confirmation",
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Reload_Sql_Query_Columns_Name",
+                    },
+                    { key: "</p>" },
+                ],
+                callBack1: () => {
+                    // const sqlTemp = this.sqlTemplate.match(this._REG_GET_FIELDS);
+                    // this._sQLQueryColumnName = (sqlTemp && sqlTemp.length) ? sqlTemp[0] : '';
+                    // this.pushDataToCached([this._sQLQueryColumnName, false]
+                    //     ,['sQLQueryColumnName', 'isChangeFromColumnViewMode']
+                    //     ,true);
+                    // this.buildSqlColumnDataGrid();
+                    this.updateDataForSqlQueryColumnName();
+                    this.outputEditingAction();
+                    this.updateIsEditingForCachedData();
+                },
+            })
+        );
     }
 
     public onRowEditEndedHandle() {
@@ -329,8 +365,7 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
         this.updateIsEditingForCachedData();
     }
 
-    public dragSplitterEnd(event) {
-    }
+    public dragSplitterEnd(event) {}
 
     public onTableEditStartHandle() {
         this.outputDataAction.emit();
@@ -352,17 +387,25 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
 
     private updateSQLQueryColumnName() {
         setTimeout(() => {
-            const currentItem = this._cachedData.find(x => x.templateId == this.templateCtr.selectedValue);
+            const currentItem = this._cachedData.find(
+                (x) => x.templateId == this.templateCtr.selectedValue
+            );
             if (!currentItem || !currentItem.templateId) {
                 return;
             }
-            let sQLQueryColumnName = '';
-            for (let i = 0; i < this.sqlColumnsDataSourceTable.data.length; i++) {
+            let sQLQueryColumnName = "";
+            for (
+                let i = 0;
+                i < this.sqlColumnsDataSourceTable.data.length;
+                i++
+            ) {
                 const item = this.sqlColumnsDataSourceTable.data[i];
                 if (!item.DataFieldHidden) continue;
-                sQLQueryColumnName += item.DataFieldHidden + (item.TemplateField ? (' AS ' + item.TemplateField) : '');
+                sQLQueryColumnName +=
+                    item.DataFieldHidden +
+                    (item.TemplateField ? " AS " + item.TemplateField : "");
                 if (i < this.sqlColumnsDataSourceTable.data.length - 1) {
-                    sQLQueryColumnName += ', ';
+                    sQLQueryColumnName += ", ";
                 }
             }
             currentItem.sQLQueryColumnName = sQLQueryColumnName;
@@ -373,8 +416,8 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     private buildEmptyGrid() {
         this.sqlColumnsDataSourceTable = new ControlGridModel({
             columns: this.createGridColumns(),
-            data: []
-        })
+            data: [],
+        });
     }
 
     private resetGridData() {
@@ -385,39 +428,41 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     private createGridColumns(): Array<ControlGridColumnModel> {
         return [
             new ControlGridColumnModel({
-                title: 'Data Field Hidden',
-                data: 'DataFieldHidden',
+                title: "Data Field Hidden",
+                data: "DataFieldHidden",
                 visible: false,
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
-                title: 'Data Field',
-                data: 'DataField'
+                title: "Data Field",
+                data: "DataField",
             }),
             new ControlGridColumnModel({
-                title: 'Template Field',
-                data: 'TemplateField',
-                readOnly: false
-            })
+                title: "Template Field",
+                data: "TemplateField",
+                readOnly: false,
+            }),
         ];
     }
 
     private checkChangeFromColumnViewMode() {
-        const currentItem = this._cachedData.find(x => x.templateId === this.templateCtr.selectedValue);
+        const currentItem = this._cachedData.find(
+            (x) => x.templateId === this.templateCtr.selectedValue
+        );
         if (!currentItem || !currentItem.templateId) {
             this.resetGridData();
             this.sqlColumnsDataSourceTable = new ControlGridModel({
                 columns: this.createGridColumns(),
-                data: []
+                data: [],
             });
             return true;
         }
@@ -430,7 +475,7 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
             this.resetGridData();
             this.sqlColumnsDataSourceTable = new ControlGridModel({
                 columns: this.createGridColumns(),
-                data: currentData
+                data: currentData,
             });
             return;
         }
@@ -439,25 +484,35 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
             if (!this.sqlTemplate) {
                 this.sqlColumnsDataSourceTable = new ControlGridModel({
                     columns: this.createGridColumns(),
-                    data: []
+                    data: [],
                 });
                 return;
             }
             this.sqlColumnsDataSourceTable = new ControlGridModel({
                 columns: this.createGridColumns(),
-                data: this._datatableService.appendRowIdForGridData(this.builDataSourceFromSqlText(this.sqlTemplate))
+                data: this._datatableService.appendRowIdForGridData(
+                    this.builDataSourceFromSqlText(this.sqlTemplate)
+                ),
             });
             return;
         }
         this.sqlColumnsDataSourceTable = new ControlGridModel({
             columns: this.createGridColumns(),
-            data: this._datatableService.appendRowIdForGridData(this.builDataSourceFromSqlText(this._sQLQueryColumnName, true))
+            data: this._datatableService.appendRowIdForGridData(
+                this.builDataSourceFromSqlText(this._sQLQueryColumnName, true)
+            ),
         });
     }
 
-    private builDataSourceFromSqlText(sqlText: string, isOnlyFields?: boolean): Array<any> {
-        const sqlVariables = XnFileUti.builDataSourceFromSqlText(sqlText, isOnlyFields);
-        this.pushDataToCached(sqlVariables, 'sqlVariables');
+    private builDataSourceFromSqlText(
+        sqlText: string,
+        isOnlyFields?: boolean
+    ): Array<any> {
+        const sqlVariables = XnFileUti.builDataSourceFromSqlText(
+            sqlText,
+            isOnlyFields
+        );
+        this.pushDataToCached(sqlVariables, "sqlVariables");
         return sqlVariables;
     }
 
@@ -535,9 +590,13 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     private setDisableUploadButton() {
-        const currentItem = this._cachedData.find(x => x.templateId == this.templateCtr.selectedValue);
+        const currentItem = this._cachedData.find(
+            (x) => x.templateId == this.templateCtr.selectedValue
+        );
         if (!currentItem || !currentItem.templateId) return;
-        this.isDisableUploadButton = !this.templateCtr.selectedValue || !this.hasActiveCountries(currentItem.currentCountries);
+        this.isDisableUploadButton =
+            !this.templateCtr.selectedValue ||
+            !this.hasActiveCountries(currentItem.currentCountries);
     }
 
     private isDirty(): boolean {
@@ -549,26 +608,35 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     private updateDataForSqlQueryColumnNameWhenChangeTextbox() {
-        this.pushDataToCached(false, 'isChangeFromColumnViewMode');
+        this.pushDataToCached(false, "isChangeFromColumnViewMode");
         this.updateDataForSqlQueryColumnName();
     }
 
     private updateDataForSqlQueryColumnName() {
         const sqlTemp = this.sqlTemplate.match(this._REG_GET_FIELDS);
-        this._sQLQueryColumnName = (sqlTemp && sqlTemp.length) ? sqlTemp[0] : '';
-        this.pushDataToCached([this._sQLQueryColumnName, false]
-            , ['sQLQueryColumnName', 'isChangeFromColumnViewMode']
-            , true);
+        this._sQLQueryColumnName = sqlTemp && sqlTemp.length ? sqlTemp[0] : "";
+        this.pushDataToCached(
+            [this._sQLQueryColumnName, false],
+            ["sQLQueryColumnName", "isChangeFromColumnViewMode"],
+            true
+        );
         this.buildSqlColumnDataGrid();
     }
 
     private updateIsEditingForCachedData() {
-        const currentItem = this._cachedData.find(x => x.templateId == this.templateCtr.selectedValue);
+        const currentItem = this._cachedData.find(
+            (x) => x.templateId == this.templateCtr.selectedValue
+        );
         if (!currentItem || !currentItem.templateId) return;
-        currentItem.isEditing = this.hasActiveCountries(currentItem.currentCountries, 'isDirty') || currentItem.isEditing;
+        currentItem.isEditing =
+            this.hasActiveCountries(currentItem.currentCountries, "isDirty") ||
+            currentItem.isEditing;
     }
 
-    private hasActiveCountries(countries: Array<any>, propertyName: string = 'isActive'): boolean {
+    private hasActiveCountries(
+        countries: Array<any>,
+        propertyName: string = "isActive"
+    ): boolean {
         for (const item of countries) {
             if (!item[propertyName]) continue;
             return true;
@@ -577,19 +645,26 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     private loadTreeViewFileExtention() {
-        this._commonService.getListComboBox(ComboBoxTypeConstant.treeMediaType).subscribe((response: ApiResultResponse) => {
-            this._appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response) || !response.item.treeMediaType) {
-                    return;
-                }
-                this._fileExtention = response.item.treeMediaType;
+        this._commonService
+            .getListComboBox(ComboBoxTypeConstant.treeMediaType)
+            .subscribe((response: ApiResultResponse) => {
+                this._appErrorHandler.executeAction(() => {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.treeMediaType
+                    ) {
+                        return;
+                    }
+                    this._fileExtention = response.item.treeMediaType;
+                });
             });
-        });
     }
 
     private updateCurrentCountriesToCached() {
         if (!this.templateCtr || !this.templateCtr.selectedValue) return;
-        const currentItem = this._cachedData.find(x => x.templateId == this.templateCtr.selectedValue);
+        const currentItem = this._cachedData.find(
+            (x) => x.templateId == this.templateCtr.selectedValue
+        );
         if (!currentItem || !currentItem.templateId) return;
         if (currentItem.currentCountries.length)
             currentItem.currentCountries.length = 0;
@@ -609,30 +684,40 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     private registerEnterForTemplateName() {
         setTimeout(() => {
             Uti.registerKeyPressForControl(
-                $('#txt-template-name-for-upload-file', this._elementRef.nativeElement),
+                $(
+                    "#txt-template-name-for-upload-file",
+                    this._elementRef.nativeElement
+                ),
                 () => {
-                    this.saveTemplateName(this.templateNameSavingMode)
+                    this.saveTemplateName(this.templateNameSavingMode);
                 },
-                13);
+                13
+            );
         });
     }
 
     private getDocumentTemplateCountries(templateId: any) {
         if (this.getDataFromCached(templateId)) return;
-        this._campaignService.getDocumentTemplateCountries(templateId)
+        this._campaignService
+            .getDocumentTemplateCountries(templateId)
             .subscribe((response: ApiResultResponse) => {
                 this._appErrorHandler.executeAction(() => {
                     this.resetCountryCheckListData();
-                    this.pushDataToCached(this.countryCheckListData, 'currentCountries');
-                    if (!Uti.isResquestSuccess(response)
-                        || !response.item.data
-                        || !response.item.data[0]
-                        || !response.item.data[0].length
-                        || !response.item.data[0][0]) {
-                        this.templateFileName = '';
-                        this.sqlTemplate = '';
-                        this._sQLQueryColumnName = '';
-                        this.pushDataToCached([], 'originalCountries');
+                    this.pushDataToCached(
+                        this.countryCheckListData,
+                        "currentCountries"
+                    );
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.data ||
+                        !response.item.data[0] ||
+                        !response.item.data[0].length ||
+                        !response.item.data[0][0]
+                    ) {
+                        this.templateFileName = "";
+                        this.sqlTemplate = "";
+                        this._sQLQueryColumnName = "";
+                        this.pushDataToCached([], "originalCountries");
                         this.setDisableUploadButton();
                         this.buildDataGridWhenChangeTemplate();
                         return;
@@ -646,17 +731,29 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     private requesetTreeMediaData(templateId: any) {
-        this._campaignService.getDocumentTemplateCountries(templateId)
+        this._campaignService
+            .getDocumentTemplateCountries(templateId)
             .subscribe((response: ApiResultResponse) => {
                 this._appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response)
-                        || !response.item.data
-                        || !response.item.data[0]
-                        || !response.item.data[0].length
-                        || !response.item.data[0][0]) {
-                        this.pushDataToCached(['', '', '', '', '', null]
-                            , ['fileName', 'originalFileName', 'mediaRelativePath', 'sQLQueryColumnName', 'sqlTemplate', 'idSharingTreeMedia']
-                            , true);
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.data ||
+                        !response.item.data[0] ||
+                        !response.item.data[0].length ||
+                        !response.item.data[0][0]
+                    ) {
+                        this.pushDataToCached(
+                            ["", "", "", "", "", null],
+                            [
+                                "fileName",
+                                "originalFileName",
+                                "mediaRelativePath",
+                                "sQLQueryColumnName",
+                                "sqlTemplate",
+                                "idSharingTreeMedia",
+                            ],
+                            true
+                        );
                         return;
                     }
                     this.makeCachedDataFromService(response.item.data[0][0]);
@@ -665,17 +762,35 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     private makeCachedDataFromService(templateData: any) {
-        let countries = Uti.tryParseJson(templateData.Countries || '{}');
+        let countries = Uti.tryParseJson(templateData.Countries || "{}");
         if (!countries.JsCountries || !countries.JsCountries.length) {
             countries = [];
         } else {
             countries = countries.JsCountries;
         }
-        this.sqlTemplate = isEmpty(templateData.SQLQuery) ? '' : templateData.SQLQuery;
-        this._sQLQueryColumnName = isEmpty(templateData.SQLQueryColumnName) ? '' : templateData.SQLQueryColumnName;
-        this.pushDataToCached([countries, this.templateFileName, this._sQLQueryColumnName, this.sqlTemplate, templateData.IdSharingTreeMedia]
-            , ['originalCountries', 'originalFileName', 'sQLQueryColumnName', 'sqlTemplate', 'idSharingTreeMedia']
-            , true);
+        this.sqlTemplate = isEmpty(templateData.SQLQuery)
+            ? ""
+            : templateData.SQLQuery;
+        this._sQLQueryColumnName = isEmpty(templateData.SQLQueryColumnName)
+            ? ""
+            : templateData.SQLQueryColumnName;
+        this.pushDataToCached(
+            [
+                countries,
+                this.templateFileName,
+                this._sQLQueryColumnName,
+                this.sqlTemplate,
+                templateData.IdSharingTreeMedia,
+            ],
+            [
+                "originalCountries",
+                "originalFileName",
+                "sQLQueryColumnName",
+                "sqlTemplate",
+                "idSharingTreeMedia",
+            ],
+            true
+        );
 
         this.makeCountriesCached(countries);
     }
@@ -686,7 +801,11 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
             tempCountries.length = 0;
             return;
         }
-        const originaleCountriesObject = Uti.mapArrayToObjectWithSelfPropertyName(originalCountries, 'IdCountrylanguage');
+        const originaleCountriesObject =
+            Uti.mapArrayToObjectWithSelfPropertyName(
+                originalCountries,
+                "IdCountrylanguage"
+            );
         if (isEmpty(originaleCountriesObject)) {
             tempCountries.length = 0;
             return;
@@ -697,7 +816,7 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
                 item.isActive = true;
             }
         }
-        this.pushDataToCached(tempCountries, 'currentCountries');
+        this.pushDataToCached(tempCountries, "currentCountries");
         this.countryCheckListData.length = 0;
         this.countryCheckListData = cloneDeep(tempCountries);
         // destroy array
@@ -713,18 +832,39 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
         this.countryCheckListData = temp;
     }
 
-    private pushDataToCached(data: any, propertyName: any, isMultiple?: boolean) {
-        const currentItem = this._cachedData.find(x => x.templateId == this.templateCtr.selectedValue);
+    private pushDataToCached(
+        data: any,
+        propertyName: any,
+        isMultiple?: boolean
+    ) {
+        const currentItem = this._cachedData.find(
+            (x) => x.templateId == this.templateCtr.selectedValue
+        );
         if (!isMultiple) {
-            this.setDataForCurrentCachedItem(this.templateCtr.selectedValue, currentItem, data, propertyName);
+            this.setDataForCurrentCachedItem(
+                this.templateCtr.selectedValue,
+                currentItem,
+                data,
+                propertyName
+            );
             return;
         }
         for (let i = 0; i < propertyName.length; i++) {
-            this.setDataForCurrentCachedItem(this.templateCtr.selectedValue, currentItem, data[i], propertyName[i]);
+            this.setDataForCurrentCachedItem(
+                this.templateCtr.selectedValue,
+                currentItem,
+                data[i],
+                propertyName[i]
+            );
         }
     }
 
-    private setDataForCurrentCachedItem(templateId: any, currentItem: any, data: any, propertyName: string) {
+    private setDataForCurrentCachedItem(
+        templateId: any,
+        currentItem: any,
+        data: any,
+        propertyName: string
+    ) {
         if (currentItem && currentItem.templateId) {
             currentItem[propertyName] = cloneDeep(data);
             return;
@@ -739,12 +879,16 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     private setTemplateFileName(data: any) {
-        this.templateFileName = isEmpty(data.MediaOriginalName) ? '' : data.MediaOriginalName;
+        this.templateFileName = isEmpty(data.MediaOriginalName)
+            ? ""
+            : data.MediaOriginalName;
         this.detectChanges();
     }
 
     private getDataFromCached(templateId: any): boolean {
-        const currentItem = this._cachedData.find(x => x.templateId == templateId);
+        const currentItem = this._cachedData.find(
+            (x) => x.templateId == templateId
+        );
         if (currentItem && currentItem.templateId) {
             this.templateFileName = currentItem.originalFileName;
             this.countryCheckListData.length = 0;
@@ -759,25 +903,46 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     private getTemplateData() {
-        this._commonService.getListComboBox(ComboBoxTypeConstant.repAppSystemColumnNameTemplate)
+        this._commonService
+            .getListComboBox(
+                ComboBoxTypeConstant.repAppSystemColumnNameTemplate
+            )
             .subscribe((response: ApiResultResponse) => {
                 this._appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.repAppSystemColumnNameTemplate) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.repAppSystemColumnNameTemplate
+                    ) {
                         this.templates = [];
                         this.detectChanges();
                         return;
                     }
                     this.templates.length = 0;
-                    this.templates = response.item.repAppSystemColumnNameTemplate || [];
+                    this.templates =
+                        response.item.repAppSystemColumnNameTemplate || [];
                 });
             });
     }
 
     private saveDocumentTemplate(response: any) {
         this.templateFileName = response.originalFileName;
-        this.pushDataToCached([this.templateFileName, response.fileName, response.path, response.size, true],
-            ['originalFileName', 'fileName', 'mediaRelativePath', 'mediaSize', 'isEditing']
-            , true);
+        this.pushDataToCached(
+            [
+                this.templateFileName,
+                response.fileName,
+                response.path,
+                response.size,
+                true,
+            ],
+            [
+                "originalFileName",
+                "fileName",
+                "mediaRelativePath",
+                "mediaSize",
+                "isEditing",
+            ],
+            true
+        );
         this.updateIsEditingForCachedData();
     }
 
@@ -792,12 +957,15 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
             MediaName: data.fileName,
             MediaOriginalName: data.originalFileName,
             MediaRelativePath: data.mediaRelativePath,
-            MediaSize: data.mediaSize
+            MediaSize: data.mediaSize,
         };
         if (data.idSharingTreeMedia) {
-            result.IdSharingTreeMedia = data.idSharingTreeMedia
+            result.IdSharingTreeMedia = data.idSharingTreeMedia;
         }
-        const countries: any = this.makeCountriesJson((data.currentCountries.filter(x => x.isActive)), data.originalCountries);
+        const countries: any = this.makeCountriesJson(
+            data.currentCountries.filter((x) => x.isActive),
+            data.originalCountries
+        );
         if (countries && !isEmpty(countries)) {
             result.JSONTextCountries = JSON.stringify(countries);
         }
@@ -805,66 +973,92 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     private makeCountriesJson(countriesData: any, originalCountries: any) {
-        const checkedCountries: Array<any> = countriesData.filter(x => x.isActive).map(x => {
-            return {
-                IdCountrylanguage: x.idValue
-            };
-        });
+        const checkedCountries: Array<any> = countriesData
+            .filter((x) => x.isActive)
+            .map((x) => {
+                return {
+                    IdCountrylanguage: x.idValue,
+                };
+            });
         setTimeout(() => {
             checkedCountries.length = 0;
         }, 1000);
         const resutl = [
             ...this.getDeleteCountries(checkedCountries, originalCountries),
             ...this.getAddCountries(checkedCountries, originalCountries),
-            ...this.getUpdateCountries(checkedCountries, originalCountries)];
+            ...this.getUpdateCountries(checkedCountries, originalCountries),
+        ];
         if (!resutl || !resutl.length) {
             return {};
         }
         return {
-            JsCountries: resutl
+            JsCountries: resutl,
         };
     }
 
-    private getDeleteCountries(checkedCountries: Array<any>, originalCountries: Array<any>): Array<any> {
-        const deleteCountries = Uti.getItemsDontExistItems(originalCountries, checkedCountries, 'IdCountrylanguage');
+    private getDeleteCountries(
+        checkedCountries: Array<any>,
+        originalCountries: Array<any>
+    ): Array<any> {
+        const deleteCountries = Uti.getItemsDontExistItems(
+            originalCountries,
+            checkedCountries,
+            "IdCountrylanguage"
+        );
         if (!deleteCountries || !deleteCountries.length) {
-            return []
+            return [];
         }
-        const result = deleteCountries.map(x => {
+        const result = deleteCountries.map((x) => {
             return {
-                IdRepAppSystemColumnNameTemplateGw: x.IdRepAppSystemColumnNameTemplateGw,
-                IsDeleted: 1
+                IdRepAppSystemColumnNameTemplateGw:
+                    x.IdRepAppSystemColumnNameTemplateGw,
+                IsDeleted: 1,
             };
         });
         deleteCountries.length = 0;
         return result;
     }
 
-    private getAddCountries(checkedCountries: Array<any>, originalCountries: Array<any>): Array<any> {
-        const addCountries = Uti.getItemsDontExistItems(checkedCountries, originalCountries, 'IdCountrylanguage');
+    private getAddCountries(
+        checkedCountries: Array<any>,
+        originalCountries: Array<any>
+    ): Array<any> {
+        const addCountries = Uti.getItemsDontExistItems(
+            checkedCountries,
+            originalCountries,
+            "IdCountrylanguage"
+        );
         if (!addCountries || !addCountries.length) {
-            return []
+            return [];
         }
-        const result = addCountries.map(x => {
+        const result = addCountries.map((x) => {
             return {
                 IdCountrylanguage: x.IdCountrylanguage,
-                IsActive: 1
+                IsActive: 1,
             };
         });
         addCountries.length = 0;
         return result;
     }
 
-    private getUpdateCountries(checkedCountries: Array<any>, originalCountries: Array<any>): Array<any> {
-        const updateCountries = Uti.getItemsExistItems(originalCountries, checkedCountries, 'IdCountrylanguage');
+    private getUpdateCountries(
+        checkedCountries: Array<any>,
+        originalCountries: Array<any>
+    ): Array<any> {
+        const updateCountries = Uti.getItemsExistItems(
+            originalCountries,
+            checkedCountries,
+            "IdCountrylanguage"
+        );
         if (!updateCountries || !updateCountries.length) {
-            return []
+            return [];
         }
-        const result = updateCountries.map(x => {
+        const result = updateCountries.map((x) => {
             return {
-                IdRepAppSystemColumnNameTemplateGw: x.IdRepAppSystemColumnNameTemplateGw,
+                IdRepAppSystemColumnNameTemplateGw:
+                    x.IdRepAppSystemColumnNameTemplateGw,
                 IdCountrylanguage: x.IdCountrylanguage,
-                IsActive: 1
+                IsActive: 1,
             };
         });
         updateCountries.length = 0;
@@ -872,24 +1066,33 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     }
 
     private getIdRepTreeMediaType(fileName): any {
-        if (!fileName || !this._fileExtention || !this._fileExtention.length) return '';
-        const arr = fileName.split('.');
-        if (!arr || !arr.length) return '-1';
+        if (!fileName || !this._fileExtention || !this._fileExtention.length)
+            return "";
+        const arr = fileName.split(".");
+        if (!arr || !arr.length) return "-1";
         const ext = arr[arr.length - 1];
-        const extItem = this._fileExtention.find(x => x.textValue.toLowerCase() === ext.toLowerCase());
-        if (!extItem) return '-1';
+        const extItem = this._fileExtention.find(
+            (x) => x.textValue.toLowerCase() === ext.toLowerCase()
+        );
+        if (!extItem) return "-1";
         return extItem.idValue;
     }
 
     private getCountries() {
-        this._campaignService.getCampaignWizardCountry()
-            .subscribe(response => {
+        this._campaignService
+            .getCampaignWizardCountry()
+            .subscribe((response) => {
                 this._appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.countryCode) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.countryCode
+                    ) {
                         this.countryCheckListData.length = 0;
                         return;
                     }
-                    this.countryCheckListData = cloneDeep(response.item.countryCode);
+                    this.countryCheckListData = cloneDeep(
+                        response.item.countryCode
+                    );
                     this.detectChanges();
                     this.getTemplateData();
                 });
@@ -900,85 +1103,97 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
         this.templateFileMenus = [
             {
                 Visible: false,
-                TabName: 'New Template',
-                Icon: 'plus',
-                ClassName: ''
+                TabName: "New Template",
+                Icon: "plus",
+                ClassName: "",
             },
             {
                 Visible: false,
-                TabName: 'Rename Template',
-                Icon: 'pencile',
-                ClassName: ''
+                TabName: "Rename Template",
+                Icon: "pencile",
+                ClassName: "",
             },
             {
                 Visible: false,
-                TabName: 'Delete Template',
-                Icon: 'trash',
-                ClassName: ''
-            }
+                TabName: "Delete Template",
+                Icon: "trash",
+                ClassName: "",
+            },
         ];
     }
 
     private newTemplate() {
-        this.templateTile = 'New Template';
+        this.templateTile = "New Template";
         this.showDialogTemplateName = true;
-        this.templateName = '';
-        this.templateNameSavingMode = 'New';
+        this.templateName = "";
+        this.templateNameSavingMode = "New";
         this.focusOnTemplateName();
     }
 
     private renameTemplate() {
-        this.templateTile = 'Edit Template';
+        this.templateTile = "Edit Template";
         this.showDialogTemplateName = true;
-        this.templateNameSavingMode = 'Edit';
+        this.templateNameSavingMode = "Edit";
         if (this.templateCtr) {
             this.templateName = this.templateCtr.text;
         } else {
-            this.templateName = '';
+            this.templateName = "";
         }
         this.focusOnTemplateName();
     }
 
     private focusOnTemplateName() {
         setTimeout(() => {
-            $('#txt-template-name-for-upload-file', this._elementRef.nativeElement).focus();
+            $(
+                "#txt-template-name-for-upload-file",
+                this._elementRef.nativeElement
+            ).focus();
         });
     }
 
     private deleteTemplate() {
-        this._modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Delete Template',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_Template'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.saveTemplateName('Delete');
-            }
-        }));
+        this._modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Delete Template",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Delete_Template" },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.saveTemplateName("Delete");
+                },
+            })
+        );
     }
 
     private handleWhenSavingTemplateNameSuccess(response: any, mode: string) {
         switch (mode) {
-            case 'New':
+            case "New":
                 this.makeTemplateDataWhenAddNew(response);
                 break;
-            case 'Edit':
+            case "Edit":
                 this.makeTemplateDataWhenAddEdit();
                 break;
-            case 'Delete':
+            case "Delete":
                 this.makeTemplateDataWhenAddDelete();
         }
     }
 
     private makeTemplateDataWhenAddNew(savedResponse: any) {
         const temp = cloneDeep(this.templates);
-        if (!savedResponse || !savedResponse.item || !savedResponse.item.returnID) {
+        if (
+            !savedResponse ||
+            !savedResponse.item ||
+            !savedResponse.item.returnID
+        ) {
             return;
         }
         temp.push({
-            idValue: savedResponse.item.returnID + '',
-            textValue: this.templateName
+            idValue: savedResponse.item.returnID + "",
+            textValue: this.templateName,
         });
         this.templates.length = 0;
         this.templates = temp;
@@ -990,10 +1205,16 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
 
     private makeTemplateDataWhenAddEdit() {
         const temp = cloneDeep(this.templates);
-        const currentItem = temp.find(x => x.idValue == this.templateCtr.selectedValue);
+        const currentItem = temp.find(
+            (x) => x.idValue == this.templateCtr.selectedValue
+        );
         if (!currentItem || !currentItem.idValue) return;
         currentItem.textValue = this.templateName;
-        const currentIndex = Uti.getIndexOfItemInArray(temp, this.templateCtr.selectedItem, 'idValue');
+        const currentIndex = Uti.getIndexOfItemInArray(
+            temp,
+            this.templateCtr.selectedItem,
+            "idValue"
+        );
         this.templates.length = 0;
         this.templates = temp;
         this._preventTemplateChange = true;
@@ -1004,7 +1225,7 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
 
     private makeTemplateDataWhenAddDelete() {
         const temp = cloneDeep(this.templates);
-        Uti.removeItemInArray(temp, this.templateCtr.selectedItem, 'idValue');
+        Uti.removeItemInArray(temp, this.templateCtr.selectedItem, "idValue");
         this.templates.length = 0;
         this.templates = temp;
     }
@@ -1012,35 +1233,40 @@ export class XnUploadTemplateFileComponent extends BaseComponent implements OnIn
     private buildSavingDataForTemplateName(mode: string) {
         let result = {};
         switch (mode) {
-            case 'New':
-                return result = {
+            case "New":
+                return (result = {
                     SQLQuery: this.sqlTemplate,
                     SQLQueryColumnName: this._sQLQueryColumnName,
                     DefaultValue: this.templateName,
                     IsBlocked: 0,
-                    IsDeleted: 0
-                };
-            case 'Edit':
-                return result = {
-                    IdRepAppSystemColumnNameTemplate: this.templateCtr.selectedValue,
+                    IsDeleted: 0,
+                });
+            case "Edit":
+                return (result = {
+                    IdRepAppSystemColumnNameTemplate:
+                        this.templateCtr.selectedValue,
                     SQLQuery: this.sqlTemplate,
                     SQLQueryColumnName: this._sQLQueryColumnName,
                     DefaultValue: this.templateName,
                     IsBlocked: 0,
-                    IsDeleted: 0
-                };
-            case 'Delete':
-                return result = {
-                    IdRepAppSystemColumnNameTemplate: this.templateCtr.selectedValue,
-                    IsDeleted: 1
-                };
+                    IsDeleted: 0,
+                });
+            case "Delete":
+                return (result = {
+                    IdRepAppSystemColumnNameTemplate:
+                        this.templateCtr.selectedValue,
+                    IsDeleted: 1,
+                });
         }
     }
 
     private closeTemplateNamePopup() {
-        this.templateName = '';
-        this.templateNameSavingMode = '';
-        this._isDirtyTemplateName = this.submitTemplateName = this.showDialogTemplateName = false;
+        this.templateName = "";
+        this.templateNameSavingMode = "";
+        this._isDirtyTemplateName =
+            this.submitTemplateName =
+            this.showDialogTemplateName =
+                false;
     }
 
     private resetEditing() {
@@ -1065,14 +1291,14 @@ class TemplateCachedModel {
     public originalCountries: Array<any> = [];
     public currentCountries: Array<any> = [];
     public isEditing = false;
-    public originalFileName = '';
-    public fileName = '';
-    public mediaRelativePath = '';
-    public mediaSize = '';
-    public sqlTemplate = '';
-    public sQLQueryColumnName = '';
+    public originalFileName = "";
+    public fileName = "";
+    public mediaRelativePath = "";
+    public mediaSize = "";
+    public sqlTemplate = "";
+    public sQLQueryColumnName = "";
     public idSharingTreeMedia: any = null;
-    public sqlVariables = '';
+    public sqlVariables = "";
     public isChangeFromColumnViewMode = false;
 
     public constructor(init?: Partial<TemplateCachedModel>) {

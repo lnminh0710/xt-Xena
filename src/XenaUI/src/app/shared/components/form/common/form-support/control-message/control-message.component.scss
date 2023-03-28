@@ -2,7 +2,7 @@
     font-size: 14px;
     color: #fff;
     display: flex;
-    justify-content:center;
+    justify-content: center;
 }
 
 .hot-key_suggestion {
@@ -16,5 +16,5 @@
 }
 
 :host-context(wijmo-grid) .hot-key_suggestion {
-   margin-top: -0px;
+    margin-top: -0px;
 }

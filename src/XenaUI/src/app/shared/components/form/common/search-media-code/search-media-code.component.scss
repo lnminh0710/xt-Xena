@@ -73,15 +73,15 @@
 .spliter-content {
     height: 100%;
     display: flex;
-    align-items:stretch; 
+    align-items: stretch;
     justify-content: space-between;
     flex-wrap: nowrap;
 }
-.spliter-content.left{
-    margin-right: calc(0.5em - 2.5px)
+.spliter-content.left {
+    margin-right: calc(0.5em - 2.5px);
 }
-.spliter-content.right{
-    margin-left: calc(0.5em - 2.5px)
+.spliter-content.right {
+    margin-left: calc(0.5em - 2.5px);
 }
 
 .spliter-content-item {

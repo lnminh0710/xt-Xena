@@ -1,1 +1,1 @@
-export * from './dialog-add-customer-to-doublet.component';
+export * from "./dialog-add-customer-to-doublet.component";

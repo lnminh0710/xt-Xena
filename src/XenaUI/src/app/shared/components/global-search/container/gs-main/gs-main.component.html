@@ -1,101 +1,180 @@
-<div #searchContainer
-     [ngClass]="{'hidden': showFakedHeading, 'height-pc-100': showFullPage }"
-     class="panel-group  global-search"
-     [ngStyle]="(!isCollapsed? mainContainerStyle : '')"
-     id="global-search-container"
-     mwlResizable
-     [enableGhostResize]="allowResize"
-     [resizeEdges]="{bottom: false, right: false, top: true, left: false}"
-     (resizeEnd)="onResizeEnd($event)">
-    <div class="panel panel-default  height-pc-100">
-        <div class="panel-heading"
-             id="global-search-heading" *ngIf="!isCollapsed">
-            <div *ngIf="!showFullPage"
-                 class="col-xs-12  gs__pin-group">
-                <a class="gs-buttons search-pin-button  mat-btn-small--icon"
-                   mat-raised-button
-                   (click)="showFullPage ? false : pinGlobalSearchGroup()">
-                    <span class="{{pinIconClassName}}  pull-right  glyphicon  glyphicon-pushpin"></span>
+<div
+    #searchContainer
+    [ngClass]="{ hidden: showFakedHeading, 'height-pc-100': showFullPage }"
+    class="panel-group global-search"
+    [ngStyle]="!isCollapsed ? mainContainerStyle : ''"
+    id="global-search-container"
+    mwlResizable
+    [enableGhostResize]="allowResize"
+    [resizeEdges]="{ bottom: false, right: false, top: true, left: false }"
+    (resizeEnd)="onResizeEnd($event)"
+>
+    <div class="panel panel-default height-pc-100">
+        <div
+            class="panel-heading"
+            id="global-search-heading"
+            *ngIf="!isCollapsed"
+        >
+            <div *ngIf="!showFullPage" class="col-xs-12 gs__pin-group">
+                <a
+                    class="gs-buttons search-pin-button mat-btn-small--icon"
+                    mat-raised-button
+                    (click)="showFullPage ? false : pinGlobalSearchGroup()"
+                >
+                    <span
+                        class="{{
+                            pinIconClassName
+                        }}  pull-right  glyphicon  glyphicon-pushpin"
+                    ></span>
                 </a>
-                <a *ngIf="enableGSNewWindow"
-                   class="gs-buttons new-window-button  mat-btn-small--icon"
-                   mat-raised-button
-                   (click)="openNewWindow($event)">
+                <a
+                    *ngIf="enableGSNewWindow"
+                    class="gs-buttons new-window-button mat-btn-small--icon"
+                    mat-raised-button
+                    (click)="openNewWindow($event)"
+                >
                     <i class="fa fa-window-restore" aria-hidden="true"></i>
                 </a>
             </div>
             <h4 class="panel-title">
-                <a mat-button
-                   (click)="showFullPage ? false : headerClick(null)"
-                   [class.disabled]="!(isViewModeState | async)"
-                   mwlResizeHandle
-                   [resizeEdges]="{top: true}"
-                   [ngClass]="{'cursor-ns-resize': !isCollapsed && !showFullPage }">
-                    <span class="glyphicon glyphicon-search"></span> <label-translation [keyword]="'Gs_main__Global_Search'"></label-translation>
+                <a
+                    mat-button
+                    (click)="showFullPage ? false : headerClick(null)"
+                    [class.disabled]="!(isViewModeState | async)"
+                    mwlResizeHandle
+                    [resizeEdges]="{ top: true }"
+                    [ngClass]="{
+                        'cursor-ns-resize': !isCollapsed && !showFullPage
+                    }"
+                >
+                    <span class="glyphicon glyphicon-search"></span>
+                    <label-translation
+                        [keyword]="'Gs_main__Global_Search'"
+                    ></label-translation>
                 </a>
             </h4>
         </div>
-        <div class="panel-collapse"
-             [ngClass]="{'expand-transition': !isCollapsed}">
-            <div class="panel-body"
-                 [ngStyle]="showFullPage ? {height: 'calc(100vh - 35px)'} : mainContentStyle"
-                 id="global-search-body">
-                <div id="tab-container"
-                     class="global-search__tab-list  xn-tab--general  height-pc-100">
+        <div
+            class="panel-collapse"
+            [ngClass]="{ 'expand-transition': !isCollapsed }"
+        >
+            <div
+                class="panel-body"
+                [ngStyle]="
+                    showFullPage
+                        ? { height: 'calc(100vh - 35px)' }
+                        : mainContentStyle
+                "
+                id="global-search-body"
+            >
+                <div
+                    id="tab-container"
+                    class="global-search__tab-list xn-tab--general height-pc-100"
+                >
                     <tabset>
-                        <tab *ngFor="let tabz of tabs;let i=index"
-                             [active]="tabz.active"
-                             (select)="selectTab($event, tabz)"
-                             (deselect)="tabz.active = false"
-                             [disabled]="tabz.disabled"
-                             [removable]="tabz.removable"
-                             [customClass]="tabz.customClass">
-                            <div *tabHeading
-                                 class="pull-right  margin-left--sm">
-                                <span ><label-translation *ngIf="tabz.title == 'All'" [keyword]="'Gs_main__All'"></label-translation></span>
-                                <span class="gs_tab-title" *ngIf="tabz.title != 'All'">{{tabz.title}}</span>
-                                <span [ngStyle]="{'display':(tabz.module != null || tabz.title != globalSearchConsts.searchAll) ? 'none' : ''}">
+                        <tab
+                            *ngFor="let tabz of tabs; let i = index"
+                            [active]="tabz.active"
+                            (select)="selectTab($event, tabz)"
+                            (deselect)="tabz.active = false"
+                            [disabled]="tabz.disabled"
+                            [removable]="tabz.removable"
+                            [customClass]="tabz.customClass"
+                        >
+                            <div *tabHeading class="pull-right margin-left--sm">
+                                <span
+                                    ><label-translation
+                                        *ngIf="tabz.title == 'All'"
+                                        [keyword]="'Gs_main__All'"
+                                    ></label-translation
+                                ></span>
+                                <span
+                                    class="gs_tab-title"
+                                    *ngIf="tabz.title != 'All'"
+                                    >{{ tabz.title }}</span
+                                >
+                                <span
+                                    [ngStyle]="{
+                                        display:
+                                            tabz.module != null ||
+                                            tabz.title !=
+                                                globalSearchConsts.searchAll
+                                                ? 'none'
+                                                : ''
+                                    }"
+                                >
                                     <i class="fa fa-th"></i>
                                 </span>
-                                <a *ngIf="tabz.removable && tabz.active"
-                                   mat-raised-button
-                                   class="mat-btn-red--icon  mat-tab-close-icon  mat-btn-small--icon"
-                                   (click)="removeTabHandler(tabz)">
+                                <a
+                                    *ngIf="tabz.removable && tabz.active"
+                                    mat-raised-button
+                                    class="mat-btn-red--icon mat-tab-close-icon mat-btn-small--icon"
+                                    (click)="removeTabHandler(tabz)"
+                                >
                                     <i class="fa fa-times-circle"></i>
                                 </a>
                             </div>
 
-                            <div id="gs__search-input"
-                                 class="gs__search-input  col-xs-12  no-padding  no-margin  form-group  form-control__relative">
-                                <app-xn-input-debounce delayTimer="800"
-                                                       placeholder="Search Here"
-                                                       [hasIndicator]="true"
-                                                       [hasSearchButton]="true"
-                                                       [value]="tabz.textSearch"
-                                                       (onValueChanged)="search(tabz, globalSearchTabForm, $event)"
-                                                       (onSearchButtonClicked)="search(tabz, globalSearchTabForm, tabz.textSearch)"
-                                                       cssClass="gs__search-text-input"
-                                                       [isLoading]="tabz.isLoading">
+                            <div
+                                id="gs__search-input"
+                                class="gs__search-input col-xs-12 no-padding no-margin form-group form-control__relative"
+                            >
+                                <app-xn-input-debounce
+                                    delayTimer="800"
+                                    placeholder="Search Here"
+                                    [hasIndicator]="true"
+                                    [hasSearchButton]="true"
+                                    [value]="tabz.textSearch"
+                                    (onValueChanged)="
+                                        search(
+                                            tabz,
+                                            globalSearchTabForm,
+                                            $event
+                                        )
+                                    "
+                                    (onSearchButtonClicked)="
+                                        search(
+                                            tabz,
+                                            globalSearchTabForm,
+                                            tabz.textSearch
+                                        )
+                                    "
+                                    cssClass="gs__search-text-input"
+                                    [isLoading]="tabz.isLoading"
+                                >
                                 </app-xn-input-debounce>
-                                <advance-search-icon class="advance_search" *ngIf="tabz.module"
-                                                     [module]="tabz.module"
-                                                     [activeSearch]="tabz.activeAdvanceSearchStatus"></advance-search-icon>
+                                <advance-search-icon
+                                    class="advance_search"
+                                    *ngIf="tabz.module"
+                                    [module]="tabz.module"
+                                    [activeSearch]="
+                                        tabz.activeAdvanceSearchStatus
+                                    "
+                                ></advance-search-icon>
                             </div>
-                            <gs-tab #globalSearchTabForm
-                                    [type]="tabz.title"
-                                    [tabs]="tabs"
-                                    [tabz]="tabz"
-                                    [isWithStar]="isWithStar"
-                                    (onGlobalSearchItemClicked)="globalSearchItemClicked($event)"
-                                    (onMarkForCheck)="markForCheck($event)"
-                                    (onPinGroupTranslateClick)="turnOnPinGroupTranslateClick($event)"
-                                    (onSearchResultCompleted)="onSearchResultCompleted(tabz, $event)"
-                                    [mainModules]="(mainModulesState | async)"
-                                    [subModules]="(subModulesState | async)"
-                                    [activeModule]="(activeModuleState | async)"
-                                    [activeSubModule]="(activeSubModuleState | async)"
-                                    [ofModule]="tabz.module"
-                                    [cssClass]="'gs__search-result'"></gs-tab>
+                            <gs-tab
+                                #globalSearchTabForm
+                                [type]="tabz.title"
+                                [tabs]="tabs"
+                                [tabz]="tabz"
+                                [isWithStar]="isWithStar"
+                                (onGlobalSearchItemClicked)="
+                                    globalSearchItemClicked($event)
+                                "
+                                (onMarkForCheck)="markForCheck($event)"
+                                (onPinGroupTranslateClick)="
+                                    turnOnPinGroupTranslateClick($event)
+                                "
+                                (onSearchResultCompleted)="
+                                    onSearchResultCompleted(tabz, $event)
+                                "
+                                [mainModules]="mainModulesState | async"
+                                [subModules]="subModulesState | async"
+                                [activeModule]="activeModuleState | async"
+                                [activeSubModule]="activeSubModuleState | async"
+                                [ofModule]="tabz.module"
+                                [cssClass]="'gs__search-result'"
+                            ></gs-tab>
                         </tab>
                     </tabset>
                 </div>
@@ -104,13 +183,17 @@
     </div>
 </div>
 
-<div [hidden]="!showFakedHeading"
-     class="faked-heading">
+<div [hidden]="!showFakedHeading" class="faked-heading">
     <h4>
-        <a mat-button
-           (click)="collapseClick()"
-           [class.disabled]="!(isViewModeState | async)">
-            <span class="glyphicon glyphicon-search"></span> <label-translation [keyword]="'Gs_main__Global_Search'"></label-translation>
+        <a
+            mat-button
+            (click)="collapseClick()"
+            [class.disabled]="!(isViewModeState | async)"
+        >
+            <span class="glyphicon glyphicon-search"></span>
+            <label-translation
+                [keyword]="'Gs_main__Global_Search'"
+            ></label-translation>
         </a>
     </h4>
 </div>

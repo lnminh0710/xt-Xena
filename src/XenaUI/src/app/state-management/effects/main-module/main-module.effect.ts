@@ -1,11 +1,11 @@
-﻿import { Injectable } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+﻿import { Injectable } from "@angular/core";
+import { Effect, Actions } from "@ngrx/effects";
 
-import { ModuleActions } from 'app/state-management/store/actions';
-import { ModuleService } from 'app/services';
-import { Module, ApiResultResponse } from 'app/models';
-import { Uti } from 'app/utilities';
-import { CustomAction } from 'app/state-management/store/actions/base';
+import { ModuleActions } from "app/state-management/store/actions";
+import { ModuleService } from "app/services";
+import { Module, ApiResultResponse } from "app/models";
+import { Uti } from "app/utilities";
+import { CustomAction } from "app/state-management/store/actions/base";
 
 @Injectable()
 export class MainModuleEffects {
@@ -13,7 +13,7 @@ export class MainModuleEffects {
         private update$: Actions,
         private moduleActions: ModuleActions,
         private moduleService: ModuleService
-    ) { }
+    ) {}
 
     @Effect() loadMainModules$ = this.update$
         .ofType(ModuleActions.LOAD_MAIN_MODULES)
@@ -27,8 +27,10 @@ export class MainModuleEffects {
 
     @Effect() loadSubModules$ = this.update$
         .ofType<CustomAction>(ModuleActions.ACTIVE_MODULE)
-        .map(action => action.payload)
-        .switchMap((module: Module) => this.moduleService.getDetailSubModule(module.idSettingsGUI))
+        .map((action) => action.payload)
+        .switchMap((module: Module) =>
+            this.moduleService.getDetailSubModule(module.idSettingsGUI)
+        )
         .map((response: ApiResultResponse) => {
             if (!Uti.isResquestSuccess(response)) {
                 return;

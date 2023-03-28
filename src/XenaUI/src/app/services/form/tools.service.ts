@@ -1,10 +1,7 @@
-import { Injectable, Injector } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BaseService } from '../base.service';
-import {
-    MatchingCountry,
-    ScanAssignmentUserLanguageCountry
-} from 'app/models';
+import { Injectable, Injector } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import { BaseService } from "../base.service";
+import { MatchingCountry, ScanAssignmentUserLanguageCountry } from "app/models";
 
 @Injectable()
 export class ToolsService extends BaseService {
@@ -14,7 +11,7 @@ export class ToolsService extends BaseService {
 
     public getAllScanCenters(mode: string): Observable<any> {
         return this.get<any>(this.serUrl.getAllScanCenters, {
-            mode: mode
+            mode: mode,
         }).map((result: any) => {
             return result.item;
         });
@@ -22,36 +19,44 @@ export class ToolsService extends BaseService {
 
     public getScanCenterPools(idScanCenter: string): Observable<any> {
         return this.get<any>(this.serUrl.getScanCenterPools, {
-            idScanCenter: idScanCenter
+            idScanCenter: idScanCenter,
         }).map((result: any) => {
             return result.item;
         });
     }
 
     public getAllScanDataEntryCenters(): Observable<any> {
-        return this.get<any>(this.serUrl.getAllScanDataEntryCenters).map((result: any) => {
-            return result.item;
-        }).map((result: any) => {
-            return result.item;
-        });
+        return this.get<any>(this.serUrl.getAllScanDataEntryCenters)
+            .map((result: any) => {
+                return result.item;
+            })
+            .map((result: any) => {
+                return result.item;
+            });
     }
 
     public getScanCenterDispatcher(idScanCenter: string): Observable<any> {
         return this.get<any>(this.serUrl.getScanCenterDispatcher, {
-            idScanCenter: idScanCenter
+            idScanCenter: idScanCenter,
         }).map((result: any) => {
             return result.item;
         });
     }
 
     public saveScanDispatcherPool(dispatcherData: any): Observable<any> {
-        return this.post<any>(this.serUrl.saveScanDispatcherPool, JSON.stringify(dispatcherData)).map((result: any) => {
+        return this.post<any>(
+            this.serUrl.saveScanDispatcherPool,
+            JSON.stringify(dispatcherData)
+        ).map((result: any) => {
             return result.item;
         });
     }
 
     public saveScanUndispatch(unDispatcherData: any) {
-        return this.post<any>(this.serUrl.saveScanUndispatch, JSON.stringify(unDispatcherData)).map((result: any) => {
+        return this.post<any>(
+            this.serUrl.saveScanUndispatch,
+            JSON.stringify(unDispatcherData)
+        ).map((result: any) => {
             return result.item;
         });
     }
@@ -59,14 +64,16 @@ export class ToolsService extends BaseService {
     /* For Assignment */
 
     public getScanAssignmentDataEntryCenter(): Observable<any> {
-        return this.get<any>(this.serUrl.getScanAssignmentDataEntryCenter).map((result: any) => {
-            return result.item;
-        });
+        return this.get<any>(this.serUrl.getScanAssignmentDataEntryCenter).map(
+            (result: any) => {
+                return result.item;
+            }
+        );
     }
 
     public getScanAssignmentPool(idPerson: string): Observable<any> {
         return this.get<any>(this.serUrl.getScanAssignmentPool, {
-            idPerson: idPerson
+            idPerson: idPerson,
         }).map((result: any) => {
             return result.item;
         });
@@ -74,32 +81,45 @@ export class ToolsService extends BaseService {
 
     public getScanAssignedPool(idPerson: string): Observable<any> {
         return this.get<any>(this.serUrl.getScanAssignedPool, {
-            idPerson: idPerson
+            idPerson: idPerson,
         }).map((result: any) => {
             return result.item;
         });
     }
 
-    public getScanAssignmentUserLanguageAndCountry(model: ScanAssignmentUserLanguageCountry): Observable<any> {
-        return this.get<any>(this.serUrl.getScanAssignmentUserLanguageAndCountry, model).map((result: any) => {
+    public getScanAssignmentUserLanguageAndCountry(
+        model: ScanAssignmentUserLanguageCountry
+    ): Observable<any> {
+        return this.get<any>(
+            this.serUrl.getScanAssignmentUserLanguageAndCountry,
+            model
+        ).map((result: any) => {
             return result.item;
         });
     }
 
     public getScanAssignmentUsers(): Observable<any> {
-        return this.get<any>(this.serUrl.getScanAssignmentUsers).map((result: any) => {
-            return result.item;
-        });
+        return this.get<any>(this.serUrl.getScanAssignmentUsers).map(
+            (result: any) => {
+                return result.item;
+            }
+        );
     }
 
     public scanAssignmentAssignPoolsToUsers(data: any): Observable<any> {
-        return this.post<any>(this.serUrl.scanAssignmentAssignPoolsToUsers, JSON.stringify(data)).map((result: any) => {
+        return this.post<any>(
+            this.serUrl.scanAssignmentAssignPoolsToUsers,
+            JSON.stringify(data)
+        ).map((result: any) => {
             return result.item;
         });
     }
 
     public scanAssignmentUnassignPoolsToUsers(data: any): Observable<any> {
-        return this.post<any>(this.serUrl.scanAssignmentUnassignPoolsToUsers, JSON.stringify(data)).map((result: any) => {
+        return this.post<any>(
+            this.serUrl.scanAssignmentUnassignPoolsToUsers,
+            JSON.stringify(data)
+        ).map((result: any) => {
             return result.item;
         });
     }
@@ -117,7 +137,10 @@ export class ToolsService extends BaseService {
     }
 
     public saveMatchingConfiguration(data: any): Observable<any> {
-        return this.post<any>(this.serUrl.saveMatchingConfiguration, JSON.stringify(data));
+        return this.post<any>(
+            this.serUrl.saveMatchingConfiguration,
+            JSON.stringify(data)
+        );
     }
 
     public getScheduleTime(): Observable<any> {
@@ -125,36 +148,58 @@ export class ToolsService extends BaseService {
     }
 
     public saveScheduleTime(data: any): Observable<any> {
-        return this.post<any>(this.serUrl.saveScheduleTime, JSON.stringify(data));
+        return this.post<any>(
+            this.serUrl.saveScheduleTime,
+            JSON.stringify(data)
+        );
     }
 
-    public listSystemScheduleService(idSharingTreeGroups?: any, runDateTime?: any): Observable<any> {
+    public listSystemScheduleService(
+        idSharingTreeGroups?: any,
+        runDateTime?: any
+    ): Observable<any> {
         return this.get<any>(this.serUrl.listSystemScheduleService, {
             IdSharingTreeGroups: idSharingTreeGroups,
-            RunDateTime: runDateTime
+            RunDateTime: runDateTime,
         });
     }
 
-    public getScheduleServiceStatusByQueueId(idAppSystemScheduleQueue: any): Observable<any> {
+    public getScheduleServiceStatusByQueueId(
+        idAppSystemScheduleQueue: any
+    ): Observable<any> {
         return this.get<any>(this.serUrl.getScheduleServiceStatusByQueueId, {
-            idAppSystemScheduleQueue: idAppSystemScheduleQueue
+            idAppSystemScheduleQueue: idAppSystemScheduleQueue,
         });
     }
 
     public getSummayFileResultSystemSchedule(data): Observable<any> {
-        return this.get<any>(this.serUrl.getSummayFileResultSystemSchedule, data);
+        return this.get<any>(
+            this.serUrl.getSummayFileResultSystemSchedule,
+            data
+        );
     }
 
-    public getScheduleByServiceId(idRepAppSystemScheduleServiceName: number): Observable<any> {
-        return this.get<any>(this.serUrl.getScheduleByServiceId, {idRepAppSystemScheduleServiceName: idRepAppSystemScheduleServiceName});
+    public getScheduleByServiceId(
+        idRepAppSystemScheduleServiceName: number
+    ): Observable<any> {
+        return this.get<any>(this.serUrl.getScheduleByServiceId, {
+            idRepAppSystemScheduleServiceName:
+                idRepAppSystemScheduleServiceName,
+        });
     }
-    
+
     public saveSystemSchedule(data: any): Observable<any> {
-        return this.post<any>(this.serUrl.saveSystemSchedule, JSON.stringify(data));
+        return this.post<any>(
+            this.serUrl.saveSystemSchedule,
+            JSON.stringify(data)
+        );
     }
 
     public saveStatusSystemSchedule(data: any): Observable<any> {
-        return this.post<any>(this.serUrl.saveStatusSystemSchedule, JSON.stringify(data));
+        return this.post<any>(
+            this.serUrl.saveStatusSystemSchedule,
+            JSON.stringify(data)
+        );
     }
 
     public savingQueue(data: any): Observable<any> {
@@ -162,7 +207,10 @@ export class ToolsService extends BaseService {
     }
 
     public saveMailingReturn(data: any): Observable<any> {
-        return this.post<any>(this.serUrl.saveMailingReturn, JSON.stringify(data)).map((result: any) => {
+        return this.post<any>(
+            this.serUrl.saveMailingReturn,
+            JSON.stringify(data)
+        ).map((result: any) => {
             return result.item;
         });
     }
@@ -172,26 +220,38 @@ export class ToolsService extends BaseService {
     }
 
     public getMailingReturnSummary(): Observable<any> {
-        return this.get<any>(this.serUrl.getMailingReturnSummary).map((result: any) => {
-            return result.item;
-        });
+        return this.get<any>(this.serUrl.getMailingReturnSummary).map(
+            (result: any) => {
+                return result.item;
+            }
+        );
     }
 
-    public exportCustomerAndBusinessStatus(customerStatusIds, businessStatusIds): Observable<any> {
-        return this.get<any>(this.serUrl.exportCustomerAndBusinessStatus, { customerStatusIds: customerStatusIds, businessStatusIds: businessStatusIds }).map((result: any) => {
+    public exportCustomerAndBusinessStatus(
+        customerStatusIds,
+        businessStatusIds
+    ): Observable<any> {
+        return this.get<any>(this.serUrl.exportCustomerAndBusinessStatus, {
+            customerStatusIds: customerStatusIds,
+            businessStatusIds: businessStatusIds,
+        }).map((result: any) => {
             return result.item;
         });
     }
 
     public getImportInvoiceFiles(): Observable<any> {
-        return this.get<any>(this.serUrl.getImportInvoiceFiles).map((result: any) => {
-            return result.item;
-        });
+        return this.get<any>(this.serUrl.getImportInvoiceFiles).map(
+            (result: any) => {
+                return result.item;
+            }
+        );
     }
 
-    public callbackSP(data :any): Observable<any> {
-      return this.post<any>(this.serUrl.callbackSP, JSON.stringify(data)).map((result: any) => {
-          return result.item;
-      });
-  }
+    public callbackSP(data: any): Observable<any> {
+        return this.post<any>(this.serUrl.callbackSP, JSON.stringify(data)).map(
+            (result: any) => {
+                return result.item;
+            }
+        );
+    }
 }

@@ -1,37 +1,49 @@
 <div class="search-media-code-grid-standard">
-    <split  direction="horizontal"
-            (dragStart)="dragStart()"
-            [gutterSize]="5">
+    <split direction="horizontal" (dragStart)="dragStart()" [gutterSize]="5">
         <split-area [size]="75">
             <div class="spliter-content left">
-                <div class="col-xs-10  no-padding spliter-content-item  grid-left">
-                    <xn-ag-grid #wjGridSearchMediaCodeLeft
-                                *ngIf="searchMediaCodeGridLeft && searchMediaCodeGridLeft.columns && searchMediaCodeGridLeft.columns.length"
-                                [id]="wjGridSearchMediaCodeLeftId"
-                                [dataSource]="searchMediaCodeGridLeft"
-                                [hasSearch]="true"
-                                [pageSize]="pageSize"
-                                [serverPaging]="true"
-                                [globalProperties]="globalProperties"
-                                [isShowedHeader]="true"
-                                [isUsedSearchTextboxInside]="true"
-                                [headerTitle]="'Search campaign'"
-                                [searchText]="searchText"
-                                (rowClick)="searchMediaCodeGridLeftRowClick($event)"
-                                (onTableSearch)="onLeftTableSearch($event)"
-                                (pageChanged)="onPageChanged($event)"
-                                (pageNumberChanged)="onPageNumberChanged($event)">
+                <div
+                    class="col-xs-10 no-padding spliter-content-item grid-left"
+                >
+                    <xn-ag-grid
+                        #wjGridSearchMediaCodeLeft
+                        *ngIf="
+                            searchMediaCodeGridLeft &&
+                            searchMediaCodeGridLeft.columns &&
+                            searchMediaCodeGridLeft.columns.length
+                        "
+                        [id]="wjGridSearchMediaCodeLeftId"
+                        [dataSource]="searchMediaCodeGridLeft"
+                        [hasSearch]="true"
+                        [pageSize]="pageSize"
+                        [serverPaging]="true"
+                        [globalProperties]="globalProperties"
+                        [isShowedHeader]="true"
+                        [isUsedSearchTextboxInside]="true"
+                        [headerTitle]="'Search campaign'"
+                        [searchText]="searchText"
+                        (rowClick)="searchMediaCodeGridLeftRowClick($event)"
+                        (onTableSearch)="onLeftTableSearch($event)"
+                        (pageChanged)="onPageChanged($event)"
+                        (pageNumberChanged)="onPageNumberChanged($event)"
+                    >
                     </xn-ag-grid>
                 </div>
                 <div class="col-xs-2 spliter-content-item">
-                    <xn-ag-grid #wjGridSearchMediaCodeRight
-                                *ngIf="searchMediaCodeGridRight && searchMediaCodeGridRight.columns && searchMediaCodeGridRight.columns.length"
-                                [id]="wjGridSearchMediaCodeRightId"
-                                [dataSource]="searchMediaCodeGridRight"
-                                [globalProperties]="globalProperties"
-                                [isShowedHeader]="true"
-                                [headerTitle]="'Select Country'"
-                                (rowClick)="searchMediaCodeGridRightRowClick($event)">
+                    <xn-ag-grid
+                        #wjGridSearchMediaCodeRight
+                        *ngIf="
+                            searchMediaCodeGridRight &&
+                            searchMediaCodeGridRight.columns &&
+                            searchMediaCodeGridRight.columns.length
+                        "
+                        [id]="wjGridSearchMediaCodeRightId"
+                        [dataSource]="searchMediaCodeGridRight"
+                        [globalProperties]="globalProperties"
+                        [isShowedHeader]="true"
+                        [headerTitle]="'Select Country'"
+                        (rowClick)="searchMediaCodeGridRightRowClick($event)"
+                    >
                     </xn-ag-grid>
                 </div>
             </div>
@@ -39,15 +51,23 @@
         <split-area [size]="25">
             <div class="spliter-content right">
                 <div style="width: 100%">
-                    <xn-ag-grid #wijmoGridComponentDetail
-                                *ngIf="searchMediaCodeGridDetail && searchMediaCodeGridDetail.columns && searchMediaCodeGridDetail.columns.length"
-                                [id]="wijmoGridComponentDetailId"
-                                [dataSource]="searchMediaCodeGridDetail"
-                                [globalProperties]="globalProperties"
-                                [isShowedHeader]="true"
-                                [headerTitle]="'Mediacodes'"
-                                (rowClick)="searchMediaCodeGridDetailRowClick($event)"
-                                (rowDoubleClicked)="searchMediaCodeGridDetailRowDoubleClick($event)">
+                    <xn-ag-grid
+                        #wijmoGridComponentDetail
+                        *ngIf="
+                            searchMediaCodeGridDetail &&
+                            searchMediaCodeGridDetail.columns &&
+                            searchMediaCodeGridDetail.columns.length
+                        "
+                        [id]="wijmoGridComponentDetailId"
+                        [dataSource]="searchMediaCodeGridDetail"
+                        [globalProperties]="globalProperties"
+                        [isShowedHeader]="true"
+                        [headerTitle]="'Mediacodes'"
+                        (rowClick)="searchMediaCodeGridDetailRowClick($event)"
+                        (rowDoubleClicked)="
+                            searchMediaCodeGridDetailRowDoubleClick($event)
+                        "
+                    >
                     </xn-ag-grid>
                 </div>
             </div>

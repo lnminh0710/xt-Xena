@@ -1,10 +1,12 @@
-<customer-form #customerForm
-               [isVerticalLayout]="true"
-               [data]="customerData"
-               [formFieldsData]="formFields"
-               [transferTranslate]="transferTranslate"
-               [tabID]="tabID"
-               (outputData)="outputDataCustomerForm($event)"
-               (outputFormFields)="buildWidgetContentDetail($event)">
+<customer-form
+    #customerForm
+    [isVerticalLayout]="true"
+    [data]="customerData"
+    [formFieldsData]="formFields"
+    [transferTranslate]="transferTranslate"
+    [tabID]="tabID"
+    (outputData)="outputDataCustomerForm($event)"
+    (outputFormFields)="buildWidgetContentDetail($event)"
+>
 </customer-form>
 <div class="block-ui" *ngIf="isBlockUI()"></div>

@@ -1,1 +1,1 @@
-export * from './data-entry-form-base';
+export * from "./data-entry-form-base";

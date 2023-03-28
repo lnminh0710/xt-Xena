@@ -1,164 +1,204 @@
 <div class="text-center">
     <ng-container [ngSwitch]="mode">
-        <button *ngSwitchCase="'Mediacode'"
-                mat-raised-button
-                class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
-                [ngClass]="{'btn-media-code-disable': params && params.data.IsSetMediaCodeArticlePrice == 0}"
-                type="button"
-                (click)="btnClick()">
+        <button
+            *ngSwitchCase="'Mediacode'"
+            mat-raised-button
+            class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
+            [ngClass]="{'btn-media-code-disable': params && params.data.IsSetMediaCodeArticlePrice == 0}"
+            type="button"
+            (click)="btnClick()"
+        >
             <i class="fa fa-usd"></i>
         </button>
-        <button *ngSwitchCase="'Delete'"
-                mat-raised-button
-                class="mat-btn-non-fix--icon mat-btn-small mat-btn-red"
-                [disabled]="params && params.data && (params.data.IsCanDeleted === 0 || params.data.IsCanDeleted === false)"
-                type="button"
-                (click)="btnClick()">
+        <button
+            *ngSwitchCase="'Delete'"
+            mat-raised-button
+            class="mat-btn-non-fix--icon mat-btn-small mat-btn-red"
+            [disabled]="params && params.data && (params.data.IsCanDeleted === 0 || params.data.IsCanDeleted === false)"
+            type="button"
+            (click)="btnClick()"
+        >
             <i class="fa fa-trash-o"></i>
         </button>
-        <button *ngSwitchCase="'RunSchedule'"
-                mat-raised-button
-                class="mat-btn-non-fix--icon mat-btn-small mat-btn-green"
-                type="button"
-                (click)="btnClick()">
+        <button
+            *ngSwitchCase="'RunSchedule'"
+            mat-raised-button
+            class="mat-btn-non-fix--icon mat-btn-small mat-btn-green"
+            type="button"
+            (click)="btnClick()"
+        >
             <i class="fa fa-play"></i>
         </button>
-        <button *ngSwitchCase="'Return'"
-                mat-raised-button
-                class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
-                type="button"
-                (click)="btnClick()">
+        <button
+            *ngSwitchCase="'Return'"
+            mat-raised-button
+            class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
+            type="button"
+            (click)="btnClick()"
+        >
             <i class="fa fa-exchange"></i>
         </button>
         <ng-template [ngSwitchCase]="'StartStop'">
-            <button *ngIf="!params.data || params.data.HasChildren == 0"
-                    mat-raised-button
-                    class="mat-btn-non-fix--icon mat-btn-small"
-                    type="button"
-                    [ngClass]="{'mat-btn-red': value != 1,
+            <button
+                *ngIf="!params.data || params.data.HasChildren == 0"
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small"
+                type="button"
+                [ngClass]="{'mat-btn-red': value != 1,
                                 'mat-btn-green': value == 1 }"
-                    (click)="btnClick(value)">
-                <i class="fa"
-                   [ngClass]="{'fa-stop': value != 1,
-                               'fa-play': value == 1 }"></i>
+                (click)="btnClick(value)"
+            >
+                <i
+                    class="fa"
+                    [ngClass]="{'fa-stop': value != 1,
+                               'fa-play': value == 1 }"
+                ></i>
             </button>
         </ng-template>
         <ng-template [ngSwitchCase]="'Run'">
-            <button *ngIf="!params.data || params.data.HasChildren == 0"
-                    mat-raised-button
-                    [disabled]="value == '2'"
-                    class="mat-btn-non-fix--icon mat-btn-small mat-btn-green"
-                    type="button"
-                    (click)="btnClick()">
+            <button
+                *ngIf="!params.data || params.data.HasChildren == 0"
+                mat-raised-button
+                [disabled]="value == '2'"
+                class="mat-btn-non-fix--icon mat-btn-small mat-btn-green"
+                type="button"
+                (click)="btnClick()"
+            >
                 <i class="fa fa-play"></i>
             </button>
         </ng-template>
         <ng-template [ngSwitchCase]="'Setting'">
-            <button *ngIf="!params.data || params.data.HasChildren == 0"
-                    mat-raised-button
-                    class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
-                    type="button"
-                    (click)="btnClick()">
+            <button
+                *ngIf="!params.data || params.data.HasChildren == 0"
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
+                type="button"
+                (click)="btnClick()"
+            >
                 <i class="fa fa-ellipsis-h"></i>
             </button>
         </ng-template>
         <ng-template [ngSwitchCase]="'Download'">
-            <button mat-raised-button
-                    class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
-                    type="button"
-                    (click)="btnClick()">
+            <button
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
+                type="button"
+                (click)="btnClick()"
+            >
                 <i class="fa fa-download"></i>
             </button>
         </ng-template>
         <ng-template [ngSwitchCase]="'Preview'">
-            <button mat-raised-button
-                    class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
-                    type="button"
-                    (click)="btnClick()">
-                <i class="fa fa-eye "></i>
+            <button
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
+                type="button"
+                (click)="btnClick()"
+            >
+                <i class="fa fa-eye"></i>
             </button>
         </ng-template>
         <ng-template [ngSwitchCase]="'rowColCheckAll'">
-            <button mat-raised-button
-                    class="mat-btn-non-fix--icon mat-btn-small"
-                    type="button"
-                    (click)="btnClick('vertical')">
+            <button
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small"
+                type="button"
+                (click)="btnClick('vertical')"
+            >
                 <i class="fa fa-long-arrow-down"></i>
             </button>
-            <button mat-raised-button
-                    class="mat-btn-non-fix--icon mat-btn-small"
-                    type="button"
-                    (click)="btnClick('horizontal')">
+            <button
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small"
+                type="button"
+                (click)="btnClick('horizontal')"
+            >
                 <i class="fa fa-long-arrow-right"></i>
             </button>
         </ng-template>
         <ng-template [ngSwitchCase]="'Edit'">
-            <button mat-raised-button
-                    class="mat-btn-non-fix--icon mat-btn-small mat-btn-orange"
-                    type="button"
-                    (click)="btnClick()">
+            <button
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small mat-btn-orange"
+                type="button"
+                (click)="btnClick()"
+            >
                 <i class="fa fa-pencil"></i>
             </button>
         </ng-template>
         <ng-template [ngSwitchCase]="'FilterExtended'">
-            <button mat-raised-button
-                    class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
-                    type="button"
-                    (click)="btnClick()">
+            <button
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
+                type="button"
+                (click)="btnClick()"
+            >
                 <i class="fa fa-eye"></i>
             </button>
         </ng-template>
         <ng-template [ngSwitchCase]="'KillProcess'">
-          <button mat-raised-button
-                  class="mat-btn-non-fix--icon mat-btn-small  mat-btn-orange"
-                  type="button"
-                  (click)="btnClick()">
-              <i class="fa fa-ban"></i>
-          </button>
-      </ng-template>
-      <ng-template [ngSwitchCase]="'ShrinkFile'">
-        <button mat-raised-button
-                class="mat-btn-non-fix--icon mat-btn-small  mat-btn-blue"
+            <button
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small mat-btn-orange"
                 type="button"
-                (click)="btnClick()">
-            <i class="fa fa-cog"></i>
-        </button>
-    </ng-template>
+                (click)="btnClick()"
+            >
+                <i class="fa fa-ban"></i>
+            </button>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'ShrinkFile'">
+            <button
+                mat-raised-button
+                class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
+                type="button"
+                (click)="btnClick()"
+            >
+                <i class="fa fa-cog"></i>
+            </button>
+        </ng-template>
         <ng-template [ngSwitchCase]="'ReportTypeTemplate'">
             <div *ngIf="value==1">
-                <button mat-raised-button
-                        class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
-                        type="button"
-                        (click)="btnClick('download')">
+                <button
+                    mat-raised-button
+                    class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
+                    type="button"
+                    (click)="btnClick('download')"
+                >
                     <i class="fa fa-download"></i>
                 </button>
                 &nbsp;&nbsp;
-                <button mat-raised-button
-                        class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
-                        type="button"
-                        (click)="btnClick('upload')">
+                <button
+                    mat-raised-button
+                    class="mat-btn-non-fix--icon mat-btn-small mat-btn-blue"
+                    type="button"
+                    (click)="btnClick('upload')"
+                >
                     <i class="fa fa-upload"></i>
                 </button>
             </div>
         </ng-template>
-        <button *ngSwitchDefault
-                class="mat-btn-non-fix--icon mat-btn-small"
-                [ngClass]="{'mat-btn-orange': mode === 'Unblock' || mode === 'EditRow',
+        <button
+            *ngSwitchDefault
+            class="mat-btn-non-fix--icon mat-btn-small"
+            [ngClass]="{'mat-btn-orange': mode === 'Unblock' || mode === 'EditRow',
                             'mat-btn-blue': mode !== 'Unblock' && mode !== 'EditRow'}"
-                (click)="btnClick()"
-                type="button"
-                mat-raised-button
-                [disabled]="!value">
+            (click)="btnClick()"
+            type="button"
+            mat-raised-button
+            [disabled]="!value"
+        >
             <ng-container [ngSwitch]="mode">
                 <i *ngSwitchCase="'Tracking'" class="fa fa-truck"></i>
                 <i *ngSwitchCase="'InvoicePDF'" class="fa fa-file-pdf-o"></i>
                 <i *ngSwitchCase="'PDF'" class="fa fa-file-pdf-o"></i>
                 <!-- <i *ngSwitchCase="'SAV'" class="fa fa-paper-plane-o"></i> -->
                 <i *ngSwitchCase="'EditRow'" class="fa fa-pencil"></i>
-                <i *ngSwitchCase="'SendLetter'" class="fa fa-envelope-open-o"></i>
+                <i
+                    *ngSwitchCase="'SendLetter'"
+                    class="fa fa-envelope-open-o"
+                ></i>
                 <i *ngSwitchCase="'Unblock'" class="fa fa-unlock"></i>
             </ng-container>
         </button>
     </ng-container>
-
 </div>

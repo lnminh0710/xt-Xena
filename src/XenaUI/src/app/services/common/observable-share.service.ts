@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Scheduler } from 'rxjs/Rx';
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import { Scheduler } from "rxjs/Rx";
 
 class ObservableShareModel {
     public key: string;
@@ -13,10 +13,9 @@ class ObservableShareModel {
 
 @Injectable()
 export class ObservableShareService {
-
     public observables: Array<ObservableShareModel> = [];
     private scheduler: any;
-    private expirationMs: number = 5000;//in milliseconds
+    private expirationMs: number = 5000; //in milliseconds
 
     constructor() {
         this.scheduler = this.scheduler || Scheduler.async;
@@ -27,28 +26,35 @@ export class ObservableShareService {
      * @param key
      * @param observable
      */
-    public setObservable(key: string, observable: Observable<any>, expirationMs?: number, isExecuteImmediately?: boolean) {
-        let obs = this.observables.find(p => p.key == key);
+    public setObservable(
+        key: string,
+        observable: Observable<any>,
+        expirationMs?: number,
+        isExecuteImmediately?: boolean
+    ) {
+        let obs = this.observables.find((p) => p.key == key);
         if (!obs) {
             /*
             - refCount: returns an observable that maintains a reference count of subscribers.
             */
-            this.observables.push(new ObservableShareModel({
-                key: key,
-                observable: observable.publishReplay(1).refCount()
-            }));
+            this.observables.push(
+                new ObservableShareModel({
+                    key: key,
+                    observable: observable.publishReplay(1).refCount(),
+                })
+            );
 
             //Execute Immediately
             if (isExecuteImmediately) {
-                if (key.indexOf('getCustomerData') !== -1)
-                    console.log('subscribe to get: ', key);
+                if (key.indexOf("getCustomerData") !== -1)
+                    console.log("subscribe to get: ", key);
 
                 observable.subscribe();
             }
 
             this.scheduler.schedule(() => {
-                if (key.indexOf('getCustomerData') !== -1)
-                    console.log('deleteObservable: ', key);
+                if (key.indexOf("getCustomerData") !== -1)
+                    console.log("deleteObservable: ", key);
 
                 this.deleteObservable(key);
             }, expirationMs || this.expirationMs);
@@ -61,7 +67,7 @@ export class ObservableShareService {
      */
     public deleteObservable(key: string) {
         if (this.observables && this.observables.length) {
-            this.observables = this.observables.filter(p => p.key != key);
+            this.observables = this.observables.filter((p) => p.key != key);
 
             //// add currency if not existed
             //for (let i = 0, length = this.observables.length; i < length; i++) {
@@ -80,7 +86,7 @@ export class ObservableShareService {
      */
     public getObservable(key: string) {
         let observable = null;
-        let obs = this.observables.find(p => p.key == key);
+        let obs = this.observables.find((p) => p.key == key);
         if (obs) {
             observable = obs.observable;
         }

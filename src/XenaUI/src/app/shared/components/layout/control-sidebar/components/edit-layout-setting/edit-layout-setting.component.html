@@ -1,54 +1,64 @@
 <div class="layout-setting-aside">
     <div class="small-line"></div>
     <div class="btn-group width-pc-100">
-        <a mat-button
-           class="mat-btn-blue"
-           xn-tooltip
-           [tooltipText]="'Save'"
-           [tooltipPlacement]="'left'"
-           container="body"
-           (click)="save($event)">
+        <a
+            mat-button
+            class="mat-btn-blue"
+            xn-tooltip
+            [tooltipText]="'Save'"
+            [tooltipPlacement]="'left'"
+            container="body"
+            (click)="save($event)"
+        >
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
         </a>
-        <a mat-button
-           class="mat-btn-red"
-           xn-tooltip
-           [tooltipText]="'Close'"
-           [tooltipPlacement]="'left'"
-           container="body"
-           (click)="close($event)">
+        <a
+            mat-button
+            class="mat-btn-red"
+            xn-tooltip
+            [tooltipText]="'Close'"
+            [tooltipPlacement]="'left'"
+            container="body"
+            (click)="close($event)"
+        >
             <i class="fa fa-times fa-lg"></i>
         </a>
     </div>
     <div class="btn-group group2 width-pc-100">
-        <a mat-button
-           class="mat-btn-blue"
-           xn-tooltip
-           [tooltipText]="'Undo'"
-           [tooltipPlacement]="'left'"
-           container="body"
-           (click)="undo($event)">
+        <a
+            mat-button
+            class="mat-btn-blue"
+            xn-tooltip
+            [tooltipText]="'Undo'"
+            [tooltipPlacement]="'left'"
+            container="body"
+            (click)="undo($event)"
+        >
             <i class="fa fa-undo" aria-hidden="true"></i>
         </a>
-        <a mat-button
-           class="mat-btn-red"
-           xn-tooltip
-           [tooltipText]="'Reset'"
-           [tooltipPlacement]="'left'"
-           container="body"
-           (click)="restore($event)">
+        <a
+            mat-button
+            class="mat-btn-red"
+            xn-tooltip
+            [tooltipText]="'Reset'"
+            [tooltipPlacement]="'left'"
+            container="body"
+            (click)="restore($event)"
+        >
             <i class="fa fa-refresh"></i>
         </a>
     </div>
     <div class="layout-drag-drop-source-block">
-        <div *ngFor="let item of itemDragSource"
-             class="drag-drop-item"
-             xn-tooltip
-             [tooltipText]="item.title"
-             [tooltipPlacement]="'left'"
-             container="body"
-             [attr.data-type]="item.type">
-            <i class="{{item.icon}}" aria-hidden="true"></i>
+        <div
+            *ngFor="let item of itemDragSource"
+            class="drag-drop-item"
+            xn-tooltip
+            [tooltipText]="item.title"
+            [tooltipPlacement]="'left'"
+            container="body"
+            [attr.data-type]="item.type"
+        >
+            <i class="{{ item.icon }}" aria-hidden="true"></i>
         </div>
 
         <!--<div class="drag-drop-item"

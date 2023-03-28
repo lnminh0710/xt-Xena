@@ -1,4 +1,4 @@
-import * as wjcChart from 'wijmo/wijmo.chart';
+import * as wjcChart from "wijmo/wijmo.chart";
 export declare enum Easing {
     Linear = 0,
     Swing = 1,

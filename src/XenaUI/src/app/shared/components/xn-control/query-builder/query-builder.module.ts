@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, } from '@angular/forms';
-import { WjInputModule } from 'wijmo/wijmo.angular2.input';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { WjInputModule } from "wijmo/wijmo.angular2.input";
 import {
     QueryBuilderComponent,
     QueryInputDirective,
@@ -15,17 +15,17 @@ import {
     DynamicControlComponent,
     DynamicFilterComponent,
     DynamicFormComponent,
-    RangeControlComponent
-} from './components';
-import * as primengModule from 'primeng/primeng';
-import { ReactiveFormsModule } from '@angular/forms';
-import { InputToggleComponent } from '../input-toggle';
-import { MatButtonModule } from '../light-material-ui/button';
-import { XnFormFocusDirectiveModule } from 'app/shared/directives/xn-form-focus';
-import {AngularMultiSelectModule} from "../xn-dropdown";
-import { XnInputNumericModule } from 'app/shared/directives/xn-input-numeric/xn-input-numeric.module';
+    RangeControlComponent,
+} from "./components";
+import * as primengModule from "primeng/primeng";
+import { ReactiveFormsModule } from "@angular/forms";
+import { InputToggleComponent } from "../input-toggle";
+import { MatButtonModule } from "../light-material-ui/button";
+import { XnFormFocusDirectiveModule } from "app/shared/directives/xn-form-focus";
+import { AngularMultiSelectModule } from "../xn-dropdown";
+import { XnInputNumericModule } from "app/shared/directives/xn-input-numeric/xn-input-numeric.module";
 import { LabelTranslationModule } from "app/shared/components/label-translation/label-translation.module";
-import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-translation';
+import { XnResourceTranslationModule } from "app/shared/directives/xn-resource-translation";
 @NgModule({
     imports: [
         CommonModule,
@@ -38,7 +38,7 @@ import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-t
         LabelTranslationModule,
         XnResourceTranslationModule,
         XnFormFocusDirectiveModule,
-        XnInputNumericModule
+        XnInputNumericModule,
     ],
     declarations: [
         QueryBuilderComponent,
@@ -54,7 +54,7 @@ import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-t
         DynamicControlComponent,
         DynamicFilterComponent,
         DynamicFormComponent,
-        RangeControlComponent
+        RangeControlComponent,
     ],
     exports: [
         QueryBuilderComponent,
@@ -70,7 +70,7 @@ import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-t
         DynamicControlComponent,
         DynamicFilterComponent,
         DynamicFormComponent,
-        RangeControlComponent
-    ]
+        RangeControlComponent,
+    ],
 })
-export class QueryBuilderModule { }
+export class QueryBuilderModule {}

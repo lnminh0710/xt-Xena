@@ -1,4 +1,10 @@
-import { ViewChild, ViewChildren, Input, QueryList, ChangeDetectorRef } from '@angular/core';
+import {
+    ViewChild,
+    ViewChildren,
+    Input,
+    QueryList,
+    ChangeDetectorRef,
+} from "@angular/core";
 import {
     WidgetDetail,
     WidgetType,
@@ -8,11 +14,15 @@ import {
     WidgetPropertyModel,
     ApiResultResponse,
     WidgetState,
-    RowSetting
-} from 'app/models';
-import { MessageModal, MenuModuleId, RepWidgetAppIdEnum } from 'app/app.constants';
-import { WidgetUtils } from '../../../utils';
-import { WidgetTranslationComponent } from '../../widget-translation';
+    RowSetting,
+} from "app/models";
+import {
+    MessageModal,
+    MenuModuleId,
+    RepWidgetAppIdEnum,
+} from "app/app.constants";
+import { WidgetUtils } from "../../../utils";
+import { WidgetTranslationComponent } from "../../widget-translation";
 import {
     WidgetTemplateSettingService,
     DatatableService,
@@ -20,32 +30,36 @@ import {
     GlobalSettingService,
     ArticleService,
     PersonService,
-    ModalService
-} from 'app/services';
-import { Constructor } from './constructor';
-import { WidgetDetailInfo, WidgetMenu, WidgetAction } from './widget-base-mixin';
-import { WijmoGridComponent } from 'app/shared/components/wijmo';
-import { Uti } from 'app/utilities/uti';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import cloneDeep from 'lodash-es/cloneDeep';
-import uniqBy from 'lodash-es/uniqBy';
-import { XnWidgetMenuStatusComponent } from '../../xn-widget-menu-status';
-import { XnFileExplorerComponent } from '../../../../xn-file';
+    ModalService,
+} from "app/services";
+import { Constructor } from "./constructor";
+import {
+    WidgetDetailInfo,
+    WidgetMenu,
+    WidgetAction,
+} from "./widget-base-mixin";
+import { WijmoGridComponent } from "app/shared/components/wijmo";
+import { Uti } from "app/utilities/uti";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import cloneDeep from "lodash-es/cloneDeep";
+import uniqBy from "lodash-es/uniqBy";
+import { XnWidgetMenuStatusComponent } from "../../xn-widget-menu-status";
+import { XnFileExplorerComponent } from "../../../../xn-file";
 
 import {
     FilterModeEnum,
     TranslateModeEnum,
-    TranslateDataTypeEnum
-} from 'app/app.constants';
-import { ArticleMediaManagerComponent } from 'app/shared/components/xn-control';
-import { Observable } from 'rxjs/Observable';
-import { WidgetRoleTreeGridComponent } from '../../widget-role-tree-grid';
-import { HistoryContainerComponent } from 'app/shared/components/customer-history';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import isObject from 'lodash-es/isObject';
-import groupBy from 'lodash-es/groupBy';
-import {SavLetterTemplateComponent} from '../../../../form/tools/sav-letter-template';
+    TranslateDataTypeEnum,
+} from "app/app.constants";
+import { ArticleMediaManagerComponent } from "app/shared/components/xn-control";
+import { Observable } from "rxjs/Observable";
+import { WidgetRoleTreeGridComponent } from "../../widget-role-tree-grid";
+import { HistoryContainerComponent } from "app/shared/components/customer-history";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import isObject from "lodash-es/isObject";
+import groupBy from "lodash-es/groupBy";
+import { SavLetterTemplateComponent } from "../../../../form/tools/sav-letter-template";
 
 export interface TableServiceInjector {
     widgetTemplateSettingService: WidgetTemplateSettingService;
@@ -58,9 +72,13 @@ export interface TableServiceInjector {
     changeDetectorRef: ChangeDetectorRef;
 }
 
-export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(base: T) {
-    abstract class AbstractWidgetTableBase extends base implements WidgetDetailInfo, WidgetMenu, WidgetAction {
-
+export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(
+    base: T
+) {
+    abstract class AbstractWidgetTableBase
+        extends base
+        implements WidgetDetailInfo, WidgetMenu, WidgetAction
+    {
         // Only effect for EDIT TABLE MODE
         // Default TRUE for Edit Mode
         public allowEditRow = false;
@@ -84,7 +102,7 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         public templateId: any;
         public isCustomerStatusWidgetEdit = false;
         public selectedNodes;
-        public rowSelection = 'single';
+        public rowSelection = "single";
         public groupTotal: number;
         public groupNumber: number = 1;
         public isEditAllWidgetMode = false;
@@ -92,8 +110,13 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         private previousCountryCustomerDoubletteParentData: any;
 
         public get agGridComponent(): XnAgGridComponent {
-            if (this.widgetAgGridComponent && this.widgetAgGridComponent.length) {
-                const agGrid = this.widgetAgGridComponent.find(p => p.isActivated);
+            if (
+                this.widgetAgGridComponent &&
+                this.widgetAgGridComponent.length
+            ) {
+                const agGrid = this.widgetAgGridComponent.find(
+                    (p) => p.isActivated
+                );
                 if (agGrid) {
                     return agGrid;
                 }
@@ -102,11 +125,16 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         }
 
         /**
-        * Get treeGridComponent
-        */
+         * Get treeGridComponent
+         */
         public get treeGridComponent(): WidgetRoleTreeGridComponent {
-            if (this.widgetTreeGridComponent && this.widgetTreeGridComponent.length) {
-                const treeGrid = this.widgetTreeGridComponent.find(p => p.isActivated);
+            if (
+                this.widgetTreeGridComponent &&
+                this.widgetTreeGridComponent.length
+            ) {
+                const treeGrid = this.widgetTreeGridComponent.find(
+                    (p) => p.isActivated
+                );
                 if (treeGrid) {
                     return treeGrid;
                 }
@@ -157,7 +185,9 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          */
         private getSelectedTableState() {
             if (this.widgetStatesInfo && this.widgetStatesInfo.length) {
-                const selectedState = this.widgetStatesInfo.find(p => p.selected);
+                const selectedState = this.widgetStatesInfo.find(
+                    (p) => p.selected
+                );
                 return selectedState.tableData;
             }
             return null;
@@ -173,7 +203,7 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
                 return tableData.dataSourceTable;
             }
             return null;
-        };
+        }
 
         /**
          * Set dataSourceTable
@@ -193,13 +223,14 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             }
         }
 
-
         public clearDataSourceData() {
             const tableData = this.getSelectedTableState();
             if (tableData) {
-                tableData.dataSourceTable = Object.assign({ ...tableData.dataSourceTable, data: [] });
+                tableData.dataSourceTable = Object.assign({
+                    ...tableData.dataSourceTable,
+                    data: [],
+                });
             }
-
         }
         /***** Get & Set DataSource *****/
 
@@ -213,7 +244,7 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
                 return tableData.copiedData;
             }
             return null;
-        };
+        }
 
         /**
          * Set copiedData
@@ -223,7 +254,7 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             if (tableData) {
                 tableData.copiedData = data;
             }
-        };
+        }
         /***** Get & Set CopiedData *****/
 
         /***** Get & Set isOnEditingTable *****/
@@ -236,7 +267,7 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
                 return tableData.isOnEditingTable;
             }
             return null;
-        };
+        }
 
         /**
          * Set isOnEditingTable
@@ -246,7 +277,7 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             if (tableData) {
                 tableData.isOnEditingTable = data;
             }
-        };
+        }
         /***** Get & Set isOnEditingTable *****/
 
         /***** Get & Set isTableEdited *****/
@@ -259,7 +290,7 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
                 return tableData.isTableEdited;
             }
             return null;
-        };
+        }
 
         /**
          * Set isTableEdited
@@ -269,32 +300,44 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             if (tableData) {
                 tableData.isTableEdited = data;
             }
-        };
+        }
         /***** Get & Set isOnEditingTable *****/
 
         protected updateDataSourceFromDataTable(_dataSourceTable?: any) {
             this.copiedData = cloneDeep(this.dataInfo);
             let dataSourceTable = this.dataSourceTable;
-            if (_dataSourceTable)
-                dataSourceTable = _dataSourceTable;
-            if (!dataSourceTable || !dataSourceTable.data)
-                return;
+            if (_dataSourceTable) dataSourceTable = _dataSourceTable;
+            if (!dataSourceTable || !dataSourceTable.data) return;
             // update data of
             if (this.dataInfo.idRepWidgetType === WidgetType.Combination) {
-                this.copiedData.contentDetail.data[2][0].collectionData = Uti.convertDataFromEditableToSource(dataSourceTable.data, this.dataInfo.contentDetail.data[2][0].collectionData);
+                this.copiedData.contentDetail.data[2][0].collectionData =
+                    Uti.convertDataFromEditableToSource(
+                        dataSourceTable.data,
+                        this.dataInfo.contentDetail.data[2][0].collectionData
+                    );
             } else if (
                 // this.dataInfo.idRepWidgetType === WidgetType.EditableTable ||
                 this.dataInfo.idRepWidgetType === WidgetType.EditableGrid ||
-                this.dataInfo.idRepWidgetType === WidgetType.EditableRoleTreeGrid) {
-                this.copiedData.contentDetail.collectionData = Uti.convertDataFromEditableToSource(dataSourceTable.data, this.dataInfo.contentDetail.collectionData);
+                this.dataInfo.idRepWidgetType ===
+                    WidgetType.EditableRoleTreeGrid
+            ) {
+                this.copiedData.contentDetail.collectionData =
+                    Uti.convertDataFromEditableToSource(
+                        dataSourceTable.data,
+                        this.dataInfo.contentDetail.collectionData
+                    );
             }
         }
 
         protected rebuildComboboxData(dataSourceTable) {
             for (const dt of dataSourceTable.data) {
                 for (const prop in dt) {
-                    if (typeof dt[prop] === 'object' && dt[prop] && dt[prop]['key']) {
-                        dt[prop] = dt[prop]['key'];
+                    if (
+                        typeof dt[prop] === "object" &&
+                        dt[prop] &&
+                        dt[prop]["key"]
+                    ) {
+                        dt[prop] = dt[prop]["key"];
                     }
                 }
             }
@@ -303,16 +346,21 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         }
 
         protected manageEditableTableStatusButtonsAfterSaving() {
-            if (this.dataInfo.idRepWidgetType !== WidgetType.Combination &&
+            if (
+                this.dataInfo.idRepWidgetType !== WidgetType.Combination &&
                 // this.dataInfo.idRepWidgetType !== WidgetType.EditableTable &&
                 this.dataInfo.idRepWidgetType !== WidgetType.EditableGrid &&
-                this.dataInfo.idRepWidgetType !== WidgetType.EditableRoleTreeGrid) {
+                this.dataInfo.idRepWidgetType !==
+                    WidgetType.EditableRoleTreeGrid
+            ) {
                 return;
             }
 
             if (this.widgetMenuStatusInfo) {
                 this.widgetMenuStatusInfo.manageAddRowTableButtonStatus(false);
-                this.widgetMenuStatusInfo.manageDeleteRowTableButtonStatus(true);
+                this.widgetMenuStatusInfo.manageDeleteRowTableButtonStatus(
+                    true
+                );
             }
             this.isOnEditingTable = false;
             this.isTableEdited = false;
@@ -323,7 +371,6 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          * saveEditableTableWidget
          */
         protected saveEditableTableWidget() {
-
             if (this.agGridComponent) {
                 this.agGridComponent.stopEditing();
             }
@@ -332,23 +379,24 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
                 if (!this.dataSourceTable || !this.dataSourceTable.data) return;
 
                 if (this.allowColTranslation) {
-                    this.saveColTranslation().then(rs => {
+                    this.saveColTranslation().then((rs) => {
                         this.updateTableWidget();
                     });
-                }
-                else {
+                } else {
                     this.updateTableWidget();
                 }
             }, 200);
         }
 
         private resetWidgetToolbar() {
-            if (this.dataInfo
-                && (this.dataInfo.idRepWidgetApp == 111
-                    || this.dataInfo.idRepWidgetApp == 112
-                    || this.dataInfo.idRepWidgetApp == 113
-                    || this.dataInfo.idRepWidgetApp == 114
-                    || this.dataInfo.idRepWidgetApp == 126)) {
+            if (
+                this.dataInfo &&
+                (this.dataInfo.idRepWidgetApp == 111 ||
+                    this.dataInfo.idRepWidgetApp == 112 ||
+                    this.dataInfo.idRepWidgetApp == 113 ||
+                    this.dataInfo.idRepWidgetApp == 114 ||
+                    this.dataInfo.idRepWidgetApp == 126)
+            ) {
                 this.widgetMenuStatusInfo.toggleEditTemplateMode(false);
                 this.templateId = null;
             }
@@ -361,9 +409,17 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             if (this.agGridComponent) {
                 const lengthRemoved = this.agGridComponent.itemsRemoved;
                 const lengthAdded = this.agGridComponent.itemsAdded;
-                const itemsRemoved = lengthRemoved.length > 0 && lengthRemoved.some(v => v.IsDeleted);
-                const itemsAdded = lengthAdded.length > 0 && lengthAdded.some(v => v.IsDeleted);
-                if (!itemsAdded && !itemsRemoved && this.agGridComponent.hasError()) {
+                const itemsRemoved =
+                    lengthRemoved.length > 0 &&
+                    lengthRemoved.some((v) => v.IsDeleted);
+                const itemsAdded =
+                    lengthAdded.length > 0 &&
+                    lengthAdded.some((v) => v.IsDeleted);
+                if (
+                    !itemsAdded &&
+                    !itemsRemoved &&
+                    this.agGridComponent.hasError()
+                ) {
                     this.reEditWhenInPopup();
                     return;
                 }
@@ -372,8 +428,11 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             }
 
             if (!this.isTableEdited) {
-                const ignoreDirtyCheck = (this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.CountryCustomerDoublette)
-                    || (!!this.widgetMenuStatusInfo && !!this.widgetMenuStatusInfo.selectedTemplate);
+                const ignoreDirtyCheck =
+                    this.dataInfo.idRepWidgetApp ==
+                        RepWidgetAppIdEnum.CountryCustomerDoublette ||
+                    (!!this.widgetMenuStatusInfo &&
+                        !!this.widgetMenuStatusInfo.selectedTemplate);
                 if (!ignoreDirtyCheck) {
                     this.isOnEditingTable = false;
                     this.reEditWhenInPopup();
@@ -385,7 +444,10 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             let _dataSourceTable = this.dataSourceTable;
             if (this.agGridComponent) {
                 const wijmoGridData = this.agGridComponent.getEditedItems();
-                _dataSourceTable = Uti.mergeWijmoGridData(this.dataSourceTable, wijmoGridData);
+                _dataSourceTable = Uti.mergeWijmoGridData(
+                    this.dataSourceTable,
+                    wijmoGridData
+                );
             }
 
             _dataSourceTable = this.rebuildComboboxData(_dataSourceTable);
@@ -396,29 +458,43 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             let key, value;
             const isCustomerDoubletteWidget = this.isDoubletteWidget();
             if (!isCustomerDoubletteWidget) {
-                key = Object.keys(this.dataInfo.widgetDataType.listenKeyRequest(this.moduleInfo.moduleNameTrim))[0];
-                value = this.dataInfo.widgetDataType.listenKeyRequest(this.moduleInfo.moduleNameTrim)[key];
+                key = Object.keys(
+                    this.dataInfo.widgetDataType.listenKeyRequest(
+                        this.moduleInfo.moduleNameTrim
+                    )
+                )[0];
+                value = this.dataInfo.widgetDataType.listenKeyRequest(
+                    this.moduleInfo.moduleNameTrim
+                )[key];
             }
 
             const updateData = Uti.mapDataSourceToDataUpdateByColumnSetting(
                 this.copiedData.contentDetail,
                 key,
                 value,
-                this.widgetMenuStatusInfo ? this.widgetMenuStatusInfo.selectedTemplate : null,
+                this.widgetMenuStatusInfo
+                    ? this.widgetMenuStatusInfo.selectedTemplate
+                    : null,
                 this.copiedData
             );
 
             // Custom param in JSON Request String in some special cases.
             let updateRequest = this.updateRequestInfo();
             if (updateRequest) {
-                this.widgetTemplateSettingService.updateWidgetInfo(updateData, updateRequest, null, null,
-                    (s: string) => {
-                        return s.replace(/"/g, '\\\\"');
-                    },
-                    null
-                ).subscribe((rs) => {
-                    this.updateTableStatusAfterCompletedSaving();
-                });
+                this.widgetTemplateSettingService
+                    .updateWidgetInfo(
+                        updateData,
+                        updateRequest,
+                        null,
+                        null,
+                        (s: string) => {
+                            return s.replace(/"/g, '\\\\"');
+                        },
+                        null
+                    )
+                    .subscribe((rs) => {
+                        this.updateTableStatusAfterCompletedSaving();
+                    });
             }
         }
 
@@ -438,15 +514,18 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             let updateRequest = this.dataInfo.updateRequest;
             const isCustomerDoubletteWidget = this.isDoubletteWidget();
             if (isCustomerDoubletteWidget) {
-                let matchingGroupId = '';
+                let matchingGroupId = "";
                 const nodeItems = this.agGridComponent.getCurrentNodeItems();
                 for (let i = 0; i < nodeItems.length; i++) {
-                    if (nodeItems[i]['MatchingGroup']) {
-                        matchingGroupId = nodeItems[i]['MatchingGroup'];
+                    if (nodeItems[i]["MatchingGroup"]) {
+                        matchingGroupId = nodeItems[i]["MatchingGroup"];
                         break;
                     }
                 }
-                updateRequest = this.dataInfo.updateRequest.replace("<<MatchingGroup>>", matchingGroupId);
+                updateRequest = this.dataInfo.updateRequest.replace(
+                    "<<MatchingGroup>>",
+                    matchingGroupId
+                );
             }
             return updateRequest;
         }
@@ -455,7 +534,12 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          * isDoubletteWidget
          **/
         private isDoubletteWidget() {
-            return this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.CustomerDoublette || this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.CountryCustomerDoublette;
+            return (
+                this.dataInfo.idRepWidgetApp ==
+                    RepWidgetAppIdEnum.CustomerDoublette ||
+                this.dataInfo.idRepWidgetApp ==
+                    RepWidgetAppIdEnum.CountryCustomerDoublette
+            );
         }
 
         /**
@@ -463,7 +547,10 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          * @param eventData
          */
         protected onTableEditStart(eventData) {
-            if (this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.PrinterAndConfirm) {
+            if (
+                this.dataInfo.idRepWidgetApp ==
+                RepWidgetAppIdEnum.PrinterAndConfirm
+            ) {
                 return;
             }
             this.isOnEditingTable = true;
@@ -476,15 +563,25 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          * @param eventData
          */
         protected onTableEditEnd(eventData) {
-            if (this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.PrinterAndConfirm
-                || this.isEditAllWidgetMode) {
+            if (
+                this.dataInfo.idRepWidgetApp ==
+                    RepWidgetAppIdEnum.PrinterAndConfirm ||
+                this.isEditAllWidgetMode
+            ) {
                 return;
             }
 
             if (this.showTotalRow.showTotalRow) {
-                this.agGridComponent.calculatePinnedRowBottomData(this.showTotalRow);
+                this.agGridComponent.calculatePinnedRowBottomData(
+                    this.showTotalRow
+                );
             }
-            if (!eventData || (!this.widgetMenuStatusInfo.isEditTemplateMode && eventData && eventData.cellType !== 'checkbox')) {
+            if (
+                !eventData ||
+                (!this.widgetMenuStatusInfo.isEditTemplateMode &&
+                    eventData &&
+                    eventData.cellType !== "checkbox")
+            ) {
                 if (!this.isTableEdited) {
                     this.isOnEditingTable = false;
                     this.controlMenuStatusToolButtons(false);
@@ -499,25 +596,35 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          */
         private updateDataTranslateAfterEdittingLanguage(editItemRow: any) {
             if (this.allowColTranslation) {
-                editItemRow['isedited'] = true;
+                editItemRow["isedited"] = true;
 
-                const colTranslate = this.dataInfo.widgetDataType.editTableSetting.colTranslate;
+                const colTranslate =
+                    this.dataInfo.widgetDataType.editTableSetting.colTranslate;
                 const translateValue = editItemRow[colTranslate];
                 const salesPrice = editItemRow.SalesPrice;
-                if (this.dataSourceTable && this.dataSourceTable.data &&
-                    this.dataSourceTable.data.length) {
+                if (
+                    this.dataSourceTable &&
+                    this.dataSourceTable.data &&
+                    this.dataSourceTable.data.length
+                ) {
                     let collectionItems: Array<any> = this.dataSourceTable.data;
-                    collectionItems.forEach(item => {
-                        if (item.IdRepLanguage && item.IdRepLanguage == editItemRow.IdRepLanguage) {
+                    collectionItems.forEach((item) => {
+                        if (
+                            item.IdRepLanguage &&
+                            item.IdRepLanguage == editItemRow.IdRepLanguage
+                        ) {
                             if (!item.ArticleNameShort && translateValue) {
                                 item.ArticleNameShort = translateValue;
-                                item['isedited'] = true;
+                                item["isedited"] = true;
                             }
                         }
-                        if (item.CurrencyCode && item.CurrencyCode == editItemRow.CurrencyCode) {
+                        if (
+                            item.CurrencyCode &&
+                            item.CurrencyCode == editItemRow.CurrencyCode
+                        ) {
                             if (!item.SalesPrice && salesPrice) {
                                 item.SalesPrice = salesPrice;
-                                item['isedited'] = true;
+                                item["isedited"] = true;
                             }
                         }
                     });
@@ -533,14 +640,22 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         protected onItemsEditedTranslateData(items: Array<any>) {
             let isEdited: boolean;
             if (items && items.length) {
-                items.forEach(editedItem => {
-                    if (this.dataSourceTable && this.dataSourceTable.data &&
-                        this.dataSourceTable.data.length) {
-                        let collectionItems: Array<any> = this.dataSourceTable.data;
-                        collectionItems.forEach(item => {
-                            if (item.IdRepLanguage && item.IdRepLanguage == editedItem.IdRepLanguage) {
-                                item.ArticleNameShort = editedItem.TranslateText;
-                                item['isedited'] = true;
+                items.forEach((editedItem) => {
+                    if (
+                        this.dataSourceTable &&
+                        this.dataSourceTable.data &&
+                        this.dataSourceTable.data.length
+                    ) {
+                        let collectionItems: Array<any> =
+                            this.dataSourceTable.data;
+                        collectionItems.forEach((item) => {
+                            if (
+                                item.IdRepLanguage &&
+                                item.IdRepLanguage == editedItem.IdRepLanguage
+                            ) {
+                                item.ArticleNameShort =
+                                    editedItem.TranslateText;
+                                item["isedited"] = true;
                                 isEdited = true;
                             }
                         });
@@ -565,7 +680,10 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          * @param eventData
          */
         protected onTableEditSuccess(eventData) {
-            if (this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.PrinterAndConfirm) {
+            if (
+                this.dataInfo.idRepWidgetApp ==
+                RepWidgetAppIdEnum.PrinterAndConfirm
+            ) {
                 return;
             }
             this.isOnEditingTable = true;
@@ -586,7 +704,9 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
 
         protected deleteRowEditableTable(): void {
             if (this.widgetMenuStatusInfo) {
-                this.widgetMenuStatusInfo.manageDeleteRowTableButtonStatus(true);
+                this.widgetMenuStatusInfo.manageDeleteRowTableButtonStatus(
+                    true
+                );
             }
 
             if (this.agGridComponent) {
@@ -611,35 +731,58 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         protected onRowMarkedAsDeleted(eventData) {
             if (!isNil(eventData)) {
                 if (this.widgetMenuStatusInfo) {
-                    this.widgetMenuStatusInfo.manageSaveTableButtonStatus(eventData.disabledDeleteButton);
+                    this.widgetMenuStatusInfo.manageSaveTableButtonStatus(
+                        eventData.disabledDeleteButton
+                    );
 
                     if (eventData.enableAddButtonCommand) {
-                        this.widgetMenuStatusInfo.manageAddRowTableButtonStatus(false);
+                        this.widgetMenuStatusInfo.manageAddRowTableButtonStatus(
+                            false
+                        );
                     }
                 }
                 if (eventData.showCommandButtons) {
-                    if (this.dataInfo.idRepWidgetType === WidgetType.FileExplorer
-                        || this.dataInfo.idRepWidgetType === WidgetType.ToolFileTemplate
-                        || this.dataInfo.idRepWidgetType === WidgetType.FileExplorerWithLabel
-                        || this.dataInfo.idRepWidgetType === WidgetType.FileTemplate) {
-                        const isOnEditFileExplorerOld = this.isOnEditFileExplorer;
+                    if (
+                        this.dataInfo.idRepWidgetType ===
+                            WidgetType.FileExplorer ||
+                        this.dataInfo.idRepWidgetType ===
+                            WidgetType.ToolFileTemplate ||
+                        this.dataInfo.idRepWidgetType ===
+                            WidgetType.FileExplorerWithLabel ||
+                        this.dataInfo.idRepWidgetType ===
+                            WidgetType.FileTemplate
+                    ) {
+                        const isOnEditFileExplorerOld =
+                            this.isOnEditFileExplorer;
                         this.isOnEditFileExplorer = true;
                         this.controlMenuStatusToolButtons(true);
                         if (this.widgetMenuStatusInfo && !this.isDeletedFiles) {
-                            if (this.dataInfo.idRepWidgetType === WidgetType.FileExplorerWithLabel
-                                || this.dataInfo.idRepWidgetType === WidgetType.FileTemplate) {
+                            if (
+                                this.dataInfo.idRepWidgetType ===
+                                    WidgetType.FileExplorerWithLabel ||
+                                this.dataInfo.idRepWidgetType ===
+                                    WidgetType.FileTemplate
+                            ) {
                                 if (!isOnEditFileExplorerOld) {
-                                    this.widgetMenuStatusInfo.manageSaveTableButtonStatus(true);
+                                    this.widgetMenuStatusInfo.manageSaveTableButtonStatus(
+                                        true
+                                    );
                                 }
                             } else {
-                                this.widgetMenuStatusInfo.manageSaveTableButtonStatus(true);
+                                this.widgetMenuStatusInfo.manageSaveTableButtonStatus(
+                                    true
+                                );
                             }
                         }
                     } else {
                         this.isOnEditingTable = true;
                         this.controlMenuStatusToolButtons(true);
                     }
-                } else if (this.checkToShowCommandButtons(eventData.showCommandButtons === false)) {
+                } else if (
+                    this.checkToShowCommandButtons(
+                        eventData.showCommandButtons === false
+                    )
+                ) {
                     this.isOnEditingTable = false;
                     this.controlMenuStatusToolButtons(false);
                 }
@@ -649,11 +792,27 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         protected onTableDeleteRowSuccess(eventData) {
             if (eventData && eventData.length) {
                 for (const itemData of eventData) {
-                    this.dataSourceTable = this.datatableService.updateDataSourceTable(this.dataSourceTable, { data: [itemData] }, true);
+                    this.dataSourceTable =
+                        this.datatableService.updateDataSourceTable(
+                            this.dataSourceTable,
+                            { data: [itemData] },
+                            true
+                        );
                     if (itemData && itemData.isNew) {
-                        this.widgetMenuStatusInfo.manageAddRowTableButtonStatus(false);
-                    } else if (isNil(this.dataSourceTable.data.find((item) => item && item.isNew)) && this.widgetMenuStatusInfo) {
-                        this.widgetMenuStatusInfo.manageAddRowTableButtonStatus(false);
+                        this.widgetMenuStatusInfo.manageAddRowTableButtonStatus(
+                            false
+                        );
+                    } else if (
+                        isNil(
+                            this.dataSourceTable.data.find(
+                                (item) => item && item.isNew
+                            )
+                        ) &&
+                        this.widgetMenuStatusInfo
+                    ) {
+                        this.widgetMenuStatusInfo.manageAddRowTableButtonStatus(
+                            false
+                        );
                     }
                 }
                 this.isOnEditingTable = true;
@@ -665,51 +824,67 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         }
 
         protected updateDataSourceCloumnSettings() {
-            if (!this.copiedData || !this.copiedData.contentDetail)
-                return;
+            if (!this.copiedData || !this.copiedData.contentDetail) return;
             // update data of
             if (this.dataInfo.idRepWidgetType === WidgetType.Combination) {
-                this.copiedData.contentDetail.data[2][0].columnSettings = this.datatableService.updateTableColumnSettings(
-                    this.selectedSubFilterInfo,
-                    this.fieldFiltersInfo,
-                    this.copiedData.contentDetail.data[2][0].columnSettings,
-                    this.copiedData.contentDetail.data[2][0].collectionData);
+                this.copiedData.contentDetail.data[2][0].columnSettings =
+                    this.datatableService.updateTableColumnSettings(
+                        this.selectedSubFilterInfo,
+                        this.fieldFiltersInfo,
+                        this.copiedData.contentDetail.data[2][0].columnSettings,
+                        this.copiedData.contentDetail.data[2][0].collectionData
+                    );
             } else {
-                this.copiedData.contentDetail.columnSettings = this.datatableService.updateTableColumnSettings(
-                    this.selectedFilterInfo,
-                    this.fieldFiltersInfo,
-                    this.copiedData.contentDetail.columnSettings,
-                    this.copiedData.contentDetail.collectionData);
+                this.copiedData.contentDetail.columnSettings =
+                    this.datatableService.updateTableColumnSettings(
+                        this.selectedFilterInfo,
+                        this.fieldFiltersInfo,
+                        this.copiedData.contentDetail.columnSettings,
+                        this.copiedData.contentDetail.collectionData
+                    );
             }
         }
-
 
         /**
          * formatTableSetting
          */
         protected formatTableSetting() {
-            if (this.dataInfo.widgetDataType && this.dataInfo.widgetDataType.editTableSetting) {
-                this.allowEditRow = this.dataInfo.widgetDataType.editTableSetting.allowEditRow;
-                this.allowRowDelete = this.dataInfo.widgetDataType.editTableSetting.allowRowDelete;
-                this.allowNewRowAdd = this.dataInfo.widgetDataType.editTableSetting.allowNewRowAdd;
-                this.allowMediaCode = this.dataInfo.widgetDataType.editTableSetting.allowMediaCode;
-                this.allowColTranslation = this.dataInfo.widgetDataType.editTableSetting.allowColTranslation;
-                this.allowTreeView = this.dataInfo.widgetDataType.editTableSetting.allowTreeView;
+            if (
+                this.dataInfo.widgetDataType &&
+                this.dataInfo.widgetDataType.editTableSetting
+            ) {
+                this.allowEditRow =
+                    this.dataInfo.widgetDataType.editTableSetting.allowEditRow;
+                this.allowRowDelete =
+                    this.dataInfo.widgetDataType.editTableSetting.allowRowDelete;
+                this.allowNewRowAdd =
+                    this.dataInfo.widgetDataType.editTableSetting.allowNewRowAdd;
+                this.allowMediaCode =
+                    this.dataInfo.widgetDataType.editTableSetting.allowMediaCode;
+                this.allowColTranslation =
+                    this.dataInfo.widgetDataType.editTableSetting.allowColTranslation;
+                this.allowTreeView =
+                    this.dataInfo.widgetDataType.editTableSetting.allowTreeView;
                 if (this.columnLayoutsetting) {
-                    this.allowFitColumn = this.columnLayoutsetting.isFitWidthColumn;
+                    this.allowFitColumn =
+                        this.columnLayoutsetting.isFitWidthColumn;
                 }
 
                 if (this.rowSetting)
                     this.showTotalRow = this.rowSetting.showTotalRow;
             }
             if (this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.UserList) {
-                this.rowSelection = 'multiple';
+                this.rowSelection = "multiple";
             }
         }
 
         protected formatShowFilterSetting() {
-            if (this.dataInfo.widgetDataType && this.dataInfo.widgetDataType.editTableSetting) {
-                this.showSelectionFilter = this.dataInfo.widgetDataType.editTableSetting.allowShowFilter;
+            if (
+                this.dataInfo.widgetDataType &&
+                this.dataInfo.widgetDataType.editTableSetting
+            ) {
+                this.showSelectionFilter =
+                    this.dataInfo.widgetDataType.editTableSetting.allowShowFilter;
             }
         }
 
@@ -718,26 +893,40 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          * @param contentDetail
          */
         protected buildDatatable(contentDetail) {
-            const datasource = this.datatableService.buildDataSource(contentDetail);
+            const datasource =
+                this.datatableService.buildDataSource(contentDetail);
             this.dataSourceTable = datasource;
             // Filter here
             if (this.tabHeaderTableFilterInfo) {
                 this.dataSourceTable = {
                     columns: this.dataSourceTable.columns,
-                    data: this.filterData(this.dataSourceTable.data)
-                }
+                    data: this.filterData(this.dataSourceTable.data),
+                };
             }
 
-            if (this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.CountryCustomerDoublette) {
-                if (this.dataSourceTable.data && this.dataSourceTable.data.length) {
-
+            if (
+                this.dataInfo.idRepWidgetApp ==
+                RepWidgetAppIdEnum.CountryCustomerDoublette
+            ) {
+                if (
+                    this.dataSourceTable.data &&
+                    this.dataSourceTable.data.length
+                ) {
                     let currentParentData = this.getListenKeyRequestItem();
-                    if (!this.previousCountryCustomerDoubletteParentData || this.previousCountryCustomerDoubletteParentData.value != currentParentData.value) {
+                    if (
+                        !this.previousCountryCustomerDoubletteParentData ||
+                        this.previousCountryCustomerDoubletteParentData.value !=
+                            currentParentData.value
+                    ) {
                         this.groupNumber = 1;
-                        this.previousCountryCustomerDoubletteParentData = currentParentData;
+                        this.previousCountryCustomerDoubletteParentData =
+                            currentParentData;
                     }
 
-                    const groupData = groupBy(this.dataSourceTable.data, 'MatchingGroup');
+                    const groupData = groupBy(
+                        this.dataSourceTable.data,
+                        "MatchingGroup"
+                    );
                     if (groupData) {
                         let keys = Object.keys(groupData);
                         if (keys.length) {
@@ -761,12 +950,12 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
                     this.onTableEditStart(true);
                     if (this.widgetMenuStatusInfo) {
                         this.widgetMenuStatusInfo.showToolButtons = true;
-                        this.widgetMenuStatusInfo.isShowToolButtonsWihoutClick = true;
+                        this.widgetMenuStatusInfo.isShowToolButtonsWihoutClick =
+                            true;
                     }
                     break;
             }
         }
-
 
         /**
          * filterData
@@ -778,15 +967,30 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
                 const rowData = dataRows[i];
                 let isValidRow = true;
 
-                const objTemp = JSON.parse(JSON.stringify(rowData).toLowerCase());
-                const columnFilterKeys: Array<string> = Object.keys(this.tabHeaderTableFilterInfo);
-                columnFilterKeys.forEach(columnFilterKey => {
-                    const expectedValueArray: Array<string> = this.tabHeaderTableFilterInfo[columnFilterKey];
-                    if (expectedValueArray.length === 1 && expectedValueArray[0] === '*') {
+                const objTemp = JSON.parse(
+                    JSON.stringify(rowData).toLowerCase()
+                );
+                const columnFilterKeys: Array<string> = Object.keys(
+                    this.tabHeaderTableFilterInfo
+                );
+                columnFilterKeys.forEach((columnFilterKey) => {
+                    const expectedValueArray: Array<string> =
+                        this.tabHeaderTableFilterInfo[columnFilterKey];
+                    if (
+                        expectedValueArray.length === 1 &&
+                        expectedValueArray[0] === "*"
+                    ) {
                         isValidRow = true;
                     } else {
                         if (objTemp[columnFilterKey.toLowerCase()]) {
-                            const rs: Array<string> = expectedValueArray.filter(p => p.toLowerCase() === ((objTemp[columnFilterKey.toLowerCase()] + '').toLowerCase()));
+                            const rs: Array<string> = expectedValueArray.filter(
+                                (p) =>
+                                    p.toLowerCase() ===
+                                    (
+                                        objTemp[columnFilterKey.toLowerCase()] +
+                                        ""
+                                    ).toLowerCase()
+                            );
                             if (rs.length === 0) {
                                 isValidRow = false;
                             }
@@ -813,12 +1017,26 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         }
 
         private _updateRowDisplayMode(instance: any) {
-            const multipleDisplayRowMode = this.propertyPanelService.getItemRecursive(this.propertiesInfo, 'MultipleRowDisplay');
-            const proSwitchToDetail = this.propertyPanelService.getItemRecursive(this.propertiesInfo, 'AutoSwitchToDetail');
-            if (multipleDisplayRowMode === undefined || proSwitchToDetail === undefined) return;
+            const multipleDisplayRowMode =
+                this.propertyPanelService.getItemRecursive(
+                    this.propertiesInfo,
+                    "MultipleRowDisplay"
+                );
+            const proSwitchToDetail =
+                this.propertyPanelService.getItemRecursive(
+                    this.propertiesInfo,
+                    "AutoSwitchToDetail"
+                );
+            if (
+                multipleDisplayRowMode === undefined ||
+                proSwitchToDetail === undefined
+            )
+                return;
             // const hasMultipleRow = this.dataSourceTable && this.dataSourceTable.data && this.dataSourceTable.data.length > 1;
-            const valueSwitchToDetail = proSwitchToDetail && proSwitchToDetail.value;
-            const valueMultipleDisplayRowMode = multipleDisplayRowMode && multipleDisplayRowMode.value; // && hasMultipleRow;
+            const valueSwitchToDetail =
+                proSwitchToDetail && proSwitchToDetail.value;
+            const valueMultipleDisplayRowMode =
+                multipleDisplayRowMode && multipleDisplayRowMode.value; // && hasMultipleRow;
             if (valueMultipleDisplayRowMode) {
                 instance.changeToMultipleRowMode(valueMultipleDisplayRowMode);
             } else {
@@ -852,9 +1070,13 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
                 this.isOnEditFileExplorer = false;
                 if (this.widgetMenuStatusInfo) {
                     // enable delete button
-                    this.widgetMenuStatusInfo.manageDeleteRowTableButtonStatus(true);
+                    this.widgetMenuStatusInfo.manageDeleteRowTableButtonStatus(
+                        true
+                    );
                     // disable save button
-                    this.widgetMenuStatusInfo.manageSaveTableButtonStatus(false);
+                    this.widgetMenuStatusInfo.manageSaveTableButtonStatus(
+                        false
+                    );
                 }
                 this.cancelEditingWidget(this.dataInfo);
             }
@@ -872,7 +1094,9 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             this.editingWidget(this.dataInfo);
             if (this.widgetMenuStatusInfo) {
                 // disable delete button
-                this.widgetMenuStatusInfo.manageDeleteRowTableButtonStatus(true);
+                this.widgetMenuStatusInfo.manageDeleteRowTableButtonStatus(
+                    true
+                );
                 // enable save button
                 this.widgetMenuStatusInfo.manageSaveTableButtonStatus(false);
             }
@@ -880,7 +1104,9 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
 
         public onUploadFileClick($event?: any) {
             if (this.xnFileExplorerComponentCtrl)
-                this.xnFileExplorerComponentCtrl.showFileUploadDialogHandler(true);
+                this.xnFileExplorerComponentCtrl.showFileUploadDialogHandler(
+                    true
+                );
 
             if (this.articleMediaManagerComponent)
                 this.articleMediaManagerComponent.showDialog = true;
@@ -897,49 +1123,56 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          * prepareDataForColTranslateSaving
          */
         protected prepareDataForColTranslateSaving(): Observable<any> {
-            const translateEditedData = this.dataSourceTable.data.filter(p => p['isedited']);
+            const translateEditedData = this.dataSourceTable.data.filter(
+                (p) => p["isedited"]
+            );
             const result = [];
-            const items: Array<any> = translateEditedData.map(p => {
+            const items: Array<any> = translateEditedData.map((p) => {
                 return {
                     IdTranslateLabelText: p.IdTranslateLabelText,
                     IdArticle: p.IdArticle,
                     ArticleNameShort: p.ArticleNameShort,
                     IdRepLanguage: p.IdRepLanguage,
-                    IdCountryLanguage: p.IdCountryLanguage
-                }
+                    IdCountryLanguage: p.IdCountryLanguage,
+                };
             });
 
-            let editData = uniqBy(items, 'IdRepLanguage');
+            let editData = uniqBy(items, "IdRepLanguage");
             if (editData && editData.length) {
                 const idArticle = editData[0].IdArticle;
-                return this.getOriginalArticleNameValue(idArticle).map(originalValue => {
-                    (editData as Array<any>).forEach((item) => {
-                        const isDeleted = isEmpty(item.ArticleNameShort);
-                        if (!(isDeleted && !item.IdTranslateLabelText)) {
-                            const isModeAll = TranslateModeEnum.All;
-                            let idTable = item.IdArticle;
-                            result.push({
-                                'IdTranslateLabelText': item.IdTranslateLabelText > 0 ? item.IdTranslateLabelText : null,
-                                'IdRepTranslateModuleType': TranslateDataTypeEnum.Data,
-                                'IdRepLanguage': item.IdRepLanguage,
-                                'IdCountryLanguage': item.IdCountryLanguage,
-                                'WidgetMainID': null,
-                                'WidgetCloneID': null,
-                                'OriginalText': originalValue,
-                                'TranslatedText': item.ArticleNameShort,
-                                'IsDeleted': isDeleted ? '1' : null,
-                                'IdTable': idTable,
-                                'FieldName': 'ArticleNameShort',
-                                'TableName': 'B00ArticleName'
-                            });
-                        }
-                    });
-                    return { 'Translations': result };
-                });
+                return this.getOriginalArticleNameValue(idArticle).map(
+                    (originalValue) => {
+                        (editData as Array<any>).forEach((item) => {
+                            const isDeleted = isEmpty(item.ArticleNameShort);
+                            if (!(isDeleted && !item.IdTranslateLabelText)) {
+                                const isModeAll = TranslateModeEnum.All;
+                                let idTable = item.IdArticle;
+                                result.push({
+                                    IdTranslateLabelText:
+                                        item.IdTranslateLabelText > 0
+                                            ? item.IdTranslateLabelText
+                                            : null,
+                                    IdRepTranslateModuleType:
+                                        TranslateDataTypeEnum.Data,
+                                    IdRepLanguage: item.IdRepLanguage,
+                                    IdCountryLanguage: item.IdCountryLanguage,
+                                    WidgetMainID: null,
+                                    WidgetCloneID: null,
+                                    OriginalText: originalValue,
+                                    TranslatedText: item.ArticleNameShort,
+                                    IsDeleted: isDeleted ? "1" : null,
+                                    IdTable: idTable,
+                                    FieldName: "ArticleNameShort",
+                                    TableName: "B00ArticleName",
+                                });
+                            }
+                        });
+                        return { Translations: result };
+                    }
+                );
             }
             return Observable.of(null);
         }
-
 
         /**
          * saveColTranslation
@@ -947,21 +1180,28 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          */
         public saveColTranslation() {
             return new Promise<any>((resolve, reject) => {
-                const translateEditedData: Array<any> = this.dataSourceTable.data.filter(p => p['isedited']);
+                const translateEditedData: Array<any> =
+                    this.dataSourceTable.data.filter((p) => p["isedited"]);
                 if (translateEditedData && !translateEditedData.length) {
                     resolve(true);
-                }
-                else {
-                    this.prepareDataForColTranslateSaving().subscribe(saveData => {
-                        if (!saveData || !saveData.Translations || !saveData.Translations.length) {
-                            resolve(true);
+                } else {
+                    this.prepareDataForColTranslateSaving().subscribe(
+                        (saveData) => {
+                            if (
+                                !saveData ||
+                                !saveData.Translations ||
+                                !saveData.Translations.length
+                            ) {
+                                resolve(true);
+                            }
+                            this.globalSettingService
+                                .saveTranslateLabelText(saveData)
+                                .finally(() => {
+                                    resolve(true);
+                                })
+                                .subscribe((response) => {});
                         }
-                        this.globalSettingService.saveTranslateLabelText(saveData).finally(() => {
-                            resolve(true);
-                        }).subscribe(
-                            (response) => { }
-                        );
-                    });
+                    );
                 }
             });
         }
@@ -970,23 +1210,27 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          * getOriginalArticleNameValue
          */
         public getOriginalArticleNameValue(idArticle): Observable<string> {
-            return this.articleService.getArticleById(idArticle, '-1').map((response: ApiResultResponse) => {
-                let orgValue = '';
-                if (Uti.isResquestSuccess(response)) {
-                    const item = response.item;
-                    if (item && item.articleNameShort) {
-                        orgValue = item.articleNameShort.value
+            return this.articleService
+                .getArticleById(idArticle, "-1")
+                .map((response: ApiResultResponse) => {
+                    let orgValue = "";
+                    if (Uti.isResquestSuccess(response)) {
+                        const item = response.item;
+                        if (item && item.articleNameShort) {
+                            orgValue = item.articleNameShort.value;
+                        }
                     }
-                }
-                return orgValue;
-            })
+                    return orgValue;
+                });
         }
 
         public onAfterFlexgridRendered($event) {
             if (this.selectedRowsData && this.selectedRowsData.length) {
                 for (let i = 0; i < this.selectedRowsData.length; i++) {
                     const widget = this.selectedRowsData[i];
-                    if (widget.widgetDetailId === this.dataInfo.idRepWidgetApp) {
+                    if (
+                        widget.widgetDetailId === this.dataInfo.idRepWidgetApp
+                    ) {
                         const rowData = widget.rowData;
                         const selectedRow = {};
                         for (let j = 0; j < rowData.length; j++) {
@@ -1004,14 +1248,26 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         }
 
         public getListenKeyRequestItem() {
-            if (this.dataInfo.widgetDataType && this.dataInfo.widgetDataType.listenKey && this.dataInfo.widgetDataType.listenKey.key && (this.dataInfo.widgetDataType.listenKey.main || this.dataInfo.widgetDataType.listenKey.sub)) {
-                const key = Object.keys(this.dataInfo.widgetDataType.listenKeyRequest(this.moduleInfo.moduleNameTrim))[0];
-                const dataItem = this.dataInfo.widgetDataType.listenKeyRequest(this.moduleInfo.moduleNameTrim);
+            if (
+                this.dataInfo.widgetDataType &&
+                this.dataInfo.widgetDataType.listenKey &&
+                this.dataInfo.widgetDataType.listenKey.key &&
+                (this.dataInfo.widgetDataType.listenKey.main ||
+                    this.dataInfo.widgetDataType.listenKey.sub)
+            ) {
+                const key = Object.keys(
+                    this.dataInfo.widgetDataType.listenKeyRequest(
+                        this.moduleInfo.moduleNameTrim
+                    )
+                )[0];
+                const dataItem = this.dataInfo.widgetDataType.listenKeyRequest(
+                    this.moduleInfo.moduleNameTrim
+                );
 
                 return {
                     key: key,
                     value: dataItem[key],
-                    item: dataItem['item']
+                    item: dataItem["item"],
                 };
             }
 
@@ -1019,17 +1275,22 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         }
 
         /**
-        * onDataDrop
-        * Used for handle drag event from Global Search
-        **/
+         * onDataDrop
+         * Used for handle drag event from Global Search
+         **/
         public onDataDrop(event: DragEvent) {
-            const isCustomerDoubletteWidget = this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.CustomerDoublette;
-            const isCustomerModule = this.moduleInfo.idSettingsGUI == MenuModuleId.customer;
+            const isCustomerDoubletteWidget =
+                this.dataInfo.idRepWidgetApp ==
+                RepWidgetAppIdEnum.CustomerDoublette;
+            const isCustomerModule =
+                this.moduleInfo.idSettingsGUI == MenuModuleId.customer;
             if (isCustomerModule && isCustomerDoubletteWidget) {
-                const rawData = event.dataTransfer.getData('text');
+                const rawData = event.dataTransfer.getData("text");
                 if (rawData) {
                     const data = JSON.parse(rawData);
-                    const isDragFromCustomerModule = data.refData && data.refData.idSettingsGUI == MenuModuleId.customer;
+                    const isDragFromCustomerModule =
+                        data.refData &&
+                        data.refData.idSettingsGUI == MenuModuleId.customer;
 
                     // Do nothing if not drag from customer module of Global Search
                     if (!isDragFromCustomerModule) {
@@ -1048,15 +1309,21 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             const status = this.isExistingCurrentNode(data);
             // Do nothing if this data already existed in grid
             if (status) {
-                this.modalService.warningMessage([{
-                    key: 'Modal_Message__This_Item_Has_Already_Added_Select_Another_One'
-                }]);
+                this.modalService.warningMessage([
+                    {
+                        key: "Modal_Message__This_Item_Has_Already_Added_Select_Another_One",
+                    },
+                ]);
                 return;
             }
 
             const nodeItems = this.agGridComponent.getCurrentNodeItems();
             let key;
-            if (this.dataInfo && this.dataInfo.widgetDataType && this.dataInfo.widgetDataType.listenKey) {
+            if (
+                this.dataInfo &&
+                this.dataInfo.widgetDataType &&
+                this.dataInfo.widgetDataType.listenKey
+            ) {
                 key = this.dataInfo.widgetDataType.listenKey.main.key;
             }
             if (!key) {
@@ -1066,63 +1333,83 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             let masterKeyValue;
             let subKeyValue = data[key];
             if (!subKeyValue) {
-                Object.keys(data).forEach(k => {
+                Object.keys(data).forEach((k) => {
                     if (key.toLowerCase() == k.toLowerCase()) {
                         subKeyValue = data[k];
                     }
                 });
             }
 
-            masterKeyValue = this.dataInfo.widgetDataType.listenKeyRequest(this.moduleInfo.moduleNameTrim)[key];
+            masterKeyValue = this.dataInfo.widgetDataType.listenKeyRequest(
+                this.moduleInfo.moduleNameTrim
+            )[key];
 
             // Do nothing if this data is master
             if (subKeyValue == masterKeyValue) {
-                this.modalService.warningMessage([{
-                    key: 'Modal_Message__Not_Allow_To_Add_Itself'
-                }]);
+                this.modalService.warningMessage([
+                    {
+                        key: "Modal_Message__Not_Allow_To_Add_Itself",
+                    },
+                ]);
                 return;
             }
 
-            let idPersons = '';
+            let idPersons = "";
             if (nodeItems && nodeItems.length) {
-                const masterItem = nodeItems.find(p => (p['IsMaster'] == true || p['IsMaster'] == 1))
+                const masterItem = nodeItems.find(
+                    (p) => p["IsMaster"] == true || p["IsMaster"] == 1
+                );
                 if (masterItem) {
                     masterKeyValue = masterItem[key];
                 }
             }
-            idPersons = masterKeyValue + ',' + subKeyValue;
+            idPersons = masterKeyValue + "," + subKeyValue;
 
-
-            this.personService.getPersonData(idPersons).subscribe(response => {
-                if (response && response.item && response.item.data && response.item.data[1]) {
-                    const items: Array<any> = response.item.data[1];
-                    if (items.length > 1) {
-                        const notMatchingItem = items.find(p => (p['NotMatching'] == true || p['NotMatching'] == 1))
-                        if (notMatchingItem) {
-                            this.modalService.warningMessage([{
-                                key: 'Modal_Message__This_Item_Was_Unmerged_Before'
-                            }]);
-                            return;
-                        }
-                        const item = items.find(p => p[key] == masterKeyValue);
-                        if (item) {
-                            item['IsMaster'] = true;
-                            this.addDataToDoubletWidget(item);
-                            const index = items.indexOf(item);
-                            if (index > -1) {
-                                items.splice(index, 1);
+            this.personService
+                .getPersonData(idPersons)
+                .subscribe((response) => {
+                    if (
+                        response &&
+                        response.item &&
+                        response.item.data &&
+                        response.item.data[1]
+                    ) {
+                        const items: Array<any> = response.item.data[1];
+                        if (items.length > 1) {
+                            const notMatchingItem = items.find(
+                                (p) =>
+                                    p["NotMatching"] == true ||
+                                    p["NotMatching"] == 1
+                            );
+                            if (notMatchingItem) {
+                                this.modalService.warningMessage([
+                                    {
+                                        key: "Modal_Message__This_Item_Was_Unmerged_Before",
+                                    },
+                                ]);
+                                return;
                             }
-                        }
-                        items.forEach(item => {
-                            if (!item['NotMatching']) {
+                            const item = items.find(
+                                (p) => p[key] == masterKeyValue
+                            );
+                            if (item) {
+                                item["IsMaster"] = true;
                                 this.addDataToDoubletWidget(item);
+                                const index = items.indexOf(item);
+                                if (index > -1) {
+                                    items.splice(index, 1);
+                                }
                             }
-                        });
+                            items.forEach((item) => {
+                                if (!item["NotMatching"]) {
+                                    this.addDataToDoubletWidget(item);
+                                }
+                            });
+                        }
+                        this.isTableEdited = true;
+                        this.onTableEditStart(true);
                     }
-                    this.isTableEdited = true;
-                    this.onTableEditStart(true);
-                }
-            });
+                });
         }
 
         /**
@@ -1137,13 +1424,16 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             if (!status) {
                 const cols: Array<any> = this.dataSourceTable.columns;
                 let obj = {};
-                cols.forEach(col => {
-                    Object.keys(data).forEach(key => {
+                cols.forEach((col) => {
+                    Object.keys(data).forEach((key) => {
                         if (col.data.toLowerCase() == key.toLowerCase()) {
-                            obj[col.data] = (isObject(data[key]) && isEmpty(data[key])) ? '' : data[key];
+                            obj[col.data] =
+                                isObject(data[key]) && isEmpty(data[key])
+                                    ? ""
+                                    : data[key];
                         }
                     });
-                })
+                });
                 this.agGridComponent.addNewRow(obj, null);
             }
         }
@@ -1154,15 +1444,15 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         private isExistingCurrentNode(data) {
             const nodeItems = this.agGridComponent.getCurrentNodeItems();
             const key = this.dataInfo.widgetDataType.listenKey.key;
-            const node = nodeItems.find(p => {
+            const node = nodeItems.find((p) => {
                 let existingId;
                 let addNewId;
-                Object.keys(p).forEach(k => {
+                Object.keys(p).forEach((k) => {
                     if (key.toLowerCase() == k.toLowerCase()) {
                         existingId = p[k];
                     }
                 });
-                Object.keys(data).forEach(k => {
+                Object.keys(data).forEach((k) => {
                     if (key.toLowerCase() == k.toLowerCase()) {
                         addNewId = data[k];
                     }
@@ -1185,7 +1475,10 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
             if (!this.agGridComponent) return;
             const selectedNodes = this.agGridComponent.getSelectedNodes();
             if (this.dataInfo.idRepWidgetApp == RepWidgetAppIdEnum.UserList) {
-                this.selectedNodes = selectedNodes && selectedNodes.length > 1 ? selectedNodes.map(p => p.data) : null;
+                this.selectedNodes =
+                    selectedNodes && selectedNodes.length > 1
+                        ? selectedNodes.map((p) => p.data)
+                        : null;
             }
         }
 
@@ -1204,8 +1497,8 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
         public onNextDoubletteGroup(number) {
             if (this.isTableEdited) {
                 this.modalService.confirmMessage({
-                    headerText: 'Confirmation',
-                    message: [{key: 'Modal_Message__Saving_Change'}],
+                    headerText: "Confirmation",
+                    message: [{ key: "Modal_Message__Saving_Change" }],
                     messageType: MessageModal.MessageType.warning,
                     buttonType1: MessageModal.ButtonType.danger,
                     callBack1: () => {
@@ -1216,10 +1509,9 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
                         // this.isOnEditingTable = false;
                         this.isTableEdited = false;
                         this.moveToDoubletteGroup(number);
-                    }
-                })
-            }
-            else {
+                    },
+                });
+            } else {
                 this.moveToDoubletteGroup(number);
             }
         }
@@ -1229,13 +1521,17 @@ export function MixinWidgetTable<T extends Constructor<TableServiceInjector>>(ba
          * @param number
          */
         private moveToDoubletteGroup(number) {
-            const datasource = this.datatableService.buildDataSource(this.dataInfo.contentDetail);
+            const datasource = this.datatableService.buildDataSource(
+                this.dataInfo.contentDetail
+            );
             this.dataSourceTable = datasource;
-            const groupData = groupBy(this.dataSourceTable.data, 'MatchingGroup');
+            const groupData = groupBy(
+                this.dataSourceTable.data,
+                "MatchingGroup"
+            );
             let keys = Object.keys(groupData);
             this.dataSourceTable.data = groupData[keys[number - 1]];
         }
-
-    };
+    }
     return AbstractWidgetTableBase;
 }

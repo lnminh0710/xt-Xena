@@ -1,1 +1,1 @@
-export * from './paperwork.component';
+export * from "./paperwork.component";

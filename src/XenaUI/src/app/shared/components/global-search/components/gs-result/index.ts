@@ -1,1 +1,1 @@
-﻿export { GlobalSearchResultComponent } from './gs-result.component';
+﻿export { GlobalSearchResultComponent } from "./gs-result.component";

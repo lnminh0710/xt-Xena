@@ -1,3 +1,9 @@
-<span class="parked-item-title" [ngClass]="{'is-first-breabcrumb-item':data.IsFirst}" [innerHTML]="data.Name"></span>
-<span class="next-breadcrumb-item-icon" *ngIf="data.Child"><i class="fa fa-caret-right"></i></span>
+<span
+    class="parked-item-title"
+    [ngClass]="{ 'is-first-breabcrumb-item': data.IsFirst }"
+    [innerHTML]="data.Name"
+></span>
+<span class="next-breadcrumb-item-icon" *ngIf="data.Child"
+    ><i class="fa fa-caret-right"></i
+></span>
 <breadcrumb-item [data]="data.Child" *ngIf="data.Child"></breadcrumb-item>

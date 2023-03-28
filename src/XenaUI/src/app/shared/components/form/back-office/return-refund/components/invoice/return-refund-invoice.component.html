@@ -1,65 +1,102 @@
-<div *ngIf="isRenderForm"
-     class="height-pc-100"
-     [ngClass]="{'submitted': invoiceForm.submitted}">
-    <form [formGroup]="invoiceForm" class="form-inline amount-container" id="invoiceForm" novalidate>
-        <div class="form-group no-wrap  form-group-item">
-            <label class="required amount-label"><label-translation [keyword]="'Return_Refund_Invoice__Amount'"></label-translation></label>
+<div
+    *ngIf="isRenderForm"
+    class="height-pc-100"
+    [ngClass]="{ submitted: invoiceForm.submitted }"
+>
+    <form
+        [formGroup]="invoiceForm"
+        class="form-inline amount-container"
+        id="invoiceForm"
+        novalidate
+    >
+        <div class="form-group no-wrap form-group-item">
+            <label class="required amount-label"
+                ><label-translation
+                    [keyword]="'Return_Refund_Invoice__Amount'"
+                ></label-translation
+            ></label>
             <div class="no-wrap inline-block amount__size">
-                <input formControlName="amount" #controlAmount
-                           id="amount" 
-                           name="amount"
-                           type="text" 
-                           xn-numeric 
-                           [min]="0"
-                           [format]="globalNumberFormat"
-                           class="custom-wj-input-control xn-input">
-                <clear-text [enableClearText]="true"
-                            [controlType]="'number'"
-                            [inputControl]="invoiceForm.controls['amount']"
-                            [controlName]="'amount'"></clear-text>
-                <control-messages [type]="'textbox'"
-                                  [control]="invoiceForm.controls['amount']"
-                                  [icon]="'sum'"></control-messages>
+                <input
+                    formControlName="amount"
+                    #controlAmount
+                    id="amount"
+                    name="amount"
+                    type="text"
+                    xn-numeric
+                    [min]="0"
+                    [format]="globalNumberFormat"
+                    class="custom-wj-input-control xn-input"
+                />
+                <clear-text
+                    [enableClearText]="true"
+                    [controlType]="'number'"
+                    [inputControl]="invoiceForm.controls['amount']"
+                    [controlName]="'amount'"
+                ></clear-text>
+                <control-messages
+                    [type]="'textbox'"
+                    [control]="invoiceForm.controls['amount']"
+                    [icon]="'sum'"
+                ></control-messages>
             </div>
             <div class="inline-block amount__drop-down">
-                <xn-combo-box #currency
-                              wjDropdownHelper
-                              [form]="invoiceForm"
-                              formControlName="currency"
-                              class="custom-wj-input-control xn-select"
-                              [itemsSource]="listComboBox.currency"
-                              [displayMemberPath]="'textValue'"
-                              [selectedValuePath]="'idValue'"
-                              [isEditable]="true"
-                              [isRequired]="false"
-                              placeholder="Please select">
+                <xn-combo-box
+                    #currency
+                    wjDropdownHelper
+                    [form]="invoiceForm"
+                    formControlName="currency"
+                    class="custom-wj-input-control xn-select"
+                    [itemsSource]="listComboBox.currency"
+                    [displayMemberPath]="'textValue'"
+                    [selectedValuePath]="'idValue'"
+                    [isEditable]="true"
+                    [isRequired]="false"
+                    placeholder="Please select"
+                >
                 </xn-combo-box>
-                <control-messages [xn-trigger-click-inside-cbo]="currency" [type]="'textbox'"
-                                  [icon]="'list'"
-                                  [control]="invoiceForm.controls['currency']"></control-messages>
+                <control-messages
+                    [xn-trigger-click-inside-cbo]="currency"
+                    [type]="'textbox'"
+                    [icon]="'list'"
+                    [control]="invoiceForm.controls['currency']"
+                ></control-messages>
             </div>
             <div class="form-group amount__total">
-                <label><label-translation [keyword]="'Return_Refund_Invoice__New_Invoice'"></label-translation></label>
+                <label
+                    ><label-translation
+                        [keyword]="'Return_Refund_Invoice__New_Invoice'"
+                    ></label-translation
+                ></label>
                 <label>
-                    (<label-translation [keyword]="'Return_Refund_Invoice__Total_Amount'"></label-translation>: {{invoiceForm.controls['totalAmount'].value}})
+                    (<label-translation
+                        [keyword]="'Return_Refund_Invoice__Total_Amount'"
+                    ></label-translation
+                    >: {{ invoiceForm.controls["totalAmount"].value }})
                 </label>
             </div>
             <div class="form-group">
-                <label for="isFreeShipping"><label-translation [keyword]="'Return_Refund_Invoice__Free_shipping'"></label-translation></label>
+                <label for="isFreeShipping"
+                    ><label-translation
+                        [keyword]="'Return_Refund_Invoice__Free_shipping'"
+                    ></label-translation
+                ></label>
                 <div class="inline-block">
-                    <mat-checkbox color="primary"
-                                  formControlName="isFreeShipping">
+                    <mat-checkbox
+                        color="primary"
+                        formControlName="isFreeShipping"
+                    >
                     </mat-checkbox>
                 </div>
             </div>
         </div>
     </form>
     <div class="a-s">
-        <article-search [articleGridId]="articleGridId"
-                        [articleCampaignSearchGridId]="articleCampaignSearchGridId"
-                        [parentInstance]="that"
-                        (outputDataAction)="outputDataHandler($event)">
+        <article-search
+            [articleGridId]="articleGridId"
+            [articleCampaignSearchGridId]="articleCampaignSearchGridId"
+            [parentInstance]="that"
+            (outputDataAction)="outputDataHandler($event)"
+        >
         </article-search>
     </div>
-
 </div>

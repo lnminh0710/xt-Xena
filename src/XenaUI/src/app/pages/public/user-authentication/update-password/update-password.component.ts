@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { URLSearchParams, QueryEncoder } from '@angular/http';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { AuthenticationService } from 'app/services';
-import { Configuration } from 'app/app.constants';
+import { Component, OnInit } from "@angular/core";
+import { URLSearchParams, QueryEncoder } from "@angular/http";
+import { Router, ActivatedRoute, Params } from "@angular/router";
+import { AuthenticationService } from "app/services";
+import { Configuration } from "app/app.constants";
 
 @Component({
-    selector: 'update-password',
-    templateUrl: './update-password.component.html',
-    styleUrls: ['./update-password.component.scss']
+    selector: "update-password",
+    templateUrl: "./update-password.component.html",
+    styleUrls: ["./update-password.component.scss"],
 })
 export class UpdatePasswordComponent implements OnInit {
-
     model: any = {};
     loading = false;
     returnUrl: string;
@@ -28,33 +27,43 @@ export class UpdatePasswordComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthenticationService,
-        private consts: Configuration) { }
+        private consts: Configuration
+    ) {}
 
     ngOnInit() {
         this.loginUrl = this.consts.loginUrl;
 
         // get token
-        this.token = this.consts.tokenType + " " + this.route.snapshot.queryParams[this.consts.urlPramToken];
+        this.token =
+            this.consts.tokenType +
+            " " +
+            this.route.snapshot.queryParams[this.consts.urlPramToken];
 
         this.checking = true;
         this.showCheckingIndicator = true;
-        this.authenticationService.checkToken(this.route.snapshot.queryParams[this.consts.urlPramToken]).subscribe(
-            (result) => {
-                if (result) {
-                    setTimeout(() => {
-                        this.showCheckingIndicator = false;
-                        this.isTokenValid = result.isValid;
+        this.authenticationService
+            .checkToken(
+                this.route.snapshot.queryParams[this.consts.urlPramToken]
+            )
+            .subscribe(
+                (result) => {
+                    if (result) {
                         setTimeout(() => {
-                            this.checking = false;
-                            this.authenticationService.logout();
-                        }, 1000);
-                    }, 2000);
+                            this.showCheckingIndicator = false;
+                            this.isTokenValid = result.isValid;
+                            setTimeout(() => {
+                                this.checking = false;
+                                this.authenticationService.logout();
+                            }, 1000);
+                        }, 2000);
+                    }
+                },
+                (error) => {
+                    this.checking = false;
+                    this.showCheckingIndicator = false;
+                    this.isTokenValid = false;
                 }
-            }, (error) => {
-                this.checking = false;
-                this.showCheckingIndicator = false;
-                this.isTokenValid = false;
-            });
+            );
     }
 
     submit() {
@@ -62,10 +71,12 @@ export class UpdatePasswordComponent implements OnInit {
             return;
         }
         this.loading = true;
-        this.authenticationService.resetPassword(this.model.newPassword, this.token)
+        this.authenticationService
+            .resetPassword(this.model.newPassword, this.token)
             .subscribe(
-                data => this.resetPasswordSuccess(data.item),
-                error => this.resetPasswordError(error));
+                (data) => this.resetPasswordSuccess(data.item),
+                (error) => this.resetPasswordError(error)
+            );
     }
 
     resetPasswordSuccess(data: any) {
@@ -92,10 +103,12 @@ export class UpdatePasswordComponent implements OnInit {
         let path = this.consts.passwordPath;
         if (!this.model.newPassword && !this.model.reNewPassword) {
             this.passwordIsCorrect = true;
+        } else {
+            this.passwordIsCorrect =
+                path.test(this.model.newPassword) &&
+                path.test(this.model.reNewPassword);
         }
-        else {
-            this.passwordIsCorrect = path.test(this.model.newPassword) && path.test(this.model.reNewPassword);
-        }
-        this.passwordIsMatched = (this.model.newPassword == this.model.reNewPassword);
+        this.passwordIsMatched =
+            this.model.newPassword == this.model.reNewPassword;
     }
 }

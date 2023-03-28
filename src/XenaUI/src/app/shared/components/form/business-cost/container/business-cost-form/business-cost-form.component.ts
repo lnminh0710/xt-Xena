@@ -1,51 +1,67 @@
 import {
-    Component, OnInit, OnDestroy,
-    EventEmitter, Input, Output,
-    ViewChild, AfterViewInit
-} from '@angular/core';
-import { Router } from '@angular/router';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+    Component,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild,
+    AfterViewInit,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 // import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { AppErrorHandler, ModalService } from 'app/services';
+import { AppErrorHandler, ModalService } from "app/services";
 import {
     ModuleSettingActions,
     ProcessDataActions,
     CustomAction,
-    TabSummaryActions
-} from 'app/state-management/store/actions';
-import { RequestSavingMode } from 'app/app.constants';
-import { BusinessCostHeaderFormComponent, BusinessCostRowFormComponent } from 'app/shared/components/form';
-import { Uti } from 'app/utilities';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import * as moduleSettingReducer from 'app/state-management/store/reducer/module-setting';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import { BaseComponent, ModuleList } from 'app/pages/private/base';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
+    TabSummaryActions,
+} from "app/state-management/store/actions";
+import { RequestSavingMode } from "app/app.constants";
+import {
+    BusinessCostHeaderFormComponent,
+    BusinessCostRowFormComponent,
+} from "app/shared/components/form";
+import { Uti } from "app/utilities";
+import * as tabSummaryReducer from "app/state-management/store/reducer/tab-summary";
+import * as moduleSettingReducer from "app/state-management/store/reducer/module-setting";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import { BaseComponent, ModuleList } from "app/pages/private/base";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
 
 @Component({
-    selector: 'app-business-cost-form',
-    styleUrls: ['./business-cost-form.component.scss'],
-    templateUrl: './business-cost-form.component.html'
+    selector: "app-business-cost-form",
+    styleUrls: ["./business-cost-form.component.scss"],
+    templateUrl: "./business-cost-form.component.html",
 })
-export class BusinessCostFormComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-
+export class BusinessCostFormComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     private _progressStatus;
 
     set progressStatus(value) {
         this._progressStatus = value;
         if (this.toolbarSetting) {
-            this.toolbarSetting.SaveNext = this._progressStatus == 1 ? '1' : '0';
+            this.toolbarSetting.SaveNext =
+                this._progressStatus == 1 ? "1" : "0";
         }
-        this.store.dispatch(this.moduleSettingActions.selectToolbarSetting(this.toolbarSetting, this.ofModule));
+        this.store.dispatch(
+            this.moduleSettingActions.selectToolbarSetting(
+                this.toolbarSetting,
+                this.ofModule
+            )
+        );
     }
 
     get progressStatus() {
         return this._progressStatus;
-    };
+    }
 
     public showBusinessCostHeaderForm = true;
     public idSalesCampaignWizard: any;
@@ -84,14 +100,16 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
     private globalPropertiesStateSubscription: Subscription;
     private globalPropertiesState: Observable<any>;
 
-    @ViewChild('businessCostHeader') businessCostHeader: BusinessCostHeaderFormComponent;
-    @ViewChild('businessCostRow') businessCostRow: BusinessCostRowFormComponent;
+    @ViewChild("businessCostHeader")
+    businessCostHeader: BusinessCostHeaderFormComponent;
+    @ViewChild("businessCostRow") businessCostRow: BusinessCostRowFormComponent;
 
     @Input() gridId: string;
     @Input() switchForm: string;
     @Output() outputData: EventEmitter<any> = new EventEmitter();
 
-    constructor(private store: Store<AppState>,
+    constructor(
+        private store: Store<AppState>,
         private appErrorHandler: AppErrorHandler,
         private modalService: ModalService,
         private moduleSettingActions: ModuleSettingActions,
@@ -103,21 +121,46 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
     ) {
         super(router);
 
-        this.formEditModeState = this.store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditMode);
-        this.formEditDataState = this.store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditData);
-        this.toolbarSettingState = store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).toolbarSetting);
-        this.globalPropertiesState = store.select(state => propertyPanelReducer.getPropertyPanelState(state, ModuleList.Base.moduleNameTrim).globalProperties);
+        this.formEditModeState = this.store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditMode
+        );
+        this.formEditDataState = this.store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditData
+        );
+        this.toolbarSettingState = store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).toolbarSetting
+        );
+        this.globalPropertiesState = store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    ModuleList.Base.moduleNameTrim
+                ).globalProperties
+        );
     }
 
     /**
      * subcribeToolbarSettingState
      */
     private subcribeToolbarSettingState() {
-        this.toolbarSettingStateSubscription = this.toolbarSettingState.subscribe((toolbarSettingState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.toolbarSetting = toolbarSettingState;
+        this.toolbarSettingStateSubscription =
+            this.toolbarSettingState.subscribe((toolbarSettingState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.toolbarSetting = toolbarSettingState;
+                });
             });
-        });
     }
 
     public ngOnInit() {
@@ -138,10 +181,15 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
         }
 
         this.progressStatus = this.showBusinessCostHeaderForm ? 1 : 2;
-        this.store.dispatch(this.tabSummaryActions.setFormEditTextDataSubTab({
-            main: 'Main',
-            detail: 'Country Detail'
-        }, this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.setFormEditTextDataSubTab(
+                {
+                    main: "Main",
+                    detail: "Country Detail",
+                },
+                this.ofModule
+            )
+        );
     }
 
     /**
@@ -152,55 +200,71 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
     }
 
     private subscribeGlobalProperties() {
-        this.globalPropertiesStateSubscription = this.globalPropertiesState.subscribe((globalProperties: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (globalProperties) {
-                    this.globalProperties = globalProperties;
-                }
+        this.globalPropertiesStateSubscription =
+            this.globalPropertiesState.subscribe((globalProperties: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (globalProperties) {
+                        this.globalProperties = globalProperties;
+                    }
+                });
             });
-        });
     }
 
     private setActiveForm() {
-        this.setShowHeaderForm(this.switchForm === 'header');
+        this.setShowHeaderForm(this.switchForm === "header");
     }
 
     private setShowHeaderForm(value: boolean) {
         this.showBusinessCostHeaderForm = value;
-        this.store.dispatch(this.tabSummaryActions.setFormEditDataActiveSubTab(this.showBusinessCostHeaderForm, this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.setFormEditDataActiveSubTab(
+                this.showBusinessCostHeaderForm,
+                this.ofModule
+            )
+        );
     }
 
     /**
      * subscribeFormEditModeState
      */
     private subscription() {
-        this.formEditModeStateSubscription = this.formEditModeState.subscribe((formEditModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.formEditMode = formEditModeState;
-            });
-        });
+        this.formEditModeStateSubscription = this.formEditModeState.subscribe(
+            (formEditModeState: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.formEditMode = formEditModeState;
+                });
+            }
+        );
 
-        this.formEditDataStateSubscription = this.formEditDataState.subscribe((formEditDataState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.formEditData = formEditDataState;
-            });
-        });
+        this.formEditDataStateSubscription = this.formEditDataState.subscribe(
+            (formEditDataState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.formEditData = formEditDataState;
+                });
+            }
+        );
 
-        this.requestSaveSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return {
-                savingMode: action.payload
-            };
-        }).subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.currentSavingMode = RequestSavingMode.SaveOnly;
-                if (requestSaveState.savingMode) {
-                    this.currentSavingMode = requestSaveState.savingMode;
-                }
-                this.onSubmit(this.showBusinessCostHeaderForm);
+        this.requestSaveSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .map((action: CustomAction) => {
+                return {
+                    savingMode: action.payload,
+                };
+            })
+            .subscribe((requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.currentSavingMode = RequestSavingMode.SaveOnly;
+                    if (requestSaveState.savingMode) {
+                        this.currentSavingMode = requestSaveState.savingMode;
+                    }
+                    this.onSubmit(this.showBusinessCostHeaderForm);
+                });
             });
-        });
 
         // this.requestNewInEditSubscription = this.dispatcher.filter((action: CustomAction) => {
         //     return action.type === ProcessDataActions.REQUEST_NEW_IN_EDIT && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
@@ -212,35 +276,52 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
         //     });
         // });
 
-        this.okToGoToFirstStepSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.OK_TO_GO_TO_FIRST_STEP && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.willGoToStep1) {
-                    this.processGoToStep1();
-                }
+        this.okToGoToFirstStepSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.OK_TO_GO_TO_FIRST_STEP &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.willGoToStep1) {
+                        this.processGoToStep1();
+                    }
+                });
             });
-        });
 
-        this.okToGoToSecondStepSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.OK_TO_GO_TO_SECOND_STEP && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.willGoToStep2) {
-                    this.processGoToStep2();
-                }
+        this.okToGoToSecondStepSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        ProcessDataActions.OK_TO_GO_TO_SECOND_STEP &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.willGoToStep2) {
+                        this.processGoToStep2();
+                    }
+                });
             });
-        });
 
-        this.okToChangeBusinessCostRowSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.OK_TO_CHANGE_BUSINESS_COST_ROW && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.willChangeBusinessCostRow) {
-                    this.processChangeBusinessCostRow();
-                }
+        this.okToChangeBusinessCostRowSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        ProcessDataActions.OK_TO_CHANGE_BUSINESS_COST_ROW &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.willChangeBusinessCostRow) {
+                        this.processChangeBusinessCostRow();
+                    }
+                });
             });
-        });
     }
 
     private onSubmit(showBusinessCostHeaderForm: boolean, saveOnly?: boolean) {
@@ -248,12 +329,10 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
             this.currentSavingMode = RequestSavingMode.SaveOnly;
         }
         if (showBusinessCostHeaderForm) {
-            if (this.businessCostHeader)
-                this.businessCostHeader.onSubmit();
+            if (this.businessCostHeader) this.businessCostHeader.onSubmit();
             this.businessCostHeaderSubmitted = true;
         } else {
-            if (this.businessCostRow)
-                this.businessCostRow.onSubmit();
+            if (this.businessCostRow) this.businessCostRow.onSubmit();
             this.businessCostRowSubmitted = true;
         }
     }
@@ -268,7 +347,7 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
         // this.outPutFormHeader = $event;
         if (!$event || !$event.submitResult || !$event.returnID) return;
 
-        $event['savingMode'] = this.currentSavingMode;
+        $event["savingMode"] = this.currentSavingMode;
         this.outputData.emit($event);
         switch (this.currentSavingMode) {
             case RequestSavingMode.SaveAndNext: {
@@ -281,7 +360,8 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
                 this.idSalesCampaignWizard = $event.returnID;
                 break;
             }
-            default: break;
+            default:
+                break;
         }
         this.changeStep(true);
         // setTimeout(() => {
@@ -291,7 +371,7 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
 
     public rowFormDataChange($event) {
         // this.outPutFormRow = $event;
-        $event['savingMode'] = this.currentSavingMode;
+        $event["savingMode"] = this.currentSavingMode;
         // if (!_.isNil($event.submitResult) && $event.submitResult) {
         // 	$event['returnID'] = this.idSalesCampaignWizard;
         // }
@@ -314,7 +394,7 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
         // 	return;
         // }
         // this.changeStep(true);
-        $event['savingMode'] = this.currentSavingMode;
+        $event["savingMode"] = this.currentSavingMode;
         this.outputData.emit($event);
         // this.outputData.emit({
         // 	submitResult: true,
@@ -326,32 +406,48 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
         // });
     }
     private subscribeStep1Click() {
-        this.step1ClickSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === TabSummaryActions.SET_FORM_EDIT_SUB_TAB_1_CLICK && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.step1Click(null);
+        this.step1ClickSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        TabSummaryActions.SET_FORM_EDIT_SUB_TAB_1_CLICK &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.step1Click(null);
+                });
             });
-        });
     }
     private subscribeStep2Click() {
-        this.step2ClickSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === TabSummaryActions.SET_FORM_EDIT_SUB_TAB_2_CLICK && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.step2Click(null);
+        this.step2ClickSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        TabSummaryActions.SET_FORM_EDIT_SUB_TAB_2_CLICK &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.step2Click(null);
+                });
             });
-        });
     }
 
     public step1Click(event) {
         this.willGoToStep1 = true;
-        this.store.dispatch(this.processDataActions.requestGoToFirstStep(this.ofModule));
+        this.store.dispatch(
+            this.processDataActions.requestGoToFirstStep(this.ofModule)
+        );
     }
 
     public saveBusinessCostRowData($event: any) {
         this.willChangeBusinessCostRow = true;
-        this.store.dispatch(this.processDataActions.requestChangeBusinessCostRow(this.ofModule));
+        this.store.dispatch(
+            this.processDataActions.requestChangeBusinessCostRow(this.ofModule)
+        );
     }
 
     private processChangeBusinessCostRow() {
@@ -371,11 +467,12 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
     }
 
     public step2Click(event) {
-        if (!this.idSalesCampaignWizard)
-            return;
+        if (!this.idSalesCampaignWizard) return;
 
         this.willGoToStep2 = true;
-        this.store.dispatch(this.processDataActions.requestGoToSecondStep(this.ofModule));
+        this.store.dispatch(
+            this.processDataActions.requestGoToSecondStep(this.ofModule)
+        );
     }
 
     private processGoToStep2() {
@@ -405,7 +502,7 @@ export class BusinessCostFormComponent extends BaseComponent implements OnInit, 
             isValid: true,
             isDirty: false,
             returnID: null,
-            savingMode: this.currentSavingMode
+            savingMode: this.currentSavingMode,
         });
     }
 

@@ -1,40 +1,43 @@
 import {
-    Component, Input, Output, OnInit, OnDestroy,
-    AfterViewInit, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef,
-    TemplateRef, ContentChild
-} from '@angular/core';
-import { Router } from '@angular/router';
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcGrid from 'wijmo/wijmo.grid';
-import * as gridPdf from 'wijmo/wijmo.grid.pdf';
-import * as wjcGridFilter from 'wijmo/wijmo.grid.filter';
-import * as wjcInput from 'wijmo/wijmo.input';
-import * as Ps from 'perfect-scrollbar';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isObject from 'lodash-es/isObject';
-import mapKeys from 'lodash-es/mapKeys';
-import camelCase from 'lodash-es/camelCase';
-import isString from 'lodash-es/isString';
-import isNumber from 'lodash-es/isNumber';
-import isBoolean from 'lodash-es/isBoolean';
-import isNaN from 'lodash-es/isNaN';
-import orderBy from 'lodash-es/orderBy';
-import max from 'lodash-es/max';
-import toSafeInteger from 'lodash-es/toSafeInteger';
-import { parse, compareAsc } from 'date-fns/esm';
-import {
-    Store,
-    ReducerManagerDispatcher
-} from '@ngrx/store';
-import {
-    GridActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import { AppState } from 'app/state-management/store';
-import { Subscription } from 'rxjs/Subscription';
-import { IPageChangedEvent } from 'app/shared/components/xn-pager/xn-pagination.component';
+    Component,
+    Input,
+    Output,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    EventEmitter,
+    ViewChild,
+    ElementRef,
+    ChangeDetectorRef,
+    TemplateRef,
+    ContentChild,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcGrid from "wijmo/wijmo.grid";
+import * as gridPdf from "wijmo/wijmo.grid.pdf";
+import * as wjcGridFilter from "wijmo/wijmo.grid.filter";
+import * as wjcInput from "wijmo/wijmo.input";
+import * as Ps from "perfect-scrollbar";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import cloneDeep from "lodash-es/cloneDeep";
+import isObject from "lodash-es/isObject";
+import mapKeys from "lodash-es/mapKeys";
+import camelCase from "lodash-es/camelCase";
+import isString from "lodash-es/isString";
+import isNumber from "lodash-es/isNumber";
+import isBoolean from "lodash-es/isBoolean";
+import isNaN from "lodash-es/isNaN";
+import orderBy from "lodash-es/orderBy";
+import max from "lodash-es/max";
+import toSafeInteger from "lodash-es/toSafeInteger";
+import { parse, compareAsc } from "date-fns/esm";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { GridActions, CustomAction } from "app/state-management/store/actions";
+import { AppState } from "app/state-management/store";
+import { Subscription } from "rxjs/Subscription";
+import { IPageChangedEvent } from "app/shared/components/xn-pager/xn-pagination.component";
 import {
     DatatableService,
     CommonService,
@@ -43,27 +46,35 @@ import {
     ScrollUtils,
     DomHandler,
     PropertyPanelService,
-    HotKeySettingService
-} from 'app/services';
-import { MessageModal } from 'app/app.constants';
-import { MessageModel, ApiResultResponse, ReloadMode } from 'app/models';
-import { Uti } from 'app/utilities/uti';
-import { BaseComponent } from 'app/pages/private/base';
-import { BooleanCellTemplateDirective, BooleanColHeaderTemplateDirective } from '../template';
-import { CellEditDialogComponent } from '../components/cell-edit-dialog';
-import { format } from 'date-fns/esm';
+    HotKeySettingService,
+} from "app/services";
+import { MessageModal } from "app/app.constants";
+import { MessageModel, ApiResultResponse, ReloadMode } from "app/models";
+import { Uti } from "app/utilities/uti";
+import { BaseComponent } from "app/pages/private/base";
+import {
+    BooleanCellTemplateDirective,
+    BooleanColHeaderTemplateDirective,
+} from "../template";
+import { CellEditDialogComponent } from "../components/cell-edit-dialog";
+import { format } from "date-fns/esm";
 
 @Component({
-    selector: 'wijmo-grid',
-    styleUrls: ['./wijmo-grid.component.scss', './wijmo-grid.component.flag.scss'],
-    templateUrl: './wijmo-grid.component.html'
+    selector: "wijmo-grid",
+    styleUrls: [
+        "./wijmo-grid.component.scss",
+        "./wijmo-grid.component.flag.scss",
+    ],
+    templateUrl: "./wijmo-grid.component.html",
 })
-
-export class WijmoGridComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
+export class WijmoGridComponent
+    extends BaseComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     public priority: any[] = [];
     public quantityPriority = [];
     private currentCellData: any;
-    private _filter = '';
+    private _filter = "";
     private _thisFilterFunction: wjcCore.IPredicate;
     private _toFilter: any;
     private currentSelectedColHeader: any = null;
@@ -71,7 +82,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private _colWidthUpdated = false;
     private _beginningEdit = false;
     private isDoubleClick = false;
-    private popupPosition: { top: number, left: number } = { top: -50, left: 0 };
+    private popupPosition: { top: number; left: number } = {
+        top: -50,
+        left: 0,
+    };
     public isHalfOpacity = false;
     public isShowingPopupFilter = false;
     private _randomNo: number = Math.round(Math.random() * 10000000);
@@ -87,12 +101,15 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     public totalResults: number;
     private _previousCellRange: any = {
         col: -1,
-        row: -1
+        row: -1,
     };
     private _scrollUtils: ScrollUtils;
     private get scrollUtils() {
         if (!this._scrollUtils) {
-            this._scrollUtils = new ScrollUtils(this.scrollBodyContainer, this.domHandler);
+            this._scrollUtils = new ScrollUtils(
+                this.scrollBodyContainer,
+                this.domHandler
+            );
         }
         return this._scrollUtils;
     }
@@ -111,45 +128,45 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     itemFormatter: Function;
     isMarkedAsDelete = false;
     isMarkedAsSelectedAll = false;
-    search = '';
+    search = "";
     private localGridStyle: any = {
         headerStyle: {},
-        rowStyle: {}
-    }
+        rowStyle: {},
+    };
     private localWidgetStyle: any;
 
     public CONTROL_COLUMNS = {
-        deleted: 'deleted',
-        mediaCodeButton: 'mediaCodeButton',
-        download: 'download',
-        selectAll: 'selectAll',
-        InvoicePDF: 'InvoicePDF',
-        PDF: 'PDF',
-        Tracking: 'Tracking',
-        Return: 'Return',
-        SendLetter: 'SendLetter',
-        SAV: 'SAV',
-        Unblock: 'Unblock',
-        Delete: 'Delete',
-        EditRow: 'EditRow',
-        scheduleSetting: 'ScheduleSetting',
-        runScheduleSetting: 'RunScheduleSetting',
-        FilterExtended: 'FilterExtended',
-        noExport: 'noExport',
-        Priority: 'Priority',
-        Edit: 'Edit',
+        deleted: "deleted",
+        mediaCodeButton: "mediaCodeButton",
+        download: "download",
+        selectAll: "selectAll",
+        InvoicePDF: "InvoicePDF",
+        PDF: "PDF",
+        Tracking: "Tracking",
+        Return: "Return",
+        SendLetter: "SendLetter",
+        SAV: "SAV",
+        Unblock: "Unblock",
+        Delete: "Delete",
+        EditRow: "EditRow",
+        scheduleSetting: "ScheduleSetting",
+        runScheduleSetting: "RunScheduleSetting",
+        FilterExtended: "FilterExtended",
+        noExport: "noExport",
+        Priority: "Priority",
+        Edit: "Edit",
     };
     public CHECKBOX_COLUMNS = {
-        masterCheckbox: 'MasterCheckbox',
-        unMergeCheckbox: 'UnMergeCheckbox'
+        masterCheckbox: "MasterCheckbox",
+        unMergeCheckbox: "UnMergeCheckbox",
     };
     private checkBoxColumnsName = [
-        'IsActive',
-        'isActiveDisableRow',
-        'selectAll',
-        'select',
-        'UnAssign',
-    ]
+        "IsActive",
+        "isActiveDisableRow",
+        "selectAll",
+        "select",
+        "UnAssign",
+    ];
     private fitWidth = true;
     private showTotalRowLocal = false;
     private isDragging = false;
@@ -159,7 +176,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     public needCheckGlobalSearchDirty = true;
     public cheatCounter = 0;
     public preventRowEmit: boolean;
-    private selectedRow: { r: number, c: number };
+    private selectedRow: { r: number; c: number };
     public showCellEditDialog = false;
 
     private commonServiceSubscription: Subscription;
@@ -173,11 +190,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         this._isActivated = status;
         if (!status) {
             this.ref.detach();
-        }
-        else {
+        } else {
             this.ref.reattach();
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
@@ -195,11 +211,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     @Input() hasSearch = false;
     @Input() hasFilter = true;
     @Input() hasFilterBox = false;
-    @Input() selectionMode: any = 'Row';
-    @Input() headersVisibility: any = 'All';
-    @Input() showSelectedHeaders: any = 'None';
+    @Input() selectionMode: any = "Row";
+    @Input() headersVisibility: any = "All";
+    @Input() showSelectedHeaders: any = "None";
     @Input() showMarquee = false;
-    @Input() allowResizing: any = 'Both';
+    @Input() allowResizing: any = "Both";
     @Input() columnFilter = true;
     @Input() isShowedEditButtons = false;
     @Input() enableDownloadColumn = false;
@@ -213,7 +229,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             } else {
                 this.turnOffStarResizeMode();
 
-                if (this.columnLayout || (this.columnsLayoutSettings && this.columnsLayoutSettings.settings)) {
+                if (
+                    this.columnLayout ||
+                    (this.columnsLayoutSettings &&
+                        this.columnsLayoutSettings.settings)
+                ) {
                     this._updateColumnLayoutFromState();
                 } else {
                     this.flex.autoSizeColumns();
@@ -289,24 +309,26 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             allowDownload: this.allowDownload,
             allowSelectAll: this.allowSelectAll,
             hasDisableRow: this.hasDisableRow,
-            hasCountryFlagColumn: this.hasCountryFlagColumn
-        }
+            hasCountryFlagColumn: this.hasCountryFlagColumn,
+        };
         // TODO: get column layout settings here
         this.setDatasouceForGrid(dataSource, config);
-    };
+    }
 
     /**
      * initPriorityList
      */
     private initPriorityList() {
         this.priority = [];
-        const priorityList = this.gridData.items.map(o => o[this.CONTROL_COLUMNS.Priority]);
+        const priorityList = this.gridData.items.map(
+            (o) => o[this.CONTROL_COLUMNS.Priority]
+        );
         if (priorityList && priorityList.length) {
             const maxValue = Math.max.apply(Math, priorityList);
             for (let i = 0; i < maxValue; i++) {
                 this.priority.push({
                     key: i + 1,
-                    value: i + 1
+                    value: i + 1,
                 });
             }
         }
@@ -330,9 +352,18 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     @Input() isDesignWidgetMode = false;
     @Input() enableQtyWithColor = false;
     @Input() set globalProperties(globalProperties: any[]) {
-        this.globalDateFormat = this.propertyPanelService.buildGlobalInputDateFormatFromProperties(globalProperties);
-        this.globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(globalProperties);
-        this.dontShowCalendarWhenFocus = this.propertyPanelService.getValueDropdownFromGlobalProperties(globalProperties);
+        this.globalDateFormat =
+            this.propertyPanelService.buildGlobalInputDateFormatFromProperties(
+                globalProperties
+            );
+        this.globalNumberFormat =
+            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                globalProperties
+            );
+        this.dontShowCalendarWhenFocus =
+            this.propertyPanelService.getValueDropdownFromGlobalProperties(
+                globalProperties
+            );
     }
 
     @Input() enableRowHotKey: boolean = false;
@@ -388,21 +419,25 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     @Output() onCellEditEnded = new EventEmitter<any>();
     @Output() onEditColumnClick = new EventEmitter<any>();
 
-    @ViewChild('flex') flex: wjcGrid.FlexGrid;
-    @ViewChild('filter') gridFilter: wjcGridFilter.FlexGridFilter;
-    @ViewChild('popup') popup: wjcInput.Popup;
+    @ViewChild("flex") flex: wjcGrid.FlexGrid;
+    @ViewChild("filter") gridFilter: wjcGridFilter.FlexGridFilter;
+    @ViewChild("popup") popup: wjcInput.Popup;
 
     private cellCombo: wjcInput.ComboBox;
-    @ViewChild('cellCombo') set content(content: wjcInput.ComboBox) {
+    @ViewChild("cellCombo") set content(content: wjcInput.ComboBox) {
         this.cellCombo = content;
     }
 
     private cellEditDialog: CellEditDialogComponent;
-    @ViewChild(CellEditDialogComponent) set cellEditDialogComponent(cellEditDialogComponent: CellEditDialogComponent) {
+    @ViewChild(CellEditDialogComponent) set cellEditDialogComponent(
+        cellEditDialogComponent: CellEditDialogComponent
+    ) {
         this.cellEditDialog = cellEditDialogComponent;
     }
-    @ContentChild(BooleanCellTemplateDirective) booleanCellTemplate: BooleanCellTemplateDirective;
-    @ContentChild(BooleanColHeaderTemplateDirective) booleanColHeaderTemplate: BooleanColHeaderTemplateDirective;
+    @ContentChild(BooleanCellTemplateDirective)
+    booleanCellTemplate: BooleanCellTemplateDirective;
+    @ContentChild(BooleanColHeaderTemplateDirective)
+    booleanColHeaderTemplate: BooleanColHeaderTemplateDirective;
 
     get filter(): string {
         return this._filter;
@@ -436,7 +471,8 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         this._thisFilterFunction = this._filterFunction.bind(this);
         this.validateCells = this.validateCells.bind(this);
         this.sortComparer = this.sortComparer.bind(this);
-        this.collectionChangedHandler = this.collectionChangedHandler.bind(this);
+        this.collectionChangedHandler =
+            this.collectionChangedHandler.bind(this);
         this.itemFormatter = this._itemFormatterFunc.bind(this);
     }
 
@@ -457,12 +493,9 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         Uti.unsubscribe(this);
 
         //set array length = 0
-        if (this.gridColumns)
-            this.gridColumns.length = 0
-        if (this.filterColumns)
-            this.filterColumns.length = 0
-        if (this.deletedItemList)
-            this.deletedItemList.length = 0
+        if (this.gridColumns) this.gridColumns.length = 0;
+        if (this.filterColumns) this.filterColumns.length = 0;
+        if (this.deletedItemList) this.deletedItemList.length = 0;
 
         //set object = null
         this.gridData = null;
@@ -490,25 +523,58 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
             if (this.activeRowIndex) {
                 this.selectRowIndex(this.activeRowIndex);
-            } else if (this.autoSelectFirstRow || (this.gridData && this.gridData.items.length === 1)) {
+            } else if (
+                this.autoSelectFirstRow ||
+                (this.gridData && this.gridData.items.length === 1)
+            ) {
                 this.selectFirstRow();
             }
-            this.flex.selectionChanging.addHandler(this.selectionChangingHandler.bind(this));
-            this.flex.selectionChanged.addHandler(this.selectionChangedHandler.bind(this));
-            this.flex.beginningEdit.addHandler(this.beginningEditHandler.bind(this));
-            this.flex.sortingColumn.addHandler(this.sortingColumnHandler.bind(this));
-            this.flex.cellEditEnding.addHandler(this.cellEditEndingHandler.bind(this));
-            this.flex.cells.hostElement.addEventListener('click', this._onCellClick.bind(this));
+            this.flex.selectionChanging.addHandler(
+                this.selectionChangingHandler.bind(this)
+            );
+            this.flex.selectionChanged.addHandler(
+                this.selectionChangedHandler.bind(this)
+            );
+            this.flex.beginningEdit.addHandler(
+                this.beginningEditHandler.bind(this)
+            );
+            this.flex.sortingColumn.addHandler(
+                this.sortingColumnHandler.bind(this)
+            );
+            this.flex.cellEditEnding.addHandler(
+                this.cellEditEndingHandler.bind(this)
+            );
+            this.flex.cells.hostElement.addEventListener(
+                "click",
+                this._onCellClick.bind(this)
+            );
             this.flex.copying.addHandler(this.copyingHandler.bind(this));
-            this.flex.pastingCell.addHandler(this._pastingCellHandler.bind(this));
-            this.flex.hostElement.addEventListener("keydown", this.onGridKeydown.bind(this));
-            this.flex.rowEditStarted.addHandler(this._rowEditStarted.bind(this));
+            this.flex.pastingCell.addHandler(
+                this._pastingCellHandler.bind(this)
+            );
+            this.flex.hostElement.addEventListener(
+                "keydown",
+                this.onGridKeydown.bind(this)
+            );
+            this.flex.rowEditStarted.addHandler(
+                this._rowEditStarted.bind(this)
+            );
             this.flex.cellEditEnded.addHandler(this._cellEditEnded.bind(this));
-            this.flex.rowEditEnded.addHandler(this.rowEditEndedHandler.bind(this));
-            this.flex.resizingColumn.addHandler(this.resizingColumnHandler.bind(this));
-            this.flex.resizedColumn.addHandler(this.resizedColumnHandler.bind(this));
-            this.flex.draggedColumn.addHandler(this.draggedColumnHandler.bind(this));
-            this.flex.scrollPositionChanged.addHandler(this.scrollPositionChanged.bind(this));
+            this.flex.rowEditEnded.addHandler(
+                this.rowEditEndedHandler.bind(this)
+            );
+            this.flex.resizingColumn.addHandler(
+                this.resizingColumnHandler.bind(this)
+            );
+            this.flex.resizedColumn.addHandler(
+                this.resizedColumnHandler.bind(this)
+            );
+            this.flex.draggedColumn.addHandler(
+                this.draggedColumnHandler.bind(this)
+            );
+            this.flex.scrollPositionChanged.addHandler(
+                this.scrollPositionChanged.bind(this)
+            );
 
             if (this.smallRowHeaders) {
                 this.resizeRowHeaders(22);
@@ -548,11 +614,13 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         if (this.wijmoDataSource && this.wijmoDataSource.columns) {
             setTimeout(() => {
                 if (this.wijmoDataSource && this.wijmoDataSource.columns) {
-                    (this.wijmoDataSource.columns as Array<any>).forEach((col, index) => {
-                        if (col.autoSize) {
-                            this.flex.autoSizeColumn(index);
+                    (this.wijmoDataSource.columns as Array<any>).forEach(
+                        (col, index) => {
+                            if (col.autoSize) {
+                                this.flex.autoSizeColumn(index);
+                            }
                         }
-                    });
+                    );
                 }
             });
         }
@@ -572,7 +640,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 e.cancel = true;
                 let selectingCell = {
                     row: e.row,
-                    col: e.col
+                    col: e.col,
                 };
                 this.onSelectionChanging.emit(selectingCell);
             } else {
@@ -606,12 +674,15 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         let column = this.flex.getColumn(e.col);
         let hasBorderStatus = false;
         for (let col of this.flex.columns) {
-            if (col._hdr === 'BorderStatus') {
+            if (col._hdr === "BorderStatus") {
                 hasBorderStatus = true;
                 break;
             }
         }
-        if (hasBorderStatus && this.checkBoxColumnsName.indexOf(column.binding) > -1)
+        if (
+            hasBorderStatus &&
+            this.checkBoxColumnsName.indexOf(column.binding) > -1
+        )
             e.cancel = true;
     }
 
@@ -653,85 +724,184 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         }
 
         if (this.readOnly || !item || !property) {
-            this._errorObject = this._buildErrorObject(this._errorObject, item, property, false);
+            this._errorObject = this._buildErrorObject(
+                this._errorObject,
+                item,
+                property,
+                false
+            );
             return null;
         }
 
-        const column = this.gridColumns.find(col => col.data === property);
+        const column = this.gridColumns.find((col) => col.data === property);
 
         if (!column) {
-            this._errorObject = this._buildErrorObject(this._errorObject, item, property, false);
+            this._errorObject = this._buildErrorObject(
+                this._errorObject,
+                item,
+                property,
+                false
+            );
             return null;
         }
 
-        if (this.datatableService.hasValidation(column, 'IsRequired')) {
-            if (isNil(item[property]) || item[property] === '' || item[property] === 0 || (typeof item[property] === 'object' && !item[property]['key'])) {
-                this._errorObject = this._buildErrorObject(this._errorObject, item, property, true);
-                return 'Field is required';
+        if (this.datatableService.hasValidation(column, "IsRequired")) {
+            if (
+                isNil(item[property]) ||
+                item[property] === "" ||
+                item[property] === 0 ||
+                (typeof item[property] === "object" && !item[property]["key"])
+            ) {
+                this._errorObject = this._buildErrorObject(
+                    this._errorObject,
+                    item,
+                    property,
+                    true
+                );
+                return "Field is required";
             }
         }
 
-        if (this.datatableService.hasValidation(column, 'RequiredFrom')) {
-            let fromFieldName = this.datatableService.getSettingContainsValidation(column.setting.Setting).Validation.RequiredFrom;
+        if (this.datatableService.hasValidation(column, "RequiredFrom")) {
+            let fromFieldName =
+                this.datatableService.getSettingContainsValidation(
+                    column.setting.Setting
+                ).Validation.RequiredFrom;
 
-            if (!isNil(item[fromFieldName])
-                && item[fromFieldName] !== ''
-                && (isNil(item[property]) || item[property] === '' || item[property] === 0 || (typeof item[property] === 'object' && !item[property]['key']))) {
-                this._errorObject = this._buildErrorObject(this._errorObject, item, property, true);
-                return 'Field is required';
+            if (
+                !isNil(item[fromFieldName]) &&
+                item[fromFieldName] !== "" &&
+                (isNil(item[property]) ||
+                    item[property] === "" ||
+                    item[property] === 0 ||
+                    (typeof item[property] === "object" &&
+                        !item[property]["key"]))
+            ) {
+                this._errorObject = this._buildErrorObject(
+                    this._errorObject,
+                    item,
+                    property,
+                    true
+                );
+                return "Field is required";
             }
         }
 
-        if (this.datatableService.hasValidation(column, 'Comparison')) {
-            if (isNil(item[property]) || item[property] === '' || item[property] === 0 || (typeof item[property] === 'object' && !item[property]['key'])) {
-                this._errorObject = this._buildErrorObject(this._errorObject, item, property, true);
+        if (this.datatableService.hasValidation(column, "Comparison")) {
+            if (
+                isNil(item[property]) ||
+                item[property] === "" ||
+                item[property] === 0 ||
+                (typeof item[property] === "object" && !item[property]["key"])
+            ) {
+                this._errorObject = this._buildErrorObject(
+                    this._errorObject,
+                    item,
+                    property,
+                    true
+                );
                 let compareThem = {
-                    '<=': (x, y) => { return x <= y },
-                    '<': (x, y) => { return x < y },
-                    '=': (x, y) => { return x == y },
-                    '>': (x, y) => { return x > y },
-                    '>=': (x, y) => { return x >= y }
+                    "<=": (x, y) => {
+                        return x <= y;
+                    },
+                    "<": (x, y) => {
+                        return x < y;
+                    },
+                    "=": (x, y) => {
+                        return x == y;
+                    },
+                    ">": (x, y) => {
+                        return x > y;
+                    },
+                    ">=": (x, y) => {
+                        return x >= y;
+                    },
                 };
 
-                let comparisonRules = this.datatableService.getSettingContainsValidation(column.setting.Setting).Validation.Comparison;
+                let comparisonRules =
+                    this.datatableService.getSettingContainsValidation(
+                        column.setting.Setting
+                    ).Validation.Comparison;
                 for (let i = 0; i < comparisonRules.length; i++) {
                     let leftData = parseFloat(item[property]) || 0.0;
-                    let rightData = parseFloat(item[comparisonRules[i].With]) || 0.0;
-                    if (compareThem[comparisonRules[i].Operator](leftData, rightData) === false) {
+                    let rightData =
+                        parseFloat(item[comparisonRules[i].With]) || 0.0;
+                    if (
+                        compareThem[comparisonRules[i].Operator](
+                            leftData,
+                            rightData
+                        ) === false
+                    ) {
                         return comparisonRules[i].ErrorMessage;
                     }
                 }
             }
         }
 
-        if (this.datatableService.hasValidation(column, 'ValidationRange')) {
-            if (isNil(item['ValidationRangeFrom']) || isNil(item['ValidationRangeTo'])) {
+        if (this.datatableService.hasValidation(column, "ValidationRange")) {
+            if (
+                isNil(item["ValidationRangeFrom"]) ||
+                isNil(item["ValidationRangeTo"])
+            ) {
                 return null;
             }
 
-            if (!(item[property] >= item['ValidationRangeFrom'] && item[property] <= item['ValidationRangeTo'])) {
-                this._errorObject = this._buildErrorObject(this._errorObject, item, property, true);
-                return property + ' must be in the range of ' + item['ValidationRangeFrom'] + ' and ' + item['ValidationRangeTo'];
+            if (
+                !(
+                    item[property] >= item["ValidationRangeFrom"] &&
+                    item[property] <= item["ValidationRangeTo"]
+                )
+            ) {
+                this._errorObject = this._buildErrorObject(
+                    this._errorObject,
+                    item,
+                    property,
+                    true
+                );
+                return (
+                    property +
+                    " must be in the range of " +
+                    item["ValidationRangeFrom"] +
+                    " and " +
+                    item["ValidationRangeTo"]
+                );
             }
         }
 
         if (this.datatableService.hasValidation(column)) {
-            const regexData = this.datatableService.buildWijmoGridValidationExpression(item, column);
+            const regexData =
+                this.datatableService.buildWijmoGridValidationExpression(
+                    item,
+                    column
+                );
             if (regexData && regexData.Regex) {
-                const regex = new RegExp(decodeURIComponent(regexData.Regex), 'g');
+                const regex = new RegExp(
+                    decodeURIComponent(regexData.Regex),
+                    "g"
+                );
 
                 if (!regex.test(item[property])) {
-                    this._errorObject = this._buildErrorObject(this._errorObject, item, property, true);
+                    this._errorObject = this._buildErrorObject(
+                        this._errorObject,
+                        item,
+                        property,
+                        true
+                    );
                     if (regexData.ErrorMessage) {
                         return regexData.ErrorMessage;
                     } else {
-                        return 'Invalid';
+                        return "Invalid";
                     }
                 }
             }
         }
 
-        this._errorObject = this._buildErrorObject(this._errorObject, item, property, false);
+        this._errorObject = this._buildErrorObject(
+            this._errorObject,
+            item,
+            property,
+            false
+        );
         return null;
     }
 
@@ -744,7 +914,9 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         let hasError = this._hasError();
         if (hasError.result) {
-            let itemHasError = this.gridData.items.find(i => i.DT_RowId == hasError.rowID);
+            let itemHasError = this.gridData.items.find(
+                (i) => i.DT_RowId == hasError.rowID
+            );
             if (itemHasError && !itemHasError.deleted) {
                 this._hasValidationError = true;
             }
@@ -790,7 +962,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             this.flex.select(new wjcGrid.CellRange(-1, -1, -1, -1));
         }
         this.onPageChanged.emit(event);
-    };
+    }
 
     selectFirstRow() {
         this._selectFirstRow();
@@ -839,9 +1011,8 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         });
     }
 
-
     exportToPdf(fileName) {
-        gridPdf.FlexGridPdfConverter.export(this.flex, fileName + '.pdf');
+        gridPdf.FlexGridPdfConverter.export(this.flex, fileName + ".pdf");
     }
 
     public turnOnStarResizeMode() {
@@ -857,7 +1028,9 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     format(data: any, formatPattern: string) {
-        const result = !data ? '' : this.uti.formatLocale(new Date(data), formatPattern);
+        const result = !data
+            ? ""
+            : this.uti.formatLocale(new Date(data), formatPattern);
         return result;
     }
 
@@ -883,16 +1056,26 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         if (!dataSource) return;
 
         let processData = () => {
-            this.wijmoDataSource = this.datatableService.buildWijmoDataSource(dataSource, config);
-            this.wijmoDataSource = this.preOrderColumnBeforeApplyColumn(this.wijmoDataSource);
+            this.wijmoDataSource = this.datatableService.buildWijmoDataSource(
+                dataSource,
+                config
+            );
+            this.wijmoDataSource = this.preOrderColumnBeforeApplyColumn(
+                this.wijmoDataSource
+            );
 
-            this.gridData = new wjcCore.CollectionView(this.wijmoDataSource.data, {
-                getError: this.validateCells,
-                sortComparer: this.sortComparer
-            });
+            this.gridData = new wjcCore.CollectionView(
+                this.wijmoDataSource.data,
+                {
+                    getError: this.validateCells,
+                    sortComparer: this.sortComparer,
+                }
+            );
 
             this.gridData.trackChanges = true;
-            this.gridData.collectionChanged.addHandler(this.collectionChangedHandler);
+            this.gridData.collectionChanged.addHandler(
+                this.collectionChangedHandler
+            );
 
             if (!this.autoSelectFirstRow && this.gridData.items.length !== 1) {
                 this.gridData.currentItem = null;
@@ -902,7 +1085,9 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
             this.deletedItemList = [];
             if (this.gridData.items.length) {
-                const deletedItems = this.gridData.items.filter(i => i.deleted === true);
+                const deletedItems = this.gridData.items.filter(
+                    (i) => i.deleted === true
+                );
                 if (deletedItems && deletedItems.length) {
                     for (const item of deletedItems) {
                         this.deletedItemList.push(item);
@@ -910,18 +1095,33 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 }
             }
 
-            if (this.widgetReloadMode === ReloadMode.UpdatingData && this._filter) {
+            if (
+                this.widgetReloadMode === ReloadMode.UpdatingData &&
+                this._filter
+            ) {
                 this._applyFilter(true);
             } else {
                 this.resetFilterPopup();
             }
 
-            if (this.isColumnsChanged(this.gridColumns, this.wijmoDataSource.columns)) {
+            if (
+                this.isColumnsChanged(
+                    this.gridColumns,
+                    this.wijmoDataSource.columns
+                )
+            ) {
                 this.gridColumns = this.wijmoDataSource.columns;
-                this.filterColumns = this.datatableService.buildWijmoFilterColumns(this.gridColumns, config, this.noFilterColumns);
+                this.filterColumns =
+                    this.datatableService.buildWijmoFilterColumns(
+                        this.gridColumns,
+                        config,
+                        this.noFilterColumns
+                    );
 
                 if (this.flex) {
-                    const groupByColumn = this._getGroupByColumn(this.gridColumns);
+                    const groupByColumn = this._getGroupByColumn(
+                        this.gridColumns
+                    );
                     if (groupByColumn) {
                         this._applyGroupBy(groupByColumn);
                     }
@@ -954,10 +1154,13 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             }
             setTimeout(() => {
                 if (this.selectedRow) {
-                    this.flex.select(new wjcGrid.CellRange(this.selectedRow.r, -1), true);
+                    this.flex.select(
+                        new wjcGrid.CellRange(this.selectedRow.r, -1),
+                        true
+                    );
                 }
             }, 200);
-        }
+        };
 
         if (this.resetDatasouceWhenChanged) {
             if (this.wijmoDataSource) {
@@ -980,7 +1183,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         if (this.readOnlyCells && this.readOnlyCells.length) {
             for (let i = 0; i < this.readOnlyCells.length; i++) {
-                if (dataItem[this.readOnlyCells[i].name] == this.readOnlyCells[i].value) {
+                if (
+                    dataItem[this.readOnlyCells[i].name] ==
+                    this.readOnlyCells[i].value
+                ) {
                     return true;
                 }
             }
@@ -1000,20 +1206,33 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     private preOrderColumnBeforeApplyColumn(dataSource): any {
-        if (!this.widgetId || !this.columnsLayoutSettings || !this.columnsLayoutSettings.settings || !dataSource.columns || !dataSource.columns.length) {
+        if (
+            !this.widgetId ||
+            !this.columnsLayoutSettings ||
+            !this.columnsLayoutSettings.settings ||
+            !dataSource.columns ||
+            !dataSource.columns.length
+        ) {
             return dataSource;
         }
         let result = {
             columns: [],
-            data: dataSource.data
+            data: dataSource.data,
         };
 
-        if (this.widgetId && this.columnsLayoutSettings && this.columnsLayoutSettings.settings && typeof this.columnsLayoutSettings.settings === 'string') {
+        if (
+            this.widgetId &&
+            this.columnsLayoutSettings &&
+            this.columnsLayoutSettings.settings &&
+            typeof this.columnsLayoutSettings.settings === "string"
+        ) {
             let settings = JSON.parse(this.columnsLayoutSettings.settings);
             if (settings && settings.columns && settings.columns.length) {
                 if (settings.columns.length == dataSource.columns.length) {
-                    settings.columns.forEach(x => {
-                        let col = dataSource.columns.find(y => y.data == x.binding);
+                    settings.columns.forEach((x) => {
+                        let col = dataSource.columns.find(
+                            (y) => y.data == x.binding
+                        );
                         if (col) {
                             result.columns.push(col);
                         }
@@ -1029,7 +1248,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private _wordWrapColumnsHeader() {
         if (this.flex) {
             setTimeout(() => {
-                if (this.flex.columnHeaders && this.flex.columnHeaders.rows.length) {
+                if (
+                    this.flex.columnHeaders &&
+                    this.flex.columnHeaders.rows.length
+                ) {
                     var row = this.flex.columnHeaders.rows[0];
                     row.wordWrap = true;
 
@@ -1047,15 +1269,23 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     private onGridKeydown(e) {
-        const n = (window.event) ? e.which : e.keyCode;
-        if ((n === 9 && e.which == 9) || (n === 13 && e.which == 13 && this.flex.keyActionEnter === wjcGrid.KeyAction.MoveAcross)) {
+        const n = window.event ? e.which : e.keyCode;
+        if (
+            (n === 9 && e.which == 9) ||
+            (n === 13 &&
+                e.which == 13 &&
+                this.flex.keyActionEnter === wjcGrid.KeyAction.MoveAcross)
+        ) {
             let selectedCellRange = this.flex.selection;
             let nextCell: any = {
                 col: this._nextVisibleColumn(selectedCellRange.col, this.flex),
-                row: selectedCellRange.row
+                row: selectedCellRange.row,
             };
 
-            if (nextCell.col == this.flex.columns.length && nextCell.row == this.flex.rows.length) {
+            if (
+                nextCell.col == this.flex.columns.length &&
+                nextCell.row == this.flex.rows.length
+            ) {
                 let firstVisibleCell = this.firstVisibleCellIndex();
                 if (firstVisibleCell) {
                     nextCell.col = firstVisibleCell.c;
@@ -1073,12 +1303,23 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 }
             }
 
-            this.flex.select(new wjcGrid.CellRange(nextCell.row, nextCell.col, nextCell.row, nextCell.col));
+            this.flex.select(
+                new wjcGrid.CellRange(
+                    nextCell.row,
+                    nextCell.col,
+                    nextCell.row,
+                    nextCell.col
+                )
+            );
         }
 
         // Enter Key
         if (n == 13) {
-            if (this.flex && this.flex.selectedRows && this.flex.selectedRows.length) {
+            if (
+                this.flex &&
+                this.flex.selectedRows &&
+                this.flex.selectedRows.length
+            ) {
                 this.onEnterPress.emit(this.flex.selectedRows[0].dataItem);
             }
         }
@@ -1087,14 +1328,22 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             let selectedCellRange = this.flex.selection;
             let flexCol = this.flex.getColumn(<any>selectedCellRange.col);
             if (flexCol) {
-                let gridCol = this.gridColumns.find(x => x.data === flexCol.binding);
-                if (gridCol
-                    && (gridCol.dataType == 'Boolean' || gridCol.data == this.CONTROL_COLUMNS.deleted || gridCol.data == this.CONTROL_COLUMNS.selectAll)
-                    && $(e.target).find('mat-checkbox').length) {
+                let gridCol = this.gridColumns.find(
+                    (x) => x.data === flexCol.binding
+                );
+                if (
+                    gridCol &&
+                    (gridCol.dataType == "Boolean" ||
+                        gridCol.data == this.CONTROL_COLUMNS.deleted ||
+                        gridCol.data == this.CONTROL_COLUMNS.selectAll) &&
+                    $(e.target).find("mat-checkbox").length
+                ) {
                     let row = this.flex.rows[selectedCellRange.row];
                     if (row) {
                         let item = row.dataItem;
-                        this.onCheckboxChanged(item, flexCol.binding, { checked: !item[flexCol.binding] });
+                        this.onCheckboxChanged(item, flexCol.binding, {
+                            checked: !item[flexCol.binding],
+                        });
                     }
                 }
             }
@@ -1117,7 +1366,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     private _copyingHandler(s: wjcGrid.FlexGrid, e: any) {
-        const colBinding = this.flex.columns[e.col]['binding'],
+        const colBinding = this.flex.columns[e.col]["binding"],
             cellData = this.gridData.currentItem[colBinding];
 
         wjcCore.Clipboard.copy(cellData.toString());
@@ -1139,20 +1388,25 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             let currentFlexCol = this.flex.getColumn(e.col),
                 row = s.rows[e.row],
                 item = row.dataItem;
-            if (e && currentFlexCol
-                && e._data instanceof KeyboardEvent
-                && e.panel
-                && e.panel._activeCell
-                && e.panel._activeCell.className.indexOf('in-active-cell') > -1
-                && !currentFlexCol.isReadOnly
-                && (!item['BorderStatus'] || item['BorderStatus'] !== '1')) {
-
-                if (item.hasOwnProperty('isActiveDisableRow') && !item['isActiveDisableRow']) {
-                    item['isActiveDisableRow'] = true;
+            if (
+                e &&
+                currentFlexCol &&
+                e._data instanceof KeyboardEvent &&
+                e.panel &&
+                e.panel._activeCell &&
+                e.panel._activeCell.className.indexOf("in-active-cell") > -1 &&
+                !currentFlexCol.isReadOnly &&
+                (!item["BorderStatus"] || item["BorderStatus"] !== "1")
+            ) {
+                if (
+                    item.hasOwnProperty("isActiveDisableRow") &&
+                    !item["isActiveDisableRow"]
+                ) {
+                    item["isActiveDisableRow"] = true;
                 }
 
-                if (item.hasOwnProperty('IsActive') && !item['IsActive']) {
-                    item['IsActive'] = true;
+                if (item.hasOwnProperty("IsActive") && !item["IsActive"]) {
+                    item["IsActive"] = true;
                 }
             }
         }
@@ -1162,48 +1416,69 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         if (this.showTooltip && this.tooltipField) {
             $("i[id^=info-icon-]", this.flex.hostElement).hide();
             if (this.gridData.currentItem) {
-                $("i#info-icon-" + this.gridData.currentItem.DT_RowId, this.flex.hostElement).show();
+                $(
+                    "i#info-icon-" + this.gridData.currentItem.DT_RowId,
+                    this.flex.hostElement
+                ).show();
             }
         }
     }
 
     private _pastingCellHandler(p: any, e: any) {
-        const isNotTheSelectingCell = (!p.selection || p.selection.col !== e.col || p.selection.row !== e.row);
-        const isComboboxCell = this.gridColumns[e.col].dataType === 'Object';
+        const isNotTheSelectingCell =
+            !p.selection ||
+            p.selection.col !== e.col ||
+            p.selection.row !== e.row;
+        const isComboboxCell = this.gridColumns[e.col].dataType === "Object";
 
         e.cancel = isNotTheSelectingCell || isComboboxCell;
     }
 
     private registerContextMenu() {
         if (this.showContextMenu) {
-            this.flex.addEventListener(this.flex.hostElement, 'contextmenu', (e) => {
-                this.showCtxItem = false;
-                const ht = this.flex.hitTest(e);
-                const selection = this.flex.selection;
-                if ((selection.row !== ht.row) || (selection.col !== ht.col)) {
-                    this.flex.select(new wjcGrid.CellRange(ht.row, ht.col, ht.row, ht.col));
-                } else {
-                    this.gridItemRightClick.emit(this.flex.selectedItems);
-                }
+            this.flex.addEventListener(
+                this.flex.hostElement,
+                "contextmenu",
+                (e) => {
+                    this.showCtxItem = false;
+                    const ht = this.flex.hitTest(e);
+                    const selection = this.flex.selection;
+                    if (selection.row !== ht.row || selection.col !== ht.col) {
+                        this.flex.select(
+                            new wjcGrid.CellRange(
+                                ht.row,
+                                ht.col,
+                                ht.row,
+                                ht.col
+                            )
+                        );
+                    } else {
+                        this.gridItemRightClick.emit(this.flex.selectedItems);
+                    }
 
-                let item = this.flex.rows[ht.row].dataItem;
+                    let item = this.flex.rows[ht.row].dataItem;
 
-                const binding = this.flex.columns[ht.col].binding;
-                if (binding == this.CONTROL_COLUMNS.Priority && !this.readOnly) {
-                    if (!$(e.target).hasClass('wj-form-control')
-                        && !$(e.target).hasClass('wj-btn')
-                        && !$(e.target).hasClass('wj-glyph-down')) {
-                        this.deletePriorityForCurrentItem(item);
+                    const binding = this.flex.columns[ht.col].binding;
+                    if (
+                        binding == this.CONTROL_COLUMNS.Priority &&
+                        !this.readOnly
+                    ) {
+                        if (
+                            !$(e.target).hasClass("wj-form-control") &&
+                            !$(e.target).hasClass("wj-btn") &&
+                            !$(e.target).hasClass("wj-glyph-down")
+                        ) {
+                            this.deletePriorityForCurrentItem(item);
+                        }
+                    } else {
+                        setTimeout(() => {
+                            this.showCtxItem = true;
+
+                            this.ref.detectChanges();
+                        }, 300);
                     }
                 }
-                else {
-                    setTimeout(() => {
-                        this.showCtxItem = true;
-
-                        this.ref.detectChanges();
-                    }, 300);
-                }
-            });
+            );
         }
     }
 
@@ -1217,19 +1492,30 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     private _selectRowIndex(index: number) {
         setTimeout(() => {
-            if (this.flex && this.flex.rows && this.flex.rows.length && !isNil(index)) {
+            if (
+                this.flex &&
+                this.flex.rows &&
+                this.flex.rows.length &&
+                !isNil(index)
+            ) {
                 this.flex.select(new wjcGrid.CellRange(index, -1, index, -1));
             }
         }, 200);
     }
 
     private _selectCell(iRow: number, iCol: number) {
-        if (this.flex && this.flex.rows && this.flex.rows.length && !isNil(iRow) && !isNil(iCol) &&
-            this.flex.rows.length > iRow && this.flex.columns.length > iCol) {
+        if (
+            this.flex &&
+            this.flex.rows &&
+            this.flex.rows.length &&
+            !isNil(iRow) &&
+            !isNil(iCol) &&
+            this.flex.rows.length > iRow &&
+            this.flex.columns.length > iCol
+        ) {
             this.flex.select(new wjcGrid.CellRange(iRow, iCol, iRow, iCol));
         }
     }
-
 
     private _refresh() {
         this.isMarkedAsDelete = false;
@@ -1240,11 +1526,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     private _buildErrorObject(errorObject, item, property, hasError) {
-        if (item['DT_RowId']) {
-            if (!this._errorObject[item['DT_RowId']]) {
-                this._errorObject[item['DT_RowId']] = {};
+        if (item["DT_RowId"]) {
+            if (!this._errorObject[item["DT_RowId"]]) {
+                this._errorObject[item["DT_RowId"]] = {};
             }
-            this._errorObject[item['DT_RowId']][property] = hasError;
+            this._errorObject[item["DT_RowId"]][property] = hasError;
         }
 
         return errorObject;
@@ -1257,7 +1543,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                     if (this._errorObject[prop][childProp]) {
                         return {
                             rowID: prop,
-                            result: true
+                            result: true,
                         };
                     }
                 }
@@ -1266,7 +1552,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         return {
             rowID: null,
-            result: false
+            result: false,
         };
     }
 
@@ -1277,7 +1563,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         this.isDoubleClick = true;
         if (s.selectedRows.length) {
-            let col: any = (s.hitTest(e).col);
+            let col: any = s.hitTest(e).col;
             let currentFlexCol = this.flex.getColumn(col);
 
             if (!currentFlexCol) {
@@ -1286,7 +1572,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
             let result = s.selectedRows[0].dataItem;
             // isReadOnlyColumn: use as constant
-            result['isReadOnlyColumn'] = currentFlexCol.isReadOnly;
+            result["isReadOnlyColumn"] = currentFlexCol.isReadOnly;
             this.onRowDoubleClick.emit(result);
             this._toggleTooltip();
         }
@@ -1296,18 +1582,28 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         setTimeout(() => {
             if (this.fitWidth) {
                 this.turnOnStarResizeMode();
-            } else if (this.columnsLayoutSettings && this.columnsLayoutSettings.settings) {
-                this.updateColumnWidth(this.flex.columns, this.columnsLayoutSettings.settings);
+            } else if (
+                this.columnsLayoutSettings &&
+                this.columnsLayoutSettings.settings
+            ) {
+                this.updateColumnWidth(
+                    this.flex.columns,
+                    this.columnsLayoutSettings.settings
+                );
             }
         });
     }
 
     private updateColumnWidth(columns, columnLayout) {
-        if (!columns.length || typeof columnLayout !== 'string') {
+        if (!columns.length || typeof columnLayout !== "string") {
             return;
         }
         const columnLayoutObj = JSON.parse(columnLayout);
-        if (columnLayoutObj && columnLayoutObj.columns && columnLayoutObj.columns.length == columns.length) {
+        if (
+            columnLayoutObj &&
+            columnLayoutObj.columns &&
+            columnLayoutObj.columns.length == columns.length
+        ) {
             for (let i = 0; i < columnLayoutObj.columns.length; i++) {
                 if (columnLayoutObj.columns[i])
                     columns[i].width = columnLayoutObj.columns[i].width;
@@ -1316,23 +1612,33 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     private _subscribeRequestRefreshState() {
-        this.requestRefreshSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === GridActions.REQUEST_REFRESH && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.refresh();
+        this.requestRefreshSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === GridActions.REQUEST_REFRESH &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.refresh();
+                });
             });
-        });
     }
 
     private _subscribeRequestInvalidateState() {
-        this.requestInvalidateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === GridActions.REQUEST_INVALIDATE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.invalidate();
+        this.requestInvalidateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === GridActions.REQUEST_INVALIDATE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.invalidate();
+                });
             });
-        });
     }
 
     private _itemFormatterFunc(panel, r, c, cell) {
@@ -1341,12 +1647,16 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         }
 
         if (this.localWidgetStyle) {
-            let rootElement = $('div[wj-part=\'root\']', this.flex.hostElement);
+            let rootElement = $("div[wj-part='root']", this.flex.hostElement);
             if (rootElement.length) {
                 if (!isNil(this.localWidgetStyle.backgroundColor)) {
-                    rootElement.get(0).style.backgroundColor = this.localWidgetStyle.backgroundColor;
-                } else if (!isNil(this.localWidgetStyle.globalBackgroundColor)) {
-                    rootElement.get(0).style.backgroundColor = this.localWidgetStyle.globalBackgroundColor;
+                    rootElement.get(0).style.backgroundColor =
+                        this.localWidgetStyle.backgroundColor;
+                } else if (
+                    !isNil(this.localWidgetStyle.globalBackgroundColor)
+                ) {
+                    rootElement.get(0).style.backgroundColor =
+                        this.localWidgetStyle.globalBackgroundColor;
                 }
             }
         }
@@ -1356,155 +1666,235 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 this.popupPosition.top = this.flex.hostElement.clientHeight + 6;
             }
 
-            const filterSpan = $('span.wj-glyph-filter', cell);
+            const filterSpan = $("span.wj-glyph-filter", cell);
             if (!filterSpan.length) {
-                const ele = $('<span class="wj-glyph-filter" id="btnPopup"></span>');
+                const ele = $(
+                    '<span class="wj-glyph-filter" id="btnPopup"></span>'
+                );
                 $(cell).append(ele);
-                ele.bind('click', (eve) => {
+                ele.bind("click", (eve) => {
                     this.isShowingPopupFilter = true;
                     setTimeout(() => {
-                        $('input#xn-input' + this._randomNo).focus();
-                        $('input#xn-input' + this._randomNo).val($('input#xn-input' + this._randomNo).val());
+                        $("input#xn-input" + this._randomNo).focus();
+                        $("input#xn-input" + this._randomNo).val(
+                            $("input#xn-input" + this._randomNo).val()
+                        );
                     }, 1000);
                 });
 
                 if (this._filter.length) {
-                    $(cell).addClass('has-filter-text');
+                    $(cell).addClass("has-filter-text");
                 }
             }
         }
 
-        const qtyWithColor = 'qtywithcolor';
+        const qtyWithColor = "qtywithcolor";
         if (panel.cellType === wjcGrid.CellType.ColumnHeader) {
-            if (!this.readOnly && (!panel.columns[c].isReadOnly || !isNil(Object.keys(this.CONTROL_COLUMNS).find(x => x === panel.columns[c].binding)))) {
-                cell.style.borderBottom = '3px solid orange';
+            if (
+                !this.readOnly &&
+                (!panel.columns[c].isReadOnly ||
+                    !isNil(
+                        Object.keys(this.CONTROL_COLUMNS).find(
+                            (x) => x === panel.columns[c].binding
+                        )
+                    ))
+            ) {
+                cell.style.borderBottom = "3px solid orange";
             } else {
-                cell.style.borderBottom = '';
+                cell.style.borderBottom = "";
             }
             const binding = panel.columns[c].binding;
-            if (this.enableQtyWithColor && binding && binding.toLowerCase() === qtyWithColor) {
-                cell.classList.value = cell.classList.value + ' qty-with-color';
+            if (
+                this.enableQtyWithColor &&
+                binding &&
+                binding.toLowerCase() === qtyWithColor
+            ) {
+                cell.classList.value = cell.classList.value + " qty-with-color";
             }
 
             if (this.hasQuantityPriorityColumn) {
                 const flexCol = panel.columns[c];
-                const gridCol = this.gridColumns.find(c => c.data == flexCol.binding);
+                const gridCol = this.gridColumns.find(
+                    (c) => c.data == flexCol.binding
+                );
 
-                if (gridCol.controlType == 'QuantityPriority') {
-                    $(cell).addClass('no-padding');
+                if (gridCol.controlType == "QuantityPriority") {
+                    $(cell).addClass("no-padding");
 
                     if (!this.readOnly) {
-                        cell.style.borderBottom = '3px solid orange';
+                        cell.style.borderBottom = "3px solid orange";
                     }
 
                     this.stopQuantityPriorityEditMode();
                 }
             }
 
-            if (!this.localGridStyle || isEmpty(this.localGridStyle.headerStyle)) {
+            if (
+                !this.localGridStyle ||
+                isEmpty(this.localGridStyle.headerStyle)
+            ) {
                 return;
             }
 
-            cell.style.color = this.isDesignWidgetMode ? 'black' : this.localGridStyle.headerStyle['color'];
-            cell.style.fontFamily = this.localGridStyle.headerStyle['font-family'];
-            cell.style.fontSize = this.localGridStyle.headerStyle['font-size'];
-            cell.style.fontWeight = this.localGridStyle.headerStyle['font-weight'];
-            cell.style.fontStyle = this.localGridStyle.headerStyle['font-style'];
-            cell.style.textDecoration = this.localGridStyle.headerStyle['text-decoration'];
+            cell.style.color = this.isDesignWidgetMode
+                ? "black"
+                : this.localGridStyle.headerStyle["color"];
+            cell.style.fontFamily =
+                this.localGridStyle.headerStyle["font-family"];
+            cell.style.fontSize = this.localGridStyle.headerStyle["font-size"];
+            cell.style.fontWeight =
+                this.localGridStyle.headerStyle["font-weight"];
+            cell.style.fontStyle =
+                this.localGridStyle.headerStyle["font-style"];
+            cell.style.textDecoration =
+                this.localGridStyle.headerStyle["text-decoration"];
         }
 
         // append the validation icon for row header.
         if (panel.cellType === wjcGrid.CellType.RowHeader) {
-            if ($(cell).hasClass('wj-state-invalid')) {
-                const span = '<i class="fa fa-info-circle  text-danger" style="font-size: 19px;"></i>';
+            if ($(cell).hasClass("wj-state-invalid")) {
+                const span =
+                    '<i class="fa fa-info-circle  text-danger" style="font-size: 19px;"></i>';
                 $(cell).append(span);
             }
 
             let borderStatusColumn = this.gridColumns.find((col) => {
-                return this.datatableService.hasControlType(col, 'BorderStatus');
+                return this.datatableService.hasControlType(
+                    col,
+                    "BorderStatus"
+                );
             });
             if (borderStatusColumn) {
                 const item = panel.rows[r].dataItem;
                 if (item[borderStatusColumn.data] == 1) {
                     // $(cell).addClass('border-status-red left-border top-bot-border');
-                    $(cell).addClass('background-status-red');
+                    $(cell).addClass("background-status-red");
                 }
             }
 
             if (this.showTooltip && this.tooltipField) {
                 let data = this.flex.getCellData(r, c, true);
                 if (this.tooltipField) {
-                    data = this.flex.rows[r]['dataItem'][this.tooltipField];
+                    data = this.flex.rows[r]["dataItem"][this.tooltipField];
                 }
 
                 if (data) {
-                    const span = `<i id="info-icon-` + this.flex.rows[r]['dataItem'].DT_RowId + `" class="fa fa-info-circle text-info" style="font-size: 19px;display:none"></i>`;
+                    const span =
+                        `<i id="info-icon-` +
+                        this.flex.rows[r]["dataItem"].DT_RowId +
+                        `" class="fa fa-info-circle text-info" style="font-size: 19px;display:none"></i>`;
                     $(cell).append(span);
 
                     let toolTip = new wjcCore.Tooltip();
-                    cell.addEventListener('mouseenter', (e) => {
+                    cell.addEventListener("mouseenter", (e) => {
                         let ht = this.flex.hitTest(e),
                             rng = null;
 
                         if (!ht.range.equals(rng)) {
                             if (ht.cellType == wjcGrid.CellType.RowHeader) {
                                 rng = ht.range;
-                                let data = this.flex.getCellData(rng.row, rng.col, true);
+                                let data = this.flex.getCellData(
+                                    rng.row,
+                                    rng.col,
+                                    true
+                                );
                                 if (this.tooltipField) {
-                                    data = this.flex.rows[rng.row]['dataItem'][this.tooltipField];
+                                    data =
+                                        this.flex.rows[rng.row]["dataItem"][
+                                            this.tooltipField
+                                        ];
                                 }
-                                let tipContent = data ? `<strong>${data}</strong>` : '',
-                                    cellElement = document.elementFromPoint(e.clientX, e.clientY),
-                                    cellBounds = wjcCore.Rect.fromBoundingRect(cellElement ? cellElement.getBoundingClientRect() : <any>{top: 0, width: 0, bottom: 0, height: 0});
+                                let tipContent = data
+                                        ? `<strong>${data}</strong>`
+                                        : "",
+                                    cellElement = document.elementFromPoint(
+                                        e.clientX,
+                                        e.clientY
+                                    ),
+                                    cellBounds = wjcCore.Rect.fromBoundingRect(
+                                        cellElement
+                                            ? cellElement.getBoundingClientRect()
+                                            : <any>{
+                                                  top: 0,
+                                                  width: 0,
+                                                  bottom: 0,
+                                                  height: 0,
+                                              }
+                                    );
 
-                                if ($("i#info-icon-" + this.flex.rows[rng.row]['dataItem'].DT_RowId, this.flex.hostElement).is(':visible')) {
-                                    toolTip.show(this.flex.hostElement, tipContent, cellBounds);
+                                if (
+                                    $(
+                                        "i#info-icon-" +
+                                            this.flex.rows[rng.row]["dataItem"]
+                                                .DT_RowId,
+                                        this.flex.hostElement
+                                    ).is(":visible")
+                                ) {
+                                    toolTip.show(
+                                        this.flex.hostElement,
+                                        tipContent,
+                                        cellBounds
+                                    );
                                 }
                             }
                         }
-
                     });
-                    cell.addEventListener('mouseout', (e) => {
+                    cell.addEventListener("mouseout", (e) => {
                         toolTip.hide();
                     });
                 }
             }
         }
 
-        if (panel.rows[r] instanceof wjcGrid.GroupRow && panel.cellType !== wjcGrid.CellType.RowHeader) {
+        if (
+            panel.rows[r] instanceof wjcGrid.GroupRow &&
+            panel.cellType !== wjcGrid.CellType.RowHeader
+        ) {
             if (!this.groupByColumn || !this.groupByColumn.groupDisplayColumn) {
                 return;
             }
 
-            let span = '<span class="wj-elem-collapse wj-glyph-down-right"></span>'; // html for expand/collapse group
+            let span =
+                '<span class="wj-elem-collapse wj-glyph-down-right"></span>'; // html for expand/collapse group
             const flex = panel.grid,
                 value = flex.rows[r].dataItem.name, // get group header name
                 count = flex.rows[r].dataItem.items.length, // get items in group,
-                newValue = this._buildGridGroupTitle(this.gridData.items, value, this.groupByColumn);
+                newValue = this._buildGridGroupTitle(
+                    this.gridData.items,
+                    value,
+                    this.groupByColumn
+                );
 
             if (flex.rows[r].isCollapsed)
                 span = '<span class="wj-elem-collapse wj-glyph-right"></span>';
 
-            cell.innerHTML = span + ' <b>' + newValue + '</b> (' + count + ' items)';
+            cell.innerHTML =
+                span + " <b>" + newValue + "</b> (" + count + " items)";
         }
 
         if (panel.cellType === wjcGrid.CellType.Cell) {
-
             const item = panel.rows[r].dataItem;
             const prop = panel.columns[c].binding;
 
             if (prop && item) {
                 let tooltip = new wjcCore.Tooltip();
                 //let currentElement: any;
-                cell.addEventListener('mouseenter', (e) => {
+                cell.addEventListener("mouseenter", (e) => {
                     let rng = null;
                     let _ht = this.flex.hitTest(e);
                     if (!_ht.range.equals(rng)) {
                         if (_ht.cellType == wjcGrid.CellType.Cell) {
                             rng = _ht.range;
                             let cellElement: any = cell,
-                                cellBounds = this.flex.getCellBoundingRect(_ht.row, _ht.col),
-                                tooltipContent = this.flex.getCellData(rng.row, rng.col, false);
+                                cellBounds = this.flex.getCellBoundingRect(
+                                    _ht.row,
+                                    _ht.col
+                                ),
+                                tooltipContent = this.flex.getCellData(
+                                    rng.row,
+                                    rng.col,
+                                    false
+                                );
 
                             //if ($(currentElement).is($(cellElement))) {
                             //    return;
@@ -1512,25 +1902,49 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
                             //currentElement = cellElement;
 
-                            if (cellElement.className.indexOf('mat-checkbox-inner-container') === -1
-                                && !this.checkWidthInARound(cellElement.clientWidth || 0, cellElement.scrollWidth || 0, 2)) {
-                                if (tooltipContent && typeof tooltipContent === 'object') {
+                            if (
+                                cellElement.className.indexOf(
+                                    "mat-checkbox-inner-container"
+                                ) === -1 &&
+                                !this.checkWidthInARound(
+                                    cellElement.clientWidth || 0,
+                                    cellElement.scrollWidth || 0,
+                                    2
+                                )
+                            ) {
+                                if (
+                                    tooltipContent &&
+                                    typeof tooltipContent === "object"
+                                ) {
                                     tooltipContent = tooltipContent.value;
                                 }
 
-                                if (tooltipContent === true || tooltipContent === 'true') {
-                                    tooltipContent = 'Activate';
+                                if (
+                                    tooltipContent === true ||
+                                    tooltipContent === "true"
+                                ) {
+                                    tooltipContent = "Activate";
                                 }
 
-                                if (tooltipContent === false || tooltipContent === 'false') {
-                                    tooltipContent = 'Deactivate';
+                                if (
+                                    tooltipContent === false ||
+                                    tooltipContent === "false"
+                                ) {
+                                    tooltipContent = "Deactivate";
                                 }
 
                                 if (tooltipContent) {
-                                    tooltipContent = tooltipContent || '';
-                                    tooltipContent = tooltipContent + '';
-                                    tooltipContent = tooltipContent.replace(/#/g, "\\#");
-                                    tooltip.show(this.flex.hostElement, tooltipContent, cellBounds);
+                                    tooltipContent = tooltipContent || "";
+                                    tooltipContent = tooltipContent + "";
+                                    tooltipContent = tooltipContent.replace(
+                                        /#/g,
+                                        "\\#"
+                                    );
+                                    tooltip.show(
+                                        this.flex.hostElement,
+                                        tooltipContent,
+                                        cellBounds
+                                    );
                                 }
                             } else {
                                 tooltip.hide();
@@ -1538,186 +1952,274 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                         }
                     }
                 });
-                cell.addEventListener('mouseout', (e) => {
+                cell.addEventListener("mouseout", (e) => {
                     tooltip.hide();
                 });
 
-
                 if (isObject(item[prop]) && isEmpty(item[prop])) {
-                    item[prop] = '';
-                    cell.innerHTML = '';
+                    item[prop] = "";
+                    cell.innerHTML = "";
                 }
 
-                if (isObject(item[prop]) || panel.columns[c].dataType === wjcCore.DataType.Date) {
-                    if ($(cell).find('input').length) {
-                        $(cell).css('padding-left', 0);
-                        $(cell).css('padding-right', 0);
+                if (
+                    isObject(item[prop]) ||
+                    panel.columns[c].dataType === wjcCore.DataType.Date
+                ) {
+                    if ($(cell).find("input").length) {
+                        $(cell).css("padding-left", 0);
+                        $(cell).css("padding-right", 0);
                     }
                 }
 
-                let column = this.gridColumns.find(c => c.data == prop);
-                if (column
-                    && !this.isReadonlyColumn(column)
-                    && column.dataType !== 'Date'
-                    && column.dataType !== 'Boolean'
-                    && column.dataType !== 'Object'
-                    && column.dataType !== 'Number'
-                    && !this.CONTROL_COLUMNS[prop]
-                    && !this.checkBoxColumnsName[prop]
-                    && column.controlType !== 'Button'
-                    && column.controlType !== 'Numeric'
-                    && column.controlType !== 'Icon'
-                    && column.controlType !== 'Image'
-                    && column.controlType !== 'CountryFlag'
-                    && column.controlType !== 'Autocomplete'
-                    && column.controlType !== 'CreditCard') {
-                    $(cell).append('<button style="position:absolute;right:0;top:0;bottom:0;border-radius:0;opacity:0" class="expand-btn btn btn-xs btn-default"><i class="fa fa-ellipsis-v"></i></button>');
+                let column = this.gridColumns.find((c) => c.data == prop);
+                if (
+                    column &&
+                    !this.isReadonlyColumn(column) &&
+                    column.dataType !== "Date" &&
+                    column.dataType !== "Boolean" &&
+                    column.dataType !== "Object" &&
+                    column.dataType !== "Number" &&
+                    !this.CONTROL_COLUMNS[prop] &&
+                    !this.checkBoxColumnsName[prop] &&
+                    column.controlType !== "Button" &&
+                    column.controlType !== "Numeric" &&
+                    column.controlType !== "Icon" &&
+                    column.controlType !== "Image" &&
+                    column.controlType !== "CountryFlag" &&
+                    column.controlType !== "Autocomplete" &&
+                    column.controlType !== "CreditCard"
+                ) {
+                    $(cell).append(
+                        '<button style="position:absolute;right:0;top:0;bottom:0;border-radius:0;opacity:0" class="expand-btn btn btn-xs btn-default"><i class="fa fa-ellipsis-v"></i></button>'
+                    );
                     $(cell).hover(
                         function () {
-                            $(this).find('button.expand-btn').css('opacity', 1);
-                        }, function () {
-                            $(this).find('button.expand-btn').css('opacity', 0);
+                            $(this).find("button.expand-btn").css("opacity", 1);
+                        },
+                        function () {
+                            $(this).find("button.expand-btn").css("opacity", 0);
                         }
                     );
 
-                    if ($(cell).find('input[type=text].wj-grid-editor').length) {
-                        $(cell).trigger('mouseenter');
+                    if (
+                        $(cell).find("input[type=text].wj-grid-editor").length
+                    ) {
+                        $(cell).trigger("mouseenter");
                     }
 
-                    $(cell).find('button.expand-btn').on('click', (e) => {
-                        e.stopPropagation();
-                        e.stopImmediatePropagation();
-                        e.preventDefault();
+                    $(cell)
+                        .find("button.expand-btn")
+                        .on("click", (e) => {
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+                            e.preventDefault();
 
-                        this.showCellEditDialog = true;
+                            this.showCellEditDialog = true;
 
-                        setTimeout(() => {
-                            if (this.cellEditDialog) {
-                                this.cellEditDialog.cellData.value = this.flex.getCellData(r, c, true);
-                                this.cellEditDialog.cellData.r = r;
-                                this.cellEditDialog.cellData.c = c;
-                                this.cellEditDialog.cellData.title = column.title;
-                                this.cellEditDialog.cellData.data = column.data;
-                            }
-                        }, 200);
+                            setTimeout(() => {
+                                if (this.cellEditDialog) {
+                                    this.cellEditDialog.cellData.value =
+                                        this.flex.getCellData(r, c, true);
+                                    this.cellEditDialog.cellData.r = r;
+                                    this.cellEditDialog.cellData.c = c;
+                                    this.cellEditDialog.cellData.title =
+                                        column.title;
+                                    this.cellEditDialog.cellData.data =
+                                        column.data;
+                                }
+                            }, 200);
 
-                        this.ref.detectChanges();
-                    })
+                            this.ref.detectChanges();
+                        });
                 }
 
-                if (this.hightlightKeywords && this.hightlightKeywords.trim() !== '*') {
-                    this.hightlightKeywords = this.hightlightKeywords.split('*').join('');
+                if (
+                    this.hightlightKeywords &&
+                    this.hightlightKeywords.trim() !== "*"
+                ) {
+                    this.hightlightKeywords = this.hightlightKeywords
+                        .split("*")
+                        .join("");
                     let regTxt;
-                    this.hightlightKeywords = this.hightlightKeywords.trim().replace(/\?|\+|\%|\>|\<|\$|/g, "");
+                    this.hightlightKeywords = this.hightlightKeywords
+                        .trim()
+                        .replace(/\?|\+|\%|\>|\<|\$|/g, "");
 
-                    if (/ or | and | [&] |[&]| [|] |[|]/i.test(this.hightlightKeywords)) {
-                        this.hightlightKeywords = this.hightlightKeywords.replace(/OR|AND|&|\|/gi, function (matched) {
-                            return '|';
-                        });
-                        this.hightlightKeywords = this.hightlightKeywords.trim().replace(/ +/g, "");
+                    if (
+                        / or | and | [&] |[&]| [|] |[|]/i.test(
+                            this.hightlightKeywords
+                        )
+                    ) {
+                        this.hightlightKeywords =
+                            this.hightlightKeywords.replace(
+                                /OR|AND|&|\|/gi,
+                                function (matched) {
+                                    return "|";
+                                }
+                            );
+                        this.hightlightKeywords = this.hightlightKeywords
+                            .trim()
+                            .replace(/ +/g, "");
+                    } else {
+                        this.hightlightKeywords = this.hightlightKeywords
+                            .trim()
+                            .replace(/ +/g, "|");
                     }
-                    else {
-                        this.hightlightKeywords = this.hightlightKeywords.trim().replace(/ +/g, "|");
+                    if (
+                        / [&&] |[&&]| [||] |[||]|/i.test(
+                            this.hightlightKeywords
+                        )
+                    ) {
+                        this.hightlightKeywords =
+                            this.hightlightKeywords.replace(
+                                /&&|\|\|/gi,
+                                function (matched) {
+                                    return "|";
+                                }
+                            );
+                        this.hightlightKeywords = this.hightlightKeywords
+                            .trim()
+                            .replace(/ +/g, "");
+                    } else {
+                        this.hightlightKeywords = this.hightlightKeywords
+                            .trim()
+                            .replace(/ +/g, "|");
                     }
-                    if (/ [&&] |[&&]| [||] |[||]|/i.test(this.hightlightKeywords)) {
-                        this.hightlightKeywords = this.hightlightKeywords.replace(/&&|\|\|/gi, function (matched) {
-                            return '|';
-                        });
-                        this.hightlightKeywords = this.hightlightKeywords.trim().replace(/ +/g, "");
-                    }
-                    else {
-                        this.hightlightKeywords = this.hightlightKeywords.trim().replace(/ +/g, "|");
-                    }
-                    regTxt = new RegExp(this.hightlightKeywords, 'gi');
-                    if (panel.columns[c].dataType == wjcCore.DataType.String || panel.columns[c].dataType == wjcCore.DataType.Number) {
-                        cell.innerHTML = cell.innerText.replace(regTxt, function (str) {
-                            return '<span class="hight-light__keyword">' + str + '</span>';
-                        });
+                    regTxt = new RegExp(this.hightlightKeywords, "gi");
+                    if (
+                        panel.columns[c].dataType == wjcCore.DataType.String ||
+                        panel.columns[c].dataType == wjcCore.DataType.Number
+                    ) {
+                        cell.innerHTML = cell.innerText.replace(
+                            regTxt,
+                            function (str) {
+                                return (
+                                    '<span class="hight-light__keyword">' +
+                                    str +
+                                    "</span>"
+                                );
+                            }
+                        );
                     }
                 }
 
-                if (this.enableQtyWithColor && prop.toLowerCase() === qtyWithColor) {
+                if (
+                    this.enableQtyWithColor &&
+                    prop.toLowerCase() === qtyWithColor
+                ) {
                     const _value = item[prop];
                     try {
                         if (!isNil(_value)) {
                             if (parseInt(_value) > 0) {
-                                $(cell).addClass('positive-qty');
+                                $(cell).addClass("positive-qty");
                             } else if (parseInt(_value) < 0) {
-                                $(cell).addClass('negative-qty');
+                                $(cell).addClass("negative-qty");
                             }
                         }
-                    } catch (ex) { }
+                    } catch (ex) {}
                 }
 
-                if (item['deleted']) {
+                if (item["deleted"]) {
                     if (this.deletedItemList.indexOf(item) !== -1) {
-                        $(cell).addClass('deleted-row-text');
+                        $(cell).addClass("deleted-row-text");
                     }
                 }
 
-                if (item['isActiveDisableRow'] === false
-                    || item['isActiveDisableRow'] === 0
-                    || item['IsActive'] === false
-                    || item['IsActive'] === 0) {
-                    if ((panel._cols[c].binding != 'isActiveDisableRow' && panel._cols[c].binding != 'IsActive')
-                        || item['BorderStatus'] === '1') {
-                        cell.classList.add('in-active-cell');
+                if (
+                    item["isActiveDisableRow"] === false ||
+                    item["isActiveDisableRow"] === 0 ||
+                    item["IsActive"] === false ||
+                    item["IsActive"] === 0
+                ) {
+                    if (
+                        (panel._cols[c].binding != "isActiveDisableRow" &&
+                            panel._cols[c].binding != "IsActive") ||
+                        item["BorderStatus"] === "1"
+                    ) {
+                        cell.classList.add("in-active-cell");
                     } else {
-                        cell.classList.add('in-active-cell-for-active');
+                        cell.classList.add("in-active-cell-for-active");
                     }
                 }
 
                 if (this.allowSelectAll && this.isDisableRowWithSelectAll) {
-                    if (panel._cols[c].binding != 'selectAll' && !item['selectAll']) {
-                        cell.classList.add('in-active-cell');
+                    if (
+                        panel._cols[c].binding != "selectAll" &&
+                        !item["selectAll"]
+                    ) {
+                        cell.classList.add("in-active-cell");
                     }
                 }
 
                 if (this.disabledAll) {
-                    cell.classList.add('in-active-cell');
+                    cell.classList.add("in-active-cell");
                 }
 
-                if (!isNil(item['IsActive']) && !item['IsActive'] && this.hasDisableRow) {
-                    $(cell).addClass('disabled-row-text');
+                if (
+                    !isNil(item["IsActive"]) &&
+                    !item["IsActive"] &&
+                    this.hasDisableRow
+                ) {
+                    $(cell).addClass("disabled-row-text");
                     // Check if have Priority Column
-                    if (item.hasOwnProperty(this.CONTROL_COLUMNS.Priority) && !Uti.isEmptyObject(item[this.CONTROL_COLUMNS.Priority]) && !!item[this.CONTROL_COLUMNS.Priority]) {
+                    if (
+                        item.hasOwnProperty(this.CONTROL_COLUMNS.Priority) &&
+                        !Uti.isEmptyObject(
+                            item[this.CONTROL_COLUMNS.Priority]
+                        ) &&
+                        !!item[this.CONTROL_COLUMNS.Priority]
+                    ) {
                         this.deletePriorityForCurrentItem(item);
                     }
                 }
 
                 if (column && column.fontWeight) {
-                    $(cell).css('font-weight', column.fontWeight);
+                    $(cell).css("font-weight", column.fontWeight);
                 }
 
                 if (column && column.disabledBy) {
-                    let disabledCheckbox = !Uti.isEmptyObject(item) && item['DT_RowId'].indexOf('newrow') === -1 && !!item[column.disabledBy];
+                    let disabledCheckbox =
+                        !Uti.isEmptyObject(item) &&
+                        item["DT_RowId"].indexOf("newrow") === -1 &&
+                        !!item[column.disabledBy];
                     setTimeout(() => {
-                        let matChecbox = $(cell).find('mat-checkbox');
+                        let matChecbox = $(cell).find("mat-checkbox");
                         if (matChecbox.length) {
                             if (disabledCheckbox) {
-                                $(matChecbox).addClass('mat-checkbox-disabled');
+                                $(matChecbox).addClass("mat-checkbox-disabled");
                             } else {
-                                $(matChecbox).removeClass('mat-checkbox-disabled');
+                                $(matChecbox).removeClass(
+                                    "mat-checkbox-disabled"
+                                );
                             }
                         }
                     }, 200);
                 }
-                if (column && column.data && Uti.toLowerCase(column.data) === Uti.toLowerCase(this.CHECKBOX_COLUMNS.unMergeCheckbox)
-                    && item[this.CHECKBOX_COLUMNS.masterCheckbox]) {
-                    cell.classList.add('in-active-cell--control');
+                if (
+                    column &&
+                    column.data &&
+                    Uti.toLowerCase(column.data) ===
+                        Uti.toLowerCase(
+                            this.CHECKBOX_COLUMNS.unMergeCheckbox
+                        ) &&
+                    item[this.CHECKBOX_COLUMNS.masterCheckbox]
+                ) {
+                    cell.classList.add("in-active-cell--control");
                 }
 
                 if (this.hasQuantityPriorityColumn) {
                     const item = panel.rows[r].dataItem;
                     const flexCol = panel.columns[c];
-                    const gridCol = this.gridColumns.find(c => c.data == flexCol.binding);
-                    if (gridCol.controlType == 'QuantityPriority') {
-                        $(cell).addClass('no-padding');
+                    const gridCol = this.gridColumns.find(
+                        (c) => c.data == flexCol.binding
+                    );
+                    if (gridCol.controlType == "QuantityPriority") {
+                        $(cell).addClass("no-padding");
                         this.buildCellColor(cell, item, gridCol);
                     }
 
-                    if (gridCol.data == 'Total Qty') {
-                        $(cell).css('font-weight', 'bold');
+                    if (gridCol.data == "Total Qty") {
+                        $(cell).css("font-weight", "bold");
                     }
                 }
             }
@@ -1729,39 +2231,52 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 return;
             }
 
-            cell.style.color = this.isDesignWidgetMode ? 'black' : this.localGridStyle.rowStyle['color'];
-            cell.style.fontFamily = this.localGridStyle.rowStyle['font-family'];
-            cell.style.fontSize = this.localGridStyle.rowStyle['font-size'];
-            cell.style.fontWeight = this.localGridStyle.rowStyle['font-weight'];
-            cell.style.fontStyle = this.localGridStyle.rowStyle['font-style'];
-            cell.style.textDecoration = this.localGridStyle.rowStyle['text-decoration'];
+            cell.style.color = this.isDesignWidgetMode
+                ? "black"
+                : this.localGridStyle.rowStyle["color"];
+            cell.style.fontFamily = this.localGridStyle.rowStyle["font-family"];
+            cell.style.fontSize = this.localGridStyle.rowStyle["font-size"];
+            cell.style.fontWeight = this.localGridStyle.rowStyle["font-weight"];
+            cell.style.fontStyle = this.localGridStyle.rowStyle["font-style"];
+            cell.style.textDecoration =
+                this.localGridStyle.rowStyle["text-decoration"];
         }
     }
 
-    private checkWidthInARound(width1: number, width2: number, probability?: number): boolean {
+    private checkWidthInARound(
+        width1: number,
+        width2: number,
+        probability?: number
+    ): boolean {
         probability = probability || 1;
         if (width1 + probability == width2 || width1 == width2 + probability)
             return true;
-        if (width1 + probability > width2 && (width1 + probability - width2) <= probability)
+        if (
+            width1 + probability > width2 &&
+            width1 + probability - width2 <= probability
+        )
             return true;
-        if (width2 + probability > width1 && (width2 + probability - width1) <= probability)
+        if (
+            width2 + probability > width1 &&
+            width2 + probability - width1 <= probability
+        )
             return true;
         return false;
     }
 
     private _initDragDropHandler() {
-
-        const isIE = (typeof document.createElement('span').dragDrop === 'function');
+        const isIE =
+            typeof document.createElement("span").dragDrop === "function";
 
         const createDragContent = function (x, y, offsetX, offsetY, content) {
-            const dragImage = document.createElement('div');
+            const dragImage = document.createElement("div");
             dragImage.innerHTML = content;
-            dragImage.style.position = 'absolute';
-            dragImage.style.pointerEvents = 'none';
-            dragImage.style.top = '0px'; // Math.max(0, y - offsetY) + 'px';
-            dragImage.style.left = '0px'; // Math.max(0, x) + 'px';
-            dragImage.style.zIndex = '1000';
-            dragImage.classList.add('xn-grid-drag');
+            dragImage.style.position = "absolute";
+            dragImage.style.pointerEvents = "none";
+            dragImage.style.top = "0px"; // Math.max(0, y - offsetY) + 'px';
+            dragImage.style.left = "0px"; // Math.max(0, x) + 'px';
+            dragImage.style.zIndex = "1000";
+            dragImage.classList.add("xn-grid-drag");
 
             document.body.appendChild(dragImage);
 
@@ -1770,40 +2285,63 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             }, 100);
 
             return dragImage;
-        }
+        };
 
         const updateDragContent = function (_node, x, y, offsetX, offsetY) {
             if (_node) {
-                _node.style.top = Math.max(0, y) + 'px';
-                _node.style.left = Math.max(0, x) + 'px';
+                _node.style.top = Math.max(0, y) + "px";
+                _node.style.left = Math.max(0, x) + "px";
             }
-        }
+        };
 
         const flex = this.flex;
         const self = this;
         let node;
-        this.flex.hostElement.addEventListener('dragstart', function (e) {
-            const ht = flex.hitTest(e);
-            if (ht.cellType === wjcGrid.CellType.Cell) {
-                flex.select(new wjcGrid.CellRange(ht.row, 0, ht.row, flex.columns.length - 1));
-                let item = flex.rows[ht.row].dataItem;
-                item = mapKeys(item, function (v, k) { return camelCase(k.toString()); });
-                e.dataTransfer.setData('text', JSON.stringify(item));
-                if (self.customDragContent) {
-                    if (!isIE) {
-                        node = createDragContent(e.pageX, e.pageY, e.offsetX, e.offsetY, self.customDragContent);
-                        const dataTransfer: any = e.dataTransfer;
-                        dataTransfer.setDragImage(node, 5, 5);
+        this.flex.hostElement.addEventListener(
+            "dragstart",
+            function (e) {
+                const ht = flex.hitTest(e);
+                if (ht.cellType === wjcGrid.CellType.Cell) {
+                    flex.select(
+                        new wjcGrid.CellRange(
+                            ht.row,
+                            0,
+                            ht.row,
+                            flex.columns.length - 1
+                        )
+                    );
+                    let item = flex.rows[ht.row].dataItem;
+                    item = mapKeys(item, function (v, k) {
+                        return camelCase(k.toString());
+                    });
+                    e.dataTransfer.setData("text", JSON.stringify(item));
+                    if (self.customDragContent) {
+                        if (!isIE) {
+                            node = createDragContent(
+                                e.pageX,
+                                e.pageY,
+                                e.offsetX,
+                                e.offsetY,
+                                self.customDragContent
+                            );
+                            const dataTransfer: any = e.dataTransfer;
+                            dataTransfer.setDragImage(node, 5, 5);
+                        }
                     }
+                    self.isDragging = true;
                 }
-                self.isDragging = true;
-            };
-        }, true);
+            },
+            true
+        );
 
-        this.flex.hostElement.addEventListener('dragend', function (e) {
-            $('.xn-grid-drag').remove();
-            self.isDragging = false;
-        }, true);
+        this.flex.hostElement.addEventListener(
+            "dragend",
+            function (e) {
+                $(".xn-grid-drag").remove();
+                self.isDragging = false;
+            },
+            true
+        );
 
         /*
         // TODO: Fix IE
@@ -1819,14 +2357,13 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             }, true);
         }
         */
-
     }
 
     private _resizingColumnHandler(s: wjcCore.CollectionView, e: any) {
         this.resizing = true;
         if (!this.fitWidth && !this._colWidthUpdated) {
             for (let i = 0; i < this.flex.columns.length; i++) {
-                if (this.flex.columns[i].width === '*') {
+                if (this.flex.columns[i].width === "*") {
                     this.flex.columns[i].width = this.flex.columns[i].size;
                     this._colWidthUpdated = true;
                 }
@@ -1838,7 +2375,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     private _turnOffStarResizeMode() {
         for (let i = 0; i < this.flex.columns.length; i++) {
-            if (this.flex.columns[i].width === '*') {
+            if (this.flex.columns[i].width === "*") {
                 this.flex.columns[i].width = this.flex.columns[i].size;
             }
         }
@@ -1848,7 +2385,13 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         this.resizing = false;
         if (this.flex) {
             if (!this.fitWidth && this.widgetId) {
-                this.store.dispatch(this.gridActions.setColumnLayout(this.widgetId, this.flex.columnLayout, this.ofModule));
+                this.store.dispatch(
+                    this.gridActions.setColumnLayout(
+                        this.widgetId,
+                        this.flex.columnLayout,
+                        this.ofModule
+                    )
+                );
             }
             if (this.columnsLayoutSettings) {
                 this.columnsLayoutSettings.settings = this.flex.columnLayout;
@@ -1866,28 +2409,44 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     private _turnOnStarResizeMode() {
         for (let i = 0; i < this.flex.columns.length; i++) {
-            if (this.flex.columns[i]['binding'] === this.CONTROL_COLUMNS.deleted ||
-                this.flex.columns[i]['binding'] === this.CONTROL_COLUMNS.download ||
-                this.flex.columns[i]['binding'] === this.CONTROL_COLUMNS.mediaCodeButton ||
-                this.flex.columns[i]['binding'] === this.CONTROL_COLUMNS.Edit ||
-                this.flex.columns[i]['binding'] === this.CONTROL_COLUMNS.FilterExtended ||
-                this.flex.columns[i]['binding'] === this.CONTROL_COLUMNS.noExport ||
-                this.flex.columns[i]['dataType'] === wjcCore.DataType.Boolean ||
-                this.gridColumns.find(col => !isNil(col.width) && col.data == this.flex.columns[i]['binding'])) {
+            if (
+                this.flex.columns[i]["binding"] ===
+                    this.CONTROL_COLUMNS.deleted ||
+                this.flex.columns[i]["binding"] ===
+                    this.CONTROL_COLUMNS.download ||
+                this.flex.columns[i]["binding"] ===
+                    this.CONTROL_COLUMNS.mediaCodeButton ||
+                this.flex.columns[i]["binding"] === this.CONTROL_COLUMNS.Edit ||
+                this.flex.columns[i]["binding"] ===
+                    this.CONTROL_COLUMNS.FilterExtended ||
+                this.flex.columns[i]["binding"] ===
+                    this.CONTROL_COLUMNS.noExport ||
+                this.flex.columns[i]["dataType"] === wjcCore.DataType.Boolean ||
+                this.gridColumns.find(
+                    (col) =>
+                        !isNil(col.width) &&
+                        col.data == this.flex.columns[i]["binding"]
+                )
+            ) {
                 continue;
             } else {
                 if (this.canBeStarSize(this.flex.columns[i].binding))
-                    this.flex.columns[i].width = '*';
+                    this.flex.columns[i].width = "*";
             }
         }
     }
 
     private canBeStarSize(id) {
-        return isNil(this.gridColumns.find((item) => item.data === id && (item.autoSize || !isNil(item.width))));
+        return isNil(
+            this.gridColumns.find(
+                (item) =>
+                    item.data === id && (item.autoSize || !isNil(item.width))
+            )
+        );
     }
 
     private _addPerfectScrollbar() {
-        let flexGrid = $('div[wj-part=\'root\']', this.flex.hostElement).get(0);
+        let flexGrid = $("div[wj-part='root']", this.flex.hostElement).get(0);
         if (flexGrid) {
             Ps.destroy(flexGrid);
             Ps.initialize(flexGrid);
@@ -1896,68 +2455,83 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 this._updatePerfectScrollbar();
 
                 setTimeout(() => {
-                    $('.ps-scrollbar-x-rail', this.flex.hostElement).css('z-index', 999);
-                    $('.ps-scrollbar-y-rail', this.flex.hostElement).css('z-index', 999);
+                    $(".ps-scrollbar-x-rail", this.flex.hostElement).css(
+                        "z-index",
+                        999
+                    );
+                    $(".ps-scrollbar-y-rail", this.flex.hostElement).css(
+                        "z-index",
+                        999
+                    );
                 });
             }, 200);
         }
     }
 
     private _addHorizontalPerfectScrollEvent() {
-        $('div[wj-part=\'root\']', this.flex.hostElement).on('ps-scroll-left', () => {
-            this.hasScrollbars.emit({
-                top: this.scrollUtils.canScrollUpTop,
-                left: this.scrollUtils.canScrollToLeft,
-                right: this.scrollUtils.canScrollToRight,
-                bottom: this.scrollUtils.canScrollDownBottom
-            });
-        });
+        $("div[wj-part='root']", this.flex.hostElement).on(
+            "ps-scroll-left",
+            () => {
+                this.hasScrollbars.emit({
+                    top: this.scrollUtils.canScrollUpTop,
+                    left: this.scrollUtils.canScrollToLeft,
+                    right: this.scrollUtils.canScrollToRight,
+                    bottom: this.scrollUtils.canScrollDownBottom,
+                });
+            }
+        );
 
-        $('div[wj-part=\'root\']', this.flex.hostElement).on('ps-scroll-right', () => {
-
-            this.hasScrollbars.emit({
-                top: this.scrollUtils.canScrollUpTop,
-                left: this.scrollUtils.canScrollToLeft,
-                right: this.scrollUtils.canScrollToRight,
-                bottom: this.scrollUtils.canScrollDownBottom
-            });
-        });
+        $("div[wj-part='root']", this.flex.hostElement).on(
+            "ps-scroll-right",
+            () => {
+                this.hasScrollbars.emit({
+                    top: this.scrollUtils.canScrollUpTop,
+                    left: this.scrollUtils.canScrollToLeft,
+                    right: this.scrollUtils.canScrollToRight,
+                    bottom: this.scrollUtils.canScrollDownBottom,
+                });
+            }
+        );
     }
 
     private _removeHorizontalPerfectScrollEvent() {
-        $('div[wj-part=\'root\']', this.flex.hostElement).off('ps-scroll-left');
-        $('div[wj-part=\'root\']', this.flex.hostElement).off('ps-scroll-right');
-        $('div[wj-part=\'root\']', this.flex.hostElement).off('ps-x-reach-end');
-        $('div[wj-part=\'root\']', this.flex.hostElement).off('ps-x-reach-start');
+        $("div[wj-part='root']", this.flex.hostElement).off("ps-scroll-left");
+        $("div[wj-part='root']", this.flex.hostElement).off("ps-scroll-right");
+        $("div[wj-part='root']", this.flex.hostElement).off("ps-x-reach-end");
+        $("div[wj-part='root']", this.flex.hostElement).off("ps-x-reach-start");
     }
 
     private _addVerticalPerfectScrollEvent() {
-        $('div[wj-part=\'root\']', this.flex.hostElement).on('ps-scroll-up', () => {
-            this.hasScrollbars.emit({
-                top: this.scrollUtils.canScrollUpTop,
-                left: this.scrollUtils.canScrollToLeft,
-                right: this.scrollUtils.canScrollToRight,
-                bottom: this.scrollUtils.canScrollDownBottom
-            });
-        });
+        $("div[wj-part='root']", this.flex.hostElement).on(
+            "ps-scroll-up",
+            () => {
+                this.hasScrollbars.emit({
+                    top: this.scrollUtils.canScrollUpTop,
+                    left: this.scrollUtils.canScrollToLeft,
+                    right: this.scrollUtils.canScrollToRight,
+                    bottom: this.scrollUtils.canScrollDownBottom,
+                });
+            }
+        );
 
-        $('div[wj-part=\'root\']', this.flex.hostElement).on('ps-scroll-down', () => {
-
-            this.hasScrollbars.emit({
-                top: this.scrollUtils.canScrollUpTop,
-                left: this.scrollUtils.canScrollToLeft,
-                right: this.scrollUtils.canScrollToRight,
-                bottom: this.scrollUtils.canScrollDownBottom
-            });
-
-        });
+        $("div[wj-part='root']", this.flex.hostElement).on(
+            "ps-scroll-down",
+            () => {
+                this.hasScrollbars.emit({
+                    top: this.scrollUtils.canScrollUpTop,
+                    left: this.scrollUtils.canScrollToLeft,
+                    right: this.scrollUtils.canScrollToRight,
+                    bottom: this.scrollUtils.canScrollDownBottom,
+                });
+            }
+        );
     }
 
     private _removeVerticalPerfectScrollEvent() {
-        $('div[wj-part=\'root\']', this.flex.hostElement).off('ps-scroll-up');
-        $('div[wj-part=\'root\']', this.flex.hostElement).off('ps-scroll-down');
-        $('div[wj-part=\'root\']', this.flex.hostElement).off('ps-y-reach-end');
-        $('div[wj-part=\'root\']', this.flex.hostElement).off('ps-y-reach-start');
+        $("div[wj-part='root']", this.flex.hostElement).off("ps-scroll-up");
+        $("div[wj-part='root']", this.flex.hostElement).off("ps-scroll-down");
+        $("div[wj-part='root']", this.flex.hostElement).off("ps-y-reach-end");
+        $("div[wj-part='root']", this.flex.hostElement).off("ps-y-reach-start");
     }
 
     private _checkGridHasScrollbars() {
@@ -1970,20 +2544,23 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 top: false,
                 left: false,
                 right: false,
-                bottom: false
+                bottom: false,
             });
 
             return;
         }
 
         setTimeout(() => {
-            const wjPartRootElm = $('div[wj-part="root"]', this.flex.hostElement);
+            const wjPartRootElm = $(
+                'div[wj-part="root"]',
+                this.flex.hostElement
+            );
             if (wjPartRootElm.length) {
                 this.hasScrollbars.emit({
                     top: this.scrollUtils.canScrollUpTop,
                     left: this.scrollUtils.canScrollToLeft,
                     right: this.scrollUtils.canScrollToRight,
-                    bottom: this.scrollUtils.canScrollDownBottom
+                    bottom: this.scrollUtils.canScrollDownBottom,
                 });
 
                 if (this.scrollUtils.hasHorizontalScroll) {
@@ -2005,9 +2582,8 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private _filterFunction(item) {
         const f = this.filter;
         if (f && item) {
-
             // split string into terms to enable multi-field searches such as 'us gadget red'
-            const terms = f.toUpperCase().split(' ');
+            const terms = f.toUpperCase().split(" ");
 
             // look for any term in any string field
             for (let i = 0; i < terms.length; i++) {
@@ -2015,7 +2591,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 for (const key in item) {
                     if (key) {
                         const value = item[key];
-                        if (wjcCore.isString(value) && value.toUpperCase().indexOf(terms[i]) > -1) {
+                        if (
+                            wjcCore.isString(value) &&
+                            value.toUpperCase().indexOf(terms[i]) > -1
+                        ) {
                             termFound = true;
                             break;
                         }
@@ -2032,7 +2611,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         if (this.filterObj && item) {
             let termFound = false;
             let count = 0;
-            Object.keys(this.filterObj).forEach(keyFilter => {
+            Object.keys(this.filterObj).forEach((keyFilter) => {
                 const valueFilter = this.filterObj[keyFilter];
                 for (const key in item) {
                     if (key) {
@@ -2079,7 +2658,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                     }
                 }
             }
-        }
+        };
 
         setTimeout(this._toFilter, noTimeout ? 0 : 500);
     }
@@ -2094,11 +2673,13 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         cv.groupDescriptions.clear();
         if (groupByColumn) {
             this.groupByColumn = groupByColumn;
-            const groupNames = groupByColumn.data.split(',');
+            const groupNames = groupByColumn.data.split(",");
             for (let i = 0; i < groupNames.length; i++) {
                 const groupName = groupNames[i];
                 if (groupName) {
-                    const groupDesc = new wjcCore.PropertyGroupDescription(groupName);
+                    const groupDesc = new wjcCore.PropertyGroupDescription(
+                        groupName
+                    );
                     cv.groupDescriptions.push(groupDesc);
                 }
             }
@@ -2110,7 +2691,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private _buildGridGroupTitle(items, titleText, groupByColumn) {
         for (const item of items) {
             if (item[groupByColumn.data] === titleText) {
-                return ' ' + item[groupByColumn.groupDisplayColumn];
+                return " " + item[groupByColumn.groupDisplayColumn];
             }
         }
 
@@ -2119,7 +2700,6 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     private _selectionChangedHandler(eventData) {
         setTimeout(() => {
-
             if (this.isDragging) {
                 return;
             }
@@ -2135,19 +2715,28 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             }
 
             if (eventData) {
-                const isRowAutoChangedOnFirstLoad = (this._previousCellRange.row === -1 && this.autoSelectFirstRow && eventData.row === 0);
-                const isRowChangedByClick = this._previousCellRange.row !== eventData.row;
-                const selectedRow: any = this._getSelectedFlexRow(this.flex.rows, eventData);
+                const isRowAutoChangedOnFirstLoad =
+                    this._previousCellRange.row === -1 &&
+                    this.autoSelectFirstRow &&
+                    eventData.row === 0;
+                const isRowChangedByClick =
+                    this._previousCellRange.row !== eventData.row;
+                const selectedRow: any = this._getSelectedFlexRow(
+                    this.flex.rows,
+                    eventData
+                );
 
                 if (isRowAutoChangedOnFirstLoad || isRowChangedByClick) {
                     if (selectedRow) {
-                        const rowData = this._buildRowClickData(selectedRow.dataItem);
+                        const rowData = this._buildRowClickData(
+                            selectedRow.dataItem
+                        );
                         this.onRowClick.emit(rowData);
 
                         if (!this.selectedRow) {
                             this.selectedRow = {
                                 c: eventData.col,
-                                r: eventData.row
+                                r: eventData.row,
                             };
                         } else {
                             this.selectedRow.c = eventData.col;
@@ -2159,15 +2748,30 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                     this._previousCellRange.col = eventData.col;
                 }
 
-                let col: any = (eventData.col);
+                let col: any = eventData.col;
                 let flexCol = this.flex.getColumn(col);
                 if (flexCol) {
-                    let gridCol = this.gridColumns.find(x => x.data === flexCol.binding);
-                    if (selectedRow
-                        && ((selectedRow.dataItem && !selectedRow.dataItem[gridCol.data])
-                            || (typeof selectedRow.dataItem[gridCol.data] === 'object' && !selectedRow.dataItem[gridCol.data].key))) {
-                        if (this.flex.selection.row > -1 && this.flex.selection.col > -1) {
-                            this.flex.startEditing(false, this.flex.selection.row, this.flex.selection.col, true);
+                    let gridCol = this.gridColumns.find(
+                        (x) => x.data === flexCol.binding
+                    );
+                    if (
+                        selectedRow &&
+                        ((selectedRow.dataItem &&
+                            !selectedRow.dataItem[gridCol.data]) ||
+                            (typeof selectedRow.dataItem[gridCol.data] ===
+                                "object" &&
+                                !selectedRow.dataItem[gridCol.data].key))
+                    ) {
+                        if (
+                            this.flex.selection.row > -1 &&
+                            this.flex.selection.col > -1
+                        ) {
+                            this.flex.startEditing(
+                                false,
+                                this.flex.selection.row,
+                                this.flex.selection.col,
+                                true
+                            );
                         }
                     }
                 }
@@ -2197,8 +2801,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
             if (!currentFlexCol) return;
 
-            if ((this.hasDisableRow && currentFlexCol.binding === 'IsActive')
-                || currentFlexCol.binding === this.CONTROL_COLUMNS.noExport) {
+            if (
+                (this.hasDisableRow && currentFlexCol.binding === "IsActive") ||
+                currentFlexCol.binding === this.CONTROL_COLUMNS.noExport
+            ) {
                 e.cancel = true;
                 return;
             }
@@ -2206,17 +2812,27 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             if (row) {
                 let item = row.dataItem;
 
-                if (!isNil(item['IsActive']) && this.hasDisableRow) {
-                    if (currentFlexCol.binding !== 'IsActive' && item['IsActive'] === false) {
+                if (!isNil(item["IsActive"]) && this.hasDisableRow) {
+                    if (
+                        currentFlexCol.binding !== "IsActive" &&
+                        item["IsActive"] === false
+                    ) {
                         e.cancel = true;
                         return;
                     }
                 }
 
-                if (e && e.panel && e.panel._activeCell
-                    && e.panel._activeCell.className.indexOf('in-active-cell') > -1
-                    && (!currentFlexCol.isReadOnly
-                        || (currentFlexCol.isReadOnly && (item['BorderStatus'] && item['BorderStatus'] === '1')))) {
+                if (
+                    e &&
+                    e.panel &&
+                    e.panel._activeCell &&
+                    e.panel._activeCell.className.indexOf("in-active-cell") >
+                        -1 &&
+                    (!currentFlexCol.isReadOnly ||
+                        (currentFlexCol.isReadOnly &&
+                            item["BorderStatus"] &&
+                            item["BorderStatus"] === "1"))
+                ) {
                     e.cancel = true;
                     return;
                 }
@@ -2236,13 +2852,14 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                     e.cancel = true;
                 }
 
-                if (this.allowDelete
-                    && e.col !== this.flex.columns.length - 1
-                    && item['deleted']
-                    && this.deletedItemList.indexOf(item) !== -1) {
+                if (
+                    this.allowDelete &&
+                    e.col !== this.flex.columns.length - 1 &&
+                    item["deleted"] &&
+                    this.deletedItemList.indexOf(item) !== -1
+                ) {
                     e.cancel = true;
                 }
-
             }
 
             this._toggleTooltip();
@@ -2257,44 +2874,68 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         if (isEmpty(selectedRowData)) {
             for (const col of this.gridColumns) {
-                if (this.datatableService.hasControlType(col, 'Combobox')) {
+                if (this.datatableService.hasControlType(col, "Combobox")) {
                     selectedRowData[col.data] = {
-                        key: '',
-                        value: '',
-                        options: []
+                        key: "",
+                        value: "",
+                        options: [],
                     };
                 } else {
-                    selectedRowData[col.data] = '';
+                    selectedRowData[col.data] = "";
                 }
             }
         }
 
-        if (this.datatableService.hasControlType(column, 'Combobox')) {
+        if (this.datatableService.hasControlType(column, "Combobox")) {
             const comboboxType = this.datatableService.getComboboxType(column);
 
-            let filterByValue = this.datatableService.getControlTypeFilterBy(column);
+            let filterByValue =
+                this.datatableService.getControlTypeFilterBy(column);
 
             if (filterByValue) {
                 let filterByFrom: string;
                 if (selectedRowData[filterByValue]) {
-                    filterByFrom = typeof selectedRowData[filterByValue] === 'object' ? selectedRowData[filterByValue]['key'] : selectedRowData[filterByValue];
+                    filterByFrom =
+                        typeof selectedRowData[filterByValue] === "object"
+                            ? selectedRowData[filterByValue]["key"]
+                            : selectedRowData[filterByValue];
                 } else {
-                    filterByFrom = this.parentInstance.data.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim)[filterByValue];
+                    filterByFrom =
+                        this.parentInstance.data.widgetDataType.listenKeyRequest(
+                            this.ofModule.moduleNameTrim
+                        )[filterByValue];
                 }
 
-                this.commonServiceSubscription = this.commonService.getComboBoxDataByFilter(comboboxType.value.toString(), filterByFrom).subscribe((response: ApiResultResponse) => {
-                    this.appErrorHandler.executeAction(() => {
-                        this._onGetComboboxDataSuccess(response.item, comboboxType, selectedRowData, column, filterByFrom);
+                this.commonServiceSubscription = this.commonService
+                    .getComboBoxDataByFilter(
+                        comboboxType.value.toString(),
+                        filterByFrom
+                    )
+                    .subscribe((response: ApiResultResponse) => {
+                        this.appErrorHandler.executeAction(() => {
+                            this._onGetComboboxDataSuccess(
+                                response.item,
+                                comboboxType,
+                                selectedRowData,
+                                column,
+                                filterByFrom
+                            );
+                        });
                     });
-                });
             } else {
-                this.commonServiceSubscription = this.commonService.getListComboBox(comboboxType.value.toString())
+                this.commonServiceSubscription = this.commonService
+                    .getListComboBox(comboboxType.value.toString())
                     .subscribe((response: ApiResultResponse) => {
                         this.appErrorHandler.executeAction(() => {
                             if (!Uti.isResquestSuccess(response)) {
                                 return;
                             }
-                            this._onGetComboboxDataSuccess(response.item, comboboxType, selectedRowData, column);
+                            this._onGetComboboxDataSuccess(
+                                response.item,
+                                comboboxType,
+                                selectedRowData,
+                                column
+                            );
                         });
                     });
             }
@@ -2303,23 +2944,29 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         this.editingRow = cloneDeep(selectedRowData);
     }
 
-    private _onGetComboboxDataSuccess(comboboxData, comboboxType, selectedRowData, column, filterByValue?) {
+    private _onGetComboboxDataSuccess(
+        comboboxData,
+        comboboxType,
+        selectedRowData,
+        column,
+        filterByValue?
+    ) {
         let comboboxTypeName = comboboxType.name;
         if (filterByValue) {
-            comboboxTypeName += '_' + filterByValue;
+            comboboxTypeName += "_" + filterByValue;
         }
         let options: any[] = comboboxData[comboboxTypeName];
 
         if (!options) {
-            selectedRowData[column.data].key = '';
-            selectedRowData[column.data].value = '';
+            selectedRowData[column.data].key = "";
+            selectedRowData[column.data].value = "";
             selectedRowData[column.data].options = [];
         } else {
             options = options.map((opt) => {
                 return {
                     label: opt.textValue,
-                    value: opt.idValue
-                }
+                    value: opt.idValue,
+                };
             });
 
             selectedRowData[column.data].options = options;
@@ -2340,7 +2987,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         if (!this.readOnly) {
             let currentFlexCol = this.flex.getColumn(e.col);
             // Type is checkbox
-            if (currentFlexCol && currentFlexCol.dataType === wjcCore.DataType.Boolean) {
+            if (
+                currentFlexCol &&
+                currentFlexCol.dataType === wjcCore.DataType.Boolean
+            ) {
                 e.cancel = true;
             }
         }
@@ -2350,11 +3000,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         if (!this.readOnly) {
             if (this.allowDelete && e.col === this.flex.columns.length - 1) {
                 const hasDeletedRows = this._hasDeletedRow(this.gridData.items);
-                this.onRowMarkedAsDelete.emit(
-                    {
-                        showCommandButtons: hasDeletedRows,
-                        disabledDeleteButton: !hasDeletedRows
-                    });
+                this.onRowMarkedAsDelete.emit({
+                    showCommandButtons: hasDeletedRows,
+                    disabledDeleteButton: !hasDeletedRows,
+                });
 
                 if (this.isShowedEditButtons) {
                     this.isMarkedAsDelete = this._hasRowMarkedAsDeleted();
@@ -2366,23 +3015,34 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             this._convertCurrenCellValueToFloat(e);
 
             setTimeout(() => {
-                if (this.gridData
-                    && ((this.gridData.itemsEdited && this.gridData.itemsEdited.length) ||
-                        (this.gridData.itemsAdded && this.gridData.itemsAdded.length))
+                if (
+                    this.gridData &&
+                    ((this.gridData.itemsEdited &&
+                        this.gridData.itemsEdited.length) ||
+                        (this.gridData.itemsAdded &&
+                            this.gridData.itemsAdded.length))
                 ) {
-                    let editingItem = this.gridData.itemsEdited.find(x => x.DT_RowId == this.gridData.currentItem.DT_RowId);
+                    let editingItem = this.gridData.itemsEdited.find(
+                        (x) => x.DT_RowId == this.gridData.currentItem.DT_RowId
+                    );
                     if (!editingItem) {
-                        editingItem = this.gridData.itemsAdded.find(x => x.DT_RowId == this.gridData.currentItem.DT_RowId);
+                        editingItem = this.gridData.itemsAdded.find(
+                            (x) =>
+                                x.DT_RowId == this.gridData.currentItem.DT_RowId
+                        );
                     }
 
                     if (editingItem) {
                         const column = this.flex.getColumn(e.col);
-                        const cellData = column && column.binding ? this.gridData.currentItem[column.binding] : null;
+                        const cellData =
+                            column && column.binding
+                                ? this.gridData.currentItem[column.binding]
+                                : null;
                         this.onCellEditEnd.emit({
                             col: this.flex.getColumn(e.col),
                             currentItem: this.gridData.currentItem,
                             cellData: cellData,
-                            itemData: this.gridData.currentItem
+                            itemData: this.gridData.currentItem,
                         });
                     }
                 }
@@ -2391,14 +3051,20 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             let currentFlexCol = this.flex.getColumn(e.col),
                 row = s.rows[e.row];
             if (row && currentFlexCol) {
-                let item = row.dataItem
-                if (!currentFlexCol.isReadOnly && item[currentFlexCol.binding]) {
-                    if (item.hasOwnProperty('isActiveDisableRow') && !item['isActiveDisableRow']) {
-                        item['isActiveDisableRow'] = true;
+                let item = row.dataItem;
+                if (
+                    !currentFlexCol.isReadOnly &&
+                    item[currentFlexCol.binding]
+                ) {
+                    if (
+                        item.hasOwnProperty("isActiveDisableRow") &&
+                        !item["isActiveDisableRow"]
+                    ) {
+                        item["isActiveDisableRow"] = true;
                     }
 
-                    if (item.hasOwnProperty('IsActive') && !item['IsActive']) {
-                        item['IsActive'] = true;
+                    if (item.hasOwnProperty("IsActive") && !item["IsActive"]) {
+                        item["IsActive"] = true;
                     }
                 }
             }
@@ -2408,30 +3074,53 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private _convertCurrenCellValueToFloat(eventData) {
         let currentFlexCol = this.flex.getColumn(eventData.col);
         if (currentFlexCol) {
-            let currentGridCol = this.gridColumns.find(c => c.data == currentFlexCol.binding);
-            let currentCellData = this.flex.getCellData(eventData.row, eventData.col, false);
-            currentCellData = (currentCellData == null || currentCellData == undefined) ? null : currentCellData;
-            if (currentGridCol
-                && currentGridCol.controlType === 'Numeric'
-                && currentCellData
-                && typeof currentCellData === 'string') {
-                currentCellData = wjcCore.Globalize.parseFloat(currentCellData, 'd');
+            let currentGridCol = this.gridColumns.find(
+                (c) => c.data == currentFlexCol.binding
+            );
+            let currentCellData = this.flex.getCellData(
+                eventData.row,
+                eventData.col,
+                false
+            );
+            currentCellData =
+                currentCellData == null || currentCellData == undefined
+                    ? null
+                    : currentCellData;
+            if (
+                currentGridCol &&
+                currentGridCol.controlType === "Numeric" &&
+                currentCellData &&
+                typeof currentCellData === "string"
+            ) {
+                currentCellData = wjcCore.Globalize.parseFloat(
+                    currentCellData,
+                    "d"
+                );
             }
 
-            this.flex.setCellData(eventData.row, eventData.col, currentCellData);
+            this.flex.setCellData(
+                eventData.row,
+                eventData.col,
+                currentCellData
+            );
             this.gridData.currentItem[currentFlexCol.binding] = currentCellData;
         }
     }
 
     private _hasRowMarkedAsDeleted() {
-        return this.gridData.items.filter(item => item.deleted === true).length > 0;
+        return (
+            this.gridData.items.filter((item) => item.deleted === true).length >
+            0
+        );
     }
 
     private _collectionChangedHandler(s: wjcCore.CollectionView, e: any) {
         if (!this.readOnly) {
-            if (this._beginningEdit
-                && !this._isRowDataEqual(this.editingRow, s.currentItem)
-                && s.itemsAdded.indexOf(s.currentItem) < 0) {
+            if (
+                this._beginningEdit &&
+                !this._isRowDataEqual(this.editingRow, s.currentItem) &&
+                s.itemsAdded.indexOf(s.currentItem) < 0
+            ) {
                 if (s.itemsEdited && s.itemsEdited.indexOf(s.currentItem) < 0) {
                     s.itemsEdited.push(s.currentItem);
                 }
@@ -2459,10 +3148,12 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 this.onTableEditEnd.emit(true);
 
                 if (this.gridData) {
-                    if (this.gridData.itemsEdited.length
-                        || this.gridData.itemsAdded.length
-                        || this.gridData.itemsRemoved.length
-                        || this.deletedItemList.length) {
+                    if (
+                        this.gridData.itemsEdited.length ||
+                        this.gridData.itemsAdded.length ||
+                        this.gridData.itemsRemoved.length ||
+                        this.deletedItemList.length
+                    ) {
                         this.onRowEditEnded.emit(currentItem);
                     }
                 }
@@ -2477,8 +3168,18 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             if (fprop) {
                 for (const sprop in secondRow) {
                     if (fprop === sprop) {
-                        if (typeof firstRow[fprop] === 'object' && typeof secondRow[sprop] === 'object' && firstRow[fprop] && secondRow[sprop]) {
-                            if (firstRow[fprop]['key'] !== secondRow[sprop]['key'] || firstRow[fprop]['value'] !== secondRow[sprop]['value']) {
+                        if (
+                            typeof firstRow[fprop] === "object" &&
+                            typeof secondRow[sprop] === "object" &&
+                            firstRow[fprop] &&
+                            secondRow[sprop]
+                        ) {
+                            if (
+                                firstRow[fprop]["key"] !==
+                                    secondRow[sprop]["key"] ||
+                                firstRow[fprop]["value"] !==
+                                    secondRow[sprop]["value"]
+                            ) {
                                 return false;
                             }
                         } else {
@@ -2495,7 +3196,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     private _hasDeletedRow(itemsEdited) {
-        return itemsEdited.filter(item => item.deleted === true).length > 0;
+        return itemsEdited.filter((item) => item.deleted === true).length > 0;
     }
 
     private _getSelectedFlexRow(flexRows, eventData) {
@@ -2516,7 +3217,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             if (propName) {
                 result.push({
                     key: propName,
-                    value: selectedRow[propName]
+                    value: selectedRow[propName],
                 });
             }
         }
@@ -2529,7 +3230,9 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             return;
         }
 
-        const deletedRows = this.gridData.items.filter(item => item.deleted === true);
+        const deletedRows = this.gridData.items.filter(
+            (item) => item.deleted === true
+        );
         if (deletedRows && deletedRows.length) {
             this._okDeleteRows();
             //this.showDeleteConfirmModal();
@@ -2537,39 +3240,63 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     private showDeleteConfirmModal() {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Delete Item',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_The_Selected_Items'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => { this._okDeleteRows(); },
-            callBack2: () => { this._cancelDeleteRows(); },
-            callBackCloseButton: () => { this._cancelDeleteRows() }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Delete Item",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Delete_The_Selected_Items",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this._okDeleteRows();
+                },
+                callBack2: () => {
+                    this._cancelDeleteRows();
+                },
+                callBackCloseButton: () => {
+                    this._cancelDeleteRows();
+                },
+            })
+        );
     }
 
     private _okDeleteRows() {
-        const deletedRows = this.gridData.items.filter(item => item.deleted === true);
+        const deletedRows = this.gridData.items.filter(
+            (item) => item.deleted === true
+        );
         if (deletedRows.length) {
             this.onDeletedRowAway.emit();
             for (let i = 0; i < deletedRows.length; i++) {
-                if (deletedRows[i]['DT_RowId'].indexOf('newrow') !== -1) {
-                    let gridItemidx = this.gridData.items.findIndex(ii => ii['DT_RowId'] == deletedRows[i]['DT_RowId']);
+                if (deletedRows[i]["DT_RowId"].indexOf("newrow") !== -1) {
+                    let gridItemidx = this.gridData.items.findIndex(
+                        (ii) => ii["DT_RowId"] == deletedRows[i]["DT_RowId"]
+                    );
                     this.gridData.items.splice(gridItemidx, 1);
 
                     let flexRowidx = -1;
                     for (let ii = 0; ii < this.flex.rows.length; ii++) {
-                        if (this.flex.rows[ii]['dataItem']['DT_RowId'] == deletedRows[i]['DT_RowId']) {
+                        if (
+                            this.flex.rows[ii]["dataItem"]["DT_RowId"] ==
+                            deletedRows[i]["DT_RowId"]
+                        ) {
                             flexRowidx = ii;
                         }
                     }
                     if (flexRowidx !== -1) {
                         this.flex.rows.splice(flexRowidx, 1);
 
-                        let gridItemidx = this.gridData.itemsAdded.findIndex(ii => ii['DT_RowId'] == deletedRows[i]['DT_RowId']);
+                        let gridItemidx = this.gridData.itemsAdded.findIndex(
+                            (ii) => ii["DT_RowId"] == deletedRows[i]["DT_RowId"]
+                        );
                         this.gridData.itemsAdded.splice(gridItemidx, 1);
-                        gridItemidx = this.gridData.itemsEdited.findIndex(ii => ii['DT_RowId'] == deletedRows[i]['DT_RowId']);
+                        gridItemidx = this.gridData.itemsEdited.findIndex(
+                            (ii) => ii["DT_RowId"] == deletedRows[i]["DT_RowId"]
+                        );
                         this.gridData.itemsEdited.splice(gridItemidx, 1);
                     }
 
@@ -2578,7 +3305,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                     this.onRowMarkedAsDelete.emit({
                         showCommandButtons: true,
                         disabledDeleteButton: true,
-                        enableAddButtonCommand: true
+                        enableAddButtonCommand: true,
                     });
                     this.isMarkedAsDelete = false;
                 } else {
@@ -2588,19 +3315,24 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
                     this.onRowMarkedAsDelete.emit({
                         showCommandButtons: true,
-                        disabledDeleteButton: false
+                        disabledDeleteButton: false,
                     });
                     this.isMarkedAsDelete = true;
 
                     this.onDeletedRows.emit(true);
                 }
 
-                if (this._errorObject && this._errorObject[deletedRows[i]['DT_RowId']])
-                    delete this._errorObject[deletedRows[i]['DT_RowId']];
+                if (
+                    this._errorObject &&
+                    this._errorObject[deletedRows[i]["DT_RowId"]]
+                )
+                    delete this._errorObject[deletedRows[i]["DT_RowId"]];
             }
 
             // update isSelectDeletedAll in case no left items
-            const remainItems = this.gridData.items.filter((item) => item.deleted !== true);
+            const remainItems = this.gridData.items.filter(
+                (item) => item.deleted !== true
+            );
             if (!remainItems.length && this.selectDeleteAll) {
                 this.isSelectDeletedAll = false;
             }
@@ -2616,15 +3348,17 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private _cancelDeleteRows() {
         this.onRowMarkedAsDelete.emit({
             showCommandButtons: true,
-            disabledDeleteButton: false
+            disabledDeleteButton: false,
         });
     }
 
     private _hasUnsavedRows() {
-        return this.gridData.itemsEdited.length > 0
-            || this.gridData.itemsAdded.length > 0
-            || this.gridData.itemsRemoved.length > 0
-            || this.deletedItemList.length > 0;
+        return (
+            this.gridData.itemsEdited.length > 0 ||
+            this.gridData.itemsAdded.length > 0 ||
+            this.gridData.itemsRemoved.length > 0 ||
+            this.deletedItemList.length > 0
+        );
     }
 
     private _getWijmoGridData() {
@@ -2651,26 +3385,32 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     public scheduleSettingClicked(event: any, item: any) {
-        this.onScheduleSettingClickAction.emit({ rowData: item, element: event.target });
+        this.onScheduleSettingClickAction.emit({
+            rowData: item,
+            element: event.target,
+        });
     }
 
     public runScheduleSettingClicked(event: any, item: any) {
-        this.onRunScheduleSettingClickAction.emit({ rowData: item, element: event.target });
+        this.onRunScheduleSettingClickAction.emit({
+            rowData: item,
+            element: event.target,
+        });
     }
 
     public onHandleClickHeader(event, col) {
-        if (event.target.className.indexOf('mat-checkbox') !== -1) {
+        if (event.target.className.indexOf("mat-checkbox") !== -1) {
             return;
         }
 
-        if (this.currentSelectedColHeader && this.currentSelectedColHeader !== col)
-            this.currentSelectedColHeader['sort'] = null;
-        if (!col['sort'])
-            col['sort'] = 'wj-glyph-up';
-        else if (col['sort'] === 'wj-glyph-up')
-            col['sort'] = 'wj-glyph-down';
-        else if (col['sort'] = 'wj-glyph-down')
-            col['sort'] = 'wj-glyph-up';
+        if (
+            this.currentSelectedColHeader &&
+            this.currentSelectedColHeader !== col
+        )
+            this.currentSelectedColHeader["sort"] = null;
+        if (!col["sort"]) col["sort"] = "wj-glyph-up";
+        else if (col["sort"] === "wj-glyph-up") col["sort"] = "wj-glyph-down";
+        else if ((col["sort"] = "wj-glyph-down")) col["sort"] = "wj-glyph-up";
 
         this.currentSelectedColHeader = col;
     }
@@ -2708,27 +3448,39 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             return [];
         }
 
-        return ccData.split(',');
+        return ccData.split(",");
     }
 
     private _addNoDataMessage() {
         setTimeout(() => {
-            const wjPartCellsElement = $('div[wj-part="cells"]', this.flex.hostElement);
-            if (wjPartCellsElement.length && wjPartCellsElement.children().length) {
+            const wjPartCellsElement = $(
+                'div[wj-part="cells"]',
+                this.flex.hostElement
+            );
+            if (
+                wjPartCellsElement.length &&
+                wjPartCellsElement.children().length
+            ) {
                 return;
             }
 
-            const wjPartFCellsElement = $('div[wj-part="fcells"]', this.flex.hostElement);
+            const wjPartFCellsElement = $(
+                'div[wj-part="fcells"]',
+                this.flex.hostElement
+            );
 
             if (wjPartFCellsElement.length) {
-                const noDataMessageElement = wjPartFCellsElement.find('p#noDataMessage');
+                const noDataMessageElement =
+                    wjPartFCellsElement.find("p#noDataMessage");
                 if (noDataMessageElement.length) {
                     return;
                 } else {
-                    const _noDataMessageElement = document.createElement('p');
-                    const textNode = document.createTextNode('No data available in table');
-                    _noDataMessageElement.id = 'noDataMessage';
-                    _noDataMessageElement.className = 'text-center';
+                    const _noDataMessageElement = document.createElement("p");
+                    const textNode = document.createTextNode(
+                        "No data available in table"
+                    );
+                    _noDataMessageElement.id = "noDataMessage";
+                    _noDataMessageElement.className = "text-center";
                     _noDataMessageElement.appendChild(textNode);
 
                     wjPartFCellsElement.append(noDataMessageElement);
@@ -2738,14 +3490,25 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     private _removeNoDataMessage() {
-        const noDataMessageElement = $('p#noDataMessage', this.flex.hostElement);
+        const noDataMessageElement = $(
+            "p#noDataMessage",
+            this.flex.hostElement
+        );
         if (noDataMessageElement.length) {
-            noDataMessageElement[0].parentNode.removeChild(noDataMessageElement[0]);
+            noDataMessageElement[0].parentNode.removeChild(
+                noDataMessageElement[0]
+            );
         }
     }
 
     private _toggleNoDataMessage() {
-        if (this.gridData && (!this.gridData.items.length || (!this.gridData.items.length && (this.gridData.itemsRemoved.length || this.deletedItemList.length)))) {
+        if (
+            this.gridData &&
+            (!this.gridData.items.length ||
+                (!this.gridData.items.length &&
+                    (this.gridData.itemsRemoved.length ||
+                        this.deletedItemList.length)))
+        ) {
             this._addNoDataMessage();
         } else {
             this._removeNoDataMessage();
@@ -2754,7 +3517,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     private _getGroupByColumn(columns) {
         for (const col of columns) {
-            if (col['isGrouped']) {
+            if (col["isGrouped"]) {
                 return col;
             }
         }
@@ -2780,9 +3543,14 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 allowDelete: this.allowDelete,
                 allowMediaCode: this.allowMediaCode,
                 allowDownload: this.allowDownload,
-                allowSelectAll: this.allowSelectAll
-            }
-            newItem = this.datatableService.createEmptyRowData(newItem, col, config, this.gridData.items.length);
+                allowSelectAll: this.allowSelectAll,
+            };
+            newItem = this.datatableService.createEmptyRowData(
+                newItem,
+                col,
+                config,
+                this.gridData.items.length
+            );
         }
 
         this.gridData.commitNew();
@@ -2801,7 +3569,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         if (data) {
             for (let i = 0; i < this.flex.columns.length; i++) {
-                this.flex.setCellData(0, i, data[this.flex.columns[i]['binding']]);
+                this.flex.setCellData(
+                    0,
+                    i,
+                    data[this.flex.columns[i]["binding"]]
+                );
             }
         }
 
@@ -2812,18 +3584,27 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             let firstVisibleCell = this.firstVisibleCellIndex();
             if (firstVisibleCell) {
                 if (firstVisibleCell.r > -1 && firstVisibleCell.c > -1) {
-                    this.flex.startEditing(false, firstVisibleCell.r, firstVisibleCell.c, true);
+                    this.flex.startEditing(
+                        false,
+                        firstVisibleCell.r,
+                        firstVisibleCell.c,
+                        true
+                    );
                 }
             }
         });
     }
 
     private _deleteRowByRowId(rowId: any) {
-        const item = this.flex.rows.find(x => (x.dataItem && x.dataItem.DT_RowId === rowId));
+        const item = this.flex.rows.find(
+            (x) => x.dataItem && x.dataItem.DT_RowId === rowId
+        );
         if (!item) return;
         this.flex.rows.remove(item);
 
-        let gridItemidx = this.gridData.items.findIndex(ii => ii['DT_RowId'] === rowId);
+        let gridItemidx = this.gridData.items.findIndex(
+            (ii) => ii["DT_RowId"] === rowId
+        );
         if (gridItemidx !== -1) {
             this.gridData.items.splice(gridItemidx, 1);
         }
@@ -2843,12 +3624,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     private resetFilterPopup() {
         this.isShowingPopupFilter = false;
-        this.filter = '';
+        this.filter = "";
     }
 
     public contextMenuItemClick(func: any) {
-        if (func)
-            func();
+        if (func) func();
     }
 
     public uploadFile() {
@@ -2860,11 +3640,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         this.isSelectDeletedAll = checked;
         this.onRowMarkedAsDelete.emit({
             showCommandButtons: checked,
-            disabledDeleteButton: !checked
+            disabledDeleteButton: !checked,
         });
         this.gridData.items.forEach((item) => {
             if (!this.hasReadOnlyCells(item)) {
-                item['deleted'] = checked;
+                item["deleted"] = checked;
             }
         });
 
@@ -2880,20 +3660,28 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         item[fieldName] = event.checked;
 
         // Set row to disable when isactive is false
-        if ((fieldName.toLowerCase() == 'isactive' || fieldName.toLowerCase() == 'isactivedisablerow') && row) {
+        if (
+            (fieldName.toLowerCase() == "isactive" ||
+                fieldName.toLowerCase() == "isactivedisablerow") &&
+            row
+        ) {
             row.isReadOnly = !event.checked;
         }
         switch (Uti.toLowerCase(fieldName)) {
-            case 'deleted': {
+            case "deleted": {
                 this.handleForDeleteCase(event, item);
                 break;
             }
-            case 'selectall': {
+            case "selectall": {
                 this.handleForCheckAllCase(event);
                 break;
             }
             case Uti.toLowerCase(this.CHECKBOX_COLUMNS.masterCheckbox): {
-                this.handleForMasterCheckboxCase(event.checked, cell.row.index, cell.col.index);
+                this.handleForMasterCheckboxCase(
+                    event.checked,
+                    cell.row.index,
+                    cell.col.index
+                );
                 break;
             }
             default:
@@ -2912,11 +3700,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         this.onCellEditEnd.emit({
             col: {
-                binding: fieldName
+                binding: fieldName,
             },
             currentItem: this.gridData.currentItem,
             cellData: item[fieldName],
-            itemData: this.gridData.currentItem
+            itemData: this.gridData.currentItem,
         });
 
         this.flex.refresh();
@@ -2925,23 +3713,28 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private handleForDeleteCase(event: any, item: any) {
         if (!event.checked) {
             if (this.deletedItemList.indexOf(item) !== -1) {
-                this.deletedItemList.splice(this.deletedItemList.indexOf(item), 1);
+                this.deletedItemList.splice(
+                    this.deletedItemList.indexOf(item),
+                    1
+                );
             }
         }
 
-        const itemMarkedAsDeleted = this.gridData.items.filter(_item => _item.deleted === true);
+        const itemMarkedAsDeleted = this.gridData.items.filter(
+            (_item) => _item.deleted === true
+        );
 
         // only emit if this is selected item/ there is no one
         if (event.checked && itemMarkedAsDeleted.length) {
             this.onRowMarkedAsDelete.emit({
                 showCommandButtons: true,
-                disabledDeleteButton: false
+                disabledDeleteButton: false,
             });
             this.isMarkedAsDelete = true;
         } else if (itemMarkedAsDeleted.length > this.deletedItemList.length) {
             this.onRowMarkedAsDelete.emit({
                 showCommandButtons: true,
-                disabledDeleteButton: false
+                disabledDeleteButton: false,
             });
             this.isMarkedAsDelete = true;
         } else if (itemMarkedAsDeleted.length === this.deletedItemList.length) {
@@ -2953,19 +3746,21 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             }
 
             this.onRowMarkedAsDelete.emit({
-                showCommandButtons: itemMarkedAsDeleted.length === 0 ? false : true,
-                disabledDeleteButton: appearAll
+                showCommandButtons:
+                    itemMarkedAsDeleted.length === 0 ? false : true,
+                disabledDeleteButton: appearAll,
             });
             this.isMarkedAsDelete = !appearAll;
         } else {
             this.onRowMarkedAsDelete.emit({
                 showCommandButtons: false,
-                disabledDeleteButton: true
+                disabledDeleteButton: true,
             });
             this.isMarkedAsDelete = false;
         }
 
-        this.isSelectDeletedAll = itemMarkedAsDeleted.length === this.gridData.items.length;
+        this.isSelectDeletedAll =
+            itemMarkedAsDeleted.length === this.gridData.items.length;
 
         // For each delete item change
         this.onEachRowMarkedAsDelete.emit();
@@ -2974,21 +3769,28 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private handleForCheckAllCase(event: any) {
         if (!event.checked) {
             this.isMarkedAsSelectedAll = false;
-            this.onMarkedAsSelectedAll.emit(this.gridData.items.filter((item) => item['selectAll'] === true));
-        }
-        else {
-            const unselectedItems = this.gridData.items.filter((item) => item['selectAll'] !== true);
+            this.onMarkedAsSelectedAll.emit(
+                this.gridData.items.filter((item) => item["selectAll"] === true)
+            );
+        } else {
+            const unselectedItems = this.gridData.items.filter(
+                (item) => item["selectAll"] !== true
+            );
             if (!unselectedItems || !unselectedItems.length) {
                 this.isMarkedAsSelectedAll = true;
                 this.onMarkedAsSelectedAll.emit(this.gridData.items);
             } else {
-                this.onMarkedAsSelectedAll.emit(this.gridData.items.filter((item) => item['selectAll'] === true));
+                this.onMarkedAsSelectedAll.emit(
+                    this.gridData.items.filter(
+                        (item) => item["selectAll"] === true
+                    )
+                );
             }
         }
     }
 
     private handleForMasterCheckboxCase(value: any, r: any, c: any) {
-        if (value && Uti.toLowerCase(value) !== 'false') {
+        if (value && Uti.toLowerCase(value) !== "false") {
             let counter = 0;
             for (let i = 0; i < this.flex.rows.length; i++) {
                 if (counter == 2) return;
@@ -2998,7 +3800,9 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                     counter++;
                 }
                 if (r == i) {
-                    const unMergeColumnIndex = this.getColumnIndexByName(this.CHECKBOX_COLUMNS.unMergeCheckbox);
+                    const unMergeColumnIndex = this.getColumnIndexByName(
+                        this.CHECKBOX_COLUMNS.unMergeCheckbox
+                    );
                     this.flex.setCellData(i, unMergeColumnIndex, false);
                     counter++;
                 }
@@ -3008,7 +3812,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     private getColumnIndexByName(name: string): number {
         for (let i = 0; i < this.flex.columns.length; i++) {
-            if (Uti.toLowerCase(this.flex.columns[i].binding) == Uti.toLowerCase(name)) {
+            if (
+                Uti.toLowerCase(this.flex.columns[i].binding) ==
+                Uti.toLowerCase(name)
+            ) {
                 return i;
             }
         }
@@ -3018,16 +3825,21 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     public copyToClipboard(event: wjcGrid.CellRangeEventArgs) {
         if (this.flex && event) {
             const text = this.flex.getCellData(event.row, event.col, false);
-            if (!isString(text) && !isBoolean(text) && !isNumber(text) &&
-                isObject(text) && text.value) {
+            if (
+                !isString(text) &&
+                !isBoolean(text) &&
+                !isNumber(text) &&
+                isObject(text) &&
+                text.value
+            ) {
                 setTimeout(() => {
                     try {
-                        const $temp = $('<input>');
-                        $('body').append($temp);
+                        const $temp = $("<input>");
+                        $("body").append($temp);
                         $temp.val(text.value).select();
-                        document.execCommand('copy');
+                        document.execCommand("copy");
                         $temp.remove();
-                    } catch (exc) { }
+                    } catch (exc) {}
                 });
             }
         }
@@ -3035,17 +3847,15 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     selectAllColumnItems() {
         const checked = this.isMarkedAsSelectedAll;
-        this.gridData.items.forEach((item) => item['selectAll'] = checked);
-        if (checked)
-            this.onMarkedAsSelectedAll.emit(this.gridData.items);
-        else
-            this.onMarkedAsSelectedAll.emit([]);
+        this.gridData.items.forEach((item) => (item["selectAll"] = checked));
+        if (checked) this.onMarkedAsSelectedAll.emit(this.gridData.items);
+        else this.onMarkedAsSelectedAll.emit([]);
         this.flex.refresh();
     }
 
     private _updatePerfectScrollbar() {
         if (this.flex) {
-            const flex = $('div[wj-part=\'root\']', this.flex.hostElement).get(0);
+            const flex = $("div[wj-part='root']", this.flex.hostElement).get(0);
             if (flex) {
                 Ps.update(flex);
             }
@@ -3084,24 +3894,27 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         // May be grid is displaying in single row mode so we need to trace in original datasource.
         if (rowIndex == -1) {
             this.preventRowEmit = true;
-            cv.sourceCollection = this.wijmoDataSource.data.filter((obj, pos, arr) => {
-                let count = 0;
-                Object.keys(keyObj).forEach(key => {
-                    const value = keyObj[key];
-                    if (obj[key] && obj[key] == value) {
-                        count++;
+            cv.sourceCollection = this.wijmoDataSource.data.filter(
+                (obj, pos, arr) => {
+                    let count = 0;
+                    Object.keys(keyObj).forEach((key) => {
+                        const value = keyObj[key];
+                        if (obj[key] && obj[key] == value) {
+                            count++;
+                        }
+                    });
+                    if (Object.keys(keyObj).length == count) {
+                        return true;
                     }
-                });
-                if (Object.keys(keyObj).length == count) {
-                    return true;
+                    return false;
                 }
-                return false;
-            });
-        }
-        else {
+            );
+        } else {
             if (rowIndex != flex.selection.row) {
                 this.preventRowEmit = true;
-                this.flex.select(new wjcGrid.CellRange(rowIndex, -1, rowIndex, -1));
+                this.flex.select(
+                    new wjcGrid.CellRange(rowIndex, -1, rowIndex, -1)
+                );
             }
         }
     }
@@ -3111,7 +3924,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
      */
     public changeToSingleRowMode() {
         const cv = this.flex.collectionView;
-        const lastItem = cv.currentItem ? cv.currentItem : (this.wijmoDataSource.data && this.wijmoDataSource.data.length) ? this.wijmoDataSource.data[0] : null;
+        const lastItem = cv.currentItem
+            ? cv.currentItem
+            : this.wijmoDataSource.data && this.wijmoDataSource.data.length
+            ? this.wijmoDataSource.data[0]
+            : null;
         if (lastItem) {
             cv.sourceCollection = [lastItem];
         }
@@ -3134,7 +3951,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             }
         }
 
-        if (this.autoSelectFirstRow || (this.gridData && this.gridData.items.length === 1)) {
+        if (
+            this.autoSelectFirstRow ||
+            (this.gridData && this.gridData.items.length === 1)
+        ) {
             this.flex.select(new wjcGrid.CellRange(rowIndex, -1, rowIndex, -1));
         }
     }
@@ -3148,21 +3968,21 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         let tbl = '<table width="100%">';
 
         // headers
-        tbl += '<thead>';
+        tbl += "<thead>";
         for (let r = 0; r < flex.columnHeaders.rows.length; r++) {
             tbl += this.renderRow(flex.columnHeaders, r);
         }
-        tbl += '</thead>';
+        tbl += "</thead>";
 
         // body
-        tbl += '<tbody>';
+        tbl += "<tbody>";
         for (let r = 0; r < flex.rows.length; r++) {
             tbl += this.renderRow(flex.cells, r);
         }
-        tbl += '</tbody>';
+        tbl += "</tbody>";
 
         // done
-        tbl += '</table>';
+        tbl += "</table>";
         return tbl;
     }
 
@@ -3172,22 +3992,25 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
      * @param r
      */
     private renderRow(panel: wjcGrid.GridPanel, r: number) {
-        let tr = '',
+        let tr = "",
             row: wjcGrid.Row = panel.rows[r];
         if (row.renderSize > 0) {
-            tr += '<tr>';
+            tr += "<tr>";
             for (let c = 0; c < panel.columns.length; c++) {
                 let col: wjcGrid.Column = panel.columns[c];
-                if (col.binding == 'deleted') {
+                if (col.binding == "deleted") {
                     break;
                 }
                 if (col.renderSize > 0) {
-
                     // get cell style, content
-                    let style = 'width:' + col.renderSize + 'px;text-align:' + col.getAlignment(),
+                    let style =
+                            "width:" +
+                            col.renderSize +
+                            "px;text-align:" +
+                            col.getAlignment(),
                         content = panel.getCellData(r, c, true),
                         cellElement = panel.getCellElement(r, c);
-                    let className = '';
+                    let className = "";
 
                     if (cellElement) {
                         className = cellElement.className;
@@ -3199,62 +4022,81 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
                     // add cell to row
                     if (panel.cellType == wjcGrid.CellType.ColumnHeader) {
-                        tr += '<th style="' + style + '" class="' + className + '" > ' + content + ' </th>';
+                        tr +=
+                            '<th style="' +
+                            style +
+                            '" class="' +
+                            className +
+                            '" > ' +
+                            content +
+                            " </th>";
                     } else {
-
                         let raw = panel.getCellData(r, c, false);
 
-                        const rs = this.gridColumns.filter(p => p.data == col.binding);
-                        let controlType;//toLowerCase
+                        const rs = this.gridColumns.filter(
+                            (p) => p.data == col.binding
+                        );
+                        let controlType; //toLowerCase
                         if (rs.length) {
-                            controlType = (rs[0].controlType || '').toLowerCase();
-                            if (controlType == 'creditcard') {
-                                className += ' creditcard-icon';
+                            controlType = (
+                                rs[0].controlType || ""
+                            ).toLowerCase();
+                            if (controlType == "creditcard") {
+                                className += " creditcard-icon";
                                 const element = panel.getCellElement(r, c);
                                 raw = element.innerHTML;
                             }
                         }
 
                         if (isObject(raw)) {
-                            content = raw.value ? raw.value : '';
-                        }
-                        else if (isBoolean(raw)) {
+                            content = raw.value ? raw.value : "";
+                        } else if (isBoolean(raw)) {
                             if (raw === true) {
-                                content = '&#9745;';
+                                content = "&#9745;";
                             } else if (raw === false) {
-                                content = '&#9744;';
+                                content = "&#9744;";
                             }
-                        }
-                        else if (controlType === 'checkbox') {
-                            if (cellElement && className === 'wj-cell readonly' && $(cellElement).find('.fa-check.active').length) {
-                                content = '&#9745;';
-                            }
-                            else {
-                                if (raw == '1') {
-                                    content = '&#9745;';
-                                } else if (raw == '0') {
-                                    content = '&#9744;';
+                        } else if (controlType === "checkbox") {
+                            if (
+                                cellElement &&
+                                className === "wj-cell readonly" &&
+                                $(cellElement).find(".fa-check.active").length
+                            ) {
+                                content = "&#9745;";
+                            } else {
+                                if (raw == "1") {
+                                    content = "&#9745;";
+                                } else if (raw == "0") {
+                                    content = "&#9744;";
                                 }
                             }
-                        }
-                        else if (isString(raw)) {
+                        } else if (isString(raw)) {
                             content = raw;
                         }
 
-                        if (className.indexOf('wj-cell') == -1) {
-                            className += ' wj-cell ';
+                        if (className.indexOf("wj-cell") == -1) {
+                            className += " wj-cell ";
                         }
                         if (r % 2 != 0) {
-                            if (className.indexOf('wj-alt') == -1) {
-                                className += ' wj-alt ';
+                            if (className.indexOf("wj-alt") == -1) {
+                                className += " wj-alt ";
                             }
                         }
-                        className = className.replace("wj-state-selected", "").replace("wj-state-multi-selected", "");
-                        tr += '<td style="' + style + '" class="' + className + '">' + content + '</td>';
+                        className = className
+                            .replace("wj-state-selected", "")
+                            .replace("wj-state-multi-selected", "");
+                        tr +=
+                            '<td style="' +
+                            style +
+                            '" class="' +
+                            className +
+                            '">' +
+                            content +
+                            "</td>";
                     }
                 }
             }
-            tr += '</tr>';
+            tr += "</tr>";
         }
         return tr;
     }
@@ -3263,7 +4105,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
      * scrollBodyContainer of widget
      */
     private get scrollBodyContainer() {
-        const elm = $('div[wj-part=\'root\']', this.flex.hostElement);
+        const elm = $("div[wj-part='root']", this.flex.hostElement);
         if (elm.length) {
             return elm[0];
         }
@@ -3279,7 +4121,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             top: this.scrollUtils.canScrollUpTop,
             left: this.scrollUtils.canScrollToLeft,
             right: this.scrollUtils.canScrollToRight,
-            bottom: this.scrollUtils.canScrollDownBottom
+            bottom: this.scrollUtils.canScrollDownBottom,
         });
     }
 
@@ -3301,18 +4143,27 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     public toggleDeleteColumn(isShow) {
         if (this.flex) {
-            if (this.parentInstance && this.parentInstance.hasOwnProperty('widgetInstance')) {
-                const itemMarkedAsDeleted = this.gridData.items.filter(_item => _item.deleted === true);
+            if (
+                this.parentInstance &&
+                this.parentInstance.hasOwnProperty("widgetInstance")
+            ) {
+                const itemMarkedAsDeleted = this.gridData.items.filter(
+                    (_item) => _item.deleted === true
+                );
                 if (itemMarkedAsDeleted.length) {
                     return;
                 }
 
-                let deleteCol = this.flex.columns.find(c => c.binding == 'deleted');
+                let deleteCol = this.flex.columns.find(
+                    (c) => c.binding == "deleted"
+                );
                 if (!deleteCol) {
                     return;
                 }
 
-                let gridDeleteCol = this.gridColumns.find(c => c.data == 'deleted');
+                let gridDeleteCol = this.gridColumns.find(
+                    (c) => c.data == "deleted"
+                );
                 if (!gridDeleteCol) {
                     return;
                 }
@@ -3331,7 +4182,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     public toogleColumns(columnNames: Array<string>, status: boolean) {
         for (let item of columnNames) {
-            let column = this.flex.columns.find(x => x.binding === item);
+            let column = this.flex.columns.find((x) => x.binding === item);
             if (!column) continue;
             column.visible = status;
         }
@@ -3346,21 +4197,27 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         return item ? item.data : undefined;
     }
 
-    public formatNumber(data, globalNumberFormat, allowNumberSeparator?: boolean) {
+    public formatNumber(
+        data,
+        globalNumberFormat,
+        allowNumberSeparator?: boolean
+    ) {
         if (data == 0) {
             return 0;
         }
 
         if (isNil(data) || isNaN(data)) {
-            return '';
+            return "";
         }
 
         if (!isNil(allowNumberSeparator) && allowNumberSeparator == false) {
             return data;
         }
 
-        if (globalNumberFormat === 'N') {
-            return data ? data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : null;
+        if (globalNumberFormat === "N") {
+            return data
+                ? data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                : null;
         }
 
         return data;
@@ -3369,15 +4226,15 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     public checkAllItems(colName, e) {
         for (let i = 0; i < this.gridData.sourceCollection.length; i++) {
             let item = this.gridData.sourceCollection[i];
-            if (!item['BorderStatus']) {
-                let gridCol = this.gridColumns.find(x => x.data == colName);
+            if (!item["BorderStatus"]) {
+                let gridCol = this.gridColumns.find((x) => x.data == colName);
                 if (gridCol && gridCol.disabledBy && item[gridCol.disabledBy]) {
                     continue;
                 }
 
                 this.gridData.editItem(item);
                 item[colName] = e.checked;
-                item['isEdited'] = true;
+                item["isEdited"] = true;
                 this.gridData.commitEdit();
             }
         }
@@ -3391,8 +4248,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             if (!this.gridData) return;
 
             if (keyColumnNames) {
-
-                const keys = keyColumnNames.split(',');
+                const keys = keyColumnNames.split(",");
                 const compareObj1 = {};
                 for (var j = 0; j < keys.length; j++) {
                     const key = keys[j];
@@ -3406,7 +4262,9 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                         const key = keys[j];
                         compareObj2[key] = item[key];
                     }
-                    let isEqual: boolean = JSON.stringify(compareObj1).toLowerCase() === JSON.stringify(compareObj2).toLowerCase()
+                    let isEqual: boolean =
+                        JSON.stringify(compareObj1).toLowerCase() ===
+                        JSON.stringify(compareObj2).toLowerCase();
                     if (isEqual) {
                         this.gridData.moveCurrentToPosition(i);
                         break;
@@ -3415,10 +4273,10 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             } else {
                 for (let i = 0; i < this.gridData.items.length; i++) {
                     let item = cloneDeep(this.gridData.items[i]);
-                    delete item['DT_RowId'];
-                    delete item['isReadOnlyColumn'];
-                    delete selectedRow['DT_RowId'];
-                    delete selectedRow['isReadOnlyColumn'];
+                    delete item["DT_RowId"];
+                    delete item["isReadOnlyColumn"];
+                    delete selectedRow["DT_RowId"];
+                    delete selectedRow["isReadOnlyColumn"];
                     if (JSON.stringify(selectedRow) === JSON.stringify(item)) {
                         this.gridData.moveCurrentToPosition(i);
                         break;
@@ -3433,7 +4291,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
      */
     public initialized() {
         if (this.isSupportHierarchicalView) {
-            this.flex.childItemsPath = 'children';
+            this.flex.childItemsPath = "children";
         }
         setTimeout(() => {
             this.onAfterFlexgridRendered.emit();
@@ -3475,9 +4333,16 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     private isReadonlyColumn(column) {
-        return this.readOnly || (!this.readOnly && column
-            && this.datatableService.hasDisplayField(column, 'Readonly')
-            && this.datatableService.getDisplayFieldValue(column, 'Readonly') === '1');
+        return (
+            this.readOnly ||
+            (!this.readOnly &&
+                column &&
+                this.datatableService.hasDisplayField(column, "Readonly") &&
+                this.datatableService.getDisplayFieldValue(
+                    column,
+                    "Readonly"
+                ) === "1")
+        );
     }
 
     public onCellEditAccept(cellData) {
@@ -3485,8 +4350,15 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         if (cellData && this.flex) {
             this.flex.setCellData(cellData.r, cellData.c, cellData.value);
-            if (Uti.toLowerCase(cellData.data) === Uti.toLowerCase(this.CHECKBOX_COLUMNS.masterCheckbox)) {
-                this.handleForMasterCheckboxCase(cellData.value, cellData.r, cellData.c);
+            if (
+                Uti.toLowerCase(cellData.data) ===
+                Uti.toLowerCase(this.CHECKBOX_COLUMNS.masterCheckbox)
+            ) {
+                this.handleForMasterCheckboxCase(
+                    cellData.value,
+                    cellData.r,
+                    cellData.c
+                );
             }
             setTimeout(() => {
                 this.flex.startEditing();
@@ -3497,7 +4369,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private _addFooterRow(flex: wjcGrid.FlexGrid) {
         flex.columnFooters.rows.clear();
 
-        if (this.gridData && (this.gridData.items && !this.gridData.items.length)) {
+        if (
+            this.gridData &&
+            this.gridData.items &&
+            !this.gridData.items.length
+        ) {
             return;
         }
 
@@ -3508,7 +4384,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         flex.columnFooters.rows.push(row);
 
         // show a sigma on the header
-        flex.bottomLeftCells.setCellData(0, 0, '\u03A3');
+        flex.bottomLeftCells.setCellData(0, 0, "\u03A3");
     }
 
     private _firstVisibleCellIndex() {
@@ -3518,26 +4394,38 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         return {
             r: 0,
-            c: this.flex.columns.firstVisibleIndex
+            c: this.flex.columns.firstVisibleIndex,
         };
     }
 
     private compareComboboxColumn(a, b) {
-        return ('' + a.value).localeCompare(b.value);
+        return ("" + a.value).localeCompare(b.value);
     }
 
     private sortComparer(a, b) {
         //Check Date column
-        if (a && typeof a === 'string' && a.indexOf('/') !== -1 && b && typeof b === 'string' && b.indexOf('/') !== -1) {
-            let aDateObj = parse(a, 'MM/dd/yyyy', new Date());
-            let bDateObj = parse(b, 'MM/dd/yyyy', new Date());
+        if (
+            a &&
+            typeof a === "string" &&
+            a.indexOf("/") !== -1 &&
+            b &&
+            typeof b === "string" &&
+            b.indexOf("/") !== -1
+        ) {
+            let aDateObj = parse(a, "MM/dd/yyyy", new Date());
+            let bDateObj = parse(b, "MM/dd/yyyy", new Date());
             if (aDateObj && bDateObj) {
                 return compareAsc(aDateObj, bDateObj);
             }
         }
 
         //Check Combobox column
-        if (wjcCore.isObject(a) && wjcCore.isObject(b) && !wjcCore.isUndefined(a.key) && !wjcCore.isUndefined(b.key)) {
+        if (
+            wjcCore.isObject(a) &&
+            wjcCore.isObject(b) &&
+            !wjcCore.isUndefined(a.key) &&
+            !wjcCore.isUndefined(b.key)
+        ) {
             return this.compareComboboxColumn(a, b);
         }
 
@@ -3551,7 +4439,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     public editButtonClickHandler(rowData, binding) {
         this.onEditColumnClick.emit({
             data: rowData,
-            binding: binding
+            binding: binding,
         });
     }
 
@@ -3561,11 +4449,11 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         }
 
         if (oldColumns.length !== newColumns.length) {
-            return true
+            return true;
         }
 
         for (let i = 0; i < oldColumns.length; i++) {
-            if (!newColumns.find(x => x.data == oldColumns[i].data)) {
+            if (!newColumns.find((x) => x.data == oldColumns[i].data)) {
                 return true;
             }
         }
@@ -3588,7 +4476,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         const priorityDeleted = item[this.CONTROL_COLUMNS.Priority];
         if (priorityDeleted) {
             const data = this.flex.collectionView.items;
-            data.forEach(item => {
+            data.forEach((item) => {
                 if (item[this.CONTROL_COLUMNS.Priority] > priorityDeleted) {
                     if (item[this.CONTROL_COLUMNS.Priority] > 1) {
                         item[this.CONTROL_COLUMNS.Priority] -= 1;
@@ -3596,7 +4484,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 }
             });
         }
-        item[this.CONTROL_COLUMNS.Priority] = '';
+        item[this.CONTROL_COLUMNS.Priority] = "";
         this.onPriorityEditEnded.emit();
         this.initPriorityList();
     }
@@ -3609,13 +4497,16 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private buildQuantityPriorityList() {
         let count = 0;
         this.quantityPriority = [];
-        this.gridData.items.forEach(item => {
-            Object.keys(item).forEach(keyName => {
-                if (typeof item[keyName] === 'object' && item[keyName]['Qty'] > 0) {
+        this.gridData.items.forEach((item) => {
+            Object.keys(item).forEach((keyName) => {
+                if (
+                    typeof item[keyName] === "object" &&
+                    item[keyName]["Qty"] > 0
+                ) {
                     count++;
                     this.quantityPriority.push({
                         key: count,
-                        value: count
+                        value: count,
                     });
                 }
             });
@@ -3623,9 +4514,17 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     public onFrequencyPriorityChanged(newCellData, combobox) {
-        if (combobox.selectedItem && combobox.selectedItem.value && this.currentCellData[this.CONTROL_COLUMNS.Priority] != combobox.selectedItem.value) {
+        if (
+            combobox.selectedItem &&
+            combobox.selectedItem.value &&
+            this.currentCellData[this.CONTROL_COLUMNS.Priority] !=
+                combobox.selectedItem.value
+        ) {
             this.onTableEditStart.emit();
-            this.updateQuantityPriority(this.currentCellData, combobox.selectedItem);
+            this.updateQuantityPriority(
+                this.currentCellData,
+                combobox.selectedItem
+            );
             this.updateQuantityColor(newCellData);
         }
     }
@@ -3643,24 +4542,29 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     public onFrequencyQuantityChanged(newCellData, quantityInputNumber) {
-        if (this.currentCellData['ExportQty'] != quantityInputNumber.value) {
-            if (newCellData['ExportQty'] > newCellData['Qty']) {
+        if (this.currentCellData["ExportQty"] != quantityInputNumber.value) {
+            if (newCellData["ExportQty"] > newCellData["Qty"]) {
                 this.modalService.warningMessageHtmlContent({
-                    headerText: 'Update quantity',
+                    headerText: "Update quantity",
                     messageType: MessageModal.MessageType.warning,
                     message: [
-                        {key: '<p>'},
-                        {key : 'Modal_Message__The_Value_Should_Not_Be_Greater_Than'},
-                        {key: '<strong>'},
-                        {key: newCellData['Qty']},
-                        {key: '</strong></p>'}],
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__The_Value_Should_Not_Be_Greater_Than",
+                        },
+                        { key: "<strong>" },
+                        { key: newCellData["Qty"] },
+                        { key: "</strong></p>" },
+                    ],
                     buttonType1: MessageModal.ButtonType.primary,
                     callBack1: () => {
-                        newCellData['ExportQty'] = this.currentCellData['ExportQty'];
+                        newCellData["ExportQty"] =
+                            this.currentCellData["ExportQty"];
                     },
                     callBackCloseButton: () => {
-                        newCellData['ExportQty'] = this.currentCellData['ExportQty'];
-                    }
+                        newCellData["ExportQty"] =
+                            this.currentCellData["ExportQty"];
+                    },
                 });
             } else {
                 this.updateQuantityColor(newCellData);
@@ -3680,11 +4584,15 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     private buildQuantityPriorityArray(fromItem?) {
         let result: any[] = [];
-        this.gridData.items.forEach(item => {
-            Object.keys(item).forEach(keyName => {
-                if (typeof item[keyName] === 'object' && item[keyName]['Qty'] > 0) {
-                    if (fromItem && item[keyName].hasOwnProperty('pEdit')) {
-                        item[keyName][this.CONTROL_COLUMNS.Priority] = fromItem[this.CONTROL_COLUMNS.Priority];
+        this.gridData.items.forEach((item) => {
+            Object.keys(item).forEach((keyName) => {
+                if (
+                    typeof item[keyName] === "object" &&
+                    item[keyName]["Qty"] > 0
+                ) {
+                    if (fromItem && item[keyName].hasOwnProperty("pEdit")) {
+                        item[keyName][this.CONTROL_COLUMNS.Priority] =
+                            fromItem[this.CONTROL_COLUMNS.Priority];
                     }
                     result.push(item[keyName]);
                 }
@@ -3697,26 +4605,36 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     private updateQuantityPriority(fromItem: any, changedPriorityOption: any) {
         let data = this.buildQuantityPriorityArray(fromItem);
 
-        let destItem = data.find(p => p[this.CONTROL_COLUMNS.Priority] == changedPriorityOption.key);
+        let destItem = data.find(
+            (p) => p[this.CONTROL_COLUMNS.Priority] == changedPriorityOption.key
+        );
         if (fromItem && destItem) {
-            const fromIndex = data.findIndex(p => p[this.CONTROL_COLUMNS.Priority] == fromItem[this.CONTROL_COLUMNS.Priority]);
-            const destIndex = data.findIndex(p => p[this.CONTROL_COLUMNS.Priority] == destItem[this.CONTROL_COLUMNS.Priority]);
+            const fromIndex = data.findIndex(
+                (p) =>
+                    p[this.CONTROL_COLUMNS.Priority] ==
+                    fromItem[this.CONTROL_COLUMNS.Priority]
+            );
+            const destIndex = data.findIndex(
+                (p) =>
+                    p[this.CONTROL_COLUMNS.Priority] ==
+                    destItem[this.CONTROL_COLUMNS.Priority]
+            );
             if (fromIndex < destIndex) {
-                let arr = data.map(p => p[this.CONTROL_COLUMNS.Priority]);
+                let arr = data.map((p) => p[this.CONTROL_COLUMNS.Priority]);
                 arr.splice(fromIndex, 0, changedPriorityOption.key);
                 arr.splice(destIndex + 1, 1);
                 data.forEach((db, index, dataArr) => {
                     db[this.CONTROL_COLUMNS.Priority] = arr[index];
-                    db['isDirty'] = true;
+                    db["isDirty"] = true;
                 });
             }
             if (fromIndex > destIndex) {
-                var arr = data.map(p => p[this.CONTROL_COLUMNS.Priority]);
+                var arr = data.map((p) => p[this.CONTROL_COLUMNS.Priority]);
                 arr.splice(fromIndex + 1, 0, changedPriorityOption.key);
                 arr.splice(destIndex, 1);
                 data.forEach((db, index, dataArr) => {
                     db[this.CONTROL_COLUMNS.Priority] = arr[index];
-                    db['isDirty'] = true;
+                    db["isDirty"] = true;
                 });
             }
 
@@ -3735,39 +4653,42 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     public onQuantityPriorityRightClick(data, binding) {
-        if (data && binding && data['ExportQty'] != data['ExportQtyBackup']) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                headerText: 'Restore Quantity',
-                messageType: MessageModal.MessageType.error,
-                message: [{key: '<p>'},
-                    {key: 'Modal_Message__Quantity_Will_Change_From'},
-                    {key: '<strong>'},
-                    {key: data['ExportQty']},
-                    {key: '</strong>'},
-                    {key: 'Modal_Message__To'},
-                    {key: '<strong>'},
-                    {key: data['ExportQtyBackup']},
-                    {key: '</strong>.'},
-                    {key: 'Modal_Message__Are_You_Sure'},
-                    {key: '</p>'}
-                ],
-                buttonType1: MessageModal.ButtonType.danger,
-                callBack1: () => {
-                    data['ExportQty'] = data['ExportQtyBackup'];
-                }
-            }));
+        if (data && binding && data["ExportQty"] != data["ExportQtyBackup"]) {
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    headerText: "Restore Quantity",
+                    messageType: MessageModal.MessageType.error,
+                    message: [
+                        { key: "<p>" },
+                        { key: "Modal_Message__Quantity_Will_Change_From" },
+                        { key: "<strong>" },
+                        { key: data["ExportQty"] },
+                        { key: "</strong>" },
+                        { key: "Modal_Message__To" },
+                        { key: "<strong>" },
+                        { key: data["ExportQtyBackup"] },
+                        { key: "</strong>." },
+                        { key: "Modal_Message__Are_You_Sure" },
+                        { key: "</p>" },
+                    ],
+                    buttonType1: MessageModal.ButtonType.danger,
+                    callBack1: () => {
+                        data["ExportQty"] = data["ExportQtyBackup"];
+                    },
+                })
+            );
         }
     }
 
     private stopQuantityPriorityEditMode() {
-        this.gridData.items.forEach(item => {
-            Object.keys(item).forEach(keyName => {
-                if (typeof item[keyName] === 'object') {
-                    if (item[keyName].hasOwnProperty('pEdit')) {
-                        delete item[keyName]['pEdit'];
+        this.gridData.items.forEach((item) => {
+            Object.keys(item).forEach((keyName) => {
+                if (typeof item[keyName] === "object") {
+                    if (item[keyName].hasOwnProperty("pEdit")) {
+                        delete item[keyName]["pEdit"];
                     }
-                    if (item[keyName].hasOwnProperty('qEdit')) {
-                        delete item[keyName]['qEdit'];
+                    if (item[keyName].hasOwnProperty("qEdit")) {
+                        delete item[keyName]["qEdit"];
                     }
                 }
             });
@@ -3789,61 +4710,74 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
         let requiredNumber = this.requiredAddressNumber;
         let priorityData = this.buildQuantityPriorityArray();
-        priorityData = orderBy(priorityData, [this.CONTROL_COLUMNS.Priority], ['asc']);
+        priorityData = orderBy(
+            priorityData,
+            [this.CONTROL_COLUMNS.Priority],
+            ["asc"]
+        );
 
         let totalQuantity = 0;
         let notRedAnymore = false;
         for (let i = 0; i < priorityData.length; i++) {
-            this.resetProps(priorityData[i], ['isRed', 'isBlue', 'isGreen', 'isUnderline', 'isDarkRed', 'isDarkBlue', 'isDarkGreen']);
+            this.resetProps(priorityData[i], [
+                "isRed",
+                "isBlue",
+                "isGreen",
+                "isUnderline",
+                "isDarkRed",
+                "isDarkBlue",
+                "isDarkGreen",
+            ]);
 
             //Underline
-            if (priorityData[i]['ExportQty'] < priorityData[i]['Qty']) {
-                priorityData[i]['isUnderline'] = true;
+            if (priorityData[i]["ExportQty"] < priorityData[i]["Qty"]) {
+                priorityData[i]["isUnderline"] = true;
             }
 
             //Blue color
-            if (priorityData[i]['isUnderline']) {
-                priorityData[i]['isDarkBlue'] = true;
+            if (priorityData[i]["isUnderline"]) {
+                priorityData[i]["isDarkBlue"] = true;
             } else {
-                priorityData[i]['isBlue'] = true;
+                priorityData[i]["isBlue"] = true;
             }
 
-
             //Green color
-            if (priorityData[i]['Qty'] < 10) {
-                priorityData[i]['isBlue'] = false;
-                priorityData[i]['isDarkBlue'] = false;
+            if (priorityData[i]["Qty"] < 10) {
+                priorityData[i]["isBlue"] = false;
+                priorityData[i]["isDarkBlue"] = false;
 
-                if (priorityData[i]['isUnderline']) {
-                    priorityData[i]['isDarkGreen'] = true;
+                if (priorityData[i]["isUnderline"]) {
+                    priorityData[i]["isDarkGreen"] = true;
                 } else {
-                    priorityData[i]['isGreen'] = true;
+                    priorityData[i]["isGreen"] = true;
                 }
             }
 
             //Red color
             if (!notRedAnymore) {
-                totalQuantity += priorityData[i]['ExportQty'];
+                totalQuantity += priorityData[i]["ExportQty"];
                 if (totalQuantity >= requiredNumber) {
-                    let diff = requiredNumber - (totalQuantity - priorityData[i]['ExportQty']);
-                    priorityData[i]['ExportQty'] = diff;
+                    let diff =
+                        requiredNumber -
+                        (totalQuantity - priorityData[i]["ExportQty"]);
+                    priorityData[i]["ExportQty"] = diff;
 
                     notRedAnymore = true;
                 }
 
-                priorityData[i]['isBlue'] = false;
-                priorityData[i]['isDarkBlue'] = false;
-                priorityData[i]['isGreen'] = false;
-                priorityData[i]['isDarkGreen'] = false;
+                priorityData[i]["isBlue"] = false;
+                priorityData[i]["isDarkBlue"] = false;
+                priorityData[i]["isGreen"] = false;
+                priorityData[i]["isDarkGreen"] = false;
 
                 //Underline
-                if (priorityData[i]['ExportQty'] < priorityData[i]['Qty']) {
-                    priorityData[i]['isUnderline'] = true;
+                if (priorityData[i]["ExportQty"] < priorityData[i]["Qty"]) {
+                    priorityData[i]["isUnderline"] = true;
                 }
-                if (priorityData[i]['isUnderline']) {
-                    priorityData[i]['isDarkRed'] = true;
+                if (priorityData[i]["isUnderline"]) {
+                    priorityData[i]["isDarkRed"] = true;
                 } else {
-                    priorityData[i]['isRed'] = true;
+                    priorityData[i]["isRed"] = true;
                 }
             }
         }
@@ -3851,35 +4785,35 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
 
     private buildCellColor(cell, item, col) {
         if (!this.requiredAddressNumber) {
-            $(cell).addClass('red-text');
+            $(cell).addClass("red-text");
         }
 
         if (item[col.data].isUnderline) {
-            $(cell).addClass('underline-text');
+            $(cell).addClass("underline-text");
         }
 
         if (item[col.data].isDarkBlue) {
-            $(cell).addClass('dark-blue-text');
+            $(cell).addClass("dark-blue-text");
         }
 
         if (item[col.data].isDarkGreen) {
-            $(cell).addClass('dark-green-text');
+            $(cell).addClass("dark-green-text");
         }
 
         if (item[col.data].isDarkRed) {
-            $(cell).addClass('dark-red-text');
+            $(cell).addClass("dark-red-text");
         }
 
         if (item[col.data].isBlue) {
-            $(cell).addClass('blue-text');
+            $(cell).addClass("blue-text");
         }
 
         if (item[col.data].isGreen) {
-            $(cell).addClass('green-text');
+            $(cell).addClass("green-text");
         }
 
         if (item[col.data].isRed) {
-            $(cell).addClass('red-text');
+            $(cell).addClass("red-text");
         }
     }
 
@@ -3889,17 +4823,22 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
             if (!priority) {
                 let data = this.flex.collectionView.items;
                 const maxLength = data.length;
-                const arr = data.map(p => toSafeInteger(p[this.CONTROL_COLUMNS.Priority]));
+                const arr = data.map((p) =>
+                    toSafeInteger(p[this.CONTROL_COLUMNS.Priority])
+                );
                 const maxValue = max(arr);
                 if (maxValue < maxLength) {
                     item[this.CONTROL_COLUMNS.Priority] = maxValue + 1;
-                }
-                else {
+                } else {
                     let validPriority = maxValue;
                     let rs;
                     do {
                         validPriority -= 1;
-                        rs = data.find(p => p[this.CONTROL_COLUMNS.Priority] == validPriority);
+                        rs = data.find(
+                            (p) =>
+                                p[this.CONTROL_COLUMNS.Priority] ==
+                                validPriority
+                        );
                     } while (rs);
                     item[this.CONTROL_COLUMNS.Priority] = validPriority;
                 }
@@ -3915,14 +4854,24 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
      * updatePriority
      */
     private updatePriority(fromItem: any, changedPriorityOption: any) {
-        let data = this.flex.collectionView.items.filter(p => p[this.CONTROL_COLUMNS.Priority]);
-        let destItem = data.find(p => p[this.CONTROL_COLUMNS.Priority] == changedPriorityOption.key);
+        let data = this.flex.collectionView.items.filter(
+            (p) => p[this.CONTROL_COLUMNS.Priority]
+        );
+        let destItem = data.find(
+            (p) => p[this.CONTROL_COLUMNS.Priority] == changedPriorityOption.key
+        );
         if (fromItem && destItem) {
-            const idField = Object.keys(fromItem).find(k => k == 'id') ? 'id' : 'DT_RowId';
-            const fromIndex = data.findIndex(p => p[idField] == fromItem[idField]);
-            const destIndex = data.findIndex(p => p[idField] == destItem[idField]);
+            const idField = Object.keys(fromItem).find((k) => k == "id")
+                ? "id"
+                : "DT_RowId";
+            const fromIndex = data.findIndex(
+                (p) => p[idField] == fromItem[idField]
+            );
+            const destIndex = data.findIndex(
+                (p) => p[idField] == destItem[idField]
+            );
             if (fromIndex < destIndex) {
-                let arr = data.map(p => p[this.CONTROL_COLUMNS.Priority]);
+                let arr = data.map((p) => p[this.CONTROL_COLUMNS.Priority]);
                 arr.splice(fromIndex, 0, changedPriorityOption.key);
                 arr.splice(destIndex + 1, 1);
                 data.forEach((db, index, dataArr) => {
@@ -3930,7 +4879,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
                 });
             }
             if (fromIndex > destIndex) {
-                var arr = data.map(p => p[this.CONTROL_COLUMNS.Priority]);
+                var arr = data.map((p) => p[this.CONTROL_COLUMNS.Priority]);
                 arr.splice(fromIndex + 1, 0, changedPriorityOption.key);
                 arr.splice(destIndex, 1);
                 data.forEach((db, index, dataArr) => {
@@ -3954,7 +4903,7 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
     }
 
     public onSelectColumnChanged(item, event, cell) {
-        item['IsActive'] = event.checked;
+        item["IsActive"] = event.checked;
 
         if (this.gridData.itemsEdited.indexOf(item) < 0) {
             this.gridData.itemsEdited.push(item);
@@ -3963,33 +4912,42 @@ export class WijmoGridComponent extends BaseComponent implements OnInit, AfterVi
         this.flex.refresh(true);
 
         if (event.checked) {
-            this.flex.select(new wjcGrid.CellRange(cell.row.index, cell.col.index + 1, cell.row.index, cell.col.index + 1));
+            this.flex.select(
+                new wjcGrid.CellRange(
+                    cell.row.index,
+                    cell.col.index + 1,
+                    cell.row.index,
+                    cell.col.index + 1
+                )
+            );
 
             this.updateCellPriority(item);
         }
 
-        this.onSelectionColumnChanged.emit(item['IsActive']);
+        this.onSelectionColumnChanged.emit(item["IsActive"]);
     }
 
     /**
      * registerCellClickEvent
      */
     private registerCellClickEvent() {
-        this.flex.addEventListener(this.flex.hostElement, 'click', (e) => {
-
+        this.flex.addEventListener(this.flex.hostElement, "click", (e) => {
             const ht = this.flex.hitTest(e);
             if (ht.cellType === wjcGrid.CellType.Cell) {
                 let item = this.flex.rows[ht.row].dataItem;
                 const binding = this.flex.columns[ht.col].binding;
 
-                if (!isNil(item['IsActive']) && this.hasDisableRow) {
-                    if (binding !== 'IsActive' && item['IsActive'] === false) {
+                if (!isNil(item["IsActive"]) && this.hasDisableRow) {
+                    if (binding !== "IsActive" && item["IsActive"] === false) {
                         e.cancel = true;
                         return;
                     }
                 }
 
-                if (!this.readOnly && binding == this.CONTROL_COLUMNS.Priority) {
+                if (
+                    !this.readOnly &&
+                    binding == this.CONTROL_COLUMNS.Priority
+                ) {
                     this.updateCellPriority(item);
                 }
             } else if (ht.cellType === wjcGrid.CellType.None) {

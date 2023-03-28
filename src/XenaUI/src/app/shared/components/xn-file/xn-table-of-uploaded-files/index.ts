@@ -1,1 +1,1 @@
-export * from './xn-table-of-uploaded-files.component'
+export * from "./xn-table-of-uploaded-files.component";

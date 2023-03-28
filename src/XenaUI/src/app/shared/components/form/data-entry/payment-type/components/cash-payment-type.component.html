@@ -1,24 +1,36 @@
 <div class="form-group">
-    <label class="control-label col-sm-2" for="pwd"><label-translation [keyword]="'Cash_Payment_Type__Amount'"></label-translation>:</label>
+    <label class="control-label col-sm-2" for="pwd"
+        ><label-translation
+            [keyword]="'Cash_Payment_Type__Amount'"
+        ></label-translation
+        >:</label
+    >
     <div class="col-sm-5">
         <input type="text" class="form-control xn-input" autocomplete="off" />
-        <control-messages [type]="'textbox'"
-                          [icon]="'money'"></control-messages>
+        <control-messages
+            [type]="'textbox'"
+            [icon]="'money'"
+        ></control-messages>
     </div>
     <div class="col-sm-5">
         <div class="full-width">
-            <xn-combo-box #currencyListCtrl
-                          class="custom-wj-input-control xn-select"
-                          [itemsSource]="currencyList"
-                          [displayMemberPath]="'value'"
-                          [selectedValuePath]="'key'"
-                          [isEditable]="true"
-                          [isRequired]="false"
-                          placeholder="Please select"
-                          (gotFocus)="currencyListCtrl.isDroppedDown = true">
+            <xn-combo-box
+                #currencyListCtrl
+                class="custom-wj-input-control xn-select"
+                [itemsSource]="currencyList"
+                [displayMemberPath]="'value'"
+                [selectedValuePath]="'key'"
+                [isEditable]="true"
+                [isRequired]="false"
+                placeholder="Please select"
+                (gotFocus)="currencyListCtrl.isDroppedDown = true"
+            >
             </xn-combo-box>
-            <control-messages [xn-trigger-click-inside-cbo]="currencyListCtrl" [type]="'textbox'"
-                              [icon]="'credit-card'"></control-messages>
+            <control-messages
+                [xn-trigger-click-inside-cbo]="currencyListCtrl"
+                [type]="'textbox'"
+                [icon]="'credit-card'"
+            ></control-messages>
         </div>
     </div>
 </div>

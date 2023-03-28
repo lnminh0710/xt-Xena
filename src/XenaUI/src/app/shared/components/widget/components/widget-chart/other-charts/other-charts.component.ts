@@ -1,13 +1,12 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import { BaseWidget } from 'app/pages/private/base';
-import {ChartTypeNgx} from '../chart.model';
+import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
+import { BaseWidget } from "app/pages/private/base";
+import { ChartTypeNgx } from "../chart.model";
 
 @Component({
-    selector: 'xena-other-chart',
-    templateUrl: './other-charts.component.html',
+    selector: "xena-other-chart",
+    templateUrl: "./other-charts.component.html",
     encapsulation: ViewEncapsulation.None,
 })
-
 export class OtherChartsComponent extends BaseWidget implements OnInit {
     public _chartType: string;
     public _colorType: string;
@@ -31,7 +30,7 @@ export class OtherChartsComponent extends BaseWidget implements OnInit {
 
     @Input() set chartType(chartType: string) {
         this._chartType = chartType;
-    };
+    }
 
     @Input() set scheme(colorType: string) {
         this._colorType = colorType;
@@ -65,7 +64,7 @@ export class OtherChartsComponent extends BaseWidget implements OnInit {
         this._legendTitle = legendTitle;
     }
     @Input() set disableTooltip(disableTooltip: boolean) {
-        this._disableTooltip = disableTooltip
+        this._disableTooltip = disableTooltip;
     }
     @Input() set xAxisLabel(xAxisLabel: string) {
         this._xAxisLabel = xAxisLabel;
@@ -80,16 +79,12 @@ export class OtherChartsComponent extends BaseWidget implements OnInit {
         super();
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     lineChartScheme = {
-        name: 'coolthree',
+        name: "coolthree",
         selectable: true,
-        group: 'Ordinal',
-        domain: [
-            '#01579b', '#7aa3e5', '#a8385d', '#00bfa5'
-        ]
+        group: "Ordinal",
+        domain: ["#01579b", "#7aa3e5", "#a8385d", "#00bfa5"],
     };
-
 }

@@ -5,7 +5,7 @@ export class ControlGridModel {
     public autoGroupColumnDef?: AutoGroupColumnDefModel;
     public idSettingsGUI?: number = null;
     public funcGetData?: Function = null;
-    
+
     public constructor(init?: Partial<ControlGridModel>) {
         Object.assign(this, init);
     }
@@ -31,7 +31,7 @@ export class AutoGroupColumnDefModel {
     public minWidth?: number = null;
     public width?: number = null;
     public isFitColumn?: boolean;
-    
+
     public constructor(init?: Partial<AutoGroupColumnDefModel>) {
         Object.assign(this, init);
     }

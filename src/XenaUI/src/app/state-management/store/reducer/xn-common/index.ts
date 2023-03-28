@@ -1,2 +1,2 @@
-﻿export * from './xn-common.reducer';
-export * from './xn-common.selectors';
+﻿export * from "./xn-common.reducer";
+export * from "./xn-common.selectors";

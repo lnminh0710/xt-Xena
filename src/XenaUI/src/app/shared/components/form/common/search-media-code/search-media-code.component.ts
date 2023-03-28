@@ -1,28 +1,42 @@
 import {
-    Component, Input, Output, EventEmitter,
-    ChangeDetectorRef, OnInit, OnDestroy, ViewChild, AfterViewInit
-} from '@angular/core';
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    ChangeDetectorRef,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    AfterViewInit,
+} from "@angular/core";
+import { StoreStringCall, Configuration } from "app/app.constants";
 import {
-    StoreStringCall,
-    Configuration
-} from 'app/app.constants';
+    AppErrorHandler,
+    SearchService,
+    DatatableService,
+    WidgetTemplateSettingService,
+    ModalService,
+} from "app/services";
+import { Uti } from "app/utilities";
 import {
-    AppErrorHandler, SearchService, DatatableService,
-    WidgetTemplateSettingService, ModalService
-} from 'app/services';
-import { Uti } from 'app/utilities';
-import { ControlGridModel, WidgetDetail, EsSearchResult, ApiResultResponse } from 'app/models';
-import lowerFirst from 'lodash-es/lowerFirst';
-import { Subscription } from 'rxjs/Subscription';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { IPageChangedEvent } from 'app/shared/components/xn-pager/xn-pagination.component';
+    ControlGridModel,
+    WidgetDetail,
+    EsSearchResult,
+    ApiResultResponse,
+} from "app/models";
+import lowerFirst from "lodash-es/lowerFirst";
+import { Subscription } from "rxjs/Subscription";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import { IPageChangedEvent } from "app/shared/components/xn-pager/xn-pagination.component";
 
 @Component({
-    selector: 'app-search-media-code',
-    styleUrls: ['./search-media-code.component.scss'],
-    templateUrl: './search-media-code.component.html'
+    selector: "app-search-media-code",
+    styleUrls: ["./search-media-code.component.scss"],
+    templateUrl: "./search-media-code.component.html",
 })
-export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SearchMediaCodeComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     public searchMediaCodeGridLeft: ControlGridModel;
     public searchMediaCodeGridRight: ControlGridModel;
     public searchMediaCodeGridDetail: ControlGridModel;
@@ -37,7 +51,7 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
     private idSalesCampaignWizardItems: any;
     private mediacodeOutput: any = {};
     private pageIndex: number = Configuration.pageIndex;
-    private keyword: string = '';
+    private keyword: string = "";
 
     @Input() wjGridSearchMediaCodeLeftId: string;
     @Input() wjGridSearchMediaCodeRightId: string;
@@ -49,9 +63,12 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
     @Output() outputData: EventEmitter<any> = new EventEmitter();
     @Output() outputDataWithCloseModal: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('wjGridSearchMediaCodeLeft') wjGridSearchMediaCodeLeft: XnAgGridComponent;
-    @ViewChild('wjGridSearchMediaCodeRight') wjGridSearchMediaCodeRight: XnAgGridComponent;
-    @ViewChild('wijmoGridComponentDetail') wjGridSearchMediaCodeDetail: XnAgGridComponent;
+    @ViewChild("wjGridSearchMediaCodeLeft")
+    wjGridSearchMediaCodeLeft: XnAgGridComponent;
+    @ViewChild("wjGridSearchMediaCodeRight")
+    wjGridSearchMediaCodeRight: XnAgGridComponent;
+    @ViewChild("wijmoGridComponentDetail")
+    wjGridSearchMediaCodeDetail: XnAgGridComponent;
 
     constructor(
         private ref: ChangeDetectorRef,
@@ -79,13 +96,16 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
 
     private autoSearchTimeout: any = null;
     private autoSearch() {
-        if (this.searchText && this.searchText != '*') {
-            if (this.searchMediaCodeGridLeft && this.searchMediaCodeGridLeft.columns && this.searchMediaCodeGridLeft.columns.length) {
+        if (this.searchText && this.searchText != "*") {
+            if (
+                this.searchMediaCodeGridLeft &&
+                this.searchMediaCodeGridLeft.columns &&
+                this.searchMediaCodeGridLeft.columns.length
+            ) {
                 clearTimeout(this.autoSearchTimeout);
                 this.autoSearchTimeout = null;
                 this.onLeftTableSearch(this.searchText);
-            }
-            else {
+            } else {
                 this.autoSearchTimeout = setTimeout(() => {
                     this.autoSearch();
                 }, 500);
@@ -94,27 +114,46 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     public searchMediaCodeGridLeftRowClick($event: any) {
-        this.mediacodeOutput['campaignNr'] = Uti.getValueFromArrayByKey($event, 'CampaignNr');
-        this.mediacodeOutput['idSalesCampaignWizard'] = Uti.getValueFromArrayByKey($event, 'IdSalesCampaignWizard');
+        this.mediacodeOutput["campaignNr"] = Uti.getValueFromArrayByKey(
+            $event,
+            "CampaignNr"
+        );
+        this.mediacodeOutput["idSalesCampaignWizard"] =
+            Uti.getValueFromArrayByKey($event, "IdSalesCampaignWizard");
         this.getCampaignForRight(this.mediacodeOutput.idSalesCampaignWizard);
     }
 
     public searchMediaCodeGridRightRowClick($event: any) {
-        this.mediacodeOutput['idSalesCampaignWizardItems'] = Uti.getValueFromArrayByKey($event, 'IdSalesCampaignWizardItems');
-        this.mediacodeOutput['idRepIsoCountryCode'] = Uti.getValueFromArrayByKey($event, 'IdRepIsoCountryCode');
-        this.mediacodeOutput['idRepLanguage'] = Uti.getValueFromArrayByKey($event, 'IdRepLanguage');
-        this.getCampaignForDetail(this.mediacodeOutput.idSalesCampaignWizardItems);
+        this.mediacodeOutput["idSalesCampaignWizardItems"] =
+            Uti.getValueFromArrayByKey($event, "IdSalesCampaignWizardItems");
+        this.mediacodeOutput["idRepIsoCountryCode"] =
+            Uti.getValueFromArrayByKey($event, "IdRepIsoCountryCode");
+        this.mediacodeOutput["idRepLanguage"] = Uti.getValueFromArrayByKey(
+            $event,
+            "IdRepLanguage"
+        );
+        this.getCampaignForDetail(
+            this.mediacodeOutput.idSalesCampaignWizardItems
+        );
     }
 
     public searchMediaCodeGridDetailRowClick($event: any) {
-        this.mediacodeOutput['mediaCode'] = Uti.getValueFromArrayByKey($event, 'MediaCode');
-        this.mediacodeOutput['idSalesCampaignMediaCode'] = Uti.getValueFromArrayByKey($event, 'IdSalesCampaignMediaCode');
+        this.mediacodeOutput["mediaCode"] = Uti.getValueFromArrayByKey(
+            $event,
+            "MediaCode"
+        );
+        this.mediacodeOutput["idSalesCampaignMediaCode"] =
+            Uti.getValueFromArrayByKey($event, "IdSalesCampaignMediaCode");
         this.outputData.emit(this.mediacodeOutput);
     }
 
     public searchMediaCodeGridDetailRowDoubleClick($event: any) {
-        this.mediacodeOutput['mediaCode'] = Uti.getValueFromArrayByKey($event, 'MediaCode');
-        this.mediacodeOutput['idSalesCampaignMediaCode'] = Uti.getValueFromArrayByKey($event, 'IdSalesCampaignMediaCode');
+        this.mediacodeOutput["mediaCode"] = Uti.getValueFromArrayByKey(
+            $event,
+            "MediaCode"
+        );
+        this.mediacodeOutput["idSalesCampaignMediaCode"] =
+            Uti.getValueFromArrayByKey($event, "IdSalesCampaignMediaCode");
         this.outputDataWithCloseModal.emit(this.mediacodeOutput);
     }
 
@@ -139,9 +178,22 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     private search() {
-        if (this.modalService.isStopSearchWhenEmptySize(this.pageSize, this.pageIndex)) return;
+        if (
+            this.modalService.isStopSearchWhenEmptySize(
+                this.pageSize,
+                this.pageIndex
+            )
+        )
+            return;
         this.wjGridSearchMediaCodeLeft.isSearching = true;
-        this.searchServiceSubscription = this.searchService.search('campaign', this.keyword, null, this.pageIndex, this.pageSize)
+        this.searchServiceSubscription = this.searchService
+            .search(
+                "campaign",
+                this.keyword,
+                null,
+                this.pageIndex,
+                this.pageSize
+            )
             .subscribe(this.onSearchComplete);
     }
 
@@ -155,15 +207,15 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
 
     private getEmptyDataForGrid() {
         this.createWidgetDetail();
-        this.getCampaignForLeft('');
-        this.getCampaignForRight('');
-        this.getCampaignForDetail('');
+        this.getCampaignForLeft("");
+        this.getCampaignForRight("");
+        this.getCampaignForDetail("");
     }
 
     private initPerfectScroll() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
 
@@ -175,83 +227,105 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
 
     private createWidgetDetail() {
         this.widgetDetailMediaCodeMain = new WidgetDetail({
-            id: '153eaf8e-b109-aa3a-b2ab-57aa5c8ae4cb', // No needed
+            id: "153eaf8e-b109-aa3a-b2ab-57aa5c8ae4cb", // No needed
             idRepWidgetApp: 46,
             idRepWidgetType: 2,
             isMainArea: false,
-            moduleName: 'Campaign',
+            moduleName: "Campaign",
             request: StoreStringCall.StoreWidgetRequestMediaCodeMain,
-            title: 'MediaCode Main',
-            updateRequest: ''
+            title: "MediaCode Main",
+            updateRequest: "",
         });
 
         this.widgetDetailMediaCodeDetail = new WidgetDetail({
-            id: '153eaf8e-b109-aa3a-b2ab-57aa5c8ae4cb', // No needed
+            id: "153eaf8e-b109-aa3a-b2ab-57aa5c8ae4cb", // No needed
             idRepWidgetApp: 46,
             idRepWidgetType: 3,
             isMainArea: false,
-            moduleName: 'Campaign',
+            moduleName: "Campaign",
             request: StoreStringCall.StoreWidgetRequestMediaCodeDetail,
-            title: 'MediaCode Detail',
-            updateRequest: ''
+            title: "MediaCode Detail",
+            updateRequest: "",
         });
     }
 
     private initEmptyDataForGrid() {
         this.searchMediaCodeGridLeft = {
             data: [],
-            columns: []
+            columns: [],
         };
         this.searchMediaCodeGridRight = {
             data: [],
-            columns: []
+            columns: [],
         };
         this.searchMediaCodeGridDetail = {
             data: [],
-            columns: []
+            columns: [],
         };
     }
 
     private getCampaignForLeft(idSalesCampaignWizard: any) {
-        this.searchServiceSubscription = this.searchService.search('campaign', '153eaf8eb109aa3ab2ab57aa5c8ae4cb534fda432fda432', 4, 1, 0)
+        this.searchServiceSubscription = this.searchService
+            .search(
+                "campaign",
+                "153eaf8eb109aa3ab2ab57aa5c8ae4cb534fda432fda432",
+                4,
+                1,
+                0
+            )
             .finally(() => {
                 if (this.searchText) {
                     setTimeout(() => {
-                        this.wjGridSearchMediaCodeLeft.setSelectedRow({ 'CampaignNr': this.searchText }, 'CampaignNr');
+                        this.wjGridSearchMediaCodeLeft.setSelectedRow(
+                            { CampaignNr: this.searchText },
+                            "CampaignNr"
+                        );
                     });
                 }
                 this.ref.detectChanges();
             })
-            .subscribe(
-                (response) => {
-                    this.appErrorHandler.executeAction(() => {
-                        const tableData = this.datatableService.formatDataTableFromRawData([
+            .subscribe((response) => {
+                this.appErrorHandler.executeAction(() => {
+                    const tableData =
+                        this.datatableService.formatDataTableFromRawData([
                             response.item.setting[0],
-                            []
+                            [],
                         ]);
-                        this.searchMediaCodeGridLeft = this.datatableService.buildDataSource(tableData);
-                        this.ref.detectChanges();
-                    });
+                    this.searchMediaCodeGridLeft =
+                        this.datatableService.buildDataSource(tableData);
+                    this.ref.detectChanges();
                 });
+            });
     }
 
     private getCampaignForRight(idSalesCampaignWizard: any) {
         if (this.idSalesCampaignWizard === idSalesCampaignWizard) return;
         this.idSalesCampaignWizard = idSalesCampaignWizard;
 
-        this.widgetTemplateSettingServiceSubscription = this.widgetTemplateSettingService.getWidgetDetailByRequestString(this.widgetDetailMediaCodeMain, { IdSalesCampaignWizard: idSalesCampaignWizard })
-            .subscribe(
-                (response) => {
+        this.widgetTemplateSettingServiceSubscription =
+            this.widgetTemplateSettingService
+                .getWidgetDetailByRequestString(
+                    this.widgetDetailMediaCodeMain,
+                    { IdSalesCampaignWizard: idSalesCampaignWizard }
+                )
+                .subscribe((response) => {
                     this.appErrorHandler.executeAction(() => {
-                        this.searchMediaCodeGridRight = this.datatableService.buildDataSource(response.contentDetail);
+                        this.searchMediaCodeGridRight =
+                            this.datatableService.buildDataSource(
+                                response.contentDetail
+                            );
 
                         if (this.data && Object.keys(this.data).length > 0) {
                             setTimeout(() => {
                                 const selectedRow = {
-                                    IdRepIsoCountryCode: this.data['idRepIsoCountryCode'],
-                                    IdRepLanguage: this.data['idRepLanguage']
+                                    IdRepIsoCountryCode:
+                                        this.data["idRepIsoCountryCode"],
+                                    IdRepLanguage: this.data["idRepLanguage"],
                                 };
-                                this.wjGridSearchMediaCodeRight.setSelectedRow(selectedRow, 'IdRepIsoCountryCode,IdRepLanguage');
+                                this.wjGridSearchMediaCodeRight.setSelectedRow(
+                                    selectedRow,
+                                    "IdRepIsoCountryCode,IdRepLanguage"
+                                );
                             }, 500);
                         }
                         this.ref.detectChanges();
@@ -260,24 +334,35 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     private getCampaignForDetail(idSalesCampaignWizardItems: any) {
-        if (this.idSalesCampaignWizardItems === idSalesCampaignWizardItems) return;
+        if (this.idSalesCampaignWizardItems === idSalesCampaignWizardItems)
+            return;
         this.idSalesCampaignWizardItems = idSalesCampaignWizardItems;
 
-        this.widgetTemplateSettingServiceSubscription = this.widgetTemplateSettingService.getWidgetDetailByRequestString(this.widgetDetailMediaCodeDetail, { IdSalesCampaignWizardItems: idSalesCampaignWizardItems })
-            .subscribe((response) => {
-                this.appErrorHandler.executeAction(() => {
-                    this.searchMediaCodeGridDetail = this.datatableService.buildDataSource(response.contentDetail);
-                    if (this.data && Object.keys(this.data).length > 0) {
-                        setTimeout(() => {
-
-                            const selectedRow = {
-                                MediaCode: this.data['mediaCode']
-                            };
-                            this.wjGridSearchMediaCodeDetail.setSelectedRow(selectedRow, 'MediaCode');
-                        });
-                    }
+        this.widgetTemplateSettingServiceSubscription =
+            this.widgetTemplateSettingService
+                .getWidgetDetailByRequestString(
+                    this.widgetDetailMediaCodeDetail,
+                    { IdSalesCampaignWizardItems: idSalesCampaignWizardItems }
+                )
+                .subscribe((response) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.searchMediaCodeGridDetail =
+                            this.datatableService.buildDataSource(
+                                response.contentDetail
+                            );
+                        if (this.data && Object.keys(this.data).length > 0) {
+                            setTimeout(() => {
+                                const selectedRow = {
+                                    MediaCode: this.data["mediaCode"],
+                                };
+                                this.wjGridSearchMediaCodeDetail.setSelectedRow(
+                                    selectedRow,
+                                    "MediaCode"
+                                );
+                            });
+                        }
+                    });
                 });
-            });
     }
 
     private onSearchComplete(response: ApiResultResponse) {
@@ -292,7 +377,7 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
         const leftData = {
             data: newData,
             columns: this.searchMediaCodeGridLeft.columns,
-            totalResults: response.item.total || 0
+            totalResults: response.item.total || 0,
         };
         this.searchMediaCodeGridLeft = leftData;
         this.wjGridSearchMediaCodeLeft.isSearching = false;
@@ -306,9 +391,16 @@ export class SearchMediaCodeComponent implements OnInit, OnDestroy, AfterViewIni
 
         this.ref.detectChanges();
 
-        if (this.searchMediaCodeGridLeft && this.searchMediaCodeGridLeft.totalResults && this.searchText) {
+        if (
+            this.searchMediaCodeGridLeft &&
+            this.searchMediaCodeGridLeft.totalResults &&
+            this.searchText
+        ) {
             setTimeout(() => {
-                this.wjGridSearchMediaCodeLeft.setSelectedRow({ 'CampaignNr': this.searchText }, 'CampaignNr');
+                this.wjGridSearchMediaCodeLeft.setSelectedRow(
+                    { CampaignNr: this.searchText },
+                    "CampaignNr"
+                );
             });
         }
     }

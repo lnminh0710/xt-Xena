@@ -1,1 +1,1 @@
-export { NotificationDetailComponent } from './notification-detail.component';
+export { NotificationDetailComponent } from "./notification-detail.component";

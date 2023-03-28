@@ -1,1 +1,1 @@
-export * from './scanning-status.component';
+export * from "./scanning-status.component";

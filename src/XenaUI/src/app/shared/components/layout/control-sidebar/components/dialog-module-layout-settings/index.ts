@@ -1,1 +1,1 @@
-export { DialogModuleLayoutSettingsComponent } from './dialog-module-layout-settings.component';
+export { DialogModuleLayoutSettingsComponent } from "./dialog-module-layout-settings.component";

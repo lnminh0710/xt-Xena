@@ -1,33 +1,37 @@
 import {
-    Component, Input, Output, EventEmitter,
-    ChangeDetectorRef, OnInit, OnDestroy, ViewChild
-} from '@angular/core';
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    ChangeDetectorRef,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+} from "@angular/core";
 import {
     AppErrorHandler,
     SearchService,
     WareHouseMovementService,
     DatatableService,
-    ModalService
-} from 'app/services';
-import {
-    ControlGridModel,
-    FormOutputModel,
-    MessageModel
-} from 'app/models';
-import isEmpty from 'lodash-es/isEmpty';
-import cloneDeep from 'lodash-es/cloneDeep';
-import {Uti} from 'app/utilities';
-import {WarehuoseMovementEditFormFakeData} from './fake-data';
-import {Subscription} from 'rxjs/Subscription';
-import {ToasterService} from 'angular2-toaster';
-import {XnAgGridComponent} from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
+    ModalService,
+} from "app/services";
+import { ControlGridModel, FormOutputModel, MessageModel } from "app/models";
+import isEmpty from "lodash-es/isEmpty";
+import cloneDeep from "lodash-es/cloneDeep";
+import { Uti } from "app/utilities";
+import { WarehuoseMovementEditFormFakeData } from "./fake-data";
+import { Subscription } from "rxjs/Subscription";
+import { ToasterService } from "angular2-toaster";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 
 @Component({
-    selector: 'warehouse-movement-select-article',
-    styleUrls: ['./wm-select-article.component.scss'],
-    templateUrl: './wm-select-article.component.html'
+    selector: "warehouse-movement-select-article",
+    styleUrls: ["./wm-select-article.component.scss"],
+    templateUrl: "./wm-select-article.component.html",
 })
-export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestroy {
+export class WarehouseMovementSelectArticleComponent
+    implements OnInit, OnDestroy
+{
     // TODO: will remove when has service
     private fake = new WarehuoseMovementEditFormFakeData();
 
@@ -47,10 +51,12 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
     private searchGridCellServiceSubscription: Subscription;
     private editItems: Array<any> = [];
     private cachedRemoveItemsFromRight: Array<any> = [];
-    private _validationPropertyName = 'ArticleNr';
+    private _validationPropertyName = "ArticleNr";
 
-    @ViewChild('leftGridComponent') private leftGridComponent: XnAgGridComponent;
-    @ViewChild('rightGridComponent') private rightGridComponent: XnAgGridComponent;
+    @ViewChild("leftGridComponent")
+    private leftGridComponent: XnAgGridComponent;
+    @ViewChild("rightGridComponent")
+    private rightGridComponent: XnAgGridComponent;
 
     @Input() set selectedArticleData(data: ControlGridModel) {
         if (!data || !data.columns || !data.columns.length) {
@@ -85,8 +91,9 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
-        this.datatableService['ArrayDataToValiation'] = this.datatableService['ArrayDataToValiation'] || [];
-        this.datatableService['ArrayDataToValiation'].length = 0;
+        this.datatableService["ArrayDataToValiation"] =
+            this.datatableService["ArrayDataToValiation"] || [];
+        this.datatableService["ArrayDataToValiation"].length = 0;
     }
 
     public handleRowLeftGrouping(data) {
@@ -118,7 +125,6 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
 
     public rightGridRowDoubleClick($event: any) {
         // Disable double click behaviour
-
         // this.setIsSelectGrid(false);
         // this.setItemSelectedWhenDoubleClick(this.rightGrid, $event);
         // this.removeArticle();
@@ -128,7 +134,11 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
         // waiting edit data is bound to grid data
         setTimeout(() => {
             if (rowData.idWarehouseMovementGoodsIssue > 0) {
-                Uti.removeItemInArray(this.editItems, rowData, 'idWarehouseMovementGoodsIssue');
+                Uti.removeItemInArray(
+                    this.editItems,
+                    rowData,
+                    "idWarehouseMovementGoodsIssue"
+                );
                 this.editItems.push(rowData);
             }
             this.setOutputData();
@@ -142,30 +152,52 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
     }
 
     private isLocalDataExisted(rowData: any): boolean {
-        const addToArticleNumber = rowData['addToArticleNumber'].replace(/([.?\\])/g, '');
+        const addToArticleNumber = rowData["addToArticleNumber"].replace(
+            /([.?\\])/g,
+            ""
+        );
         if (!addToArticleNumber) return true;
-        if (!this.datatableService['ArrayDataToValiation']
-        || !this.datatableService['ArrayDataToValiation'].length) return false;
-        const item = this.datatableService['ArrayDataToValiation'].find(x => x[this._validationPropertyName] == addToArticleNumber);
+        if (
+            !this.datatableService["ArrayDataToValiation"] ||
+            !this.datatableService["ArrayDataToValiation"].length
+        )
+            return false;
+        const item = this.datatableService["ArrayDataToValiation"].find(
+            (x) => x[this._validationPropertyName] == addToArticleNumber
+        );
         return !!(item && item[this._validationPropertyName]);
     }
 
     private setAsyncValidationData(rowData: any) {
-        if (!rowData || !rowData['addToArticleNumber']) {
+        if (!rowData || !rowData["addToArticleNumber"]) {
             return;
         }
 
         if (!this.updateFormData.toWarehouseId) {
-            this.toasterService.pop('warning', 'Warning', 'Please select an item in To warehouse to get data!');
+            this.toasterService.pop(
+                "warning",
+                "Warning",
+                "Please select an item in To warehouse to get data!"
+            );
             return;
         }
 
-        let addToArticleNumber = rowData['addToArticleNumber'].replace(/([.?\\])/g, '');
-        this.searchGridCellServiceSubscription = this.wareHouseMovementService.searchArticles(addToArticleNumber, this.updateFormData.fromWarehouseId)
+        let addToArticleNumber = rowData["addToArticleNumber"].replace(
+            /([.?\\])/g,
+            ""
+        );
+        this.searchGridCellServiceSubscription = this.wareHouseMovementService
+            .searchArticles(
+                addToArticleNumber,
+                this.updateFormData.fromWarehouseId
+            )
             .subscribe((response) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!response || response.length < 2) return;
-                    this.setDataForDataServiceCampaignDataSource(rowData, response.data[1]);
+                    this.setDataForDataServiceCampaignDataSource(
+                        rowData,
+                        response.data[1]
+                    );
                     this.rightGridComponent.api.refreshView();
                 });
             });
@@ -176,7 +208,10 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
             return [];
         }
         for (let item of data) {
-            if (item[this._validationPropertyName] === rowData['addToArticleNumber']) {
+            if (
+                item[this._validationPropertyName] ===
+                rowData["addToArticleNumber"]
+            ) {
                 this.setShadowAddToArticleNumberValue(rowData, item.IdArticle);
             }
             this.pushToWarehouseAddToArticleNumbers(item);
@@ -184,9 +219,19 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
     }
 
     private pushToWarehouseAddToArticleNumbers(item: any) {
-        this.datatableService['ArrayDataToValiation'] = this.datatableService['ArrayDataToValiation'] || [];
-        if (Uti.existItemInArray(this.datatableService['ArrayDataToValiation'], item, 'IdArticle')) return;
-        this.datatableService['ArrayDataToValiation'].push({'ArticleNr': item[this._validationPropertyName]});
+        this.datatableService["ArrayDataToValiation"] =
+            this.datatableService["ArrayDataToValiation"] || [];
+        if (
+            Uti.existItemInArray(
+                this.datatableService["ArrayDataToValiation"],
+                item,
+                "IdArticle"
+            )
+        )
+            return;
+        this.datatableService["ArrayDataToValiation"].push({
+            ArticleNr: item[this._validationPropertyName],
+        });
         // Use this static property for validation in grid this.datatableService['ArrayDataToValiation']
         // The name of property is also dynamic in column setting
         /*
@@ -199,17 +244,27 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
         // See this behaviour in ag-grid.service with keyword CompareWithArray
     }
 
-    private setShadowAddToArticleNumberValue(rowData: any, addToArticleNumberValue: any) {
-        rowData['addToArticleNumberValue'] = addToArticleNumberValue;
+    private setShadowAddToArticleNumberValue(
+        rowData: any,
+        addToArticleNumberValue: any
+    ) {
+        rowData["addToArticleNumberValue"] = addToArticleNumberValue;
         for (let item of this.rightGrid.data) {
-            if (item['addToArticleNumber'] != rowData['addToArticleNumberValue']) continue;
-            item['addToArticleNumberValue'] = addToArticleNumberValue;
+            if (
+                item["addToArticleNumber"] != rowData["addToArticleNumberValue"]
+            )
+                continue;
+            item["addToArticleNumberValue"] = addToArticleNumberValue;
             break;
         }
     }
 
     public addArticle() {
-        if (isEmpty(this.selectItem) || !this.isLeftSelect || !this.selectItem.IsActive) {
+        if (
+            isEmpty(this.selectItem) ||
+            !this.isLeftSelect ||
+            !this.selectItem.IsActive
+        ) {
             return;
         }
         this.removeItemFromCachedRemoveItemsFromRight();
@@ -247,20 +302,34 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
         if (!this.rightGrid.data.length) {
             return;
         }
-        this._modalService.confirmMessageHtmlContent(new MessageModel({
-            message: [{key: '<p>'}, {key: 'Modal_Message__Are_You_Sure_You_Want_To_Remove_All_Article'},
-                {key: '</p>'}],
-            callBack1: () => { this.removeAllArticleAfterConfirm(); }
-        }));
+        this._modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Are_You_Sure_You_Want_To_Remove_All_Article",
+                    },
+                    { key: "</p>" },
+                ],
+                callBack1: () => {
+                    this.removeAllArticleAfterConfirm();
+                },
+            })
+        );
     }
 
     public leftGridSearch(keyword) {
         this.leftGridComponent.isSearching = true;
         if (this.updateFormData.fromWarehouseId) {
-            this.searchServiceSubscription = this.wareHouseMovementService.searchArticles(keyword, this.updateFormData.fromWarehouseId)
+            this.searchServiceSubscription = this.wareHouseMovementService
+                .searchArticles(keyword, this.updateFormData.fromWarehouseId)
                 .subscribe(this.onSearchComplete);
         } else {
-            this.toasterService.pop('warning', 'Warning', 'Please select an item in From warehouse to get data!');
+            this.toasterService.pop(
+                "warning",
+                "Warning",
+                "Please select an item in From warehouse to get data!"
+            );
             setTimeout(() => {
                 this.leftGridComponent.isSearching = false;
             });
@@ -275,16 +344,23 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
 
         if (!this.updateFormData.toWarehouseId) {
             callback([]);
-            this.toasterService.pop('warning', 'Warning', 'Please select an item in To warehouse to get data!');
+            this.toasterService.pop(
+                "warning",
+                "Warning",
+                "Please select an item in To warehouse to get data!"
+            );
             return;
         }
 
         // this.rightGridComponent.isAutoCompleteSearching = true;
-        query = query.replace(/([.?\\])/g, '');
-        this.searchGridCellServiceSubscription = this.wareHouseMovementService.searchArticles(query, this.updateFormData.fromWarehouseId)
+        query = query.replace(/([.?\\])/g, "");
+        this.searchGridCellServiceSubscription = this.wareHouseMovementService
+            .searchArticles(query, this.updateFormData.fromWarehouseId)
             .subscribe((response) => {
                 this.appErrorHandler.executeAction(() => {
-                    const autoCompleteData = this.buildCampaignDataSource(response.data[1]);
+                    const autoCompleteData = this.buildCampaignDataSource(
+                        response.data[1]
+                    );
                     if (callback) {
                         callback(autoCompleteData);
                     }
@@ -320,10 +396,10 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
         //     IdArticle: 0,
         //     ArticleNr: '&nbsp'
         // });
-        return data.map(x => {
+        return data.map((x) => {
             return {
                 value: x.IdArticle,
-                label: x.ArticleNr
+                label: x.ArticleNr,
             };
         });
     }
@@ -333,28 +409,59 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
         this.isRightSelect = !isLeftSelected;
     }
 
-    private removeItemArticle(controlGridModel: ControlGridModel): ControlGridModel {
-        Uti.removeItemInArray(controlGridModel.data, this.selectItem, 'idWarehouseMovementGoodsIssue');
+    private removeItemArticle(
+        controlGridModel: ControlGridModel
+    ): ControlGridModel {
+        Uti.removeItemInArray(
+            controlGridModel.data,
+            this.selectItem,
+            "idWarehouseMovementGoodsIssue"
+        );
         return Uti.cloneDataForGridItems(controlGridModel);
     }
 
-    private addAllItemArticle(sourceGridModel: ControlGridModel, destinationGridModel: ControlGridModel): ControlGridModel {
-        destinationGridModel.data = [...cloneDeep(sourceGridModel.data), ...destinationGridModel.data];
+    private addAllItemArticle(
+        sourceGridModel: ControlGridModel,
+        destinationGridModel: ControlGridModel
+    ): ControlGridModel {
+        destinationGridModel.data = [
+            ...cloneDeep(sourceGridModel.data),
+            ...destinationGridModel.data,
+        ];
         return Uti.cloneDataForGridItems(destinationGridModel);
     }
 
-    private removeAllItemArticle(controlGridModel: ControlGridModel): ControlGridModel {
+    private removeAllItemArticle(
+        controlGridModel: ControlGridModel
+    ): ControlGridModel {
         controlGridModel.data = [];
         return Uti.cloneDataForGridItems(controlGridModel);
     }
 
-    private setItemSelectedWhenClick(controlGridModel: ControlGridModel, event: any) {
-        const item = controlGridModel.data.find(x => x.idWarehouseMovementGoodsIssue == Uti.getValueFromArrayByKey(event, 'idWarehouseMovementGoodsIssue'));
+    private setItemSelectedWhenClick(
+        controlGridModel: ControlGridModel,
+        event: any
+    ) {
+        const item = controlGridModel.data.find(
+            (x) =>
+                x.idWarehouseMovementGoodsIssue ==
+                Uti.getValueFromArrayByKey(
+                    event,
+                    "idWarehouseMovementGoodsIssue"
+                )
+        );
         this.setItemSelected(item);
     }
 
-    private setItemSelectedWhenDoubleClick(controlGridModel: ControlGridModel, event: any) {
-        const item = controlGridModel.data.find(x => x.idWarehouseMovementGoodsIssue == event.idWarehouseMovementGoodsIssue);
+    private setItemSelectedWhenDoubleClick(
+        controlGridModel: ControlGridModel,
+        event: any
+    ) {
+        const item = controlGridModel.data.find(
+            (x) =>
+                x.idWarehouseMovementGoodsIssue ==
+                event.idWarehouseMovementGoodsIssue
+        );
         this.setItemSelected(item);
     }
 
@@ -365,7 +472,9 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
         this.selectItem = Object.assign({}, cloneDeep(item));
     }
 
-    private addItemArticle(controlGridModel: ControlGridModel): ControlGridModel {
+    private addItemArticle(
+        controlGridModel: ControlGridModel
+    ): ControlGridModel {
         controlGridModel.data.unshift(cloneDeep(this.selectItem));
         return Uti.cloneDataForGridItems(controlGridModel);
     }
@@ -385,12 +494,20 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
     }
 
     private addToCachedRemoveItemsFromRight(addItem: any) {
-        Uti.removeItemInArray(this.cachedRemoveItemsFromRight, this.selectItem, 'idWarehouseMovementGoodsIssue');
+        Uti.removeItemInArray(
+            this.cachedRemoveItemsFromRight,
+            this.selectItem,
+            "idWarehouseMovementGoodsIssue"
+        );
         this.cachedRemoveItemsFromRight.push(addItem);
     }
 
     private removeItemFromCachedRemoveItemsFromRight() {
-        Uti.removeItemInArray(this.cachedRemoveItemsFromRight, this.selectItem, 'idWarehouseMovementGoodsIssue');
+        Uti.removeItemInArray(
+            this.cachedRemoveItemsFromRight,
+            this.selectItem,
+            "idWarehouseMovementGoodsIssue"
+        );
     }
 
     private removeAllItemFromCachedRemoveItemsFromRight() {
@@ -416,7 +533,7 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
                 submitResult: null,
                 formValue: this.makeOutputData(),
                 isValid: true,
-                isDirty: true
+                isDirty: true,
             });
             this.outputData.emit(this.outputModel);
         }, 300);
@@ -426,7 +543,7 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
         return {
             insertedData: this.makeInsertData(),
             editedData: this.makeEditDate(),
-            deletedData: this.makeDeleteData()
+            deletedData: this.makeDeleteData(),
         };
     }
 
@@ -435,7 +552,11 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
     }
 
     private makeInsertData(): Array<any> {
-        const addItem = Uti.getItemsDontExistItems(this.rightGrid.data, this.currentSelectedArticleData, 'idWarehouseMovementGoodsIssue');
+        const addItem = Uti.getItemsDontExistItems(
+            this.rightGrid.data,
+            this.currentSelectedArticleData,
+            "idWarehouseMovementGoodsIssue"
+        );
         if (!addItem || !addItem.length) {
             return [];
         }
@@ -443,7 +564,11 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
     }
 
     private makeDeleteData(): Array<any> {
-        const deleteData = Uti.getItemsDontExistItems(this.currentSelectedArticleData, this.rightGrid.data, 'idWarehouseMovementGoodsIssue');
+        const deleteData = Uti.getItemsDontExistItems(
+            this.currentSelectedArticleData,
+            this.rightGrid.data,
+            "idWarehouseMovementGoodsIssue"
+        );
         if (!deleteData || !deleteData.length) {
             return [];
         }
@@ -451,28 +576,35 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
     }
 
     private onSearchComplete(response: any) {
-        const results: Array<any> = response.data && response.data.length > 1 ? response.data[1] : [];
+        const results: Array<any> =
+            response.data && response.data.length > 1 ? response.data[1] : [];
         let newData: Array<any> = [];
         for (const res of results) {
-            if (this.checkExistPrimaryItem(res.IdArticle) ||
-                this.checkExistCachedRemoveItemsFromRight(res['idArticle'])) {
+            if (
+                this.checkExistPrimaryItem(res.IdArticle) ||
+                this.checkExistCachedRemoveItemsFromRight(res["idArticle"])
+            ) {
                 continue;
             }
-            if (res['OnStock'] > 0) {
+            if (res["OnStock"] > 0) {
                 newData.push({
                     idWarehouseMovementGoodsIssue: Uti.getTempId(),
                     // addToArticleNumber: {
                     //     key: null,
                     //     value: null,
                     // },
-                    addToArticleNumber: '',
-                    addToArticleNumberValue: '',
-                    articleId: res['IdArticle'],
-                    articleNumber: res['ArticleNr'],
-                    articleName: res['ArticleName'],
-                    onStock: res['OnStock'],
-                    available: res['Available'],
-                    IsActive: (res['OnStock'] && res['Available'] && res['OnStock'] > 0 && res['Available'] > 0)
+                    addToArticleNumber: "",
+                    addToArticleNumberValue: "",
+                    articleId: res["IdArticle"],
+                    articleNumber: res["ArticleNr"],
+                    articleName: res["ArticleName"],
+                    onStock: res["OnStock"],
+                    available: res["Available"],
+                    IsActive:
+                        res["OnStock"] &&
+                        res["Available"] &&
+                        res["OnStock"] > 0 &&
+                        res["Available"] > 0,
                 });
             }
         }
@@ -480,7 +612,7 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
         newData = [...this.cachedRemoveItemsFromRight, ...newData];
         let leftData = {
             data: newData,
-            columns: this.leftGrid.columns
+            columns: this.leftGrid.columns,
         };
         leftData = this.datatableService.appendRowId(leftData);
         this.leftGrid = leftData;
@@ -489,18 +621,26 @@ export class WarehouseMovementSelectArticleComponent implements OnInit, OnDestro
 
     private checkExistCachedRemoveItemsFromRight(articleId: any): boolean {
         if (!this.cachedRemoveItemsFromRight.length) return false;
-        const articleItem = this.cachedRemoveItemsFromRight.find(x => x.articleId == articleId);
-        return (articleItem && articleItem.articleId);
+        const articleItem = this.cachedRemoveItemsFromRight.find(
+            (x) => x.articleId == articleId
+        );
+        return articleItem && articleItem.articleId;
     }
 
     private checkExistPrimaryItem(articleId: any): boolean {
-        const articleItem = this.rightGridComponent.getGridData().find(x => x.articleId === articleId);
-        return (articleItem && articleItem.articleId);
+        const articleItem = this.rightGridComponent
+            .getGridData()
+            .find((x) => x.articleId === articleId);
+        return articleItem && articleItem.articleId;
     }
 
     private focusOnEditRow(rowNumber: number) {
         setTimeout(() => {
-            this.rightGridComponent.setFocusedCell(rowNumber, 'addToArticleNumber', true);
+            this.rightGridComponent.setFocusedCell(
+                rowNumber,
+                "addToArticleNumber",
+                true
+            );
         }, 200);
     }
 }

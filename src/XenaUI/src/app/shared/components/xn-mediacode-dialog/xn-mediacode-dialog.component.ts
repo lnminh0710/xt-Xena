@@ -6,51 +6,56 @@ import {
     ViewChild,
     Output,
     EventEmitter,
-    ChangeDetectorRef
-} from '@angular/core';
-import { Router } from '@angular/router';
+    ChangeDetectorRef,
+} from "@angular/core";
+import { Router } from "@angular/router";
 import {
     Module,
     ControlGridModel,
     ApiResultResponse,
     WidgetTemplateSettingModel,
-    WidgetDetail
-} from 'app/models';
+    WidgetDetail,
+} from "app/models";
 import {
     DatatableService,
     ModalService,
     AppErrorHandler,
     CampaignService,
-    WidgetTemplateSettingService
-} from 'app/services';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isString from 'lodash-es/isString';
-import isNumber from 'lodash-es/isNumber';
-import toNumber from 'lodash-es/toNumber';
-import { Uti } from 'app/utilities';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { WidgetFormComponent } from 'app/shared/components/widget/components/widget-form/widget-form.component';
-import { BaseComponent } from 'app/pages/private/base';
-import * as widgetTemplateReducer from 'app/state-management/store/reducer/widget-template';
-import { XnAgGridComponent } from '../xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { Configuration } from 'app/app.constants';
-import {Dialog} from "primeng/components/dialog/dialog";
+    WidgetTemplateSettingService,
+} from "app/services";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import cloneDeep from "lodash-es/cloneDeep";
+import isString from "lodash-es/isString";
+import isNumber from "lodash-es/isNumber";
+import toNumber from "lodash-es/toNumber";
+import { Uti } from "app/utilities";
+import { Subscription } from "rxjs/Subscription";
+import { Observable } from "rxjs/Observable";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { WidgetFormComponent } from "app/shared/components/widget/components/widget-form/widget-form.component";
+import { BaseComponent } from "app/pages/private/base";
+import * as widgetTemplateReducer from "app/state-management/store/reducer/widget-template";
+import { XnAgGridComponent } from "../xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import { Configuration } from "app/app.constants";
+import { Dialog } from "primeng/components/dialog/dialog";
 
 @Component({
-    selector: 'xn-mediacode-dialog',
-    templateUrl: './xn-mediacode-dialog.component.html'
+    selector: "xn-mediacode-dialog",
+    templateUrl: "./xn-mediacode-dialog.component.html",
 })
-export class XnMediacodeDialogComponent extends BaseComponent implements OnInit, OnDestroy {
-    private ID_WIDGET_CATALOG = Configuration.PublicSettings.isSelectionProject ? 512 : 52;
+export class XnMediacodeDialogComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
+    private ID_WIDGET_CATALOG = Configuration.PublicSettings.isSelectionProject
+        ? 512
+        : 52;
 
     public mediacodeData: ControlGridModel;
     public paymentTypeData: ControlGridModel;
     public showDialog = false;
-    public countryName = '';
+    public countryName = "";
     public hasEditedItemForMediaCodeDataGrid = false;
     public hasEditedItemForPaymentTypeDataGrid = false;
     public hasFormEdited = false;
@@ -71,19 +76,25 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
     private getCatalogSubscription: Subscription;
     private paymentTypeDataSubscription: Subscription;
     private widgetTemplateSettingServiceSubscription: Subscription;
-    private widgetTemplateSettingModelState: Observable<WidgetTemplateSettingModel[]>;
+    private widgetTemplateSettingModelState: Observable<
+        WidgetTemplateSettingModel[]
+    >;
     private widgetTemplateSettingModelStateSubscription: Subscription;
     private preDialogW: string;
     private preDialogH: string;
     private preDialogLeft: string;
     private preDialogTop: string;
 
-    @ViewChild('mediaCodeDataGrid') private mediaCodeDataGrid: XnAgGridComponent;
-    @ViewChild('paymentTypeDataGrid') private paymentTypeDataGrid: XnAgGridComponent;
-    
+    @ViewChild("mediaCodeDataGrid")
+    private mediaCodeDataGrid: XnAgGridComponent;
+    @ViewChild("paymentTypeDataGrid")
+    private paymentTypeDataGrid: XnAgGridComponent;
+
     @ViewChild(WidgetFormComponent) widgetFormComponent: WidgetFormComponent;
     private pDialogXnMediaCode: any;
-    @ViewChild('pDialogXnMediaCode') set pDialogXnMediaCodeInstance(pDialogXnMediaCodeInstance: Dialog) {
+    @ViewChild("pDialogXnMediaCode") set pDialogXnMediaCodeInstance(
+        pDialogXnMediaCodeInstance: Dialog
+    ) {
         this.pDialogXnMediaCode = pDialogXnMediaCodeInstance;
     }
     @Input() gridId: string;
@@ -108,15 +119,23 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
     ) {
         super(router);
 
-        this.widgetTemplateSettingModelState = store.select(state => widgetTemplateReducer.getWidgetTemplateState(state, this.ofModule.moduleNameTrim).mainWidgetTemplateSettings);
+        this.widgetTemplateSettingModelState = store.select(
+            (state) =>
+                widgetTemplateReducer.getWidgetTemplateState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).mainWidgetTemplateSettings
+        );
     }
 
     ngOnInit() {
-        this.dialogStyleClass = this.consts.classCampaignCodeDialog + '  ' +
+        this.dialogStyleClass =
+            this.consts.classCampaignCodeDialog +
+            "  " +
             this.consts.popupResizeClassName;
         this.mediacodeData = {
             data: [],
-            columns: []
+            columns: [],
         };
         this.subscribeWidgetTemplateSetting();
     }
@@ -138,46 +157,56 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
     }
 
     public saveCampaignMediaCodeArticleSalesPriceForGrid(callbackFunc?: any) {
-        if (this.hasErrorOnEditMediaCodeGrid)
-            return;
+        if (this.hasErrorOnEditMediaCodeGrid) return;
 
         if (this.mediaCodeDataGrid && this.mediaCodeDataGrid.itemsEdited) {
             const updateData = [];
             this.mediaCodeDataGrid.itemsEdited.forEach((item) => {
                 // tslint:disable-next-line:triple-equals
                 updateData.push({
-                    'IdSalesCampaignMediaCodeSalesPrice': toNumber(item.IdSalesCampaignMediaCodeSalesPrice),
-                    'IdSalesCampaignArticle': this.rowData['IdSalesCampaignArticle'],
-                    'IdSalesCampaignMediaCode': item.IdSalesCampaignMediaCode,
-                    'SalesPrice': toNumber(item.SalesPrice),
-                    'PostageCosts': toNumber(item.PostageCosts),
-                    'IsActive': item.IsActive
+                    IdSalesCampaignMediaCodeSalesPrice: toNumber(
+                        item.IdSalesCampaignMediaCodeSalesPrice
+                    ),
+                    IdSalesCampaignArticle:
+                        this.rowData["IdSalesCampaignArticle"],
+                    IdSalesCampaignMediaCode: item.IdSalesCampaignMediaCode,
+                    SalesPrice: toNumber(item.SalesPrice),
+                    PostageCosts: toNumber(item.PostageCosts),
+                    IsActive: item.IsActive,
                 });
             });
             if (updateData.length)
-                this.saveCampaignMediaCodeArticleSalesPrice({ 'CampaignMediaCodeArticleSalesPrices': updateData }, callbackFunc);
+                this.saveCampaignMediaCodeArticleSalesPrice(
+                    { CampaignMediaCodeArticleSalesPrices: updateData },
+                    callbackFunc
+                );
         }
     }
 
     public savePaymentTypeForGrid(callbackFunc?: any) {
-        if (this.hasErrorOnEditPaymentTypeGrid)
-            return;
+        if (this.hasErrorOnEditPaymentTypeGrid) return;
 
         if (this.paymentTypeDataGrid && this.paymentTypeDataGrid.itemsEdited) {
             const updateData = [];
             this.paymentTypeDataGrid.itemsEdited.forEach((item) => {
                 // tslint:disable-next-line:triple-equals
                 updateData.push({
-                    'IdSalesCampaignPaymentTypeSalesPrice': toNumber(item.IdSalesCampaignPaymentTypeSalesPrice),
-                    'IdSalesCampaignWizardItems': this.rowData['IdSalesCampaignWizardItems'],
-                    'IdRepPaymentsMethods': item.IdRepPaymentsMethods,
-                    'SalesPrice': toNumber(item.SalesPrice),
-                    'PostageCosts': toNumber(item.PostageCosts),
-                    'IsActive': item.IsActive
+                    IdSalesCampaignPaymentTypeSalesPrice: toNumber(
+                        item.IdSalesCampaignPaymentTypeSalesPrice
+                    ),
+                    IdSalesCampaignWizardItems:
+                        this.rowData["IdSalesCampaignWizardItems"],
+                    IdRepPaymentsMethods: item.IdRepPaymentsMethods,
+                    SalesPrice: toNumber(item.SalesPrice),
+                    PostageCosts: toNumber(item.PostageCosts),
+                    IsActive: item.IsActive,
                 });
             });
             if (updateData.length)
-                this.savePaymentTypeSalesPrice({ 'CampaignPaymentTypeSalesPrices': updateData }, callbackFunc);
+                this.savePaymentTypeSalesPrice(
+                    { CampaignPaymentTypeSalesPrices: updateData },
+                    callbackFunc
+                );
         }
     }
 
@@ -187,17 +216,25 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
         this.isMaximized = true;
         this.isResizable = false;
         this.isDraggable = false;
-        this.dialogStyleClass += '  ' + this.consts.popupFullViewClassName;
+        this.dialogStyleClass += "  " + this.consts.popupFullViewClassName;
         if (this.pDialogXnMediaCode) {
-            this.preDialogW = this.pDialogXnMediaCode.containerViewChild.nativeElement.style.width;
-            this.preDialogH = this.pDialogXnMediaCode.containerViewChild.nativeElement.style.height;
-            this.preDialogLeft = this.pDialogXnMediaCode.containerViewChild.nativeElement.style.left;
-            this.preDialogTop = this.pDialogXnMediaCode.containerViewChild.nativeElement.style.top;
+            this.preDialogW =
+                this.pDialogXnMediaCode.containerViewChild.nativeElement.style.width;
+            this.preDialogH =
+                this.pDialogXnMediaCode.containerViewChild.nativeElement.style.height;
+            this.preDialogLeft =
+                this.pDialogXnMediaCode.containerViewChild.nativeElement.style.left;
+            this.preDialogTop =
+                this.pDialogXnMediaCode.containerViewChild.nativeElement.style.top;
 
-            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.width = $(document).width() + 'px';
-            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.height = $(document).height() + 'px';
-            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.top = '0px';
-            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.left = '0px';
+            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.width =
+                $(document).width() + "px";
+            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.height =
+                $(document).height() + "px";
+            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.top =
+                "0px";
+            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.left =
+                "0px";
         }
     }
 
@@ -207,42 +244,60 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
         this.isMaximized = false;
         this.isResizable = true;
         this.isDraggable = true;
-        this.dialogStyleClass = this.consts.classCampaignCodeDialog + '  ' + this.consts.popupResizeClassName;
+        this.dialogStyleClass =
+            this.consts.classCampaignCodeDialog +
+            "  " +
+            this.consts.popupResizeClassName;
         if (this.pDialogXnMediaCode) {
-            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.width = this.preDialogW;
-            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.height = this.preDialogH;
-            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.top = this.preDialogTop;
-            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.left = this.preDialogLeft;
+            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.width =
+                this.preDialogW;
+            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.height =
+                this.preDialogH;
+            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.top =
+                this.preDialogTop;
+            this.pDialogXnMediaCode.containerViewChild.nativeElement.style.left =
+                this.preDialogLeft;
         }
         // setTimeout(() => {
         //     this.bindResizeEvent();
         // }, 200);
-
     }
 
     private onWidgetFormSave(callbackFunc?: any) {
         if (!this.widgetFormComponent) return;
-        if (this.widgetFormComponent.form && this.widgetFormComponent.form.valid) {
+        if (
+            this.widgetFormComponent.form &&
+            this.widgetFormComponent.form.valid
+        ) {
             let formValues = this.widgetFormComponent.filterValidFormField();
             formValues = Uti.convertDataEmptyToNull(formValues);
-            this.widgetTemplateSettingServiceSubscription = this.widgetTemplateSettingService.updateWidgetInfo(
-                formValues,
-                this.catalogWidgetTemplateSetting.updateJsonString,
-                this.ofModule,
-                this.rowData['IdSalesCampaignWizardItems'],
-                null,
-                '1'
-            ).subscribe(() => {
-                this.appErrorHandler.executeAction(() => {
-                    this.hasFormEdited = false;
-                    this.isSaveSucceeded = true;
-                    this.toasterService.pop('success', 'Success', 'Update ' + this.countryName + ' article\'s mediacode price saved successfully');
-                    if (callbackFunc) {
-                        callbackFunc();
-                    }
-                    this.onSuccessSaved.emit();
-                });
-            });
+            this.widgetTemplateSettingServiceSubscription =
+                this.widgetTemplateSettingService
+                    .updateWidgetInfo(
+                        formValues,
+                        this.catalogWidgetTemplateSetting.updateJsonString,
+                        this.ofModule,
+                        this.rowData["IdSalesCampaignWizardItems"],
+                        null,
+                        "1"
+                    )
+                    .subscribe(() => {
+                        this.appErrorHandler.executeAction(() => {
+                            this.hasFormEdited = false;
+                            this.isSaveSucceeded = true;
+                            this.toasterService.pop(
+                                "success",
+                                "Success",
+                                "Update " +
+                                    this.countryName +
+                                    " article's mediacode price saved successfully"
+                            );
+                            if (callbackFunc) {
+                                callbackFunc();
+                            }
+                            this.onSuccessSaved.emit();
+                        });
+                    });
         } else {
             this.widgetFormComponent.focusOnFirstFieldError();
         }
@@ -250,11 +305,17 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
 
     public onMediacodeSaveAndClose() {
         if (this.hasEditedItemForMediaCodeDataGrid) {
-            let func = (this.hasFormEdited || this.hasEditedItemForPaymentTypeDataGrid ) ? null : () => this.close();
+            let func =
+                this.hasFormEdited || this.hasEditedItemForPaymentTypeDataGrid
+                    ? null
+                    : () => this.close();
             this.saveCampaignMediaCodeArticleSalesPriceForGrid(func);
         }
         if (this.hasEditedItemForPaymentTypeDataGrid) {
-            let func = (this.hasFormEdited || this.hasEditedItemForMediaCodeDataGrid) ? null : () => this.close();
+            let func =
+                this.hasFormEdited || this.hasEditedItemForMediaCodeDataGrid
+                    ? null
+                    : () => this.close();
             this.savePaymentTypeForGrid(func);
         }
         if (this.hasFormEdited) {
@@ -292,7 +353,7 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
      */
     public open(rowData) {
         this.rowData = rowData;
-        this.countryName = rowData['Country'];
+        this.countryName = rowData["Country"];
         this.showDialog = true;
         this.ref.detectChanges();
         this.getData();
@@ -307,12 +368,16 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
     }
 
     public close() {
-        if (this.hasEditedItemForMediaCodeDataGrid || this.hasEditedItemForPaymentTypeDataGrid || this.hasFormEdited) {
+        if (
+            this.hasEditedItemForMediaCodeDataGrid ||
+            this.hasEditedItemForPaymentTypeDataGrid ||
+            this.hasFormEdited
+        ) {
             setTimeout(() => {
                 this.modalService.unsavedWarningMessageDefault({
-                    headerText: 'Close Dialog',
+                    headerText: "Close Dialog",
                     onModalSaveAndExit: this.onMediacodeSaveAndClose.bind(this),
-                    onModalExit: this.onModalExit.bind(this)
+                    onModalExit: this.onModalExit.bind(this),
                 });
             });
             return;
@@ -328,24 +393,42 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
     }
 
     private subscribeWidgetTemplateSetting() {
-        this.widgetTemplateSettingModelStateSubscription = this.widgetTemplateSettingModelState.subscribe((mainWidgetTemplateSettings: WidgetTemplateSettingModel[]) => {
-            this.appErrorHandler.executeAction(() => {
-                this.catalogWidgetTemplateSetting = Uti.getItemFromArrayByProperty(mainWidgetTemplateSettings, 'idRepWidgetApp', this.ID_WIDGET_CATALOG);
-                this.catalogData = new WidgetDetail({
-                    idRepWidgetApp: this.ID_WIDGET_CATALOG,
-                    idRepWidgetType: this.catalogWidgetTemplateSetting.idRepWidgetType,
-                    request: this.catalogWidgetTemplateSetting.jsonString,
-                    updateRequest: this.catalogWidgetTemplateSetting.updateJsonString // TODO update the update data.
-                });
-            });
-        });
+        this.widgetTemplateSettingModelStateSubscription =
+            this.widgetTemplateSettingModelState.subscribe(
+                (mainWidgetTemplateSettings: WidgetTemplateSettingModel[]) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.catalogWidgetTemplateSetting =
+                            Uti.getItemFromArrayByProperty(
+                                mainWidgetTemplateSettings,
+                                "idRepWidgetApp",
+                                this.ID_WIDGET_CATALOG
+                            );
+                        this.catalogData = new WidgetDetail({
+                            idRepWidgetApp: this.ID_WIDGET_CATALOG,
+                            idRepWidgetType:
+                                this.catalogWidgetTemplateSetting
+                                    .idRepWidgetType,
+                            request:
+                                this.catalogWidgetTemplateSetting.jsonString,
+                            updateRequest:
+                                this.catalogWidgetTemplateSetting
+                                    .updateJsonString, // TODO update the update data.
+                        });
+                    });
+                }
+            );
     }
 
     private getDataForCatalog() {
         if (!this.catalogData) return;
-        let fieldName = this.isSelectionProject ? 'IdSalesCampaignWizard' : 'IdSalesCampaignWizardItems'
-        this.getCatalogSubscription = this.widgetTemplateSettingService.getWidgetDetailByRequestString(this.catalogData, { [fieldName]: this.rowData[fieldName] }).subscribe(
-            (response: any) => {
+        let fieldName = this.isSelectionProject
+            ? "IdSalesCampaignWizard"
+            : "IdSalesCampaignWizardItems";
+        this.getCatalogSubscription = this.widgetTemplateSettingService
+            .getWidgetDetailByRequestString(this.catalogData, {
+                [fieldName]: this.rowData[fieldName],
+            })
+            .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     // let temp = cloneDeep(this.catalogData);
                     // temp.contentDetail = response;
@@ -363,26 +446,46 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
     }
 
     private getData() {
-        this.campaignServiceSubscription = this.campaignService.getCampaignMediaCodeArticleSalesPrice(this.rowData['IdCountryLanguage'], this.rowData['IdSalesCampaignWizard'], this.rowData['IdSalesCampaignArticle']).subscribe(
-            (response: ApiResultResponse) => {
+        this.campaignServiceSubscription = this.campaignService
+            .getCampaignMediaCodeArticleSalesPrice(
+                this.rowData["IdCountryLanguage"],
+                this.rowData["IdSalesCampaignWizard"],
+                this.rowData["IdSalesCampaignArticle"]
+            )
+            .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.data) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.data
+                    ) {
                         return;
                     }
-                    this.mediacodeData = this.datatableService.buildEditableDataSource(cloneDeep(response.item.data));
+                    this.mediacodeData =
+                        this.datatableService.buildEditableDataSource(
+                            cloneDeep(response.item.data)
+                        );
                     this.setEditModeForForm();
                 });
             });
     }
 
     private getPaymentTypeSalesPriceData() {
-        this.paymentTypeDataSubscription = this.campaignService.getPaymentTypeSalesPrice(this.rowData['IdSalesCampaignWizardItems']).subscribe(
-            (response: ApiResultResponse) => {
+        this.paymentTypeDataSubscription = this.campaignService
+            .getPaymentTypeSalesPrice(
+                this.rowData["IdSalesCampaignWizardItems"]
+            )
+            .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.data) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.data
+                    ) {
                         return;
                     }
-                    this.paymentTypeData = this.datatableService.buildEditableDataSource(cloneDeep(response.item.data));
+                    this.paymentTypeData =
+                        this.datatableService.buildEditableDataSource(
+                            cloneDeep(response.item.data)
+                        );
                 });
             });
     }
@@ -394,64 +497,99 @@ export class XnMediacodeDialogComponent extends BaseComponent implements OnInit,
         }, 400);
     }
 
-    private saveCampaignMediaCodeArticleSalesPrice(updateData: any, callbackFunc?: any) {
+    private saveCampaignMediaCodeArticleSalesPrice(
+        updateData: any,
+        callbackFunc?: any
+    ) {
         this.isSaveSucceeded = false;
-        this.campaignServiceSubscription = this.campaignService.saveCampaignMediaCodeArticleSalesPrice(updateData).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response) ||
-                    !(response.item.data ||
-                        response.item.data.length ||
-                        response.item.data[0][0].EventType === 'Successfully')) {
-                    return;
-                }
-                this.hasEditedItemForMediaCodeDataGrid = false;
-                if (!this.hasFormEdited && !this.hasEditedItemForPaymentTypeDataGrid) {
-                    this.isSaveSucceeded = true;
-                    this.toasterService.pop('success', 'Success', 'Update ' + this.countryName + ' article\'s mediacode price saved successfully');
-                    this.onSuccessSaved.emit();
-                }
-                if (!callbackFunc)
-                    this.getData();
-                else
-                    callbackFunc();
-                this.updateRowDataAfterSave();
+        this.campaignServiceSubscription = this.campaignService
+            .saveCampaignMediaCodeArticleSalesPrice(updateData)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !(
+                            response.item.data ||
+                            response.item.data.length ||
+                            response.item.data[0][0].EventType ===
+                                "Successfully"
+                        )
+                    ) {
+                        return;
+                    }
+                    this.hasEditedItemForMediaCodeDataGrid = false;
+                    if (
+                        !this.hasFormEdited &&
+                        !this.hasEditedItemForPaymentTypeDataGrid
+                    ) {
+                        this.isSaveSucceeded = true;
+                        this.toasterService.pop(
+                            "success",
+                            "Success",
+                            "Update " +
+                                this.countryName +
+                                " article's mediacode price saved successfully"
+                        );
+                        this.onSuccessSaved.emit();
+                    }
+                    if (!callbackFunc) this.getData();
+                    else callbackFunc();
+                    this.updateRowDataAfterSave();
+                });
             });
-        });
     }
 
     private savePaymentTypeSalesPrice(updateData: any, callbackFunc?: any) {
         this.isSaveSucceeded = false;
-        this.campaignServiceSubscription = this.campaignService.savePaymentTypeSalesPrice(updateData).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response) ||
-                    !(response.item.data ||
-                        response.item.data.length ||
-                        response.item.data[0][0].EventType === 'Successfully')) {
-                    return;
-                }
-                this.hasEditedItemForPaymentTypeDataGrid = false;
-                if (!this.hasFormEdited && !this.hasEditedItemForMediaCodeDataGrid) {
-                    this.isSaveSucceeded = true;
-                    this.toasterService.pop('success', 'Success', 'Update ' + this.countryName + ' article\'s payment type sale price saved successfully');
-                    this.onSuccessSaved.emit();
-                }
-                if (!callbackFunc)
-                    this.getPaymentTypeSalesPriceData();
-                else
-                    callbackFunc();
+        this.campaignServiceSubscription = this.campaignService
+            .savePaymentTypeSalesPrice(updateData)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !(
+                            response.item.data ||
+                            response.item.data.length ||
+                            response.item.data[0][0].EventType ===
+                                "Successfully"
+                        )
+                    ) {
+                        return;
+                    }
+                    this.hasEditedItemForPaymentTypeDataGrid = false;
+                    if (
+                        !this.hasFormEdited &&
+                        !this.hasEditedItemForMediaCodeDataGrid
+                    ) {
+                        this.isSaveSucceeded = true;
+                        this.toasterService.pop(
+                            "success",
+                            "Success",
+                            "Update " +
+                                this.countryName +
+                                " article's payment type sale price saved successfully"
+                        );
+                        this.onSuccessSaved.emit();
+                    }
+                    if (!callbackFunc) this.getPaymentTypeSalesPriceData();
+                    else callbackFunc();
+                });
             });
-        });
     }
 
     private updateRowDataAfterSave() {
-        if (!this.mediacodeData || !this.mediacodeData.data || !this.mediacodeData.data.length) return;
+        if (
+            !this.mediacodeData ||
+            !this.mediacodeData.data ||
+            !this.mediacodeData.data.length
+        )
+            return;
         for (let item of this.mediacodeData.data) {
             if (item.IsActive) {
-                this.rowData['IsSetMediaCodeArticlePrice'] = 1;
+                this.rowData["IsSetMediaCodeArticlePrice"] = 1;
                 return;
             }
         }
-        this.rowData['IsSetMediaCodeArticlePrice'] = 0;
+        this.rowData["IsSetMediaCodeArticlePrice"] = 0;
     }
-
 }

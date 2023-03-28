@@ -1,36 +1,32 @@
-
 import {
     Component,
     OnInit,
     Input,
     Output,
     OnDestroy,
-    EventEmitter
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
+    EventEmitter,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
 @Component({
-    selector: 'notification-archive-popup',
-    styleUrls: ['./notification-archive-popup.component.scss'],
-    templateUrl: './notification-archive-popup.component.html'
+    selector: "notification-archive-popup",
+    styleUrls: ["./notification-archive-popup.component.scss"],
+    templateUrl: "./notification-archive-popup.component.html",
 })
-export class NotificationArchivePopupComponent extends BaseComponent implements OnInit, OnDestroy {
+export class NotificationArchivePopupComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     @Input() isShow: boolean = false;
-    @Input() typeArchive: string = '';
+    @Input() typeArchive: string = "";
 
     @Output() showDetailAction = new EventEmitter<any>();
     @Output() closeArchivePopupAction = new EventEmitter<any>();
-    constructor(router ? : Router) {
+    constructor(router?: Router) {
         super(router);
     }
-    public ngOnInit() {
-    }
-    public ngOnDestroy() {
-    }
+    public ngOnInit() {}
+    public ngOnDestroy() {}
     public close() {
         this.closeArchivePopupAction.emit();
     }

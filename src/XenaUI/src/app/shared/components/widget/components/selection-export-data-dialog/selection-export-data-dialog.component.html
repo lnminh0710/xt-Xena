@@ -1,74 +1,121 @@
-<p-dialog header=""
-          [styleClass]="'selection-export-data-dialog'"
-          [(visible)]="showDialog"
-          [resizable]="false"
-          [draggable]="false"
-          modal="modal"
-          width="640"
-          responsive="false"
-          appendTo="body"
-          [closable]="false">
+<p-dialog
+    header=""
+    [styleClass]="'selection-export-data-dialog'"
+    [(visible)]="showDialog"
+    [resizable]="false"
+    [draggable]="false"
+    modal="modal"
+    width="640"
+    responsive="false"
+    appendTo="body"
+    [closable]="false"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="fa  fa-floppy-o  header-icon  pull-left"></span>
-            <span class="header-text  pull-left"><label-translation [keyword]="'Widget_communication_dialog__Export_Data'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="cancel()">
+            <span class="fa fa-floppy-o header-icon pull-left"></span>
+            <span class="header-text pull-left"
+                ><label-translation
+                    [keyword]="'Widget_communication_dialog__Export_Data'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="cancel()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <div [ngClass]="{'submitted': submitted}"
-         class="form-container col-xs-12 no-padding  height-pc-100">
-        <form [formGroup]="formGroup"
-              class="form-horizontal  height-pc-100">
-            <control-focus [formName]="'selectionExportDataFormGroup'"
-                           [isFocusOnFirstControl]="true"></control-focus>
+    <div
+        [ngClass]="{ submitted: submitted }"
+        class="form-container col-xs-12 no-padding height-pc-100"
+    >
+        <form [formGroup]="formGroup" class="form-horizontal height-pc-100">
+            <control-focus
+                [formName]="'selectionExportDataFormGroup'"
+                [isFocusOnFirstControl]="true"
+            ></control-focus>
             <div class="col-xs-12 height-pc-100">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label"><label-translation [keyword]="'Widget_communication_dialog__Email'"></label-translation></label>
+                    <label class="col-sm-2 control-label"
+                        ><label-translation
+                            [keyword]="'Widget_communication_dialog__Email'"
+                        ></label-translation
+                    ></label>
                     <div class="col-sm-10">
-                        <rl-tag-input formControlName="email"
-                                      [allowedTagsPattern]="emailRegex"
-                                      class="p-0"
-                                      [placeholder]="'Email address'"></rl-tag-input>
+                        <rl-tag-input
+                            formControlName="email"
+                            [allowedTagsPattern]="emailRegex"
+                            class="p-0"
+                            [placeholder]="'Email address'"
+                        ></rl-tag-input>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="campaignNr" class="control-label  col-sm-2"><label-translation [keyword]="'Widget_communication_dialog__Export_file_type'"></label-translation></label>
-                    <div [ngClass]="{'col-xs-7 pr-0': formGroup.value.exportFileType && formGroup.value.exportFileType === 'csv',
-                                     'col-xs-10': !formGroup.value.exportFileType || formGroup.value.exportFileType !== 'csv'}">
+                    <label for="campaignNr" class="control-label col-sm-2"
+                        ><label-translation
+                            [keyword]="
+                                'Widget_communication_dialog__Export_file_type'
+                            "
+                        ></label-translation
+                    ></label>
+                    <div
+                        [ngClass]="{
+                            'col-xs-7 pr-0':
+                                formGroup.value.exportFileType &&
+                                formGroup.value.exportFileType === 'csv',
+                            'col-xs-10':
+                                !formGroup.value.exportFileType ||
+                                formGroup.value.exportFileType !== 'csv'
+                        }"
+                    >
                         <div class="full-width">
-                            <xn-combo-box #exportFileType
-                                          wjDropdownHelper
-                                          [form]="formGroup"
-                                          formControlName="exportFileType"
-                                          class="custom-wj-input-control xn-select"
-                                          [itemsSource]="EXPORT_FILE_TYPES"
-                                          [displayMemberPath]="'textValue'"
-                                          [selectedValuePath]="'idValue'"
-                                          [isEditable]="true"
-                                          [isRequired]="false"
-                                          placeholder="Please select"
-                                          (selectedIndexChanged)="exportFileTypeChanged(exportFileType)">
+                            <xn-combo-box
+                                #exportFileType
+                                wjDropdownHelper
+                                [form]="formGroup"
+                                formControlName="exportFileType"
+                                class="custom-wj-input-control xn-select"
+                                [itemsSource]="EXPORT_FILE_TYPES"
+                                [displayMemberPath]="'textValue'"
+                                [selectedValuePath]="'idValue'"
+                                [isEditable]="true"
+                                [isRequired]="false"
+                                placeholder="Please select"
+                                (selectedIndexChanged)="
+                                    exportFileTypeChanged(exportFileType)
+                                "
+                            >
                             </xn-combo-box>
-                            <control-messages [xn-trigger-click-inside-cbo]="exportFileType"
-                                              [control]="formGroup.controls.exportFileType"
-                                              icon="file-o"></control-messages>
+                            <control-messages
+                                [xn-trigger-click-inside-cbo]="exportFileType"
+                                [control]="formGroup.controls.exportFileType"
+                                icon="file-o"
+                            ></control-messages>
                         </div>
                     </div>
-                    <div [ngClass]="{'col-xs-3': formGroup.value.exportFileType && formGroup.value.exportFileType === 'csv',
-                                     'hidden': !formGroup.value.exportFileType || formGroup.value.exportFileType !== 'csv'}">
-                        <input type="text"
-                               class="form-control font-size-22px"
-                               name="csvDelimiter"
-                               formControlName="csvDelimiter"
-                               autocomplete="off"
-                               maxlength="10"
-                               placeholder="Delimiter" />
+                    <div
+                        [ngClass]="{
+                            'col-xs-3':
+                                formGroup.value.exportFileType &&
+                                formGroup.value.exportFileType === 'csv',
+                            hidden:
+                                !formGroup.value.exportFileType ||
+                                formGroup.value.exportFileType !== 'csv'
+                        }"
+                    >
+                        <input
+                            type="text"
+                            class="form-control font-size-22px"
+                            name="csvDelimiter"
+                            formControlName="csvDelimiter"
+                            autocomplete="off"
+                            maxlength="10"
+                            placeholder="Delimiter"
+                        />
                     </div>
                 </div>
             </div>
@@ -76,11 +123,17 @@
     </div>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button type="button"
-                    mat-raised-button
-                    class="btn-cancel pull-right"
-                    (click)="cancel()">
-                <span class="bt-t"><label-translation [keyword]="'Widget_communication_dialog__Cancel'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="btn-cancel pull-right"
+                (click)="cancel()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Widget_communication_dialog__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
             <!--<button class="mat-btn-blue"
                     mat-raised-button
@@ -90,23 +143,50 @@
                    class="fa fa-spinner fa-spin"></i>
                 <span *ngIf="!this.BUTTON_STATE.exportSelectionData.loading">Export Country Data</span>
             </button>-->
-            <button class="mat-btn-orange"
-                    mat-raised-button
-                    [disabled]="this.BUTTON_STATE.exportMediacode.loading"
-                    (click)="!this.BUTTON_STATE.exportMediacode.loading && exportSelectionData('mediacode')">
-                <i *ngIf="this.BUTTON_STATE.exportMediacode.loading"
-                   class="fa fa-spinner fa-spin text-danger fa-2x"></i>
-                <span class="bt-t-i" *ngIf="!this.BUTTON_STATE.exportMediacode.loading"><label-translation [keyword]="'Widget_communication_dialog__Export_Mediacode'"></label-translation></span>
+            <button
+                class="mat-btn-orange"
+                mat-raised-button
+                [disabled]="this.BUTTON_STATE.exportMediacode.loading"
+                (click)="
+                    !this.BUTTON_STATE.exportMediacode.loading &&
+                        exportSelectionData('mediacode')
+                "
+            >
+                <i
+                    *ngIf="this.BUTTON_STATE.exportMediacode.loading"
+                    class="fa fa-spinner fa-spin text-danger fa-2x"
+                ></i>
+                <span
+                    class="bt-t-i"
+                    *ngIf="!this.BUTTON_STATE.exportMediacode.loading"
+                    ><label-translation
+                        [keyword]="
+                            'Widget_communication_dialog__Export_Mediacode'
+                        "
+                    ></label-translation
+                ></span>
             </button>
-            <button class="mat-btn-green"
-                    mat-raised-button
-                    [disabled]="this.BUTTON_STATE.exportAll.loading"
-                    (click)="!this.BUTTON_STATE.exportAll.loading && exportSelectionData('all')">
-                <i *ngIf="this.BUTTON_STATE.exportAll.loading"
-                   class="fa fa-spinner fa-spin text-danger fa-2x"></i>
-                <span class="bt-t-i" *ngIf="!this.BUTTON_STATE.exportAll.loading"><label-translation [keyword]="'Widget_communication_dialog__Export_All'"></label-translation></span>
+            <button
+                class="mat-btn-green"
+                mat-raised-button
+                [disabled]="this.BUTTON_STATE.exportAll.loading"
+                (click)="
+                    !this.BUTTON_STATE.exportAll.loading &&
+                        exportSelectionData('all')
+                "
+            >
+                <i
+                    *ngIf="this.BUTTON_STATE.exportAll.loading"
+                    class="fa fa-spinner fa-spin text-danger fa-2x"
+                ></i>
+                <span
+                    class="bt-t-i"
+                    *ngIf="!this.BUTTON_STATE.exportAll.loading"
+                    ><label-translation
+                        [keyword]="'Widget_communication_dialog__Export_All'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>
 </p-dialog>
-

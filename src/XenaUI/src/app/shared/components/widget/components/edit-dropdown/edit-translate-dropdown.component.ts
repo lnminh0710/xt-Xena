@@ -1,13 +1,18 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter, Input } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    Output,
+    EventEmitter,
+    Input,
+} from "@angular/core";
 
 @Component({
-    selector: 'edit-translate-dropdown',
-    styleUrls: ['./edit-dropdown.component.scss'],
-    templateUrl: './edit-translate-dropdown.component.html'
+    selector: "edit-translate-dropdown",
+    styleUrls: ["./edit-dropdown.component.scss"],
+    templateUrl: "./edit-translate-dropdown.component.html",
 })
-
 export class EditTranslateDropdownComponent implements OnInit, OnDestroy {
-
     @Input() isTable: boolean;
     @Input() isForm: boolean;
 
@@ -15,11 +20,11 @@ export class EditTranslateDropdownComponent implements OnInit, OnDestroy {
     @Output() translateRowClick = new EventEmitter<any>();
     @Output() translateFormClick = new EventEmitter<any>();
 
-    constructor() { }
+    constructor() {}
 
-    ngOnInit() { }
+    ngOnInit() {}
 
-    ngOnDestroy() { }
+    ngOnDestroy() {}
 
     public translateHeader() {
         this.translateHeaderClick.emit();
@@ -32,5 +37,4 @@ export class EditTranslateDropdownComponent implements OnInit, OnDestroy {
     public translateForm() {
         this.translateFormClick.emit();
     }
-
 }

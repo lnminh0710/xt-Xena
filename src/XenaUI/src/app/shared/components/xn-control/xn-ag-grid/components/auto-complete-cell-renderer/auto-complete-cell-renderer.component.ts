@@ -1,33 +1,45 @@
-import { Component, ViewEncapsulation, ViewChild, ViewContainerRef } from "@angular/core";
-import { ICellRendererAngularComp, ICellEditorAngularComp } from "ag-grid-angular";
-import { BaseAgGridCellComponent } from '../../shared/base-ag-grid-cell-component';
-import { AppErrorHandler, PropertyPanelService} from 'app/services';
+import {
+    Component,
+    ViewEncapsulation,
+    ViewChild,
+    ViewContainerRef,
+} from "@angular/core";
+import {
+    ICellRendererAngularComp,
+    ICellEditorAngularComp,
+} from "ag-grid-angular";
+import { BaseAgGridCellComponent } from "../../shared/base-ag-grid-cell-component";
+import { AppErrorHandler, PropertyPanelService } from "app/services";
 
 @Component({
-    selector: 'auto-complete-cell-renderer',
-    templateUrl: './auto-complete-cell-renderer.html',
-    styleUrls: ['./auto-complete-cell-renderer.scss']
+    selector: "auto-complete-cell-renderer",
+    templateUrl: "./auto-complete-cell-renderer.html",
+    styleUrls: ["./auto-complete-cell-renderer.scss"],
 })
-export class AutoCompleteCellRenderer extends BaseAgGridCellComponent<any> implements ICellRendererAngularComp {
-
+export class AutoCompleteCellRenderer
+    extends BaseAgGridCellComponent<any>
+    implements ICellRendererAngularComp
+{
     public searchFunc: Function;
     public ctrlValue: {
-        key: string,
-        value: string,
-        options: any[]
+        key: string;
+        value: string;
+        options: any[];
     } = {
-            key: '',
-            value: '',
-            options: []
-        };
+        key: "",
+        value: "",
+        options: [],
+    };
     public isShowDropdownWhenFocusCombobox: boolean = false;
     public isInWidget: boolean = true;
 
-    @ViewChild('autoCompleteCtr', { read: ViewContainerRef }) public autoCompleteCtr;
+    @ViewChild("autoCompleteCtr", { read: ViewContainerRef })
+    public autoCompleteCtr;
 
     constructor(
-                private propertyPanelService: PropertyPanelService,
-                private appErrorHandler: AppErrorHandler) {
+        private propertyPanelService: PropertyPanelService,
+        private appErrorHandler: AppErrorHandler
+    ) {
         super();
     }
 
@@ -46,7 +58,10 @@ export class AutoCompleteCellRenderer extends BaseAgGridCellComponent<any> imple
         this.getCustomParam(params);
         if (!this.cellStartedEdit || !this.componentParent || !field) return;
         const propertiesWidget = this.componentParent.widgetProperties;
-        const propertyDropdownForm = this.propertyPanelService.getValueDropdownFromProperties(propertiesWidget);
+        const propertyDropdownForm =
+            this.propertyPanelService.getValueDropdownFromProperties(
+                propertiesWidget
+            );
         if (!propertyDropdownForm || !propertyDropdownForm.length) return;
         for (let item of propertyDropdownForm) {
             if (field !== item.value) continue;
@@ -56,13 +71,15 @@ export class AutoCompleteCellRenderer extends BaseAgGridCellComponent<any> imple
 
     ngAfterViewInit() {
         setTimeout(() => {
-            if (!this.autoCompleteCtr ||
+            if (
+                !this.autoCompleteCtr ||
                 !this.autoCompleteCtr.element ||
-                !this.autoCompleteCtr.element.nativeElement)
+                !this.autoCompleteCtr.element.nativeElement
+            )
                 return;
 
             this.autoCompleteCtr.element.nativeElement.focus();
-        })
+        });
     }
 
     /**
@@ -77,7 +94,7 @@ export class AutoCompleteCellRenderer extends BaseAgGridCellComponent<any> imple
             this.ctrlValue.value = this.value.value;
         }
     }
-    
+
     /**
      * getValue
      * */
@@ -85,13 +102,15 @@ export class AutoCompleteCellRenderer extends BaseAgGridCellComponent<any> imple
         return {
             key: this.ctrlValue.key,
             value: this.ctrlValue.value,
-            options: []
-        }
+            options: [],
+        };
     }
 
     public onKeyUp(control) {
         if (this.componentParent) {
-            this.componentParent.onAutoCompleteCellChanged.emit(this.ctrlValue.value);
+            this.componentParent.onAutoCompleteCellChanged.emit(
+                this.ctrlValue.value
+            );
         }
     }
 }

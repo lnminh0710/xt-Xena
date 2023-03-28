@@ -1,6 +1,14 @@
 import {
-    Component, Input, Output, EventEmitter, OnInit,
-    OnDestroy, AfterViewInit, ElementRef, ViewChild, TemplateRef
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
+    TemplateRef,
 } from "@angular/core";
 import { ColumnApi, GridApi, GridOptions } from "ag-grid-community";
 import {
@@ -8,51 +16,45 @@ import {
     HistoryHeaderInfo,
     HistoryBodyInfo,
     HistoryFooterInfo,
-    HistoryHeaderMenu
-} from 'app/models';
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcGrid from 'wijmo/wijmo.grid';
-import * as Ps from 'perfect-scrollbar';
-import {
-    ScrollUtils,
-    DomHandler
-} from 'app/services';
-import { IAgGridData } from 'app/shared/components/xn-control/xn-ag-grid/shared/ag-grid.service';
-import { TemplateHeaderCellRenderer } from 'app/shared/components/xn-control/xn-ag-grid/components/header-cell-renderer/template-header-cell-renderer/template-header-cell-renderer.component';
-import { TemplateCellRenderer } from 'app/shared/components/xn-control/xn-ag-grid/components/template-cell-renderer/template-cell-renderer.component';
+    HistoryHeaderMenu,
+} from "app/models";
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcGrid from "wijmo/wijmo.grid";
+import * as Ps from "perfect-scrollbar";
+import { ScrollUtils, DomHandler } from "app/services";
+import { IAgGridData } from "app/shared/components/xn-control/xn-ag-grid/shared/ag-grid.service";
+import { TemplateHeaderCellRenderer } from "app/shared/components/xn-control/xn-ag-grid/components/header-cell-renderer/template-header-cell-renderer/template-header-cell-renderer.component";
+import { TemplateCellRenderer } from "app/shared/components/xn-control/xn-ag-grid/components/template-cell-renderer/template-cell-renderer.component";
 
 @Component({
-    selector: 'history-list',
-    templateUrl: './history-list.component.html',
-    styleUrls: ['./history-list.component.scss']
+    selector: "history-list",
+    templateUrl: "./history-list.component.html",
+    styleUrls: ["./history-list.component.scss"],
 })
 export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
-
     // Core API of Ag Grid
     private api: GridApi;
     private columnApi: ColumnApi;
     public gridOptions: GridOptions;
 
-
-    public customerHistories : Array<CustomerHistory>;
+    public customerHistories: Array<CustomerHistory>;
 
     @Input() set data(customerHistories: Array<CustomerHistory>) {
         this.customerHistories = customerHistories;
         this.buildAgGridDataSource(customerHistories);
-    };
+    }
 
     @Input() set resizeInfo(resizeInfo: string) {
         this.turnOnStartResizeMode();
     }
 
-
     // @ViewChild('flex') flex: wjcGrid.FlexGrid;
-    @ViewChild('headerCell') headerCellTemplateRef: TemplateRef<any>;
-    @ViewChild('bodyCell') bodyCellTemplateRef: TemplateRef<any>;
-    
+    @ViewChild("headerCell") headerCellTemplateRef: TemplateRef<any>;
+    @ViewChild("bodyCell") bodyCellTemplateRef: TemplateRef<any>;
+
     public dataSource: {
-        columns: Array<any>,
-        data: Array<any>
+        columns: Array<any>;
+        data: Array<any>;
     };
 
     public showLeftIconScroll: boolean;
@@ -61,7 +63,10 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
     private _scrollUtils: ScrollUtils;
     private get scrollUtils() {
         if (!this._scrollUtils) {
-            this._scrollUtils = new ScrollUtils(this.scrollBodyContainer, this.domHandler);
+            this._scrollUtils = new ScrollUtils(
+                this.scrollBodyContainer,
+                this.domHandler
+            );
         }
         return this._scrollUtils;
     }
@@ -70,7 +75,7 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.initGrid();
         this.dataSource = {
             columns: [],
-            data: []
+            data: [],
         };
     }
 
@@ -88,9 +93,7 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
     /**
      * ngOnInit
      */
-    public ngOnInit() {
-        
-    }
+    public ngOnInit() {}
 
     /**
      * ngOnDestroy
@@ -99,7 +102,7 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.gridOptions) {
             this.gridOptions.columnDefs = null;
             this.gridOptions.rowData = null;
-            this.gridOptions = null;            
+            this.gridOptions = null;
         }
         if (this.api) {
             this.api.destroy();
@@ -127,9 +130,9 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
                 params.api.sizeColumnsToFit();
             },
             context: {
-                componentParent: this
+                componentParent: this,
             },
-            rowHeight: 150
+            rowHeight: 150,
         };
     }
 
@@ -142,7 +145,6 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.columnApi = params.columnApi;
     }
 
-
     /**
      * Update Perfect Scroll
      */
@@ -151,14 +153,12 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
         //    let flex = $('div[wj-part="root"]', this.flex.hostElement).get(0);
         //    if (flex) {
         //        Ps.initialize(flex);
-
         //        setTimeout(() => {
         //            Ps.update(flex);
         //            this.showLeftIconScroll = this.scrollUtils.canScrollToLeft;
         //            this.showRightIconScroll = this.scrollUtils.canScrollToRight;
         //        }, 200);
         //    }
-
         //    this.flex.rows.defaultSize = 200;
         //}, 500);
         //this.flex.rowHeaders.columns[0].width = 150;
@@ -192,7 +192,7 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     /**
-     * Build history customer datasource 
+     * Build history customer datasource
      */
     //public buildDataSource(customerHistories: Array<CustomerHistory>) {
     //    let data: any = {};
@@ -225,28 +225,28 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
         let data: any = {};
         const dataSource: IAgGridData = {
             rowData: [],
-            columnDefs: []
+            columnDefs: [],
         };
 
         dataSource.columnDefs.push({
-            field: 'mailing',
-            headerName: '',
+            field: "mailing",
+            headerName: "",
             editable: false,
             hide: false,
             autoHeight: true,
-            cellClass: 'text-center lock-pinned',
+            cellClass: "text-center lock-pinned",
             pinned: "left",
             lockPinned: true,
             minWidth: 250,
             maxWidth: 250,
-            suppressResize: true
+            suppressResize: true,
         });
-        data['mailing'] = 'Mailing';
+        data["mailing"] = "Mailing";
 
         customerHistories.forEach((customerHistory: CustomerHistory) => {
             dataSource.columnDefs.push({
                 field: customerHistory.id,
-                headerName: '',
+                headerName: "",
                 editable: false,
                 hide: customerHistory.isHidden,
                 autoHeight: true,
@@ -254,18 +254,18 @@ export class HistoryListComponent implements OnInit, OnDestroy, AfterViewInit {
                 headerComponentFramework: TemplateHeaderCellRenderer,
                 headerComponentParams: {
                     ngTemplate: this.headerCellTemplateRef,
-                    customParam: customerHistory.header
+                    customParam: customerHistory.header,
                 },
                 cellRendererFramework: TemplateCellRenderer,
                 cellRendererParams: {
                     ngTemplate: this.bodyCellTemplateRef,
                     customParam: {
                         body: customerHistory.body,
-                        footer: customerHistory.footer
-                    }                    
-                }
+                        footer: customerHistory.footer,
+                    },
+                },
             });
-            data[customerHistory.id] = '';
+            data[customerHistory.id] = "";
         });
         dataSource.rowData = [data];
         this.gridOptions.columnDefs = dataSource.columnDefs;

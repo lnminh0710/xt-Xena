@@ -8,30 +8,46 @@
     <i class="fa fa-bell-o"></i>
 </a>   -->
 
-<a mat-button
-   dropdownToggle
-   xn-tooltip
-   [tooltipText]="'Notification'"
-   [tooltipPlacement]="'bottom'"
-   id="notification-dropdown"
-   class="dropdown-toggle cursor-pointer">
+<a
+    mat-button
+    dropdownToggle
+    xn-tooltip
+    [tooltipText]="'Notification'"
+    [tooltipPlacement]="'bottom'"
+    id="notification-dropdown"
+    class="dropdown-toggle cursor-pointer"
+>
     <i class="fa fa-bell-o"></i>
-    <span *ngIf="(autoLetterList.length + sendToAdminList.length + feedbackList.length) > 0"
-          class="label label-warning">{{autoLetterList.length + sendToAdminList.length + feedbackList.length}}</span>
+    <span
+        *ngIf="
+            autoLetterList.length +
+                sendToAdminList.length +
+                feedbackList.length >
+            0
+        "
+        class="label label-warning"
+        >{{
+            autoLetterList.length + sendToAdminList.length + feedbackList.length
+        }}</span
+    >
 </a>
-<div class="container dropdown-menu"
-     *dropdownMenu
-     role="menu"
-     aria-labelledby="notification-dropdown"
-     (click)="preventClose($event)">
+<div
+    class="container dropdown-menu"
+    *dropdownMenu
+    role="menu"
+    aria-labelledby="notification-dropdown"
+    (click)="preventClose($event)"
+>
     <div class="col-xs-12 no-padding">
-        <notification-list-view-main [feedbackRawList]="feedbackRawList"
-                                     [feedbackList]="feedbackList"
-                                     [sendToAdminRawList]="sendToAdminRawList"
-                                     [sendToAdminList]="sendToAdminList"
-                                     [autoLetterRawList]="autoLetterRawList"
-                                     [autoLetterList]="autoLetterList"
-                                     (updateAutoClose)="updateDropdownAutoClose($event)">
+        <notification-list-view-main
+            [feedbackRawList]="feedbackRawList"
+            [feedbackList]="feedbackList"
+            [sendToAdminRawList]="sendToAdminRawList"
+            [sendToAdminList]="sendToAdminList"
+            [autoLetterRawList]="autoLetterRawList"
+            [autoLetterList]="autoLetterList"
+            (updateAutoClose)="updateDropdownAutoClose($event)"
+        >
         </notification-list-view-main>
     </div>
 </div>

@@ -1,21 +1,21 @@
 ﻿// TODO: will remove this file when has service
-import { DropdownListModel, ControlGridModel } from 'app/models';
+import { DropdownListModel, ControlGridModel } from "app/models";
 
 export class WarehuoseMovementEditFormFakeData {
     public createClosingReason(): Array<DropdownListModel> {
         return [
             {
-                textValue: 'Reason 1',
-                idValue: 1
+                textValue: "Reason 1",
+                idValue: 1,
             },
             {
-                textValue: 'Reason 2',
-                idValue: 2
+                textValue: "Reason 2",
+                idValue: 2,
             },
             {
-                textValue: 'Reason 3',
-                idValue: 3
-            }
+                textValue: "Reason 3",
+                idValue: 3,
+            },
         ];
     }
 
@@ -23,71 +23,71 @@ export class WarehuoseMovementEditFormFakeData {
         return new ControlGridModel({
             columns: [
                 {
-                    title: 'Article Id',
-                    data: 'articleId',
+                    title: "Article Id",
+                    data: "articleId",
                     visible: false,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'IdWarehouseMovementGoodsIssue',
-                    data: 'IdWarehouseMovementGoodsIssue',
+                    title: "IdWarehouseMovementGoodsIssue",
+                    data: "IdWarehouseMovementGoodsIssue",
                     visible: false,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Article #',
-                    data: 'articleNumber',
+                    title: "Article #",
+                    data: "articleNumber",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Description',
-                    data: 'description',
+                    title: "Description",
+                    data: "description",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'quantity',
-                    data: 'quantity',
+                    title: "quantity",
+                    data: "quantity",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'confirm',
-                    data: 'confirm',
+                    title: "confirm",
+                    data: "confirm",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Not conf.',
-                    data: 'notConfiguration',
+                    title: "Not conf.",
+                    data: "notConfiguration",
                     visible: true,
                     readOnly: true,
-                    setting: {}
-                }
-            ]
+                    setting: {},
+                },
+            ],
         });
     }
 
@@ -95,78 +95,78 @@ export class WarehuoseMovementEditFormFakeData {
         return new ControlGridModel({
             columns: [
                 {
-                    title: 'Article Id',
-                    data: 'articleId',
+                    title: "Article Id",
+                    data: "articleId",
                     visible: false,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Article #',
-                    data: 'articleNumber',
+                    title: "Article #",
+                    data: "articleNumber",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'quantity',
-                    data: 'quantity',
+                    title: "quantity",
+                    data: "quantity",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Division',
-                    data: 'division',
+                    title: "Division",
+                    data: "division",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Coordinates',
-                    data: 'coordinate',
+                    title: "Coordinates",
+                    data: "coordinate",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Expiry date',
-                    data: 'expiryDate',
+                    title: "Expiry date",
+                    data: "expiryDate",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Closing reason',
-                    data: 'closingReasonText',
+                    title: "Closing reason",
+                    data: "closingReasonText",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Closing reason Id',
-                    data: 'closingReasonId',
+                    title: "Closing reason Id",
+                    data: "closingReasonId",
                     visible: true,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
         });
     }
 }

@@ -1,1 +1,1 @@
-export * from './widget-translate.component';
+export * from "./widget-translate.component";

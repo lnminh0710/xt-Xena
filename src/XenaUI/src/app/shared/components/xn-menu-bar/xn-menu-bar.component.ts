@@ -1,26 +1,34 @@
-import { Component, Input, EventEmitter, Output, ElementRef, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
 import {
-    Module,
-    GlobalSettingModel,
-} from 'app/models';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Subscription } from 'rxjs/Subscription';
+    Component,
+    Input,
+    EventEmitter,
+    Output,
+    ElementRef,
+    OnInit,
+    OnDestroy,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { Module, GlobalSettingModel } from "app/models";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Subscription } from "rxjs/Subscription";
+import { ModuleActions } from "app/state-management/store/actions";
+import { GlobalSettingService, AccessRightsService } from "app/services";
 import {
-    ModuleActions
-} from 'app/state-management/store/actions';
-import {
-    GlobalSettingService, AccessRightsService,
-} from 'app/services';
-import { GlobalSettingConstant, AccessRightKeyEnum, AccessRightTypeEnum, Configuration } from 'app/app.constants';
-import { Uti } from 'app/utilities';
+    GlobalSettingConstant,
+    AccessRightKeyEnum,
+    AccessRightTypeEnum,
+    Configuration,
+} from "app/app.constants";
+import { Uti } from "app/utilities";
 
 @Component({
-    selector: 'xn-menu-bar',
-    styleUrls: ['./xn-menu-bar.component.scss'],
-    templateUrl: './xn-menu-bar.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: "xn-menu-bar",
+    styleUrls: ["./xn-menu-bar.component.scss"],
+    templateUrl: "./xn-menu-bar.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class XnMenuBarComponent implements OnInit, OnDestroy {
     @Input() modules: Module[];
@@ -48,13 +56,14 @@ export class XnMenuBarComponent implements OnInit, OnDestroy {
         private changeDetectorRef: ChangeDetectorRef,
         private router: Router,
         private accessRightService: AccessRightsService
-    ) {
-    }
+    ) {}
 
     ngOnInit() {
         this.getCheckedModules();
         if (this.activeModule) {
-            this.tabAccessRight = this.accessRightService.getMainTabAccessRight(this.activeModule);
+            this.tabAccessRight = this.accessRightService.getMainTabAccessRight(
+                this.activeModule
+            );
         } else {
             this.tabAccessRight = null;
         }
@@ -70,11 +79,14 @@ export class XnMenuBarComponent implements OnInit, OnDestroy {
         }
 
         if (!Configuration.PublicSettings.isSelectionProject) {
-            if (!selectedModule.isClickable)
-                return;
-        }        
+            if (!selectedModule.isClickable) return;
+        }
 
-        if (event && event.target && event.target.className.indexOf('mat-checkbox-inner-container') > -1) {
+        if (
+            event &&
+            event.target &&
+            event.target.className.indexOf("mat-checkbox-inner-container") > -1
+        ) {
             return;
         }
 
@@ -90,21 +102,35 @@ export class XnMenuBarComponent implements OnInit, OnDestroy {
     }
 
     private getCheckedModules() {
-        this.getGlobalSettingSubscription = this.globalSettingService.getAllGlobalSettings().subscribe(
-            data => this.getCheckedModulesSuccess(data),
-            error => this.serviceError(error)
-        );
+        this.getGlobalSettingSubscription = this.globalSettingService
+            .getAllGlobalSettings()
+            .subscribe(
+                (data) => this.getCheckedModulesSuccess(data),
+                (error) => this.serviceError(error)
+            );
     }
 
     private getCheckedModulesSuccess(data: GlobalSettingModel[]) {
-        if (!data || !data.length) { return; }
+        if (!data || !data.length) {
+            return;
+        }
         this.checkedModuleIds = this.getCurrentCheckedModules(data);
         this.setCheckedForModule();
         for (let i = 0; i < this.checkedModuleIds.length; i++) {
-            const moduleInfo = this.modules.find(md => md.idSettingsGUI == this.checkedModuleIds[i]);
+            const moduleInfo = this.modules.find(
+                (md) => md.idSettingsGUI == this.checkedModuleIds[i]
+            );
 
             if (moduleInfo) {
-                this.store.dispatch(this.moduleActions.addWorkingModule(moduleInfo, [], [], [], true));
+                this.store.dispatch(
+                    this.moduleActions.addWorkingModule(
+                        moduleInfo,
+                        [],
+                        [],
+                        [],
+                        true
+                    )
+                );
             }
         }
     }
@@ -114,14 +140,20 @@ export class XnMenuBarComponent implements OnInit, OnDestroy {
     }
 
     private getCurrentCheckedModules(data: GlobalSettingModel[]): any {
-        this.currentGlobalSettingModel = data.find(x => x.globalName === this.getSettingName());
-        if (!this.currentGlobalSettingModel || !this.currentGlobalSettingModel.idSettingsGlobal) {
+        this.currentGlobalSettingModel = data.find(
+            (x) => x.globalName === this.getSettingName()
+        );
+        if (
+            !this.currentGlobalSettingModel ||
+            !this.currentGlobalSettingModel.idSettingsGlobal
+        ) {
             return this.checkedModuleIds;
         }
-        const checkedModulesSetting = JSON.parse(this.currentGlobalSettingModel.jsonSettings);
+        const checkedModulesSetting = JSON.parse(
+            this.currentGlobalSettingModel.jsonSettings
+        );
 
-
-        return (checkedModulesSetting && checkedModulesSetting.CheckedModules);
+        return checkedModulesSetting && checkedModulesSetting.CheckedModules;
     }
 
     private getSettingName() {
@@ -129,32 +161,46 @@ export class XnMenuBarComponent implements OnInit, OnDestroy {
     }
 
     private reloadAndSaveSetting() {
-        this.getGlobalSettingSubscription = this.globalSettingService.getAllGlobalSettings().subscribe((data: any) => {
-            this.saveCheckedModulesSetting(data);
-        });
+        this.getGlobalSettingSubscription = this.globalSettingService
+            .getAllGlobalSettings()
+            .subscribe((data: any) => {
+                this.saveCheckedModulesSetting(data);
+            });
     }
 
     private saveCheckedModulesSetting(data: GlobalSettingModel[]) {
-        if (!this.currentGlobalSettingModel || !this.currentGlobalSettingModel.idSettingsGlobal || !this.currentGlobalSettingModel.globalName) {
+        if (
+            !this.currentGlobalSettingModel ||
+            !this.currentGlobalSettingModel.idSettingsGlobal ||
+            !this.currentGlobalSettingModel.globalName
+        ) {
             this.currentGlobalSettingModel = new GlobalSettingModel({
                 globalName: this.getSettingName(),
-                description: 'Checked Modules Setting',
-                globalType: this.globalSettingConstant.settingCheckedModules
+                description: "Checked Modules Setting",
+                globalType: this.globalSettingConstant.settingCheckedModules,
             });
         }
         this.currentGlobalSettingModel.idSettingsGUI = -1;
-        this.currentGlobalSettingModel.jsonSettings = JSON.stringify({ CheckedModules: this.getModuleChecked() });
+        this.currentGlobalSettingModel.jsonSettings = JSON.stringify({
+            CheckedModules: this.getModuleChecked(),
+        });
         this.currentGlobalSettingModel.isActive = true;
 
-        this.getGlobalSettingSubscription = this.globalSettingService.saveGlobalSetting(this.currentGlobalSettingModel).subscribe(
-            dt => this.saveSettingSuccess(dt),
-            error => this.serviceError(error));
+        this.getGlobalSettingSubscription = this.globalSettingService
+            .saveGlobalSetting(this.currentGlobalSettingModel)
+            .subscribe(
+                (dt) => this.saveSettingSuccess(dt),
+                (error) => this.serviceError(error)
+            );
     }
 
     private saveSettingSuccess(data: any) {
-        this.globalSettingService.saveUpdateCache('-1', this.currentGlobalSettingModel, data);
+        this.globalSettingService.saveUpdateCache(
+            "-1",
+            this.currentGlobalSettingModel,
+            data
+        );
     }
-
 
     search(selectedModule: Module) {
         this.onSearchingModule.emit(selectedModule);
@@ -167,7 +213,8 @@ export class XnMenuBarComponent implements OnInit, OnDestroy {
 
     private setCheckedForModule() {
         for (let item of this.modules) {
-            item.isChecked = (this.checkedModuleIds.indexOf(item.idSettingsGUI) > -1);
+            item.isChecked =
+                this.checkedModuleIds.indexOf(item.idSettingsGUI) > -1;
         }
 
         this.changeDetectorRef.markForCheck();

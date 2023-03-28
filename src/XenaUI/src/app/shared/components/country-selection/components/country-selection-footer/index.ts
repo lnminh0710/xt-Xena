@@ -1,1 +1,1 @@
-export * from './country-selection-footer.component';
+export * from "./country-selection-footer.component";

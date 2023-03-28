@@ -1,5 +1,5 @@
 export class DataColumn {
-    public DictionaryType: string = 'No dictionary';
+    public DictionaryType: string = "No dictionary";
     public Fields: Array<Field> = [];
     public IgnoreNullValues: boolean = false;
     public Level: number;
@@ -7,13 +7,13 @@ export class DataColumn {
     public Weight: number = 1;
 
     public constructor(init?: Partial<DataColumn>) {
-        Object.assign(this, init);        
+        Object.assign(this, init);
     }
 }
 
 export class Field {
     public ColumnIndex: number = 0;
-    public ColumnName: string = '';
+    public ColumnName: string = "";
 
     public constructor(init?: Partial<Field>) {
         Object.assign(this, init);

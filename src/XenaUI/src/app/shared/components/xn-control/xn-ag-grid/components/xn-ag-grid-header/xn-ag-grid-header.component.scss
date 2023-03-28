@@ -13,12 +13,12 @@
     justify-content: space-between;
 
     &.has-border {
-        border: 1px solid #DDDDDD;
+        border: 1px solid #dddddd;
     }
 }
 
 .controls-container {
-    border: 1px solid #DDDDDD;
+    border: 1px solid #dddddd;
     border-bottom: none;
     display: -ms-flexbox;
     display: flex;
@@ -46,7 +46,10 @@
     }
 }
 
-.btn-del-editable-table, .btn-plus-editable-table, .icon-editable-table, .btn-upload-editable-table {
+.btn-del-editable-table,
+.btn-plus-editable-table,
+.icon-editable-table,
+.btn-upload-editable-table {
     width: 24px;
     height: 24px;
     background-color: transparent;
@@ -56,7 +59,9 @@
     border-width: 0px;
 }
 
-.btn-del-editable-table:hover, .btn-plus-editable-table:hover, .btn-upload-editable-table:hover {
+.btn-del-editable-table:hover,
+.btn-plus-editable-table:hover,
+.btn-upload-editable-table:hover {
     background-color: #e3e3e3;
 }
 
@@ -89,7 +94,8 @@
     margin-left: auto;
 }
 
-.btn-plus-editable-table.disabled, .btn-plus-editable-table.disabled:focus {
+.btn-plus-editable-table.disabled,
+.btn-plus-editable-table.disabled:focus {
     color: #808080 !important;
     opacity: 1;
     background-color: transparent;

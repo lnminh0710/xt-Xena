@@ -3,12 +3,12 @@ ag-grid-angular {
         border-bottom: solid 1px #beb7b7;
     }
 
-
     .editable-col.editing {
         border-bottom: solid 1px orange;
     }
 
-    .ag-header, .ag-header-row {
+    .ag-header,
+    .ag-header-row {
         border-bottom-style: none !important;
     }
 
@@ -16,7 +16,10 @@ ag-grid-angular {
         border-right: solid 1px #d9dcde !important;
     }
 
-    .ag-ltr .ag-cell-focus:not(.invalid-cell):not(.positive-qty):not(.negative-qty) {
+    .ag-ltr
+        .ag-cell-focus:not(.invalid-cell):not(.positive-qty):not(
+            .negative-qty
+        ) {
         border: none !important;
     }
 
@@ -54,7 +57,7 @@ ag-grid-angular {
         font-size: 30px;
         color: #c4c1c1;
         font-weight: 800;
-        white-space: nowrap
+        white-space: nowrap;
     }
     .ag-cell-inline-editing {
         .quantity-article {

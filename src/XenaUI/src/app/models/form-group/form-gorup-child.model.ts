@@ -1,8 +1,8 @@
-import { FormGroup } from '@angular/forms';
+import { FormGroup } from "@angular/forms";
 export class FormGroupChild {
     public form: FormGroup = null;
     public name: string = null;
-    
+
     public constructor(init?: Partial<FormGroupChild>) {
         Object.assign(this, init);
     }

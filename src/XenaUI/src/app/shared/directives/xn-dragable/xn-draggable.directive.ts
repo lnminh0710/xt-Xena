@@ -1,5 +1,11 @@
-import { Input, HostListener, Directive, HostBinding, ElementRef } from '@angular/core';
-import { DragService } from 'app/services';
+import {
+    Input,
+    HostListener,
+    Directive,
+    HostBinding,
+    ElementRef,
+} from "@angular/core";
+import { DragService } from "app/services";
 
 export interface DraggableOptions {
     zone?: string;
@@ -8,18 +14,17 @@ export interface DraggableOptions {
 }
 
 @Directive({
-    selector: '[xnDraggable]'
+    selector: "[xnDraggable]",
 })
-
 export class DraggableDirective {
-
     private options: DraggableOptions = {};
 
-    constructor(private _elementRef: ElementRef, private dragService: DragService) {
+    constructor(
+        private _elementRef: ElementRef,
+        private dragService: DragService
+    ) {}
 
-    }
-
-    @HostBinding('draggable')
+    @HostBinding("draggable")
     get draggable() {
         return true;
     }
@@ -31,13 +36,13 @@ export class DraggableDirective {
         }
     }
 
-    @HostListener('dragstart', ['$event'])
+    @HostListener("dragstart", ["$event"])
     onDragStart(event) {
-        const { zone = 'zone', data = {}, callBack } = this.options;
+        const { zone = "zone", data = {}, callBack } = this.options;
         this.dragService.startDrag(zone, data, callBack);
     }
 
-    @HostListener('dragend', ['$event'])
+    @HostListener("dragend", ["$event"])
     onDragEnd(event) {
         this.dragService.reset();
     }

@@ -1,1 +1,1 @@
-export { DialogApplyWidgetSettingsComponent } from './dialog-apply-widget-settings.component';
+export { DialogApplyWidgetSettingsComponent } from "./dialog-apply-widget-settings.component";

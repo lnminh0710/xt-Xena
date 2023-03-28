@@ -1,4 +1,4 @@
-@import '~sass_files/color.scss';
+@import "~sass_files/color.scss";
 
 .panel {
     margin-bottom: 5px;
@@ -122,7 +122,9 @@
     display: none;
 }
 
-.btn-remove, .btn-remove:focus, .btn-remove:active {
+.btn-remove,
+.btn-remove:focus,
+.btn-remove:active {
     font-size: 15px;
     padding-top: 0;
     border: none;

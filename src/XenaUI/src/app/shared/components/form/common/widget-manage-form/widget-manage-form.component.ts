@@ -1,4 +1,3 @@
-
 import {
     Component,
     OnInit,
@@ -7,48 +6,45 @@ import {
     OnDestroy,
     Injector,
     ViewChild,
-    ChangeDetectorRef
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import { FormBase } from 'app/shared/components/form/form-base';
-import { Uti, CustomValidators } from 'app/utilities';
-import { Validators } from '@angular/forms';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import * as widgetContentReducer from 'app/state-management/store/reducer/widget-content-detail';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import { FormOutputModel } from 'app/models';
+    ChangeDetectorRef,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { FormBase } from "app/shared/components/form/form-base";
+import { Uti, CustomValidators } from "app/utilities";
+import { Validators } from "@angular/forms";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import * as widgetContentReducer from "app/state-management/store/reducer/widget-content-detail";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import { FormOutputModel } from "app/models";
 import {
     ProcessDataActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import { CommonService, AppErrorHandler, ModalService } from 'app/services';
-import { ComboBoxTypeConstant } from 'app/app.constants';
-import {
-    ApiResultResponse,
-} from 'app/models';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isEmpty from 'lodash-es/isEmpty';
-import { WjMultiSelect } from 'wijmo/wijmo.angular2.input';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { ControlMessageComponent } from 'app/shared/components/form';
+    CustomAction,
+} from "app/state-management/store/actions";
+import { CommonService, AppErrorHandler, ModalService } from "app/services";
+import { ComboBoxTypeConstant } from "app/app.constants";
+import { ApiResultResponse } from "app/models";
+import cloneDeep from "lodash-es/cloneDeep";
+import isEmpty from "lodash-es/isEmpty";
+import { WjMultiSelect } from "wijmo/wijmo.angular2.input";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { ControlMessageComponent } from "app/shared/components/form";
 
 @Component({
-    selector: 'widget-manage-form',
-    styleUrls: ['./widget-manage-form.component.scss'],
-    templateUrl: './widget-manage-form.component.html'
+    selector: "widget-manage-form",
+    styleUrls: ["./widget-manage-form.component.scss"],
+    templateUrl: "./widget-manage-form.component.html",
 })
-export class WidgetManageFormComponent extends FormBase implements OnInit, OnDestroy {
+export class WidgetManageFormComponent
+    extends FormBase
+    implements OnInit, OnDestroy
+{
     public listComboBox: any = {
         widgetType: [],
-        moduleItems: []
+        moduleItems: [],
     };
     public widgetGroups: Array<any> = [];
 
@@ -66,8 +62,9 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     private _formCloneMode: boolean = false;
     private _displayOnDirty: boolean = false;
 
-    @ViewChild('module') moduleCombobox: WjMultiSelect;
-    @ViewChild('moduleControlMessage') moduleControlMessage: ControlMessageComponent;
+    @ViewChild("module") moduleCombobox: WjMultiSelect;
+    @ViewChild("moduleControlMessage")
+    moduleControlMessage: ControlMessageComponent;
     constructor(
         protected injector: Injector,
         protected router: Router,
@@ -76,7 +73,8 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
         private _dispatcher: ReducerManagerDispatcher,
         private _ref: ChangeDetectorRef,
         private _store: Store<AppState>,
-        private _comService: CommonService) {
+        private _comService: CommonService
+    ) {
         super(injector, router);
     }
 
@@ -94,7 +92,7 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     }
 
     public submit() {
-        this.formGroup['submitted'] = true;
+        this.formGroup["submitted"] = true;
         this.formGroup.updateValueAndValidity();
         const isValid = this.isValid(true);
         if (!isValid) {
@@ -103,7 +101,7 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
                 submitResult: false,
                 isValid: isValid,
                 isDirty: this.isDirty(),
-                returnID: null
+                returnID: null,
             });
             this.outputData.emit(this.outputModel);
             return;
@@ -114,10 +112,10 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
                 submitResult: false,
                 isValid: true,
                 isDirty: false,
-                returnID: null
+                returnID: null,
             });
             this.outputData.emit(this.outputModel);
-            return;   
+            return;
         }
         this.saveData();
     }
@@ -130,7 +128,9 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
         if (this.formGroup.valid) {
             if (!this.isDisplayOnValid()) {
                 if (isShowMessage)
-                    this._modalService.warningText('Modal_Message__Select_An_Item_Display');
+                    this._modalService.warningText(
+                        "Modal_Message__Select_An_Item_Display"
+                    );
                 return false;
             }
             return true;
@@ -151,7 +151,7 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
             UpdateJsonString: formValue.updateJson,
             // IdSettingsModule: this.moduleCombobox.selectedItem.idSettingsModule,
             ToolbarJson: this.buildToolbarJson(formValue.title),
-            UsedModule: this.getUsedModule()
+            UsedModule: this.getUsedModule(),
         };
         if (this._idRepWidgetApp) {
             result.IdRepWidgetApp = this._idRepWidgetApp;
@@ -160,25 +160,33 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     }
 
     public onCheckedItemsChanged() {
-        const forAllMoudleItem = this.moduleCombobox.checkedItems.find(x => x.keepValue == '-1');
+        const forAllMoudleItem = this.moduleCombobox.checkedItems.find(
+            (x) => x.keepValue == "-1"
+        );
         if (forAllMoudleItem) {
             if (this.moduleCombobox.checkedItems.length > 1) {
-                this._toasterService.pop('warning', 'Warning', 'Remove "All Advance..." to select other module');
+                this._toasterService.pop(
+                    "warning",
+                    "Warning",
+                    'Remove "All Advance..." to select other module'
+                );
             }
             for (let item of this.listComboBox.moduleItems) {
-                item['idValue'] = false;
+                item["idValue"] = false;
             }
-            this.listComboBox.moduleItems[0]['idValue'] = true;
+            this.listComboBox.moduleItems[0]["idValue"] = true;
             this.moduleCombobox.refresh();
         }
         this.onModuleChanged();
         // this.formGroup.controls['module']['valueIncorrect'] = !this.moduleCombobox.checkedItems.length;
         if (!this.moduleCombobox.checkedItems.length) {
-            this.formGroup.controls['module'].setValidators(Validators.required);
-            this.formGroup.controls['module'].setErrors({ 'required': true });
+            this.formGroup.controls["module"].setValidators(
+                Validators.required
+            );
+            this.formGroup.controls["module"].setErrors({ required: true });
         } else {
-            this.formGroup.controls['module'].clearValidators();
-            this.formGroup.controls['module'].setErrors(null);
+            this.formGroup.controls["module"].clearValidators();
+            this.formGroup.controls["module"].setErrors(null);
         }
         this.moduleControlMessage.reUpdateStyleForControl();
     }
@@ -191,7 +199,7 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
             submitResult: null,
             isValid: this.isValid(),
             isDirty: true,
-            returnID: null
+            returnID: null,
         });
         this.outputData.emit(this.outputModel);
         // this.processFormChanged();
@@ -201,13 +209,35 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     /***************************************PRIVATE METHOD********************************************/
 
     private registerSubscribe() {
-        this._formEditModeState = this._store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditMode);
-        this._formCloneModeState = this._store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formCloneMode);
-        this._rowsDataState = this._store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).rowsData);
+        this._formEditModeState = this._store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditMode
+        );
+        this._formCloneModeState = this._store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formCloneMode
+        );
+        this._rowsDataState = this._store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).rowsData
+        );
     }
 
     private onModuleChanged() {
-        if (!this.moduleCombobox || !this.moduleCombobox.checkedItems || !this.moduleCombobox.checkedItems.length) {
+        if (
+            !this.moduleCombobox ||
+            !this.moduleCombobox.checkedItems ||
+            !this.moduleCombobox.checkedItems.length
+        ) {
             this.widgetGroups = [];
             return;
         }
@@ -215,31 +245,37 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     }
 
     private isDisplayOnValid(): boolean {
-        if (this.widgetGroups.length === 1 && this.widgetGroups[0].idSettingsGUI == '-1') {
+        if (
+            this.widgetGroups.length === 1 &&
+            this.widgetGroups[0].idSettingsGUI == "-1"
+        ) {
             return true;
         }
-        const displayOn = this.widgetGroups.find(x => !!x.value);
-        return (displayOn && displayOn.value);
+        const displayOn = this.widgetGroups.find((x) => !!x.value);
+        return displayOn && displayOn.value;
     }
 
     private initEmptyData() {
-        this.initForm({
-            title: ['', CustomValidators.required],
-            type: ['', Validators.required],
-            module: [undefined, Validators.required],
-            icon: ['', Validators.required],
-            listenKey: '',
-            filterKey: '',
-            primaryKey: '',
-            add: '',
-            edit: '',
-            delete: '',
-            getJson: '',
-            updateJson: '',
-        }, true);
+        this.initForm(
+            {
+                title: ["", CustomValidators.required],
+                type: ["", Validators.required],
+                module: [undefined, Validators.required],
+                icon: ["", Validators.required],
+                listenKey: "",
+                filterKey: "",
+                primaryKey: "",
+                add: "",
+                edit: "",
+                delete: "",
+                getJson: "",
+                updateJson: "",
+            },
+            true
+        );
         Uti.registerFormControlType(this.formGroup, {
-            dropdown: 'type',
-            multiple: 'module'
+            dropdown: "type",
+            multiple: "module",
         });
     }
 
@@ -248,8 +284,13 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
         this._comService.updateWidgetApp(data).subscribe((response: any) => {
             this.appErrorHandler.executeAction(() => {
                 this.outputModel = new FormOutputModel({
-                    submitResult: true, formValue: this.formGroup.value,
-                    isDirty: false, isValid: true, returnID: Uti.isResquestSuccess(response) ? response.item.returnID : null
+                    submitResult: true,
+                    formValue: this.formGroup.value,
+                    isDirty: false,
+                    isValid: true,
+                    returnID: Uti.isResquestSuccess(response)
+                        ? response.item.returnID
+                        : null,
                 });
                 this.outputData.emit(this.outputModel);
                 if (!response.item.returnID) {
@@ -267,75 +308,129 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     }
 
     private subcribeEditModeState() {
-        this._formEditModeStateSubscription = this._formEditModeState.subscribe((_formEditModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this._formEditMode = _formEditModeState;
-            });
-        });
+        this._formEditModeStateSubscription = this._formEditModeState.subscribe(
+            (_formEditModeState: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this._formEditMode = _formEditModeState;
+                });
+            }
+        );
     }
 
     private subcribeCloneModeState() {
-        this._formCloneModeStateSubscription = this._formCloneModeState.subscribe((_formCloneModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this._formCloneMode = _formCloneModeState;
-            });
-        });
+        this._formCloneModeStateSubscription =
+            this._formCloneModeState.subscribe(
+                (_formCloneModeState: boolean) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this._formCloneMode = _formCloneModeState;
+                    });
+                }
+            );
     }
 
     private subcribeRequestSaveState() {
-        this._dispatcherSubscription = this._dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.submit();
+        this._dispatcherSubscription = this._dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.submit();
+                });
             });
-        });
     }
 
     private subcribeWidgetRowData() {
-        this._rowsDataStateSubscription = this._rowsDataState.subscribe((rowsData: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this._idRepWidgetApp = Uti.getValueFromWidgetRowDataArrayByKey(rowsData, 'IdRepWidgetApp');
-                if (!rowsData || !rowsData.length || !this._idRepWidgetApp || (!this._formEditMode && !this._formCloneMode)) {
-                    this._idRepWidgetApp = null;
-                    return;
-                }
-                this.getWidgetDataById();
-            });
-        });
+        this._rowsDataStateSubscription = this._rowsDataState.subscribe(
+            (rowsData: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this._idRepWidgetApp =
+                        Uti.getValueFromWidgetRowDataArrayByKey(
+                            rowsData,
+                            "IdRepWidgetApp"
+                        );
+                    if (
+                        !rowsData ||
+                        !rowsData.length ||
+                        !this._idRepWidgetApp ||
+                        (!this._formEditMode && !this._formCloneMode)
+                    ) {
+                        this._idRepWidgetApp = null;
+                        return;
+                    }
+                    this.getWidgetDataById();
+                });
+            }
+        );
     }
 
     private getWidgetDataById() {
-        this._comService.getWidgetAppById(this._idRepWidgetApp).subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response) || response.item.length < 2 || !response.item[1].length) {
-                    return;
-                }
-                const wd = response.item[1][0];
-                this._currentWidget = wd;
-                const widgetDataType = Uti.tryParseJson(Uti.mapEmptyToStringEmpty(wd.WidgetDataType));
-                this.formGroup.controls['title'].setValue(Uti.mapEmptyToStringEmpty(wd.WidgetApp));
-                this.formGroup.controls['type'].setValue(Uti.mapEmptyToStringEmpty(wd.IdRepWidgetType.toString()));
-                this.setFormDataForModule(wd);
-                this.formGroup.controls['icon'].setValue(Uti.mapEmptyToStringEmpty(wd.IconName));
-                this.formGroup.controls['listenKey'].setValue(widgetDataType.listenKey);
-                this.formGroup.controls['filterKey'].setValue(widgetDataType.filterKey);
-                this.formGroup.controls['primaryKey'].setValue(widgetDataType.primaryKey);
-                this.formGroup.controls['add'].setValue(widgetDataType.editTableSetting && widgetDataType.editTableSetting.addNew == '1');
-                this.formGroup.controls['edit'].setValue(widgetDataType.editTableSetting && widgetDataType.editTableSetting.edit == '1');
-                this.formGroup.controls['delete'].setValue(widgetDataType.editTableSetting && widgetDataType.editTableSetting.delete == '1');
-                this.formGroup.controls['getJson'].setValue(Uti.mapEmptyToStringEmpty(wd.JsonString));
-                this.formGroup.controls['updateJson'].setValue(Uti.mapEmptyToStringEmpty(wd.UpdateJsonString));
-                this.formGroup.markAsPristine();
+        this._comService
+            .getWidgetAppById(this._idRepWidgetApp)
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        response.item.length < 2 ||
+                        !response.item[1].length
+                    ) {
+                        return;
+                    }
+                    const wd = response.item[1][0];
+                    this._currentWidget = wd;
+                    const widgetDataType = Uti.tryParseJson(
+                        Uti.mapEmptyToStringEmpty(wd.WidgetDataType)
+                    );
+                    this.formGroup.controls["title"].setValue(
+                        Uti.mapEmptyToStringEmpty(wd.WidgetApp)
+                    );
+                    this.formGroup.controls["type"].setValue(
+                        Uti.mapEmptyToStringEmpty(wd.IdRepWidgetType.toString())
+                    );
+                    this.setFormDataForModule(wd);
+                    this.formGroup.controls["icon"].setValue(
+                        Uti.mapEmptyToStringEmpty(wd.IconName)
+                    );
+                    this.formGroup.controls["listenKey"].setValue(
+                        widgetDataType.listenKey
+                    );
+                    this.formGroup.controls["filterKey"].setValue(
+                        widgetDataType.filterKey
+                    );
+                    this.formGroup.controls["primaryKey"].setValue(
+                        widgetDataType.primaryKey
+                    );
+                    this.formGroup.controls["add"].setValue(
+                        widgetDataType.editTableSetting &&
+                            widgetDataType.editTableSetting.addNew == "1"
+                    );
+                    this.formGroup.controls["edit"].setValue(
+                        widgetDataType.editTableSetting &&
+                            widgetDataType.editTableSetting.edit == "1"
+                    );
+                    this.formGroup.controls["delete"].setValue(
+                        widgetDataType.editTableSetting &&
+                            widgetDataType.editTableSetting.delete == "1"
+                    );
+                    this.formGroup.controls["getJson"].setValue(
+                        Uti.mapEmptyToStringEmpty(wd.JsonString)
+                    );
+                    this.formGroup.controls["updateJson"].setValue(
+                        Uti.mapEmptyToStringEmpty(wd.UpdateJsonString)
+                    );
+                    this.formGroup.markAsPristine();
+                });
             });
-        });
     }
 
     private setFormDataForModule(widgetData: any) {
         const moduleData: any = [];
         let usedModule: any = widgetData.UsedModule;
         if (usedModule && !isEmpty(usedModule)) {
-            usedModule = usedModule.split(',');
+            usedModule = usedModule.split(",");
             for (let item of this.listComboBox.moduleItems) {
                 if (usedModule.indexOf(item.keepValue) > -1) {
                     moduleData.push(item);
@@ -344,35 +439,40 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
         } else {
             for (let item of this.listComboBox.moduleItems) {
                 if (item.keepValue == widgetData.IdSettingsGUI) {
-                    this._currentWidget.UsedModule = widgetData.IdSettingsGUI + '';
+                    this._currentWidget.UsedModule =
+                        widgetData.IdSettingsGUI + "";
                     moduleData.push(item);
                 }
-            }    
+            }
         }
-        
-        this.formGroup.controls['module'].setValue(moduleData);
+
+        this.formGroup.controls["module"].setValue(moduleData);
     }
 
     private getDataForCombobox() {
-        this._comService.getListComboBox(
-            ComboBoxTypeConstant.widgetType + ',' +
-            ComboBoxTypeConstant.moduleItems + ',',
-            null, true
-        )
-        .subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    return;
-                }
-                for (let item of response.item.moduleItems) {
-                    item.keepValue = item.idValue;
-                    item.idValue = false;
-                }
-                this.listComboBox = response.item;
-                this.isRenderForm = true;
-                this.subcribeWidgetRowData();
+        this._comService
+            .getListComboBox(
+                ComboBoxTypeConstant.widgetType +
+                    "," +
+                    ComboBoxTypeConstant.moduleItems +
+                    ",",
+                null,
+                true
+            )
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        return;
+                    }
+                    for (let item of response.item.moduleItems) {
+                        item.keepValue = item.idValue;
+                        item.idValue = false;
+                    }
+                    this.listComboBox = response.item;
+                    this.isRenderForm = true;
+                    this.subcribeWidgetRowData();
+                });
             });
-        });
     }
 
     private buildDataForDisplayOn(settings: Array<any>) {
@@ -386,16 +486,16 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
                 jsonSettings: item.jsonSettings,
                 idSettingsGUI: item.keepValue,
                 idSettingsModule: item.idSettingsModule,
-                dirty: false
+                dirty: false,
             };
             for (let item1 of jsonSetting) {
                 widgetGroup.group.push({
                     value: item1.Tooltip,
                     icon: item1.Icon,
-                    text: item1.Tooltip
+                    text: item1.Tooltip,
                 });
                 if (this.isExistsWidgetAppInThisGroup(item1.Widgets)) {
-                    widgetGroup.value = item1.Tooltip
+                    widgetGroup.value = item1.Tooltip;
                 }
             }
             widgetGroups.push(widgetGroup);
@@ -410,11 +510,13 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     }
 
     private getKeepValueForModuleGroup(moduleName: string): string {
-        const currentModule = this.widgetGroups.find(x => x.text == moduleName);
+        const currentModule = this.widgetGroups.find(
+            (x) => x.text == moduleName
+        );
         if (!currentModule) {
-            return '';
+            return "";
         }
-        return currentModule.value || '';
+        return currentModule.value || "";
     }
 
     private isExistsWidgetAppInThisGroup(group: Array<any>): boolean {
@@ -427,11 +529,14 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     }
 
     private buildToolbarJson(widgetTitle: string): any {
-        if (this.widgetGroups.length === 1 && this.widgetGroups[0].idSettingsGUI == '-1') {
+        if (
+            this.widgetGroups.length === 1 &&
+            this.widgetGroups[0].idSettingsGUI == "-1"
+        ) {
             return null;
         }
         let result: any = {
-            WidgetJsonToolbar: []
+            WidgetJsonToolbar: [],
         };
         for (let item of this.widgetGroups) {
             let settings = Uti.tryParseJson(item.jsonSettings);
@@ -441,7 +546,10 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
             if (item.dirty || this._formCloneMode) {
                 this.appendWidgetToSettingJson(settings, item.value);
             }
-            settings = this.updateWidgetNameToToolBarJson(settings, widgetTitle);
+            settings = this.updateWidgetNameToToolBarJson(
+                settings,
+                widgetTitle
+            );
             result.WidgetJsonToolbar.push({
                 IdSettingsModule: item.idSettingsModule,
                 JsonSettings: JSON.stringify(settings),
@@ -452,7 +560,10 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
         return jsonResult;
     }
 
-    private updateWidgetNameToToolBarJson(settings: Array<any>, widgetName: string): any {
+    private updateWidgetNameToToolBarJson(
+        settings: Array<any>,
+        widgetName: string
+    ): any {
         for (let item of settings) {
             for (let widget of item.Widgets) {
                 if (widget.IdRepWidgetApp != this._idRepWidgetApp) continue;
@@ -464,13 +575,13 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     }
 
     private getJsonSettingOfMovedModule(saveData: any) {
-        let currentUsedModule = this._currentWidget.UsedModule || '';
-        currentUsedModule = currentUsedModule.split(',');
-        let usedModule: any = this.getUsedModule() || '';
-        usedModule = usedModule.split(',');
+        let currentUsedModule = this._currentWidget.UsedModule || "";
+        currentUsedModule = currentUsedModule.split(",");
+        let usedModule: any = this.getUsedModule() || "";
+        usedModule = usedModule.split(",");
         let movedModule: any = [];
         for (let item of currentUsedModule) {
-            if (item == '-1') continue;
+            if (item == "-1") continue;
             if (usedModule.indexOf(item) === -1) {
                 movedModule.push(item);
             }
@@ -493,10 +604,10 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     }
 
     private getUsedModule(): string {
-        let result: string = '';
+        let result: string = "";
         for (let item of this.widgetGroups) {
-            if (item.value || item.idSettingsGUI == '-1') {
-                result += item.idSettingsGUI + ',';
+            if (item.value || item.idSettingsGUI == "-1") {
+                result += item.idSettingsGUI + ",";
             }
         }
         return result.substring(0, result.length - 1);
@@ -504,10 +615,16 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
 
     private removeWidgetFromSettingJson(settings: Array<any>) {
         for (let item of settings) {
-            const widgetItem = item.Widgets.find(x => x.IdRepWidgetApp == this._idRepWidgetApp);
+            const widgetItem = item.Widgets.find(
+                (x) => x.IdRepWidgetApp == this._idRepWidgetApp
+            );
             if (widgetItem) {
                 this._currentWidgetModule = widgetItem;
-                Uti.removeItemInArray(item.Widgets, {'IdRepWidgetApp': this._idRepWidgetApp}, 'IdRepWidgetApp');
+                Uti.removeItemInArray(
+                    item.Widgets,
+                    { IdRepWidgetApp: this._idRepWidgetApp },
+                    "IdRepWidgetApp"
+                );
                 return;
             } else {
                 this._currentWidgetModule = {};
@@ -518,8 +635,11 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
     private appendWidgetToSettingJson(settings: Array<any>, value: string) {
         for (let item of settings) {
             if (item.Tooltip == value) {
-                this._currentWidgetModule.IdRepWidgetApp = this._idRepWidgetApp ? this._idRepWidgetApp : '<<ReplaceRepWidgetAppId>>';
-                this._currentWidgetModule.WidgetName = this.formGroup.value.title;
+                this._currentWidgetModule.IdRepWidgetApp = this._idRepWidgetApp
+                    ? this._idRepWidgetApp
+                    : "<<ReplaceRepWidgetAppId>>";
+                this._currentWidgetModule.WidgetName =
+                    this.formGroup.value.title;
                 this._currentWidgetModule.Icon = this.formGroup.value.icon;
                 item.Widgets.push(this._currentWidgetModule);
                 return;
@@ -529,14 +649,14 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
 
     private buildWidgetDataType(formValue: any) {
         let result = {
-            listenKey: formValue.listenKey || '',
-            filterKey: formValue.filterKey || '',
-            primaryKey: formValue.primaryKey || '',
+            listenKey: formValue.listenKey || "",
+            filterKey: formValue.filterKey || "",
+            primaryKey: formValue.primaryKey || "",
             editTableSetting: {
-                addNew: formValue.add ? '1' : '',
-                edit: formValue.edit ? '1' : '',
-                delete: formValue.delete ? '1' : ''
-            }
+                addNew: formValue.add ? "1" : "",
+                edit: formValue.edit ? "1" : "",
+                delete: formValue.delete ? "1" : "",
+            },
         };
         return JSON.stringify(result);
     }
@@ -546,15 +666,15 @@ export class WidgetManageFormComponent extends FormBase implements OnInit, OnDes
             return this.widgetGroups[0].idSettingsGUI;
         }
         let moduleCounter: number = 0;
-        let currentIdSettingGUI: any = '';
+        let currentIdSettingGUI: any = "";
         for (let item of this.widgetGroups) {
-            if (item.value || item.idSettingsGUI == '-1') {
+            if (item.value || item.idSettingsGUI == "-1") {
                 currentIdSettingGUI = item.idSettingsGUI;
                 moduleCounter++;
             }
         }
         if (moduleCounter === 1) return currentIdSettingGUI;
-        if (moduleCounter > 1) return '0';
+        if (moduleCounter > 1) return "0";
         return null;
     }
 }

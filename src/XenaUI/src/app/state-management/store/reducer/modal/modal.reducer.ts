@@ -1,7 +1,7 @@
-import { Action } from '@ngrx/store';
-import { ModalActions } from 'app/state-management/store/actions';
-import { CustomAction } from 'app/state-management/store/actions/base';
-import { MessageModalModel } from 'app/models';
+import { Action } from "@ngrx/store";
+import { ModalActions } from "app/state-management/store/actions";
+import { CustomAction } from "app/state-management/store/actions/base";
+import { MessageModalModel } from "app/models";
 
 export interface ModalState {
     modalData: MessageModalModel;
@@ -14,16 +14,24 @@ const initialState: ModalState = {
     modalData: new MessageModalModel(),
     modalShowMessage: false,
     modalCloseMessage: false,
-    hasTranslatePopup: false
+    hasTranslatePopup: false,
 };
 
-export function modalReducer(state = initialState, action: CustomAction): ModalState {
-	switch (action.type) {
+export function modalReducer(
+    state = initialState,
+    action: CustomAction
+): ModalState {
+    switch (action.type) {
         case ModalActions.MODAL_SET_DATA: {
             if (action.payload)
-                return Object.assign({}, state, { modalData: Object.assign({}, state.modalData, action.payload) });
-            else
-                return Object.assign({}, state, { modalData: {} });
+                return Object.assign({}, state, {
+                    modalData: Object.assign(
+                        {},
+                        state.modalData,
+                        action.payload
+                    ),
+                });
+            else return Object.assign({}, state, { modalData: {} });
         }
         case ModalActions.MODAL_SHOW_MESSAGE: {
             return Object.assign({}, state, {
@@ -40,9 +48,9 @@ export function modalReducer(state = initialState, action: CustomAction): ModalS
                 hasTranslatePopup: action.payload,
             });
         }
-            		
-		default: {
-			return state;
-		}
-	}
+
+        default: {
+            return state;
+        }
+    }
 }

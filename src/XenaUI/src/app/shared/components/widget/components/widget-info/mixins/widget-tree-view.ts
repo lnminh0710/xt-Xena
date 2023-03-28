@@ -1,37 +1,42 @@
-import { ViewChildren, QueryList } from '@angular/core';
+import { ViewChildren, QueryList } from "@angular/core";
 import {
     WidgetDetail,
     WidgetType,
     Module,
     WidgetPropertyModel,
-    WidgetState
-} from 'app/models';
+    WidgetState,
+} from "app/models";
 import {
     ModalService,
     WidgetTemplateSettingService,
-    TreeViewService
-} from 'app/services';
-import { Constructor } from './constructor';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { Uti } from 'app/utilities/uti';
-import { WidgetDetailInfo, WidgetAction } from './widget-base-mixin';
-import {
-    XnTreeViewComponent
-} from 'app/shared/components/xn-control';
+    TreeViewService,
+} from "app/services";
+import { Constructor } from "./constructor";
+import cloneDeep from "lodash-es/cloneDeep";
+import { Uti } from "app/utilities/uti";
+import { WidgetDetailInfo, WidgetAction } from "./widget-base-mixin";
+import { XnTreeViewComponent } from "app/shared/components/xn-control";
 
 export interface TreeViewServiceInjector {
     widgetTemplateSettingService: WidgetTemplateSettingService;
     treeViewService: TreeViewService;
 }
 
-export function MixinWidgetTreeView<T extends Constructor<TreeViewServiceInjector>>(base: T) {
-    abstract class AbstractWidgetTreeViewBase extends base implements WidgetDetailInfo, WidgetAction {
+export function MixinWidgetTreeView<
+    T extends Constructor<TreeViewServiceInjector>
+>(base: T) {
+    abstract class AbstractWidgetTreeViewBase
+        extends base
+        implements WidgetDetailInfo, WidgetAction
+    {
         // @ViewChildren(XnTreeViewComponent)
         // xnTreeViewComponents: QueryList<XnTreeViewComponent>;
 
         get xnTreeViewComponent(): XnTreeViewComponent {
             if (this.xnTreeViewComponents && this.xnTreeViewComponents.length) {
-                const wijmoGrid = this.xnTreeViewComponents.find(p => p.isActivated);
+                const wijmoGrid = this.xnTreeViewComponents.find(
+                    (p) => p.isActivated
+                );
                 if (wijmoGrid) {
                     return wijmoGrid;
                 }
@@ -114,13 +119,21 @@ export function MixinWidgetTreeView<T extends Constructor<TreeViewServiceInjecto
                 this.treeViewSavingComplete();
                 return;
             }
-             const strSaveData = JSON.stringify(saveData);
-             const updateString = cloneDeep(this.dataInfo.updateRequest);
-             this.widgetTemplateSettingService.updateWidgetInfo(saveData, updateString, this.moduleInfo, null, (s: string) => {
-                 return s.replace(/"/g, '\\\\"');
-             }).subscribe((rs) => {
-                 this.treeViewSavingComplete();
-             });
+            const strSaveData = JSON.stringify(saveData);
+            const updateString = cloneDeep(this.dataInfo.updateRequest);
+            this.widgetTemplateSettingService
+                .updateWidgetInfo(
+                    saveData,
+                    updateString,
+                    this.moduleInfo,
+                    null,
+                    (s: string) => {
+                        return s.replace(/"/g, '\\\\"');
+                    }
+                )
+                .subscribe((rs) => {
+                    this.treeViewSavingComplete();
+                });
         }
 
         /**
@@ -159,7 +172,6 @@ export function MixinWidgetTreeView<T extends Constructor<TreeViewServiceInjecto
             this.updateWidgetEditedStatus(true);
             this.editingWidget(this.dataInfo);
         }
-
-    };
+    }
     return AbstractWidgetTreeViewBase;
 }

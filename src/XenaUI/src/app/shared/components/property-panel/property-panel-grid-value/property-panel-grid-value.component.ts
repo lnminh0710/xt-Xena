@@ -9,33 +9,33 @@ import {
     AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-} from '@angular/core';
-import * as wjInput from 'wijmo/wijmo.angular2.input';
-import isNil from 'lodash-es/isNil';
-import {GlobalSettingService} from 'app/services';
-import {Module} from 'app/models';
-import {PropertyPanelDateFormatDialogComponent} from '../property-panel-date-format-dialog';
-import {PropertyPanelGridValueDialogComponent} from '../property-panel-grid-value-dialog';
-import {PropertyPanelOrderFieldDialogComponent} from '../property-panel-order-field-dialog';
-import {PropertyPanelGridFieldDataDialogComponent} from '../property-panel-grid-field-data-dialog';
-import {PropertyPanelShowDropdownFocusComponent} from '../property-panel-show-dropdown-focus';
-import {Subject} from 'rxjs/Subject';
-import {Subscription} from 'rxjs/Subscription';
-import {Uti} from 'app/utilities';
-import {AngularMultiSelect} from '../../xn-control/xn-dropdown';
-import {PropertyBackgroundGradientComponent} from '../property-background-gradient-dialog';
-import {PropertyBackgroundImageComponent} from '../property-background-image';
-import cloneDeep from 'lodash-es/cloneDeep';
+} from "@angular/core";
+import * as wjInput from "wijmo/wijmo.angular2.input";
+import isNil from "lodash-es/isNil";
+import { GlobalSettingService } from "app/services";
+import { Module } from "app/models";
+import { PropertyPanelDateFormatDialogComponent } from "../property-panel-date-format-dialog";
+import { PropertyPanelGridValueDialogComponent } from "../property-panel-grid-value-dialog";
+import { PropertyPanelOrderFieldDialogComponent } from "../property-panel-order-field-dialog";
+import { PropertyPanelGridFieldDataDialogComponent } from "../property-panel-grid-field-data-dialog";
+import { PropertyPanelShowDropdownFocusComponent } from "../property-panel-show-dropdown-focus";
+import { Subject } from "rxjs/Subject";
+import { Subscription } from "rxjs/Subscription";
+import { Uti } from "app/utilities";
+import { AngularMultiSelect } from "../../xn-control/xn-dropdown";
+import { PropertyBackgroundGradientComponent } from "../property-background-gradient-dialog";
+import { PropertyBackgroundImageComponent } from "../property-background-image";
+import cloneDeep from "lodash-es/cloneDeep";
 
 @Component({
-    selector: 'property-panel-grid-value',
-    styleUrls: ['./property-panel-grid-value.component.scss'],
-    templateUrl: './property-panel-grid-value.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: "property-panel-grid-value",
+    styleUrls: ["./property-panel-grid-value.component.scss"],
+    templateUrl: "./property-panel-grid-value.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
-export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, AfterViewInit {
-
+export class PropertyPanelGridValueComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     @Input() item: any;
     @Input() usingModule: Module;
 
@@ -45,15 +45,22 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
 
     @ViewChild(AngularMultiSelect) multiSelect: AngularMultiSelect;
     @ViewChild(wjInput.WjInputColor) wjInputColor: wjInput.WjInputColor;
-    @ViewChild('propertyPanelGridValueDialog') propertyPanelGridValueDialog: PropertyPanelGridValueDialogComponent;
-    @ViewChild('propertyPanelOrderFieldDialog') propertyPanelOrderFieldDialog: PropertyPanelOrderFieldDialogComponent;
-    @ViewChild('propertyPanelDropdownFocusDialog') propertyPanelDropdownFocusDialog: PropertyPanelShowDropdownFocusComponent;
-    @ViewChild('propertyPanelGridFieldDataDialog') propertyPanelGridFieldDataDialogComponent: PropertyPanelGridFieldDataDialogComponent;
-    @ViewChild('propertyPanelDateFormatDialog') propertyPanelDateFormatDialogComponent: PropertyPanelDateFormatDialogComponent;
-    @ViewChild('propertyBackgroundGradient') propertyBackgroundGradient: PropertyBackgroundGradientComponent;
-    @ViewChild('propertyBackgroundImage') propertyBackgroundImage: PropertyBackgroundImageComponent;
+    @ViewChild("propertyPanelGridValueDialog")
+    propertyPanelGridValueDialog: PropertyPanelGridValueDialogComponent;
+    @ViewChild("propertyPanelOrderFieldDialog")
+    propertyPanelOrderFieldDialog: PropertyPanelOrderFieldDialogComponent;
+    @ViewChild("propertyPanelDropdownFocusDialog")
+    propertyPanelDropdownFocusDialog: PropertyPanelShowDropdownFocusComponent;
+    @ViewChild("propertyPanelGridFieldDataDialog")
+    propertyPanelGridFieldDataDialogComponent: PropertyPanelGridFieldDataDialogComponent;
+    @ViewChild("propertyPanelDateFormatDialog")
+    propertyPanelDateFormatDialogComponent: PropertyPanelDateFormatDialogComponent;
+    @ViewChild("propertyBackgroundGradient")
+    propertyBackgroundGradient: PropertyBackgroundGradientComponent;
+    @ViewChild("propertyBackgroundImage")
+    propertyBackgroundImage: PropertyBackgroundImageComponent;
 
-    private multiSelectInputValue = '';
+    private multiSelectInputValue = "";
 
     private delayedInputChangeSubject = new Subject<any>();
     // private delayedColorChangeSubject = new Subject<any>();
@@ -63,7 +70,7 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
     constructor(
         private globalSettingService: GlobalSettingService,
         private uti: Uti,
-        public changeDetectorRef: ChangeDetectorRef,
+        public changeDetectorRef: ChangeDetectorRef
     ) {
         this.onComboboxChanged = this.onComboboxChanged.bind(this);
         // this.onColorChanged = this.onColorChanged.bind(this);
@@ -78,8 +85,10 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
             // this.wjInputColor.valueChanged.addHandler(this.onColorChanged);
         }
 
-        if (this.item.dataType === 'MultiSelect') {
-            this.multiSelectInputValue = this.buildMultiSelectInputValue(this.item.options);
+        if (this.item.dataType === "MultiSelect") {
+            this.multiSelectInputValue = this.buildMultiSelectInputValue(
+                this.item.options
+            );
         }
     }
 
@@ -89,14 +98,15 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
             this.comboboxChangedSubscription.unsubscribe();
         }
         setTimeout(() => {
-            this.comboboxChangedSubscription = this.multiSelect.onSelect.subscribe(this.onComboboxChanged);
+            this.comboboxChangedSubscription =
+                this.multiSelect.onSelect.subscribe(this.onComboboxChanged);
         }, timeout);
     }
 
     ngOnInit() {
         this.onInputChangedSubscription = this.delayedInputChangeSubject
             .debounceTime(1000)
-            .subscribe(newValue => {
+            .subscribe((newValue) => {
                 if (this.item.value !== newValue) {
                     this.item.value = newValue;
                     this.item.dirty = true;
@@ -148,9 +158,12 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
     // }
 
     onColorTextChanged($event) {
-        if (!this.wjInputColor ||
+        if (
+            !this.wjInputColor ||
             this.item.value === this.wjInputColor._oldText ||
-            (Uti.isNilE(this.item.value) && Uti.isNilE(this.wjInputColor._oldText))) {
+            (Uti.isNilE(this.item.value) &&
+                Uti.isNilE(this.wjInputColor._oldText))
+        ) {
             return;
         }
         this.item.value = this.wjInputColor._oldText;
@@ -218,7 +231,7 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
     }
 
     public onSelectImage(data) {
-        this.item.value = 'api/FileManager/GetFile?' + data;
+        this.item.value = "api/FileManager/GetFile?" + data;
         this.item.dirty = true;
         this.onPropertiesChange.emit(true);
         setTimeout(() => {
@@ -228,20 +241,26 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
 
     public onSelectBackgroundGradient(data) {
         if (!data.background) return;
-        const regexMatchRgbGradient = /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\([^\)]*\)/;
-        const splitDataRgb = data.background.split('rgb');
+        const regexMatchRgbGradient =
+            /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\([^\)]*\)/;
+        const splitDataRgb = data.background.split("rgb");
         const result = [];
         for (let i = 1; i < splitDataRgb.length; i++) {
-            const rgb = 'rgb' + splitDataRgb[i];
+            const rgb = "rgb" + splitDataRgb[i];
             result.push(rgb);
         }
 
-        this.item.options = cloneDeep(result.map(x => {
-            return {
-                value: regexMatchRgbGradient.exec(x)[0],
-                position: x.replace(regexMatchRgbGradient, '').replace('%)', '').trim()
-            }
-        }));
+        this.item.options = cloneDeep(
+            result.map((x) => {
+                return {
+                    value: regexMatchRgbGradient.exec(x)[0],
+                    position: x
+                        .replace(regexMatchRgbGradient, "")
+                        .replace("%)", "")
+                        .trim(),
+                };
+            })
+        );
 
         if (data.type) {
             this.item.typeGradient = data.type;
@@ -262,11 +281,17 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
         this.item.dirty = true;
 
         for (const opt of this.item.options) {
-            opt.selected = !((isNil(opt.isEditable) || opt.isEditable === true) && (isNil(opt.isHidden) || opt.isHidden === false));
+            opt.selected = !(
+                (isNil(opt.isEditable) || opt.isEditable === true) &&
+                (isNil(opt.isHidden) || opt.isHidden === false)
+            );
         }
 
         for (const opt of this.item.options) {
-            if ((isNil(opt.isEditable) || opt.isEditable === true) && (isNil(opt.isHidden) || opt.isHidden === false)) {
+            if (
+                (isNil(opt.isEditable) || opt.isEditable === true) &&
+                (isNil(opt.isHidden) || opt.isHidden === false)
+            ) {
                 for (const dt of data) {
                     if (opt.value === dt.value) {
                         opt.selected = true;
@@ -275,7 +300,9 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
             }
         }
 
-        this.multiSelectInputValue = this.buildMultiSelectInputValue(this.item.options);
+        this.multiSelectInputValue = this.buildMultiSelectInputValue(
+            this.item.options
+        );
 
         this.onPropertiesChange.emit(true);
         this.onPropertiesApply.emit(true);
@@ -283,16 +310,22 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
         this.changeDetectorRef.markForCheck();
     }
 
-
     onSelectDropdownApply(data) {
         this.item.dirty = true;
         for (const opt of this.item.options) {
             for (const dt of data) {
-                if (opt.value === dt.value && dt.selected !== null && dt.selected === true) {
+                if (
+                    opt.value === dt.value &&
+                    dt.selected !== null &&
+                    dt.selected === true
+                ) {
                     opt.selected = true;
-                } else if (opt.value === dt.value && dt.selected !== null && dt.selected === false) {
+                } else if (
+                    opt.value === dt.value &&
+                    dt.selected !== null &&
+                    dt.selected === false
+                ) {
                     opt.selected = false;
-
                 }
             }
         }
@@ -315,13 +348,22 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
 
     buildMultiSelectInputValue(options) {
         if (options)
-            return options.filter(i => i.selected === true && (isNil(i.isHidden) || i.isHidden === false)).length + ' items selected';
-        else
-            return '';
+            return (
+                options.filter(
+                    (i) =>
+                        i.selected === true &&
+                        (isNil(i.isHidden) || i.isHidden === false)
+                ).length + " items selected"
+            );
+        else return "";
     }
 
     public itemFormatterFunc(index, content) {
-        if (this.item.options && this.item.options[index] && this.item.options[index].isHeader) {
+        if (
+            this.item.options &&
+            this.item.options[index] &&
+            this.item.options[index].isHeader
+        ) {
             return `<span class='option-header' style='pointer-events:none;display:block;margin-left:-5px;font-size:10pt;font-weight:bold'>${content.value}</span>`;
         }
 
@@ -330,7 +372,9 @@ export class PropertyPanelGridValueComponent implements OnInit, OnDestroy, After
 
     public onPropComboFocused($event) {
         setTimeout(() => {
-            $('.option-header').closest('.wj-listbox-item').css('pointer-events', 'none');
+            $(".option-header")
+                .closest(".wj-listbox-item")
+                .css("pointer-events", "none");
         });
     }
 }

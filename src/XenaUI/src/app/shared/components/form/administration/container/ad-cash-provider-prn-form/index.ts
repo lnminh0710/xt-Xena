@@ -1,1 +1,1 @@
-export * from './ad-cash-provider-prn-form.component';
+export * from "./ad-cash-provider-prn-form.component";

@@ -1,49 +1,78 @@
 <div class="article-search">
     <div class="form-inline">
         <div class="form-group no-wrap">
-            <label class="article-search__article-label"><label-translation [keyword]="'Article_Search__Article_Number'"></label-translation></label>
-            <input #articleInput
-                   [(ngModel)]="articleNumber"
-                   (keyup.enter)="focusControl(quantityInput)"
-                   class="form-control article-search__article-input"
-                   XnOnlyNumber="true"
-                   name="articleNumber"
-                   autocomplete="off">
+            <label class="article-search__article-label"
+                ><label-translation
+                    [keyword]="'Article_Search__Article_Number'"
+                ></label-translation
+            ></label>
+            <input
+                #articleInput
+                [(ngModel)]="articleNumber"
+                (keyup.enter)="focusControl(quantityInput)"
+                class="form-control article-search__article-input"
+                XnOnlyNumber="true"
+                name="articleNumber"
+                autocomplete="off"
+            />
 
             <div class="inline-block article-search__qty">
-                <label><label-translation [keyword]="'Article_Search__Qty'"></label-translation>:</label>
-                <input #quantityInput
-                       [(ngModel)]="quantity"
-                       (keyup.enter)="focusControl(addButton)"
-                       class="form-control article-search__qty-input"
-                       XnOnlyNumber="true"
-                       name="quantity"
-                       autocomplete="off">
+                <label
+                    ><label-translation
+                        [keyword]="'Article_Search__Qty'"
+                    ></label-translation
+                    >:</label
+                >
+                <input
+                    #quantityInput
+                    [(ngModel)]="quantity"
+                    (keyup.enter)="focusControl(addButton)"
+                    class="form-control article-search__qty-input"
+                    XnOnlyNumber="true"
+                    name="quantity"
+                    autocomplete="off"
+                />
             </div>
         </div>
         <div class="form-group">
-            <button type="button"
-                    #addButton
-                    mat-raised-button
-                    class="mat-btn-blue"
-                    [ngClass]="{'disabled' : (!articleNumber || !quantity) }"
-                    (keyup.enter)="focusControl(articleInput)"
-                    (click)="addArticle()">
-                <span class="bt-t"><label-translation [keyword]="'Article_Search__Add'"></label-translation></span>
+            <button
+                type="button"
+                #addButton
+                mat-raised-button
+                class="mat-btn-blue"
+                [ngClass]="{ disabled: !articleNumber || !quantity }"
+                (keyup.enter)="focusControl(articleInput)"
+                (click)="addArticle()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Article_Search__Add'"
+                    ></label-translation
+                ></span>
             </button>
 
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-blue search-article-btn"
-                    [disabled]="true"
-                    (click)="searchArticle()">
-                <span class="bt-t"><label-translation [keyword]="'Article_Search__Search_article'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-blue search-article-btn"
+                [disabled]="true"
+                (click)="searchArticle()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Article_Search__Search_article'"
+                    ></label-translation
+                ></span>
             </button>
 
-            <mat-checkbox color="primary"
-                        [disabled]="true"
-                        [(ngModel)]="allArticlesChecked">
-                <label-translation [keyword]="'Article_Search__All_Articles'"></label-translation>
+            <mat-checkbox
+                color="primary"
+                [disabled]="true"
+                [(ngModel)]="allArticlesChecked"
+            >
+                <label-translation
+                    [keyword]="'Article_Search__All_Articles'"
+                ></label-translation>
             </mat-checkbox>
         </div>
     </div>
@@ -57,21 +86,26 @@
         [parentInstance]="that"
         [dataSource]="dataSource"
         [preventAutoSelectFirstRow]="true"
-        (deleteClick)="deleteClickHandler($event)">
+        (deleteClick)="deleteClickHandler($event)"
+    >
     </xn-ag-grid>
 </div>
 
 <div class="article-grid">
-    <article-campaign-search #articleCampaignSearch
-                             [gridId]="articleCampaignSearchGridId"
-                             [mediaCode]="mediaCode"
-                             [parentInstance]="that"
-                             (onCampaignArticleSelected)="campaignArticleSelected($event)"></article-campaign-search>
+    <article-campaign-search
+        #articleCampaignSearch
+        [gridId]="articleCampaignSearchGridId"
+        [mediaCode]="mediaCode"
+        [parentInstance]="that"
+        (onCampaignArticleSelected)="campaignArticleSelected($event)"
+    ></article-campaign-search>
 </div>
 
-<module-search-dialog #articleSearchDialog
-                      [headerTitle]="'Search Article'"
-                      [searchIndex]="searchIndex"
-                      [module]="module"
-                      (onItemSelect)="onArticleSelect($event)">
+<module-search-dialog
+    #articleSearchDialog
+    [headerTitle]="'Search Article'"
+    [searchIndex]="searchIndex"
+    [module]="module"
+    (onItemSelect)="onArticleSelect($event)"
+>
 </module-search-dialog>

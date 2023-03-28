@@ -7,12 +7,9 @@ import {
     ChangeDetectorRef,
     EventEmitter,
     ViewChild,
-    AfterViewInit
-} from '@angular/core';
-import {
-    FormGroup,
-    FormBuilder
-} from '@angular/forms';
+    AfterViewInit,
+} from "@angular/core";
+import { FormGroup, FormBuilder } from "@angular/forms";
 import {
     ControlGridModel,
     MatchingCountry,
@@ -20,90 +17,86 @@ import {
     Field,
     MatchingGroup,
     MessageModel,
-    ScheduleEvent
-} from 'app/models';
+    ScheduleEvent,
+} from "app/models";
 import {
     ToolsService,
     AppErrorHandler,
     DatatableService,
     ModalService,
     CommonService,
-
-    AccessRightsService
-} from 'app/services';
+    AccessRightsService,
+} from "app/services";
 import {
-    MessageModal, AccessRightTypeEnum, Configuration
-} from 'app/app.constants';
+    MessageModal,
+    AccessRightTypeEnum,
+    Configuration,
+} from "app/app.constants";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { WijmoGridComponent } from "app/shared/components/wijmo";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcGrid from "wijmo/wijmo.grid";
+import filter from "lodash-es/filter";
+import find from "lodash-es/find";
+import reject from "lodash-es/reject";
+import cloneDeep from "lodash-es/cloneDeep";
+import sortBy from "lodash-es/sortBy";
+import findIndex from "lodash-es/findIndex";
+import isNil from "lodash-es/isNil";
+import maxBy from "lodash-es/maxBy";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { TabsetComponent } from "ngx-bootstrap/tabs";
+import { DoubletCheckMainFake } from "./doublet-check-main.component-fake";
+import { Uti } from "app/utilities/uti";
+import { WjInputTime } from "wijmo/wijmo.angular2.input";
+import * as models from "app/models";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 import {
-    ToasterService
-} from 'angular2-toaster/angular2-toaster';
-import {
-    WijmoGridComponent
-} from 'app/shared/components/wijmo';
-import {
-    Observable
-} from 'rxjs/Observable';
-import {
-    Subscription
-} from 'rxjs/Subscription';
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcGrid from 'wijmo/wijmo.grid';
-import filter from 'lodash-es/filter';
-import find from 'lodash-es/find';
-import reject from 'lodash-es/reject';
-import cloneDeep from 'lodash-es/cloneDeep';
-import sortBy from 'lodash-es/sortBy';
-import findIndex from 'lodash-es/findIndex';
-import isNil from 'lodash-es/isNil';
-import maxBy from 'lodash-es/maxBy';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    TabsetComponent
-} from 'ngx-bootstrap/tabs';
-import {
-    DoubletCheckMainFake
-} from './doublet-check-main.component-fake';
-import {
-    Uti
-} from 'app/utilities/uti';
-import {
-    WjInputTime
-} from 'wijmo/wijmo.angular2.input';
-import * as models from 'app/models';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { ScheduleSettingComponent, ScheduleSettingRunImmediatelyComponent } from 'app/shared/components/xn-control/';
+    ScheduleSettingComponent,
+    ScheduleSettingRunImmediatelyComponent,
+} from "app/shared/components/xn-control/";
 
 @Component({
-    selector: 'doublet-check-main',
-    styleUrls: ['./doublet-check-main.component.scss'],
-    templateUrl: './doublet-check-main.component.html'
+    selector: "doublet-check-main",
+    styleUrls: ["./doublet-check-main.component.scss"],
+    templateUrl: "./doublet-check-main.component.html",
 })
-export class DoubletCheckMainComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DoubletCheckMainComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     public scheduleEventForm: FormGroup;
     public showDialog: boolean = false;
     public groupName: string;
     public isAutoMatching: boolean = true;
     public matchingGroup: MatchingGroup = null;
     public nextScheduleEvent: ScheduleEvent = new ScheduleEvent();
-    public dayOfWeekEnum: Array<any> = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    public dayOfWeekEnum: Array<any> = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ];
     public countryGridData: ControlGridModel;
     public columnsGridData: ControlGridModel;
     public autoMatchingGridData: ControlGridModel;
     public manualMatchingGridData: ControlGridModel;
-    public scheduleEventGridData: wjcCore.CollectionView = new wjcCore.CollectionView([]);
+    public scheduleEventGridData: wjcCore.CollectionView =
+        new wjcCore.CollectionView([]);
     public allowMerging = wjcGrid.AllowMerging.All;
     public showRequire: boolean = false;
     public isDirty: boolean = false;
     public hasDataChanged: boolean = false;
     public matchingStatus: number = 0;
-    private cacheAllConfigurationData: string = '';
+    private cacheAllConfigurationData: string = "";
     private interValTimer: number = 10000;
-    private cacheScheduleData: string = '';
+    private cacheScheduleData: string = "";
     private fake: DoubletCheckMainFake = new DoubletCheckMainFake();
     private formBuilder: FormBuilder;
     private count: number = 1;
@@ -121,27 +114,29 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
     private isEditing: boolean = false;
     private matchingWeight: number;
     public widgetButtonAccessRight: {
-        all: boolean,
-        createGroup: boolean,
-        updateGroup: boolean,
-        deleteGroup: boolean,
-        scheduleSetting: boolean,
-        start: boolean,
+        all: boolean;
+        createGroup: boolean;
+        updateGroup: boolean;
+        deleteGroup: boolean;
+        scheduleSetting: boolean;
+        start: boolean;
     };
     @Input() countryGridId: string;
     @Input() columnsGridId: string;
     @Input() autoMatchingGridId: string;
     @Input() manualMatchingGridId: string;
 
-    @ViewChild('countryGrid') countryGrid: XnAgGridComponent;
-    @ViewChild('columnsGrid') columnsGrid: XnAgGridComponent;
-    @ViewChild('autoMatchingGrid') autoMatchingGrid: XnAgGridComponent;
-    @ViewChild('manualMatchingGrid') manualMatchingGrid: XnAgGridComponent;
-    @ViewChild('scheduleEventGrid') scheduleEventGrid: wjcGrid.FlexGrid;
-    @ViewChild('groupTab') groupTab: TabsetComponent;
-    @ViewChild('scheduleTime') scheduleTime: WjInputTime;
-    @ViewChild('scheduleSetting') private scheduleSetting: ScheduleSettingComponent;
-    constructor(private toolsService: ToolsService,
+    @ViewChild("countryGrid") countryGrid: XnAgGridComponent;
+    @ViewChild("columnsGrid") columnsGrid: XnAgGridComponent;
+    @ViewChild("autoMatchingGrid") autoMatchingGrid: XnAgGridComponent;
+    @ViewChild("manualMatchingGrid") manualMatchingGrid: XnAgGridComponent;
+    @ViewChild("scheduleEventGrid") scheduleEventGrid: wjcGrid.FlexGrid;
+    @ViewChild("groupTab") groupTab: TabsetComponent;
+    @ViewChild("scheduleTime") scheduleTime: WjInputTime;
+    @ViewChild("scheduleSetting")
+    private scheduleSetting: ScheduleSettingComponent;
+    constructor(
+        private toolsService: ToolsService,
         private appErrorHandler: AppErrorHandler,
         private datatableService: DatatableService,
         private modalService: ModalService,
@@ -162,13 +157,60 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         this.turnOnResizeGird(this.autoMatchingGrid);
         this.turnOnResizeGird(this.manualMatchingGrid);
         this.widgetButtonAccessRight = {
-            all: this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, { idSettingsGUIParent: this.ofModule.idSettingsGUIParent, idSettingsGUI: this.ofModule.idSettingsGUI, idRepWidgetApp: 109 }).read,
-            createGroup: this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, { idSettingsGUIParent: this.ofModule.idSettingsGUIParent, idSettingsGUI: this.ofModule.idSettingsGUI, idRepWidgetApp: 109, widgetButtonName: 'CreateGroup' }).read,
-            updateGroup: this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, { idSettingsGUIParent: this.ofModule.idSettingsGUIParent, idSettingsGUI: this.ofModule.idSettingsGUI, idRepWidgetApp: 109, widgetButtonName: 'UpdateGroup' }).read,
-            deleteGroup: this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, { idSettingsGUIParent: this.ofModule.idSettingsGUIParent, idSettingsGUI: this.ofModule.idSettingsGUI, idRepWidgetApp: 109, widgetButtonName: 'DeleteGroup' }).read,
-            scheduleSetting: this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, { idSettingsGUIParent: this.ofModule.idSettingsGUIParent, idSettingsGUI: this.ofModule.idSettingsGUI, idRepWidgetApp: 109, widgetButtonName: 'ScheduleSetting' }).read,
-            start: this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, { idSettingsGUIParent: this.ofModule.idSettingsGUIParent, idSettingsGUI: this.ofModule.idSettingsGUI, idRepWidgetApp: 109, widgetButtonName: 'Start' }).read,
-        }
+            all: this.accessRightService.getAccessRight(
+                AccessRightTypeEnum.WidgetButton,
+                {
+                    idSettingsGUIParent: this.ofModule.idSettingsGUIParent,
+                    idSettingsGUI: this.ofModule.idSettingsGUI,
+                    idRepWidgetApp: 109,
+                }
+            ).read,
+            createGroup: this.accessRightService.getAccessRight(
+                AccessRightTypeEnum.WidgetButton,
+                {
+                    idSettingsGUIParent: this.ofModule.idSettingsGUIParent,
+                    idSettingsGUI: this.ofModule.idSettingsGUI,
+                    idRepWidgetApp: 109,
+                    widgetButtonName: "CreateGroup",
+                }
+            ).read,
+            updateGroup: this.accessRightService.getAccessRight(
+                AccessRightTypeEnum.WidgetButton,
+                {
+                    idSettingsGUIParent: this.ofModule.idSettingsGUIParent,
+                    idSettingsGUI: this.ofModule.idSettingsGUI,
+                    idRepWidgetApp: 109,
+                    widgetButtonName: "UpdateGroup",
+                }
+            ).read,
+            deleteGroup: this.accessRightService.getAccessRight(
+                AccessRightTypeEnum.WidgetButton,
+                {
+                    idSettingsGUIParent: this.ofModule.idSettingsGUIParent,
+                    idSettingsGUI: this.ofModule.idSettingsGUI,
+                    idRepWidgetApp: 109,
+                    widgetButtonName: "DeleteGroup",
+                }
+            ).read,
+            scheduleSetting: this.accessRightService.getAccessRight(
+                AccessRightTypeEnum.WidgetButton,
+                {
+                    idSettingsGUIParent: this.ofModule.idSettingsGUIParent,
+                    idSettingsGUI: this.ofModule.idSettingsGUI,
+                    idRepWidgetApp: 109,
+                    widgetButtonName: "ScheduleSetting",
+                }
+            ).read,
+            start: this.accessRightService.getAccessRight(
+                AccessRightTypeEnum.WidgetButton,
+                {
+                    idSettingsGUIParent: this.ofModule.idSettingsGUIParent,
+                    idSettingsGUI: this.ofModule.idSettingsGUI,
+                    idRepWidgetApp: 109,
+                    widgetButtonName: "Start",
+                }
+            ).read,
+        };
     }
     private turnOnResizeGird(grid: XnAgGridComponent) {
         if (!grid) return;
@@ -182,16 +224,14 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
     public selectTab(tabId: any, e) {
         if (!e.tabset) return;
         switch (tabId) {
-            case 1:
-                {
-                    this.turnOnResizeGird(this.autoMatchingGrid);
-                    break;
-                }
-            case 2:
-                {
-                    this.turnOnResizeGird(this.manualMatchingGrid);
-                    break;
-                }
+            case 1: {
+                this.turnOnResizeGird(this.autoMatchingGrid);
+                break;
+            }
+            case 2: {
+                this.turnOnResizeGird(this.manualMatchingGrid);
+                break;
+            }
         }
     }
     public groupNameKeyDown() {
@@ -209,9 +249,15 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         setTimeout(() => {
             if (!this.validationMatchingGroup()) return;
             if (this.isAutoMatching) {
-                this.autoMatchingGridData = this.pushRowDataForMatchingGroupGridData(this.autoMatchingGridData);
+                this.autoMatchingGridData =
+                    this.pushRowDataForMatchingGroupGridData(
+                        this.autoMatchingGridData
+                    );
             } else {
-                this.manualMatchingGridData = this.pushRowDataForMatchingGroupGridData(this.manualMatchingGridData);
+                this.manualMatchingGridData =
+                    this.pushRowDataForMatchingGroupGridData(
+                        this.manualMatchingGridData
+                    );
             }
             this.isEditing = this.isDirty = true;
             this.resetForm();
@@ -226,16 +272,25 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
 
         setTimeout(() => {
             if (!this.validationMatchingGroup()) return;
-            const datacolumns: Array<DataColumn> = filter(this.columnsGridData.data, this.loopItem.bind(this));
+            const datacolumns: Array<DataColumn> = filter(
+                this.columnsGridData.data,
+                this.loopItem.bind(this)
+            );
             this.matchingGroup = Object.assign(this.matchingGroup, {
                 GroupName: this.groupName,
                 IsAutoMatching: this.isAutoMatching,
-                Conditions: this.makeMatchingCondition()
+                Conditions: this.makeMatchingCondition(),
             });
             if (this.isAutoMatching) {
-                this.autoMatchingGridData = this.updateMatchingGroupGridData(this.autoMatchingGridData, this.manualMatchingGridData);
+                this.autoMatchingGridData = this.updateMatchingGroupGridData(
+                    this.autoMatchingGridData,
+                    this.manualMatchingGridData
+                );
             } else {
-                this.manualMatchingGridData = this.updateMatchingGroupGridData(this.manualMatchingGridData, this.autoMatchingGridData);
+                this.manualMatchingGridData = this.updateMatchingGroupGridData(
+                    this.manualMatchingGridData,
+                    this.autoMatchingGridData
+                );
             }
             this.isEditing = this.isDirty = true;
             this.resetForm();
@@ -246,26 +301,31 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
     }
     public deleteGroup(): void {
         if (!this.matchingGroup) return;
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Delete Group',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_Group'},
-                {key: this.matchingGroup.GroupName},
-                {key: '?</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.deleteDataRow();
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Delete Group",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Delete_Group" },
+                    { key: this.matchingGroup.GroupName },
+                    { key: "?</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.deleteDataRow();
+                },
+            })
+        );
     }
     public start(): void {
         if (this.matchingStatus == 1) {
             this.matchingStatus = 0;
-            this.saveConfigurationToService('Matching is stopped.', 0);
+            this.saveConfigurationToService("Matching is stopped.", 0);
             return;
         }
         this.matchingStatus = 1;
-        this.saveConfigurationToService('Matching is started.', 0);
+        this.saveConfigurationToService("Matching is started.", 0);
     }
     public saveConfig(): void {
         if (!this.isDirty) {
@@ -314,7 +374,7 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
                 onModalExit: () => {
                     this.isColumnsDirty = false;
                     this.bindConfigurationData($event);
-                }
+                },
             });
         } else {
             this.bindConfigurationData($event);
@@ -338,11 +398,11 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
                 id: Uti.getTempId(),
                 on: propertyName,
                 minute: time.getMinutes(),
-                hour: time.getHours()
+                hour: time.getHours(),
             });
             const existedItem = find(this.scheduleEventArray, {
-                'on': dataRow.on,
-                'at': dataRow.at
+                on: dataRow.on,
+                at: dataRow.at,
             });
             if (!existedItem) this.scheduleEventArray.push(dataRow);
         }
@@ -353,50 +413,70 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
     }
     public scheduleEventGridDeleteRow($event): void {
         const item = find(this.scheduleEventArray, {
-            'id': $event
+            id: $event,
         });
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Delete Event',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_Event'},
-                {key: item.on},
-                {key: '-'},
-                {key: item.at},
-                {key: '?</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.scheduleEventArray = reject(this.scheduleEventArray, {
-                    'id': $event
-                });
-                this.scheduleEventArray = this.sortScheduleItem(this.scheduleEventArray);
-                this.scheduleEventGridData = new wjcCore.CollectionView(cloneDeep(this.scheduleEventArray));
-                this.setNetxScheduleEvent();
-                this.saveScheduleTime();
-                this.setNetxScheduleEvent();
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Delete Event",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Delete_Event" },
+                    { key: item.on },
+                    { key: "-" },
+                    { key: item.at },
+                    { key: "?</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.scheduleEventArray = reject(this.scheduleEventArray, {
+                        id: $event,
+                    });
+                    this.scheduleEventArray = this.sortScheduleItem(
+                        this.scheduleEventArray
+                    );
+                    this.scheduleEventGridData = new wjcCore.CollectionView(
+                        cloneDeep(this.scheduleEventArray)
+                    );
+                    this.setNetxScheduleEvent();
+                    this.saveScheduleTime();
+                    this.setNetxScheduleEvent();
+                },
+            })
+        );
     }
     public refreshData() {
         if (this.isEditing || this.isDirty) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                headerText: 'Refresh data',
-                messageType: MessageModal.MessageType.error,
-                message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Refresh'},
-                    {key: '</p>'}],
-                buttonType1: MessageModal.ButtonType.danger,
-                callBack1: () => {
-                    this.refreshDataFromService();
-                }
-            }));
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    headerText: "Refresh data",
+                    messageType: MessageModal.MessageType.error,
+                    message: [
+                        { key: "<p>" },
+                        { key: "Modal_Message__Do_You_Want_To_Refresh" },
+                        { key: "</p>" },
+                    ],
+                    buttonType1: MessageModal.ButtonType.danger,
+                    callBack1: () => {
+                        this.refreshDataFromService();
+                    },
+                })
+            );
         } else {
             this.refreshDataFromService();
         }
     }
 
     public onMatchingGridCheckAllChecked(isChecked, gridName) {
-        if (this[gridName] && this[gridName].data && this[gridName].data.length) {
-            this[gridName].data.forEach(item => {
-                let configItem = this.cachedConfigurationData.find(x => x.GroupId == item.GroupId);
+        if (
+            this[gridName] &&
+            this[gridName].data &&
+            this[gridName].data.length
+        ) {
+            this[gridName].data.forEach((item) => {
+                let configItem = this.cachedConfigurationData.find(
+                    (x) => x.GroupId == item.GroupId
+                );
                 if (configItem) {
                     configItem.IsActive = isChecked;
                 }
@@ -406,7 +486,9 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
 
     public onMatchingGridCheckChanged(data) {
         if (data && data.itemData) {
-            let configItem = this.cachedConfigurationData.find(x => x.GroupId == data.itemData.GroupId);
+            let configItem = this.cachedConfigurationData.find(
+                (x) => x.GroupId == data.itemData.GroupId
+            );
             if (configItem) {
                 configItem.IsActive = data.itemData.IsActive;
             }
@@ -417,16 +499,16 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
     private initForm(): void {
         this.formBuilder = new FormBuilder();
         this.scheduleEventForm = this.formBuilder.group({
-            'Sunday': false,
-            'Monday': false,
-            'Tuesday': false,
-            'Wednesday': false,
-            'Thursday': false,
-            'Friday': false,
-            'Saturday': false,
-            'Time': new Date(new Date().setHours(0, 0, 0, 0))
+            Sunday: false,
+            Monday: false,
+            Tuesday: false,
+            Wednesday: false,
+            Thursday: false,
+            Friday: false,
+            Saturday: false,
+            Time: new Date(new Date().setHours(0, 0, 0, 0)),
         });
-        this.scheduleEventForm['submitted'] = false;
+        this.scheduleEventForm["submitted"] = false;
     }
     private initData(): void {
         this.createEmptyGridData();
@@ -455,14 +537,16 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
     }
     private showHasDataChangedConfirm() {
         this.modalService.unsavedWarningMessage({
-            headerText: 'Saving Changes',
-            customClass: 'custom-modal-medium',
-            yesButtonText: 'Save overrite',
-            noButtonText: 'Refresh',
-            message: [{key: '<p>'}, {key: 'Modal_Message__There_Was_Changed_Data'},
-                {key: '</p><p>'},
-                {key: 'Modal_Message__Please_Choose_Action_Below'},
-                {key: '</p>'},
+            headerText: "Saving Changes",
+            customClass: "custom-modal-medium",
+            yesButtonText: "Save overrite",
+            noButtonText: "Refresh",
+            message: [
+                { key: "<p>" },
+                { key: "Modal_Message__There_Was_Changed_Data" },
+                { key: "</p><p>" },
+                { key: "Modal_Message__Please_Choose_Action_Below" },
+                { key: "</p>" },
             ],
             onModalSaveAndExit: () => {
                 this.saveConfigurationToService();
@@ -470,128 +554,168 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
             onModalExit: () => {
                 this.refreshDataFromService();
             },
-            onModalCancel: () => {
-            }
+            onModalCancel: () => {},
         });
     }
-    private saveConfigurationToService(successMessage?: string, matchingStatus?: number) {
-        this.toolsService.saveMatchingConfiguration(this.makeConfigurationSavingData(matchingStatus)).subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) return;
-                this.toasterService.pop('success', 'Success', successMessage || 'Data saved successfully');
-                this.resetForm();
-                this.refreshDataFromService();
-                if (this.matchingStatus === 1) {
-                    this.getConfigurationDataWhenStarting();
-                }
+    private saveConfigurationToService(
+        successMessage?: string,
+        matchingStatus?: number
+    ) {
+        this.toolsService
+            .saveMatchingConfiguration(
+                this.makeConfigurationSavingData(matchingStatus)
+            )
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) return;
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        successMessage || "Data saved successfully"
+                    );
+                    this.resetForm();
+                    this.refreshDataFromService();
+                    if (this.matchingStatus === 1) {
+                        this.getConfigurationDataWhenStarting();
+                    }
+                });
             });
-        });
     }
     private createEmptyGridData() {
         this.countryGridData = {
             columns: this.fake.createFakedColumnsForCountryGrid(),
-            data: []
+            data: [],
         };
         this.columnsGridData = {
             columns: this.fake.createFakedColumnsForColumnsGrid(),
-            data: []
+            data: [],
         };
         this.autoMatchingGridData = {
             columns: this.fake.createFakedColumnsForEventColumnsData(),
-            data: []
+            data: [],
         };
         this.manualMatchingGridData = {
             columns: this.fake.createFakedColumnsForEventColumnsData(),
-            data: []
+            data: [],
         };
     }
     private getCountriesData() {
-        this.matchingCountrySubscription = this.toolsService.getMatchingCountry().subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) return;
-                const data = (response.item.data[0] as Array<any>).map(p => new MatchingCountry(p));
-                this.countryGridData = {
-                    data: this.datatableService.appendRowIdForGridData(data),
-                    columns: this.countryGridData.columns
-                };
-                this.buildCountriesData();
-                this.callRender();
+        this.matchingCountrySubscription = this.toolsService
+            .getMatchingCountry()
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) return;
+                    const data = (response.item.data[0] as Array<any>).map(
+                        (p) => new MatchingCountry(p)
+                    );
+                    this.countryGridData = {
+                        data: this.datatableService.appendRowIdForGridData(
+                            data
+                        ),
+                        columns: this.countryGridData.columns,
+                    };
+                    this.buildCountriesData();
+                    this.callRender();
+                });
             });
-        });
     }
     private getColumnsData() {
-        this.matchingColumnsSubscription = this.toolsService.getMatchingColumns().subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) return;
-                const data = (response.item.data[0] as Array<any>).map(p => {
-                    return {
-                        Id: p.ColumnName,
-                        ColumnName: p.ColumnName,
-                        Level: null,
-                        select: false
-                    }
+        this.matchingColumnsSubscription = this.toolsService
+            .getMatchingColumns()
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) return;
+                    const data = (response.item.data[0] as Array<any>).map(
+                        (p) => {
+                            return {
+                                Id: p.ColumnName,
+                                ColumnName: p.ColumnName,
+                                Level: null,
+                                select: false,
+                            };
+                        }
+                    );
+                    this.columnsGridData = {
+                        data: this.datatableService.appendRowIdForGridData([
+                            ...data,
+                        ]),
+                        columns: this.columnsGridData.columns,
+                    };
+                    this.callRender();
                 });
-                this.columnsGridData = {
-                    data: this.datatableService.appendRowIdForGridData([...data]),
-                    columns: this.columnsGridData.columns
-                };
-                this.callRender();
             });
-        });
     }
     private getConfigurationDataWhenStarting() {
-        this.matchingConfigurationSubscription = this.toolsService.getMatchingConfiguration().subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.matchingStatus !== 1) return;
-                setTimeout(() => {
-                    this.getConfigurationDataWhenStarting();
-                }, 200);
-                this.makeAllConfigurationData(response);
+        this.matchingConfigurationSubscription = this.toolsService
+            .getMatchingConfiguration()
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.matchingStatus !== 1) return;
+                    setTimeout(() => {
+                        this.getConfigurationDataWhenStarting();
+                    }, 200);
+                    this.makeAllConfigurationData(response);
+                });
             });
-        });
     }
     private getConfigurationData(updateCached?: boolean) {
-        this.matchingConfigurationSubscription = this.toolsService.getMatchingConfiguration().subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.makeAllConfigurationData(response, updateCached);
+        this.matchingConfigurationSubscription = this.toolsService
+            .getMatchingConfiguration()
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.makeAllConfigurationData(response, updateCached);
+                });
             });
-        });
     }
     private makeAllConfigurationData(response: any, updateCached?: boolean) {
         if (!Uti.isResquestSuccess(response)) return;
         try {
-            this.cacheAllConfigurationData = this.makeConfigurationStringData(response.item.data[1][0].Value, true);
+            this.cacheAllConfigurationData = this.makeConfigurationStringData(
+                response.item.data[1][0].Value,
+                true
+            );
         } catch (e) {
-            this.cacheAllConfigurationData = '';
+            this.cacheAllConfigurationData = "";
         }
         if (updateCached) return;
         this.makeConfigurationData(response.item.data);
         this.callRender();
     }
     private checkConfigurationDataChange() {
-        this.matchingConfigurationSubscription = this.toolsService.getMatchingConfiguration().subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) return;
-                let cacheAllConfigurationData = '';
+        this.matchingConfigurationSubscription = this.toolsService
+            .getMatchingConfiguration()
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) return;
+                    let cacheAllConfigurationData = "";
 
-                try {
-                    cacheAllConfigurationData = this.makeConfigurationStringData(response.item.data[1][0].Value);
-                } catch (e) {
-                    cacheAllConfigurationData = '';
-                }
-                if (cacheAllConfigurationData !== this.cacheAllConfigurationData) {
-                    this.hasDataChanged = true;
-                    this.callRender();
-                }
+                    try {
+                        cacheAllConfigurationData =
+                            this.makeConfigurationStringData(
+                                response.item.data[1][0].Value
+                            );
+                    } catch (e) {
+                        cacheAllConfigurationData = "";
+                    }
+                    if (
+                        cacheAllConfigurationData !==
+                        this.cacheAllConfigurationData
+                    ) {
+                        this.hasDataChanged = true;
+                        this.callRender();
+                    }
+                });
             });
-        });
     }
     private callRender() {
         setTimeout(() => {
             this.ref.detectChanges();
         }, 100);
     }
-    private makeConfigurationStringData(rawData: any, isSetValueMatchingStatus?: boolean): string {
+    private makeConfigurationStringData(
+        rawData: any,
+        isSetValueMatchingStatus?: boolean
+    ): string {
         try {
             rawData = JSON.parse(rawData);
             if (isSetValueMatchingStatus) {
@@ -603,7 +727,7 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
             delete rawData.SaveMatchingTool.MatchingStatus;
             return JSON.stringify(rawData);
         } catch (e) {
-            return '';
+            return "";
         }
     }
     private makeConfigurationData(rawData: any) {
@@ -617,7 +741,7 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         } catch (e) {
             this.cachedCountriesData = [];
             this.cachedConfigurationData = [];
-            console.error('Json data has incorrect format.');
+            console.error("Json data has incorrect format.");
         }
     }
     private bindConfigurationData($event) {
@@ -631,7 +755,8 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
             item.Level = null;
             item.select = false;
             for (let condition of conditions) {
-                if (item.ColumnName !== condition.Fields[0].ColumnName) continue;
+                if (item.ColumnName !== condition.Fields[0].ColumnName)
+                    continue;
                 item.Level = (condition.Level || 0) * 100;
                 item.select = true;
                 break;
@@ -639,78 +764,110 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         }
         this.columnsGridData = {
             data: [...newData],
-            columns: this.columnsGridData.columns
+            columns: this.columnsGridData.columns,
         };
     }
     private buildCountriesData() {
         let newData = this.countryGridData.data;
         if (!newData || !newData.length) return;
-        if (!this.cachedCountriesData || !this.cachedCountriesData.length) return;
+        if (!this.cachedCountriesData || !this.cachedCountriesData.length)
+            return;
         for (let item of newData) {
-            item.select = Uti.checkKeynameExistInArray(this.cachedCountriesData, 'IdRepIsoCountryCode', item.IdRepIsoCountryCode);
+            item.select = Uti.checkKeynameExistInArray(
+                this.cachedCountriesData,
+                "IdRepIsoCountryCode",
+                item.IdRepIsoCountryCode
+            );
         }
         this.countryGridData = {
             data: newData,
-            columns: this.countryGridData.columns
+            columns: this.countryGridData.columns,
         };
         this.callRender();
     }
     private buildConfigurationData() {
-        this.autoMatchingGridData = this.buildConfigurationDataForEachGrid(this.autoMatchingGridData, true);
-        this.manualMatchingGridData = this.buildConfigurationDataForEachGrid(this.manualMatchingGridData, false);
+        this.autoMatchingGridData = this.buildConfigurationDataForEachGrid(
+            this.autoMatchingGridData,
+            true
+        );
+        this.manualMatchingGridData = this.buildConfigurationDataForEachGrid(
+            this.manualMatchingGridData,
+            false
+        );
         this.callRender();
     }
-    private buildConfigurationDataForEachGrid(gridData: any, isAutoMatching?: boolean): ControlGridModel {
-        let data = this.cachedConfigurationData.filter(x => x.IsAutoMatching === (isAutoMatching || false));
+    private buildConfigurationDataForEachGrid(
+        gridData: any,
+        isAutoMatching?: boolean
+    ): ControlGridModel {
+        let data = this.cachedConfigurationData.filter(
+            (x) => x.IsAutoMatching === (isAutoMatching || false)
+        );
         return new ControlGridModel({
             data: cloneDeep(data),
-            columns: gridData.columns
+            columns: gridData.columns,
         });
     }
     private getScheduleData(updateCached?: boolean) {
-        this.matchingScheduleSubscription = this.toolsService.getScheduleTime().subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) return;
-                this.cacheScheduleData = JSON.stringify(response.item.data[0]);
-                if (updateCached) return;
-                this.makeScheduleDataFromService(response.item.data[0]);
-                if (this.scheduleSetting) {
-                    this.scheduleSetting.callShowDialog(this.scheduleEventArray);
-                }
-                this.callRender();
+        this.matchingScheduleSubscription = this.toolsService
+            .getScheduleTime()
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) return;
+                    this.cacheScheduleData = JSON.stringify(
+                        response.item.data[0]
+                    );
+                    if (updateCached) return;
+                    this.makeScheduleDataFromService(response.item.data[0]);
+                    if (this.scheduleSetting) {
+                        this.scheduleSetting.callShowDialog(
+                            this.scheduleEventArray
+                        );
+                    }
+                    this.callRender();
+                });
             });
-        });
     }
     private checkScheduleDataChange() {
-        this.matchingScheduleSubscription = this.toolsService.getScheduleTime().subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) return;
-                const cacheScheduleData = JSON.stringify(response.item.data[0]);
-                if (cacheScheduleData !== this.cacheScheduleData) {
-                    this.hasDataChanged = true;
-                    this.callRender();
-                }
+        this.matchingScheduleSubscription = this.toolsService
+            .getScheduleTime()
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) return;
+                    const cacheScheduleData = JSON.stringify(
+                        response.item.data[0]
+                    );
+                    if (cacheScheduleData !== this.cacheScheduleData) {
+                        this.hasDataChanged = true;
+                        this.callRender();
+                    }
+                });
             });
-        });
     }
 
     private makeScheduleDataFromService(rawData: Array<any>) {
         this.scheduleEventArray = [];
         for (let item of rawData) {
-            this.scheduleEventArray.push(new ScheduleEvent({
-                id: Uti.getTempId(),
-                on: this.dayOfWeekEnum[item.DayOfWeek],
-                minute: item.Minute,
-                hour: item.Hour
-            }));
+            this.scheduleEventArray.push(
+                new ScheduleEvent({
+                    id: Uti.getTempId(),
+                    on: this.dayOfWeekEnum[item.DayOfWeek],
+                    minute: item.Minute,
+                    hour: item.Hour,
+                })
+            );
         }
         // this.makeScheduleGridData();
         this.setNetxScheduleEvent();
         // this.setNetxScheduleEvent();
     }
     private makeScheduleGridData() {
-        this.scheduleEventArray = this.sortScheduleItem(this.scheduleEventArray);
-        this.scheduleEventGridData = new wjcCore.CollectionView(cloneDeep(this.scheduleEventArray));
+        this.scheduleEventArray = this.sortScheduleItem(
+            this.scheduleEventArray
+        );
+        this.scheduleEventGridData = new wjcCore.CollectionView(
+            cloneDeep(this.scheduleEventArray)
+        );
     }
     private makeConfigurationSavingData(matchingStatus?: number): any {
         let countryCodes: Array<any> = [];
@@ -719,23 +876,25 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
             countryCodes.push({
                 IdRepIsoCountryCode: item.IdRepIsoCountryCode,
                 DefaultValue: item.DefaultValue,
-                IsoCode: null
+                IsoCode: null,
             });
-        };
+        }
         this.makeMatchingStatusForEachConfiguration(0);
         return {
             JSONText: JSON.stringify({
                 SaveMatchingTool: {
                     MatchParameter: {
-                        Groups: this.removeDTRowId()
+                        Groups: this.removeDTRowId(),
                     },
                     CountryCodes: countryCodes,
-                    MatchingStatus: this.matchingStatus || 0
-                }
-            })
+                    MatchingStatus: this.matchingStatus || 0,
+                },
+            }),
         };
     }
-    private makeMatchingStatusForEachConfiguration(matchingStatus?: number): void {
+    private makeMatchingStatusForEachConfiguration(
+        matchingStatus?: number
+    ): void {
         if (isNil(matchingStatus)) return;
         for (let item of this.cachedConfigurationData) {
             if (item.IsActive) {
@@ -751,26 +910,34 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         return result;
     }
     private saveScheduleTime() {
-        this.toolsService.saveScheduleTime(this.makeScheduleTimeData()).subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) return;
-                this.toasterService.pop('success', 'Success', 'Data saved successfully');
-                this.getScheduleData(true);
+        this.toolsService
+            .saveScheduleTime(this.makeScheduleTimeData())
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) return;
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "Data saved successfully"
+                    );
+                    this.getScheduleData(true);
+                });
             });
-        });
     }
     private makeScheduleTimeData(): any {
-        let scheduleTime: Array<any> = this.scheduleEventGridData.items.map(x => {
-            return {
-                DayOfWeek: this.mapToDayOfWeek(x.on).toString(),
-                Hour: x.hour,
-                Minute: x.minute
-            };
-        });
+        let scheduleTime: Array<any> = this.scheduleEventGridData.items.map(
+            (x) => {
+                return {
+                    DayOfWeek: this.mapToDayOfWeek(x.on).toString(),
+                    Hour: x.hour,
+                    Minute: x.minute,
+                };
+            }
+        );
         return {
             JSONText: JSON.stringify({
-                SaveMatchingToolSchedule: scheduleTime
-            })
+                SaveMatchingToolSchedule: scheduleTime,
+            }),
         };
     }
     private mapToDayOfWeek(day: string) {
@@ -789,16 +956,20 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         const minute = now.getMinutes();
         let day = now.getDay();
         let dayOfWeek = this.dayOfWeekEnum[day];
-        let dataRows = filter(this.scheduleEventArray, (function (item, index) {
-            return item.on == dayOfWeek && ((hour < item.hour && minute < item.minute) || (hour == item.hour && minute < item.minute));
-        }));
+        let dataRows = filter(this.scheduleEventArray, function (item, index) {
+            return (
+                item.on == dayOfWeek &&
+                ((hour < item.hour && minute < item.minute) ||
+                    (hour == item.hour && minute < item.minute))
+            );
+        });
         if (!dataRows.length) {
             this.addScheduleWhenEmpty(day, dayOfWeek, dataRows);
             return;
         }
         this.nextScheduleEvent = new ScheduleEvent({
             on: dataRows[0].on,
-            at: dataRows[0].at
+            at: dataRows[0].at,
         });
     }
     private addScheduleWhenEmpty(day: any, dayOfWeek: any, dataRows: any) {
@@ -806,32 +977,37 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         while (foundEvent == null && day < 8) {
             day++;
             dayOfWeek = this.dayOfWeekEnum[day];
-            dataRows = filter(this.scheduleEventArray, (function (item, index) {
+            dataRows = filter(this.scheduleEventArray, function (item, index) {
                 return item.on == dayOfWeek;
-            }));
+            });
             if (dataRows.length > 0) {
                 foundEvent = dataRows[0];
                 this.nextScheduleEvent = new ScheduleEvent({
                     on: foundEvent.on,
-                    at: foundEvent.at
+                    at: foundEvent.at,
                 });
             }
         }
     }
-    private pushRowDataForMatchingGroupGridData(gridData: ControlGridModel): ControlGridModel {
+    private pushRowDataForMatchingGroupGridData(
+        gridData: ControlGridModel
+    ): ControlGridModel {
         const dataRow = this.createMatchingGroup();
         const data = gridData.data;
         data.push(dataRow);
         this.cachedConfigurationData.push(dataRow);
         return new ControlGridModel({
             columns: gridData.columns,
-            data: [...this.datatableService.appendRowIdForGridData(data)]
+            data: [...this.datatableService.appendRowIdForGridData(data)],
         });
     }
-    private updateMatchingGroupGridData(gridData: ControlGridModel, otherGridData: ControlGridModel): ControlGridModel {
+    private updateMatchingGroupGridData(
+        gridData: ControlGridModel,
+        otherGridData: ControlGridModel
+    ): ControlGridModel {
         const data = gridData.data;
         let index = findIndex(data, {
-            'GroupId': this.matchingGroup.GroupId
+            GroupId: this.matchingGroup.GroupId,
         });
         if (index >= 0) {
             data[index] = this.matchingGroup;
@@ -842,26 +1018,26 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         this.updateCachedConfigurationData();
         return new ControlGridModel({
             columns: gridData.columns,
-            data: [...this.datatableService.appendRowIdForGridData(data)]
+            data: [...this.datatableService.appendRowIdForGridData(data)],
         });
     }
     private deleteGridItemWhenUpdate(otherGridData: ControlGridModel) {
         // Delete other grid data
         let tempData = otherGridData.data;
         tempData = reject(tempData, {
-            'GroupId': this.matchingGroup.GroupId
+            GroupId: this.matchingGroup.GroupId,
         });
         this.callRender();
         if (this.isAutoMatching) {
             this.manualMatchingGridData = {
                 data: this.datatableService.appendRowIdForGridData(tempData),
-                columns: this.manualMatchingGridData.columns
-            }
+                columns: this.manualMatchingGridData.columns,
+            };
         } else {
             this.autoMatchingGridData = {
                 data: this.datatableService.appendRowIdForGridData(tempData),
-                columns: this.autoMatchingGridData.columns
-            }
+                columns: this.autoMatchingGridData.columns,
+            };
         }
     }
     private updateCachedConfigurationData() {
@@ -869,56 +1045,84 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
             if (item.GroupId !== this.matchingGroup.GroupId) continue;
             item.GroupName = this.matchingGroup.GroupName;
             item.Conditions = this.matchingGroup.Conditions;
-            item.IsAutoMatching = this.isAutoMatching
+            item.IsAutoMatching = this.isAutoMatching;
             break;
         }
     }
     private resetForm() {
         this.matchingGroup = null;
-        this.groupName = '';
+        this.groupName = "";
         this.isAutoMatching = true;
         this.isColumnsDirty = false;
         this.columnsGridData = {
-            data: Uti.setValueForArrayByProperties([...this.columnsGridData.data], ['select', 'Level'], [false, null]),
-            columns: this.columnsGridData.columns
+            data: Uti.setValueForArrayByProperties(
+                [...this.columnsGridData.data],
+                ["select", "Level"],
+                [false, null]
+            ),
+            columns: this.columnsGridData.columns,
         };
     }
     private deleteDataRow(): void {
         let groupId: any;
         if (this.isAutoMatching) {
-            this.autoMatchingGridData = this.deleteEachGridData(this.autoMatchingGrid, this.autoMatchingGridData);
+            this.autoMatchingGridData = this.deleteEachGridData(
+                this.autoMatchingGrid,
+                this.autoMatchingGridData
+            );
         } else {
-            this.manualMatchingGridData = this.deleteEachGridData(this.manualMatchingGrid, this.manualMatchingGridData);
+            this.manualMatchingGridData = this.deleteEachGridData(
+                this.manualMatchingGrid,
+                this.manualMatchingGridData
+            );
         }
         this.cachedConfigurationData = reject(this.cachedConfigurationData, {
-            'GroupId': this.matchingGroup.GroupId
+            GroupId: this.matchingGroup.GroupId,
         });
         this.isEditing = this.isDirty = true;
         this.resetForm();
     }
-    private deleteEachGridData(grid: XnAgGridComponent, gridData: ControlGridModel): ControlGridModel {
+    private deleteEachGridData(
+        grid: XnAgGridComponent,
+        gridData: ControlGridModel
+    ): ControlGridModel {
         let data = gridData.data;
         data = reject(data, {
-            'GroupId': this.matchingGroup.GroupId
+            GroupId: this.matchingGroup.GroupId,
         });
         return new ControlGridModel({
             columns: gridData.columns,
-            data: [...data]
+            data: [...data],
         });
     }
     private validationMatchingGroup() {
         if (!this.groupName) {
             this.showRequire = true;
-            this.toasterService.pop('warning', 'Validation Failed', 'There are some fields do not pass validation!');
+            this.toasterService.pop(
+                "warning",
+                "Validation Failed",
+                "There are some fields do not pass validation!"
+            );
             return false;
         }
         if (this.columnsGridhasError) {
-            this.toasterService.pop('warning', 'Validation Failed', 'There are some fields do not pass validation!');
+            this.toasterService.pop(
+                "warning",
+                "Validation Failed",
+                "There are some fields do not pass validation!"
+            );
             return false;
         }
-        const datacolumns: Array<DataColumn> = filter(this.columnsGridData.data, this.loopItem.bind(this));
+        const datacolumns: Array<DataColumn> = filter(
+            this.columnsGridData.data,
+            this.loopItem.bind(this)
+        );
         if (datacolumns.length == 0) {
-            this.toasterService.pop('warning', 'Validation Failed', 'Please select at least a column!');
+            this.toasterService.pop(
+                "warning",
+                "Validation Failed",
+                "Please select at least a column!"
+            );
             return false;
         }
         this.showRequire = false;
@@ -928,7 +1132,7 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         return item.select && item.Level > 0;
     }
     private createMatchingGroup(): MatchingGroup {
-        let maxGroup = maxBy(this.cachedConfigurationData, 'GroupId');
+        let maxGroup = maxBy(this.cachedConfigurationData, "GroupId");
         maxGroup = maxGroup || {};
         const dataRow = new MatchingGroup({
             GroupId: (maxGroup.GroupId || 0) + 1,
@@ -936,7 +1140,7 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
             IsAutoMatching: this.isAutoMatching,
             Conditions: this.makeMatchingCondition(),
             MatchingStatus: 0,
-            IsActive: true
+            IsActive: true,
         });
         return dataRow;
     }
@@ -944,12 +1148,16 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
         let result: Array<DataColumn> = [];
         for (let item of this.columnsGridData.data) {
             if (!item.select || item.Level <= 0) continue;
-            result.push(new DataColumn({
-                Fields: new Array<Field>(new Field({
-                    ColumnName: item.ColumnName
-                })),
-                Level: (item.Level || 0) / 100,
-            }));
+            result.push(
+                new DataColumn({
+                    Fields: new Array<Field>(
+                        new Field({
+                            ColumnName: item.ColumnName,
+                        })
+                    ),
+                    Level: (item.Level || 0) / 100,
+                })
+            );
         }
         return result;
     }
@@ -962,17 +1170,17 @@ export class DoubletCheckMainComponent extends BaseComponent implements OnInit, 
     }
     private makeDataForEachDay(gridData: any, dayName: string): Array<any> {
         let result: Array<any> = [];
-        let rawDayData = gridData.filter(x => x.on === dayName);
+        let rawDayData = gridData.filter((x) => x.on === dayName);
         if (!rawDayData || !rawDayData.length) return result;
-        let dayData = rawDayData.map(x => {
+        let dayData = rawDayData.map((x) => {
             return {
                 id: x.id,
-                time: x.hour + x.minute
+                time: x.hour + x.minute,
             };
         });
-        dayData = sortBy(dayData, ['time']);
+        dayData = sortBy(dayData, ["time"]);
         for (let item of dayData) {
-            const currentItem = rawDayData.find(x => x.id === item.id);
+            const currentItem = rawDayData.find((x) => x.id === item.id);
             result.push(currentItem);
         }
         return result;

@@ -1,1 +1,1 @@
-﻿export * from './tab-summary.effect';
+﻿export * from "./tab-summary.effect";

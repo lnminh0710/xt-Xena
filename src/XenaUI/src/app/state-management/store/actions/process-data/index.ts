@@ -1,1 +1,1 @@
-﻿export * from './process-data.action';
+﻿export * from "./process-data.action";

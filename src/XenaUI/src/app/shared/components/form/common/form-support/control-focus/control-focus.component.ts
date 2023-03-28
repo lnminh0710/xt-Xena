@@ -1,26 +1,37 @@
-import { Component, Input, Output, OnInit, OnDestroy, AfterViewInit, EventEmitter, ElementRef, ViewChild } from '@angular/core';
-import { AppState } from 'app/state-management/store';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import {
+    Component,
+    Input,
+    Output,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    EventEmitter,
+    ElementRef,
+    ViewChild,
+} from "@angular/core";
+import { AppState } from "app/state-management/store";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 import {
     TabSummaryActions,
-    DataEntryActions
-} from 'app/state-management/store/actions';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import {
-    AppErrorHandler
-} from 'app/services';
-import * as uti from 'app/utilities';
-import find from 'lodash-es/find';
+    DataEntryActions,
+} from "app/state-management/store/actions";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import * as tabSummaryReducer from "app/state-management/store/reducer/tab-summary";
+import { AppErrorHandler } from "app/services";
+import * as uti from "app/utilities";
+import find from "lodash-es/find";
 
 @Component({
-    selector: 'control-focus',
-    template: `<div style='display: none'></div>`
+    selector: "control-focus",
+    template: `<div style="display: none"></div>`,
 })
-export class ControlFocusComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ControlFocusComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     private selectedODETab: any;
     private selectedODETabState: Observable<any>;
     private selectedODETabStateSubscription: Subscription;
@@ -36,15 +47,18 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
     @Input() isRegisterBlurEventInLastControl?: boolean;
 
     // Use to move to the next control of the other componnet.
-    @Input() targetComponentFocus: string;//component tag name -> it is selector of component
+    @Input() targetComponentFocus: string; //component tag name -> it is selector of component
     @Input() targetComponentIndex: number = 0;
 
     @Input() preventFocus: Promise<any>;
 
     @Output() callBackAfterEnter: EventEmitter<any> = new EventEmitter<any>();
-    @Output() callBackAfterEnterWhenLastItemAction: EventEmitter<any> = new EventEmitter<any>();
-    @Output() callBackWhenReachFinalField: EventEmitter<any> = new EventEmitter<any>();
-    @Output() callBackWhenInvalidCharacterAction: EventEmitter<any> = new EventEmitter<any>();
+    @Output() callBackAfterEnterWhenLastItemAction: EventEmitter<any> =
+        new EventEmitter<any>();
+    @Output() callBackWhenReachFinalField: EventEmitter<any> =
+        new EventEmitter<any>();
+    @Output() callBackWhenInvalidCharacterAction: EventEmitter<any> =
+        new EventEmitter<any>();
 
     private controlList: Array<any> = [];
     private maxNumofTimesWaiting: number = 0;
@@ -63,7 +77,13 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
     ) {
         super(router);
 
-        this.selectedODETabState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedODETab);
+        this.selectedODETabState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedODETab
+        );
     }
 
     public ngOnInit() {
@@ -95,7 +115,7 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
             if (this.controlWaitingMore) {
                 let $controlWaitingMore = this.findControlWaitingMore();
                 if (!$controlWaitingMore) {
-                    console.log('initControl -> controlWaitingMore');
+                    console.log("initControl -> controlWaitingMore");
                     this.initControl();
                     this.maxNumofTimesWaiting++;
                     return;
@@ -107,74 +127,76 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
 
             if (noFocusFirstControl) {
                 //no focus
-            }
-            else {
-                if (this.isFocusOnFirstControl)
-                    this.focusOnFirstControl();
+            } else {
+                if (this.isFocusOnFirstControl) this.focusOnFirstControl();
                 else if (this.focusControl)
                     this.focusControlByControlName(this.focusControl);
             }
-
         }, 200);
     }
 
     public focusControlByControlName(controlName: string) {
-        if (!controlName || !this.controlList || !this.controlList.length) return;
+        if (!controlName || !this.controlList || !this.controlList.length)
+            return;
 
         let searchByMultipleName = false;
         //controlName1,controlName2,controlName3
-        if (controlName.indexOf(',') !== -1) {
-            controlName = ',' + controlName + ',';
+        if (controlName.indexOf(",") !== -1) {
+            controlName = "," + controlName + ",";
             searchByMultipleName = true;
         }
 
         let findControl: any;
         for (const control of this.controlList) {
             if (searchByMultipleName) {
-                if (controlName.indexOf(',' + control.attr('name') + ',') !== -1 ||
-                    controlName.indexOf(',' + control.attr('formcontrolname') + ',') !== -1) {
+                if (
+                    controlName.indexOf("," + control.attr("name") + ",") !==
+                        -1 ||
+                    controlName.indexOf(
+                        "," + control.attr("formcontrolname") + ","
+                    ) !== -1
+                ) {
                     findControl = control;
                     break;
                 }
-            }
-            else {
+            } else {
                 // && control.is(':visible')
-                if (control.attr('name') === controlName || control.attr('formcontrolname') === controlName) {
+                if (
+                    control.attr("name") === controlName ||
+                    control.attr("formcontrolname") === controlName
+                ) {
                     findControl = control;
                     break;
                 }
             }
+        } //for
 
-        }//for
-
-        if (findControl)
-            this.focusOnControl(findControl);
-        else
-            this.focusOnFirstControl();
+        if (findControl) this.focusOnControl(findControl);
+        else this.focusOnFirstControl();
     }
 
     public focusOnFirstControl() {
         if (!this.controlList || !this.controlList.length) return;
 
         for (const control of this.controlList) {
-            if (control.is(':visible')) {
+            if (control.is(":visible")) {
                 this.focusOnControl(control);
                 break;
             }
-        }//for
+        } //for
     }
 
     public selectChildAndParentTab($curentTab: any) {
         if (!$curentTab || !$curentTab.length) return;
 
-        const tabId = $curentTab.attr('id');
+        const tabId = $curentTab.attr("id");
         if (!tabId) return;
 
         //select current tab
         this.selectTab($curentTab);
 
         //select parent tab
-        const $parentTab = $curentTab.parent().closest('.tab-pane');
+        const $parentTab = $curentTab.parent().closest(".tab-pane");
         if ($parentTab && $parentTab.length) {
             this.selectTab($parentTab);
         }
@@ -183,11 +205,10 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
     public executeBehaviorInLastCustomerItem() {
         setTimeout(() => {
             if (this.preventFocus) {
-                this.preventFocus.then(data => {
+                this.preventFocus.then((data) => {
                     if (!data) this.activeTabAndFocusFirstElement();
                 });
-            }
-            else {
+            } else {
                 this.activeTabAndFocusFirstElement();
             }
         });
@@ -202,25 +223,31 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
     /********************************************************************************************/
 
     private subscribeSelectedODETabState() {
-        this.selectedODETabStateSubscription = this.selectedODETabState.subscribe((selectedODETabState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!selectedODETabState) return;
+        this.selectedODETabStateSubscription =
+            this.selectedODETabState.subscribe((selectedODETabState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!selectedODETabState) return;
 
-                this.selectedODETab = selectedODETabState;
+                    this.selectedODETab = selectedODETabState;
 
-                if (this.selectedODETab.TabID && this.formName === 'orderDataEntryForm') {
-                    const $form = $('#' + this.selectedODETab.TabID).find('#orderDataEntryForm');
-                    if (!$form.length) return;
+                    if (
+                        this.selectedODETab.TabID &&
+                        this.formName === "orderDataEntryForm"
+                    ) {
+                        const $form = $("#" + this.selectedODETab.TabID).find(
+                            "#orderDataEntryForm"
+                        );
+                        if (!$form.length) return;
 
-                    clearTimeout(this.timeoutFocusWhenChangeTab);
-                    this.timeoutFocusWhenChangeTab = null;
+                        clearTimeout(this.timeoutFocusWhenChangeTab);
+                        this.timeoutFocusWhenChangeTab = null;
 
-                    this.timeoutFocusWhenChangeTab = setTimeout(() => {
-                        this.focusOnFirstControl();
-                    }, 100);
-                }
+                        this.timeoutFocusWhenChangeTab = setTimeout(() => {
+                            this.focusOnFirstControl();
+                        }, 100);
+                    }
+                });
             });
-        });
     }
 
     private focusOnControl(control: any) {
@@ -238,25 +265,33 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
         const disabled = item.disabled;
 
         const $item = $(item);
-        if ((
-            type === 'checkbox' || type === 'radio' || type === 'text' ||
-
-            $item.hasClass('xn-input') ||
-            $item.hasClass('xn-input--no-icon') ||
-            $item.hasClass('xn-select') ||
-            $item.hasClass('xn-date-picker-input') ||
-            $item.hasClass('xn-select--no-icon') ||
-
-            (tagName != 'BUTTON' && $item.closest('wj-combo-box.xn-select').length) ||
-            (tagName != 'BUTTON' && $item.closest('wj-auto-complete').length) ||//wj-auto-complete.xn-auto-complete
-            (tagName == 'INPUT' && $item.closest('wj-input-date.xn-input').length) ||
-            (tagName == 'INPUT' && $item.closest('wj-input-mask.xn-select').length) ||
-            (tagName == 'INPUT' && $item.closest('wj-input-date.xn-select').length) ||
-
-            ($item.attr('wj-part') === 'input' && $item.hasClass('wj-numeric')) ||
-            ($item.attr('pinputtext') === '' && $item.attr('placeholder') === 'mm/dd/yyyy'))
-
-            && !disabled && !$item.hasClass('focus-ignore') && !this.isIgnoreControl($item)) {
+        if (
+            (type === "checkbox" ||
+                type === "radio" ||
+                type === "text" ||
+                $item.hasClass("xn-input") ||
+                $item.hasClass("xn-input--no-icon") ||
+                $item.hasClass("xn-select") ||
+                $item.hasClass("xn-date-picker-input") ||
+                $item.hasClass("xn-select--no-icon") ||
+                (tagName != "BUTTON" &&
+                    $item.closest("wj-combo-box.xn-select").length) ||
+                (tagName != "BUTTON" &&
+                    $item.closest("wj-auto-complete").length) || //wj-auto-complete.xn-auto-complete
+                (tagName == "INPUT" &&
+                    $item.closest("wj-input-date.xn-input").length) ||
+                (tagName == "INPUT" &&
+                    $item.closest("wj-input-mask.xn-select").length) ||
+                (tagName == "INPUT" &&
+                    $item.closest("wj-input-date.xn-select").length) ||
+                ($item.attr("wj-part") === "input" &&
+                    $item.hasClass("wj-numeric")) ||
+                ($item.attr("pinputtext") === "" &&
+                    $item.attr("placeholder") === "mm/dd/yyyy")) &&
+            !disabled &&
+            !$item.hasClass("focus-ignore") &&
+            !this.isIgnoreControl($item)
+        ) {
             return true;
         }
         return false;
@@ -264,17 +299,23 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
 
     private isIgnoreControl(control: any) {
         try {
-            const type = control.attr('type');
+            const type = control.attr("type");
             switch (type) {
-                case 'text':
+                case "text":
                     // retrieving the wj-auto-complete structure.
-                    const $parent = control.closest('wj-auto-complete,wj-combo-box.xn-select');//.xn-auto-complete
-                    return $parent.length && $parent.hasClass('focus-ignore');
-                case 'checkbox':
+                    const $parent = control.closest(
+                        "wj-auto-complete,wj-combo-box.xn-select"
+                    ); //.xn-auto-complete
+                    return $parent.length && $parent.hasClass("focus-ignore");
+                case "checkbox":
                     // retrieving the mat-checkbox structure.
-                    return control.parent().parent().parent().hasClass('focus-ignore');
+                    return control
+                        .parent()
+                        .parent()
+                        .parent()
+                        .hasClass("focus-ignore");
             }
-        } catch (ex) { }
+        } catch (ex) {}
         return false;
     }
 
@@ -284,16 +325,23 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
         let formControls: any = this.getForm();
         if (!formControls || !formControls.length) return null;
 
-        return find(formControls, (c) => c.name === this.controlWaitingMore || c.getAttribute('formcontrolname') === this.controlWaitingMore);
+        return find(
+            formControls,
+            (c) =>
+                c.name === this.controlWaitingMore ||
+                c.getAttribute("formcontrolname") === this.controlWaitingMore
+        );
     }
 
     private getForm() {
-        const selectorForm = '#' + this.formName;
+        const selectorForm = "#" + this.formName;
         let formControls: any;
 
         //From ControlFocus -> get closest Form
         if (this.controlFocus && this.controlFocus.nativeElement)
-            formControls = this.controlFocus.nativeElement.closest('form' + selectorForm);
+            formControls = this.controlFocus.nativeElement.closest(
+                "form" + selectorForm
+            );
 
         //if there is no closest Form -> get form by ID
         if (!formControls) {
@@ -305,11 +353,10 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
     }
 
     private addControlList() {
-
         let formControls: any = this.getForm();
         if (!formControls || !formControls.length) return;
 
-        for (const item of (formControls as any)) {
+        for (const item of formControls as any) {
             if (this.isValidControlToFocus(item)) {
                 const $item = $(item);
                 this.controlList.push($item);
@@ -322,14 +369,14 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
 
         for (let i = 0; i < this.controlList.length; i++) {
             const control = $(this.controlList[i]);
-            control.unbind('keyup');
+            control.unbind("keyup");
             control.keyup(($event) => {
                 if (!($event.which === 13 || $event.keyCode === 13)) return;
 
                 if (this.isExistDontAllowCharacter($event)) return;
 
                 // stop move to other control when control is textArea
-                if ($event.target.toString().indexOf('TextArea') > -1) return;
+                if ($event.target.toString().indexOf("TextArea") > -1) return;
 
                 if (i === this.controlList.length - 1) {
                     if (this.noLoop) {
@@ -353,7 +400,7 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
                 this.callBackAfterEnter.emit($event);
                 for (let j = i + 1; j < this.controlList.length; j++) {
                     const condition1 = $(this.controlList[j]).length;
-                    const condition2 = $(this.controlList[j]).is(':visible');
+                    const condition2 = $(this.controlList[j]).is(":visible");
                     if (condition1 && condition2) {
                         setTimeout(() => {
                             $(this.controlList[j]).focus();
@@ -366,9 +413,13 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
     }
 
     private isExistDontAllowCharacter($event: any) {
-        if ($event.target.attributes['dont-allow-char'] &&
-            $event.target.attributes['dont-allow-char'].value &&
-            $event.target['value'].indexOf($event.target.attributes['dont-allow-char'].value) > -1) {
+        if (
+            $event.target.attributes["dont-allow-char"] &&
+            $event.target.attributes["dont-allow-char"].value &&
+            $event.target["value"].indexOf(
+                $event.target.attributes["dont-allow-char"].value
+            ) > -1
+        ) {
             this.callBackWhenInvalidCharacterAction.emit();
             return true;
         }
@@ -397,58 +448,79 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
 
         let $thisPane: any;
         if (this.controlFocus && this.controlFocus.nativeElement) {
-            const thisForm = this.controlFocus.nativeElement.closest('form#' + this.formName);
+            const thisForm = this.controlFocus.nativeElement.closest(
+                "form#" + this.formName
+            );
             if (thisForm)
-                $thisPane = $(thisForm).parents('.tab-pane.active').last();
+                $thisPane = $(thisForm).parents(".tab-pane.active").last();
         }
 
-        let $targetForm = $thisPane && $thisPane.length ? $thisPane.find(this.targetComponentFocus) : $(this.targetComponentFocus);
+        let $targetForm =
+            $thisPane && $thisPane.length
+                ? $thisPane.find(this.targetComponentFocus)
+                : $(this.targetComponentFocus);
         if (!$targetForm || !$targetForm.length) {
-            if (this.targetComponentFocus == 'data-entry-order-payment-type')
-                this.selectChildAndParentTab($thisPane.find('app-customer-data-entry-form').closest('.tab-pane').siblings());
+            if (this.targetComponentFocus == "data-entry-order-payment-type")
+                this.selectChildAndParentTab(
+                    $thisPane
+                        .find("app-customer-data-entry-form")
+                        .closest(".tab-pane")
+                        .siblings()
+                );
 
             return;
         }
 
-        if (!$targetForm.is('form')) {
-            const forms = $targetForm.find('form');
+        if (!$targetForm.is("form")) {
+            const forms = $targetForm.find("form");
             if (!forms || !forms.length) return;
 
             //If there is more than one form -> will get form by index
-            $targetForm = forms.length > 1 ? $(forms[this.targetComponentIndex]) : forms;
+            $targetForm =
+                forms.length > 1 ? $(forms[this.targetComponentIndex]) : forms;
 
-            if (!$targetForm.is(':visible'))
-                this.selectChildAndParentTab($targetForm.closest('.tab-pane'));
+            if (!$targetForm.is(":visible"))
+                this.selectChildAndParentTab($targetForm.closest(".tab-pane"));
         }
 
         let $item: any;
 
         //focus on the first / or last valid control
-        for (const item of ($targetForm[0] as any)) {
+        for (const item of $targetForm[0] as any) {
             if (this.isValidControlToFocus(item)) {
                 $item = item;
 
                 //if isFocusOnLast = false -> will focus on first valid control
                 if (!this.isFocusOnLast) break;
             }
-        }//for
+        } //for
 
-        if ($item)
-            $($item).focus();
+        if ($item) $($item).focus();
     }
 
     private selectTab($curentTab: any) {
         if (!$curentTab.length) return;
 
-        const tabId = $curentTab.attr('id');
+        const tabId = $curentTab.attr("id");
         if (!tabId) return;
 
         const $currentNav = $('li a[href$="' + tabId + '"]');
         if ($currentNav.length) {
-            if (tabId.indexOf('orderDataEntryPayment') !== -1)
-                this.store.dispatch(this.dataEntryActions.activeTabInListPaymentTab(tabId, this.ofModule, this.selectedODETab.TabID));
+            if (tabId.indexOf("orderDataEntryPayment") !== -1)
+                this.store.dispatch(
+                    this.dataEntryActions.activeTabInListPaymentTab(
+                        tabId,
+                        this.ofModule,
+                        this.selectedODETab.TabID
+                    )
+                );
             else
-                this.store.dispatch(this.tabSummaryActions.requestSelectSimpleTab(tabId, this.ofModule));
+                this.store.dispatch(
+                    this.tabSummaryActions.requestSelectSimpleTab(
+                        tabId,
+                        this.ofModule
+                    )
+                );
         }
     }
 
@@ -456,12 +528,13 @@ export class ControlFocusComponent extends BaseComponent implements OnInit, OnDe
         if (!this.controlList || !this.controlList.length) return;
 
         try {
-
             for (let i = 0; i <= this.controlList.length; i++) {
-                $(this.controlList[i]).unbind('keyup');
+                $(this.controlList[i]).unbind("keyup");
             }
 
             this.controlList = [];
-        } catch (ex) { console.log('unbindKeyDownEvent', ex); }
+        } catch (ex) {
+            console.log("unbindKeyDownEvent", ex);
+        }
     }
 }

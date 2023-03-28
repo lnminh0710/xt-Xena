@@ -1,10 +1,16 @@
-import { AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
-import { QueryOperatorDirective } from './query-operator.directive';
-import { QueryFieldDirective } from './query-field.directive';
-import { QuerySwitchGroupDirective } from './query-switch-group.directive';
-import { QueryButtonGroupDirective } from './query-button-group.directive';
-import { QueryInputDirective } from './query-input.directive';
-import { QueryRemoveButtonDirective } from './query-remove-button.directive';
+import {
+    AbstractControl,
+    ControlValueAccessor,
+    NG_VALUE_ACCESSOR,
+    ValidationErrors,
+    Validator,
+} from "@angular/forms";
+import { QueryOperatorDirective } from "./query-operator.directive";
+import { QueryFieldDirective } from "./query-field.directive";
+import { QuerySwitchGroupDirective } from "./query-switch-group.directive";
+import { QueryButtonGroupDirective } from "./query-button-group.directive";
+import { QueryInputDirective } from "./query-input.directive";
+import { QueryRemoveButtonDirective } from "./query-remove-button.directive";
 import {
     ButtonGroupContext,
     Field,
@@ -17,7 +23,7 @@ import {
     QueryBuilderConfig,
     Rule,
     RuleSet,
-} from './query-builder.interfaces';
+} from "./query-builder.interfaces";
 import {
     ChangeDetectorRef,
     Component,
@@ -34,30 +40,37 @@ import {
     SimpleChanges,
     TemplateRef,
     ViewChild,
-    ViewChildren
-} from '@angular/core';
-import { ModalService } from 'app/services';
-import { MessageModel } from 'app/models';
-import { MessageModal } from 'app/app.constants';
-import { AgeFilterComponent } from '../filter/age-filter';
-import { ExtendedFilterComponent } from '../filter/extended-filter';
-import { DynamicFormComponent } from '../filter/dynamic-filter';
-import { XnFormFocusDirective } from 'app/shared/directives/xn-form-focus/xn-form-focus.directive';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+    ViewChildren,
+} from "@angular/core";
+import { ModalService } from "app/services";
+import { MessageModel } from "app/models";
+import { MessageModal } from "app/app.constants";
+import { AgeFilterComponent } from "../filter/age-filter";
+import { ExtendedFilterComponent } from "../filter/extended-filter";
+import { DynamicFormComponent } from "../filter/dynamic-filter";
+import { XnFormFocusDirective } from "app/shared/directives/xn-form-focus/xn-form-focus.directive";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 
 export const CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => QueryBuilderComponent),
-    multi: true
+    multi: true,
 };
 
 @Component({
-    selector: 'query-builder',
-    templateUrl: './query-builder.component.html',
-    styleUrls: ['./query-builder.component.scss'],
-    providers: [CONTROL_VALUE_ACCESSOR]
+    selector: "query-builder",
+    templateUrl: "./query-builder.component.html",
+    styleUrls: ["./query-builder.component.scss"],
+    providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, ControlValueAccessor, Validator {
+export class QueryBuilderComponent
+    implements
+        OnInit,
+        AfterViewInit,
+        OnChanges,
+        ControlValueAccessor,
+        Validator
+{
     public showDialog = false;
     public disabled: boolean;
     public fields: Field[];
@@ -65,36 +78,39 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
     public listComboBox: any = {};
     public focusHandleStart: boolean = false;
     public defaultClassNames: { [key: string]: string } = {
-        removeIcon: 'q-icon q-remove-icon',
-        addIcon: 'q-icon q-add-icon',
-        button: 'q-button',
-        buttonGroup: 'q-button-group',
-        switchGroup: 'q-switch-group',
-        queryTree: 'q-tree',
-        queryItem: 'q-item',
-        queryRule: 'q-rule',
-        queryRuleSet: 'q-ruleset',
-        invalidRuleset: 'q-invalid-ruleset',
-        emptyWarning: 'q-empty-warning',
-        fieldControl: 'q-field-control',
-        operatorControl: 'q-operator-control',
-        inputControl: 'q-input-control'
+        removeIcon: "q-icon q-remove-icon",
+        addIcon: "q-icon q-add-icon",
+        button: "q-button",
+        buttonGroup: "q-button-group",
+        switchGroup: "q-switch-group",
+        queryTree: "q-tree",
+        queryItem: "q-item",
+        queryRule: "q-rule",
+        queryRuleSet: "q-ruleset",
+        invalidRuleset: "q-invalid-ruleset",
+        emptyWarning: "q-empty-warning",
+        fieldControl: "q-field-control",
+        operatorControl: "q-operator-control",
+        inputControl: "q-input-control",
     };
     public defaultOperatorMap: { [key: string]: string[] } = {
-        string: ['=', '!=', 'contains', 'like'],
-        number: ['=', '!=', '>', '>=', '<', '<='],
-        time: ['=', '!=', '>', '>=', '<', '<='],
-        date: ['=', '!=', '>', '>=', '<', '<='],
-        category: ['=', '!='],
-        boolean: ['=']
+        string: ["=", "!=", "contains", "like"],
+        number: ["=", "!=", ">", ">=", "<", "<="],
+        time: ["=", "!=", ">", ">=", "<", "<="],
+        date: ["=", "!=", ">", ">=", "<", "<="],
+        category: ["=", "!="],
+        boolean: ["="],
     };
     @Input() set comboData(data: any) {
         this.listComboBoxRaw = data;
-        if (!this.listComboBoxRaw || !this.listComboBoxRaw['LogicalOperatores']) return;
-        this.listComboBox['LogicalOperatores'] = this.listComboBoxRaw['LogicalOperatores'].map(x => {
+        if (!this.listComboBoxRaw || !this.listComboBoxRaw["LogicalOperatores"])
+            return;
+        this.listComboBox["LogicalOperatores"] = this.listComboBoxRaw[
+            "LogicalOperatores"
+        ].map((x) => {
             return {
                 textValue: x.TextValue,
-                idValue: x.TextValue
+                idValue: x.TextValue,
             };
         });
     }
@@ -102,7 +118,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
     @Input() allowRuleset: boolean = true;
     @Input() classNames: { [key: string]: string };
     @Input() operatorMap: { [key: string]: string[] };
-    @Input() data: RuleSet = { condition: 'AND', rules: [] };
+    @Input() data: RuleSet = { condition: "AND", rules: [] };
     @Input() parentData: RuleSet;
     @Input() config: QueryBuilderConfig = { fields: {} };
     @Input() parentInputTemplates: QueryList<QueryInputDirective>;
@@ -116,21 +132,36 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
 
     @Output() onChanged = new EventEmitter<any>();
 
-    @ContentChild(QueryButtonGroupDirective) buttonGroupTemplate: QueryButtonGroupDirective;
-    @ContentChild(QuerySwitchGroupDirective) switchGroupTemplate: QuerySwitchGroupDirective;
+    @ContentChild(QueryButtonGroupDirective)
+    buttonGroupTemplate: QueryButtonGroupDirective;
+    @ContentChild(QuerySwitchGroupDirective)
+    switchGroupTemplate: QuerySwitchGroupDirective;
     @ContentChild(QueryFieldDirective) fieldTemplate: QueryFieldDirective;
-    @ContentChild(QueryOperatorDirective) operatorTemplate: QueryOperatorDirective;
-    @ContentChild(QueryRemoveButtonDirective) removeButtonTemplate: QueryRemoveButtonDirective;
-    @ContentChildren(QueryInputDirective) inputTemplates: QueryList<QueryInputDirective>;
+    @ContentChild(QueryOperatorDirective)
+    operatorTemplate: QueryOperatorDirective;
+    @ContentChild(QueryRemoveButtonDirective)
+    removeButtonTemplate: QueryRemoveButtonDirective;
+    @ContentChildren(QueryInputDirective)
+    inputTemplates: QueryList<QueryInputDirective>;
 
-    @ViewChild('logicalOperator') logicalOperator: AngularMultiSelect;
-    @ViewChildren(AgeFilterComponent) private ageFilterComponents: QueryList<AgeFilterComponent>;
-    @ViewChildren(ExtendedFilterComponent) private extendedFilterComponents: QueryList<ExtendedFilterComponent>;
-    @ViewChildren(DynamicFormComponent) private dynamicFormComponents: QueryList<DynamicFormComponent>;
+    @ViewChild("logicalOperator") logicalOperator: AngularMultiSelect;
+    @ViewChildren(AgeFilterComponent)
+    private ageFilterComponents: QueryList<AgeFilterComponent>;
+    @ViewChildren(ExtendedFilterComponent)
+    private extendedFilterComponents: QueryList<ExtendedFilterComponent>;
+    @ViewChildren(DynamicFormComponent)
+    private dynamicFormComponents: QueryList<DynamicFormComponent>;
     @ViewChild(XnFormFocusDirective) formFocusDirective: XnFormFocusDirective;
 
     private defaultTemplateTypes: string[] = [
-        'string', 'number', 'time', 'date', 'category', 'boolean', 'multiselect'];
+        "string",
+        "number",
+        "time",
+        "date",
+        "category",
+        "boolean",
+        "multiselect",
+    ];
     private defaultEmptyList: any[] = [];
     private operatorsCache: { [key: string]: string[] };
     private inputContextCache = new Map<Rule, InputContext>();
@@ -147,12 +178,11 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
     constructor(
         private changeDetectorRef: ChangeDetectorRef,
         private modalService: ModalService
-    ) { }
+    ) {}
 
     // ----------OnInit Implementation----------
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     ngAfterViewInit() {
         this.initFocusControl();
@@ -165,7 +195,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
     ngOnChanges(changes: SimpleChanges) {
         const config = this.config;
         const type = typeof config;
-        if (type === 'object') {
+        if (type === "object") {
             this.fields = Object.keys(config.fields).map((value) => {
                 const field = config.fields[value];
                 field.value = field.value || value;
@@ -173,7 +203,9 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
             });
             this.operatorsCache = {};
         } else {
-            throw new Error(`Expected 'config' must be a valid object, got ${type} instead.`);
+            throw new Error(
+                `Expected 'config' must be a valid object, got ${type} instead.`
+            );
         }
     }
 
@@ -185,15 +217,18 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         const ruleErrorStore = [];
         let hasErrors = false;
 
-        if (!this.config.allowEmptyRulesets && this.checkEmptyRuleInRuleset(query)) {
-            errors['empty'] = 'Empty rulesets are not allowed.';
+        if (
+            !this.config.allowEmptyRulesets &&
+            this.checkEmptyRuleInRuleset(query)
+        ) {
+            errors["empty"] = "Empty rulesets are not allowed.";
             hasErrors = true;
         }
 
         this.validateRulesInRuleset(query, ruleErrorStore);
 
         if (ruleErrorStore.length) {
-            errors['rules'] = ruleErrorStore;
+            errors["rules"] = ruleErrorStore;
             hasErrors = true;
         }
         return hasErrors ? errors : null;
@@ -240,7 +275,9 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
                 return queryInput.template;
             } else {
                 if (this.defaultTemplateTypes.indexOf(type) === -1) {
-                    console.warn(`Could not find template for field with type: ${type}`);
+                    console.warn(
+                        `Could not find template for field with type: ${type}`
+                    );
                 }
                 return null;
             }
@@ -266,21 +303,25 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         if (fieldObject && fieldObject.operators) {
             operators = fieldObject.operators;
         } else if (type) {
-            operators = (this.operatorMap && this.operatorMap[type]) || this.defaultOperatorMap[type] || this.defaultEmptyList;
+            operators =
+                (this.operatorMap && this.operatorMap[type]) ||
+                this.defaultOperatorMap[type] ||
+                this.defaultEmptyList;
             if (operators.length === 0) {
                 console.warn(
                     `No operators found for field '${field}' with type ${fieldObject.type}. ` +
-                    `Please define an 'operators' property on the field or use the 'operatorMap' binding to fix this.`);
+                        `Please define an 'operators' property on the field or use the 'operatorMap' binding to fix this.`
+                );
             }
         } else {
             console.warn(`No 'type' property found on field: '${field}'`);
         }
 
         if (fieldObject.options) {
-            operators = operators.concat(['in', 'not in']);
+            operators = operators.concat(["in", "not in"]);
         }
         if (fieldObject.nullable) {
-            operators = operators.concat(['is null', 'is not null']);
+            operators = operators.concat(["is null", "is not null"]);
         }
         // Cache reference to array object, so it won't be computed next time and trigger a rerender.
         this.operatorsCache[field] = operators;
@@ -293,12 +334,12 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         }
         const type = this.config.fields[field].type;
         switch (operator) {
-            case 'is null':
-            case 'is not null':
-                return null;  // No displayed component
-            case 'in':
-            case 'not in':
-                return 'multiselect';
+            case "is null":
+            case "is not null":
+                return null; // No displayed component
+            case "in":
+            case "not in":
+                return "multiselect";
             default:
                 return type;
         }
@@ -324,8 +365,10 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
             if (operators && operators.length) {
                 return operators[0];
             } else {
-                console.warn(`No operators found for field '${field.value}'. ` +
-                    `A 'defaultOperator' is also not specified on the field config. Operator value will default to null.`);
+                console.warn(
+                    `No operators found for field '${field.value}'. ` +
+                        `A 'defaultOperator' is also not specified on the field config. Operator value will default to null.`
+                );
                 return null;
             }
         }
@@ -343,7 +386,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
                     // condition: 'AND',
                     field: field.value,
                     //operator: this.getDefaultOperator(field)
-                }
+                },
             ]);
         }
 
@@ -354,7 +397,10 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
     }
 
     removeRule(rule: Rule, parent?: RuleSet): void {
-        this.showRemoveConfirmationDialog(this.processRemoveRule.bind(this), { rule: rule, parent: parent });
+        this.showRemoveConfirmationDialog(this.processRemoveRule.bind(this), {
+            rule: rule,
+            parent: parent,
+        });
     }
 
     public ageFilterDataChanged() {
@@ -363,7 +409,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
 
     /** FOCUS **/
     private controlList: Array<any> = [];
-    private formControlName = ['ageForm', 'extendedForm'];
+    private formControlName = ["ageForm", "extendedForm"];
     private initFocusControl() {
         setTimeout(() => {
             this.unbindKeyDownEvent();
@@ -374,24 +420,38 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         }, 300);
     }
     private addControlList(formControlName) {
-        const formList = $('*[id*=' + formControlName + ']:visible');
+        const formList = $("*[id*=" + formControlName + "]:visible");
 
-        if (!formList || formList.length <= 0 || (formList[0] as any).length <= 0 || ((formList[0] as any)[0]).length <= 0) {
+        if (
+            !formList ||
+            formList.length <= 0 ||
+            (formList[0] as any).length <= 0 ||
+            (formList[0] as any)[0].length <= 0
+        ) {
             return;
         }
-        for (const form of (formList as any)) {
-            for (const item of (form as any)) {
+        for (const form of formList as any) {
+            for (const item of form as any) {
                 const $item = $(item);
-                if ($item.hasClass('xn-input') ||
-                    $item.hasClass('xn-input--no-icon') ||
-                    $item.hasClass('xn-select') ||
-                    $item.hasClass('xn-select--no-icon') ||
-                    ($item.closest('wj-combo-box.xn-select').length && $item.get(0).tagName != 'BUTTON') ||
-                    ($item.closest('wj-auto-complete.xn-auto-complete').length && $item.get(0).tagName != 'BUTTON') ||
-                    ($item.closest('wj-input-date.xn-input').length && $item.get(0).tagName == 'INPUT') ||
-                    $item.attr('type') === 'checkbox' || $item.attr('type') === 'radio' ||
-                    ($item.attr('wj-part') === 'input' && $item.hasClass('wj-numeric')) ||
-                    ($item.attr('pinputtext') === '' && $item.attr('placeholder') === 'mm/dd/yyyy')) {
+                if (
+                    $item.hasClass("xn-input") ||
+                    $item.hasClass("xn-input--no-icon") ||
+                    $item.hasClass("xn-select") ||
+                    $item.hasClass("xn-select--no-icon") ||
+                    ($item.closest("wj-combo-box.xn-select").length &&
+                        $item.get(0).tagName != "BUTTON") ||
+                    ($item.closest("wj-auto-complete.xn-auto-complete")
+                        .length &&
+                        $item.get(0).tagName != "BUTTON") ||
+                    ($item.closest("wj-input-date.xn-input").length &&
+                        $item.get(0).tagName == "INPUT") ||
+                    $item.attr("type") === "checkbox" ||
+                    $item.attr("type") === "radio" ||
+                    ($item.attr("wj-part") === "input" &&
+                        $item.hasClass("wj-numeric")) ||
+                    ($item.attr("pinputtext") === "" &&
+                        $item.attr("placeholder") === "mm/dd/yyyy")
+                ) {
                     this.controlList.push($item);
                 }
             }
@@ -408,7 +468,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
                     return;
                 }
                 // stop move to other control when control is textArea
-                if ($event.target.toString().indexOf('TextArea') > -1) {
+                if ($event.target.toString().indexOf("TextArea") > -1) {
                     return;
                 }
                 if (i === this.controlList.length - 1) {
@@ -421,7 +481,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
                 $event.preventDefault();
                 for (let j = i + 1; j < this.controlList.length; j++) {
                     const condition1 = $(this.controlList[j]).length;
-                    const condition2 = $(this.controlList[j]).is(':visible');
+                    const condition2 = $(this.controlList[j]).is(":visible");
                     if (condition1 && condition2) {
                         setTimeout(() => {
                             $(this.controlList[j]).focus();
@@ -439,8 +499,8 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         }
         for (let i = 0; i <= this.controlList.length; i++) {
             try {
-                $(this.controlList[i]).unbind('keydown');
-            } catch (e) { }
+                $(this.controlList[i]).unbind("keydown");
+            } catch (e) {}
         }
         this.controlList = [];
     }
@@ -469,10 +529,10 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         } else {
             parent.rules = parent.rules.concat([
                 {
-                    condition: 'AND',
+                    condition: "AND",
                     // sub_condition: parent.condition,
-                    rules: []
-                }
+                    rules: [],
+                },
             ]);
         }
 
@@ -483,7 +543,10 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
     }
 
     removeRuleSet(ruleset?: RuleSet, parent?: RuleSet): void {
-        this.showRemoveConfirmationDialog(this.processRemoveRuleSet.bind(this), { rule: ruleset, parent: parent });
+        this.showRemoveConfirmationDialog(
+            this.processRemoveRuleSet.bind(this),
+            { rule: ruleset, parent: parent }
+        );
     }
 
     private submitForm() {
@@ -514,14 +577,21 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
     }
 
     private showRemoveConfirmationDialog(callBack, callBackData) {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Delete Rule',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_This_Rule'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => { callBack(callBackData.rule, callBackData.parent); }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Delete Rule",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Delete_This_Rule" },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    callBack(callBackData.rule, callBackData.parent);
+                },
+            })
+        );
     }
 
     changeField(fieldValue: string, rule: Rule): void {
@@ -546,7 +616,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
 
     getDefaultValue(defaultValue: any): any {
         switch (typeof defaultValue) {
-            case 'function':
+            case "function":
                 return defaultValue();
             default:
                 return defaultValue;
@@ -579,10 +649,12 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
     }
 
     getQueryItemClassName(local: LocalRuleMeta): string {
-        let cls = this.getClassName('queryItem');
-        cls += ' ' + this.getClassName(local.ruleset ? 'queryRuleSet' : 'queryRule');
+        let cls = this.getClassName("queryItem");
+        cls +=
+            " " +
+            this.getClassName(local.ruleset ? "queryRuleSet" : "queryRule");
         if (local.invalid) {
-            cls += ' ' + this.getClassName('invalidRuleset');
+            cls += " " + this.getClassName("invalidRuleset");
         }
         return cls;
     }
@@ -593,7 +665,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
                 addRule: this.addRule.bind(this),
                 addRuleSet: this.addRuleSet.bind(this),
                 removeRuleSet: this.removeRuleSet.bind(this),
-                $implicit: this.data
+                $implicit: this.data,
             };
         }
         return this.buttonGroupContext;
@@ -603,7 +675,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         if (!this.removeButtonContextCache.has(rule)) {
             this.removeButtonContextCache.set(rule, {
                 removeRule: this.removeRule.bind(this),
-                $implicit: rule
+                $implicit: rule,
             });
         }
         return this.removeButtonContextCache.get(rule);
@@ -614,7 +686,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
             this.fieldContextCache.set(rule, {
                 changeField: this.changeField.bind(this),
                 fields: this.fields,
-                $implicit: rule
+                $implicit: rule,
             });
         }
         return this.fieldContextCache.get(rule);
@@ -624,7 +696,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         if (!this.operatorContextCache.has(rule)) {
             this.operatorContextCache.set(rule, {
                 operators: this.getOperators(rule.field),
-                $implicit: rule
+                $implicit: rule,
             });
         }
         return this.operatorContextCache.get(rule);
@@ -635,7 +707,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
             this.inputContextCache.set(rule, {
                 options: this.getOptions(rule.field),
                 field: this.config.fields[rule.field],
-                $implicit: rule
+                $implicit: rule,
             });
         }
         return this.inputContextCache.get(rule);
@@ -645,7 +717,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         rule.value = data;
         if (data.condition) {
             rule.condition = data.condition;
-            delete data['condition'];
+            delete data["condition"];
         }
         this.emitData();
     }
@@ -700,7 +772,10 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
         if (ruleset.rules.length > 0) {
             ruleset.rules.forEach((item) => {
                 if ((item as RuleSet).rules) {
-                    return this.validateRulesInRuleset(item as RuleSet, errorStore);
+                    return this.validateRulesInRuleset(
+                        item as RuleSet,
+                        errorStore
+                    );
                 } else if ((item as Rule).field) {
                     const field = this.config.fields[(item as Rule).field];
                     if (field && field.validator && field.validator.apply) {
@@ -741,5 +816,4 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit, OnChanges, 
             this.formFocusDirective.focusHandleStart = true;
         }
     }
-
 }

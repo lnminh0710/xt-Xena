@@ -1,25 +1,36 @@
-import { Injectable, Injector, Inject, forwardRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { GlobalSearchModuleModel, IndexSearchSummary, TabModel, ApiResultResponse } from 'app/models';
-import { BaseService } from '../base.service';
-import { AccessRightsService } from 'app/services';
+import { Injectable, Injector, Inject, forwardRef } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import {
+    GlobalSearchModuleModel,
+    IndexSearchSummary,
+    TabModel,
+    ApiResultResponse,
+} from "app/models";
+import { BaseService } from "../base.service";
+import { AccessRightsService } from "app/services";
 
 @Injectable()
 export class GlobalSearchService extends BaseService {
-    constructor(injector: Injector,
-        @Inject(forwardRef(() => AccessRightsService)) private accessRightsService: AccessRightsService) {
+    constructor(
+        injector: Injector,
+        @Inject(forwardRef(() => AccessRightsService))
+        private accessRightsService: AccessRightsService
+    ) {
         super(injector);
     }
 
     public getAllSearchModules(): Observable<ApiResultResponse> {
-        return BaseService.cacheService.get(this.serUrl.getAllSearchModules,
-            this.get<ApiResultResponse>(this.serUrl.getAllSearchModules)).map((result: any) => {
-
+        return BaseService.cacheService
+            .get(
+                this.serUrl.getAllSearchModules,
+                this.get<ApiResultResponse>(this.serUrl.getAllSearchModules)
+            )
+            .map((result: any) => {
                 //Set accessRight for Module
                 this.accessRightsService.SetAccessRightsForModule(result.item);
 
                 return result;
-            });;
+            });
     }
 
     //public getAllModules(): Observable<GlobalSearchModuleModel[]> {
@@ -28,7 +39,11 @@ export class GlobalSearchService extends BaseService {
     //    });
     //}
 
-    public getSearchSummary(keyWord: string, searchIndex: string, isWithStar?: boolean): Observable<ApiResultResponse> {
+    public getSearchSummary(
+        keyWord: string,
+        searchIndex: string,
+        isWithStar?: boolean
+    ): Observable<ApiResultResponse> {
         //if (keyWord && keyWord != '*') {
         //    let arr = keyWord.split(' ');
         //    keyWord = '';
@@ -36,15 +51,20 @@ export class GlobalSearchService extends BaseService {
         //        keyWord += '"' + item + '" ';
         //    }
         //}
-        isWithStar = true;//2019-01-02: Rocco always wants to search by isWithStar = true
+        isWithStar = true; //2019-01-02: Rocco always wants to search by isWithStar = true
         return this.get<any>(this.serUrl.elasticSearchSearchSummary, {
             keyword: encodeURIComponent(keyWord),
             indexes: searchIndex,
-            isWithStar: isWithStar
+            isWithStar: isWithStar,
         });
     }
 
-    public setTabActive(tabName: string, active: boolean, tabList: TabModel[], textSearch: string) {
+    public setTabActive(
+        tabName: string,
+        active: boolean,
+        tabList: TabModel[],
+        textSearch: string
+    ) {
         for (let tab of tabList) {
             if (tab.title === tabName) {
                 tab.active = true;
@@ -71,15 +91,21 @@ export class GlobalSearchService extends BaseService {
         return false;
     }
 
-    public getModuleByName(modules: GlobalSearchModuleModel[], name: string): GlobalSearchModuleModel {
+    public getModuleByName(
+        modules: GlobalSearchModuleModel[],
+        name: string
+    ): GlobalSearchModuleModel {
         for (let mod of modules) {
-            if (mod.moduleName === name)
-                return mod;
+            if (mod.moduleName === name) return mod;
         }
         return new GlobalSearchModuleModel();
     }
 
-    public getCurrentModule(globalSearchModuleModels, globalSearchModuleModelsAdminChildren, currentTab): any {
+    public getCurrentModule(
+        globalSearchModuleModels,
+        globalSearchModuleModelsAdminChildren,
+        currentTab
+    ): any {
         let allModules = globalSearchModuleModels;
         allModules = allModules.concat(globalSearchModuleModelsAdminChildren);
         for (let item of allModules) {
@@ -99,7 +125,11 @@ export class GlobalSearchService extends BaseService {
         return null;
     }
 
-    public setSearchResultForModule(globalSearchModuleModels: GlobalSearchModuleModel[], searchResult: number, className: string) {
+    public setSearchResultForModule(
+        globalSearchModuleModels: GlobalSearchModuleModel[],
+        searchResult: number,
+        className: string
+    ) {
         for (let item of globalSearchModuleModels) {
             item.isLoading = false;
             item.searchResult = null;
@@ -129,4 +159,3 @@ export class GlobalSearchService extends BaseService {
         return false;
     }
 }
-

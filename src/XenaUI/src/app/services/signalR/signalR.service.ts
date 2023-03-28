@@ -1,16 +1,28 @@
-import { Injectable, Injector, EventEmitter, Inject, forwardRef } from '@angular/core';
-import { HubConnection, HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
-import { MessagePackHubProtocol } from '@aspnet/signalr-protocol-msgpack';
-import remove from 'lodash-es/remove';
-import { BaseService } from '../base.service';
-import { Uti } from 'app/utilities/uti';
-import { SignalRNotifyModel, User } from 'app/models';
-import { Configuration, SignalRActionEnum, SignalRJobEnum, SignalRTypenEnum } from 'app/app.constants';
+import {
+    Injectable,
+    Injector,
+    EventEmitter,
+    Inject,
+    forwardRef,
+} from "@angular/core";
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@aspnet/signalr";
+import { MessagePackHubProtocol } from "@aspnet/signalr-protocol-msgpack";
+import remove from "lodash-es/remove";
+import { BaseService } from "../base.service";
+import { Uti } from "app/utilities/uti";
+import { SignalRNotifyModel, User } from "app/models";
+import {
+    Configuration,
+    SignalRActionEnum,
+    SignalRJobEnum,
+    SignalRTypenEnum,
+} from "app/app.constants";
 
 @Injectable()
 export class SignalRService extends BaseService {
-    public messageReceived = new EventEmitter<Array<SignalRNotifyModel>>();//Array message
-    public messageWidgetSavedSuccessReceived = new EventEmitter<SignalRNotifyModel>();//One message
+    public messageReceived = new EventEmitter<Array<SignalRNotifyModel>>(); //Array message
+    public messageWidgetSavedSuccessReceived =
+        new EventEmitter<SignalRNotifyModel>(); //One message
     public messageReIndexElasticSearch = new EventEmitter<SignalRNotifyModel>();
     public messageMatchingData = new EventEmitter<SignalRNotifyModel>();
     public messageImportDataMatrix = new EventEmitter<SignalRNotifyModel>();
@@ -23,25 +35,25 @@ export class SignalRService extends BaseService {
 
     private connectionIsEstablished = false;
     private _hubConnection: HubConnection | undefined;
-    private url: string = Configuration.PublicSettings.signalRApiUrl + '?env=web&groupName=' + location.host;
+    private url: string =
+        Configuration.PublicSettings.signalRApiUrl +
+        "?env=web&groupName=" +
+        location.host;
     private data: Array<SignalRNotifyModel> = [];
     private userLogin: User;
-    private maximumRetryConnecting = 10000;//retry 10000 times
+    private maximumRetryConnecting = 10000; //retry 10000 times
     private numofRetryConnecting = 0;
     private isStartingConnection = false;
 
-    constructor(
-        injector: Injector,
-        protected uti: Uti
-    ) {
+    constructor(injector: Injector, protected uti: Uti) {
         super(injector);
 
         this.userLogin = this.uti.getUserInfo();
         this.userLogin.color = this.getRandomColor();
-        this.url += '&userName=' + this.userLogin.loginName;
+        this.url += "&userName=" + this.userLogin.loginName;
 
         const randNum = Math.round(Math.random() * 10000);
-        this.sessionId = (new Date().getTime() + randNum) + '';
+        this.sessionId = new Date().getTime() + randNum + "";
     }
 
     //#region Init SignalR
@@ -62,14 +74,14 @@ export class SignalRService extends BaseService {
 
         // re-establish the connection if connection dropped
         this._hubConnection.onclose(() => {
-            console.log('_hubConnection onclose', new Date());
+            console.log("_hubConnection onclose", new Date());
             this.startConnection();
         });
     }
 
     private startConnection(): void {
         if (!this._hubConnection) {
-            console.log('_hubConnection is null');
+            console.log("_hubConnection is null");
             return;
         }
 
@@ -95,10 +107,14 @@ export class SignalRService extends BaseService {
                 this.connectionIsEstablished = true;
                 this.isStartingConnection = false;
                 this.numofRetryConnecting = 0;
-                console.log('Hub connection started', new Date());
+                console.log("Hub connection started", new Date());
             })
             .catch((err) => {
-                console.log('Error while establishing connection, retrying...', new Date(), err);
+                console.log(
+                    "Error while establishing connection, retrying...",
+                    new Date(),
+                    err
+                );
                 this.connectionIsEstablished = false;
                 this.isStartingConnection = false;
                 this.numofRetryConnecting++;
@@ -110,14 +126,15 @@ export class SignalRService extends BaseService {
 
     private registerOnServerEvents(): void {
         const listenerNames: string[] = [
-            'ReceiveMessage',
-            'ReceiveMessageES',
-            'ReceiveMessageMatchingData',
-            'ReceiveMessageImportDataMatrix',
-            'ReceiveMessageImportInvoicePayment',
-            'ReceiveMessageRCWord2Pdf'];
+            "ReceiveMessage",
+            "ReceiveMessageES",
+            "ReceiveMessageMatchingData",
+            "ReceiveMessageImportDataMatrix",
+            "ReceiveMessageImportInvoicePayment",
+            "ReceiveMessageRCWord2Pdf",
+        ];
 
-        listenerNames.forEach(listenerName => {
+        listenerNames.forEach((listenerName) => {
             this._hubConnection.on(listenerName, (data: SignalRNotifyModel) => {
                 this.processReceiveMessage(data);
             });
@@ -136,8 +153,8 @@ export class SignalRService extends BaseService {
     //#region Helpers
 
     private getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
+        const letters = "0123456789ABCDEF";
+        let color = "#";
         for (let i = 0; i < 6; i++) {
             color += letters[Math.floor(Math.random() * 16)];
         }
@@ -145,50 +162,66 @@ export class SignalRService extends BaseService {
     }
     //#endregion
 
-
     //#region Invoke: SendMessage
     public sendMessage(message: SignalRNotifyModel): void {
-        if (!Configuration.PublicSettings.enableSignalR || this.isStartingConnection) return;
+        if (
+            !Configuration.PublicSettings.enableSignalR ||
+            this.isStartingConnection
+        )
+            return;
 
         if (!this.connectionIsEstablished) {
             this.numofRetryConnecting = 0;
             if (this._hubConnection) {
                 this.startConnection();
-                console.error('Can not connect to SignalR server');
+                console.error("Can not connect to SignalR server");
             }
             return;
         }
 
-        let sendMessageType = '';
+        let sendMessageType = "";
 
         //Process for WidgetForm-Editing before sending message to Server
-        if (message.Type === SignalRTypenEnum.WidgetForm && message.Job === SignalRJobEnum.Editing) {
+        if (
+            message.Type === SignalRTypenEnum.WidgetForm &&
+            message.Job === SignalRJobEnum.Editing
+        ) {
             this.sendMessageWidgetFormEditing(message);
-        }
-        else {
+        } else {
             sendMessageType = this.getMessageType(message);
         }
         this._hubConnection
-            .invoke('SendMessage' + sendMessageType, message)
+            .invoke("SendMessage" + sendMessageType, message)
             .catch(this.errorHandler.bind(this));
     }
 
     private getMessageType(message: SignalRNotifyModel): string {
-        let sendMessageType = '';
+        let sendMessageType = "";
 
-        if (message.Type === SignalRTypenEnum.ES && message.Job === SignalRJobEnum.ES_ReIndex) {
+        if (
+            message.Type === SignalRTypenEnum.ES &&
+            message.Job === SignalRJobEnum.ES_ReIndex
+        ) {
             sendMessageType = SignalRTypenEnum.ES;
-        }
-        else if (message.Type === SignalRTypenEnum.MatchingData && message.Job === SignalRJobEnum.MatchingData) {
+        } else if (
+            message.Type === SignalRTypenEnum.MatchingData &&
+            message.Job === SignalRJobEnum.MatchingData
+        ) {
             sendMessageType = SignalRTypenEnum.MatchingData;
-        }
-        else if (message.Type === SignalRTypenEnum.ImportDataMatrix && message.Job === SignalRJobEnum.ImportDataMatrix) {
+        } else if (
+            message.Type === SignalRTypenEnum.ImportDataMatrix &&
+            message.Job === SignalRJobEnum.ImportDataMatrix
+        ) {
             sendMessageType = SignalRTypenEnum.ImportDataMatrix;
-        }
-        else if (message.Type === SignalRTypenEnum.ImportInvoicePayment && message.Job === SignalRJobEnum.ImportInvoicePayment) {
+        } else if (
+            message.Type === SignalRTypenEnum.ImportInvoicePayment &&
+            message.Job === SignalRJobEnum.ImportInvoicePayment
+        ) {
             sendMessageType = SignalRTypenEnum.ImportInvoicePayment;
-        }
-        else if (message.Type === SignalRTypenEnum.RCWord2Pdf && message.Job === SignalRJobEnum.RCWord2Pdf) {
+        } else if (
+            message.Type === SignalRTypenEnum.RCWord2Pdf &&
+            message.Job === SignalRJobEnum.RCWord2Pdf
+        ) {
             sendMessageType = SignalRTypenEnum.RCWord2Pdf;
         }
 
@@ -214,32 +247,52 @@ export class SignalRService extends BaseService {
 
     //#region process: ReceiveMessage
     private processReceiveMessage(message: SignalRNotifyModel) {
-        if ((message.Type === SignalRTypenEnum.ES && message.Job === SignalRJobEnum.ES_ReIndex) ||
-            (message.Job === SignalRJobEnum.Disconnected && message.UserName === SignalRTypenEnum.ES)) {
+        if (
+            (message.Type === SignalRTypenEnum.ES &&
+                message.Job === SignalRJobEnum.ES_ReIndex) ||
+            (message.Job === SignalRJobEnum.Disconnected &&
+                message.UserName === SignalRTypenEnum.ES)
+        ) {
             this.receiveMessageEsReIndex(message);
             return;
         }
 
-        if ((message.Type === SignalRTypenEnum.MatchingData && message.Job === SignalRJobEnum.MatchingData) ||
-            (message.Job === SignalRJobEnum.Disconnected && message.UserName === SignalRTypenEnum.MatchingData)) {
+        if (
+            (message.Type === SignalRTypenEnum.MatchingData &&
+                message.Job === SignalRJobEnum.MatchingData) ||
+            (message.Job === SignalRJobEnum.Disconnected &&
+                message.UserName === SignalRTypenEnum.MatchingData)
+        ) {
             this.receiveMessageMatchingData(message);
             return;
         }
 
-        if ((message.Type === SignalRTypenEnum.ImportDataMatrix && message.Job === SignalRJobEnum.ImportDataMatrix) ||
-            (message.Job === SignalRJobEnum.Disconnected && message.UserName === SignalRTypenEnum.ImportDataMatrix)) {
+        if (
+            (message.Type === SignalRTypenEnum.ImportDataMatrix &&
+                message.Job === SignalRJobEnum.ImportDataMatrix) ||
+            (message.Job === SignalRJobEnum.Disconnected &&
+                message.UserName === SignalRTypenEnum.ImportDataMatrix)
+        ) {
             this.receiveMessageImportDataMatrix(message);
             return;
         }
 
-        if ((message.Type === SignalRTypenEnum.ImportInvoicePayment && message.Job === SignalRJobEnum.ImportInvoicePayment) ||
-            (message.Job === SignalRJobEnum.Disconnected && message.UserName === SignalRTypenEnum.ImportInvoicePayment)) {
+        if (
+            (message.Type === SignalRTypenEnum.ImportInvoicePayment &&
+                message.Job === SignalRJobEnum.ImportInvoicePayment) ||
+            (message.Job === SignalRJobEnum.Disconnected &&
+                message.UserName === SignalRTypenEnum.ImportInvoicePayment)
+        ) {
             this.receiveMessageImportInvoicePayment(message);
             return;
         }
 
-        if ((message.Type === SignalRTypenEnum.RCWord2Pdf && message.Job === SignalRJobEnum.RCWord2Pdf) ||
-            (message.Job === SignalRJobEnum.Disconnected && message.UserName === SignalRTypenEnum.RCWord2Pdf)) {
+        if (
+            (message.Type === SignalRTypenEnum.RCWord2Pdf &&
+                message.Job === SignalRJobEnum.RCWord2Pdf) ||
+            (message.Job === SignalRJobEnum.Disconnected &&
+                message.UserName === SignalRTypenEnum.RCWord2Pdf)
+        ) {
             this.receiveMessageRCWord2Pdf(message);
             return;
         }
@@ -248,16 +301,22 @@ export class SignalRService extends BaseService {
         if (message.Job === SignalRJobEnum.Disconnected && message.UserName) {
             //Remove all data of Disconnected User
             remove(this.data, {
-                UserName: message.UserName
+                UserName: message.UserName,
             });
         }
 
-        if ((message.Type === SignalRTypenEnum.WidgetForm && message.Job === SignalRJobEnum.Editing)) {
+        if (
+            message.Type === SignalRTypenEnum.WidgetForm &&
+            message.Job === SignalRJobEnum.Editing
+        ) {
             this.receiveMessageWidgetFormEditing(message);
             return;
         }
 
-        if ((message.Type === SignalRTypenEnum.DesignLayout && message.Job === SignalRJobEnum.DesignLayout)) {
+        if (
+            message.Type === SignalRTypenEnum.DesignLayout &&
+            message.Job === SignalRJobEnum.DesignLayout
+        ) {
             this.receiveMessageDesignLayout(message);
             return;
         }
@@ -270,31 +329,41 @@ export class SignalRService extends BaseService {
     //#endregion
 
     //#region Private methods
-    private createSingalRNotifyModel(signalRTypenEnum: SignalRTypenEnum, signalRJobEnum: SignalRJobEnum) {
+    private createSingalRNotifyModel(
+        signalRTypenEnum: SignalRTypenEnum,
+        signalRJobEnum: SignalRJobEnum
+    ) {
         return new SignalRNotifyModel({
             Type: signalRTypenEnum,
             Job: signalRJobEnum,
             Color: this.userLogin.color,
             UserName: this.userLogin.loginName,
-            DisplayName: this.userLogin.fullName ? this.userLogin.fullName : (this.userLogin.lastname + ' ' + this.userLogin.firstname),
-            IpAddress: Configuration.PublicSettings.clientIpAddress,//ipAddress
-            SessionId: this.sessionId
+            DisplayName: this.userLogin.fullName
+                ? this.userLogin.fullName
+                : this.userLogin.lastname + " " + this.userLogin.firstname,
+            IpAddress: Configuration.PublicSettings.clientIpAddress, //ipAddress
+            SessionId: this.sessionId,
         });
     }
     //#endregion
     //#region WidgetForm: Editing
     public createMessageWidgetFormEditing(): SignalRNotifyModel {
-        return this.createSingalRNotifyModel(SignalRTypenEnum.WidgetForm, SignalRJobEnum.Editing);
+        return this.createSingalRNotifyModel(
+            SignalRTypenEnum.WidgetForm,
+            SignalRJobEnum.Editing
+        );
     }
 
     private displayEditingUsersWidgetFormEditing(model: SignalRNotifyModel) {
         //display editing users
-        const items = this.data.filter(p =>
-            p.Type === model.Type
-            && p.Job === model.Job
-            && p.ObjectId === model.ObjectId
-            && p.Action === SignalRActionEnum.ConnectEditing
-            && p.UserName !== this.userLogin.loginName);
+        const items = this.data.filter(
+            (p) =>
+                p.Type === model.Type &&
+                p.Job === model.Job &&
+                p.ObjectId === model.ObjectId &&
+                p.Action === SignalRActionEnum.ConnectEditing &&
+                p.UserName !== this.userLogin.loginName
+        );
         this.messageReceived.emit(items);
     }
 
@@ -302,11 +371,13 @@ export class SignalRService extends BaseService {
         //SavedSuccessfully only processing for case ReceiveMessage
         if (message.Action == SignalRActionEnum.SavedSuccessfully) return;
 
-        const connectedItemByUserLogin = this.data.find(p =>
-            p.Type === message.Type
-            && p.Job === message.Job
-            && p.ObjectId === message.ObjectId
-            && p.UserName === this.userLogin.loginName);
+        const connectedItemByUserLogin = this.data.find(
+            (p) =>
+                p.Type === message.Type &&
+                p.Job === message.Job &&
+                p.ObjectId === message.ObjectId &&
+                p.UserName === this.userLogin.loginName
+        );
 
         switch (message.Action) {
             case SignalRActionEnum.IsThereAnyoneEditing:
@@ -322,23 +393,24 @@ export class SignalRService extends BaseService {
                     if (!connectedItemByUserLogin) break;
 
                     //Only processing when UserLogin connecting
-                    const updateItem = this.data.find(p =>
-                        p.Type === message.Type
-                        && p.Job === message.Job
-                        && p.ObjectId === message.ObjectId
-                        && p.UserName === message.UserName);
+                    const updateItem = this.data.find(
+                        (p) =>
+                            p.Type === message.Type &&
+                            p.Job === message.Job &&
+                            p.ObjectId === message.ObjectId &&
+                            p.UserName === message.UserName
+                    );
 
                     if (updateItem) {
                         if (message.Action === SignalRActionEnum.StopEditing) {
                             updateItem.Data = null;
                             updateItem.Action = SignalRActionEnum.StopEditing;
-                        }
-                        else {
-                            updateItem.Action = SignalRActionEnum.ConnectEditing;
+                        } else {
+                            updateItem.Action =
+                                SignalRActionEnum.ConnectEditing;
                             updateItem.Data = message.Data;
                         }
-                    }
-                    else {
+                    } else {
                         this.data.push(message);
                     }
                 }
@@ -352,12 +424,12 @@ export class SignalRService extends BaseService {
                     Type: message.Type,
                     Job: message.Job,
                     ObjectId: message.ObjectId,
-                    UserName: message.UserName
+                    UserName: message.UserName,
                 });
                 break;
             default:
                 break;
-        }//switch
+        } //switch
 
         this.displayEditingUsersWidgetFormEditing(message);
     }
@@ -368,11 +440,13 @@ export class SignalRService extends BaseService {
 
         if (message.Job == SignalRJobEnum.Disconnected) {
             //display editing users
-            const items = this.data.filter(p =>
-                p.Type == SignalRTypenEnum.WidgetForm
-                && p.Job == SignalRJobEnum.Editing
-                && p.Action == SignalRActionEnum.ConnectEditing
-                && p.UserName != this.userLogin.loginName);
+            const items = this.data.filter(
+                (p) =>
+                    p.Type == SignalRTypenEnum.WidgetForm &&
+                    p.Job == SignalRJobEnum.Editing &&
+                    p.Action == SignalRActionEnum.ConnectEditing &&
+                    p.UserName != this.userLogin.loginName
+            );
             this.messageReceived.emit(items);
 
             return;
@@ -382,35 +456,35 @@ export class SignalRService extends BaseService {
             case SignalRActionEnum.IsThereAnyoneEditing:
                 {
                     //I am 'user login' and I am editing this item
-                    const connectedItemByUserLogin = this.data.find(p =>
-                        p.Type == message.Type
-                        && p.Job == message.Job
-                        && p.ObjectId == message.ObjectId
-                        && p.UserName == this.userLogin.loginName
-                        && p.Action == SignalRActionEnum.ConnectEditing);
+                    const connectedItemByUserLogin = this.data.find(
+                        (p) =>
+                            p.Type == message.Type &&
+                            p.Job == message.Job &&
+                            p.ObjectId == message.ObjectId &&
+                            p.UserName == this.userLogin.loginName &&
+                            p.Action == SignalRActionEnum.ConnectEditing
+                    );
 
                     if (connectedItemByUserLogin) {
                         //If another user notifies me and I am also editing this item, I must notify they again.
                         this._hubConnection
-                            .invoke('SendMessage', connectedItemByUserLogin)
+                            .invoke("SendMessage", connectedItemByUserLogin)
                             .catch(this.errorHandler.bind(this));
                     }
                 }
                 break;
             case SignalRActionEnum.ConnectEditing:
             case SignalRActionEnum.StopEditing:
-
                 this.sendMessageWidgetFormEditing(message);
 
                 break;
             case SignalRActionEnum.DisconnectEditing:
-
                 //remove editing user out of list
                 remove(this.data, {
                     Type: message.Type,
                     Job: message.Job,
                     ObjectId: message.ObjectId,
-                    UserName: message.UserName
+                    UserName: message.UserName,
                 });
 
                 this.displayEditingUsersWidgetFormEditing(message);
@@ -418,11 +492,13 @@ export class SignalRService extends BaseService {
             case SignalRActionEnum.SavedSuccessfully:
                 {
                     //If I'am editing on this item -> show dialog to do: Keep Data/ Reload Data,...
-                    const item = this.data.find(p =>
-                        p.Type === message.Type
-                        && p.Job === message.Job
-                        && p.ObjectId === message.ObjectId
-                        && p.UserName === this.userLogin.loginName);
+                    const item = this.data.find(
+                        (p) =>
+                            p.Type === message.Type &&
+                            p.Job === message.Job &&
+                            p.ObjectId === message.ObjectId &&
+                            p.UserName === this.userLogin.loginName
+                    );
 
                     if (item && item.UserName) {
                         this.messageWidgetSavedSuccessReceived.emit(message);
@@ -431,13 +507,16 @@ export class SignalRService extends BaseService {
                 break;
             default:
                 break;
-        }//switch
+        } //switch
     }
     //#endregion
 
     //#region Elastic Search: ReIndex
     public createMessageESReIndex(): SignalRNotifyModel {
-        return this.createSingalRNotifyModel(SignalRTypenEnum.ES, SignalRJobEnum.ES_ReIndex);
+        return this.createSingalRNotifyModel(
+            SignalRTypenEnum.ES,
+            SignalRJobEnum.ES_ReIndex
+        );
     }
 
     private receiveMessageEsReIndex(message: SignalRNotifyModel) {
@@ -450,7 +529,10 @@ export class SignalRService extends BaseService {
 
     //#region Matching Data
     public createMessageMatchingData(): SignalRNotifyModel {
-        return this.createSingalRNotifyModel(SignalRTypenEnum.MatchingData, SignalRJobEnum.MatchingData);
+        return this.createSingalRNotifyModel(
+            SignalRTypenEnum.MatchingData,
+            SignalRJobEnum.MatchingData
+        );
     }
 
     private receiveMessageMatchingData(message: SignalRNotifyModel) {
@@ -463,7 +545,10 @@ export class SignalRService extends BaseService {
 
     //#region ImportDataMatrix
     public createMessageImportDataMatrix(): SignalRNotifyModel {
-        return this.createSingalRNotifyModel(SignalRTypenEnum.ImportDataMatrix, SignalRJobEnum.ImportDataMatrix);
+        return this.createSingalRNotifyModel(
+            SignalRTypenEnum.ImportDataMatrix,
+            SignalRJobEnum.ImportDataMatrix
+        );
     }
 
     private receiveMessageImportDataMatrix(message: SignalRNotifyModel) {
@@ -476,7 +561,10 @@ export class SignalRService extends BaseService {
 
     //#region DesignLayout
     public createMessageDesignLayout(): SignalRNotifyModel {
-        return this.createSingalRNotifyModel(SignalRTypenEnum.DesignLayout, SignalRJobEnum.DesignLayout);
+        return this.createSingalRNotifyModel(
+            SignalRTypenEnum.DesignLayout,
+            SignalRJobEnum.DesignLayout
+        );
     }
 
     private receiveMessageDesignLayout(message: SignalRNotifyModel) {
@@ -487,7 +575,10 @@ export class SignalRService extends BaseService {
         this.messageDesignLayout.emit(message);
     }
 
-    public sendMessageDesignLayout(action: SignalRActionEnum, idSettingsGUI: any) {
+    public sendMessageDesignLayout(
+        action: SignalRActionEnum,
+        idSettingsGUI: any
+    ) {
         const model = this.createMessageDesignLayout();
         model.Action = action;
         model.ObjectId = idSettingsGUI;
@@ -497,7 +588,10 @@ export class SignalRService extends BaseService {
 
     //#region ImportInvoicePayment
     public createMessageImportInvoicePayment(): SignalRNotifyModel {
-        return this.createSingalRNotifyModel(SignalRTypenEnum.ImportInvoicePayment, SignalRJobEnum.ImportInvoicePayment);
+        return this.createSingalRNotifyModel(
+            SignalRTypenEnum.ImportInvoicePayment,
+            SignalRJobEnum.ImportInvoicePayment
+        );
     }
 
     private receiveMessageImportInvoicePayment(message: SignalRNotifyModel) {
@@ -510,12 +604,19 @@ export class SignalRService extends BaseService {
 
     //#region RCWord2Pdf
     public createMessageRCWord2Pdf(): SignalRNotifyModel {
-        return this.createSingalRNotifyModel(SignalRTypenEnum.RCWord2Pdf, SignalRJobEnum.RCWord2Pdf);
+        return this.createSingalRNotifyModel(
+            SignalRTypenEnum.RCWord2Pdf,
+            SignalRJobEnum.RCWord2Pdf
+        );
     }
 
     private receiveMessageRCWord2Pdf(message: SignalRNotifyModel) {
         //If a message is fired by myself -> do nothing
-        if (message.UserName === this.userLogin.loginName || message.Action == SignalRActionEnum.RCWord2Pdf_ProcessForODE) return;
+        if (
+            message.UserName === this.userLogin.loginName ||
+            message.Action == SignalRActionEnum.RCWord2Pdf_ProcessForODE
+        )
+            return;
 
         this.messageRCWord2Pdf.emit(message);
     }

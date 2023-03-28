@@ -1,21 +1,29 @@
-﻿<p-dialog header=""
-          [(visible)]="showDialog"
-          modal="true"
-          width="300"
-          positionTop="150"
-          responsive="true"
-          appendTo="body"
-          [resizable]="false"
-          [draggable]="false"
-          [contentStyle]="{'padding-bottom': 0, 'padding-top': 0}">
+﻿<p-dialog
+    header=""
+    [(visible)]="showDialog"
+    modal="true"
+    width="300"
+    positionTop="150"
+    responsive="true"
+    appendTo="body"
+    [resizable]="false"
+    [draggable]="false"
+    [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="header-text"><label-translation [keyword]="'Property_pgvd__Select_Display_Fields'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="close()">
+            <span class="header-text"
+                ><label-translation
+                    [keyword]="'Property_pgvd__Select_Display_Fields'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="close()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
@@ -26,28 +34,40 @@
                 <thead>
                     <tr>
                         <th class="col-xs-3 text-center bg-gray xn-padding--sm">
-                            <mat-checkbox color="primary"
-                                          [(ngModel)]="checkAll"
-                                          (change)="selectAll()">
+                            <mat-checkbox
+                                color="primary"
+                                [(ngModel)]="checkAll"
+                                (change)="selectAll()"
+                            >
                             </mat-checkbox>
                         </th>
                         <th class="col-xs-9 text-left bg-gray xn-padding--sm">
-                            <label-translation [keyword]="'Property_pgvd__Field_Name'"></label-translation>
+                            <label-translation
+                                [keyword]="'Property_pgvd__Field_Name'"
+                            ></label-translation>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <ng-template let-item ngFor [ngForOf]="displayFields" let-idx="index" [ngForTrackBy]="itemsTrackBy">
+                    <ng-template
+                        let-item
+                        ngFor
+                        [ngForOf]="displayFields"
+                        let-idx="index"
+                        [ngForTrackBy]="itemsTrackBy"
+                    >
                         <tr *ngIf="!item.isHidden">
                             <td class="text-center xn-padding--sm">
-                                <mat-checkbox color="primary"
-                                              [disabled]="item.isEditable == false"
-                                              [(ngModel)]="item.selected"
-                                              (change)="onCheckboxChanged()">
+                                <mat-checkbox
+                                    color="primary"
+                                    [disabled]="item.isEditable == false"
+                                    [(ngModel)]="item.selected"
+                                    (change)="onCheckboxChanged()"
+                                >
                                 </mat-checkbox>
                             </td>
                             <td class="text-left xn-padding--sm">
-                                {{item.value}}
+                                {{ item.value }}
                             </td>
                         </tr>
                     </ng-template>
@@ -58,20 +78,32 @@
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button label="Cancel"
-                    pbutton=""
-                    type="button"
-                    mat-raised-button
-                    (click)="close()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Property_pgvd__Cancel'"></label-translation></span>
+            <button
+                label="Cancel"
+                pbutton=""
+                type="button"
+                mat-raised-button
+                (click)="close()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'Property_pgvd__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
-            <button label="Save"
-                    pbutton=""
-                    type="button"
-                    mat-raised-button
-                    class="mat-btn-blue"
-                    (click)="apply()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Property_pgvd__Apply'"></label-translation></span>
+            <button
+                label="Save"
+                pbutton=""
+                type="button"
+                mat-raised-button
+                class="mat-btn-blue"
+                (click)="apply()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'Property_pgvd__Apply'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>

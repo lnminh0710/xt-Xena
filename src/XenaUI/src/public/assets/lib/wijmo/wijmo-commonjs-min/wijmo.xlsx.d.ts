@@ -60,7 +60,14 @@ export declare class _xlsx {
     private static _generateBgFillScheme();
     private static _generateCoreDoc(file);
     private static _generateSheetGlobalSetting(index, worksheet, file);
-    private static _generateCell(rowIndex, colIndex, styleIndex, type, val, formula);
+    private static _generateCell(
+        rowIndex,
+        colIndex,
+        styleIndex,
+        type,
+        val,
+        formula
+    );
     private static _generateMergeSetting(merges);
     private static _generateStyleDoc();
     private static _generateBorderStyle(borders, isTable?);
@@ -104,14 +111,23 @@ export declare class _xlsx {
     private static _cloneStyle(src);
     private static _cloneColumnsStyle(columns);
     private static _getSheetIndex(fileName);
-    private static _checkValidMergeCell(merges, startRow, rowSpan, startCol, colSpan);
+    private static _checkValidMergeCell(
+        merges,
+        startRow,
+        rowSpan,
+        startCol,
+        colSpan
+    );
     private static _getAttr(s, attr);
     private static _getChildNodeValue(s, child);
     private static _getSheetIndexBySheetName(file, sheetName);
 }
 export declare class _Promise {
     private _callbacks;
-    then(onFulfilled?: (value?: any) => any, onRejected?: (reason?: any) => any): _Promise;
+    then(
+        onFulfilled?: (value?: any) => any,
+        onRejected?: (reason?: any) => any
+    ): _Promise;
     catch(onRejected: (reason?: any) => any): _Promise;
     resolve(value?: any): void;
     reject(reason?: any): void;
@@ -148,9 +164,17 @@ export declare class Workbook implements IWorkbook {
     readonly colorThemes: string[];
     reservedContent: any;
     save(fileName?: string): string;
-    saveAsync(fileName?: string, onSaved?: (base64?: string) => any, onError?: (reason?: any) => any): void;
+    saveAsync(
+        fileName?: string,
+        onSaved?: (base64?: string) => any,
+        onError?: (reason?: any) => any
+    ): void;
     load(base64: string): void;
-    loadAsync(base64: string, onLoaded: (workbook: Workbook) => void, onError?: (reason?: any) => any): void;
+    loadAsync(
+        base64: string,
+        onLoaded: (workbook: Workbook) => void,
+        onError?: (reason?: any) => any
+    ): void;
     _serialize(): IWorkbook;
     _deserialize(workbookOM: IWorkbook): void;
     _addWorkSheet(workSheet: WorkSheet, sheetIndex?: number): void;
@@ -161,7 +185,12 @@ export declare class Workbook implements IWorkbook {
     static fromXlsxFormat(xlsxFormat: string): string[];
     static _parseCellFormat(format: string, isDate: boolean): string;
     static _parseExcelFormat(item: any): string;
-    static xlsxAddress(row: number, col: number, absolute?: boolean, absoluteCol?: boolean): string;
+    static xlsxAddress(
+        row: number,
+        col: number,
+        absolute?: boolean,
+        absoluteCol?: boolean
+    ): string;
     static tableAddress(xlsxIndex: string): ITableAddress;
     static _parseHAlignToString(hAlign: HAlign): string;
     static _parseStringToHAlign(hAlign: string): HAlign;
@@ -366,18 +395,27 @@ export declare class WorkbookTableStyle implements IWorkbookTableStyle {
     _deserialize(workbookTableStyleOM: IWorkbookTableStyle): void;
     private _checkEmptyWorkbookTableStyle();
 }
-export declare class WorkbookTableCommonStyle extends WorkbookStyle implements IWorkbookTableCommonStyle {
+export declare class WorkbookTableCommonStyle
+    extends WorkbookStyle
+    implements IWorkbookTableCommonStyle
+{
     borders: WorkbookTableBorder;
     constructor();
     _deserialize(workbookTableCommonStyleOM: IWorkbookTableCommonStyle): void;
 }
-export declare class WorkbookTableBandedStyle extends WorkbookTableCommonStyle implements IWorkbookTableBandedStyle {
+export declare class WorkbookTableBandedStyle
+    extends WorkbookTableCommonStyle
+    implements IWorkbookTableBandedStyle
+{
     size: number;
     constructor();
     _serialize(): IWorkbookTableBandedStyle;
     _deserialize(workbookTableBandedStyleOM: IWorkbookTableBandedStyle): void;
 }
-export declare class WorkbookTableBorder extends WorkbookBorder implements IWorkbookTableBorder {
+export declare class WorkbookTableBorder
+    extends WorkbookBorder
+    implements IWorkbookTableBorder
+{
     vertical: WorkbookBorderSetting;
     horizontal: WorkbookBorderSetting;
     constructor();

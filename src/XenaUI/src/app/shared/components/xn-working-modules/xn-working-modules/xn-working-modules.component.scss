@@ -11,7 +11,6 @@
         left: 0px !important;
     }
 
-
     .pulse-container {
         visibility: hidden;
         transition-delay: 0s;
@@ -61,7 +60,8 @@
                 position: relative;
 
                 &:hover {
-                    a.module-caret-container:not(.no-hover-effect) span.module-name {
+                    a.module-caret-container:not(.no-hover-effect)
+                        span.module-name {
                         //visibility: visible;
                         transition-delay: 0.2s;
                         width: 170px;
@@ -250,7 +250,7 @@
     0% {
         -moz-transform: scale(0);
         -webkit-transform: scale(0);
-        opacity: 0.0;
+        opacity: 0;
     }
 
     25% {
@@ -274,6 +274,6 @@
     100% {
         -moz-transform: scale(1);
         -webkit-transform: scale(1);
-        opacity: 0.0;
+        opacity: 0;
     }
 }

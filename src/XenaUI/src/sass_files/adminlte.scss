@@ -1,4 +1,4 @@
-@import 'color.scss';
+@import "color.scss";
 
 /* Layout */
 .wrapper {
@@ -23,7 +23,8 @@
  * ```.right-side has been deprecated as of v2.0.0 in favor of .content-wrapper  ```
  */
 .content-wrapper {
-    -webkit-transition: -webkit-transform 0.1s ease-in-out, margin 0.1s ease-in-out;
+    -webkit-transition: -webkit-transform 0.1s ease-in-out,
+        margin 0.1s ease-in-out;
     -moz-transition: -moz-transform 0.1s ease-in-out, margin 0.1s ease-in-out;
     -o-transition: -o-transform 0.1s ease-in-out, margin 0.1s ease-in-out;
     transition: transform 0.1s ease-in-out, margin 0.1s ease-in-out;
@@ -60,8 +61,6 @@
         transform: translate(230px, 0);
     }
 }
-
-
 
 /*
  * Component: Main Header
@@ -108,7 +107,7 @@
     text-align: center;
     font-size: 9px;
     padding: 2px 3px;
-    line-height: .9;
+    line-height: 0.9;
 }
 
 .main-header .logo {
@@ -164,8 +163,6 @@
     }
 }
 
-
-
 /*
  * Component: Sidebar
  * ------------------
@@ -178,7 +175,8 @@
     min-height: 100%;
     width: 230px;
     z-index: 810;
-    -webkit-transition: -webkit-transform 0.1s ease-in-out, width 0.1s ease-in-out;
+    -webkit-transition: -webkit-transform 0.1s ease-in-out,
+        width 0.1s ease-in-out;
     -moz-transition: -moz-transform 0.1s ease-in-out, width 0.1s ease-in-out;
     -o-transition: -o-transform 0.1s ease-in-out, width 0.1s ease-in-out;
     transition: transform 0.1s ease-in-out, width 0.1s ease-in-out;
@@ -213,8 +211,6 @@
     padding-bottom: 10px;
 }
 
-
-
 /*
  * Component: Sidebar Mini
  */
@@ -241,8 +237,6 @@
         margin-left: 50px;
     }
 }
-
-
 
 /*
  * Component: Control sidebar. By default, this is the right sidebar.
@@ -324,7 +318,6 @@
     color: #fff;
 }
 
-
 /*
  * Component: Dropdown menus
  * -------------------------
@@ -404,7 +397,14 @@
     padding: 10px;
 }
 
-.navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a > .glyphicon,
+.navbar-nav
+    > .notifications-menu
+    > .dropdown-menu
+    > li
+    .menu
+    > li
+    > a
+    > .glyphicon,
 .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a > .fa,
 .navbar-nav > .notifications-menu > .dropdown-menu > li .menu > li > a > .ion {
     width: 20px;
@@ -437,7 +437,6 @@
     position: inherit !important;
 }
 
-
 .navbar-custom-menu > .navbar-nav > li > .dropdown-menu {
     position: absolute;
     right: 0;
@@ -462,7 +461,6 @@
     }
 }
 
-
 /*
  * Component: Nav
  * --------------
@@ -473,7 +471,6 @@
     color: #444;
     background: #f7f7f7;
 }
-
 
 /*
  * General: Miscellaneous
@@ -711,7 +708,7 @@
 
 .header-skin-shadow {
     display: block;
-    box-shadow: 0 0 3px rgba(0,0,0,0.4);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
 }
 
 .blue-header-left-theme {
@@ -744,7 +741,6 @@
     height: 20px;
     background: #f4f5f7;
 }
-
 
 .black-header-left-theme {
     display: block;
@@ -915,6 +911,6 @@
     width: 80%;
     float: left;
     height: 20px;
-    background: #30444D;
+    background: #30444d;
 }
 /*THEME*/

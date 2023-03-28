@@ -1,19 +1,28 @@
-import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Country } from 'app/models/country.model';
-import { WidgetDetail } from 'app/models';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isString from 'lodash-es/isString';
-import isNumber from 'lodash-es/isNumber';
-import isBoolean from 'lodash-es/isBoolean';
-import isNil from 'lodash-es/isNil';
-import { searchResultReducer } from '../../../../state-management/store/reducer';
-import { Uti } from 'app/utilities';
+import {
+    Component,
+    ChangeDetectionStrategy,
+    Output,
+    EventEmitter,
+    Input,
+    OnInit,
+    OnDestroy,
+    ChangeDetectorRef,
+} from "@angular/core";
+import { Country } from "app/models/country.model";
+import { WidgetDetail } from "app/models";
+import cloneDeep from "lodash-es/cloneDeep";
+import isString from "lodash-es/isString";
+import isNumber from "lodash-es/isNumber";
+import isBoolean from "lodash-es/isBoolean";
+import isNil from "lodash-es/isNil";
+import { searchResultReducer } from "../../../../state-management/store/reducer";
+import { Uti } from "app/utilities";
 
 @Component({
-    selector: 'xn-country-check-list',
-    styleUrls: ['./country-check-list.component.scss'],
-    templateUrl: './country-check-list.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: "xn-country-check-list",
+    styleUrls: ["./country-check-list.component.scss"],
+    templateUrl: "./country-check-list.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class XnCountryCheckListComponent implements OnInit, OnDestroy {
     public isRendered = false;
@@ -36,7 +45,7 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
     private isCountryModel = true;
     private _isRadioButtonMode = false;
 
-    private randonNr: number = (new Date()).getTime();
+    private randonNr: number = new Date().getTime();
 
     @Input() editMode = true;
 
@@ -44,7 +53,7 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
     @Input() set data(data: any) {
         setTimeout(() => {
             this.initCountriesData(data);
-            this.randonNr = (new Date()).getTime();
+            this.randonNr = new Date().getTime();
             this.checkValueWhenRadioMode(data);
             this.ref.markForCheck();
             this.isCompletedRender.emit();
@@ -63,7 +72,7 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
         this.data = countryCheckListData;
         this.ref.markForCheck();
         this.isCompletedRender.emit();
-    };
+    }
 
     @Input() set isExpand(data: any) {
         this.showSubList(!!data);
@@ -71,11 +80,9 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
     }
 
     @Input() set edit(eventdata: any) {
-        if (!eventdata)
-            return;
+        if (!eventdata) return;
         setTimeout(() => {
-            if (eventdata.data)
-                this.initCountriesData(eventdata.data);
+            if (eventdata.data) this.initCountriesData(eventdata.data);
             this.editMode = eventdata.editMode;
             this.ref.markForCheck();
         });
@@ -94,11 +101,10 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
         this._isActivated = status;
         if (!status) {
             this.ref.detach();
-        }
-        else {
+        } else {
             this.ref.reattach();
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
@@ -113,15 +119,13 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
     @Output() isCompletedRender: EventEmitter<any> = new EventEmitter();
     @Output() onChangeShowCountry: EventEmitter<any> = new EventEmitter();
 
-    constructor(
-        private ref: ChangeDetectorRef
-    ) { }
+    constructor(private ref: ChangeDetectorRef) {}
 
     public ngOnInit() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
-        }
+            suppressScrollY: false,
+        };
     }
 
     /**
@@ -130,13 +134,20 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
     public setEditMode(editMode: boolean) {
         this.editMode = editMode;
         if (this.editMode) {
-            if ((!this.mainList || !this.mainList.length) && (!this.subList || !this.subList.length)) {
+            if (
+                (!this.mainList || !this.mainList.length) &&
+                (!this.subList || !this.subList.length)
+            ) {
                 this.noEntryDataEvent.emit(true);
             } else {
                 this.noEntryDataEvent.emit(false);
             }
         } else {
-            if (this.viewModeMainList && this.viewModeMainList[0] && this.viewModeMainList[0].length > 0) {
+            if (
+                this.viewModeMainList &&
+                this.viewModeMainList[0] &&
+                this.viewModeMainList[0].length > 0
+            ) {
                 this.noEntryDataEvent.emit(false);
             } else {
                 this.noEntryDataEvent.emit(true);
@@ -147,10 +158,13 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
 
     public resetData() {
         this.mainList.forEach((item) => {
-            item.forEach(item1 => {
+            item.forEach((item1) => {
                 if (isNil(item1.idArticleExcludeCountries) && item1.isActive) {
                     item1.isActive = false;
-                } else if (!isNil(item1.idArticleExcludeCountries) && !item1.isActive) {
+                } else if (
+                    !isNil(item1.idArticleExcludeCountries) &&
+                    !item1.isActive
+                ) {
                     item1.isActive = true;
                 }
 
@@ -160,19 +174,26 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
         this.outDataCountries.forEach((item) => {
             if (isNil(item.idArticleExcludeCountries) && item.isActive) {
                 item.isActive = false;
-            } else if (!isNil(item.idArticleExcludeCountries) && !item.isActive) {
+            } else if (
+                !isNil(item.idArticleExcludeCountries) &&
+                !item.isActive
+            ) {
                 item.isActive = true;
             }
 
             item.isDirty = false;
         });
-        this.outputData.emit(this.outDataCountries.filter(x => x.isDirty));
+        this.outputData.emit(this.outDataCountries.filter((x) => x.isDirty));
     }
 
-    public setActive(idList: Array<any>, value?: boolean, keepCurrentChecked?: boolean) {
+    public setActive(
+        idList: Array<any>,
+        value?: boolean,
+        keepCurrentChecked?: boolean
+    ) {
         if (keepCurrentChecked) {
             this.mainList.forEach((item) => {
-                item.forEach(item1 => {
+                item.forEach((item1) => {
                     if (idList.indexOf(item1.idValue) > -1) {
                         item1.isActive = !!value;
                     }
@@ -180,7 +201,7 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
             });
 
             this.subList.forEach((item) => {
-                item.forEach(item1 => {
+                item.forEach((item1) => {
                     if (idList.indexOf(item1.idValue) > -1) {
                         item1.isActive = !!value;
                     }
@@ -188,19 +209,19 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
             });
         } else {
             this.mainList.forEach((item) => {
-                item.forEach(item1 => {
-                    item1.isActive = (idList.indexOf(item1.idValue) > -1);
+                item.forEach((item1) => {
+                    item1.isActive = idList.indexOf(item1.idValue) > -1;
                 });
             });
 
             this.subList.forEach((item) => {
-                item.forEach(item1 => {
-                    item1.isActive = (idList.indexOf(item1.idValue) > -1);
+                item.forEach((item1) => {
+                    item1.isActive = idList.indexOf(item1.idValue) > -1;
                 });
             });
         }
         this.ref.markForCheck();
-        this.outputData.emit(this.outDataCountries.filter(x => x.isDirty));
+        this.outputData.emit(this.outDataCountries.filter((x) => x.isDirty));
     }
 
     public hasCheckedItems() {
@@ -229,11 +250,16 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
         }
 
         this.checkIsCountryModelType(countriesData[0]);
-        const _countriesData = this.isCountryModel ? cloneDeep(countriesData) : this.mapDataToCountryModel(countriesData);
+        const _countriesData = this.isCountryModel
+            ? cloneDeep(countriesData)
+            : this.mapDataToCountryModel(countriesData);
         this.outDataCountries = _countriesData;
 
-        const mainList = _countriesData.filter(item => {
-            if (isString(item.isMain) && (item.isMain as string).toLowerCase() === 'true') {
+        const mainList = _countriesData.filter((item) => {
+            if (
+                isString(item.isMain) &&
+                (item.isMain as string).toLowerCase() === "true"
+            ) {
                 item.isMain = true;
                 return true;
             }
@@ -242,8 +268,12 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
             }
         });
 
-        const subList = _countriesData.filter(item => {
-            if (isString(item.isMain) && (item.isMain === '' || (item.isMain as string).toLowerCase() === 'false')) {
+        const subList = _countriesData.filter((item) => {
+            if (
+                isString(item.isMain) &&
+                (item.isMain === "" ||
+                    (item.isMain as string).toLowerCase() === "false")
+            ) {
                 item.isMain = false;
                 return true;
             }
@@ -253,29 +283,55 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
         });
 
         // Edit mode
-        this.selectedAllMainModel = new Country({ isoCode: null, isActive: false, isMain: true, idValue: this.idSelectAllMain, textValue: 'Select All Main' });
-        const mainData = this.generateDisplayData(mainList, !this._isRadioButtonMode, this.selectedAllMainModel);
+        this.selectedAllMainModel = new Country({
+            isoCode: null,
+            isActive: false,
+            isMain: true,
+            idValue: this.idSelectAllMain,
+            textValue: "Select All Main",
+        });
+        const mainData = this.generateDisplayData(
+            mainList,
+            !this._isRadioButtonMode,
+            this.selectedAllMainModel
+        );
         this.mainList = mainData.list;
-        this.selectedAllSecondaryModel = new Country({ isoCode: null, isActive: false, isMain: false, idValue: this.idSelectAllSecondary, textValue: 'Select All Secondary' });
-        const subData = this.generateDisplayData(subList, !this._isRadioButtonMode, this.selectedAllSecondaryModel);
+        this.selectedAllSecondaryModel = new Country({
+            isoCode: null,
+            isActive: false,
+            isMain: false,
+            idValue: this.idSelectAllSecondary,
+            textValue: "Select All Secondary",
+        });
+        const subData = this.generateDisplayData(
+            subList,
+            !this._isRadioButtonMode,
+            this.selectedAllSecondaryModel
+        );
         this.subList = subData.list;
 
         // view mode
-        const mainDataViewMode = this.generateDisplayData(_countriesData, false);
+        const mainDataViewMode = this.generateDisplayData(
+            _countriesData,
+            false
+        );
         this.viewModeMainList = mainDataViewMode.viewModeList;
 
-        this.isRendered = (!!this.mainList.length && !!this.mainList[0].length) || (!!this.subList.length && !!this.subList[0].length);
+        this.isRendered =
+            (!!this.mainList.length && !!this.mainList[0].length) ||
+            (!!this.subList.length && !!this.subList[0].length);
 
         // Bug: always show confirm dialog when switching park-item Artical page
         if (this.isClone) {
-            this.outputData.emit(this.outDataCountries.filter(x => x.isDirty));
+            this.outputData.emit(
+                this.outDataCountries.filter((x) => x.isDirty)
+            );
         }
 
         // For Widget Country know
         if (this.editMode) {
             this.setEditMode(this.editMode);
-        }
-        else {
+        } else {
             this.noEntryDataEvent.emit(this.viewModeMainList[0].length == 0);
         }
     }
@@ -286,8 +342,9 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
             return;
         }
 
-        let mainCheckedList = data.filter(x => x.isActive);
-        this.doesCountryHaveOneCheckedValue = (mainCheckedList && (mainCheckedList.length == 1));
+        let mainCheckedList = data.filter((x) => x.isActive);
+        this.doesCountryHaveOneCheckedValue =
+            mainCheckedList && mainCheckedList.length == 1;
     }
 
     generateDisplayData(data, isAddCbxSelectAll, additionalModel?) {
@@ -297,20 +354,25 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
         const _viewModeList: Country[][] = [];
         const dataLength = data.length;
         let isAllSelected = true;
-        if (isAddCbxSelectAll && data.length > 1)
-            array.push(additionalModel);
+        if (isAddCbxSelectAll && data.length > 1) array.push(additionalModel);
         (<Country[]>data).forEach((item, index) => {
-            item.isActive = (item.isActive && item.isActive.toString() === '1') || item.isActive === true;
+            item.isActive =
+                (item.isActive && item.isActive.toString() === "1") ||
+                item.isActive === true;
             array.push(item);
-            if (item.isActive)
-                viewModeArray.push(item);
-            else
-                isAllSelected = false;
-            if (array.length === this.defaultRowNo || index === dataLength - 1) {
+            if (item.isActive) viewModeArray.push(item);
+            else isAllSelected = false;
+            if (
+                array.length === this.defaultRowNo ||
+                index === dataLength - 1
+            ) {
                 _list.push(array);
                 array = [];
             }
-            if (viewModeArray.length === this.defaultRowNo || index === dataLength - 1) {
+            if (
+                viewModeArray.length === this.defaultRowNo ||
+                index === dataLength - 1
+            ) {
                 _viewModeList.push(viewModeArray);
                 viewModeArray = [];
             }
@@ -333,52 +395,65 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
 
     public itemChanged(event) {
         switch (event.source.value) {
-            case this.idSelectAllMain + '':
+            case this.idSelectAllMain + "":
                 this.UpdateCheckListState(this.mainList, this.idSelectAllMain);
                 break;
-            case this.idSelectAllSecondary + '':
-                this.UpdateCheckListState(this.subList, this.idSelectAllSecondary);
+            case this.idSelectAllSecondary + "":
+                this.UpdateCheckListState(
+                    this.subList,
+                    this.idSelectAllSecondary
+                );
                 break;
             default:
-                if (event.source._elementRef.nativeElement.getAttribute('data-is-main-item') === 'true')
-                    this.selectedAllMainModel.isActive = this.findUncheckedItem(this.mainList) == null;
+                if (
+                    event.source._elementRef.nativeElement.getAttribute(
+                        "data-is-main-item"
+                    ) === "true"
+                )
+                    this.selectedAllMainModel.isActive =
+                        this.findUncheckedItem(this.mainList) == null;
                 else
-                    this.selectedAllSecondaryModel.isActive = this.findUncheckedItem(this.subList) == null;
+                    this.selectedAllSecondaryModel.isActive =
+                        this.findUncheckedItem(this.subList) == null;
                 break;
         }
         this.ref.markForCheck();
         setTimeout(() => {
-            this.outputData.emit(this.outDataCountries.filter(x => x.isDirty));
-            this.outputIsActiveData.emit(this.outDataCountries.filter(x => x.isActive || x.isDirty));
+            this.outputData.emit(
+                this.outDataCountries.filter((x) => x.isDirty)
+            );
+            this.outputIsActiveData.emit(
+                this.outDataCountries.filter((x) => x.isActive || x.isDirty)
+            );
             this.outputAllData.emit(this.outDataCountries);
             this.isCompletedRender.emit();
-        })
+        });
     }
 
     public radioItemChanged(id) {
         // Update IsActive for all to uncheck
-        this.outDataCountries.find(x => x.isActive = false);
+        this.outDataCountries.find((x) => (x.isActive = false));
         // Re check for this item
-        const curSelectedItem = this.outDataCountries.find((item) => item.idValue.toString() === id);
-        if (curSelectedItem)
-            curSelectedItem.isActive = true;
+        const curSelectedItem = this.outDataCountries.find(
+            (item) => item.idValue.toString() === id
+        );
+        if (curSelectedItem) curSelectedItem.isActive = true;
         this.ref.markForCheck();
-        this.outputData.emit(this.outDataCountries.filter(x => x.isDirty));
+        this.outputData.emit(this.outDataCountries.filter((x) => x.isDirty));
     }
 
     private UpdateCheckListState(checkList: Array<Country[]>, id: number) {
         let isCheckedAll = false;
         checkList.forEach((col) => {
             col.forEach((row) => {
-                if (id === row.idValue)
-                    isCheckedAll = row.isActive;
+                if (id === row.idValue) isCheckedAll = row.isActive;
                 else {
                     if (row.isActive != isCheckedAll) {
                         row.isDirty = true;
                     }
                     row.isActive = isCheckedAll;
                 }
-            })
+            });
         });
         this.ref.markForCheck();
     }
@@ -387,13 +462,16 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
         let result: Country = null;
         checkList.forEach((col) => {
             col.forEach((row) => {
-                if (!row.isActive && row.idValue !== this.idSelectAllMain && row.idValue !== this.idSelectAllSecondary) {
+                if (
+                    !row.isActive &&
+                    row.idValue !== this.idSelectAllMain &&
+                    row.idValue !== this.idSelectAllSecondary
+                ) {
                     result = row;
                     return row;
                 }
-            })
-            if (result)
-                return result;
+            });
+            if (result) return result;
         });
         return result;
     }
@@ -411,7 +489,11 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
         if (checkList && checkList.length) {
             checkList.forEach((col) => {
                 col.forEach((row) => {
-                    if (row.isActive && row.idValue !== this.idSelectAllMain && row.idValue !== this.idSelectAllSecondary) {
+                    if (
+                        row.isActive &&
+                        row.idValue !== this.idSelectAllMain &&
+                        row.idValue !== this.idSelectAllSecondary
+                    ) {
                         activeCountries.push(row);
                     }
                 });
@@ -426,9 +508,11 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
             const _item = new Country();
 
             if (isNumber(item.IdArticleExcludeCountries))
-                _item.idArticleExcludeCountries = item.IdArticleExcludeCountries + '';
+                _item.idArticleExcludeCountries =
+                    item.IdArticleExcludeCountries + "";
             if (isNumber(item.IdBackOfficeLettersCountries))
-                _item.idBackOfficeLettersCountries = item.IdBackOfficeLettersCountries;
+                _item.idBackOfficeLettersCountries =
+                    item.IdBackOfficeLettersCountries;
 
             _item.isActive = false;
             if (isBoolean(item.IsActive)) {
@@ -437,7 +521,7 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
                 _item.isActive = item.IsActive == 1;
             }
 
-            _item.isMain = false
+            _item.isMain = false;
             if (isBoolean(item.IsMain)) {
                 _item.isMain = item.IsMain;
             } else {
@@ -445,7 +529,11 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
             }
 
             _item.idValue = item.IdIsoCountryCode || item.IdCountrylanguage;
-            _item.idValueExtra = Uti.isNullUndefinedEmptyObject(item.IdPersonInterfaceContactCountries) ? null : item.IdPersonInterfaceContactCountries;
+            _item.idValueExtra = Uti.isNullUndefinedEmptyObject(
+                item.IdPersonInterfaceContactCountries
+            )
+                ? null
+                : item.IdPersonInterfaceContactCountries;
             _item.isoCode = item.IsoCode;
             _item.textValue = item.Country || item.CountryLanguage;
             result.push(_item);
@@ -454,16 +542,19 @@ export class XnCountryCheckListComponent implements OnInit, OnDestroy {
     }
 
     public resizeContainer(eve) {
-        const flagContainer = $(eve.target).parent().find('div.flag-container')[0];
-        const columnElements = $(eve.target).parent().find('div.flag-container div.colum-item');
+        const flagContainer = $(eve.target)
+            .parent()
+            .find("div.flag-container")[0];
+        const columnElements = $(eve.target)
+            .parent()
+            .find("div.flag-container div.colum-item");
         let totalWidth = 0;
         if (columnElements.length > 0)
             columnElements.each((index, col) => {
                 totalWidth += $(col).width() + 10;
             });
-        $(flagContainer).css({ 'min-width': (totalWidth + 10) + 'px' });
+        $(flagContainer).css({ "min-width": totalWidth + 10 + "px" });
     }
 
-    ngOnDestroy() {
-    }
+    ngOnDestroy() {}
 }

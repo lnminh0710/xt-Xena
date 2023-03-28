@@ -1,43 +1,68 @@
-import { Component, ViewEncapsulation, ViewChild, ElementRef} from "@angular/core";
-import { ICellRendererAngularComp, ICellEditorAngularComp, IHeaderAngularComp } from "ag-grid-angular";
+import {
+    Component,
+    ViewEncapsulation,
+    ViewChild,
+    ElementRef,
+} from "@angular/core";
+import {
+    ICellRendererAngularComp,
+    ICellEditorAngularComp,
+    IHeaderAngularComp,
+} from "ag-grid-angular";
 import { IToolPanel, IToolPanelParams } from "ag-grid-community";
-import { XnAgGridComponent } from '../../../pages/ag-grid-container/xn-ag-grid.component';
-import { WidgetDetail } from 'app/models';
+import { XnAgGridComponent } from "../../../pages/ag-grid-container/xn-ag-grid.component";
+import { WidgetDetail } from "app/models";
 
 @Component({
-    selector: 'translation-tool-panel-renderer',
-    templateUrl: './translation-tool-panel-renderer.html',
-    styleUrls: ['./translation-tool-panel-renderer.scss']
+    selector: "translation-tool-panel-renderer",
+    templateUrl: "./translation-tool-panel-renderer.html",
+    styleUrls: ["./translation-tool-panel-renderer.scss"],
 })
 export class TranslationToolPanelRenderer implements IToolPanel {
-
     private targetCommunicatedWidgetDetail: WidgetDetail;
     private params: IToolPanelParams;
     public translateData: any;
     public componentParent: XnAgGridComponent;
     public columnDefs;
-    public dragDataTransferCallback: any = this.connectWidgetSuccessCallback.bind(this);
+    public dragDataTransferCallback: any =
+        this.connectWidgetSuccessCallback.bind(this);
 
-    constructor() {
-    }
-
+    constructor() {}
 
     agInit(params: IToolPanelParams): void {
         this.params = params;
-        this.componentParent = params['componentParent'];
+        this.componentParent = params["componentParent"];
         if (this.componentParent) {
             this.columnDefs = this.componentParent.gridOptions.columnDefs;
         }
         this.translateData = this.getDefaultTranslateData();
-        this.params.api.removeEventListener("selectionChanged", this.selectionChanged.bind(this));
-        this.params.api.addEventListener('selectionChanged', this.selectionChanged.bind(this));
+        this.params.api.removeEventListener(
+            "selectionChanged",
+            this.selectionChanged.bind(this)
+        );
+        this.params.api.addEventListener(
+            "selectionChanged",
+            this.selectionChanged.bind(this)
+        );
 
-        this.params.api.removeEventListener("cellFocused", this.onCellFocused.bind(this));
-        this.params.api.addEventListener('cellFocused', this.onCellFocused.bind(this));
+        this.params.api.removeEventListener(
+            "cellFocused",
+            this.onCellFocused.bind(this)
+        );
+        this.params.api.addEventListener(
+            "cellFocused",
+            this.onCellFocused.bind(this)
+        );
 
-        this.params.api.removeEventListener("modelUpdated", this.modelUpdated.bind(this));
-        this.params.api.addEventListener('modelUpdated', this.modelUpdated.bind(this));
-    } 
+        this.params.api.removeEventListener(
+            "modelUpdated",
+            this.modelUpdated.bind(this)
+        );
+        this.params.api.addEventListener(
+            "modelUpdated",
+            this.modelUpdated.bind(this)
+        );
+    }
 
     /**
      * selectionChanged
@@ -71,16 +96,21 @@ export class TranslationToolPanelRenderer implements IToolPanel {
                 fieldValue: colDef.field,
                 srcWidgetDetail: {
                     id: this.componentParent.translateData.id,
-                    idRepWidgetApp: this.componentParent.translateData.idRepWidgetApp,
-                    idRepWidgetType: this.componentParent.translateData.idRepWidgetType
+                    idRepWidgetApp:
+                        this.componentParent.translateData.idRepWidgetApp,
+                    idRepWidgetType:
+                        this.componentParent.translateData.idRepWidgetType,
                 },
-                mode: 'translate'
+                mode: "translate",
             };
             if (row) {
-                dragDropCommunicationData.srcWidgetDetail['gridSelectedRow'] = [row.data];
+                dragDropCommunicationData.srcWidgetDetail["gridSelectedRow"] = [
+                    row.data,
+                ];
             }
             if (this.targetCommunicatedWidgetDetail) {
-                this.targetCommunicatedWidgetDetail.extensionData = dragDropCommunicationData;
+                this.targetCommunicatedWidgetDetail.extensionData =
+                    dragDropCommunicationData;
             }
         }
     }
@@ -94,12 +124,11 @@ export class TranslationToolPanelRenderer implements IToolPanel {
             return {
                 id: translateData.id,
                 idRepWidgetApp: translateData.idRepWidgetApp,
-                idRepWidgetType: translateData.idRepWidgetType
-            }
+                idRepWidgetType: translateData.idRepWidgetType,
+            };
         }
         return null;
     }
-
 
     /**
      * modelUpdated
@@ -110,20 +139,18 @@ export class TranslationToolPanelRenderer implements IToolPanel {
         }
     }
 
-    public refresh() {
-
-    }
+    public refresh() {}
 
     public getDraggableData(colDef) {
         return {
-            zone: 'widget',
+            zone: "widget",
             data: {
                 fieldColumn: colDef.field,
                 fieldText: colDef.headerName,
                 fieldValue: colDef.field,
                 srcWidgetDetail: this.componentParent.translateData,
-                mode: 'translate'
-            }
+                mode: "translate",
+            },
         };
     }
 
@@ -134,5 +161,4 @@ export class TranslationToolPanelRenderer implements IToolPanel {
     public connectWidgetSuccessCallback(data: WidgetDetail) {
         this.targetCommunicatedWidgetDetail = data;
     }
-
 }

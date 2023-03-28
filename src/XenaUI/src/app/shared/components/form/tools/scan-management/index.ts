@@ -1,3 +1,3 @@
-export * from './dispatcher';
-export * from './assignment';
-export * from './components';
+export * from "./dispatcher";
+export * from "./assignment";
+export * from "./components";

@@ -1,32 +1,49 @@
-﻿<span dropdown
-      [isOpen]="status.isOpen"
-      (onShown)="toggled(true)"
-      (onHidden)="toggled(false)">
-    <a aria-hidden="true"
-       mat-button
-       mat-icon-button
-       xn-tooltip
-       [tooltipText]="toolTip"
-       [tooltipPlacement]="'top'"
-       container="body"
-       class="dropdown-toggle  {{customCss}}  mat-btn-blue--icon  cursor-pointer"
-       id="tab-header-menu"
-       dropdownToggle>
-        <span class="fa fa-{{buttonIcon}}"></span>
+﻿<span
+    dropdown
+    [isOpen]="status.isOpen"
+    (onShown)="toggled(true)"
+    (onHidden)="toggled(false)"
+>
+    <a
+        aria-hidden="true"
+        mat-button
+        mat-icon-button
+        xn-tooltip
+        [tooltipText]="toolTip"
+        [tooltipPlacement]="'top'"
+        container="body"
+        class="dropdown-toggle  {{
+            customCss
+        }}  mat-btn-blue--icon  cursor-pointer"
+        id="tab-header-menu"
+        dropdownToggle
+    >
+        <span class="fa fa-{{ buttonIcon }}"></span>
     </a>
-    <div class="xn__menu  xn__dropdown__menu  dropdown-menu"
-         *dropdownMenu
-         aria-labelledby="ai-tab-header-menu"
-         id="dropdown-menu">
+    <div
+        class="xn__menu xn__dropdown__menu dropdown-menu"
+        *dropdownMenu
+        aria-labelledby="ai-tab-header-menu"
+        id="dropdown-menu"
+    >
         <ul>
-            <div class="xn__menu__scroll"
-                 [perfect-scrollbar]="perfectScrollbarConfig">
-                <ng-template ngFor let-tab [ngForOf]="tabs" [ngForTrackBy]="itemsTrackBy">
-                    <li *ngIf="!tab.Visible"
+            <div
+                class="xn__menu__scroll"
+                [perfect-scrollbar]="perfectScrollbarConfig"
+            >
+                <ng-template
+                    ngFor
+                    let-tab
+                    [ngForOf]="tabs"
+                    [ngForTrackBy]="itemsTrackBy"
+                >
+                    <li
+                        *ngIf="!tab.Visible"
                         class="menu-list"
-                        (click)="menuItemClickHanlder(tab)">
+                        (click)="menuItemClickHanlder(tab)"
+                    >
                         <a mat-button class="hidden-tab">
-                            {{tab.TabName}}
+                            {{ tab.TabName }}
                         </a>
                     </li>
                 </ng-template>

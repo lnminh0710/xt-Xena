@@ -1,16 +1,12 @@
-﻿import {
-    Output, EventEmitter
-} from '@angular/core';
+﻿import { Output, EventEmitter } from "@angular/core";
 
 /**
  * BaseWidget
  */
 export abstract class BaseWidget {
-
     @Output() isCompletedRender: EventEmitter<any> = new EventEmitter();
 
-    constructor() {
-    }
+    constructor() {}
 
     public emitCompletedRenderEvent() {
         setTimeout(() => {

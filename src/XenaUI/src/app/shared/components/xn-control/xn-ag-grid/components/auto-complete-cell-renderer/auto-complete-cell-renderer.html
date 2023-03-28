@@ -1,22 +1,24 @@
 <ng-container [ngSwitch]="cellStartedEdit">
     <ng-container *ngSwitchCase="true">
-        <wj-auto-complete #autoCompleteCtr
-                          wjDropdownHelper
-                          [dontShowDropDownButtonWhenEmpty]="false"
-                          [isShowWhenFocus]="isShowDropdownWhenFocusCombobox"
-                          [isInWidget]="isInWidget"
-                          class="wj-auto-complete-for-grid"
-                          [itemsSourceFunction]="searchFunc"
-                          [itemsSource]="ctrlValue.options"
-                          [displayMemberPath]="'label'"
-                          [selectedValuePath]="'value'"
-                          [cssMatch]="'highlight'"
-                          [isRequired]="true"
-                          [minLength]="0"
-                          [delay]="300"
-                          placeholder="Search item"
-                          [(selectedValue)]="ctrlValue.key"
-                          [(text)]="ctrlValue.value">
+        <wj-auto-complete
+            #autoCompleteCtr
+            wjDropdownHelper
+            [dontShowDropDownButtonWhenEmpty]="false"
+            [isShowWhenFocus]="isShowDropdownWhenFocusCombobox"
+            [isInWidget]="isInWidget"
+            class="wj-auto-complete-for-grid"
+            [itemsSourceFunction]="searchFunc"
+            [itemsSource]="ctrlValue.options"
+            [displayMemberPath]="'label'"
+            [selectedValuePath]="'value'"
+            [cssMatch]="'highlight'"
+            [isRequired]="true"
+            [minLength]="0"
+            [delay]="300"
+            placeholder="Search item"
+            [(selectedValue)]="ctrlValue.key"
+            [(text)]="ctrlValue.value"
+        >
         </wj-auto-complete>
     </ng-container>
     <ng-container *ngSwitchDefault>

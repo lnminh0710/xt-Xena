@@ -1,76 +1,115 @@
-<div *ngIf="isRenderForm" class="form-container  margin-top--sd" [ngClass]="{'submitted': formGroup['submitted']}">
-    <form [formGroup]="formGroup" class="form-horizontal  article-main-form" id="articleFormGroup" novalidate>
-        <control-focus formName="articleFormGroup"
-                       [isFocusOnFirstControl]="true"></control-focus>
-        <div class="col-xs-12  col-sm-6">
-            <div class="form-group  xn__form-header">
-                <label class="control-label  col-sm-4">
-                    <label-translation [keyword]="'Article_Form__Article_status'" User_profile_F></label-translation></label>
+<div
+    *ngIf="isRenderForm"
+    class="form-container margin-top--sd"
+    [ngClass]="{ submitted: formGroup['submitted'] }"
+>
+    <form
+        [formGroup]="formGroup"
+        class="form-horizontal article-main-form"
+        id="articleFormGroup"
+        novalidate
+    >
+        <control-focus
+            formName="articleFormGroup"
+            [isFocusOnFirstControl]="true"
+        ></control-focus>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group xn__form-header">
+                <label class="control-label col-sm-4">
+                    <label-translation
+                        [keyword]="'Article_Form__Article_status'"
+                        User_profile_F
+                    ></label-translation
+                ></label>
                 <div class="col-sm-8">
-                    <div class="article-status__icon  article-status__icon--{{articleStatusIconStyle}}">
-                        <i class="fa  fa-{{articleStatusIcon}}"></i>
+                    <div
+                        class="article-status__icon  article-status__icon--{{
+                            articleStatusIconStyle
+                        }}"
+                    >
+                        <i class="fa  fa-{{ articleStatusIcon }}"></i>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="idRepArticleStatus" class="control-label  col-sm-4">{{data.idArticle.displayValue}}</label>
+                <label
+                    for="idRepArticleStatus"
+                    class="control-label col-sm-4"
+                    >{{ data.idArticle.displayValue }}</label
+                >
                 <div class="col-sm-8">
                     <div class="full-width">
-                        <xn-combo-box #articleStatusControl
-                                      wjDropdownHelper
-                                      [form]="formGroup"
-                                      formControlName="idRepArticleStatus"
-                                      class="custom-wj-input-control xn-select"
-                                      [itemsSource]="listComboBox.articleStatus"
-                                      [displayMemberPath]="'textValue'"
-                                      [selectedValuePath]="'idValue'"
-                                      [isEditable]="true"
-                                      [isRequired]="false"
-                                      placeholder="Please select"
-                                      (selectedIndexChanged)="onChangeArticleStatus()">
+                        <xn-combo-box
+                            #articleStatusControl
+                            wjDropdownHelper
+                            [form]="formGroup"
+                            formControlName="idRepArticleStatus"
+                            class="custom-wj-input-control xn-select"
+                            [itemsSource]="listComboBox.articleStatus"
+                            [displayMemberPath]="'textValue'"
+                            [selectedValuePath]="'idValue'"
+                            [isEditable]="true"
+                            [isRequired]="false"
+                            placeholder="Please select"
+                            (selectedIndexChanged)="onChangeArticleStatus()"
+                        >
                         </xn-combo-box>
-                        <control-messages [xn-trigger-click-inside-cbo]="articleStatusControl"
-                                          [mandatoryColor]="mandatoryColor['notes']"
-                                          [control]="formGroup.controls['idRepArticleStatus']"
-                                          icon="list">
+                        <control-messages
+                            [xn-trigger-click-inside-cbo]="articleStatusControl"
+                            [mandatoryColor]="mandatoryColor['notes']"
+                            [control]="formGroup.controls['idRepArticleStatus']"
+                            icon="list"
+                        >
                         </control-messages>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="articleNr" class="control-label  col-sm-4">{{data.articleNr.displayValue}}</label>
+                <label for="articleNr" class="control-label col-sm-4">{{
+                    data.articleNr.displayValue
+                }}</label>
                 <div class="col-sm-8">
-                    <app-xn-input-debounce cssClass="xn-input"
-                                           [hasIndicator]="true"
-                                           [hasSearchButton]="false"
-                                           [isLoading]="isSearching"
-                                           [hasValidation]="true"
-                                           formControlName="articleNr"
-                                           delayTimer="600">
+                    <app-xn-input-debounce
+                        cssClass="xn-input"
+                        [hasIndicator]="true"
+                        [hasSearchButton]="false"
+                        [isLoading]="isSearching"
+                        [hasValidation]="true"
+                        formControlName="articleNr"
+                        delayTimer="600"
+                    >
                     </app-xn-input-debounce>
-                    <control-messages [type]="'textbox'"
-                                      [mandatoryColor]="mandatoryColor['notes']"
-                                      [control]="formGroup.controls.articleNr"
-                                      [icon]="'newspaper-o'">
+                    <control-messages
+                        [type]="'textbox'"
+                        [mandatoryColor]="mandatoryColor['notes']"
+                        [control]="formGroup.controls.articleNr"
+                        [icon]="'newspaper-o'"
+                    >
                     </control-messages>
                 </div>
             </div>
             <div class="form-group">
-                <label for="articleNameShort" class="control-label  col-sm-4">{{data.articleNameShort.displayValue}}</label>
+                <label for="articleNameShort" class="control-label col-sm-4">{{
+                    data.articleNameShort.displayValue
+                }}</label>
                 <div class="col-sm-8">
-                    <input type="text"
-                          class="form-control  xn-input"
-                          name="articleNameShort"
-                          formControlName="articleNameShort"
-                          autocomplete="off" />
-                    <control-messages [type]="'textbox'"
-                                      [control]="formGroup.controls.articleNameShort"
-                                      [mandatoryColor]="mandatoryColor['notes']"
-                                      [icon]="'newspaper-o'"></control-messages>
+                    <input
+                        type="text"
+                        class="form-control xn-input"
+                        name="articleNameShort"
+                        formControlName="articleNameShort"
+                        autocomplete="off"
+                    />
+                    <control-messages
+                        [type]="'textbox'"
+                        [control]="formGroup.controls.articleNameShort"
+                        [mandatoryColor]="mandatoryColor['notes']"
+                        [icon]="'newspaper-o'"
+                    ></control-messages>
                 </div>
             </div>
 
-<!--             <div class="form-group">
+            <!--             <div class="form-group">
                 <label for="idArticleDescription" class="control-label  col-sm-4">{{data.idArticleDescription.displayValue}}</label>
                 <div class="col-sm-8">
                     <input type="text"
@@ -101,131 +140,249 @@
                 </div>
             </div> -->
             <div class="form-group">
-                <label for="idRepIsoCountryCode" class="control-label  col-sm-4">{{data.idRepIsoCountryCode.displayValue}}</label>
+                <label
+                    for="idRepIsoCountryCode"
+                    class="control-label col-sm-4"
+                    >{{ data.idRepIsoCountryCode.displayValue }}</label
+                >
                 <div class="col-sm-8">
                     <div class="full-width">
-                        <xn-combo-box #idRepIsoCountryCode
-                                      wjDropdownHelper
-                                      [form]="formGroup"
-                                      formControlName="idRepIsoCountryCode"
-                                      class="custom-wj-input-control xn-select"
-                                      [itemsSource]="listComboBox.countryCode"
-                                      [displayMemberPath]="'textValue'"
-                                      [selectedValuePath]="'idValue'"
-                                      [isEditable]="true"
-                                      [isRequired]="false"
-                                      placeholder="Please select"
-                                      (selectedIndexChanged)="onChangeArticleStatus()">
+                        <xn-combo-box
+                            #idRepIsoCountryCode
+                            wjDropdownHelper
+                            [form]="formGroup"
+                            formControlName="idRepIsoCountryCode"
+                            class="custom-wj-input-control xn-select"
+                            [itemsSource]="listComboBox.countryCode"
+                            [displayMemberPath]="'textValue'"
+                            [selectedValuePath]="'idValue'"
+                            [isEditable]="true"
+                            [isRequired]="false"
+                            placeholder="Please select"
+                            (selectedIndexChanged)="onChangeArticleStatus()"
+                        >
                         </xn-combo-box>
-                        <control-messages [xn-trigger-click-inside-cbo]="idRepIsoCountryCode"
-                                          [control]="formGroup.controls['idRepIsoCountryCode']"
-                                          [mandatoryColor]="mandatoryColor['notes']"
-                                          icon="globe">
+                        <control-messages
+                            [xn-trigger-click-inside-cbo]="idRepIsoCountryCode"
+                            [control]="
+                                formGroup.controls['idRepIsoCountryCode']
+                            "
+                            [mandatoryColor]="mandatoryColor['notes']"
+                            icon="globe"
+                        >
                         </control-messages>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="articleDescriptionShort" class="control-label  col-sm-4">{{data.articleDescriptionShort.displayValue}}</label>
+                <label
+                    for="articleDescriptionShort"
+                    class="control-label col-sm-4"
+                    >{{ data.articleDescriptionShort.displayValue }}</label
+                >
                 <div class="col-sm-8">
-                    <input type="text"
-                          class="form-control  xn-input"
-                          name="articleDescriptionShort"
-                          formControlName="articleDescriptionShort"
-                          autocomplete="off" />
-                    <control-messages [type]="'textbox'"
-                                      [control]="formGroup.controls.articleDescriptionShort"
-                                      [mandatoryColor]="mandatoryColor['notes']"
-                                      [icon]="'sticky-note-o'"></control-messages>
+                    <input
+                        type="text"
+                        class="form-control xn-input"
+                        name="articleDescriptionShort"
+                        formControlName="articleDescriptionShort"
+                        autocomplete="off"
+                    />
+                    <control-messages
+                        [type]="'textbox'"
+                        [control]="formGroup.controls.articleDescriptionShort"
+                        [mandatoryColor]="mandatoryColor['notes']"
+                        [icon]="'sticky-note-o'"
+                    ></control-messages>
                 </div>
             </div>
             <div class="xn__form-header">
-                <label class="control-label  col-sm-4  required">
-                  <label-translation [keyword]="'Article_Form__Article_type'" User_profile_F></label-translation>
+                <label class="control-label col-sm-4 required">
+                    <label-translation
+                        [keyword]="'Article_Form__Article_type'"
+                        User_profile_F
+                    ></label-translation>
                 </label>
             </div>
             <div class="form-group">
-                <label for="isWarehouseControl" class="control-label  col-sm-4 no-padding-top">{{data.isWarehouseControl.displayValue}}</label>
-                <div class="col-sm-8" [ngClass]="{'article-type__error': (!isArticleTypeCheck && formGroup['submitted'])}">
-                    <mat-checkbox class="no-padding-top"
-                                  color="primary"
-                                  formControlName="isWarehouseControl"
-                                  (change)="isArticleTypeChange()">
+                <label
+                    for="isWarehouseControl"
+                    class="control-label col-sm-4 no-padding-top"
+                    >{{ data.isWarehouseControl.displayValue }}</label
+                >
+                <div
+                    class="col-sm-8"
+                    [ngClass]="{
+                        'article-type__error':
+                            !isArticleTypeCheck && formGroup['submitted']
+                    }"
+                >
+                    <mat-checkbox
+                        class="no-padding-top"
+                        color="primary"
+                        formControlName="isWarehouseControl"
+                        (change)="isArticleTypeChange()"
+                    >
                     </mat-checkbox>
                 </div>
             </div>
             <div class="form-group">
-                <label for="isSetArticle" class="control-label  col-sm-4 no-padding-top">{{data.isSetArticle.displayValue}}</label>
-                <div class="col-sm-8" [ngClass]="{'article-type__error': (!isArticleTypeCheck && formGroup['submitted'])}">
-                    <mat-checkbox class="no-padding-top"
-                                  color="primary"
-                                  formControlName="isSetArticle"
-                                  (change)="isArticleTypeChange()">
+                <label
+                    for="isSetArticle"
+                    class="control-label col-sm-4 no-padding-top"
+                    >{{ data.isSetArticle.displayValue }}</label
+                >
+                <div
+                    class="col-sm-8"
+                    [ngClass]="{
+                        'article-type__error':
+                            !isArticleTypeCheck && formGroup['submitted']
+                    }"
+                >
+                    <mat-checkbox
+                        class="no-padding-top"
+                        color="primary"
+                        formControlName="isSetArticle"
+                        (change)="isArticleTypeChange()"
+                    >
                     </mat-checkbox>
                 </div>
             </div>
             <div class="form-group">
-                <label for="isVirtual" class="control-label  col-sm-4 no-padding-top">{{data.isVirtual.displayValue}}</label>
-                <div class="col-sm-8" [ngClass]="{'article-type__error': (!isArticleTypeCheck && formGroup['submitted'])}">
-                    <mat-checkbox class="no-padding-top"
-                                  color="primary"
-                                  formControlName="isVirtual"
-                                  (change)="isArticleTypeChange()">
+                <label
+                    for="isVirtual"
+                    class="control-label col-sm-4 no-padding-top"
+                    >{{ data.isVirtual.displayValue }}</label
+                >
+                <div
+                    class="col-sm-8"
+                    [ngClass]="{
+                        'article-type__error':
+                            !isArticleTypeCheck && formGroup['submitted']
+                    }"
+                >
+                    <mat-checkbox
+                        class="no-padding-top"
+                        color="primary"
+                        formControlName="isVirtual"
+                        (change)="isArticleTypeChange()"
+                    >
                     </mat-checkbox>
                 </div>
             </div>
             <div class="form-group">
-                <label for="isPrintProduct" class="control-label  col-sm-4 no-padding-top">{{data.isPrintProduct.displayValue}}</label>
-                <div class="col-sm-8" [ngClass]="{'article-type__error': (!isArticleTypeCheck && formGroup['submitted'])}">
-                    <mat-checkbox class="no-padding-top"
-                                  color="primary"
-                                  formControlName="isPrintProduct"
-                                  (change)="isArticleTypeChange()">
+                <label
+                    for="isPrintProduct"
+                    class="control-label col-sm-4 no-padding-top"
+                    >{{ data.isPrintProduct.displayValue }}</label
+                >
+                <div
+                    class="col-sm-8"
+                    [ngClass]="{
+                        'article-type__error':
+                            !isArticleTypeCheck && formGroup['submitted']
+                    }"
+                >
+                    <mat-checkbox
+                        class="no-padding-top"
+                        color="primary"
+                        formControlName="isPrintProduct"
+                        (change)="isArticleTypeChange()"
+                    >
                     </mat-checkbox>
                 </div>
             </div>
             <div class="form-group">
-                <label for="isService" class="control-label  col-sm-4 no-padding-top">{{data.isService.displayValue}}</label>
-                <div class="col-sm-8" [ngClass]="{'article-type__error': (!isArticleTypeCheck && formGroup['submitted'])}">
-                    <mat-checkbox class="no-padding-top"
-                                  color="primary"
-                                  formControlName="isService"
-                                  (change)="isArticleTypeChange()">
+                <label
+                    for="isService"
+                    class="control-label col-sm-4 no-padding-top"
+                    >{{ data.isService.displayValue }}</label
+                >
+                <div
+                    class="col-sm-8"
+                    [ngClass]="{
+                        'article-type__error':
+                            !isArticleTypeCheck && formGroup['submitted']
+                    }"
+                >
+                    <mat-checkbox
+                        class="no-padding-top"
+                        color="primary"
+                        formControlName="isService"
+                        (change)="isArticleTypeChange()"
+                    >
                     </mat-checkbox>
                 </div>
             </div>
-            <div *ngIf="(!isArticleTypeCheck && formGroup['submitted'])" class="col-sm-offset-4  col-sm-8">
+            <div
+                *ngIf="!isArticleTypeCheck && formGroup['submitted']"
+                class="col-sm-offset-4 col-sm-8"
+            >
                 <div class="alert alert-danger">
-                  <label-translation [keyword]="'Article_Form__Please_select_at_least_an_article_type'" User_profile_F></label-translation>
+                    <label-translation
+                        [keyword]="
+                            'Article_Form__Please_select_at_least_an_article_type'
+                        "
+                        User_profile_F
+                    ></label-translation>
                 </div>
             </div>
-            <div class="col-sm-offset-4  col-xs-12  col-sm-4">
-              <button type="button"
-                      mat-raised-button
-                      class="mat-btn-green"
-                      [disabled]="disableResetArticleTypeButton"
-                      (click)="resetAllArticleType()">
-                  <span class="bt-t"><label-translation [keyword]="'Article_Form__Reset_Article_Type'" User_profile_F></label-translation></span>
-              </button>
+            <div class="col-sm-offset-4 col-xs-12 col-sm-4">
+                <button
+                    type="button"
+                    mat-raised-button
+                    class="mat-btn-green"
+                    [disabled]="disableResetArticleTypeButton"
+                    (click)="resetAllArticleType()"
+                >
+                    <span class="bt-t"
+                        ><label-translation
+                            [keyword]="'Article_Form__Reset_Article_Type'"
+                            User_profile_F
+                        ></label-translation
+                    ></span>
+                </button>
             </div>
         </div>
-        <div class="col-xs-12  col-sm-6">
+        <div class="col-xs-12 col-sm-6">
             <div class="form-group">
-                <label for="notes" class="control-label  bold-title  text-left col-sm-4  form-control__note"><label-translation [keyword]="'Article_Form__Notes'" ></label-translation></label>
+                <label
+                    for="notes"
+                    class="control-label bold-title text-left col-sm-4 form-control__note"
+                    ><label-translation
+                        [keyword]="'Article_Form__Notes'"
+                    ></label-translation
+                ></label>
                 <div class="col-sm-10">
-                    <textarea class="form-control  xn-input" id="notes" name="notes" [maxlength]="maxCharactersNotes" (keypress)="updateLeftCharacters($event)"
-                              (keydown)="updateLeftCharacters($event)" formControlName="notes"></textarea>
-                    <control-messages [control]="formGroup.controls.notes"
-                                      icon="comment fa-2"
-                                      [mandatoryColor]="mandatoryColor['notes']"
-                                      styleClass="for-notes">
+                    <textarea
+                        class="form-control xn-input"
+                        id="notes"
+                        name="notes"
+                        [maxlength]="maxCharactersNotes"
+                        (keypress)="updateLeftCharacters($event)"
+                        (keydown)="updateLeftCharacters($event)"
+                        formControlName="notes"
+                    ></textarea>
+                    <control-messages
+                        [control]="formGroup.controls.notes"
+                        icon="comment fa-2"
+                        [mandatoryColor]="mandatoryColor['notes']"
+                        styleClass="for-notes"
+                    >
                     </control-messages>
                 </div>
                 <div class="col-sm-10">
-                    <p>*
-                      <label-translation [keyword]="'Article_Form__You_have'" User_profile_F></label-translation>
-                       {{formGroup.leftCharacters}} 
-                      <label-translation [keyword]="'Article_Form__characters_more'" User_profile_F></label-translation>
+                    <p>
+                        *
+                        <label-translation
+                            [keyword]="'Article_Form__You_have'"
+                            User_profile_F
+                        ></label-translation>
+                        {{ formGroup.leftCharacters }}
+                        <label-translation
+                            [keyword]="'Article_Form__characters_more'"
+                            User_profile_F
+                        ></label-translation>
                     </p>
                 </div>
             </div>

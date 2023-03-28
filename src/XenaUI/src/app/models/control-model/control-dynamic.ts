@@ -1,7 +1,7 @@
-﻿import { ControlBase } from './control-base';
+﻿import { ControlBase } from "./control-base";
 
 export class DynamicControl extends ControlBase<any> {
-    public controlType: string = 'dynamic';
+    public controlType: string = "dynamic";
     public isRawDynamicData: boolean = false;
 
     public constructor(init?: Partial<DynamicControl>) {

@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-    selector: 'form-quill-editor-toolbar',
-    templateUrl: './quill-editor-toolbar.component.html'
+    selector: "form-quill-editor-toolbar",
+    templateUrl: "./quill-editor-toolbar.component.html",
 })
 export class XnFormQuillEditorToolbarComponent {
-    constructor() {
-    }
+    constructor() {}
 }

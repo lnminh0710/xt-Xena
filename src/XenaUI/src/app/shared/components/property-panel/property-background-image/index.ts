@@ -1,1 +1,1 @@
-﻿export * from './property-background-image.component';
+﻿export * from "./property-background-image.component";

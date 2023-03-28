@@ -1,1 +1,1 @@
-﻿export { XnAdditionalInformationTabComponent } from './xn-ai-tab.component'
+﻿export { XnAdditionalInformationTabComponent } from "./xn-ai-tab.component";

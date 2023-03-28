@@ -11,45 +11,48 @@ import {
     forwardRef,
     AfterViewInit,
     OnChanges,
-    SimpleChanges
-} from '@angular/core';
-import {
-    ControlValueAccessor,
-    NG_VALUE_ACCESSOR,
-} from '@angular/forms';
-import {
-    Uti
-} from 'app/utilities';
+    SimpleChanges,
+} from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Uti } from "app/utilities";
 import {
     IMyOptions,
     NgxMyDatePickerDirective,
-    NgxMyDatePickerConfig
-} from 'app/shared/components/xn-control/xn-date-picker';
-import { format, parse } from 'date-fns/esm';
+    NgxMyDatePickerConfig,
+} from "app/shared/components/xn-control/xn-date-picker";
+import { format, parse } from "date-fns/esm";
 
 @Component({
-    selector: 'xn-date-picker',
-    templateUrl: './xn-date-picker.component.html',
-    styleUrls: ['./xn-date-picker.component.scss'],
-    providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => DatePickerComponent),
-        multi: true,
-    }],
+    selector: "xn-date-picker",
+    templateUrl: "./xn-date-picker.component.html",
+    styleUrls: ["./xn-date-picker.component.scss"],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => DatePickerComponent),
+            multi: true,
+        },
+    ],
 })
-export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDestroy, OnChanges, AfterViewInit {
-    public onChange: any = (_: any) => {
-    };
+export class DatePickerComponent
+    implements
+        ControlValueAccessor,
+        OnInit,
+        OnDestroy,
+        OnChanges,
+        AfterViewInit
+{
+    public onChange: any = (_: any) => {};
     public datePickerOptions: IMyOptions;
     public hostElement: any;
     public maskInput: Array<string | RegExp> = [];
 
-    public dateFormat: string = 'MM/dd/yyyy';
+    public dateFormat: string = "MM/dd/yyyy";
     private currentValue: any;
     private focusWhenChooseItem: boolean = false;
 
     @Input() id: string = Uti.guid();
-    @Input() customClass: string = '';
+    @Input() customClass: string = "";
     @Input() width: string;
     @Input() isInGrid: any = false;
 
@@ -82,10 +85,10 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
     @Input() itemValidator: any;
     @Input() lostFocusNg: any;
     @Input() max: any;
-    @Input() disableUntil: any = {year: 1900, month: 1, day: 1};
-    @Input() disableSince: any = {year: 9999, month: 12, day: 31};
+    @Input() disableUntil: any = { year: 1900, month: 1, day: 1 };
+    @Input() disableSince: any = { year: 9999, month: 12, day: 31 };
     @Input() min: any;
-    @Input() placeholder: any = '';
+    @Input() placeholder: any = "";
     @Input() rightToLeft: any;
     @Input() selectionMode: any;
     @Input() showDropDownButton: any = true;
@@ -105,8 +108,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
     @Output() gotFocus: EventEmitter<any> = new EventEmitter();
     @Output() lostFocus: EventEmitter<any> = new EventEmitter();
     @Output() onSearchButtonClicked: EventEmitter<string> = new EventEmitter();
-    @ViewChild('inputControl') inputControl;
-    @ViewChild('datePicker') datePicker: NgxMyDatePickerDirective;
+    @ViewChild("inputControl") inputControl;
+    @ViewChild("datePicker") datePicker: NgxMyDatePickerDirective;
 
     constructor(
         private renderer: Renderer2,
@@ -122,14 +125,18 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
         const input = this.inputControl.nativeElement;
         try {
             this.value = value;
-            const setValue = (this.value && this.value.getFullYear)
-                ? this.uti.formatLocale(this.value, this.datePickerOptions.dateFormat)
-                : '';
-            this.renderer.setProperty(input, 'value', setValue);
+            const setValue =
+                this.value && this.value.getFullYear
+                    ? this.uti.formatLocale(
+                          this.value,
+                          this.datePickerOptions.dateFormat
+                      )
+                    : "";
+            this.renderer.setProperty(input, "value", setValue);
             this.currentValue = setValue;
         } catch (e) {
-            this.renderer.setProperty(input, 'value', '');
-            this.currentValue = '';
+            this.renderer.setProperty(input, "value", "");
+            this.currentValue = "";
         }
     }
 
@@ -137,28 +144,28 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
         this.onChange = fn;
     }
 
-    registerOnTouched(fn: any): void {
-    }
+    registerOnTouched(fn: any): void {}
 
-    setDisabledState?(isDisabled: boolean): void {
-    }
+    setDisabledState?(isDisabled: boolean): void {}
 
     /* End Overrite methods */
     public onValueChange($event) {
         const input = this.inputControl.nativeElement;
         if (!$event) {
-            this.renderer.setProperty(input, 'value', '');
-            this.onChange('');
-            this.value = '';
+            this.renderer.setProperty(input, "value", "");
+            this.onChange("");
+            this.value = "";
             return;
         }
         if (!this.datePicker.isDateValid($event)) {
-            this.renderer.setProperty(input, 'value', this.currentValue);
+            this.renderer.setProperty(input, "value", this.currentValue);
             return;
         }
         let dateValue = null;
         try {
-            dateValue = Uti.getUTCDate(parse($event, this.datePickerOptions.dateFormat, new Date()));
+            dateValue = Uti.getUTCDate(
+                parse($event, this.datePickerOptions.dateFormat, new Date())
+            );
         } catch (e) {
             dateValue = null;
         }
@@ -170,11 +177,9 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
         }
     }
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
-    public ngOnDestroy(): void {
-    }
+    public ngOnDestroy(): void {}
 
     public ngAfterViewInit(): void {
         this.hostElement = this.inputControl.nativeElement;
@@ -182,22 +187,38 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
     }
 
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes.hasOwnProperty('format')
-            || changes.hasOwnProperty('width')
-            || changes.hasOwnProperty('disableUntil')
-            || changes.hasOwnProperty('disableSince')
-            || changes.hasOwnProperty('min')
-            || changes.hasOwnProperty('max')) {
+        if (
+            changes.hasOwnProperty("format") ||
+            changes.hasOwnProperty("width") ||
+            changes.hasOwnProperty("disableUntil") ||
+            changes.hasOwnProperty("disableSince") ||
+            changes.hasOwnProperty("min") ||
+            changes.hasOwnProperty("max")
+        ) {
             this.buildCalendarOption();
         }
 
-        if (changes.hasOwnProperty('value') || changes.hasOwnProperty('format')) {
+        if (
+            changes.hasOwnProperty("value") ||
+            changes.hasOwnProperty("format")
+        ) {
             setTimeout(() => {
                 if (!this.value /*|| !this.value.getFullYear*/) {
-                    this.renderer.setProperty(this.inputControl.nativeElement, 'value', '');
+                    this.renderer.setProperty(
+                        this.inputControl.nativeElement,
+                        "value",
+                        ""
+                    );
                     return;
                 }
-                this.renderer.setProperty(this.inputControl.nativeElement, 'value', this.uti.formatLocale(this.value, this.datePickerOptions.dateFormat));
+                this.renderer.setProperty(
+                    this.inputControl.nativeElement,
+                    "value",
+                    this.uti.formatLocale(
+                        this.value,
+                        this.datePickerOptions.dateFormat
+                    )
+                );
             }, 200);
         }
     }
@@ -238,13 +259,13 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
         }
         setTimeout(() => {
             this.timesCounter++;
-            let control = $('#' + this.id);
+            let control = $("#" + this.id);
             if (!control || !control.length) {
                 this.registerEvent();
                 return;
             }
             this.timesCounter = 0;
-            this.width = control.parent().parent().outerWidth() + 'px';
+            this.width = control.parent().parent().outerWidth() + "px";
             this.buildCalendarOption();
         });
     }
@@ -261,8 +282,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
             return;
         }
         if (this.isFocusing) return;
-        if (!this.dontShowCalendarWhenFocus)
-            this.openCalendarFromOutSide();
+        if (!this.dontShowCalendarWhenFocus) this.openCalendarFromOutSide();
         this.gotFocus.emit(true);
         this.isFocusing = true;
     }
@@ -280,13 +300,16 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
     }
 
     private setBorderForDatePicker(value: any) {
-        const pathDatePicker = value.path || (value.composedPath && value.composedPath());
+        const pathDatePicker =
+            value.path || (value.composedPath && value.composedPath());
         if (pathDatePicker) {
-            pathDatePicker.forEach(elementDatePicker => {
-                if (elementDatePicker.localName === 'xn-date-picker') {
+            pathDatePicker.forEach((elementDatePicker) => {
+                if (elementDatePicker.localName === "xn-date-picker") {
                     const xnDatePicker = $(elementDatePicker);
-                    const checkTypeBlur = value.type.includes('blur');
-                    return checkTypeBlur ? xnDatePicker.removeClass('focus-date-picker') : xnDatePicker.addClass('focus-date-picker');
+                    const checkTypeBlur = value.type.includes("blur");
+                    return checkTypeBlur
+                        ? xnDatePicker.removeClass("focus-date-picker")
+                        : xnDatePicker.addClass("focus-date-picker");
                 }
             });
         }
@@ -294,23 +317,35 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
 
     private buildCalendarOption() {
         let newConfig = Object.assign({}, this.datePickerOptions);
-        newConfig.dateFormat = this.dateFormat ? this.dateFormat.replace(/m/g, 'M') : this.datePickerOptions.dateFormat;
-        newConfig.selectorWidth = this.width || this.datePickerOptions.selectorWidth;
+        newConfig.dateFormat = this.dateFormat
+            ? this.dateFormat.replace(/m/g, "M")
+            : this.datePickerOptions.dateFormat;
+        newConfig.selectorWidth =
+            this.width || this.datePickerOptions.selectorWidth;
         newConfig.disableUntil = this.disableUntil;
         newConfig.disableSince = this.disableSince;
-        newConfig.minYear = (this.min && this.min.getFullYear) ? this.min.getFullYear() : this.datePickerOptions.minYear;
-        newConfig.minYear = (this.min && this.min.getFullYear) ? this.min.getFullYear() : this.datePickerOptions.minYear;
-        newConfig.maxYear = (this.max && this.max.getFullYear) ? this.max.getFullYear() : this.datePickerOptions.maxYear;
+        newConfig.minYear =
+            this.min && this.min.getFullYear
+                ? this.min.getFullYear()
+                : this.datePickerOptions.minYear;
+        newConfig.minYear =
+            this.min && this.min.getFullYear
+                ? this.min.getFullYear()
+                : this.datePickerOptions.minYear;
+        newConfig.maxYear =
+            this.max && this.max.getFullYear
+                ? this.max.getFullYear()
+                : this.datePickerOptions.maxYear;
         newConfig.dontAutoFillDateWhenEnter = this.dontAutoFillDateWhenEnter;
         this.datePickerOptions = newConfig;
     }
 
     private makeMaskForInput(mask: string) {
-        mask = mask.toLowerCase().replace(/d/g, 'y').replace(/m/g, 'y');
-        const newMaskArr = mask.split('');
+        mask = mask.toLowerCase().replace(/d/g, "y").replace(/m/g, "y");
+        const newMaskArr = mask.split("");
         let separates = [];
         for (let i = 0; i < newMaskArr.length; i++) {
-            if (newMaskArr[i] === 'y') {
+            if (newMaskArr[i] === "y") {
                 separates.push(/\d/);
             } else {
                 separates.push(newMaskArr[i]);
@@ -320,11 +355,13 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit, OnDest
     }
 
     public focus() {
-        $('#' + this.id).focus();
+        $("#" + this.id).focus();
     }
 
     private formatData(format?: string) {
-        this.dateFormat = this.ignoreDateFormat ? 'MM/dd/yyyy' : (format || 'MM/dd/yyyy');
+        this.dateFormat = this.ignoreDateFormat
+            ? "MM/dd/yyyy"
+            : format || "MM/dd/yyyy";
         this.makeMaskForInput(this.dateFormat);
     }
 }

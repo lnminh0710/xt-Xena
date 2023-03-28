@@ -1,115 +1,156 @@
 <div class="m">
-    <div class="g  col-xs-12  no-padding">
-        <xn-ag-grid #importInvoicePaymentGrid
-                    *ngIf="dataSource && dataSource.columns && dataSource.columns.length"
-                    [id]="gridId"
-                    [dataSource]="dataSource"
-                    [readOnly]="true"
-                    [isEditting]="false"
-                    [currentModule]="currentModule"
-                    [autoSaveColumnsLayout]="false"
-                    [allowSetColumnState]="allowSetColumnState"
-                    [rowGrouping]="rowGrouping"
-                    [columnsLayoutSettings]="columnsLayoutSettings"
-                    [rowBackground]="rowBackground"
-                    [rowBackgroundGlobal]="rowBackgroundGlobal"
-                    [borderRow]="borderRow"
-                    [backgroundImage]="backgroundImage"
-                    [background]="background"
-                    [gridStyle]="gridStyle"
-                    [isShowedHeader]="true"
-                    [globalProperties]="globalProperties"
-                    (changeColumnLayout)="onChangeColumnLayoutHandler($event)"
-                    (onRowGroupPanel)="handleRowGroupPanel($event)"
-                    >
+    <div class="g col-xs-12 no-padding">
+        <xn-ag-grid
+            #importInvoicePaymentGrid
+            *ngIf="
+                dataSource && dataSource.columns && dataSource.columns.length
+            "
+            [id]="gridId"
+            [dataSource]="dataSource"
+            [readOnly]="true"
+            [isEditting]="false"
+            [currentModule]="currentModule"
+            [autoSaveColumnsLayout]="false"
+            [allowSetColumnState]="allowSetColumnState"
+            [rowGrouping]="rowGrouping"
+            [columnsLayoutSettings]="columnsLayoutSettings"
+            [rowBackground]="rowBackground"
+            [rowBackgroundGlobal]="rowBackgroundGlobal"
+            [borderRow]="borderRow"
+            [backgroundImage]="backgroundImage"
+            [background]="background"
+            [gridStyle]="gridStyle"
+            [isShowedHeader]="true"
+            [globalProperties]="globalProperties"
+            (changeColumnLayout)="onChangeColumnLayoutHandler($event)"
+            (onRowGroupPanel)="handleRowGroupPanel($event)"
+        >
         </xn-ag-grid>
     </div>
-    <div class="col-xs-12  padding-top--sd">
+    <div class="col-xs-12 padding-top--sd">
         <div class="pull-left no-padding">
             <label class="control-label">
-                <label-translation [keyword]="'Import_Invoice_Payment__Provider'"></label-translation>
+                <label-translation
+                    [keyword]="'Import_Invoice_Payment__Provider'"
+                ></label-translation>
             </label>
-            <xn-combo-box #providerNameCtrl
-                          wjDropdownHelper
-                          class="custom-wj-input-control xn-select focus-ignore sel-provider"
-                          [itemsSource]="listComboBox.paymentPost"
-                          [displayMemberPath]="'textValue'"
-                          [selectedValuePath]="'idValue'"
-                          [isEditable]="true"
-                          [isRequired]="false"
-                          placeholder="Please select"
-                          (selectedIndexChanged)="onProviderChanged($event)">
+            <xn-combo-box
+                #providerNameCtrl
+                wjDropdownHelper
+                class="custom-wj-input-control xn-select focus-ignore sel-provider"
+                [itemsSource]="listComboBox.paymentPost"
+                [displayMemberPath]="'textValue'"
+                [selectedValuePath]="'idValue'"
+                [isEditable]="true"
+                [isRequired]="false"
+                placeholder="Please select"
+                (selectedIndexChanged)="onProviderChanged($event)"
+            >
             </xn-combo-box>
-            <button type="button"
-                    [disabled]="!providerNameCtrl || !providerNameCtrl.selectedValue"
-                    mat-raised-button
-                    class="mat-btn-green btn-upload btn-import"
-                    (click)="uploadFileOpenDialog()">
+            <button
+                type="button"
+                [disabled]="
+                    !providerNameCtrl || !providerNameCtrl.selectedValue
+                "
+                mat-raised-button
+                class="mat-btn-green btn-upload btn-import"
+                (click)="uploadFileOpenDialog()"
+            >
                 <i class="fa fa-upload" aria-hidden="true"></i>
                 <span class="bt-t-i">
-                    <label-translation [keyword]="'Import_Invoice_Payment__Import'"></label-translation>
+                    <label-translation
+                        [keyword]="'Import_Invoice_Payment__Import'"
+                    ></label-translation>
                 </span>
             </button>
         </div>
         <div class="pull-right no-padding">
-            <button type="button"
-                    class="{{(importStatus? 'mat-btn-red' : 'mat-btn-green')}}  mat-raised-button  pull-right"
-                    mat-raised-button
-                    (click)="startStop()">
-                <i class="fa {{(importStatus? 'fa-ban' : 'fa-play')}}"
-                   aria-hidden="true"></i>
+            <button
+                type="button"
+                class="{{
+                    importStatus ? 'mat-btn-red' : 'mat-btn-green'
+                }}  mat-raised-button  pull-right"
+                mat-raised-button
+                (click)="startStop()"
+            >
+                <i
+                    class="fa {{ importStatus ? 'fa-ban' : 'fa-play' }}"
+                    aria-hidden="true"
+                ></i>
                 <span class="bt-t-i">
-                    <label-translation *ngIf="importStatus" [keyword]="'Import_Invoice_Payment__Stop'"></label-translation>
-                    <label-translation *ngIf="!importStatus" [keyword]="'Import_Invoice_Payment__Start'"></label-translation>
+                    <label-translation
+                        *ngIf="importStatus"
+                        [keyword]="'Import_Invoice_Payment__Stop'"
+                    ></label-translation>
+                    <label-translation
+                        *ngIf="!importStatus"
+                        [keyword]="'Import_Invoice_Payment__Start'"
+                    ></label-translation>
                 </span>
             </button>
         </div>
     </div>
 </div>
 
-<p-dialog [(visible)]="uploadFileShowDialog"
-          modal="modal"
-          width="900"
-          height="500"
-          responsive="true"
-          appendTo="body"
-          (onAfterHide)="uploadFileCloseDialog()">
+<p-dialog
+    [(visible)]="uploadFileShowDialog"
+    modal="modal"
+    width="900"
+    height="500"
+    responsive="true"
+    appendTo="body"
+    (onAfterHide)="uploadFileCloseDialog()"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="fa  fa-upload  header-icon  pull-left"></span>
-            <span class="header-text  pull-left"><label-translation [keyword]="'Import_Invoice_Payment__Upload_File'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="uploadFileCloseDialog()">
+            <span class="fa fa-upload header-icon pull-left"></span>
+            <span class="header-text pull-left"
+                ><label-translation
+                    [keyword]="'Import_Invoice_Payment__Upload_File'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="uploadFileCloseDialog()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <div class="col-xs-12 no-padding  height-pc-100"
-         *ngIf="uploadFileShowDialog">
-        <file-upload #fileUpload
-                     [uploadFileMode]="uploadFileMode"
-                     [idFolder]="uploadFileIdFolder"
-                     [checkFileCorrect]="true"
-                     [allowSelectDuplicateFile]="false"
-                     [acceptExtensionFiles]="'.xml,.zip'"
-                     [singleFile]="false"
-                     [maxNumOfFiles]="maxNumOfFiles"
-                     (onCompleteItem)="uploadFileOnComplete($event)"
-                     (onCompleteAll)="uploadFileOnCompleteAll()"></file-upload>
+    <div
+        class="col-xs-12 no-padding height-pc-100"
+        *ngIf="uploadFileShowDialog"
+    >
+        <file-upload
+            #fileUpload
+            [uploadFileMode]="uploadFileMode"
+            [idFolder]="uploadFileIdFolder"
+            [checkFileCorrect]="true"
+            [allowSelectDuplicateFile]="false"
+            [acceptExtensionFiles]="'.xml,.zip'"
+            [singleFile]="false"
+            [maxNumOfFiles]="maxNumOfFiles"
+            (onCompleteItem)="uploadFileOnComplete($event)"
+            (onCompleteAll)="uploadFileOnCompleteAll()"
+        ></file-upload>
     </div>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button type="button"
-                    mat-raised-button
-                    class="pull-right  new-size"
-                    xn-tooltip
-                    [tooltipText]="'Close'"
-                    (click)="uploadFileCloseDialog()">
+            <button
+                type="button"
+                mat-raised-button
+                class="pull-right new-size"
+                xn-tooltip
+                [tooltipText]="'Close'"
+                (click)="uploadFileCloseDialog()"
+            >
                 <span class="bt-t">
-                    <label-translation [keyword]="'Import_Invoice_Payment__Close'"></label-translation>
+                    <label-translation
+                        [keyword]="'Import_Invoice_Payment__Close'"
+                    ></label-translation>
                 </span>
             </button>
         </div>

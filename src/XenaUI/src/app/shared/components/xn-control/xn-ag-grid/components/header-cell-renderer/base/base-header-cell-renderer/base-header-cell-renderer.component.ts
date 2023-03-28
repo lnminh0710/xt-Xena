@@ -1,18 +1,30 @@
-import { Component, ViewEncapsulation, ViewChild, ElementRef, Input} from "@angular/core";
-import { ICellRendererAngularComp, ICellEditorAngularComp, IHeaderAngularComp } from "ag-grid-angular";
+import {
+    Component,
+    ViewEncapsulation,
+    ViewChild,
+    ElementRef,
+    Input,
+} from "@angular/core";
+import {
+    ICellRendererAngularComp,
+    ICellEditorAngularComp,
+    IHeaderAngularComp,
+} from "ag-grid-angular";
 
 @Component({
-    selector: 'base-header-cell-renderer',
-    templateUrl: './base-header-cell-renderer.component.html',
-    styleUrls: ['./base-header-cell-renderer.component.scss']
+    selector: "base-header-cell-renderer",
+    templateUrl: "./base-header-cell-renderer.component.html",
+    styleUrls: ["./base-header-cell-renderer.component.scss"],
 })
-export class BaseHeaderCellRenderer  {   
-
+export class BaseHeaderCellRenderer {
     private _params: any;
     @Input() set params(data: any) {
         if (data) {
             this._params = data;
-            this.params.column.addEventListener('sortChanged', this.onSortChanged.bind(this));
+            this.params.column.addEventListener(
+                "sortChanged",
+                this.onSortChanged.bind(this)
+            );
             this.onSortChanged();
         }
     }
@@ -24,18 +36,17 @@ export class BaseHeaderCellRenderer  {
     @Input() template;
     @Input() contentStyle;
 
-    public templateContext: { $implicit: any, params: any };
-    @ViewChild('menuButton', { read: ElementRef }) public menuButton;
+    public templateContext: { $implicit: any; params: any };
+    @ViewChild("menuButton", { read: ElementRef }) public menuButton;
 
     public ascSort: string;
     public descSort: string;
     public noSort: string;
-    public menuStatus: string = 'hidden';
+    public menuStatus: string = "hidden";
 
-    private currentSort = '';
+    private currentSort = "";
 
-    constructor() {
-    }
+    constructor() {}
 
     /**
      * onMenuClicked
@@ -44,39 +55,48 @@ export class BaseHeaderCellRenderer  {
         event.preventDefault();
         event.stopPropagation();
         this.params.showColumnMenu(this.menuButton.nativeElement);
-    };
+    }
 
     /**
      * onSortChanged
      **/
     public onSortChanged() {
-        this.ascSort = this.descSort = this.noSort = 'ag-hidden';
+        this.ascSort = this.descSort = this.noSort = "ag-hidden";
         if (this.params.column.isSortAscending()) {
-            this.ascSort = 'active';
+            this.ascSort = "active";
         } else if (this.params.column.isSortDescending()) {
-            this.descSort = 'active';
+            this.descSort = "active";
         } else {
-            this.noSort = 'active';
+            this.noSort = "active";
         }
     }
 
-     /**
+    /**
      * onSortRequested
      * @param order
      * @param event
      */
     public onSortRequested(event) {
-        if ((() => {try {return this._params.column.colDef.suppressSorting;} catch(e){return false;}})()) return;
-        let sortMode = '';
+        if (
+            (() => {
+                try {
+                    return this._params.column.colDef.suppressSorting;
+                } catch (e) {
+                    return false;
+                }
+            })()
+        )
+            return;
+        let sortMode = "";
         switch (this.currentSort) {
-            case '':
-                sortMode = 'asc';
+            case "":
+                sortMode = "asc";
                 break;
-            case 'asc':
-                sortMode = 'desc';
+            case "asc":
+                sortMode = "desc";
                 break;
-            case 'desc':
-                sortMode = '';
+            case "desc":
+                sortMode = "";
                 break;
         }
         this.currentSort = sortMode;
@@ -88,7 +108,7 @@ export class BaseHeaderCellRenderer  {
      * @param event
      */
     public mouseEnter(event) {
-        this.menuStatus = '';
+        this.menuStatus = "";
     }
 
     /**
@@ -96,7 +116,6 @@ export class BaseHeaderCellRenderer  {
      * @param event
      */
     public mouseLeave(event) {
-        this.menuStatus = 'hidden';
+        this.menuStatus = "hidden";
     }
-
 }

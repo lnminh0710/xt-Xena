@@ -1,17 +1,17 @@
-import * as service from 'app/services';
-import * as consts from 'app/app.constants';
-import * as uti from 'app/utilities';
+import * as service from "app/services";
+import * as consts from "app/app.constants";
+import * as uti from "app/utilities";
 
-export * from 'app/services/common';
-export * from 'app/services/control';
-export * from 'app/services/form';
-export * from 'app/services/system';
-export * from 'app/services/base.service';
-export * from 'app/services/cache.service';
-export * from 'app/services/google-analytics.service';
-export * from 'app/services/signalR';
-export * from 'app/services/widget-field.service';
-export * from 'app/services/EventEmitter.service';
+export * from "app/services/common";
+export * from "app/services/control";
+export * from "app/services/form";
+export * from "app/services/system";
+export * from "app/services/base.service";
+export * from "app/services/cache.service";
+export * from "app/services/google-analytics.service";
+export * from "app/services/signalR";
+export * from "app/services/widget-field.service";
+export * from "app/services/EventEmitter.service";
 
 export const APP_SERVICES = [
     service.AccessRightsService,
@@ -98,5 +98,5 @@ export const APP_SERVICES = [
     uti.LocalStorageHelper,
 
     uti.SessionStorageProvider,
-    uti.LocalStorageProvider
+    uti.LocalStorageProvider,
 ];

@@ -1,26 +1,35 @@
 import {
-    Component, Input, Output, ViewChild, OnInit, OnDestroy, EventEmitter, ChangeDetectorRef
-} from '@angular/core';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
+    Component,
+    Input,
+    Output,
+    ViewChild,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+    ChangeDetectorRef,
+} from "@angular/core";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 import {
     ToolsService,
     AppErrorHandler,
     DatatableService,
-    ModalService
-} from 'app/services';
-import { Uti } from 'app/utilities/uti';
-import { Subscription } from 'rxjs/Subscription';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
+    ModalService,
+} from "app/services";
+import { Uti } from "app/utilities/uti";
+import { Subscription } from "rxjs/Subscription";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
 
 @Component({
-    selector: 'app-scan-assignment-step3',
-    styleUrls: ['./scan-assignment.component.scss'],
-    templateUrl: './scan-assignment-step3.component.html'
+    selector: "app-scan-assignment-step3",
+    styleUrls: ["./scan-assignment.component.scss"],
+    templateUrl: "./scan-assignment-step3.component.html",
 })
-export class ScanAssignmentStep3Component extends BaseComponent implements OnInit, OnDestroy {
-
+export class ScanAssignmentStep3Component
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     private DETERMINISTIC_QUEUE_MODE = 1;
     private RANDOM_QUEUE_MODE = 2;
 
@@ -32,7 +41,8 @@ export class ScanAssignmentStep3Component extends BaseComponent implements OnIni
     private _dataStep1: any = {};
     private toolsServiceSubscription: Subscription;
 
-    @ViewChild('wjgridPoolsDetailTable') wjgridPoolsDetailTable: XnAgGridComponent;
+    @ViewChild("wjgridPoolsDetailTable")
+    wjgridPoolsDetailTable: XnAgGridComponent;
 
     @Input() globalProperties: any;
     @Input() wjgridPoolsDetailTableId: string;
@@ -57,25 +67,27 @@ export class ScanAssignmentStep3Component extends BaseComponent implements OnIni
         super(router);
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     ngOnDestroy() {
         Uti.unsubscribe(this);
     }
 
     private loadGridData() {
-        this.toolsServiceSubscription = this.toolsService.getScanAssignedPool(this._dataStep1.idPerson || '')
+        this.toolsServiceSubscription = this.toolsService
+            .getScanAssignedPool(this._dataStep1.idPerson || "")
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!response || !response.data) {
                         this.dataSourceTableForPoolsDetail = {
                             data: [],
-                            columns: this.dataSourceTableForPoolsDetail.columns
-                        }
+                            columns: this.dataSourceTableForPoolsDetail.columns,
+                        };
                         return;
                     }
-                    response = this.datatableService.formatDataTableFromRawData(response.data);
+                    response = this.datatableService.formatDataTableFromRawData(
+                        response.data
+                    );
                     response = this.datatableService.buildDataSource(response);
                     this.dataSourceTableForPoolsDetail = response;
                     this.ref.detectChanges();
@@ -92,32 +104,48 @@ export class ScanAssignmentStep3Component extends BaseComponent implements OnIni
     }
 
     public unassign() {
-        const selectData = this.wjgridPoolsDetailTable.gridOptions.rowData.filter((item) => item.selectAll);
+        const selectData =
+            this.wjgridPoolsDetailTable.gridOptions.rowData.filter(
+                (item) => item.selectAll
+            );
         if (this.wjgridPoolsDetailTable) {
             this.outputData.emit(selectData);
         }
         if (!selectData || !selectData.length) {
-            this.modalService.warningMessage([{
-                key: 'Modal_Message__Please_Select_At_Least_One_Item_To_Unassign'
-            }]);
+            this.modalService.warningMessage([
+                {
+                    key: "Modal_Message__Please_Select_At_Least_One_Item_To_Unassign",
+                },
+            ]);
             return;
         }
-        this.toolsService.scanAssignmentUnassignPoolsToUsers({ ScanAssignmentPools: this.getSaveData(selectData) })
+        this.toolsService
+            .scanAssignmentUnassignPoolsToUsers({
+                ScanAssignmentPools: this.getSaveData(selectData),
+            })
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!response || !response.eventType || response.eventType != 'Successfully') {
+                    if (
+                        !response ||
+                        !response.eventType ||
+                        response.eventType != "Successfully"
+                    ) {
                         return;
                     }
                     this.loadGridData();
-                    this.toasterService.pop('success', 'Success', 'Unassigned is successful');
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "Unassigned is successful"
+                    );
                 });
             });
     }
 
     private getSaveData(selectData): any {
-        return selectData.map(x => {
+        return selectData.map((x) => {
             return {
-                IdScansContainerAssignment: x.IdScansContainerAssignment
+                IdScansContainerAssignment: x.IdScansContainerAssignment,
             };
         });
     }

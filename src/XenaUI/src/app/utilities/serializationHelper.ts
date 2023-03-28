@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable()
 export class SerializationHelper {
@@ -6,8 +6,8 @@ export class SerializationHelper {
         try {
             const jsonObj = JSON.parse(json);
 
-            if (typeof obj['fromJSON'] === 'function') {
-                obj['fromJSON'](jsonObj);
+            if (typeof obj["fromJSON"] === "function") {
+                obj["fromJSON"](jsonObj);
             } else {
                 for (const propName in jsonObj) {
                     if (jsonObj.hasOwnProperty(propName)) {
@@ -15,10 +15,8 @@ export class SerializationHelper {
                     }
                 }
             }
-        }
-        catch {
-        }
-        finally {
+        } catch {
+        } finally {
             return obj;
         }
     }

@@ -4,13 +4,13 @@ $bg-image-name: "sky-bg.jpg";
 $login-background-url: "#{$images-root}#{$bg-image-name}";
 
 .auth__main {
-	display: flex;
+    display: flex;
     align-items: center;
     height: 100%;
     width: 100%;
     position: fixed;
     background-image: url(#{$login-background-url});
-	background-size: cover;
+    background-size: cover;
 
     .auth__block {
         width: $small-size;
@@ -24,16 +24,16 @@ $login-background-url: "#{$images-root}#{$bg-image-name}";
         color: $gray1;
     }
 
-	.user-authentication__success {
-		color: $accent2;
-	}
-	.user-authentication__fail {
-		color: $red1;
-	}
-	.user-authentication__notice {
-		color: $palevioletred;
-	}
-    
+    .user-authentication__success {
+        color: $accent2;
+    }
+    .user-authentication__fail {
+        color: $red1;
+    }
+    .user-authentication__notice {
+        color: $palevioletred;
+    }
+
     .input-group-addon {
         margin-top: -40px;
         margin-left: 0px;
@@ -56,9 +56,9 @@ $login-background-url: "#{$images-root}#{$bg-image-name}";
         line-height: 35px;
         font-size: 23px;
         margin-right: 7px;
-        margin-top: -3px
+        margin-top: -3px;
     }
-    .line-separate hr{
+    .line-separate hr {
         margin-bottom: 0;
     }
     .mat-btn-blue {

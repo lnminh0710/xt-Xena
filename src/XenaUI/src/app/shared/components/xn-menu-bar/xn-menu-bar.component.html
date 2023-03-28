@@ -1,59 +1,95 @@
-<ul [ngClass]="{'right': position === 'right',
-                'sub-menu': !isRoot}">
-    <li *ngFor="let module of modules"
-        [xn-dropdown]="module.children">
-        <a mat-button
-           class="mat-btn-menu cursor-pointer"
-           *ngIf="module.idSettingsGUI != -1 && module.accessRight && module.accessRight.read"
-           (click)="selectModule(module, $event)">
-            <i class="header-icon fa {{module.iconName}}" aria-hidden="true"></i>
+<ul [ngClass]="{ right: position === 'right', 'sub-menu': !isRoot }">
+    <li *ngFor="let module of modules" [xn-dropdown]="module.children">
+        <a
+            mat-button
+            class="mat-btn-menu cursor-pointer"
+            *ngIf="
+                module.idSettingsGUI != -1 &&
+                module.accessRight &&
+                module.accessRight.read
+            "
+            (click)="selectModule(module, $event)"
+        >
+            <i
+                class="header-icon fa {{ module.iconName }}"
+                aria-hidden="true"
+            ></i>
             <span class="menu-bar__text">
-                {{module.moduleName}}
+                {{ module.moduleName }}
             </span>
-            <i [ngClass]="{'fa fa-angle-right pull-right': module.children && module.children.length > 0 }"></i>
-            <mat-checkbox color="primary"
-                          *ngIf="(!module.children || !module.children.length) && module.idSettingsGUIParent != 5"
-                          class="pull-right"
-                          (click)="preventCloseMenu($event)"
-                          [(ngModel)]="module.isChecked"
-                          (change)="setCheckboxValue(module)">
+            <i
+                [ngClass]="{
+                    'fa fa-angle-right pull-right':
+                        module.children && module.children.length > 0
+                }"
+            ></i>
+            <mat-checkbox
+                color="primary"
+                *ngIf="
+                    (!module.children || !module.children.length) &&
+                    module.idSettingsGUIParent != 5
+                "
+                class="pull-right"
+                (click)="preventCloseMenu($event)"
+                [(ngModel)]="module.isChecked"
+                (change)="setCheckboxValue(module)"
+            >
             </mat-checkbox>
         </a>
         <div *ngIf="module.idSettingsGUI == -1 && module.isCanSearch">
             <div class="right-inner-addon">
-                <button mat-icon-button
-                        class="custom-icon-button"
-                        color="primary"
-                        type="button"
-                        (click)="search(module)">
+                <button
+                    mat-icon-button
+                    class="custom-icon-button"
+                    color="primary"
+                    type="button"
+                    (click)="search(module)"
+                >
                     <i class="fa fa-search"></i>
                 </button>
-                <input type="text"
-                       [(ngModel)]='module.searchKeyword'
-                       (click)="preventCloseMenu($event)"
-                       class="form-control"
-                       placeholder="Search for..."
-                       (keyup.enter)="search(module)"
-                       autocomplete="off">
+                <input
+                    type="text"
+                    [(ngModel)]="module.searchKeyword"
+                    (click)="preventCloseMenu($event)"
+                    class="form-control"
+                    placeholder="Search for..."
+                    (keyup.enter)="search(module)"
+                    autocomplete="off"
+                />
             </div>
         </div>
-        <div *ngIf="module.idSettingsGUI  == -1 && module.isCanNew && tabAccessRight && tabAccessRight.new">
-            <a mat-button
-               class="mat-btn-menu cursor-pointer"
-               (click)="clickNewModuleItem(module)">
+        <div
+            *ngIf="
+                module.idSettingsGUI == -1 &&
+                module.isCanNew &&
+                tabAccessRight &&
+                tabAccessRight.new
+            "
+        >
+            <a
+                mat-button
+                class="mat-btn-menu cursor-pointer"
+                (click)="clickNewModuleItem(module)"
+            >
                 <i class="fa fa-plus" aria-hidden="true"></i>
                 <span class="menu-bar__text">
-                   <label-translation [keyword]="'XnMenuBar__New'"></label-translation> {{module.moduleName}}
+                    <label-translation
+                        [keyword]="'XnMenuBar__New'"
+                    ></label-translation>
+                    {{ module.moduleName }}
                 </span>
             </a>
         </div>
-        <xn-menu-bar [modules]="module.children"
-                     [activeModule]="activeModule.idSettingsGUI == 1 ? activeModule : module"
-                     [isRoot]="false"
-                     *ngIf="module.children && module.children.length > 0"
-                     (onSelectedModule)="onSelectedSubModule($event)"
-                     (onSearchingModule)="search($event)"
-                     (onClickNewModule)="clickNewModuleItem($event)"></xn-menu-bar>
-
+        <xn-menu-bar
+            [modules]="module.children"
+            [activeModule]="
+                activeModule.idSettingsGUI == 1 ? activeModule : module
+            "
+            [isRoot]="false"
+            *ngIf="module.children && module.children.length > 0"
+            (onSelectedModule)="onSelectedSubModule($event)"
+            (onSearchingModule)="search($event)"
+            (onClickNewModule)="clickNewModuleItem($event)"
+        ></xn-menu-bar>
     </li>
 </ul>

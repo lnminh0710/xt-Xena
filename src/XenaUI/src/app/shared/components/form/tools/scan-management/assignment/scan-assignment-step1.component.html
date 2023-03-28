@@ -1,36 +1,51 @@
-<div class="margin-top--sd  height-pc-100"
-    [ngStyle]="{'display': isShowStep1 ? 'block' : 'none'}">
+<div
+    class="margin-top--sd height-pc-100"
+    [ngStyle]="{ display: isShowStep1 ? 'block' : 'none' }"
+>
     <div class="col-xs-12 no-padding">
-        <div class="col-xs-3  no-padding-left  xn-width-100  xn-label-01">
-            <label-translation [keyword]="'SA_step1__Select_data_entry_center'"></label-translation>
+        <div class="col-xs-3 no-padding-left xn-width-100 xn-label-01">
+            <label-translation
+                [keyword]="'SA_step1__Select_data_entry_center'"
+            ></label-translation>
         </div>
         <div class="col-xs-4 no-padding form-group">
-            <xn-combo-box #cboDataEntry
-                          wjDropdownHelper
-                          class="custom-wj-input-control xn-select"
-                          [itemsSource]="dataEntryCenters"
-                          [displayMemberPath]="'textValue'"
-                          [selectedValuePath]="'idValue'"
-                          [isEditable]="true"
-                          [isRequired]="false"
-                          (selectedIndexChanged)="selectedDataEntryChanged($event)"
-                          placeholder="Please select">
+            <xn-combo-box
+                #cboDataEntry
+                wjDropdownHelper
+                class="custom-wj-input-control xn-select"
+                [itemsSource]="dataEntryCenters"
+                [displayMemberPath]="'textValue'"
+                [selectedValuePath]="'idValue'"
+                [isEditable]="true"
+                [isRequired]="false"
+                (selectedIndexChanged)="selectedDataEntryChanged($event)"
+                placeholder="Please select"
+            >
             </xn-combo-box>
-            <control-messages [xn-trigger-click-inside-cbo]="cboDataEntry" [type]="'textbox'"
-                              [icon]="'list'"></control-messages>
+            <control-messages
+                [xn-trigger-click-inside-cbo]="cboDataEntry"
+                [type]="'textbox'"
+                [icon]="'list'"
+            ></control-messages>
         </div>
     </div>
-    <div class="col-xs-12 no-padding  scan-assignment-step-1-grid">
-        <xn-ag-grid #wjgridAssigmentTable
-                    *ngIf="dataSourceTable && dataSourceTable.columns && dataSourceTable.columns.length"
-                    [id]="wjgridAssigmentTableId"
-                    [dataSource]="dataSourceTable"
-                    [globalProperties]="globalProperties"
-                    [isShowedHeader]="true"
-                    [autoSelectFirstRow]="true"
-                    [fitWidthColumn]="true"
-                    (rowClick)="onRowClick($event)"
-                    (rowDoubleClicked)="onRowDoubleClicked($event)">
+    <div class="col-xs-12 no-padding scan-assignment-step-1-grid">
+        <xn-ag-grid
+            #wjgridAssigmentTable
+            *ngIf="
+                dataSourceTable &&
+                dataSourceTable.columns &&
+                dataSourceTable.columns.length
+            "
+            [id]="wjgridAssigmentTableId"
+            [dataSource]="dataSourceTable"
+            [globalProperties]="globalProperties"
+            [isShowedHeader]="true"
+            [autoSelectFirstRow]="true"
+            [fitWidthColumn]="true"
+            (rowClick)="onRowClick($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)"
+        >
         </xn-ag-grid>
     </div>
 </div>

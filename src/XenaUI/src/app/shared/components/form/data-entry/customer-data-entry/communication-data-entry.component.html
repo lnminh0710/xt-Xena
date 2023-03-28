@@ -1,9 +1,11 @@
-<div class="col-xs-12  no-padding  height-100-pc" style="min-width:100px">
-    <xn-communication-table #communicationTable
-                            [isWidgetInfo]="true"
-                            [data]="dataSourceTable"
-                            [gridId]="'9070037e-7f0a-499c-ac9a-796f40fa3369'"
-                            [transferTranslate]="transferTranslate"
-                            (outputData)="getCommOutputData($event)"></xn-communication-table>
+<div class="col-xs-12 no-padding height-100-pc" style="min-width: 100px">
+    <xn-communication-table
+        #communicationTable
+        [isWidgetInfo]="true"
+        [data]="dataSourceTable"
+        [gridId]="'9070037e-7f0a-499c-ac9a-796f40fa3369'"
+        [transferTranslate]="transferTranslate"
+        (outputData)="getCommOutputData($event)"
+    ></xn-communication-table>
 </div>
 <div class="block-ui" *ngIf="isBlockUI()"></div>

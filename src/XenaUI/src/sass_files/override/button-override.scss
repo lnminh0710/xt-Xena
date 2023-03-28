@@ -1,4 +1,4 @@
-@import '../color.scss';
+@import "../color.scss";
 
 button {
     .bt-t,
@@ -32,7 +32,9 @@ button {
 
     .mat-raised-button:not(:first-child):not(:last-child) {
         border-radius: 0;
-        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+            0px 2px 0px 0px rgba(0, 0, 0, 0.14),
+            0px 0px 0px 0px rgba(0, 0, 0, 0.12);
     }
 
     .mat-raised-button:first-child:not(:last-child) {
@@ -43,7 +45,9 @@ button {
     .mat-raised-button:last-child:not(:first-child) {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
-        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+            0px 2px 0px 0px rgba(0, 0, 0, 0.14),
+            0px 0px 0px 0px rgba(0, 0, 0, 0.12);
     }
 }
 
@@ -196,7 +200,9 @@ a.mat-btn-non-fix {
     background-color: $btn-orange !important;
     border-color: $btn-orange !important;
     color: $btn-text-white !important;
-    box-shadow: 0px 3px 1px -2px rgba(251, 140, 0, 0.2), 0px 2px 2px 0px rgba(251, 140, 0, 0.14), 0px 1px 5px 0px rgba(251, 140, 0, 0.12) !important;
+    box-shadow: 0px 3px 1px -2px rgba(251, 140, 0, 0.2),
+        0px 2px 2px 0px rgba(251, 140, 0, 0.14),
+        0px 1px 5px 0px rgba(251, 140, 0, 0.12) !important;
 }
 
 .mat-btn-orange-off:not([disabled]) {
@@ -210,7 +216,9 @@ a.mat-btn-non-fix {
     background-color: $btn-green !important;
     border-color: $btn-green !important;
     color: $btn-text-white !important;
-    box-shadow: 0px 3px 1px -2px rgba(251, 140, 0, 0.2), 0px 2px 2px 0px rgba(251, 140, 0, 0.14), 0px 1px 5px 0px rgba(251, 140, 0, 0.12) !important;
+    box-shadow: 0px 3px 1px -2px rgba(251, 140, 0, 0.2),
+        0px 2px 2px 0px rgba(251, 140, 0, 0.14),
+        0px 1px 5px 0px rgba(251, 140, 0, 0.12) !important;
 }
 
 .mat-btn-green-off:not([disabled]) {
@@ -388,7 +396,6 @@ a.mat-btn-non-fix {
         color: $black;
     }
 }
-
 
 .blinking-new-item {
     -webkit-animation: glowing 1500ms infinite;

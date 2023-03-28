@@ -1,4 +1,4 @@
-@import '../color.scss';
+@import "../color.scss";
 
 wj-input-number.custom-style {
     border: none !important;
@@ -44,7 +44,9 @@ wj-input-number.custom-style {
 }
 
 div.wj-content.wj-dropdown-panel.wj-control.wj-listbox.wj-content {
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px, rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
+        rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,
+        rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
 }
 
 .xn__wijmo-context {
@@ -65,7 +67,8 @@ div.wj-content.wj-dropdown-panel.wj-control.wj-listbox.wj-content {
         width: 100%;
         background-color: $white;
 
-        .no-padding-left, .no-padding-right {
+        .no-padding-left,
+        .no-padding-right {
             padding-top: 4px;
             padding-bottom: 4px;
         }
@@ -82,7 +85,6 @@ div.wj-content.wj-dropdown-panel.wj-control.wj-listbox.wj-content {
     }
 
     & .wj-state-selected {
-
         .xn-wj-ddl-item {
             background-color: $blue11;
         }
@@ -168,7 +170,8 @@ div.wj-content.wj-dropdown-panel.wj-control.wj-listbox.wj-content {
 }
 
 inline-edit {
-    wj-combo-box, wj-input-date {
+    wj-combo-box,
+    wj-input-date {
         .wj-input-group {
             overflow: auto;
         }
@@ -213,7 +216,8 @@ inline-edit {
         width: auto;
         min-width: 150px;
         border: 1px solid $gray3;
-        box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+            0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
         border-radius: 4px;
 
         li {
@@ -309,7 +313,8 @@ inline-edit {
 
 widget-module-info {
     wijmo-grid {
-        .wj-content, .table__search__header {
+        .wj-content,
+        .table__search__header {
             border-left: none !important;
             border-right: none !important;
         }
@@ -345,7 +350,8 @@ wj-input-date.xn-hide {
     }
 }
 
-wj-input-date.wj-state-focused, wj-input-date.edited {
+wj-input-date.wj-state-focused,
+wj-input-date.edited {
     input {
         margin-left: 0 !important;
     }
@@ -383,7 +389,8 @@ wijmo-grid wj-flex-grid div[wj-part="tl"] div[wj-part="tlcells"] div.wj-row {
                 border-color: transparent !important;
             }
 
-            .wj-content, wj-flex-grid div[wj-part='root'] {
+            .wj-content,
+            wj-flex-grid div[wj-part="root"] {
                 background-color: transparent !important;
             }
 
@@ -402,8 +409,11 @@ app-scan-assignment {
     }
 }
 
-app-stock-correction, app-inventory {
-    .xn-custom-auto-complete .wj-input-group.wj-input-btn-visible input.wj-form-control {
+app-stock-correction,
+app-inventory {
+    .xn-custom-auto-complete
+        .wj-input-group.wj-input-btn-visible
+        input.wj-form-control {
         font-size: inherit;
     }
 }
@@ -498,7 +508,7 @@ wj-flex-grid.grid {
     .blue-text {
         .quantity-container,
         .quantity-container input {
-            color: #0070C0;
+            color: #0070c0;
         }
     }
 
@@ -512,7 +522,7 @@ wj-flex-grid.grid {
     .green-text {
         .quantity-container,
         .quantity-container input {
-            color: #00B050;
+            color: #00b050;
         }
     }
 
@@ -526,14 +536,14 @@ wj-flex-grid.grid {
     .red-text {
         .quantity-container,
         .quantity-container input {
-            color: #FF0000;
+            color: #ff0000;
         }
     }
 
     .dark-red-text {
         .quantity-container,
         .quantity-container input {
-            color: #C00000;
+            color: #c00000;
         }
     }
 
@@ -554,7 +564,7 @@ wj-flex-grid.grid {
                 height: 29px;
                 line-height: 26px;
                 display: block;
-                background-color: #F0F9FE;
+                background-color: #f0f9fe;
             }
         }
 
@@ -571,7 +581,7 @@ wj-flex-grid.grid {
 
     .empty-cell {
         min-height: 27px;
-        background-color: #F8F8F8;
+        background-color: #f8f8f8;
     }
 }
 
@@ -585,7 +595,7 @@ wj-flex-grid.grid {
     }
 
     .blue-text {
-        color: #0070C0;
+        color: #0070c0;
     }
 
     .dark-blue-text {
@@ -593,7 +603,7 @@ wj-flex-grid.grid {
     }
 
     .green-text {
-        color: #00B050;
+        color: #00b050;
     }
 
     .dark-green-text {
@@ -601,10 +611,10 @@ wj-flex-grid.grid {
     }
 
     .red-text {
-        color: #FF0000;
+        color: #ff0000;
     }
 
     .dark-red-text {
-        color: #C00000;
+        color: #c00000;
     }
 }

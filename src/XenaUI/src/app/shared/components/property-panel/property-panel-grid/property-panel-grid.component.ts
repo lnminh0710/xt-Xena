@@ -7,21 +7,21 @@
     EventEmitter,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    ViewChildren, forwardRef, QueryList
-} from '@angular/core';
-import { Module } from 'app/models';
-import {PropertyPanelGridValueComponent} from '../property-panel-grid-value';
+    ViewChildren,
+    forwardRef,
+    QueryList,
+} from "@angular/core";
+import { Module } from "app/models";
+import { PropertyPanelGridValueComponent } from "../property-panel-grid-value";
 
 @Component({
-    selector: 'app-property-panel-grid',
-    styleUrls: ['./property-panel-grid.component.scss'],
-    templateUrl: './property-panel-grid.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: "app-property-panel-grid",
+    styleUrls: ["./property-panel-grid.component.scss"],
+    templateUrl: "./property-panel-grid.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class PropertyPanelGridComponent implements OnInit, OnDestroy {
-
-    @Input() set datasource(datasource: any[]){
+    @Input() set datasource(datasource: any[]) {
         this.datasourceLocal = datasource;
         this.changeDetectorRef.markForCheck();
     }
@@ -48,16 +48,11 @@ export class PropertyPanelGridComponent implements OnInit, OnDestroy {
     public levelLocal = 0;
     public isRootLocal = true;
     public datasourceLocal: any[] = [];
-    constructor(
-        private changeDetectorRef: ChangeDetectorRef
-    ) {
-    }
+    constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
-    ngOnDestroy() {
-    }
+    ngOnDestroy() {}
 
     public propertiesChange(event) {
         this.onPropertiesChange.emit(event);
@@ -68,13 +63,12 @@ export class PropertyPanelGridComponent implements OnInit, OnDestroy {
     }
 
     public resetBackgroundAndReWrite(event) {
-        this.propertyPanelGridValue.forEach(propertyPanelGird => {
+        this.propertyPanelGridValue.forEach((propertyPanelGird) => {
             propertyPanelGird.changeDetectorRef.detectChanges();
-        })
+        });
     }
 
     public itemsTrackBy(index, item) {
         return item ? item.id : undefined;
     }
-
 }

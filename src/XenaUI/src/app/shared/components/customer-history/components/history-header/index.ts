@@ -1,1 +1,1 @@
-export * from './history-header.component';
+export * from "./history-header.component";

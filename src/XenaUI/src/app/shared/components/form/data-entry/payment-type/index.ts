@@ -1,2 +1,2 @@
-export * from './payment-type.component';
-export * from './components';
+export * from "./payment-type.component";
+export * from "./components";

@@ -1,1 +1,1 @@
-export * from './age-filter.component';
+export * from "./age-filter.component";

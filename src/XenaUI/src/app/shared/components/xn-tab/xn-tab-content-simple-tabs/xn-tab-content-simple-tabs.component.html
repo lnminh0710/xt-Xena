@@ -1,33 +1,62 @@
 <div class="simple-tab-header-container">
-    <div class="simple-scroller simple-scroller-left"
-         (click)="scrollerLeftClick($event)">
+    <div
+        class="simple-scroller simple-scroller-left"
+        (click)="scrollerLeftClick($event)"
+    >
         <i class="fa fa-chevron-left" aria-hidden="true"></i>
     </div>
-    <div class="simple-scroller simple-scroller-right"
-         (click)="scrollerRightClick($event)">
+    <div
+        class="simple-scroller simple-scroller-right"
+        (click)="scrollerRightClick($event)"
+    >
         <i class="fa fa-chevron-right" aria-hidden="true"></i>
     </div>
     <div class="simple-tab-summary-wrapper">
         <ul class="nav nav-tabs simple-tab-summary-list">
             <ng-template ngFor let-simpleTab [ngForOf]="simpleTabs">
-                <li class="nav-item simple-tab-summary"
-                    [ngClass]="{'active': simpleTab.Active, 'disabled': simpleTab.Disabled}">
-                    <a [attr.data-toggle]="simpleTab.Disabled ? '' : 'tab'"
-                       href="#{{simpleTab.TabID}}"
-                       class="nav-link cursor-pointer"
-                       [ngClass]="{'active': simpleTab.Active, 'disabled': simpleTab.Disabled}"
-                       (click)="simpleTab.Disabled ? false : selectTab(simpleTab)">
+                <li
+                    class="nav-item simple-tab-summary"
+                    [ngClass]="{
+                        active: simpleTab.Active,
+                        disabled: simpleTab.Disabled
+                    }"
+                >
+                    <a
+                        [attr.data-toggle]="simpleTab.Disabled ? '' : 'tab'"
+                        href="#{{ simpleTab.TabID }}"
+                        class="nav-link cursor-pointer"
+                        [ngClass]="{
+                            active: simpleTab.Active,
+                            disabled: simpleTab.Disabled
+                        }"
+                        (click)="
+                            simpleTab.Disabled ? false : selectTab(simpleTab)
+                        "
+                    >
                         <div class="panel">
                             <div class="panel-heading">
-                                <span #tab class="margin-top--sm font-size-14px">
+                                <span
+                                    #tab
+                                    class="margin-top--sm font-size-14px"
+                                >
                                     <!-- <label-translation
                                         [keyword]="'Simple_Tab__' + simpleTab.TabName.replace(' ', '')"
                                         [defaultValue]="simpleTab.TabName"></label-translation> -->
-                                    {{simpleTab.TabName}}
+                                    {{ simpleTab.TabName }}
                                 </span>
-                                <control-messages [componentControl]="tab"
-                                                  [hotKeyValue]="hotKeySettingService.getHotKeyTab(simpleTab.TabID) | async"
-                                                  (onClickComponentControl)="simpleTab.Disabled ? false : selectTab(simpleTab)">
+                                <control-messages
+                                    [componentControl]="tab"
+                                    [hotKeyValue]="
+                                        hotKeySettingService.getHotKeyTab(
+                                            simpleTab.TabID
+                                        ) | async
+                                    "
+                                    (onClickComponentControl)="
+                                        simpleTab.Disabled
+                                            ? false
+                                            : selectTab(simpleTab)
+                                    "
+                                >
                                 </control-messages>
                             </div>
                         </div>
@@ -39,14 +68,21 @@
 </div>
 <div class="tab-content simple-tab-content-container">
     <ng-template ngFor let-simpleTab [ngForOf]="simpleTabs">
-        <div *ngIf="(!isSelectionProject && !config) || (isSelectionProject && simpleTab.Loaded && !config)"
-             id="{{simpleTab.TabID}}"
-             class="tab-pane"
-             [ngClass]="{'active': simpleTab.Active }">
-            <app-xn-tab-page-view #xnTabPageViewCtrl
-                                  [data]="simpleTab"
-                                  [tabID]="tabID"
-                                  [isActivated]="simpleTab.Active"></app-xn-tab-page-view>
+        <div
+            *ngIf="
+                (!isSelectionProject && !config) ||
+                (isSelectionProject && simpleTab.Loaded && !config)
+            "
+            id="{{ simpleTab.TabID }}"
+            class="tab-pane"
+            [ngClass]="{ active: simpleTab.Active }"
+        >
+            <app-xn-tab-page-view
+                #xnTabPageViewCtrl
+                [data]="simpleTab"
+                [tabID]="tabID"
+                [isActivated]="simpleTab.Active"
+            ></app-xn-tab-page-view>
         </div>
 
         <!-- <div *ngIf="config"

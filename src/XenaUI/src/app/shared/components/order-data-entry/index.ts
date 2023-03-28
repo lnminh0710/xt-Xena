@@ -1,2 +1,2 @@
-﻿export * from './order-data-entry-tab';
-export * from './order-data-entry-tab-plus';
+﻿export * from "./order-data-entry-tab";
+export * from "./order-data-entry-tab-plus";

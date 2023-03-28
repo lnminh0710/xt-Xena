@@ -1,16 +1,12 @@
-import { Injectable, Injector, Inject, forwardRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import isEmpty from 'lodash-es/isEmpty';
-import camelCase from 'lodash-es/camelCase';
-import cloneDeep from 'lodash-es/cloneDeep';
-import {
-    ParkedItemMenuModel,
-    ParkedItemModel,
-    Module
-} from 'app/models';
-import { Uti } from 'app/utilities';
-import { BaseService } from '../base.service';
-import { format } from 'date-fns/esm';
+import { Injectable, Injector, Inject, forwardRef } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import isEmpty from "lodash-es/isEmpty";
+import camelCase from "lodash-es/camelCase";
+import cloneDeep from "lodash-es/cloneDeep";
+import { ParkedItemMenuModel, ParkedItemModel, Module } from "app/models";
+import { Uti } from "app/utilities";
+import { BaseService } from "../base.service";
+import { format } from "date-fns/esm";
 
 export class ParkedItemListResult {
     public collectionParkedtems: ParkedItemModel[] = [];
@@ -34,14 +30,24 @@ export class ParkedItemService extends BaseService {
 
     getParkedItemMenu(currentModule: Module): Observable<any> {
         const moduleId = currentModule.idSettingsGUI.toString();
-        return this.get<any>(this.serUrl.serviceGetParkedItemMenuUrl, { module_name: moduleId }, null, null).map((result: any) => {
+        return this.get<any>(
+            this.serUrl.serviceGetParkedItemMenuUrl,
+            { module_name: moduleId },
+            null,
+            null
+        ).map((result: any) => {
             return result.item;
         });
     }
 
     getListParkedItemByModule(currentModule: Module): Observable<any> {
         const moduleId = currentModule.idSettingsGUI.toString();
-        return this.get<any>(this.serUrl.serviceGetListParkedItemByModuleUrl, { module_name: moduleId }, null, null).map((rs: any) => {
+        return this.get<any>(
+            this.serUrl.serviceGetListParkedItemByModuleUrl,
+            { module_name: moduleId },
+            null,
+            null
+        ).map((rs: any) => {
             const result: ParkedItemListResult = new ParkedItemListResult();
             result.module = currentModule;
 
@@ -53,11 +59,14 @@ export class ParkedItemService extends BaseService {
                     const parkedItem = new ParkedItemModel(item);
                     parkedItem.id = parkedItem[camelCase(rs.item.keyName)];
 
-                    const sysCreatedate = parkedItem.sysCreatedate || parkedItem.sysCreatedate;
+                    const sysCreatedate =
+                        parkedItem.sysCreatedate || parkedItem.sysCreatedate;
                     if (sysCreatedate && sysCreatedate.value) {
                         //const dateString = sysCreatedate.value[sysCreatedate.value.length - 1] === 'Z' ? sysCreatedate.value.substring(0, sysCreatedate.value.length - 1) : sysCreatedate.value;
                         //parkedItem.createDateValue = new Date(dateString);
-                        parkedItem.createDateValue = Uti.parseISODateToDate(sysCreatedate.value);
+                        parkedItem.createDateValue = Uti.parseISODateToDate(
+                            sysCreatedate.value
+                        );
                     }
 
                     result.collectionParkedtems.push(parkedItem);
@@ -73,10 +82,15 @@ export class ParkedItemService extends BaseService {
         const moduleId = currentModule.idSettingsGUI.toString();
         const param = {
             module_name: moduleId,
-            id: parkedItemId
-        }
+            id: parkedItemId,
+        };
 
-        return this.get<any>(this.serUrl.serviceGetParkedItemByIdUrl, param, null, null).map(rs => {
+        return this.get<any>(
+            this.serUrl.serviceGetParkedItemByIdUrl,
+            param,
+            null,
+            null
+        ).map((rs) => {
             if (isEmpty(rs.item)) {
                 return rs.item;
             }
@@ -96,15 +110,25 @@ export class ParkedItemService extends BaseService {
         });
     }
 
-    saveParkedMenuItem(parkedItemMenuList: ParkedItemMenuModel[], currentModule: Module): Observable<boolean> {
-        const moduleName = 'Parked ' + currentModule.moduleName;
-        return this.post<boolean>(this.serUrl.serviceSaveParkedMenuItemUrl, JSON.stringify(parkedItemMenuList), { module_name: moduleName }).map((result: any) => {
+    saveParkedMenuItem(
+        parkedItemMenuList: ParkedItemMenuModel[],
+        currentModule: Module
+    ): Observable<boolean> {
+        const moduleName = "Parked " + currentModule.moduleName;
+        return this.post<boolean>(
+            this.serUrl.serviceSaveParkedMenuItemUrl,
+            JSON.stringify(parkedItemMenuList),
+            { module_name: moduleName }
+        ).map((result: any) => {
             return result.item;
         });
     }
 
     saveParkedItemByModule(parkedItemObj): Observable<any> {
-        return this.post<any>(this.serUrl.serviceSaveParkedItemByModuleUrl, JSON.stringify(parkedItemObj)).map((result: any) => {
+        return this.post<any>(
+            this.serUrl.serviceSaveParkedItemByModuleUrl,
+            JSON.stringify(parkedItemObj)
+        ).map((result: any) => {
             return result.item;
         });
     }
@@ -112,14 +136,14 @@ export class ParkedItemService extends BaseService {
     public buildFieldConfig(menuItems: ParkedItemMenuModel[]) {
         const result = [];
         for (let i = 0; i < menuItems.length; i++) {
-            if (menuItems[i].fieldName === 'IdPerson') {
+            if (menuItems[i].fieldName === "IdPerson") {
                 menuItems[i].isChecked = true;
             }
 
             if (menuItems[i].isChecked) {
                 result.push({
                     fieldName: menuItems[i].fieldName,
-                    icon: menuItems[i].icon
+                    icon: menuItems[i].icon,
                 });
             }
         }
@@ -150,27 +174,26 @@ export class ParkedItemService extends BaseService {
     }
 
     buildParkedItemId(parkedItems: ParkedItemModel[]) {
-        let result = '';
+        let result = "";
 
         // remove new item
-        parkedItems = parkedItems.filter(item => {
+        parkedItems = parkedItems.filter((item) => {
             return item.isNew !== true;
-        })
+        });
 
         if (parkedItems.length === 1) {
-            if (parkedItems[0].id)
-                result = '(' + parkedItems[0].id.value + ')';
+            if (parkedItems[0].id) result = "(" + parkedItems[0].id.value + ")";
         } else {
             for (let i = 0, length = parkedItems.length; i < length; i++) {
                 const parkedItem = parkedItems[i];
                 if (!parkedItem.id) continue;
 
                 if (i === 0) {
-                    result = result + '(' + parkedItem.id.value;
+                    result = result + "(" + parkedItem.id.value;
                 } else if (i === parkedItems.length - 1) {
-                    result = result + ',' + parkedItem.id.value + ')';
+                    result = result + "," + parkedItem.id.value + ")";
                 } else {
-                    result = result + ',' + parkedItem.id.value;
+                    result = result + "," + parkedItem.id.value;
                 }
             }
         }
@@ -196,15 +219,18 @@ export class ParkedItemService extends BaseService {
 
     public buildTooltipPlacement(fieldName) {
         if (fieldName.length >= 10) {
-            return 'right';
+            return "right";
         }
 
-        return 'top';
+        return "top";
     }
 
     public getFieldIndex(fieldName, data) {
         for (let i = 0; i < data.length; i++) {
-            if (data[i].fieldName && data[i].fieldName.toLowerCase() === fieldName.toLowerCase()) {
+            if (
+                data[i].fieldName &&
+                data[i].fieldName.toLowerCase() === fieldName.toLowerCase()
+            ) {
                 return i;
             }
         }
@@ -216,19 +242,22 @@ export class ParkedItemService extends BaseService {
             return {
                 fieldName: parkedItem[fieldName].displayValue,
                 fieldValue: parkedItem[fieldName].value,
-                icon: 'fa-file-o',
-                tooltipPlacement: this.buildTooltipPlacement(fieldName)
+                icon: "fa-file-o",
+                tooltipPlacement: this.buildTooltipPlacement(fieldName),
             };
-        };
+        }
 
         for (let i = 0; i < configArray.length; i++) {
-            if (Uti.toLowerCase(configArray[i].fieldName) === Uti.toLowerCase(fieldName) &&
-                Uti.toLowerCase(fieldName) !== 'idperson') {
+            if (
+                Uti.toLowerCase(configArray[i].fieldName) ===
+                    Uti.toLowerCase(fieldName) &&
+                Uti.toLowerCase(fieldName) !== "idperson"
+            ) {
                 return {
                     fieldName: parkedItem[fieldName].displayValue,
                     fieldValue: parkedItem[fieldName].value,
                     icon: configArray[i].icon,
-                    tooltipPlacement: this.buildTooltipPlacement(fieldName)
+                    tooltipPlacement: this.buildTooltipPlacement(fieldName),
                 };
             }
         }
@@ -236,7 +265,10 @@ export class ParkedItemService extends BaseService {
     }
 
     public moveHeaderToTop(headerFieldName, parkedItemFields) {
-        const headerIndex = this.getFieldIndex(headerFieldName, parkedItemFields);
+        const headerIndex = this.getFieldIndex(
+            headerFieldName,
+            parkedItemFields
+        );
         if (headerIndex > -1) {
             const headerItem = parkedItemFields[headerIndex];
             parkedItemFields.splice(headerIndex, 1);
@@ -244,15 +276,31 @@ export class ParkedItemService extends BaseService {
         }
     }
 
-    public isUpdateInfoKeyEqualCurrentParkedItem(parkedItem, widgetDataUpdatedState) {
-        if (!parkedItem || !widgetDataUpdatedState)
-            return;
+    public isUpdateInfoKeyEqualCurrentParkedItem(
+        parkedItem,
+        widgetDataUpdatedState
+    ) {
+        if (!parkedItem || !widgetDataUpdatedState) return;
         for (const keyName of Object.keys(parkedItem)) {
-            const keyRequest = Object.keys(widgetDataUpdatedState.widgetDetail.widgetDataType.listenKeyRequest)[0];
-            const idRequest = widgetDataUpdatedState.widgetDetail.widgetDataType.listenKeyRequest[Object.keys(widgetDataUpdatedState.widgetDetail.widgetDataType.listenKeyRequest)[0]];
-            if (typeof parkedItem[keyName] === 'object' && parkedItem[keyName]
-                && parkedItem[keyName].originalComlumnName && parkedItem[keyName].originalComlumnName === keyRequest
-                && parkedItem[keyName].value === idRequest) {
+            const keyRequest = Object.keys(
+                widgetDataUpdatedState.widgetDetail.widgetDataType
+                    .listenKeyRequest
+            )[0];
+            const idRequest =
+                widgetDataUpdatedState.widgetDetail.widgetDataType
+                    .listenKeyRequest[
+                    Object.keys(
+                        widgetDataUpdatedState.widgetDetail.widgetDataType
+                            .listenKeyRequest
+                    )[0]
+                ];
+            if (
+                typeof parkedItem[keyName] === "object" &&
+                parkedItem[keyName] &&
+                parkedItem[keyName].originalComlumnName &&
+                parkedItem[keyName].originalComlumnName === keyRequest &&
+                parkedItem[keyName].value === idRequest
+            ) {
                 return true;
             }
         }
@@ -261,22 +309,45 @@ export class ParkedItemService extends BaseService {
     }
 
     public mergeUpdateInfoData(parkedItem, widgetDataUpdatedState) {
-        for (const updateInfoKeyName of Object.keys(widgetDataUpdatedState.updateInfo)) {
+        for (const updateInfoKeyName of Object.keys(
+            widgetDataUpdatedState.updateInfo
+        )) {
             for (const keyName of Object.keys(parkedItem)) {
-                if (typeof parkedItem[keyName] === 'object'
-                    && parkedItem[keyName]
-                    && parkedItem[keyName].originalComlumnName
-                    && updateInfoKeyName.substring(updateInfoKeyName.indexOf('_') + 1).toLowerCase() === parkedItem[keyName].originalComlumnName.toLowerCase()) {
-
-                    const keyRequest = Object.keys(widgetDataUpdatedState.widgetDetail.widgetDataType.listenKeyRequest)[0];
-                    if (parkedItem[keyName].originalComlumnName === keyRequest) {
+                if (
+                    typeof parkedItem[keyName] === "object" &&
+                    parkedItem[keyName] &&
+                    parkedItem[keyName].originalComlumnName &&
+                    updateInfoKeyName
+                        .substring(updateInfoKeyName.indexOf("_") + 1)
+                        .toLowerCase() ===
+                        parkedItem[keyName].originalComlumnName.toLowerCase()
+                ) {
+                    const keyRequest = Object.keys(
+                        widgetDataUpdatedState.widgetDetail.widgetDataType
+                            .listenKeyRequest
+                    )[0];
+                    if (
+                        parkedItem[keyName].originalComlumnName === keyRequest
+                    ) {
                         continue;
                     }
 
-                    if (this.isTypeOfDate(widgetDataUpdatedState.updateInfo[updateInfoKeyName])) {
-                        parkedItem[keyName].value = this.uti.formatLocale(widgetDataUpdatedState.updateInfo[updateInfoKeyName], 'dd.MM.yyyy');
+                    if (
+                        this.isTypeOfDate(
+                            widgetDataUpdatedState.updateInfo[updateInfoKeyName]
+                        )
+                    ) {
+                        parkedItem[keyName].value = this.uti.formatLocale(
+                            widgetDataUpdatedState.updateInfo[
+                                updateInfoKeyName
+                            ],
+                            "dd.MM.yyyy"
+                        );
                     } else {
-                        parkedItem[keyName].value = widgetDataUpdatedState.updateInfo[updateInfoKeyName];
+                        parkedItem[keyName].value =
+                            widgetDataUpdatedState.updateInfo[
+                                updateInfoKeyName
+                            ];
                     }
                 }
             }
@@ -309,7 +380,7 @@ export class ParkedItemService extends BaseService {
 
         let idx = -1;
         for (let i = 0; i < parkedItems.length; i++) {
-            if (typeof parkedItems[i][idFieldName] !== 'object') {
+            if (typeof parkedItems[i][idFieldName] !== "object") {
                 idx = i;
             }
         }
@@ -317,7 +388,7 @@ export class ParkedItemService extends BaseService {
         if (idx !== -1) {
             return {
                 dropItem: cloneDeep(parkedItems[idx]),
-                dropItemIndex: idx
+                dropItemIndex: idx,
             };
         }
 
@@ -340,6 +411,6 @@ export class ParkedItemService extends BaseService {
     }
 
     private isTypeOfDate(value) {
-        return typeof value === 'object' && value instanceof Date;
+        return typeof value === "object" && value instanceof Date;
     }
 }

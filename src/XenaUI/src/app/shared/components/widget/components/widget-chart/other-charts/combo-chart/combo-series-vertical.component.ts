@@ -4,60 +4,56 @@ import {
     Output,
     EventEmitter,
     OnChanges,
-    ChangeDetectionStrategy
-} from '@angular/core';
-import {
-    trigger,
-    style,
-    animate,
-    transition
-} from '@angular/animations';
+    ChangeDetectionStrategy,
+} from "@angular/core";
+import { trigger, style, animate, transition } from "@angular/animations";
 import { formatLabel } from "@swimlane/ngx-charts";
 
 @Component({
-    selector: 'g[ngx-combo-charts-series-vertical]',
+    selector: "g[ngx-combo-charts-series-vertical]",
     template: `
-    <svg:g ngx-charts-bar *ngFor="let bar of bars; trackBy: trackBy"
-      [@animationState]="'active'"
-      [width]="bar.width"
-      [height]="bar.height"
-      [x]="bar.x"
-      [y]="bar.y"
-      [fill]="bar.color"
-      [stops]="bar.gradientStops"
-      [data]="bar.data"
-      [orientation]="'vertical'"
-      [roundEdges]="bar.roundEdges"
-      [gradient]="gradient"
-      [isActive]="isActive(bar.data)"
-      [animations]="animations"
-      (select)="onClick($event)"
-      (activate)="activate.emit($event)"
-      (deactivate)="deactivate.emit($event)"
-      ngx-tooltip
-      [tooltipDisabled]="tooltipDisabled"
-      [tooltipPlacement]="'top'"
-      [tooltipType]="'tooltip'"
-      [tooltipTitle]="bar.tooltipText">
-    </svg:g>
-  `,
+        <svg:g
+            ngx-charts-bar
+            *ngFor="let bar of bars; trackBy: trackBy"
+            [@animationState]="'active'"
+            [width]="bar.width"
+            [height]="bar.height"
+            [x]="bar.x"
+            [y]="bar.y"
+            [fill]="bar.color"
+            [stops]="bar.gradientStops"
+            [data]="bar.data"
+            [orientation]="'vertical'"
+            [roundEdges]="bar.roundEdges"
+            [gradient]="gradient"
+            [isActive]="isActive(bar.data)"
+            [animations]="animations"
+            (select)="onClick($event)"
+            (activate)="activate.emit($event)"
+            (deactivate)="deactivate.emit($event)"
+            ngx-tooltip
+            [tooltipDisabled]="tooltipDisabled"
+            [tooltipPlacement]="'top'"
+            [tooltipType]="'tooltip'"
+            [tooltipTitle]="bar.tooltipText"
+        ></svg:g>
+    `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
-        trigger('animationState', [
-            transition('* => void', [
+        trigger("animationState", [
+            transition("* => void", [
                 style({
                     opacity: 1,
-                    transform: '*',
+                    transform: "*",
                 }),
-                animate(500, style({ opacity: 0, transform: 'scale(0)' }))
-            ])
-        ])
-    ]
+                animate(500, style({ opacity: 0, transform: "scale(0)" })),
+            ]),
+        ]),
+    ],
 })
 export class ComboSeriesVerticalComponent implements OnChanges {
-
     @Input() dims;
-    @Input() type = 'standard';
+    @Input() type = "standard";
     @Input() series;
     @Input() seriesLine;
     @Input() xScale;
@@ -90,16 +86,17 @@ export class ComboSeriesVerticalComponent implements OnChanges {
 
         let d0 = 0;
         let total;
-        if (this.type === 'normalized') {
-            total = this.series.map(d => d.value).reduce((sum, d) => sum + d, 0);
+        if (this.type === "normalized") {
+            total = this.series
+                .map((d) => d.value)
+                .reduce((sum, d) => sum + d, 0);
         }
 
         this.bars = this.series.map((d, index) => {
-
             let value = d.value;
             const label = d.name;
             const formattedLabel = formatLabel(label);
-            const roundEdges = this.type === 'standard';
+            const roundEdges = this.type === "standard";
 
             const bar: any = {
                 value,
@@ -110,10 +107,10 @@ export class ComboSeriesVerticalComponent implements OnChanges {
                 formattedLabel,
                 height: 0,
                 x: 0,
-                y: 0
+                y: 0,
             };
 
-            if (this.type === 'standard') {
+            if (this.type === "standard") {
                 bar.height = Math.abs(this.yScale(value) - this.yScale(0));
                 bar.x = this.xScale(label);
 
@@ -122,7 +119,7 @@ export class ComboSeriesVerticalComponent implements OnChanges {
                 } else {
                     bar.y = this.yScale(value);
                 }
-            } else if (this.type === 'stacked') {
+            } else if (this.type === "stacked") {
                 const offset0 = d0;
                 const offset1 = offset0 + value;
                 d0 += value;
@@ -132,7 +129,7 @@ export class ComboSeriesVerticalComponent implements OnChanges {
                 bar.y = this.yScale(offset1);
                 bar.offset0 = offset0;
                 bar.offset1 = offset1;
-            } else if (this.type === 'normalized') {
+            } else if (this.type === "normalized") {
                 let offset0 = d0;
                 let offset1 = offset0 + value;
                 d0 += value;
@@ -150,18 +147,22 @@ export class ComboSeriesVerticalComponent implements OnChanges {
                 bar.y = this.yScale(offset1);
                 bar.offset0 = offset0;
                 bar.offset1 = offset1;
-                value = (offset1 - offset0).toFixed(2) + '%';
+                value = (offset1 - offset0).toFixed(2) + "%";
             }
 
-            if (this.colors.scaleType === 'ordinal') {
+            if (this.colors.scaleType === "ordinal") {
                 bar.color = this.colors.getColor(label);
             } else {
-                if (this.type === 'standard') {
+                if (this.type === "standard") {
                     bar.color = this.colors.getColor(value);
-                    bar.gradientStops = this.colors.getLinearGradientStops(value);
+                    bar.gradientStops =
+                        this.colors.getLinearGradientStops(value);
                 } else {
                     bar.color = this.colors.getColor(bar.offset1);
-                    bar.gradientStops = this.colors.getLinearGradientStops(bar.offset1, bar.offset0);
+                    bar.gradientStops = this.colors.getLinearGradientStops(
+                        bar.offset1,
+                        bar.offset0
+                    );
                 }
             }
 
@@ -172,9 +173,13 @@ export class ComboSeriesVerticalComponent implements OnChanges {
 
             this.getSeriesTooltips(this.seriesLine, index);
             if (this.seriesLine && this.seriesLine.length) {
-                const lineValue = this.seriesLine[0].series[index] ? this.seriesLine[0].series[index].value : '';
-                const valueLocale = value ? value.toLocaleString() : '';
-                const lineValueLocale = lineValue ? lineValue.toLocaleString() : '';
+                const lineValue = this.seriesLine[0].series[index]
+                    ? this.seriesLine[0].series[index].value
+                    : "";
+                const valueLocale = value ? value.toLocaleString() : "";
+                const lineValueLocale = lineValue
+                    ? lineValue.toLocaleString()
+                    : "";
                 bar.tooltipText = `
                     <span class="tooltip-label">${tooltipLabel}</span>
                     <span class="tooltip-val"> Y1 - ${valueLocale} • Y2 - ${lineValueLocale}%</span>
@@ -185,13 +190,13 @@ export class ComboSeriesVerticalComponent implements OnChanges {
         });
     }
     getSeriesTooltips(seriesLine, index) {
-        return seriesLine.map(d => {
+        return seriesLine.map((d) => {
             return d.series[index];
         });
     }
     isActive(entry): boolean {
         if (!this.activeEntries) return false;
-        const item = this.activeEntries.find(d => {
+        const item = this.activeEntries.find((d) => {
             return entry.name === d.name && entry.series === d.series;
         });
         return item !== undefined;
@@ -204,5 +209,4 @@ export class ComboSeriesVerticalComponent implements OnChanges {
     trackBy(index, bar): string {
         return bar.label;
     }
-
 }

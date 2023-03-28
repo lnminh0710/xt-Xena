@@ -3,7 +3,7 @@
 }
 
 .panel {
-    border-color: #0F5E8C;
+    border-color: #0f5e8c;
     border-width: 2px;
 
     &.disabled {
@@ -42,7 +42,7 @@
 
     .project-system--img--in-header {
         position: absolute;
-        transform: translateX(40%)translateY(-165%);
+        transform: translateX(40%) translateY(-165%);
         font-size: 24px;
         color: #e50069;
     }
@@ -57,7 +57,7 @@
             }
 
             &.green-text {
-                color: #2E7D32;
+                color: #2e7d32;
             }
         }
 

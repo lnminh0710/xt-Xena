@@ -1,1 +1,1 @@
-export * from './xn-credit-card.component'
+export * from "./xn-credit-card.component";

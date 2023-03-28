@@ -1,10 +1,16 @@
-import * as wjcChartFinance from 'wijmo/wijmo.chart.finance';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector } from '@angular/core';
-import { OnInit, OnDestroy } from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcChartFinance from "wijmo/wijmo.chart.finance";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import { ElementRef, Injector } from "@angular/core";
+import { OnInit, OnDestroy } from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjFinancialChartMeta: IWjComponentMeta;
-export declare class WjFinancialChart extends wjcChartFinance.FinancialChart implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFinancialChart
+    extends wjcChartFinance.FinancialChart
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -23,12 +29,20 @@ export declare class WjFinancialChart extends wjcChartFinance.FinancialChart imp
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
     tooltipContent: any;
     labelContent: any;
 }
 export declare var wjFinancialChartSeriesMeta: IWjComponentMeta;
-export declare class WjFinancialChartSeries extends wjcChartFinance.FinancialSeries implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFinancialChartSeries
+    extends wjcChartFinance.FinancialSeries
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -44,5 +58,4 @@ export declare class WjFinancialChartSeries extends wjcChartFinance.FinancialSer
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
 }
-export declare class WjChartFinanceModule {
-}
+export declare class WjChartFinanceModule {}

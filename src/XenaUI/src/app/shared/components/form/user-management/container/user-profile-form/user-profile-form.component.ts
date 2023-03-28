@@ -1,25 +1,40 @@
 import {
-    Component, Input, Output, EventEmitter,
-    OnInit, OnDestroy, ChangeDetectorRef,
-    ViewChildren, QueryList, Injector, ViewChild
-} from '@angular/core';
-import { Validators, FormControl } from '@angular/forms';
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    ChangeDetectorRef,
+    ViewChildren,
+    QueryList,
+    Injector,
+    ViewChild,
+} from "@angular/core";
+import { Validators, FormControl } from "@angular/forms";
 import {
     UpdatePasswordResultMessageEnum,
-    ComboBoxTypeConstant
-} from 'app/app.constants';
-import { Uti, CustomValidators, LocalStorageProvider, SessionStorageProvider, LocalStorageHelper } from 'app/utilities';
-import isNil from 'lodash-es/isNil';
+    ComboBoxTypeConstant,
+} from "app/app.constants";
+import {
+    Uti,
+    CustomValidators,
+    LocalStorageProvider,
+    SessionStorageProvider,
+    LocalStorageHelper,
+} from "app/utilities";
+import isNil from "lodash-es/isNil";
 import {
     ControlGridModel,
     FormOutputModel,
     ApiResultResponse,
     LanguageSettingModel,
-    User, MessageModel
-} from 'app/models';
-import { UserManagementFormBase } from '../um-form-base';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { Router } from '@angular/router';
+    User,
+    MessageModel,
+} from "app/models";
+import { UserManagementFormBase } from "../um-form-base";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { Router } from "@angular/router";
 import {
     UserProfileService,
     ValidationService,
@@ -27,39 +42,46 @@ import {
     AuthenticationService,
     UserService,
     CommonService,
-    ModalService
-} from 'app/services';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { ControlMessageComponent } from 'app/shared/components/form';
-import * as widgetContentReducer from 'app/state-management/store/reducer/widget-content-detail';
-import { UploadFileMode, MessageModal, LocalSettingKey } from 'app/app.constants';
+    ModalService,
+} from "app/services";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { ControlMessageComponent } from "app/shared/components/form";
+import * as widgetContentReducer from "app/state-management/store/reducer/widget-content-detail";
+import {
+    UploadFileMode,
+    MessageModal,
+    LocalSettingKey,
+} from "app/app.constants";
 import {
     ProcessDataActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { ColHeaderKey } from 'app/shared/components/xn-control/xn-ag-grid/shared/ag-grid-constant';
+    CustomAction,
+} from "app/state-management/store/actions";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import { ColHeaderKey } from "app/shared/components/xn-control/xn-ag-grid/shared/ag-grid-constant";
 
 @Component({
-    selector: 'um-user-profile-form',
-    styleUrls: ['./user-profile-form.component.scss'],
-    templateUrl: './user-profile-form.component.html'
+    selector: "um-user-profile-form",
+    styleUrls: ["./user-profile-form.component.scss"],
+    templateUrl: "./user-profile-form.component.html",
 })
-export class UserProfileFormComponent extends UserManagementFormBase implements OnInit, OnDestroy {
+export class UserProfileFormComponent
+    extends UserManagementFormBase
+    implements OnInit, OnDestroy
+{
     public dontShowCalendarWhenFocus: boolean;
     public passwordIsMatched: boolean = true;
     public passwordIsCorrect: boolean = true;
     public oldPasswordIsWrong: boolean = false;
     public roleDatasource: ControlGridModel = new ControlGridModel();
-    public userProfileCss: string = '';
-    public avatarCss: string = '';
+    public userProfileCss: string = "";
+    public avatarCss: string = "";
     public fileData: any = {};
-    public uploadMessage: string = '';
-    public loginPictureUrl: string = '';
+    public uploadMessage: string = "";
+    public loginPictureUrl: string = "";
     public imageLoaded: boolean = false;
     public isSearchingUserName: boolean = false;
     public languages: Array<any> = [];
@@ -67,7 +89,7 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     public globalProps: any[] = [];
     private pictureDirty: boolean = false;
     private roleDirty: boolean = false;
-    private loginPicture: string = '';
+    private loginPicture: string = "";
     private userId: any;
     private userCached: any = {};
     private userRoleCached: Array<any> = [];
@@ -78,10 +100,13 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     private isChangeLanguage: boolean;
     private normalUserRoleID = 2;
 
-    @ViewChildren('controlMessagePassword') private controlMessagePasswords: QueryList<ControlMessageComponent>;
+    @ViewChildren("controlMessagePassword")
+    private controlMessagePasswords: QueryList<ControlMessageComponent>;
 
     private xnAgGridComponent: XnAgGridComponent;
-    @ViewChild(XnAgGridComponent) set xnAgGridComponentInstance(xnAgGridComponentInstance: XnAgGridComponent) {
+    @ViewChild(XnAgGridComponent) set xnAgGridComponentInstance(
+        xnAgGridComponentInstance: XnAgGridComponent
+    ) {
         this.xnAgGridComponent = xnAgGridComponentInstance;
     }
 
@@ -94,8 +119,14 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     }
     @Input() set globalProperties(globalProperties: any[]) {
         this.globalProps = globalProperties;
-        this.globalDateFormat = this.propertyPanelService.buildGlobalInputDateFormatFromProperties(globalProperties);
-        this.dontShowCalendarWhenFocus = this.propertyPanelService.getValueDropdownFromGlobalProperties(globalProperties);
+        this.globalDateFormat =
+            this.propertyPanelService.buildGlobalInputDateFormatFromProperties(
+                globalProperties
+            );
+        this.dontShowCalendarWhenFocus =
+            this.propertyPanelService.getValueDropdownFromGlobalProperties(
+                globalProperties
+            );
     }
 
     @Output() outputData: EventEmitter<any> = new EventEmitter();
@@ -117,15 +148,28 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
         protected injector: Injector
     ) {
         super(injector, router);
-        this.formEditModeState = this.store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditMode);
-        this.rowsDataState = this.store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).rowsData);
+        this.formEditModeState = this.store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditMode
+        );
+        this.rowsDataState = this.store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).rowsData
+        );
     }
 
     public ngOnInit() {
         this.getCurrentUser();
         this.getMainLanguages();
         this.subscription();
-        this.updateUserProfileAfterUpload = this.updateUserProfileAfterUpload.bind(this);
+        this.updateUserProfileAfterUpload =
+            this.updateUserProfileAfterUpload.bind(this);
     }
 
     public ngOnDestroy() {
@@ -133,8 +177,16 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     }
 
     public ngAfterViewInit() {
-        this.userProfileCss = this.useInDropdown ? 'col-xs-12' : (this.isUserEditting ? 'col-xs-12  col-md-9' : 'col-xs-12  col-md-6');
-        this.avatarCss = this.useInDropdown ? '' : (this.isUserEditting ? 'col-xs-12  col-md-3' : 'col-xs-12  col-md-2');
+        this.userProfileCss = this.useInDropdown
+            ? "col-xs-12"
+            : this.isUserEditting
+            ? "col-xs-12  col-md-9"
+            : "col-xs-12  col-md-6";
+        this.avatarCss = this.useInDropdown
+            ? ""
+            : this.isUserEditting
+            ? "col-xs-12  col-md-3"
+            : "col-xs-12  col-md-2";
         this.createForm();
         this.buildDataForRole();
         this.ref.detectChanges();
@@ -155,10 +207,14 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
      * getMainLanguages
      */
     private getMainLanguages() {
-        this.commonService.getListComboBox('' + ComboBoxTypeConstant.language)
+        this.commonService
+            .getListComboBox("" + ComboBoxTypeConstant.language)
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.language) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.language
+                    ) {
                         return;
                     }
                     this.languages = response.item.language;
@@ -182,13 +238,15 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
 
     public onRoleChanged(e) {
         if (!this.userId) {
-            this.setValueForOutputModel(new FormOutputModel({
-                submitResult: null,
-                formValue: this.formGroup.value,
-                isValid: this.formGroup.valid,
-                isDirty: true,
-                returnID: null
-            }));
+            this.setValueForOutputModel(
+                new FormOutputModel({
+                    submitResult: null,
+                    formValue: this.formGroup.value,
+                    isValid: this.formGroup.valid,
+                    isDirty: true,
+                    returnID: null,
+                })
+            );
             return;
         }
         if (e && (e.itemData || !isNil(e.length))) {
@@ -196,9 +254,13 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
 
             if (userLogin.id == this.userId && !this.roleDirty) {
                 this.modalService.warningMessageHtmlContent({
-                    headerText: 'Change User Role',
+                    headerText: "Change User Role",
                     messageType: MessageModal.MessageType.error,
-                    message: [{key: 'Modal_Message__You_Are_Updating_Role_Of_Current_Logged_In_User'}],
+                    message: [
+                        {
+                            key: "Modal_Message__You_Are_Updating_Role_Of_Current_Logged_In_User",
+                        },
+                    ],
                     buttonType1: MessageModal.ButtonType.danger,
                     callBack: () => {
                         this.roleDirty = true;
@@ -207,10 +269,10 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
                             formValue: this.formGroup.value,
                             isValid: this.formGroup.valid,
                             isDirty: true,
-                            returnID: null
+                            returnID: null,
                         });
                     },
-                    showCloseButton: false
+                    showCloseButton: false,
                 });
             }
         }
@@ -221,12 +283,12 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
             formValue: this.formGroup.value,
             isValid: this.formGroup.valid,
             isDirty: true,
-            returnID: null
+            returnID: null,
         });
     }
 
     public submit() {
-        this.formGroup['submitted'] = true;
+        this.formGroup["submitted"] = true;
         try {
             if (!this.isValid() || !this.isDirty()) {
                 this.setFormOutputData(false);
@@ -235,7 +297,11 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
 
             if (this.noRequiredRole()) {
                 this.setFormOutputData(false);
-                this.toasterService.pop('warning', 'Warning', 'Normal User role must be selected');
+                this.toasterService.pop(
+                    "warning",
+                    "Warning",
+                    "Normal User role must be selected"
+                );
                 return;
             }
 
@@ -257,34 +323,34 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
             FullName: value.fullName,
             DateOfBirth: Uti.parseToRightDate(value.dateOfBirth),
             Email: value.email,
-            IdRepLanguage: value.idRepLanguage
+            IdRepLanguage: value.idRepLanguage,
         };
         if (this.loginPicture) {
-            result['LoginPicture'] = this.loginPicture;
+            result["LoginPicture"] = this.loginPicture;
         }
         if (this.hasPasswordUpdate) {
-            result['Password'] = value.cipher;
+            result["Password"] = value.cipher;
         } else if (!this.formEditMode && !this.isUserEditting) {
             // In adding case we will generate the password and send this password for user through email
-            result['Password'] = Uti.randomPassword(8);
+            result["Password"] = Uti.randomPassword(8);
         }
         if (!this.isUserEditting) {
-            result['ValidFrom'] = Uti.parseToRightDate(value.validFrom);
-            result['ValidTo'] = Uti.parseToRightDate(value.validTo);
+            result["ValidFrom"] = Uti.parseToRightDate(value.validFrom);
+            result["ValidTo"] = Uti.parseToRightDate(value.validTo);
         }
         if (this.formEditMode || this.isUserEditting) {
-            result['IdPerson'] = this.userId;
+            result["IdPerson"] = this.userId;
         }
         return {
             UserProfile: result,
-            UserRoles: userRoles
+            UserRoles: userRoles,
         };
     }
 
     public onPasswordFocus(control) {
         setTimeout(() => {
             let ctr = $(control.target);
-            ctr.attr('type', 'password');
+            ctr.attr("type", "password");
         }, 500);
     }
 
@@ -299,12 +365,16 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
         let path = this.consts.passwordPath;
         if (!formValue.cipher || !formValue.reCipher) {
             this.passwordIsCorrect = true;
+        } else {
+            this.passwordIsCorrect =
+                path.test(formValue.cipher) && path.test(formValue.reCipher);
         }
-        else {
-            this.passwordIsCorrect = path.test(formValue.cipher) && path.test(formValue.reCipher);
-        }
-        this.passwordIsMatched = !formValue.cipher || !formValue.reCipher || (formValue.cipher == formValue.reCipher);
-        this.hasPasswordUpdate = (formValue.currentCipher || formValue.cipher || formValue.reCipher);
+        this.passwordIsMatched =
+            !formValue.cipher ||
+            !formValue.reCipher ||
+            formValue.cipher == formValue.reCipher;
+        this.hasPasswordUpdate =
+            formValue.currentCipher || formValue.cipher || formValue.reCipher;
         this.oldPasswordIsWrong = false;
         this.updatePasswordFormField();
     }
@@ -318,13 +388,18 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
      */
 
     private subscribeRequestSaveState() {
-        this.dispatcherSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.submit();
+        this.dispatcherSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.submit();
+                });
             });
-        });
     }
 
     private createForm() {
@@ -334,8 +409,8 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
         } else {
             // Init form when new mode
             this.initForm(this.createNewFormGroup(), true);
-            this.formGroup.controls['cipher'].disable();
-            this.formGroup.controls['reCipher'].disable();
+            this.formGroup.controls["cipher"].disable();
+            this.formGroup.controls["reCipher"].disable();
             this.isRenderForm = true;
             this.registerAvatarChangeEvent();
         }
@@ -343,31 +418,43 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
 
     private createNewFormGroup(): any {
         return {
-            loginWithName: ['', CustomValidators.required, this.validateLoginWithName.bind(this)],
-            nickName: '',
-            firstName: ['', CustomValidators.required],
-            lastName: ['', CustomValidators.required],
-            fullName: ['', CustomValidators.required],
-            dateOfBirth: '',
-            email: ['', Validators.compose([Validators.required, Validators.email])],
-            validFrom: '',
-            validTo: '',
-            cipher: '',
-            reCipher: '',
-            idRepLanguage: ['', Validators.required]
+            loginWithName: [
+                "",
+                CustomValidators.required,
+                this.validateLoginWithName.bind(this),
+            ],
+            nickName: "",
+            firstName: ["", CustomValidators.required],
+            lastName: ["", CustomValidators.required],
+            fullName: ["", CustomValidators.required],
+            dateOfBirth: "",
+            email: [
+                "",
+                Validators.compose([Validators.required, Validators.email]),
+            ],
+            validFrom: "",
+            validTo: "",
+            cipher: "",
+            reCipher: "",
+            idRepLanguage: ["", Validators.required],
         };
     }
 
     private validateLoginWithName(control: FormControl): any {
-        if (this.userCached.IdLogin && control.value === this.userCached.LoginWithName) {
+        if (
+            this.userCached.IdLogin &&
+            control.value === this.userCached.LoginWithName
+        ) {
             return Observable.of(null);
         }
         this.isSearchingUserName = true;
         this.ref.markForCheck();
-        return this.userProfileService.checkExistUserByField('LoginWithName', control.value).finally(() => {
-            this.isSearchingUserName = false;
-            this.ref.markForCheck();
-        });
+        return this.userProfileService
+            .checkExistUserByField("LoginWithName", control.value)
+            .finally(() => {
+                this.isSearchingUserName = false;
+                this.ref.markForCheck();
+            });
     }
 
     private noRequiredRole() {
@@ -375,7 +462,9 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
             return true;
         }
 
-        let normalUserRole = this.roleDatasource.data.find(x => x.RoleName === 'Normal User');
+        let normalUserRole = this.roleDatasource.data.find(
+            (x) => x.RoleName === "Normal User"
+        );
         if (!normalUserRole || !normalUserRole.selectAll) {
             return true;
         }
@@ -384,14 +473,20 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     }
 
     private getUserProfile() {
-        this.userProfileService.getUserById(this.userId)
-            .subscribe(
-                data => this.getUserProfileSuccess(data.item),
-                error => this.serviceError(error));
+        this.userProfileService.getUserById(this.userId).subscribe(
+            (data) => this.getUserProfileSuccess(data.item),
+            (error) => this.serviceError(error)
+        );
     }
 
     private getUserProfileSuccess(response: any) {
-        if (!response || !response.data || !response.data.length || response.data.length < 2) return;
+        if (
+            !response ||
+            !response.data ||
+            !response.data.length ||
+            response.data.length < 2
+        )
+            return;
         let formData = this.buildFormDataFromWidgetData(response.data[1]);
         this.userCached = formData;
         if (!formData || !formData.LoginName) return;
@@ -408,18 +503,25 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
         let validTo: any = Uti.parseDateFromDB(formData.ValidTo);
         // Init form when edit mode
         let formGroup = {
-            loginWithName: [formData.LoginName, CustomValidators.required, this.validateLoginWithName.bind(this)],
+            loginWithName: [
+                formData.LoginName,
+                CustomValidators.required,
+                this.validateLoginWithName.bind(this),
+            ],
             nickName: formData.NickName,
             firstName: [formData.FirstName, CustomValidators.required],
             lastName: [formData.LastName, CustomValidators.required],
             fullName: [formData.FullName, CustomValidators.required],
-            dateOfBirth: dateOfBirth || '',
-            email: [formData.Email, Validators.compose([Validators.required, Validators.email])],
-            validFrom: validFrom || '',
-            validTo: validTo || '',
-            cipher: '',
-            reCipher: '',
-            idRepLanguage: [formData.IdRepLanguage, Validators.required]
+            dateOfBirth: dateOfBirth || "",
+            email: [
+                formData.Email,
+                Validators.compose([Validators.required, Validators.email]),
+            ],
+            validFrom: validFrom || "",
+            validTo: validTo || "",
+            cipher: "",
+            reCipher: "",
+            idRepLanguage: [formData.IdRepLanguage, Validators.required],
             // idRepLanguage: [this.currentUser.preferredLang, Validators.required]
         };
 
@@ -431,10 +533,13 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
             if (formData.IdLogin == userInfo.id && userInfo.loginPicture)
                 loginPicture = userInfo.loginPicture;
         }
-        this.loginPictureUrl = Uti.getFileUrl(loginPicture, UploadFileMode.Profile);
+        this.loginPictureUrl = Uti.getFileUrl(
+            loginPicture,
+            UploadFileMode.Profile
+        );
 
         if (this.isUserEditting) {
-            formGroup['currentCipher'] = '';
+            formGroup["currentCipher"] = "";
         }
         return formGroup;
     }
@@ -443,42 +548,55 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
         if (!widgetData.length) return {};
         let result = {};
         for (let item of widgetData) {
-            result[item.ColumnName] = item.Value
+            result[item.ColumnName] = item.Value;
         }
         return result;
     }
 
     private subscription() {
-        this.formEditModeStateSubscription = this.formEditModeState.subscribe((formEditModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.formEditMode = formEditModeState;
-            });
-        });
+        this.formEditModeStateSubscription = this.formEditModeState.subscribe(
+            (formEditModeState: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.formEditMode = formEditModeState;
+                });
+            }
+        );
 
-        this.rowsDataStateSubscription = this.rowsDataState.subscribe((rowsData: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.isUserEditting || !this.formEditMode) return;
+        this.rowsDataStateSubscription = this.rowsDataState.subscribe(
+            (rowsData: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.isUserEditting || !this.formEditMode) return;
 
-                let rowData = this.uti.getTableRowByWidgetId(rowsData, 104);
+                    let rowData = this.uti.getTableRowByWidgetId(rowsData, 104);
 
-                if (!rowData)
-                    return;
+                    if (!rowData) return;
 
-                if (!Uti.checkKeynameExistInArray(rowData, 'key', 'IdLogin'))
-                    return;
+                    if (
+                        !Uti.checkKeynameExistInArray(rowData, "key", "IdLogin")
+                    )
+                        return;
 
-                this.userId = Uti.getValueFromArrayByKey(rowData, 'IdLogin');
-            });
-        });
+                    this.userId = Uti.getValueFromArrayByKey(
+                        rowData,
+                        "IdLogin"
+                    );
+                });
+            }
+        );
         this.subscribeRequestSaveState();
     }
 
     private updateUserProfile() {
         if (this.hasPasswordUpdate && this.isUserEditting) {
-            this.authenticationService.changePassword(this.formGroup.value.currentCipher, this.formGroup.value.cipher)
+            this.authenticationService
+                .changePassword(
+                    this.formGroup.value.currentCipher,
+                    this.formGroup.value.cipher
+                )
                 .subscribe(
-                    data => this.changePasswordSuccess(data.item),
-                    error => this.serviceError(error));
+                    (data) => this.changePasswordSuccess(data.item),
+                    (error) => this.serviceError(error)
+                );
         } else {
             this.updateUserProfileAfterCheck();
         }
@@ -499,7 +617,8 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
                     this.updateUserProfileAfterCheck();
                     break;
                 }
-                default: break;
+                default:
+                    break;
             }
         });
     }
@@ -515,14 +634,17 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     private updateUserProfileAfterUpload() {
         let data = this.prepareSubmitData();
         if (data.UserProfile && data.UserProfile.IdRepLanguage) {
-            if (data.UserProfile.IdPerson == this.currentUser.id && data.UserProfile.IdRepLanguage != this.currentUser.preferredLang) {
+            if (
+                data.UserProfile.IdPerson == this.currentUser.id &&
+                data.UserProfile.IdRepLanguage != this.currentUser.preferredLang
+            ) {
                 this.isChangeLanguage = true;
             }
         }
-        this.userProfileService.saveUserProfile(data)
-            .subscribe(
-                data => this.updateUserProfileSuccess(data.item),
-                error => this.serviceError(error));
+        this.userProfileService.saveUserProfile(data).subscribe(
+            (data) => this.updateUserProfileSuccess(data.item),
+            (error) => this.serviceError(error)
+        );
     }
 
     private updateUserProfileSuccess(response: any) {
@@ -547,14 +669,28 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
 
     private showSuccessMessage() {
         if (this.userId) {
-            this.toasterService.pop('success', 'Success', 'User information is updated');
+            this.toasterService.pop(
+                "success",
+                "Success",
+                "User information is updated"
+            );
         } else {
-            this.toasterService.pop('success', 'Success', 'Please check your email to get password');
+            this.toasterService.pop(
+                "success",
+                "Success",
+                "Please check your email to get password"
+            );
         }
     }
 
     private updateRoles(userId) {
-        this.userProfileService.saveRolesForUser(this.buildRoleDataForSaving(this.roleDatasource.data, this.userId || userId))
+        this.userProfileService
+            .saveRolesForUser(
+                this.buildRoleDataForSaving(
+                    this.roleDatasource.data,
+                    this.userId || userId
+                )
+            )
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     const userLogin = this.uti.getUserInfo();
@@ -575,7 +711,7 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
                         IdLoginRoles: item.IdLoginRoles,
                         IdLoginRolesLoginGw: this.getIdLoginRolesLoginGw(item),
                         IsDeleted: 1,
-                        IdLogin: userId
+                        IdLogin: userId,
                     });
                 }
                 continue;
@@ -586,37 +722,45 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
             result.push({
                 IdLoginRoles: item.IdLoginRoles,
                 IdLoginRolesLoginGw: this.getIdLoginRolesLoginGw(item),
-                IdLogin: userId
+                IdLogin: userId,
             });
         }
         return result;
     }
 
     private isOldItem(item: any): boolean {
-        let currentItem = this.userRoleCached.find(x => x.IdLoginRoles == item.IdLoginRoles);
-        return (currentItem && currentItem.IdLoginRoles);
+        let currentItem = this.userRoleCached.find(
+            (x) => x.IdLoginRoles == item.IdLoginRoles
+        );
+        return currentItem && currentItem.IdLoginRoles;
     }
 
     private getIdLoginRolesLoginGw(item: any) {
-        let currentItem = this.userRoleCached.find(x => x.IdLoginRoles == item.IdLoginRoles);
+        let currentItem = this.userRoleCached.find(
+            (x) => x.IdLoginRoles == item.IdLoginRoles
+        );
         if (currentItem) {
-            return currentItem.IdLoginRolesLoginGw
+            return currentItem.IdLoginRolesLoginGw;
         }
         return null;
     }
 
     private loginByUserId() {
         const userLogin = this.uti.getUserInfo();
-        this.authenticationService.loginByUserId(userLogin.id)
-            .subscribe(
-                data => this.loginByUserIdSuccess(data.item),
-                error => {
-                    Uti.logError(error);
-                });
+        this.authenticationService.loginByUserId(userLogin.id).subscribe(
+            (data) => this.loginByUserIdSuccess(data.item),
+            (error) => {
+                Uti.logError(error);
+            }
+        );
     }
 
     private loginByUserIdSuccess(userAuthentication: any) {
-        if (userAuthentication && userAuthentication.access_token && userAuthentication.expires_in) {
+        if (
+            userAuthentication &&
+            userAuthentication.access_token &&
+            userAuthentication.expires_in
+        ) {
             this.uti.storeUserAuthentication(userAuthentication);
 
             var userInfo = this.uti.getUserInfo();
@@ -632,20 +776,32 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
      * @param language
      */
     public changeLanguage() {
-        LocalStorageHelper.toInstance(SessionStorageProvider).setItem(LocalSettingKey.SET_LANGUAGE_MODE, { isMain: true });
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Change Language ',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Change_Language_Will_Reload_Page_Do_You_Want_To_Change'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                LocalStorageHelper.toInstance(SessionStorageProvider).setItem(LocalSettingKey.LANGUAGE, '');
-                location.reload();
-            },
-            callBack2: () => { },
-            callBackCloseButton: () => { }
-        }));
+        LocalStorageHelper.toInstance(SessionStorageProvider).setItem(
+            LocalSettingKey.SET_LANGUAGE_MODE,
+            { isMain: true }
+        );
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Change Language ",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Change_Language_Will_Reload_Page_Do_You_Want_To_Change",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    LocalStorageHelper.toInstance(
+                        SessionStorageProvider
+                    ).setItem(LocalSettingKey.LANGUAGE, "");
+                    location.reload();
+                },
+                callBack2: () => {},
+                callBackCloseButton: () => {},
+            })
+        );
     }
 
     private serviceError(error) {
@@ -654,8 +810,8 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     }
 
     private resetForm() {
-        this.loginPicture = '';
-        this.uploadMessage = '';
+        this.loginPicture = "";
+        this.uploadMessage = "";
         Uti.resetValueForForm(this.formGroup);
     }
 
@@ -672,68 +828,102 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     }
 
     private setControlRequireWhenPasswordUpdate() {
-        Uti.setRequireForFormControl(this.formGroup, 'cipher');
-        Uti.setRequireForFormControl(this.formGroup, 'reCipher');
-        Uti.setRequireForFormControl(this.formGroup, 'currentCipher');
+        Uti.setRequireForFormControl(this.formGroup, "cipher");
+        Uti.setRequireForFormControl(this.formGroup, "reCipher");
+        Uti.setRequireForFormControl(this.formGroup, "currentCipher");
     }
 
     private setControlRequireWhenDontPasswordUpdate() {
-        Uti.clearRequireForFormControl(this.formGroup, 'cipher');
-        Uti.clearRequireForFormControl(this.formGroup, 'reCipher');
-        Uti.clearRequireForFormControl(this.formGroup, 'currentCipher');
+        Uti.clearRequireForFormControl(this.formGroup, "cipher");
+        Uti.clearRequireForFormControl(this.formGroup, "reCipher");
+        Uti.clearRequireForFormControl(this.formGroup, "currentCipher");
     }
 
     private reInitControlMessage() {
-        if (!this.controlMessagePasswords || !this.controlMessagePasswords.length) return;
-        this.controlMessagePasswords.forEach((controlMessagePassword: ControlMessageComponent) => {
-            controlMessagePassword.ngOnInit();
-        });
+        if (
+            !this.controlMessagePasswords ||
+            !this.controlMessagePasswords.length
+        )
+            return;
+        this.controlMessagePasswords.forEach(
+            (controlMessagePassword: ControlMessageComponent) => {
+                controlMessagePassword.ngOnInit();
+            }
+        );
     }
 
     private buildDataForRole() {
-        this.userProfileService.getAllUserRole()
+        this.userProfileService
+            .getAllUserRole()
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.data || !response.item.data[0] || !response.item.data[0].length) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.data ||
+                        !response.item.data[0] ||
+                        !response.item.data[0].length
+                    ) {
                         return;
                     }
 
                     this.roleDatasource = {
                         data: response.item.data[0],
-                        columns: this.createGridColumns()
+                        columns: this.createGridColumns(),
                     };
 
                     setTimeout(() => {
                         if (this.userId) {
-                            this.userProfileService.listUserRoleByUserId(this.userId)
+                            this.userProfileService
+                                .listUserRoleByUserId(this.userId)
                                 .subscribe((response: ApiResultResponse) => {
                                     this.appErrorHandler.executeAction(() => {
-                                        if (!Uti.isResquestSuccess(response) || !response.item.data || !response.item.data[0] || !response.item.data[0].length) {
+                                        if (
+                                            !Uti.isResquestSuccess(response) ||
+                                            !response.item.data ||
+                                            !response.item.data[0] ||
+                                            !response.item.data[0].length
+                                        ) {
                                             return;
                                         }
 
-                                        this.userRoleCached = response.item.data[0];
+                                        this.userRoleCached =
+                                            response.item.data[0];
 
-                                        this.userRoleCached.forEach(checkedRole => {
-                                            let found = this.roleDatasource.data.find(role => role.IdLoginRoles == checkedRole.IdLoginRoles);
-                                            if (found) {
-                                                found[ColHeaderKey.SelectAll] = true;
+                                        this.userRoleCached.forEach(
+                                            (checkedRole) => {
+                                                let found =
+                                                    this.roleDatasource.data.find(
+                                                        (role) =>
+                                                            role.IdLoginRoles ==
+                                                            checkedRole.IdLoginRoles
+                                                    );
+                                                if (found) {
+                                                    found[
+                                                        ColHeaderKey.SelectAll
+                                                    ] = true;
 
-                                                if (this.xnAgGridComponent)
-                                                    this.xnAgGridComponent.updateRowData([found]);
+                                                    if (this.xnAgGridComponent)
+                                                        this.xnAgGridComponent.updateRowData(
+                                                            [found]
+                                                        );
+                                                }
                                             }
-                                        });
+                                        );
                                     });
                                 });
-                        }
-                        else {
-                            let found = this.roleDatasource.data.find(role => role.IdLoginRoles == this.normalUserRoleID);
+                        } else {
+                            let found = this.roleDatasource.data.find(
+                                (role) =>
+                                    role.IdLoginRoles == this.normalUserRoleID
+                            );
                             if (found) {
                                 found[ColHeaderKey.SelectAll] = true;
                                 this.roleDirty = true;
 
                                 if (this.xnAgGridComponent)
-                                    this.xnAgGridComponent.updateRowData([found]);
+                                    this.xnAgGridComponent.updateRowData([
+                                        found,
+                                    ]);
                             }
                         }
                     }, 200);
@@ -744,25 +934,27 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     private registerAvatarChangeEvent() {
         setTimeout(() => {
             let that: UserProfileFormComponent = this;
-            let userAvatarUpload = $('#userAvatarUpload');
+            let userAvatarUpload = $("#userAvatarUpload");
             if (!userAvatarUpload.length) return;
             userAvatarUpload.change(function () {
                 if ((<any>this).files.length <= 0) return;
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    if (e.target['result'])
-                        $("#userAvatar").attr("src", e.target['result']);
-                }
+                    if (e.target["result"])
+                        $("#userAvatar").attr("src", e.target["result"]);
+                };
                 reader.readAsDataURL((<any>this).files[0]);
-                that.fileData = ((<any>this).files[0]);
-                that.setValueForOutputModel(new FormOutputModel({
-                    submitResult: null,
-                    formValue: that.formGroup.value,
-                    isValid: that.isValid(),
-                    isDirty: true,
-                    returnID: null
-                }));
-                that.uploadMessage = '';
+                that.fileData = (<any>this).files[0];
+                that.setValueForOutputModel(
+                    new FormOutputModel({
+                        submitResult: null,
+                        formValue: that.formGroup.value,
+                        isValid: that.isValid(),
+                        isDirty: true,
+                        returnID: null,
+                    })
+                );
+                that.uploadMessage = "";
                 that.pictureDirty = true;
             });
         }, 700);
@@ -771,21 +963,20 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     private uploadAvatar(successFunc?: Function, failFunc?: Function): any {
         const xhr = new XMLHttpRequest();
         let sendable: any;
-        if (typeof this.fileData.size !== 'number') {
-            throw new TypeError('The file specified is no longer valid');
+        if (typeof this.fileData.size !== "number") {
+            throw new TypeError("The file specified is no longer valid");
         }
         sendable = new FormData();
-        sendable.append('file', this.fileData, this.fileData.name);
-        sendable.append('mode', UploadFileMode.Profile);
+        sendable.append("file", this.fileData, this.fileData.name);
+        sendable.append("mode", UploadFileMode.Profile);
 
         xhr.onload = () => {
             if (!this._isSuccessCode(xhr.status)) {
-                this.loginPicture = '';
-                this.uploadMessage = 'Can not upload file';
+                this.loginPicture = "";
+                this.uploadMessage = "Can not upload file";
                 if (failFunc) {
                     failFunc();
                 }
-
             }
             const response = JSON.parse(xhr.response);
             this.loginPicture = response.fileName;
@@ -797,17 +988,17 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
             if (failFunc) {
                 failFunc();
             }
-            this.loginPicture = '';
-            this.uploadMessage = 'Can not upload file';
+            this.loginPicture = "";
+            this.uploadMessage = "Can not upload file";
         };
         xhr.onabort = () => {
             if (failFunc) {
                 failFunc();
             }
-            this.loginPicture = '';
-            this.uploadMessage = 'This file is aborted';
+            this.loginPicture = "";
+            this.uploadMessage = "This file is aborted";
         };
-        xhr.open('Post', '/api/FileManager/UploadFile', true);
+        xhr.open("Post", "/api/FileManager/UploadFile", true);
         xhr.withCredentials = true;
         xhr.send(sendable);
     }
@@ -819,94 +1010,93 @@ export class UserProfileFormComponent extends UserManagementFormBase implements 
     private createGridColumns(): any {
         return [
             {
-                'title': 'IdLoginRoles',
-                'data': 'IdLoginRoles',
-                'visible': false,
+                title: "IdLoginRoles",
+                data: "IdLoginRoles",
+                visible: false,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1',
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'IsBlocked',
-                'data': 'IsBlocked',
-                'visible': false,
+                title: "IsBlocked",
+                data: "IsBlocked",
+                visible: false,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1',
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'IsDeleted',
-                'data': 'IsDeleted',
-                'visible': false,
+                title: "IsDeleted",
+                data: "IsDeleted",
+                visible: false,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1',
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'RoleName',
-                'data': 'RoleName',
-                'visible': true,
+                title: "RoleName",
+                data: "RoleName",
+                visible: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'Description',
-                'data': 'Description',
-                'visible': true,
+                title: "Description",
+                data: "Description",
+                visible: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'CreateDate',
-                'data': 'CreateDate',
-                'visible': true,
+                title: "CreateDate",
+                data: "CreateDate",
+                visible: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1',
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
-            }
+                                ReadOnly: "1",
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
+            },
         ];
     }
-
 }

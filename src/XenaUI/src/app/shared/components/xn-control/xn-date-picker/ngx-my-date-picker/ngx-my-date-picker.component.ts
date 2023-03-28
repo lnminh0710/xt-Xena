@@ -1,17 +1,34 @@
-import { Component, ElementRef, ViewEncapsulation, ViewChild, Renderer, ChangeDetectorRef, OnDestroy, HostListener } from "@angular/core";
-import { IMyDate, IMyMonth, IMyCalendarDay, IMyCalendarMonth, IMyCalendarYear, IMyWeek, IMyOptions, IMySelectorPosition } from "./interfaces/index";
+import {
+    Component,
+    ElementRef,
+    ViewEncapsulation,
+    ViewChild,
+    Renderer,
+    ChangeDetectorRef,
+    OnDestroy,
+    HostListener,
+} from "@angular/core";
+import {
+    IMyDate,
+    IMyMonth,
+    IMyCalendarDay,
+    IMyCalendarMonth,
+    IMyCalendarYear,
+    IMyWeek,
+    IMyOptions,
+    IMySelectorPosition,
+} from "./interfaces/index";
 import { UtilService } from "./services/ngx-my-date-picker.util.service";
 import { KeyCode } from "./enums/key-code.enum";
 import { MonthId } from "./enums/month-id.enum";
 
 @Component({
     selector: "ngx-my-date-picker",
-    styleUrls: ['./ngx-my-date-picker.component.css'],
-    templateUrl: './ngx-my-date-picker.component.html',
+    styleUrls: ["./ngx-my-date-picker.component.css"],
+    templateUrl: "./ngx-my-date-picker.component.html",
     providers: [UtilService],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-
 export class NgxMyDatePicker implements OnDestroy {
     @ViewChild("selectorEl") selectorEl: any;
     opts: IMyOptions;
@@ -47,21 +64,38 @@ export class NgxMyDatePicker implements OnDestroy {
 
     clickListener: Function;
 
-    constructor(public elem: ElementRef, private renderer: Renderer, private cdr: ChangeDetectorRef, private utilService: UtilService) {
-        this.clickListener = renderer.listen(elem.nativeElement, "click", (evt: MouseEvent) => {
-            if ((this.opts.monthSelector || this.opts.yearSelector) && evt.target) {
-                this.resetMonthYearSelect();
+    constructor(
+        public elem: ElementRef,
+        private renderer: Renderer,
+        private cdr: ChangeDetectorRef,
+        private utilService: UtilService
+    ) {
+        this.clickListener = renderer.listen(
+            elem.nativeElement,
+            "click",
+            (evt: MouseEvent) => {
+                if (
+                    (this.opts.monthSelector || this.opts.yearSelector) &&
+                    evt.target
+                ) {
+                    this.resetMonthYearSelect();
+                }
             }
-        });
+        );
     }
 
     ngOnDestroy(): void {
         this.clickListener();
     }
 
-    @HostListener('window:keydown', ['$event'])
+    @HostListener("window:keydown", ["$event"])
     handleKeyDown(event: KeyboardEvent) {
-        if (event.keyCode == KeyCode.enter && !this.selectedDate.day && !this.selectedDate.month && !this.selectedDate.year) {
+        if (
+            event.keyCode == KeyCode.enter &&
+            !this.selectedDate.day &&
+            !this.selectedDate.month &&
+            !this.selectedDate.year
+        ) {
             this.onTodayClicked(event.keyCode);
         }
 
@@ -69,7 +103,15 @@ export class NgxMyDatePicker implements OnDestroy {
         // event.stopPropagation();
     }
 
-    initialize(opts: IMyOptions, defaultMonth: string, selectorPos: IMySelectorPosition, inputValue: string, dc: Function, cvc: Function, cbe: Function): void {
+    initialize(
+        opts: IMyOptions,
+        defaultMonth: string,
+        selectorPos: IMySelectorPosition,
+        inputValue: string,
+        dc: Function,
+        cvc: Function,
+        cbe: Function
+    ): void {
         this.opts = opts;
         this.selectorPos = selectorPos;
         this.weekDays.length = 0;
@@ -84,13 +126,30 @@ export class NgxMyDatePicker implements OnDestroy {
             }
         }
 
-        let date: IMyDate = this.utilService.isDateValid(inputValue, this.opts.dateFormat, this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.monthLabels, this.opts.enableDates);
+        let date: IMyDate = this.utilService.isDateValid(
+            inputValue,
+            this.opts.dateFormat,
+            this.opts.minYear,
+            this.opts.maxYear,
+            this.opts.disableUntil,
+            this.opts.disableSince,
+            this.opts.disableWeekends,
+            this.opts.disableDates,
+            this.opts.disableDateRanges,
+            this.opts.disableWeekdays,
+            this.opts.monthLabels,
+            this.opts.enableDates
+        );
         if (date.day !== 0 && date.month !== 0 && date.year !== 0) {
             this.selectedDate = date;
-        }
-        else {
-            if (defaultMonth !== null && defaultMonth !== undefined && defaultMonth !== "") {
-                this.selectedMonth = this.utilService.parseDefaultMonth(defaultMonth);
+        } else {
+            if (
+                defaultMonth !== null &&
+                defaultMonth !== undefined &&
+                defaultMonth !== ""
+            ) {
+                this.selectedMonth =
+                    this.utilService.parseDefaultMonth(defaultMonth);
             }
         }
 
@@ -121,9 +180,31 @@ export class NgxMyDatePicker implements OnDestroy {
             for (let i = 1; i <= 12; i += 3) {
                 let row: Array<IMyCalendarMonth> = [];
                 for (let j = i; j < i + 3; j++) {
-                    let disabled: boolean = this.utilService.isMonthDisabledByDisableUntil({ year: this.visibleMonth.year, month: j, day: this.daysInMonth(j, this.visibleMonth.year) }, this.opts.disableUntil)
-                        || this.utilService.isMonthDisabledByDisableSince({ year: this.visibleMonth.year, month: j, day: 1 }, this.opts.disableSince);
-                    row.push({ nbr: j, name: this.opts.monthLabels[j], currMonth: j === today.month && this.visibleMonth.year === today.year, selected: j === this.visibleMonth.monthNbr, disabled: disabled });
+                    let disabled: boolean =
+                        this.utilService.isMonthDisabledByDisableUntil(
+                            {
+                                year: this.visibleMonth.year,
+                                month: j,
+                                day: this.daysInMonth(
+                                    j,
+                                    this.visibleMonth.year
+                                ),
+                            },
+                            this.opts.disableUntil
+                        ) ||
+                        this.utilService.isMonthDisabledByDisableSince(
+                            { year: this.visibleMonth.year, month: j, day: 1 },
+                            this.opts.disableSince
+                        );
+                    row.push({
+                        nbr: j,
+                        name: this.opts.monthLabels[j],
+                        currMonth:
+                            j === today.month &&
+                            this.visibleMonth.year === today.year,
+                        selected: j === this.visibleMonth.monthNbr,
+                        disabled: disabled,
+                    });
                 }
                 this.months.push(row);
             }
@@ -133,7 +214,11 @@ export class NgxMyDatePicker implements OnDestroy {
 
     onMonthCellClicked(cell: IMyCalendarMonth): void {
         let mc: boolean = cell.nbr !== this.visibleMonth.monthNbr;
-        this.visibleMonth = { monthTxt: this.opts.monthLabels[cell.nbr], monthNbr: cell.nbr, year: this.visibleMonth.year };
+        this.visibleMonth = {
+            monthTxt: this.opts.monthLabels[cell.nbr],
+            monthNbr: cell.nbr,
+            year: this.visibleMonth.year,
+        };
         this.generateCalendar(cell.nbr, this.visibleMonth.year, mc);
         this.selectMonth = false;
         this.selectorEl.nativeElement.focus();
@@ -142,7 +227,12 @@ export class NgxMyDatePicker implements OnDestroy {
     }
 
     setDateWhenClickOnMonth(cell: IMyCalendarMonth) {
-        if (!this.selectedDate || !this.selectedDate.day || !this.selectedDate.month || !this.selectedDate.year)
+        if (
+            !this.selectedDate ||
+            !this.selectedDate.day ||
+            !this.selectedDate.month ||
+            !this.selectedDate.year
+        )
             return;
         this.selectedDate.month = cell.nbr;
         this.rebuildDayWhenClickOnMonthOrYear();
@@ -150,13 +240,34 @@ export class NgxMyDatePicker implements OnDestroy {
     }
 
     rebuildDayWhenClickOnMonthOrYear() {
-        let formatDate = this.utilService.formatDate(this.selectedDate, this.opts.dateFormat, this.opts.monthLabels);
-        let date: IMyDate = this.utilService.isDateValid(formatDate, this.opts.dateFormat, this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.monthLabels, this.opts.enableDates);
+        let formatDate = this.utilService.formatDate(
+            this.selectedDate,
+            this.opts.dateFormat,
+            this.opts.monthLabels
+        );
+        let date: IMyDate = this.utilService.isDateValid(
+            formatDate,
+            this.opts.dateFormat,
+            this.opts.minYear,
+            this.opts.maxYear,
+            this.opts.disableUntil,
+            this.opts.disableSince,
+            this.opts.disableWeekends,
+            this.opts.disableDates,
+            this.opts.disableDateRanges,
+            this.opts.disableWeekdays,
+            this.opts.monthLabels,
+            this.opts.enableDates
+        );
         this.selectedDate.day = date.day;
     }
 
     onMonthCellKeyDown(event: any, cell: IMyCalendarMonth) {
-        if ((event.keyCode === KeyCode.enter || event.keyCode === KeyCode.space) && !cell.disabled) {
+        if (
+            (event.keyCode === KeyCode.enter ||
+                event.keyCode === KeyCode.space) &&
+            !cell.disabled
+        ) {
             event.preventDefault();
             this.onMonthCellClicked(cell);
         }
@@ -175,7 +286,11 @@ export class NgxMyDatePicker implements OnDestroy {
 
     onYearCellClicked(cell: IMyCalendarYear): void {
         let yc: boolean = cell.year !== this.visibleMonth.year;
-        this.visibleMonth = { monthTxt: this.visibleMonth.monthTxt, monthNbr: this.visibleMonth.monthNbr, year: cell.year };
+        this.visibleMonth = {
+            monthTxt: this.visibleMonth.monthTxt,
+            monthNbr: this.visibleMonth.monthNbr,
+            year: cell.year,
+        };
         this.generateCalendar(this.visibleMonth.monthNbr, cell.year, yc);
         this.selectYear = false;
         this.selectorEl.nativeElement.focus();
@@ -184,7 +299,12 @@ export class NgxMyDatePicker implements OnDestroy {
     }
 
     setDateWhenClickOnYear(cell: IMyCalendarYear) {
-        if (!this.selectedDate || !this.selectedDate.day || !this.selectedDate.month || !this.selectedDate.year)
+        if (
+            !this.selectedDate ||
+            !this.selectedDate.day ||
+            !this.selectedDate.month ||
+            !this.selectedDate.year
+        )
             return;
         this.selectedDate.year = cell.year;
         this.rebuildDayWhenClickOnMonthOrYear();
@@ -207,33 +327,97 @@ export class NgxMyDatePicker implements OnDestroy {
         for (let i = year; i <= 20 + year; i += 5) {
             let row: Array<IMyCalendarYear> = [];
             for (let j = i; j < i + 5; j++) {
-                let disabled: boolean = this.utilService.isMonthDisabledByDisableUntil({ year: j, month: this.visibleMonth.monthNbr, day: this.daysInMonth(this.visibleMonth.monthNbr, j) }, this.opts.disableUntil)
-                    || this.utilService.isMonthDisabledByDisableSince({ year: j, month: this.visibleMonth.monthNbr, day: 1 }, this.opts.disableSince);
-                let minMax: boolean = j < this.opts.minYear || j > this.opts.maxYear;
-                row.push({ year: j, currYear: j === today.year, selected: j === this.visibleMonth.year, disabled: disabled || minMax });
+                let disabled: boolean =
+                    this.utilService.isMonthDisabledByDisableUntil(
+                        {
+                            year: j,
+                            month: this.visibleMonth.monthNbr,
+                            day: this.daysInMonth(
+                                this.visibleMonth.monthNbr,
+                                j
+                            ),
+                        },
+                        this.opts.disableUntil
+                    ) ||
+                    this.utilService.isMonthDisabledByDisableSince(
+                        { year: j, month: this.visibleMonth.monthNbr, day: 1 },
+                        this.opts.disableSince
+                    );
+                let minMax: boolean =
+                    j < this.opts.minYear || j > this.opts.maxYear;
+                row.push({
+                    year: j,
+                    currYear: j === today.year,
+                    selected: j === this.visibleMonth.year,
+                    disabled: disabled || minMax,
+                });
             }
             this.years.push(row);
         }
-        this.prevYearsDisabled = this.years[0][0].year <= this.opts.minYear || this.utilService.isMonthDisabledByDisableUntil({ year: this.years[0][0].year - 1, month: this.visibleMonth.monthNbr, day: this.daysInMonth(this.visibleMonth.monthNbr, this.years[0][0].year - 1) }, this.opts.disableUntil);
-        this.nextYearsDisabled = this.years[4][4].year >= this.opts.maxYear || this.utilService.isMonthDisabledByDisableSince({ year: this.years[4][4].year + 1, month: this.visibleMonth.monthNbr, day: 1 }, this.opts.disableSince);
+        this.prevYearsDisabled =
+            this.years[0][0].year <= this.opts.minYear ||
+            this.utilService.isMonthDisabledByDisableUntil(
+                {
+                    year: this.years[0][0].year - 1,
+                    month: this.visibleMonth.monthNbr,
+                    day: this.daysInMonth(
+                        this.visibleMonth.monthNbr,
+                        this.years[0][0].year - 1
+                    ),
+                },
+                this.opts.disableUntil
+            );
+        this.nextYearsDisabled =
+            this.years[4][4].year >= this.opts.maxYear ||
+            this.utilService.isMonthDisabledByDisableSince(
+                {
+                    year: this.years[4][4].year + 1,
+                    month: this.visibleMonth.monthNbr,
+                    day: 1,
+                },
+                this.opts.disableSince
+            );
     }
 
     onYearCellKeyDown(event: any, cell: IMyCalendarYear) {
-        if ((event.keyCode === KeyCode.enter || event.keyCode === KeyCode.space) && !cell.disabled) {
+        if (
+            (event.keyCode === KeyCode.enter ||
+                event.keyCode === KeyCode.space) &&
+            !cell.disabled
+        ) {
             event.preventDefault();
             this.onYearCellClicked(cell);
         }
     }
 
     isTodayDisabled(): void {
-        this.disableTodayBtn = this.utilService.isDisabledDate(this.getToday(), this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.enableDates);
+        this.disableTodayBtn = this.utilService.isDisabledDate(
+            this.getToday(),
+            this.opts.minYear,
+            this.opts.maxYear,
+            this.opts.disableUntil,
+            this.opts.disableSince,
+            this.opts.disableWeekends,
+            this.opts.disableDates,
+            this.opts.disableDateRanges,
+            this.opts.disableWeekdays,
+            this.opts.enableDates
+        );
     }
 
     setVisibleMonth(): void {
         // Sets visible month of calendar
-        let y: number = 0, m: number = 0;
-        if (this.selectedDate.year === 0 && this.selectedDate.month === 0 && this.selectedDate.day === 0) {
-            if (this.selectedMonth.year === 0 && this.selectedMonth.monthNbr === 0) {
+        let y: number = 0,
+            m: number = 0;
+        if (
+            this.selectedDate.year === 0 &&
+            this.selectedDate.month === 0 &&
+            this.selectedDate.day === 0
+        ) {
+            if (
+                this.selectedMonth.year === 0 &&
+                this.selectedMonth.monthNbr === 0
+            ) {
                 let today: IMyDate = this.getToday();
                 y = today.year;
                 m = today.month;
@@ -241,12 +425,15 @@ export class NgxMyDatePicker implements OnDestroy {
                 y = this.selectedMonth.year;
                 m = this.selectedMonth.monthNbr;
             }
-        }
-        else {
+        } else {
             y = this.selectedDate.year;
             m = this.selectedDate.month;
         }
-        this.visibleMonth = { monthTxt: this.opts.monthLabels[m], monthNbr: m, year: y };
+        this.visibleMonth = {
+            monthTxt: this.opts.monthLabels[m],
+            monthNbr: m,
+            year: y,
+        };
 
         // Create current month
         this.generateCalendar(m, y, true);
@@ -254,26 +441,42 @@ export class NgxMyDatePicker implements OnDestroy {
 
     onPrevMonth(): void {
         // Previous month from calendar
-        let d: Date = this.getDate(this.visibleMonth.year, this.visibleMonth.monthNbr, 1);
+        let d: Date = this.getDate(
+            this.visibleMonth.year,
+            this.visibleMonth.monthNbr,
+            1
+        );
         d.setMonth(d.getMonth() - 1);
 
         let y: number = d.getFullYear();
         let m: number = d.getMonth() + 1;
 
-        this.visibleMonth = { monthTxt: this.opts.monthLabels[m], monthNbr: m, year: y };
+        this.visibleMonth = {
+            monthTxt: this.opts.monthLabels[m],
+            monthNbr: m,
+            year: y,
+        };
         this.generateCalendar(m, y, true);
         this.cdr.detectChanges();
     }
 
     onNextMonth(): void {
         // Next month from calendar
-        let d: Date = this.getDate(this.visibleMonth.year, this.visibleMonth.monthNbr, 1);
+        let d: Date = this.getDate(
+            this.visibleMonth.year,
+            this.visibleMonth.monthNbr,
+            1
+        );
         d.setMonth(d.getMonth() + 1);
 
         let y: number = d.getFullYear();
         let m: number = d.getMonth() + 1;
 
-        this.visibleMonth = { monthTxt: this.opts.monthLabels[m], monthNbr: m, year: y };
+        this.visibleMonth = {
+            monthTxt: this.opts.monthLabels[m],
+            monthNbr: m,
+            year: y,
+        };
         this.generateCalendar(m, y, true);
         this.cdr.detectChanges();
     }
@@ -281,14 +484,22 @@ export class NgxMyDatePicker implements OnDestroy {
     onPrevYear(): void {
         // Previous year from calendar
         this.visibleMonth.year--;
-        this.generateCalendar(this.visibleMonth.monthNbr, this.visibleMonth.year, true);
+        this.generateCalendar(
+            this.visibleMonth.monthNbr,
+            this.visibleMonth.year,
+            true
+        );
         this.cdr.detectChanges();
     }
 
     onNextYear(): void {
         // Next year from calendar
         this.visibleMonth.year++;
-        this.generateCalendar(this.visibleMonth.monthNbr, this.visibleMonth.year, true);
+        this.generateCalendar(
+            this.visibleMonth.monthNbr,
+            this.visibleMonth.year,
+            true
+        );
         this.cdr.detectChanges();
     }
 
@@ -315,12 +526,10 @@ export class NgxMyDatePicker implements OnDestroy {
             if (!this.opts.allowSelectionOnlyInCurrentMonth) {
                 this.selectDate(cell.dateObj);
             }
-        }
-        else if (cell.cmo === this.currMonthId) {
+        } else if (cell.cmo === this.currMonthId) {
             // Current month of day
             this.selectDate(cell.dateObj);
-        }
-        else if (cell.cmo === this.nextMonthId) {
+        } else if (cell.cmo === this.nextMonthId) {
             // Next month of day
             this.onNextMonth();
             if (!this.opts.allowSelectionOnlyInCurrentMonth) {
@@ -332,7 +541,11 @@ export class NgxMyDatePicker implements OnDestroy {
 
     onCellKeyDown(event: any, cell: any) {
         // Cell keyboard handling
-        if ((event.keyCode === KeyCode.enter || event.keyCode === KeyCode.space) && !cell.disabled) {
+        if (
+            (event.keyCode === KeyCode.enter ||
+                event.keyCode === KeyCode.space) &&
+            !cell.disabled
+        ) {
             event.preventDefault();
             this.onCellClicked(cell);
         }
@@ -341,9 +554,17 @@ export class NgxMyDatePicker implements OnDestroy {
     selectDate(date: IMyDate, isClose?: boolean, keyCode?: number): void {
         // Notifies parent using callback
         this.selectedDate = date;
-        this.dateChanged(this.utilService.getDateModel(date, this.opts.dateFormat, this.opts.monthLabels),
-            (typeof isClose === 'boolean') ? isClose : this.opts.closeSelectorOnDateSelect,
-            keyCode);
+        this.dateChanged(
+            this.utilService.getDateModel(
+                date,
+                this.opts.dateFormat,
+                this.opts.monthLabels
+            ),
+            typeof isClose === "boolean"
+                ? isClose
+                : this.opts.closeSelectorOnDateSelect,
+            keyCode
+        );
     }
 
     monthStartIdx(y: number, m: number): number {
@@ -368,14 +589,29 @@ export class NgxMyDatePicker implements OnDestroy {
         return this.daysInMonth(d.getMonth() + 1, d.getFullYear());
     }
 
-    isCurrDay(d: number, m: number, y: number, cmo: number, today: IMyDate): boolean {
+    isCurrDay(
+        d: number,
+        m: number,
+        y: number,
+        cmo: number,
+        today: IMyDate
+    ): boolean {
         // Check is a given date the today
-        return d === today.day && m === today.month && y === today.year && cmo === this.currMonthId;
+        return (
+            d === today.day &&
+            m === today.month &&
+            y === today.year &&
+            cmo === this.currMonthId
+        );
     }
 
     getToday(): IMyDate {
         let date: Date = new Date();
-        return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+        return {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate(),
+        };
     }
 
     getDayNumber(date: IMyDate): number {
@@ -415,14 +651,38 @@ export class NgxMyDatePicker implements OnDestroy {
                 let pm = dInPrevM - monthStart + 1;
                 // Previous month
                 for (let j = pm; j <= dInPrevM; j++) {
-                    let date: IMyDate = { year: m === 1 ? y - 1 : y, month: m === 1 ? 12 : m - 1, day: j };
+                    let date: IMyDate = {
+                        year: m === 1 ? y - 1 : y,
+                        month: m === 1 ? 12 : m - 1,
+                        day: j,
+                    };
                     week.push({
                         dateObj: date,
                         cmo: cmo,
                         currDay: this.isCurrDay(j, m, y, cmo, today),
-                        disabled: this.utilService.isDisabledDate(date, this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.enableDates),
-                        markedDate: this.utilService.isMarkedDate(date, this.opts.markDates, this.opts.markWeekends),
-                        highlight: this.utilService.isHighlightedDate(date, this.opts.sunHighlight, this.opts.satHighlight, this.opts.highlightDates)
+                        disabled: this.utilService.isDisabledDate(
+                            date,
+                            this.opts.minYear,
+                            this.opts.maxYear,
+                            this.opts.disableUntil,
+                            this.opts.disableSince,
+                            this.opts.disableWeekends,
+                            this.opts.disableDates,
+                            this.opts.disableDateRanges,
+                            this.opts.disableWeekdays,
+                            this.opts.enableDates
+                        ),
+                        markedDate: this.utilService.isMarkedDate(
+                            date,
+                            this.opts.markDates,
+                            this.opts.markWeekends
+                        ),
+                        highlight: this.utilService.isHighlightedDate(
+                            date,
+                            this.opts.sunHighlight,
+                            this.opts.satHighlight,
+                            this.opts.highlightDates
+                        ),
                     });
                 }
 
@@ -435,14 +695,33 @@ export class NgxMyDatePicker implements OnDestroy {
                         dateObj: date,
                         cmo: cmo,
                         currDay: this.isCurrDay(dayNbr, m, y, cmo, today),
-                        disabled: this.utilService.isDisabledDate(date, this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.enableDates),
-                        markedDate: this.utilService.isMarkedDate(date, this.opts.markDates, this.opts.markWeekends),
-                        highlight: this.utilService.isHighlightedDate(date, this.opts.sunHighlight, this.opts.satHighlight, this.opts.highlightDates)
+                        disabled: this.utilService.isDisabledDate(
+                            date,
+                            this.opts.minYear,
+                            this.opts.maxYear,
+                            this.opts.disableUntil,
+                            this.opts.disableSince,
+                            this.opts.disableWeekends,
+                            this.opts.disableDates,
+                            this.opts.disableDateRanges,
+                            this.opts.disableWeekdays,
+                            this.opts.enableDates
+                        ),
+                        markedDate: this.utilService.isMarkedDate(
+                            date,
+                            this.opts.markDates,
+                            this.opts.markWeekends
+                        ),
+                        highlight: this.utilService.isHighlightedDate(
+                            date,
+                            this.opts.sunHighlight,
+                            this.opts.satHighlight,
+                            this.opts.highlightDates
+                        ),
                     });
                     dayNbr++;
                 }
-            }
-            else {
+            } else {
                 // Rest of the weeks
                 for (let j = 1; j < 8; j++) {
                     if (dayNbr > dInThisM) {
@@ -450,27 +729,70 @@ export class NgxMyDatePicker implements OnDestroy {
                         dayNbr = 1;
                         cmo = this.nextMonthId;
                     }
-                    let date: IMyDate = { year: cmo === this.nextMonthId && m === 12 ? y + 1 : y, month: cmo === this.currMonthId ? m : cmo === this.nextMonthId && m < 12 ? m + 1 : 1, day: dayNbr };
+                    let date: IMyDate = {
+                        year: cmo === this.nextMonthId && m === 12 ? y + 1 : y,
+                        month:
+                            cmo === this.currMonthId
+                                ? m
+                                : cmo === this.nextMonthId && m < 12
+                                ? m + 1
+                                : 1,
+                        day: dayNbr,
+                    };
                     week.push({
                         dateObj: date,
                         cmo: cmo,
                         currDay: this.isCurrDay(dayNbr, m, y, cmo, today),
-                        disabled: this.utilService.isDisabledDate(date, this.opts.minYear, this.opts.maxYear, this.opts.disableUntil, this.opts.disableSince, this.opts.disableWeekends, this.opts.disableDates, this.opts.disableDateRanges, this.opts.disableWeekdays, this.opts.enableDates),
-                        markedDate: this.utilService.isMarkedDate(date, this.opts.markDates, this.opts.markWeekends),
-                        highlight: this.utilService.isHighlightedDate(date, this.opts.sunHighlight, this.opts.satHighlight, this.opts.highlightDates)
+                        disabled: this.utilService.isDisabledDate(
+                            date,
+                            this.opts.minYear,
+                            this.opts.maxYear,
+                            this.opts.disableUntil,
+                            this.opts.disableSince,
+                            this.opts.disableWeekends,
+                            this.opts.disableDates,
+                            this.opts.disableDateRanges,
+                            this.opts.disableWeekdays,
+                            this.opts.enableDates
+                        ),
+                        markedDate: this.utilService.isMarkedDate(
+                            date,
+                            this.opts.markDates,
+                            this.opts.markWeekends
+                        ),
+                        highlight: this.utilService.isHighlightedDate(
+                            date,
+                            this.opts.sunHighlight,
+                            this.opts.satHighlight,
+                            this.opts.highlightDates
+                        ),
                     });
                     dayNbr++;
                 }
             }
-            let weekNbr: number = this.opts.showWeekNumbers && this.opts.firstDayOfWeek === "mo" ? this.utilService.getWeekNumber(week[0].dateObj) : 0;
+            let weekNbr: number =
+                this.opts.showWeekNumbers && this.opts.firstDayOfWeek === "mo"
+                    ? this.utilService.getWeekNumber(week[0].dateObj)
+                    : 0;
             this.dates.push({ week: week, weekNbr: weekNbr });
         }
 
         this.setHeaderBtnDisabledState(m, y);
 
         if (!notifyChange || !this.calendarViewChanged) return;
-        
-        this.calendarViewChanged({ year: y, month: m, first: { number: 1, weekday: this.getWeekday({ year: y, month: m, day: 1 }) }, last: { number: dInThisM, weekday: this.getWeekday({ year: y, month: m, day: dInThisM }) } });
+
+        this.calendarViewChanged({
+            year: y,
+            month: m,
+            first: {
+                number: 1,
+                weekday: this.getWeekday({ year: y, month: m, day: 1 }),
+            },
+            last: {
+                number: dInThisM,
+                weekday: this.getWeekday({ year: y, month: m, day: dInThisM }),
+            },
+        });
     }
 
     setHeaderBtnDisabledState(m: number, y: number): void {
@@ -479,14 +801,37 @@ export class NgxMyDatePicker implements OnDestroy {
         let dnm: boolean = false;
         let dny: boolean = false;
         if (this.opts.disableHeaderButtons) {
-            dpm = this.utilService.isMonthDisabledByDisableUntil({ year: m === 1 ? y - 1 : y, month: m === 1 ? 12 : m - 1, day: this.daysInMonth(m === 1 ? 12 : m - 1, m === 1 ? y - 1 : y) }, this.opts.disableUntil);
-            dpy = this.utilService.isMonthDisabledByDisableUntil({ year: y - 1, month: m, day: this.daysInMonth(m, y - 1) }, this.opts.disableUntil);
-            dnm = this.utilService.isMonthDisabledByDisableSince({ year: m === 12 ? y + 1 : y, month: m === 12 ? 1 : m + 1, day: 1 }, this.opts.disableSince);
-            dny = this.utilService.isMonthDisabledByDisableSince({ year: y + 1, month: m, day: 1 }, this.opts.disableSince);
+            dpm = this.utilService.isMonthDisabledByDisableUntil(
+                {
+                    year: m === 1 ? y - 1 : y,
+                    month: m === 1 ? 12 : m - 1,
+                    day: this.daysInMonth(
+                        m === 1 ? 12 : m - 1,
+                        m === 1 ? y - 1 : y
+                    ),
+                },
+                this.opts.disableUntil
+            );
+            dpy = this.utilService.isMonthDisabledByDisableUntil(
+                { year: y - 1, month: m, day: this.daysInMonth(m, y - 1) },
+                this.opts.disableUntil
+            );
+            dnm = this.utilService.isMonthDisabledByDisableSince(
+                {
+                    year: m === 12 ? y + 1 : y,
+                    month: m === 12 ? 1 : m + 1,
+                    day: 1,
+                },
+                this.opts.disableSince
+            );
+            dny = this.utilService.isMonthDisabledByDisableSince(
+                { year: y + 1, month: m, day: 1 },
+                this.opts.disableSince
+            );
         }
-        this.prevMonthDisabled = m === 1 && y === this.opts.minYear || dpm;
+        this.prevMonthDisabled = (m === 1 && y === this.opts.minYear) || dpm;
         this.prevYearDisabled = y - 1 < this.opts.minYear || dpy;
-        this.nextMonthDisabled = m === 12 && y === this.opts.maxYear || dnm;
+        this.nextMonthDisabled = (m === 12 && y === this.opts.maxYear) || dnm;
         this.nextYearDisabled = y + 1 > this.opts.maxYear || dny;
     }
 }

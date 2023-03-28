@@ -1,13 +1,12 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import { BaseWidget } from 'app/pages/private/base';
-import {ChartTypeNgx, curves} from '../chart.model';
+import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
+import { BaseWidget } from "app/pages/private/base";
+import { ChartTypeNgx, curves } from "../chart.model";
 
 @Component({
-    selector: 'xena-area-line-chart',
-    templateUrl: './area-line-chart.component.html',
+    selector: "xena-area-line-chart",
+    templateUrl: "./area-line-chart.component.html",
     encapsulation: ViewEncapsulation.None,
 })
-
 export class AreaLineChartComponent extends BaseWidget implements OnInit {
     public _chartType: string;
     public _colorType: string;
@@ -32,10 +31,10 @@ export class AreaLineChartComponent extends BaseWidget implements OnInit {
 
     @Input() set chartType(chartType: string) {
         this._chartType = chartType;
-    };
+    }
     @Input() set view(view: any[]) {
         this._view = view;
-    };
+    }
     @Input() set scheme(colorType: string) {
         this._colorType = colorType;
     }
@@ -51,7 +50,9 @@ export class AreaLineChartComponent extends BaseWidget implements OnInit {
         this._showYAxisAreaLineChart = showYAxisAreaLineChart;
     }
 
-    @Input() set showGirdLinesAreaLineChart(showGirdLinesAreaLineChart: boolean) {
+    @Input() set showGirdLinesAreaLineChart(
+        showGirdLinesAreaLineChart: boolean
+    ) {
         this._showGirdLinesAreaLineChart = showGirdLinesAreaLineChart;
     }
 
@@ -63,11 +64,15 @@ export class AreaLineChartComponent extends BaseWidget implements OnInit {
         this._showLegendAreaLineChart = showLegendAreaLineChart;
     }
 
-    @Input() set disableTooltipAreaLineChart(disableTooltipAreaLineChart: boolean) {
+    @Input() set disableTooltipAreaLineChart(
+        disableTooltipAreaLineChart: boolean
+    ) {
         this._disableTooltipAreaLineChart = disableTooltipAreaLineChart;
     }
 
-    @Input() set showXAxisLabelAreaLineChart(showXAxisLabelAreaLineChart: boolean) {
+    @Input() set showXAxisLabelAreaLineChart(
+        showXAxisLabelAreaLineChart: boolean
+    ) {
         this._showXAxisLabelAreaLineChart = showXAxisLabelAreaLineChart;
     }
 
@@ -75,7 +80,9 @@ export class AreaLineChartComponent extends BaseWidget implements OnInit {
         this._xAxisLabelAreaLineChart = xAxisLabelAreaLineChart;
     }
 
-    @Input() set showYAxisLabelAreaLineChart(showYAxisLabelAreaLineChart: boolean) {
+    @Input() set showYAxisLabelAreaLineChart(
+        showYAxisLabelAreaLineChart: boolean
+    ) {
         this._showYAxisLabelAreaLineChart = showYAxisLabelAreaLineChart;
     }
 
@@ -100,17 +107,13 @@ export class AreaLineChartComponent extends BaseWidget implements OnInit {
         this._lineInterpolation = curveType;
     }
 
-
     getInterpolationType(curveType: string) {
-        return curves[curveType]
+        return curves[curveType];
     }
 
     constructor() {
         super();
     }
 
-    ngOnInit() {
-    }
-
+    ngOnInit() {}
 }
-

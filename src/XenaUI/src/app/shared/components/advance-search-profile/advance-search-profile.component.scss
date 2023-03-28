@@ -1,6 +1,6 @@
 .p-w {
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     padding: 0 10px;
 }
@@ -14,8 +14,8 @@
     }
 }
 .p {
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
     height: calc(100% - 81px);
 }
 xn-ag-grid {
@@ -28,13 +28,13 @@ xn-ag-grid {
     padding: 3px 10px;
 }
 .c-m {
-	display: flex;
-	justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
     padding-top: 5px;
 
-	button {
-		margin-left: 10px;
-	}
+    button {
+        margin-left: 10px;
+    }
 }
 .xn-control {
     height: 26px;

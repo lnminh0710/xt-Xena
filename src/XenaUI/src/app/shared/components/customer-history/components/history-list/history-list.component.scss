@@ -1,6 +1,7 @@
 $arrow-color: #ff6633;
 
-history-header, history-footer {
+history-header,
+history-footer {
     text-align: center;
 }
 
@@ -8,11 +9,13 @@ history-header, history-footer {
     padding: 10px;
 }
 
-.fa-caret-left, .fa-caret-right {
+.fa-caret-left,
+.fa-caret-right {
     margin-top: -49px;
 }
 
-.fa-caret-left, .fa-caret-right {
+.fa-caret-left,
+.fa-caret-right {
     font-size: 85pt;
     transform: scaleY(1.5);
 }
@@ -72,7 +75,6 @@ history-header, history-footer {
 .box-detail {
     padding-right: 50px;
 }
-
 
 :host ::ng-deep {
     .ag-cell {

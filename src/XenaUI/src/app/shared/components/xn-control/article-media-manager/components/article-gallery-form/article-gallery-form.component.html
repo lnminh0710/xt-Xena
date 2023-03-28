@@ -1,35 +1,85 @@
-<div [ngClass]="{'col-sm-6': isShowEditForm,
-                'only-image': !isShowEditForm,
-                'col-sm-12': !isShowEditForm}">
-    <xn-galleria [images]="galleryImages" panelWidth="500" panelHeight="313" [showCaption]="false" [autoPlay]="false" (onImageClicked)="onImageClicked($event)"></xn-galleria>
+<div
+    [ngClass]="{
+        'col-sm-6': isShowEditForm,
+        'only-image': !isShowEditForm,
+        'col-sm-12': !isShowEditForm
+    }"
+>
+    <xn-galleria
+        [images]="galleryImages"
+        panelWidth="500"
+        panelHeight="313"
+        [showCaption]="false"
+        [autoPlay]="false"
+        (onImageClicked)="onImageClicked($event)"
+    ></xn-galleria>
 </div>
 <div class="col-sm-6" *ngIf="isShowEditForm">
-    <form class="form-horizontal" novalidate (ngSubmit)="onSubmit(articleMediaForm)" [formGroup]="articleMediaForm">
+    <form
+        class="form-horizontal"
+        novalidate
+        (ngSubmit)="onSubmit(articleMediaForm)"
+        [formGroup]="articleMediaForm"
+    >
         <div formGroupName="sharingTreeMedia">
             <div class="form-group">
-                <label class="control-label col-sm-3" for="title"><label-translation [keyword]="'ArticleGalleryForm__Title'"></label-translation>:</label>
+                <label class="control-label col-sm-3" for="title"
+                    ><label-translation
+                        [keyword]="'ArticleGalleryForm__Title'"
+                    ></label-translation
+                    >:</label
+                >
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="title" formControlName="mediaTitle" autocomplete="off">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        formControlName="mediaTitle"
+                        autocomplete="off"
+                    />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-3" for="description"><label-translation [keyword]="'ArticleGalleryForm__Description'"></label-translation>:</label>
+                <label class="control-label col-sm-3" for="description"
+                    ><label-translation
+                        [keyword]="'ArticleGalleryForm__Description'"
+                    ></label-translation
+                    >:</label
+                >
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="description" formControlName="mediaDescription" autocomplete="off">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="description"
+                        formControlName="mediaDescription"
+                        autocomplete="off"
+                    />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-sm-3" for="notes"><label-translation [keyword]="'ArticleGalleryForm__Notes'"></label-translation>:</label>
+                <label class="control-label col-sm-3" for="notes"
+                    ><label-translation
+                        [keyword]="'ArticleGalleryForm__Notes'"
+                    ></label-translation
+                    >:</label
+                >
                 <div class="col-sm-9">
-                    <textarea class="form-control" id="notes" formControlName="mediaNotes" rows="5"></textarea>
+                    <textarea
+                        class="form-control"
+                        id="notes"
+                        formControlName="mediaNotes"
+                        rows="5"
+                    ></textarea>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-9">
-                    <button type="submit"
-                            mat-button
-                            class="mat-btn-blue">
-                        <span class="bt-t"><label-translation [keyword]="'ArticleGalleryForm__Save'"></label-translation></span>
+                    <button type="submit" mat-button class="mat-btn-blue">
+                        <span class="bt-t"
+                            ><label-translation
+                                [keyword]="'ArticleGalleryForm__Save'"
+                            ></label-translation
+                        ></span>
                     </button>
                 </div>
             </div>

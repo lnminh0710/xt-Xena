@@ -1,12 +1,20 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import cloneDeep from 'lodash-es/cloneDeep';
-import {WidgetDetail, WidgetType} from 'app/models';
-import {Uti} from 'app/utilities/uti';
+import {
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+} from "@angular/core";
+import cloneDeep from "lodash-es/cloneDeep";
+import { WidgetDetail, WidgetType } from "app/models";
+import { Uti } from "app/utilities/uti";
 
 @Component({
-    selector: 'xn-credit-card',
-    styleUrls: ['./xn-credit-card.component.scss'],
-    templateUrl: './xn-credit-card.component.html'
+    selector: "xn-credit-card",
+    styleUrls: ["./xn-credit-card.component.scss"],
+    templateUrl: "./xn-credit-card.component.html",
 })
 export class XnCreditCardComponent implements OnInit, OnDestroy {
     public isRendered = false;
@@ -23,7 +31,9 @@ export class XnCreditCardComponent implements OnInit, OnDestroy {
         if (initInformation && initInformation.data && initInformation.config) {
             this.initationData = cloneDeep(initInformation.data);
             this.creditCards = initInformation.data;
-            this.selectedCreditCards = this.getSelectedCreditCard(this.creditCards);
+            this.selectedCreditCards = this.getSelectedCreditCard(
+                this.creditCards
+            );
             this.config = initInformation.config;
         }
     }
@@ -35,7 +45,7 @@ export class XnCreditCardComponent implements OnInit, OnDestroy {
     @Input() set widgetDetail(data: WidgetDetail) {
         this.initInformation = this.setUpDataForCreditCard(data);
         this.editMode = false;
-    };
+    }
 
     // If true , this form is displaying on Widget
     private _isActivated: boolean;
@@ -46,7 +56,7 @@ export class XnCreditCardComponent implements OnInit, OnDestroy {
         } else {
             this.ref.reattach();
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
@@ -57,21 +67,17 @@ export class XnCreditCardComponent implements OnInit, OnDestroy {
 
     public isFormChanged: boolean;
 
-    constructor(
-        private ref: ChangeDetectorRef
-    ) {
-    }
+    constructor(private ref: ChangeDetectorRef) {}
 
     public ngOnInit() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
         this.isRendered = true;
     }
 
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     public resetCreditCardComponent() {
         this.creditCards = cloneDeep(this.initationData);
@@ -90,12 +96,14 @@ export class XnCreditCardComponent implements OnInit, OnDestroy {
     }
 
     private getSelectedCreditCard(creditCards) {
-        return creditCards.filter(cc => cc.select);
+        return creditCards.filter((cc) => cc.select);
     }
 
     private checkHasSubCollectionData(data: WidgetDetail) {
         try {
-            return (data.contentDetail.data[3] && data.contentDetail.data[3].length);
+            return (
+                data.contentDetail.data[3] && data.contentDetail.data[3].length
+            );
         } catch (ex) {
             return false;
         }
@@ -106,22 +114,31 @@ export class XnCreditCardComponent implements OnInit, OnDestroy {
      * @param data
      */
     private setUpDataForCreditCard(data: WidgetDetail) {
-        if (!this.checkHasSubCollectionData(data) || data.idRepWidgetType !== WidgetType.CombinationCreditCard) { return; }
-        this.paymentIsCreditCard = data.contentDetail.data[1].some((v) => v.Value === 'Credit Card');
+        if (
+            !this.checkHasSubCollectionData(data) ||
+            data.idRepWidgetType !== WidgetType.CombinationCreditCard
+        ) {
+            return;
+        }
+        this.paymentIsCreditCard = data.contentDetail.data[1].some(
+            (v) => v.Value === "Credit Card"
+        );
         const array = data.contentDetail.data[3].map(function (x) {
             return {
-                'id': Uti.strValObj(x.IdCashProviderContractCreditcardTypeContainer),
-                'iconFileName': Uti.strValObj(x.IconFileName),
-                'textValue': Uti.strValObj(x.DefaultValue),
-                'select': !!Uti.strValObj(x.IsActive)
+                id: Uti.strValObj(
+                    x.IdCashProviderContractCreditcardTypeContainer
+                ),
+                iconFileName: Uti.strValObj(x.IconFileName),
+                textValue: Uti.strValObj(x.DefaultValue),
+                select: !!Uti.strValObj(x.IsActive),
             };
         });
         return {
             data: array,
             config: {
-                headerText: 'Credit card',
-                editMode: false
-            }
+                headerText: "Credit card",
+                editMode: false,
+            },
         };
     }
 }

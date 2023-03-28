@@ -1,1 +1,1 @@
-﻿export { XnTabHeaderMenuComponent } from './xn-tab-header-menu.component';
+﻿export { XnTabHeaderMenuComponent } from "./xn-tab-header-menu.component";

@@ -1,6 +1,9 @@
-<div #arrowElement class="arrow-container {{mode}}"
-     (mouseenter)="onWidgetScrollHovering()"
-     (mouseleave)="onWidgetScrollUnHovering()"
-     (click)="scrollToPosition()" >
+<div
+    #arrowElement
+    class="arrow-container {{ mode }}"
+    (mouseenter)="onWidgetScrollHovering()"
+    (mouseleave)="onWidgetScrollUnHovering()"
+    (click)="scrollToPosition()"
+>
     <div class="arrows"></div>
 </div>

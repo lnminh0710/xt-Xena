@@ -6,9 +6,9 @@ import { XnAgGridModule } from "../xn-control/xn-ag-grid";
 import { ExtendedFilterGridComponent } from "./extended-filter-grid.component";
 import { QueryBuilderModule } from "../xn-control/query-builder";
 import { AngularSplitModule } from "angular-split";
-import * as primengModule from 'primeng/primeng';
+import * as primengModule from "primeng/primeng";
 import { LabelTranslationModule } from "app/shared/components/label-translation/label-translation.module";
-import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-translation';
+import { XnResourceTranslationModule } from "app/shared/directives/xn-resource-translation";
 
 @NgModule({
     imports: [
@@ -20,13 +20,9 @@ import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-t
         AngularSplitModule,
         primengModule.DialogModule,
         LabelTranslationModule,
-        XnResourceTranslationModule
+        XnResourceTranslationModule,
     ],
-    declarations: [
-        ExtendedFilterGridComponent
-    ],
-    exports: [
-        ExtendedFilterGridComponent
-    ]
+    declarations: [ExtendedFilterGridComponent],
+    exports: [ExtendedFilterGridComponent],
 })
-export class ExtendedFilterGridModule { }
+export class ExtendedFilterGridModule {}

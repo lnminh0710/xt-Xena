@@ -1,1 +1,1 @@
-﻿export * from './module-setting.action';
+﻿export * from "./module-setting.action";

@@ -1,1 +1,1 @@
-﻿export * from './xn-common.action';
+﻿export * from "./xn-common.action";

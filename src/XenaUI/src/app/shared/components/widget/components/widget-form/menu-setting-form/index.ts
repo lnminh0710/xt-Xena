@@ -1,1 +1,1 @@
-export {MenuSettingFormComponent} from './menu-setting-form.component'
+export { MenuSettingFormComponent } from "./menu-setting-form.component";

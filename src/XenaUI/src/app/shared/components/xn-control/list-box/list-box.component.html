@@ -1,22 +1,35 @@
-﻿<ul class="list-box-container"
-    (mouseleave)="onMouseleave($event)">
-    <li class="list-box-item cursor-pointer"
-        [ngClass]="{'active-item': item.active}"
+﻿<ul class="list-box-container" (mouseleave)="onMouseleave($event)">
+    <li
+        class="list-box-item cursor-pointer"
+        [ngClass]="{ 'active-item': item.active }"
         *ngFor="let item of data"
         (mouseover)="onMouseover(item, $event)"
-        (click)="click(item, $event)">
-        <span>{{item.name}}</span>
+        (click)="click(item, $event)"
+    >
+        <span>{{ item.name }}</span>
     </li>
 </ul>
 <div class="button-container">
-    <button *ngIf="canApply"
-           type="button"
-           mat-raised-button
-           class="mat-btn-blue  mat-btn-block"
-           (click)="apply()"><span class="bt-t"><label-translation [keyword]="'ListBox__Apply'"></label-translation></span></button>
-    <button *ngIf="canClose"
-           type="button"
-           mat-raised-button
-           class="mat-btn-block"
-           (click)="close()"><span class="bt-t"><label-translation [keyword]="'ListBox__Close'"></label-translation></span></button>
+    <button
+        *ngIf="canApply"
+        type="button"
+        mat-raised-button
+        class="mat-btn-blue mat-btn-block"
+        (click)="apply()"
+    >
+        <span class="bt-t"
+            ><label-translation [keyword]="'ListBox__Apply'"></label-translation
+        ></span>
+    </button>
+    <button
+        *ngIf="canClose"
+        type="button"
+        mat-raised-button
+        class="mat-btn-block"
+        (click)="close()"
+    >
+        <span class="bt-t"
+            ><label-translation [keyword]="'ListBox__Close'"></label-translation
+        ></span>
+    </button>
 </div>

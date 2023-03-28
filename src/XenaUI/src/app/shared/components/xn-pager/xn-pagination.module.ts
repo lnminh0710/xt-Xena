@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
+import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { XnPaginationComponent } from './xn-pagination.component';
-import { WjCoreModule } from 'wijmo/wijmo.angular2.core';
-import { WjInputModule } from 'wijmo/wijmo.angular2.input';
-import { MatButtonModule } from '../xn-control/light-material-ui/button';
-import { XnTooltipModule } from 'app/shared/directives/xn-tooltip/xn-tooltip.module';
-import {AngularMultiSelectModule} from "../xn-control/xn-dropdown";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { XnPaginationComponent } from "./xn-pagination.component";
+import { WjCoreModule } from "wijmo/wijmo.angular2.core";
+import { WjInputModule } from "wijmo/wijmo.angular2.input";
+import { MatButtonModule } from "../xn-control/light-material-ui/button";
+import { XnTooltipModule } from "app/shared/directives/xn-tooltip/xn-tooltip.module";
+import { AngularMultiSelectModule } from "../xn-control/xn-dropdown";
 import { LabelTranslationModule } from "app/shared/components/label-translation/label-translation.module";
-import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-translation';
+import { XnResourceTranslationModule } from "app/shared/directives/xn-resource-translation";
 
 @NgModule({
     imports: [
@@ -21,11 +21,9 @@ import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-t
         MatButtonModule,
         LabelTranslationModule,
         XnResourceTranslationModule,
-        XnTooltipModule
+        XnTooltipModule,
     ],
-    declarations: [
-        XnPaginationComponent
-    ],
-    exports: [XnPaginationComponent]
+    declarations: [XnPaginationComponent],
+    exports: [XnPaginationComponent],
 })
-export class XnPagerModule { }
+export class XnPagerModule {}

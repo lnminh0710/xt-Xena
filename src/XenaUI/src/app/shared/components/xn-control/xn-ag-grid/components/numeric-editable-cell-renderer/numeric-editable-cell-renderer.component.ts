@@ -1,17 +1,28 @@
-import {Component, ViewEncapsulation, AfterViewInit, ViewChild, ViewContainerRef} from "@angular/core";
-import {ICellRendererAngularComp, ICellEditorAngularComp} from "ag-grid-angular";
-import {BaseAgGridCellComponent} from '../../shared/base-ag-grid-cell-component';
+import {
+    Component,
+    ViewEncapsulation,
+    AfterViewInit,
+    ViewChild,
+    ViewContainerRef,
+} from "@angular/core";
+import {
+    ICellRendererAngularComp,
+    ICellEditorAngularComp,
+} from "ag-grid-angular";
+import { BaseAgGridCellComponent } from "../../shared/base-ag-grid-cell-component";
 
 @Component({
-    selector: 'numeric-editable-cell-renderer',
-    templateUrl: './numeric-editable-cell-renderer.html',
-    styleUrls: ['./numeric-editable-cell-renderer.scss']
+    selector: "numeric-editable-cell-renderer",
+    templateUrl: "./numeric-editable-cell-renderer.html",
+    styleUrls: ["./numeric-editable-cell-renderer.scss"],
 })
-export class NumericEditableCellRenderer extends BaseAgGridCellComponent<number> implements ICellEditorAngularComp, AfterViewInit {
-
+export class NumericEditableCellRenderer
+    extends BaseAgGridCellComponent<number>
+    implements ICellEditorAngularComp, AfterViewInit
+{
     public globalNumberFormat: string;
 
-    @ViewChild('input', {read: ViewContainerRef}) public input;
+    @ViewChild("input", { read: ViewContainerRef }) public input;
 
     constructor() {
         super();
@@ -20,7 +31,7 @@ export class NumericEditableCellRenderer extends BaseAgGridCellComponent<number>
     ngAfterViewInit() {
         setTimeout(() => {
             this.input.element.nativeElement.focus();
-        })
+        });
     }
 
     /**
@@ -32,7 +43,6 @@ export class NumericEditableCellRenderer extends BaseAgGridCellComponent<number>
             this.globalNumberFormat = this.componentParent.globalNumberFormat;
         }
     }
-
 
     /**
      * getValue

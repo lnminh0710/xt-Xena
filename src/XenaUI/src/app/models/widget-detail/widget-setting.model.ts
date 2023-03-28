@@ -1,12 +1,11 @@
-
-export class WidgetSettingModel {    
+export class WidgetSettingModel {
     public idSettingsWidget: number = null;
     public idRepWidgetApp: number = null;
-    public objectNr: string = '';
-    public widgetName: string = '';
-    public widgetType: string = '';
-    public description: string = '';
-    public jsonSettings: string = '';
+    public objectNr: string = "";
+    public widgetName: string = "";
+    public widgetType: string = "";
+    public description: string = "";
+    public jsonSettings: string = "";
     public isActive: boolean = true;
     public idSettingsGUI?: number;
 

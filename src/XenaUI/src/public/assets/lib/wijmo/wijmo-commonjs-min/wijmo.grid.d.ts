@@ -1,6 +1,6 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcInput from 'wijmo/wijmo.input';
-import * as wjcSelf from 'wijmo/wijmo.grid';
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcInput from "wijmo/wijmo.input";
+import * as wjcSelf from "wijmo/wijmo.grid";
 export declare enum HeadersVisibility {
     None = 0,
     Column = 1,
@@ -160,7 +160,13 @@ export declare class FlexGrid extends wjcCore.Control {
     canEditCell(r: number, c: number): boolean;
     getCellData(r: number, c: number, formatted: boolean): any;
     getCellBoundingRect(r: number, c: number, raw?: boolean): wjcCore.Rect;
-    setCellData(r: number, c: any, value: any, coerce?: boolean, invalidate?: boolean): boolean;
+    setCellData(
+        r: number,
+        c: any,
+        value: any,
+        coerce?: boolean,
+        invalidate?: boolean
+    ): boolean;
     hitTest(pt: any, y?: any): HitTestInfo;
     getClipString(rng?: CellRange): string;
     setClipString(text: string, rng?: CellRange): void;
@@ -169,9 +175,19 @@ export declare class FlexGrid extends wjcCore.Control {
     refresh(fullUpdate?: boolean): void;
     refreshCells(fullUpdate: boolean, recycle?: boolean, state?: boolean): void;
     autoSizeColumn(c: number, header?: boolean, extra?: number): void;
-    autoSizeColumns(firstColumn?: number, lastColumn?: number, header?: boolean, extra?: number): void;
+    autoSizeColumns(
+        firstColumn?: number,
+        lastColumn?: number,
+        header?: boolean,
+        extra?: number
+    ): void;
     autoSizeRow(r: number, header?: boolean, extra?: number): void;
-    autoSizeRows(firstRow?: number, lastRow?: number, header?: boolean, extra?: number): void;
+    autoSizeRows(
+        firstRow?: number,
+        lastRow?: number,
+        header?: boolean,
+        extra?: number
+    ): void;
     treeIndent: number;
     collapseGroupsToLevel(level: number): void;
     selectionMode: SelectionMode;
@@ -182,12 +198,22 @@ export declare class FlexGrid extends wjcCore.Control {
     selectedItems: any[];
     scrollIntoView(r: number, c: number, refresh?: boolean): boolean;
     isRangeValid(rng: CellRange): boolean;
-    startEditing(fullEdit?: boolean, r?: number, c?: number, focus?: boolean): boolean;
+    startEditing(
+        fullEdit?: boolean,
+        r?: number,
+        c?: number,
+        focus?: boolean
+    ): boolean;
     finishEditing(cancel?: boolean): boolean;
     readonly activeEditor: HTMLInputElement;
     readonly editRange: CellRange;
     mergeManager: MergeManager;
-    getMergedRange(p: GridPanel, r: number, c: number, clip?: boolean): CellRange;
+    getMergedRange(
+        p: GridPanel,
+        r: number,
+        c: number,
+        clip?: boolean
+    ): CellRange;
     keyActionTab: KeyAction;
     keyActionEnter: KeyAction;
     showDropDown: boolean;
@@ -303,7 +329,10 @@ export declare class FlexGrid extends wjcCore.Control {
     _mappedColumns: any;
     private _sortConverter(sd, item, value, init);
     protected _bindGrid(full: boolean): void;
-    _cvCollectionChanged(sender: any, e: wjcCore.NotifyCollectionChangedEventArgs): void;
+    _cvCollectionChanged(
+        sender: any,
+        e: wjcCore.NotifyCollectionChangedEventArgs
+    ): void;
     private _cvCurrentChanged(s, e);
     private _syncSelection(force);
     private _getRowIndex(index);
@@ -380,7 +409,13 @@ export declare class GridPanel {
     private _vru;
     private _activeCell;
     static readonly _INDEX_KEY: string;
-    constructor(g: FlexGrid, cellType: CellType, rows: RowCollection, cols: ColumnCollection, host: HTMLElement);
+    constructor(
+        g: FlexGrid,
+        cellType: CellType,
+        rows: RowCollection,
+        cols: ColumnCollection,
+        host: HTMLElement
+    );
     readonly grid: FlexGrid;
     readonly cellType: CellType;
     readonly viewRange: CellRange;
@@ -389,22 +424,45 @@ export declare class GridPanel {
     readonly rows: RowCollection;
     readonly columns: ColumnCollection;
     getCellData(r: number, c: any, formatted: boolean): any;
-    setCellData(r: number, c: any, value: any, coerce?: boolean, invalidate?: boolean): boolean;
+    setCellData(
+        r: number,
+        c: any,
+        value: any,
+        coerce?: boolean,
+        invalidate?: boolean
+    ): boolean;
     getCellBoundingRect(r: number, c: number, raw?: boolean): wjcCore.Rect;
     getCellElement(r: number, c: number): HTMLElement;
     getSelectedState(r: number, c: number, rng: CellRange): SelectedState;
     readonly hostElement: HTMLElement;
     _getOffsetY(): number;
-    _updateContent(recycle: boolean, state: boolean, offsetY: number): HTMLElement;
+    _updateContent(
+        recycle: boolean,
+        state: boolean,
+        offsetY: number
+    ): HTMLElement;
     _updateScrollPosition(): void;
     _clearCells(): void;
     _reorderCells(rngNew: CellRange, rngOld: CellRange): void;
     _createRange(start: number, end: number): Range;
     _renderColHdrRow(rng: CellRange, state: boolean): number;
-    _renderColHdrCell(row: HTMLElement, c: number, rng: CellRange, state: boolean, ctr: number): number;
+    _renderColHdrCell(
+        row: HTMLElement,
+        c: number,
+        rng: CellRange,
+        state: boolean,
+        ctr: number
+    ): number;
     _renderRowHdrCell(row: HTMLElement, r: number, value: any): number;
     _renderRow(r: number, rng: CellRange, state: boolean, ctr: number): number;
-    _renderCell(row: HTMLElement, r: number, c: number, rng: CellRange, state: boolean, ctr: number): number;
+    _renderCell(
+        row: HTMLElement,
+        r: number,
+        c: number,
+        rng: CellRange,
+        state: boolean,
+        ctr: number
+    ): number;
     _removeExtraCells(row: HTMLElement, count: number): void;
     _getViewRange(): CellRange;
     _getFrozenPos(): wjcCore.Point;
@@ -414,7 +472,14 @@ export declare class CellFactory {
     static _WJC_DROPDOWN: string;
     static _ddIcon: HTMLElement;
     static _fmtRng: CellRange;
-    updateCell(p: GridPanel, r: number, c: number, cell: HTMLElement, rng?: CellRange, updateContent?: boolean): void;
+    updateCell(
+        p: GridPanel,
+        r: number,
+        c: number,
+        cell: HTMLElement,
+        rng?: CellRange,
+        updateContent?: boolean
+    ): void;
     disposeCell(cell: HTMLElement): void;
     getEditorValue(g: FlexGrid): any;
     private _isEditingCell(g, r, c);
@@ -638,8 +703,19 @@ export declare enum AllowMerging {
 export declare class MergeManager {
     _g: FlexGrid;
     constructor(g: FlexGrid);
-    getMergedRange(p: GridPanel, r: number, c: number, clip?: boolean): CellRange;
-    _mergeCell(p: GridPanel, r1: number, c1: number, r2: number, c2: number): boolean;
+    getMergedRange(
+        p: GridPanel,
+        r: number,
+        c: number,
+        clip?: boolean
+    ): CellRange;
+    _mergeCell(
+        p: GridPanel,
+        r1: number,
+        c1: number,
+        r2: number,
+        c2: number
+    ): boolean;
 }
 export declare class DataMap {
     _cv: wjcCore.ICollectionView;
@@ -648,7 +724,11 @@ export declare class DataMap {
     _editable: boolean;
     _sortByKey: boolean;
     _hash: any;
-    constructor(itemsSource: any, selectedValuePath?: string, displayMemberPath?: string);
+    constructor(
+        itemsSource: any,
+        selectedValuePath?: string,
+        displayMemberPath?: string
+    );
     sortByDisplayValues: boolean;
     readonly collectionView: wjcCore.ICollectionView;
     readonly selectedValuePath: string;
@@ -791,7 +871,13 @@ export declare class _EditHandler {
     _list: any;
     _evtInput: any;
     constructor(g: FlexGrid);
-    startEditing(fullEdit?: boolean, r?: number, c?: number, focus?: boolean, evt?: any): boolean;
+    startEditing(
+        fullEdit?: boolean,
+        r?: number,
+        c?: number,
+        focus?: boolean,
+        evt?: any
+    ): boolean;
     finishEditing(cancel?: boolean): boolean;
     readonly activeEditor: HTMLInputElement;
     readonly editRange: CellRange;
@@ -827,8 +913,7 @@ export declare class _AddNewHandler {
     _beginningEdit(sender: any, e: CellRangeEventArgs): void;
     _rowEditEnded(sender: any, e: CellRangeEventArgs): void;
 }
-export declare class _NewRowTemplate extends Row {
-}
+export declare class _NewRowTemplate extends Row {}
 export declare class _ImeHandler {
     _g: FlexGrid;
     _tbx: HTMLInputElement;

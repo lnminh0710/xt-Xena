@@ -1,17 +1,27 @@
-import { Component, Input, Output, Provider, forwardRef, EventEmitter, ElementRef, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { Dialog } from 'primeng/primeng';
-import { ModalService } from 'app/services';
-import { Module, WidgetDetail } from 'app/models';
-import { WidgetModuleComponent } from '../widget-info';
-import cloneDeep from 'lodash-es/cloneDeep';
+import {
+    Component,
+    Input,
+    Output,
+    Provider,
+    forwardRef,
+    EventEmitter,
+    ElementRef,
+    ViewChild,
+    OnInit,
+    OnDestroy,
+} from "@angular/core";
+import { Dialog } from "primeng/primeng";
+import { ModalService } from "app/services";
+import { Module, WidgetDetail } from "app/models";
+import { WidgetModuleComponent } from "../widget-info";
+import cloneDeep from "lodash-es/cloneDeep";
 
 @Component({
-    selector: 'widget-edit-dialog',
-    styleUrls: ['./widget-edit-dialog.component.scss'],
-    templateUrl: './widget-edit-dialog.component.html'
+    selector: "widget-edit-dialog",
+    styleUrls: ["./widget-edit-dialog.component.scss"],
+    templateUrl: "./widget-edit-dialog.component.html",
 })
 export class WidgetEditDialogComponent implements OnInit, OnDestroy {
-
     public showDialog = false;
     public isResizable = true;
     public isDraggable = true;
@@ -25,16 +35,16 @@ export class WidgetEditDialogComponent implements OnInit, OnDestroy {
     private isDataDirty = false;
     public willReloadWidget = false;
     public contentStyle: any = {};
-    public dialogStyleClass = 'widget-edit-dialog';
+    public dialogStyleClass = "widget-edit-dialog";
     private closeDialogAfterSave: boolean;
 
-    @ViewChild('pEditDialog') pEditDialog: Dialog;
-    @ViewChild(WidgetModuleComponent) widgetModuleComponent: WidgetModuleComponent;
+    @ViewChild("pEditDialog") pEditDialog: Dialog;
+    @ViewChild(WidgetModuleComponent)
+    widgetModuleComponent: WidgetModuleComponent;
 
     public _widgetData: any = {};
     @Input() set widgetData(data: any) {
-        if (data)
-            this._widgetData = cloneDeep(data);
+        if (data) this._widgetData = cloneDeep(data);
     }
     get widgetData() {
         return this._widgetData;
@@ -48,13 +58,12 @@ export class WidgetEditDialogComponent implements OnInit, OnDestroy {
     @Output() onChangeFieldFilter = new EventEmitter<any>();
     @Output() onSaveSuccessWidget = new EventEmitter<any>();
 
-    constructor(private element: ElementRef,
+    constructor(
+        private element: ElementRef,
         private modalService: ModalService
-    ) {
-    }
+    ) {}
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     public ngAfterViewInit() {
         if (this.widgetModuleComponent) {
@@ -63,27 +72,34 @@ export class WidgetEditDialogComponent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy() {
-        const resizeEle = $('div.ui-resizable-handle', $(this.pEditDialog.containerViewChild.nativeElement));
+        const resizeEle = $(
+            "div.ui-resizable-handle",
+            $(this.pEditDialog.containerViewChild.nativeElement)
+        );
         if (resizeEle && resizeEle.length) {
-            resizeEle.unbind('mousemove');
-            resizeEle.unbind('mouseup');
+            resizeEle.unbind("mousemove");
+            resizeEle.unbind("mouseup");
         }
     }
 
     private bindResizeEvent() {
         if (this.pEditDialog) {
-            const resizeEle = $('div.ui-resizable-handle', $(this.pEditDialog.containerViewChild.nativeElement));
+            const resizeEle = $(
+                "div.ui-resizable-handle",
+                $(this.pEditDialog.containerViewChild.nativeElement)
+            );
             if (resizeEle && resizeEle.length) {
-                resizeEle.bind('mousemove', () => {
+                resizeEle.bind("mousemove", () => {
                     if (this.pEditDialog.resizing) {
                         setTimeout(() => {
-                            this.widgetModuleComponent.resizedLocal = 'stop-' + (new Date()).getTime();
+                            this.widgetModuleComponent.resizedLocal =
+                                "stop-" + new Date().getTime();
                             this.widgetModuleComponent.onResizeStop();
                         }, 200);
                     }
                 });
 
-                resizeEle.bind('mouseup', () => {
+                resizeEle.bind("mouseup", () => {
                     this.calculateContentHeight();
                 });
             }
@@ -107,15 +123,20 @@ export class WidgetEditDialogComponent implements OnInit, OnDestroy {
     private closeDialog() {
         this.onHide.emit({
             widgetData: this.widgetData,
-            willReloadWidget: this.willReloadWidget
+            willReloadWidget: this.willReloadWidget,
         });
     }
 
     private confirmWhenClose() {
         this.modalService.unsavedWarningMessageDefault({
-            headerText: 'Saving Changes',
-            onModalSaveAndExit: () => { this.closeDialogAfterSave = true; this.save(); },
-            onModalExit: () => { this.closeDialog(); }
+            headerText: "Saving Changes",
+            onModalSaveAndExit: () => {
+                this.closeDialogAfterSave = true;
+                this.save();
+            },
+            onModalExit: () => {
+                this.closeDialog();
+            },
         });
     }
 
@@ -128,13 +149,20 @@ export class WidgetEditDialogComponent implements OnInit, OnDestroy {
     }
 
     private calculateContentHeight() {
-        let widgetEditDialogElm = $('.widget-edit-dialog');
+        let widgetEditDialogElm = $(".widget-edit-dialog");
         if (widgetEditDialogElm.length) {
-            let dialogHeaderElm = widgetEditDialogElm.find('.ui-dialog-titlebar');
-            let dialogFooterElm = widgetEditDialogElm.find('.ui-dialog-footer');
+            let dialogHeaderElm = widgetEditDialogElm.find(
+                ".ui-dialog-titlebar"
+            );
+            let dialogFooterElm = widgetEditDialogElm.find(".ui-dialog-footer");
             this.contentStyle = {
-                height: (widgetEditDialogElm.get(0).clientHeight || 0) - (dialogHeaderElm.get(0).clientHeight || 0) - (dialogFooterElm.get(0).clientHeight || 0) - 25 + 'px'
-            }
+                height:
+                    (widgetEditDialogElm.get(0).clientHeight || 0) -
+                    (dialogHeaderElm.get(0).clientHeight || 0) -
+                    (dialogFooterElm.get(0).clientHeight || 0) -
+                    25 +
+                    "px",
+            };
         }
     }
 
@@ -142,17 +170,25 @@ export class WidgetEditDialogComponent implements OnInit, OnDestroy {
         this.isMaximized = true;
         this.isResizable = false;
         this.isDraggable = false;
-        this.dialogStyleClass = 'widget-edit-dialog widget-edit-dialog-full-view';
+        this.dialogStyleClass =
+            "widget-edit-dialog widget-edit-dialog-full-view";
         if (this.pEditDialog) {
-            this.preDialogW = this.pEditDialog.containerViewChild.nativeElement.style.width;
-            this.preDialogH = this.pEditDialog.containerViewChild.nativeElement.style.height;
-            this.preDialogLeft = this.pEditDialog.containerViewChild.nativeElement.style.left;
-            this.preDialogTop = this.pEditDialog.containerViewChild.nativeElement.style.top;
+            this.preDialogW =
+                this.pEditDialog.containerViewChild.nativeElement.style.width;
+            this.preDialogH =
+                this.pEditDialog.containerViewChild.nativeElement.style.height;
+            this.preDialogLeft =
+                this.pEditDialog.containerViewChild.nativeElement.style.left;
+            this.preDialogTop =
+                this.pEditDialog.containerViewChild.nativeElement.style.top;
 
-            this.pEditDialog.containerViewChild.nativeElement.style.width = $(document).width() + 'px';
-            this.pEditDialog.containerViewChild.nativeElement.style.height = $(document).height() + 'px';
-            this.pEditDialog.containerViewChild.nativeElement.style.top = '0px';
-            this.pEditDialog.containerViewChild.nativeElement.style.left = '0px';
+            this.pEditDialog.containerViewChild.nativeElement.style.width =
+                $(document).width() + "px";
+            this.pEditDialog.containerViewChild.nativeElement.style.height =
+                $(document).height() + "px";
+            this.pEditDialog.containerViewChild.nativeElement.style.top = "0px";
+            this.pEditDialog.containerViewChild.nativeElement.style.left =
+                "0px";
 
             this.calculateContentHeight();
         }
@@ -162,12 +198,16 @@ export class WidgetEditDialogComponent implements OnInit, OnDestroy {
         this.isMaximized = false;
         this.isResizable = true;
         this.isDraggable = true;
-        this.dialogStyleClass = 'widget-edit-dialog';
+        this.dialogStyleClass = "widget-edit-dialog";
         if (this.pEditDialog) {
-            this.pEditDialog.containerViewChild.nativeElement.style.width = this.preDialogW;
-            this.pEditDialog.containerViewChild.nativeElement.style.height = this.preDialogH;
-            this.pEditDialog.containerViewChild.nativeElement.style.top = this.preDialogTop;
-            this.pEditDialog.containerViewChild.nativeElement.style.left = this.preDialogLeft;
+            this.pEditDialog.containerViewChild.nativeElement.style.width =
+                this.preDialogW;
+            this.pEditDialog.containerViewChild.nativeElement.style.height =
+                this.preDialogH;
+            this.pEditDialog.containerViewChild.nativeElement.style.top =
+                this.preDialogTop;
+            this.pEditDialog.containerViewChild.nativeElement.style.left =
+                this.preDialogLeft;
 
             this.calculateContentHeight();
         }
@@ -179,9 +219,9 @@ export class WidgetEditDialogComponent implements OnInit, OnDestroy {
 
     private onOpenTranslateWidget(event) {
         if (event)
-            this.dialogStyleClass = 'widget-edit-dialog widget-edit-dialog-backward';
-        else
-            this.dialogStyleClass = 'widget-edit-dialog';
+            this.dialogStyleClass =
+                "widget-edit-dialog widget-edit-dialog-backward";
+        else this.dialogStyleClass = "widget-edit-dialog";
     }
 
     private saveSuccessWidget(event) {

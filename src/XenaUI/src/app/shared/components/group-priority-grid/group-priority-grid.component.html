@@ -1,43 +1,67 @@
-<split class="height-pc-100"
-       direction="horizontal"
-       (dragEnd)="dragEnd($event)"
-       [gutterSize]="5"
-       #horizontalSplit>
-    <split-area [size]="splitterConfig.leftHorizontal"
-                [perfect-scrollbar]="perfectScrollbarConfig">
-        <xn-ag-grid #countryGrid
-                    *ngIf="countryGridData && countryGridData.columns && countryGridData.columns.length"
-                    [id]="countryGridId"
-                    [dataSource]="countryGridData"
-                    [readOnly]="false"
-                    [globalProperties]="globalProperties"
-                    [columnsLayoutSettings]="columnsLayoutSettings[countryGridId]"
-                    [fitWidthColumn]="true"
-                    (rowClick)="countrySelectionChanged()"
-                    (cellEditingStarted)="onTableEditStart()"
-                    (cellEditingStopped)="onTableEditEnd()"
-                    (cellValueChanged)="onTableEditSuccess(); onCountryGridEditEnded($event)"
-                    (hasValidationError)="hasValidationErrorHandler($event, 'counryGrid')">
+<split
+    class="height-pc-100"
+    direction="horizontal"
+    (dragEnd)="dragEnd($event)"
+    [gutterSize]="5"
+    #horizontalSplit
+>
+    <split-area
+        [size]="splitterConfig.leftHorizontal"
+        [perfect-scrollbar]="perfectScrollbarConfig"
+    >
+        <xn-ag-grid
+            #countryGrid
+            *ngIf="
+                countryGridData &&
+                countryGridData.columns &&
+                countryGridData.columns.length
+            "
+            [id]="countryGridId"
+            [dataSource]="countryGridData"
+            [readOnly]="false"
+            [globalProperties]="globalProperties"
+            [columnsLayoutSettings]="columnsLayoutSettings[countryGridId]"
+            [fitWidthColumn]="true"
+            (rowClick)="countrySelectionChanged()"
+            (cellEditingStarted)="onTableEditStart()"
+            (cellEditingStopped)="onTableEditEnd()"
+            (cellValueChanged)="
+                onTableEditSuccess(); onCountryGridEditEnded($event)
+            "
+            (hasValidationError)="
+                hasValidationErrorHandler($event, 'counryGrid')
+            "
+        >
         </xn-ag-grid>
     </split-area>
-    <split-area [size]="splitterConfig.rightHorizontal"
-                [perfect-scrollbar]="perfectScrollbarConfig">
-        <xn-ag-grid #groupPriorityGrid
-                    *ngIf="filterGridData && filterGridData.columns && filterGridData.columns.length"
-                    [id]="groupPriorityGridId"
-                    [dataSource]="filterGridData"
-                    [globalProperties]="globalProperties"
-                    [readOnly]="isGroupPriorityGridReadOnly"
-                    [isEditting]="!isGroupPriorityGridReadOnly"
-                    [hasPriorityColumn]="true"
-                    [disabledAll]="isGroupPriorityGridDisabled"
-                    [columnsLayoutSettings]="columnsLayoutSettings[groupPriorityGridId]"
-                    [fitWidthColumn]="true"
-                    (cellEditingStarted)="onTableEditStart()"
-                    (cellEditingStopped)="onTableEditEnd()"
-                    (cellValueChanged)="onTableEditSuccess(); onPriorityChanged()"
-                    (onPriorityEditEnded)="onPriorityChanged()"
-                    (hasValidationError)="hasValidationErrorHandler($event, 'groupPriorityGrid')">
+    <split-area
+        [size]="splitterConfig.rightHorizontal"
+        [perfect-scrollbar]="perfectScrollbarConfig"
+    >
+        <xn-ag-grid
+            #groupPriorityGrid
+            *ngIf="
+                filterGridData &&
+                filterGridData.columns &&
+                filterGridData.columns.length
+            "
+            [id]="groupPriorityGridId"
+            [dataSource]="filterGridData"
+            [globalProperties]="globalProperties"
+            [readOnly]="isGroupPriorityGridReadOnly"
+            [isEditting]="!isGroupPriorityGridReadOnly"
+            [hasPriorityColumn]="true"
+            [disabledAll]="isGroupPriorityGridDisabled"
+            [columnsLayoutSettings]="columnsLayoutSettings[groupPriorityGridId]"
+            [fitWidthColumn]="true"
+            (cellEditingStarted)="onTableEditStart()"
+            (cellEditingStopped)="onTableEditEnd()"
+            (cellValueChanged)="onTableEditSuccess(); onPriorityChanged()"
+            (onPriorityEditEnded)="onPriorityChanged()"
+            (hasValidationError)="
+                hasValidationErrorHandler($event, 'groupPriorityGrid')
+            "
+        >
         </xn-ag-grid>
     </split-area>
 </split>

@@ -5,10 +5,8 @@ $file-action-buttom-width: 20px;
 $panel-min-width: 640px;
 $left-width: 340px;
 .upload-template-file {
-
     min-width: $panel-min-width;
     height: 100%;
-
 
     .header-countries {
         padding: 0 10px;
@@ -22,7 +20,7 @@ $left-width: 340px;
         color: #f90404;
     }
 
-    input[type=text] {
+    input[type="text"] {
         font-weight: 600;
     }
 
@@ -30,12 +28,11 @@ $left-width: 340px;
         font-weight: 100;
     }
 
-
     .mat-raised-button {
         margin-left: 5px;
         max-width: $file-action-buttom-width;
         min-width: $file-action-buttom-width;
-        padding: 1px (#{$spacing*2}) 0 0;
+        padding: 1px (#{$spacing * 2}) 0 0;
         border-radius: 30px;
         height: 20px;
         line-height: 20px;
@@ -146,7 +143,7 @@ $left-width: 340px;
             border-left: 1px #b5b4b4 solid;
             border-right: 1px #b5b4b4 solid;
             border-bottom: 1px #b5b4b4 solid;
-        
+
             &:first-child {
                 border-top: 1px #b5b4b4 solid;
             }
@@ -191,7 +188,7 @@ $left-width: 340px;
     }
 
     .fa-plus-circle {
-        color: #2E9D32;
+        color: #2e9d32;
         font-size: 21px;
     }
 }
@@ -203,7 +200,7 @@ $left-width: 340px;
     font-size: 15px;
     display: flex;
     align-items: center;
-    color: #A0A0A0;
+    color: #a0a0a0;
 
     .fa {
         font-size: 16px;
@@ -295,7 +292,6 @@ $left-width: 340px;
 
     .field-input {
         width: 100%;
-
     }
 
     .wrap-delete {
@@ -335,15 +331,14 @@ $left-width: 340px;
         text-align: center;
         .fa {
             font-size: 15px;
-            color: #c1495f
+            color: #c1495f;
         }
-
     }
 
     .delete-field:hover {
         opacity: 1;
         .fa {
-            color: #626262
+            color: #626262;
         }
     }
 }

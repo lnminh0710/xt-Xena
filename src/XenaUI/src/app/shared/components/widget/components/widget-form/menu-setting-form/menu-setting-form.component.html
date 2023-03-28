@@ -1,47 +1,77 @@
-<div class="menu-content  ignore-drag">
-    <i class="fa fa-ellipsis-v box-header-btns wg-menu pull-right no-padding-left no-padding-right no-margin-left no-margin-right  ignore-drag"
-       (click)="openMenu($event)"
-       id="btnMenuSetting{{randomNumb}}"></i>
-    <wj-popup #menuSetting
-              class="menu-widget-status-ddl"
-              [ngClass]="{'visibility-hidden': showToolButtons}"
-              (hidden)="wjPopupHidden($event, menuSetting)">
-        <ul class="sub-menu filter-menu filter-menu-top"
-            [ngClass]="{'right': position === 'right'}">
-
-            <li class="menu-list display-field" *ngIf="_column && _column.layoutType === typeForm.Column"
-                [attr.data-index]="0">
+<div class="menu-content ignore-drag">
+    <i
+        class="fa fa-ellipsis-v box-header-btns wg-menu pull-right no-padding-left no-padding-right no-margin-left no-margin-right ignore-drag"
+        (click)="openMenu($event)"
+        id="btnMenuSetting{{ randomNumb }}"
+    ></i>
+    <wj-popup
+        #menuSetting
+        class="menu-widget-status-ddl"
+        [ngClass]="{ 'visibility-hidden': showToolButtons }"
+        (hidden)="wjPopupHidden($event, menuSetting)"
+    >
+        <ul
+            class="sub-menu filter-menu filter-menu-top"
+            [ngClass]="{ right: position === 'right' }"
+        >
+            <li
+                class="menu-list display-field"
+                *ngIf="_column && _column.layoutType === typeForm.Column"
+                [attr.data-index]="0"
+            >
                 <div class="menu-title">
-                    <label-translation [keyword]="'MenuSettingForm__Column'"></label-translation>
+                    <label-translation
+                        [keyword]="'MenuSettingForm__Column'"
+                    ></label-translation>
                 </div>
 
                 <div class="icon-menu">
-                    <a id="liColumnSettingTemplate{{randomNumb}}" (click)="showDialog()"
-                       class="main-setting cursor-pointer">
-                        <i class="fa fa-cog custom-filter__icon" aria-hidden="true"></i>
+                    <a
+                        id="liColumnSettingTemplate{{ randomNumb }}"
+                        (click)="showDialog()"
+                        class="main-setting cursor-pointer"
+                    >
+                        <i
+                            class="fa fa-cog custom-filter__icon"
+                            aria-hidden="true"
+                        ></i>
                     </a>
 
-                    <a [ngClass]="{'disabled': !canDelete}"  id="liColumnDeleteTemplate{{randomNumb}}"
-                       (click)="deleteColumn()"
-                       class="main-setting cursor-pointer">
-                        <i   class="fa fa-trash custom-filter__icon" aria-hidden="true"></i>
+                    <a
+                        [ngClass]="{ disabled: !canDelete }"
+                        id="liColumnDeleteTemplate{{ randomNumb }}"
+                        (click)="deleteColumn()"
+                        class="main-setting cursor-pointer"
+                    >
+                        <i
+                            class="fa fa-trash custom-filter__icon"
+                            aria-hidden="true"
+                        ></i>
                     </a>
-
-
                 </div>
             </li>
 
-            <li class="menu-list display-field" *ngIf="lineBreak && lineBreak.layoutType === typeForm.LineBreak"
-                [attr.data-index]="0">
+            <li
+                class="menu-list display-field"
+                *ngIf="lineBreak && lineBreak.layoutType === typeForm.LineBreak"
+                [attr.data-index]="0"
+            >
                 <div class="menu-title">
-                    <label-translation [keyword]="'MenuSettingForm__LineBreak'"></label-translation>
+                    <label-translation
+                        [keyword]="'MenuSettingForm__LineBreak'"
+                    ></label-translation>
                 </div>
 
                 <div class="icon-menu">
-                    <a id="liLineBreakDeleteTemplate{{randomNumb}}"
-                       (click)="deleteLineBreak()"
-                       class="main-setting cursor-pointer">
-                        <i class="fa fa-trash custom-filter__icon" aria-hidden="true"></i>
+                    <a
+                        id="liLineBreakDeleteTemplate{{ randomNumb }}"
+                        (click)="deleteLineBreak()"
+                        class="main-setting cursor-pointer"
+                    >
+                        <i
+                            class="fa fa-trash custom-filter__icon"
+                            aria-hidden="true"
+                        ></i>
                     </a>
 
                     <!--<a id="liLineBreakSettingTemplate{{randomNumb}}" (click)="showDialog()"-->
@@ -51,37 +81,62 @@
                 </div>
             </li>
 
-            <li class="menu-list display-field" *ngIf="_panel && _panel.layoutType === typeForm.Panel"
-                [attr.data-index]="0">
+            <li
+                class="menu-list display-field"
+                *ngIf="_panel && _panel.layoutType === typeForm.Panel"
+                [attr.data-index]="0"
+            >
                 <div class="menu-title">
-                    <label-translation [keyword]="'MenuSettingForm__Panel'"></label-translation>
-
+                    <label-translation
+                        [keyword]="'MenuSettingForm__Panel'"
+                    ></label-translation>
                 </div>
                 <div class="icon-menu">
-                    <a id="liPanelSettingTemplate{{randomNumb}}" (click)="showSettingPanel()"
-                       class="main-setting cursor-pointer">
-                        <i class="fa fa-cog custom-filter__icon" aria-hidden="true"></i>
+                    <a
+                        id="liPanelSettingTemplate{{ randomNumb }}"
+                        (click)="showSettingPanel()"
+                        class="main-setting cursor-pointer"
+                    >
+                        <i
+                            class="fa fa-cog custom-filter__icon"
+                            aria-hidden="true"
+                        ></i>
                     </a>
 
-                    <a id="liPanelDeleteTemplate{{randomNumb}}"
-                       (click)="deletePanel()"
-                       class="main-setting cursor-pointer">
-                        <i class="fa fa-trash custom-filter__icon" aria-hidden="true"></i>
+                    <a
+                        id="liPanelDeleteTemplate{{ randomNumb }}"
+                        (click)="deletePanel()"
+                        class="main-setting cursor-pointer"
+                    >
+                        <i
+                            class="fa fa-trash custom-filter__icon"
+                            aria-hidden="true"
+                        ></i>
                     </a>
                 </div>
-
             </li>
 
-            <li class="menu-list display-field" *ngIf="_control && _control.layoutType === typeForm.Control"
-                [attr.data-index]="0">
+            <li
+                class="menu-list display-field"
+                *ngIf="_control && _control.layoutType === typeForm.Control"
+                [attr.data-index]="0"
+            >
                 <div class="menu-title">
-                    <label-translation [keyword]="'MenuSettingForm__Field'"></label-translation>
+                    <label-translation
+                        [keyword]="'MenuSettingForm__Field'"
+                    ></label-translation>
                 </div>
 
                 <div class="icon-menu">
-                    <a id="liSettingTemplate{{randomNumb}}" (click)="showSettingField()"
-                       class="main-setting cursor-pointer">
-                        <i class="fa fa-cog custom-filter__icon" aria-hidden="true"></i>
+                    <a
+                        id="liSettingTemplate{{ randomNumb }}"
+                        (click)="showSettingField()"
+                        class="main-setting cursor-pointer"
+                    >
+                        <i
+                            class="fa fa-cog custom-filter__icon"
+                            aria-hidden="true"
+                        ></i>
                     </a>
                 </div>
             </li>

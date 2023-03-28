@@ -6,41 +6,40 @@ import {
     OnDestroy,
     ViewChild,
     EventEmitter,
-    ChangeDetectorRef
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {Uti} from 'app/utilities';
+    ChangeDetectorRef,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Uti } from "app/utilities";
 import {
     CommonService,
     CampaignService,
     AppErrorHandler,
     DownloadFileService,
-    ModalService, DomHandler
-} from 'app/services';
-import {
-    ComboBoxTypeConstant} from 'app/app.constants';
-import {ApiResultResponse} from 'app/models';
-import cloneDeep from 'lodash-es/cloneDeep';
-import {XnFileUti} from '../xn-file.uti';
-import {AngularMultiSelect} from "../../xn-control/xn-dropdown";
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
+    ModalService,
+    DomHandler,
+} from "app/services";
+import { ComboBoxTypeConstant } from "app/app.constants";
+import { ApiResultResponse } from "app/models";
+import cloneDeep from "lodash-es/cloneDeep";
+import { XnFileUti } from "../xn-file.uti";
+import { AngularMultiSelect } from "../../xn-control/xn-dropdown";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
 
 @Component({
-    selector: 'list-template-of-file',
-    styleUrls: ['./list-template-of-file.component.scss'],
-    templateUrl: './list-template-of-file.component.html'
+    selector: "list-template-of-file",
+    styleUrls: ["./list-template-of-file.component.scss"],
+    templateUrl: "./list-template-of-file.component.html",
 })
-export class ListTemplateOfFileComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ListTemplateOfFileComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public labelList: Array<string> = [];
     public templates: Array<any> = [];
     public template: any;
     public isModeEditing = false;
-    public templateId = '';
+    public templateId = "";
     // public templateFileName = '';
     public isDisableDownloadButton = true;
     public objMediaOriginalName: any;
@@ -50,10 +49,10 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
     private isTemplateFocus = false;
     private treeViewFileExtention: any = [];
     private _listenKeyRequestItem: any = [];
-    private selectedTemplateId: any = '';
+    private selectedTemplateId: any = "";
 
     @Input() set inputData(data: any) {
-        this.templateId = data ? data.templateId.toString() : '';
+        this.templateId = data ? data.templateId.toString() : "";
         this.setSelectedItemForDropdownlist(this.templateId);
     }
 
@@ -79,7 +78,7 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
     @Output() onTemplateFileChangeAction = new EventEmitter<any>();
     @Output() onDataLoadedAction = new EventEmitter<any>();
     @Output() outTemplatesAction = new EventEmitter<any>();
-    @ViewChild('templateCtr') templateCtr: AngularMultiSelect;
+    @ViewChild("templateCtr") templateCtr: AngularMultiSelect;
 
     constructor(
         private commonService: CommonService,
@@ -90,7 +89,8 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
         private _changeDetectorRef: ChangeDetectorRef,
         private _toasterService: ToasterService,
         private domHandler: DomHandler,
-        router?: Router) {
+        router?: Router
+    ) {
         super(router);
     }
 
@@ -104,37 +104,44 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
 
     public changeTemplate() {
         this.getLabelListByTemplateId(this.templateCtr.selectedValue);
-        this.objMediaOriginalName = this.templates.find(v => v.idValue === this.templateCtr.selectedValue);
+        this.objMediaOriginalName = this.templates.find(
+            (v) => v.idValue === this.templateCtr.selectedValue
+        );
         if (!this.isTemplateFocus) return;
         this.selectedTemplateId = this.templateCtr.selectedValue;
     }
 
     public onFocusTemplate() {
         this.isTemplateFocus = true;
-        this.templateCtr.isDroppedDown = true
+        this.templateCtr.isDroppedDown = true;
     }
 
     public resetData(isKeepSelectedTemplateId?: boolean) {
         this.isTemplateFocus = false;
-        if (!isKeepSelectedTemplateId)
-            this.selectedTemplateId = '';
+        if (!isKeepSelectedTemplateId) this.selectedTemplateId = "";
         this.getTemplateData();
     }
 
     public downloadFileClick() {
         if (!this.templateCtr) {
-            this._toasterService.pop('warning', 'Warning', 'The file is null');
+            this._toasterService.pop("warning", "Warning", "The file is null");
             return;
         }
-        const {mediaName, mediaOriginalName, mediaRelativePath} = this.templateCtr.selectedItem;
+        const { mediaName, mediaOriginalName, mediaRelativePath } =
+            this.templateCtr.selectedItem;
         if (!mediaName || !mediaOriginalName || !mediaRelativePath) {
-            this._toasterService.pop('warning', 'Warning', 'The file is null');
+            this._toasterService.pop("warning", "Warning", "The file is null");
             return;
         }
-        const url = Uti.getFileUrl(mediaName, null, mediaOriginalName, mediaRelativePath);
-        const a = document.createElement('a');
+        const url = Uti.getFileUrl(
+            mediaName,
+            null,
+            mediaOriginalName,
+            mediaRelativePath
+        );
+        const a = document.createElement("a");
         a.href = url;
-        a.download = 'result';
+        a.download = "result";
         document.body.appendChild(a);
         a.click();
 
@@ -152,20 +159,27 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
             return;
         }
         setTimeout(() => {
-            const index = this.templates.findIndex(x => x.idValue == templateId) || (this.templates.length > 0 ? 0 : -1);
+            const index =
+                this.templates.findIndex((x) => x.idValue == templateId) ||
+                (this.templates.length > 0 ? 0 : -1);
             this.templateCtr.selectedIndex = index;
         });
     }
 
     private loadTreeViewFileExtention() {
-        this.commonService.getListComboBox(ComboBoxTypeConstant.treeMediaType).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response) || !response.item.treeMediaType) {
-                    return;
-                }
-                this.treeViewFileExtention = response.item.treeMediaType;
+        this.commonService
+            .getListComboBox(ComboBoxTypeConstant.treeMediaType)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.treeMediaType
+                    ) {
+                        return;
+                    }
+                    this.treeViewFileExtention = response.item.treeMediaType;
+                });
             });
-        });
     }
 
     private getLabelListByTemplateId(templateId: any) {
@@ -181,13 +195,16 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
             return;
         }
         if (this.getDataFromCached(templateId)) return;
-        this.campaignService.listDocumentTemplateColumnName(templateId)
+        this.campaignService
+            .listDocumentTemplateColumnName(templateId)
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
                         this.labelList.length = 0;
                     } else {
-                        this.labelList = this.buildLabelListFromRawData(response.item.data[0][0].SQLQueryColumnName);
+                        this.labelList = this.buildLabelListFromRawData(
+                            response.item.data[0][0].SQLQueryColumnName
+                        );
                     }
                     this.setTemplateFileName();
                     this.pushDataToCached(templateId, this.labelList);
@@ -203,8 +220,8 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
     private buildLabelListFromRawData(rawData: string): Array<string> {
         const tableData = XnFileUti.builDataSourceFromSqlText(rawData, true);
         if (!tableData || !tableData.length) return [];
-        return tableData.map(x => {
-            return x.DataField
+        return tableData.map((x) => {
+            return x.DataField;
         });
     }
 
@@ -222,39 +239,62 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
         return {
             MediaOriginalName: this.templateCtr.selectedItem.mediaOriginalName,
             MediaName: this.templateCtr.selectedItem.mediaName,
-            Content: this.labelList.join(';')
+            Content: this.labelList.join(";"),
         };
     }
 
     private setOutputData() {
-        if (!this.templateCtr || !this.allowEdit || !this.templateCtr.selectedValue) {
+        if (
+            !this.templateCtr ||
+            !this.allowEdit ||
+            !this.templateCtr.selectedValue
+        ) {
             this.outputData.emit(null);
             return;
         }
         this.outputData.emit({
             data: {
                 idValue: this.templateCtr.selectedValue,
-                textValue: (this.templates.find(x => x.idValue == this.templateCtr.selectedValue) || {}).textValue,
-                mediaOriginalName: (this.templates.find(x => x.idValue == this.templateCtr.selectedValue) || {}).mediaOriginalName
+                textValue: (
+                    this.templates.find(
+                        (x) => x.idValue == this.templateCtr.selectedValue
+                    ) || {}
+                ).textValue,
+                mediaOriginalName: (
+                    this.templates.find(
+                        (x) => x.idValue == this.templateCtr.selectedValue
+                    ) || {}
+                ).mediaOriginalName,
             },
-            dirty: this.isTemplateFocus
+            dirty: this.isTemplateFocus,
         });
     }
 
     private setTemplateFileName() {
         if (this.templateCtr.selectedItem) {
-        const {mediaOriginalName, mediaName, mediaRelativePath} = this.templateCtr.selectedItem;
-        this.isDisableDownloadButton = (!mediaOriginalName && !mediaName && !mediaRelativePath);
-        this.onTemplateFileChangeAction.emit(this.getFileTemplateOutputData());
+            const { mediaOriginalName, mediaName, mediaRelativePath } =
+                this.templateCtr.selectedItem;
+            this.isDisableDownloadButton =
+                !mediaOriginalName && !mediaName && !mediaRelativePath;
+            this.onTemplateFileChangeAction.emit(
+                this.getFileTemplateOutputData()
+            );
         }
     }
 
     private getDataFromCached(idRepAppSystemColumnNameTemplate: any) {
-        const currentItem = this.cachedData.find(x => x.idRepAppSystemColumnNameTemplate == idRepAppSystemColumnNameTemplate);
+        const currentItem = this.cachedData.find(
+            (x) =>
+                x.idRepAppSystemColumnNameTemplate ==
+                idRepAppSystemColumnNameTemplate
+        );
         if (currentItem && currentItem.data && currentItem.data.length) {
             this.labelList = cloneDeep(currentItem.data);
-            this.isDisableDownloadButton = (!this.labelList || !this.labelList.length);
-            this.onTemplateFileChangeAction.emit(this.getFileTemplateOutputData());
+            this.isDisableDownloadButton =
+                !this.labelList || !this.labelList.length;
+            this.onTemplateFileChangeAction.emit(
+                this.getFileTemplateOutputData()
+            );
             this.setOutputData();
             if (this.waitDataLoadingWhenDownload) {
                 this.onDataLoadedAction.emit();
@@ -268,7 +308,7 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
     private pushDataToCached(idRepAppSystemColumnNameTemplate: any, data: any) {
         this.cachedData.push({
             idRepAppSystemColumnNameTemplate: idRepAppSystemColumnNameTemplate,
-            data: cloneDeep(data)
+            data: cloneDeep(data),
         });
     }
 
@@ -280,25 +320,38 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
             this.timeoutGetTemplateData = null;
         }
         this.timeoutGetTemplateData = setTimeout(() => {
-            if (this._listenKeyRequestItem && this._listenKeyRequestItem.item && this._listenKeyRequestItem.item.IdCountrylanguage) {
-                this.commonService.getComboBoxDataByFilter(ComboBoxTypeConstant.repAppSystemColumnNameTemplate
-                    , this._listenKeyRequestItem.item.IdCountrylanguage
-                    , null,
-                    true)
+            if (
+                this._listenKeyRequestItem &&
+                this._listenKeyRequestItem.item &&
+                this._listenKeyRequestItem.item.IdCountrylanguage
+            ) {
+                this.commonService
+                    .getComboBoxDataByFilter(
+                        ComboBoxTypeConstant.repAppSystemColumnNameTemplate,
+                        this._listenKeyRequestItem.item.IdCountrylanguage,
+                        null,
+                        true
+                    )
                     .subscribe((response: ApiResultResponse) => {
                         this.appErrorHandler.executeAction(() => {
-                            if (!Uti.isResquestSuccess(response) || !Uti.getDataOfFirstProperty(response.item)) {
+                            if (
+                                !Uti.isResquestSuccess(response) ||
+                                !Uti.getDataOfFirstProperty(response.item)
+                            ) {
                                 this.templates.length = 0;
-                                this.templateCtr.text = '';
+                                this.templateCtr.text = "";
                                 this.reSetLabels();
                                 this.detectChanges();
                                 return;
                             }
                             this.templates.length = 0;
-                            this.templates = this.appendEmptyItem(response.item) || [];
+                            this.templates =
+                                this.appendEmptyItem(response.item) || [];
                             this.detectChanges();
                             this.outTemplatesAction.emit(this.templates);
-                            this.setSelectedItemForDropdownlist(this.templateId);
+                            this.setSelectedItemForDropdownlist(
+                                this.templateId
+                            );
                             this.keepCurrentSelectedTemplate();
                         });
                     });
@@ -310,7 +363,9 @@ export class ListTemplateOfFileComponent extends BaseComponent implements OnInit
         setTimeout(() => {
             if (!this.selectedTemplateId) return;
             if (!this.templateCtr.selectedValue) {
-                this.templateCtr.selectedIndex = this.templates.findIndex(x => x.idValue == this.selectedTemplateId);
+                this.templateCtr.selectedIndex = this.templates.findIndex(
+                    (x) => x.idValue == this.selectedTemplateId
+                );
             }
         });
     }

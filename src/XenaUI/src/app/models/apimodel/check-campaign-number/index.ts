@@ -1,1 +1,1 @@
-export * from './check-campaign-number.model';
+export * from "./check-campaign-number.model";

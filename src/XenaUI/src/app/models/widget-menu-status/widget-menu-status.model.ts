@@ -7,58 +7,99 @@ export class WidgetMenuStatusModel {
     public class: WidgetMenuStatusClassModel = new WidgetMenuStatusClassModel();
 
     //Settings for Grid
-    public btnSettingGrid: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public btnSettingGrid: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
     //Settings for Form
-    public btnSettingForm: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public btnSettingForm: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
     //Settings for Grid and Form
-    public btnSettingGridAndForm: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public btnSettingGridAndForm: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
 
-    public btnToolbar: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnRefresh: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnBackToWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();//Back to Widget
-    public btnEditForm: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnEditEditableTable: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnEditWidgetOptions: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnEditCountryWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnEditTreeViewWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnUploadFileWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public btnToolbar: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnRefresh: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnBackToWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel(); //Back to Widget
+    public btnEditForm: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnEditEditableTable: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnEditWidgetOptions: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnEditCountryWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnEditTreeViewWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnUploadFileWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
 
-    public btnWidgetTranslation: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnWidgetTranslationOptions: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public btnWidgetTranslation: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnWidgetTranslationOptions: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
 
-    public btnAddPerson: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnAddRowForEditableTableWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnAddNoteForm: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnPrintWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnArticleNameTranslation: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnGoToNextcolumnOrRow: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnEditTemplate: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnTableFieldsTranslate: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnSaveSettings: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnOpenUserRoleDialog: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnOpenTranslateForCombineWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnOpenNewWindow: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnResetWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public btnAddPerson: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnAddRowForEditableTableWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnAddNoteForm: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnPrintWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnArticleNameTranslation: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnGoToNextcolumnOrRow: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnEditTemplate: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnTableFieldsTranslate: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnSaveSettings: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnOpenUserRoleDialog: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnOpenTranslateForCombineWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnOpenNewWindow: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnResetWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
 
-    public btnSaveCountryWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnSaveTreeViewWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnSaveWidgetForm: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnSaveFileExplorerWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnSaveEditableTableWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnSaveDesignColumnLayout: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnSaveNoteForm: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnPrintAndConfirm: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public btnSaveCountryWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnSaveTreeViewWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnSaveWidgetForm: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnSaveFileExplorerWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnSaveEditableTableWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnSaveDesignColumnLayout: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnSaveNoteForm: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnPrintAndConfirm: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
 
-    public btnSupportSearch: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnSupportExcelExport: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
-    public btnMaximizeWidget: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();//Toggle: true: maximize, false: restore
+    public btnSupportSearch: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnSupportExcelExport: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
+    public btnMaximizeWidget: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel(); //Toggle: true: maximize, false: restore
 
-    public btnSavePaymentTypeForm: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public btnSavePaymentTypeForm: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
 
-    public btnSaveSAVTemplateForm: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public btnSaveSAVTemplateForm: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
 
     //Textbox/ Input
-    public txtFilterTable: WidgetMenuStatusPropertyModel = new WidgetMenuStatusPropertyModel();
+    public txtFilterTable: WidgetMenuStatusPropertyModel =
+        new WidgetMenuStatusPropertyModel();
 
     public constructor(init?: Partial<WidgetMenuStatusModel>) {
         Object.assign(this, init);
@@ -75,15 +116,21 @@ export class WidgetMenuStatusModel {
     public hasRightToolbarButton_FieldTranslateButton: boolean = false;
 
     public getAccessRightForCommandButton(buttonName: string): boolean {
-        if (this.accessRight && this.accessRight['orderDataEntry']) return true;
+        if (this.accessRight && this.accessRight["orderDataEntry"]) return true;
 
-        if (!this.accessRight || !this.accessRight[AccessRightWidgetCommandButtonEnum[buttonName]]) return false;
+        if (
+            !this.accessRight ||
+            !this.accessRight[AccessRightWidgetCommandButtonEnum[buttonName]]
+        )
+            return false;
 
-        return this.accessRight[AccessRightWidgetCommandButtonEnum[buttonName]]['read'];
+        return this.accessRight[AccessRightWidgetCommandButtonEnum[buttonName]][
+            "read"
+        ];
     }
 
     public getAccessRight(commandName: string): boolean {
-        if (this.accessRight && this.accessRight['orderDataEntry']) return true;
+        if (this.accessRight && this.accessRight["orderDataEntry"]) return true;
 
         return this.accessRight[commandName];
     }
@@ -91,15 +138,27 @@ export class WidgetMenuStatusModel {
     public setAccessRight(accessRight: any) {
         this.accessRight = accessRight;
 
-        this.hasRightEdit = this.getAccessRight('edit');
-        this.hasRightDelete = this.getAccessRight('delete');
+        this.hasRightEdit = this.getAccessRight("edit");
+        this.hasRightDelete = this.getAccessRight("delete");
 
-        this.hasRightSettingButton = this.getAccessRightForCommandButton('SettingButton');
-        this.hasRightToolbarButton = this.getAccessRightForCommandButton('ToolbarButton');
-        this.hasRightToolbarButton_TranslateButton = this.getAccessRightForCommandButton('ToolbarButton__TranslateButton');
-        this.hasRightToolbarButton_PrintButton = this.getAccessRightForCommandButton('ToolbarButton__PrintButton');
-        this.hasRightToolbarButton_EditTemplateButton = this.getAccessRightForCommandButton('ToolbarButton__EditTemplateButton');
-        this.hasRightToolbarButton_FieldTranslateButton = this.getAccessRightForCommandButton('ToolbarButton__FieldTranslateButton');
+        this.hasRightSettingButton =
+            this.getAccessRightForCommandButton("SettingButton");
+        this.hasRightToolbarButton =
+            this.getAccessRightForCommandButton("ToolbarButton");
+        this.hasRightToolbarButton_TranslateButton =
+            this.getAccessRightForCommandButton(
+                "ToolbarButton__TranslateButton"
+            );
+        this.hasRightToolbarButton_PrintButton =
+            this.getAccessRightForCommandButton("ToolbarButton__PrintButton");
+        this.hasRightToolbarButton_EditTemplateButton =
+            this.getAccessRightForCommandButton(
+                "ToolbarButton__EditTemplateButton"
+            );
+        this.hasRightToolbarButton_FieldTranslateButton =
+            this.getAccessRightForCommandButton(
+                "ToolbarButton__FieldTranslateButton"
+            );
     }
     //#endregion
 }

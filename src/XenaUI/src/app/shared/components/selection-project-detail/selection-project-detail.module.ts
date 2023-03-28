@@ -4,7 +4,7 @@ import { SelectionProjectDetailComponent } from "./selection-project-detail.comp
 import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { XnAgGridModule } from "../xn-control/xn-ag-grid";
 import { AngularSplitModule } from "angular-split";
-import { XnTooltipModule } from 'app/shared/directives/xn-tooltip/xn-tooltip.module';
+import { XnTooltipModule } from "app/shared/directives/xn-tooltip/xn-tooltip.module";
 
 @NgModule({
     imports: [
@@ -14,11 +14,7 @@ import { XnTooltipModule } from 'app/shared/directives/xn-tooltip/xn-tooltip.mod
         AngularSplitModule,
         XnTooltipModule,
     ],
-    declarations: [
-        SelectionProjectDetailComponent
-    ],
-    exports: [
-        SelectionProjectDetailComponent
-    ]
+    declarations: [SelectionProjectDetailComponent],
+    exports: [SelectionProjectDetailComponent],
 })
-export class SelectionProjectDetailModule { }
+export class SelectionProjectDetailModule {}

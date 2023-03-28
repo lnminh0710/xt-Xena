@@ -12,9 +12,9 @@ import { ParkedItemProjectStatusComponent } from "./parked-item-project-status";
 import { DndModule } from "ng2-dnd";
 import { DragulaModule } from "ng2-dragula";
 import { FormsModule } from "@angular/forms";
-import { XnTooltipModule } from 'app/shared/directives/xn-tooltip/xn-tooltip.module';
+import { XnTooltipModule } from "app/shared/directives/xn-tooltip/xn-tooltip.module";
 import { LabelTranslationModule } from "app/shared/components/label-translation/label-translation.module";
-import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-translation';
+import { XnResourceTranslationModule } from "app/shared/directives/xn-resource-translation";
 
 @NgModule({
     imports: [
@@ -28,7 +28,7 @@ import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-t
         DragulaModule,
         XnTooltipModule,
         LabelTranslationModule,
-        XnResourceTranslationModule
+        XnResourceTranslationModule,
     ],
     declarations: [
         ParkedItemComponent,
@@ -40,7 +40,7 @@ import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-t
     exports: [
         ParkedItemComponent,
         ParkedItemListComponent,
-        ParkedItemProjectStatusComponent
-    ]
+        ParkedItemProjectStatusComponent,
+    ],
 })
-export class ParkedItemModule { }
+export class ParkedItemModule {}

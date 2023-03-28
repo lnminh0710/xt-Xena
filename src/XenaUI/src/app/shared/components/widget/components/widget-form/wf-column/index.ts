@@ -1,1 +1,1 @@
-export { WfColumnComponent } from './wf-column.component';
+export { WfColumnComponent } from "./wf-column.component";

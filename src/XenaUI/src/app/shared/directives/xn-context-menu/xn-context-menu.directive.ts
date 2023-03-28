@@ -1,21 +1,18 @@
-import { Directive, Input, OnInit, OnDestroy, ElementRef } from '@angular/core';
-import { ContextMenuService, AppErrorHandler } from 'app/services';
-import { Subscription } from 'rxjs/Subscription';
-import {
-    Store,
-    ReducerManagerDispatcher
-} from '@ngrx/store';
+import { Directive, Input, OnInit, OnDestroy, ElementRef } from "@angular/core";
+import { ContextMenuService, AppErrorHandler } from "app/services";
+import { Subscription } from "rxjs/Subscription";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
 import {
     ProcessDataActions,
-    CustomAction
-} from 'app/state-management/store/actions';
+    CustomAction,
+} from "app/state-management/store/actions";
 
 @Directive({
-    selector: '[context-menu-directive]',
-    host: { '(contextmenu)': 'rightClicked($event)' }
+    selector: "[context-menu-directive]",
+    host: { "(contextmenu)": "rightClicked($event)" },
 })
 export class XnContextMenuDirective implements OnInit, OnDestroy {
-    @Input('context-menu-directive') menus: Array<any>;
+    @Input("context-menu-directive") menus: Array<any>;
     @Input() waiting = false;
     @Input() wantToLeftClick = true;
     @Input() isShowMenu = true;
@@ -26,10 +23,12 @@ export class XnContextMenuDirective implements OnInit, OnDestroy {
     private dontWantToShowContextSubscription: Subscription;
     private dontWantToShowContextMenu: boolean = false;
 
-    constructor(private contextMenuService: ContextMenuService,
+    constructor(
+        private contextMenuService: ContextMenuService,
         private elementRef: ElementRef,
         private dispatcher: ReducerManagerDispatcher,
-        private appErrorHandler: AppErrorHandler) {}
+        private appErrorHandler: AppErrorHandler
+    ) {}
 
     ngOnInit() {
         this.subcribeDontWantToShowContext();
@@ -49,8 +48,7 @@ export class XnContextMenuDirective implements OnInit, OnDestroy {
                 this.dontWantToShowContextMenu = false;
                 return;
             }
-            if (!this.menus || !this.menus.length || !this.isShowMenu)
-                return;
+            if (!this.menus || !this.menus.length || !this.isShowMenu) return;
 
             if (this.wantToLeftClick && !this.isLeftClicked) {
                 $(event.srcElement).click();
@@ -71,7 +69,10 @@ export class XnContextMenuDirective implements OnInit, OnDestroy {
             }
             setTimeout(() => {
                 setTimeout(() => {
-                    this.contextMenuService.show.next({ event: event, obj: this.menus });
+                    this.contextMenuService.show.next({
+                        event: event,
+                        obj: this.menus,
+                    });
                     this.isLeftClicked = false;
                     this.waitingTimes = 0;
                 }, timeout);
@@ -80,17 +81,22 @@ export class XnContextMenuDirective implements OnInit, OnDestroy {
     }
 
     private subcribeDontWantToShowContext() {
-        this.dontWantToShowContextSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.DONT_WANT_TO_SHOW_CONTEXT_MENU;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                // console.log('set');
-                this.dontWantToShowContextMenu = true;
-                setTimeout(() => {
-                    this.dontWantToShowContextMenu = false;
-                }, 500);
+        this.dontWantToShowContextSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                    ProcessDataActions.DONT_WANT_TO_SHOW_CONTEXT_MENU
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    // console.log('set');
+                    this.dontWantToShowContextMenu = true;
+                    setTimeout(() => {
+                        this.dontWantToShowContextMenu = false;
+                    }, 500);
+                });
             });
-        });
     }
 
     private isIgnore(event: MouseEvent) {
@@ -102,9 +108,11 @@ export class XnContextMenuDirective implements OnInit, OnDestroy {
 
     private hasIgnoreClass(element: any) {
         if (!element || element == this.elementRef.nativeElement) return false;
-        if (element.className &&
-            typeof element.className === 'string' &&
-            element.className.indexOf('ignore-context-menu') > -1) {
+        if (
+            element.className &&
+            typeof element.className === "string" &&
+            element.className.indexOf("ignore-context-menu") > -1
+        ) {
             return true;
         }
         if (this.recursiveCounter > 1000) return false;

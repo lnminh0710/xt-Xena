@@ -1,10 +1,16 @@
-import * as wjcChartRadar from 'wijmo/wijmo.chart.radar';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector } from '@angular/core';
-import { OnInit, OnDestroy } from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcChartRadar from "wijmo/wijmo.chart.radar";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import { ElementRef, Injector } from "@angular/core";
+import { OnInit, OnDestroy } from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjFlexRadarMeta: IWjComponentMeta;
-export declare class WjFlexRadar extends wjcChartRadar.FlexRadar implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexRadar
+    extends wjcChartRadar.FlexRadar
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -23,12 +29,20 @@ export declare class WjFlexRadar extends wjcChartRadar.FlexRadar implements OnIn
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
     tooltipContent: any;
     labelContent: any;
 }
 export declare var wjFlexRadarAxisMeta: IWjComponentMeta;
-export declare class WjFlexRadarAxis extends wjcChartRadar.FlexRadarAxis implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexRadarAxis
+    extends wjcChartRadar.FlexRadarAxis
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -42,7 +56,10 @@ export declare class WjFlexRadarAxis extends wjcChartRadar.FlexRadarAxis impleme
     ngOnDestroy(): void;
 }
 export declare var wjFlexRadarSeriesMeta: IWjComponentMeta;
-export declare class WjFlexRadarSeries extends wjcChartRadar.FlexRadarSeries implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexRadarSeries
+    extends wjcChartRadar.FlexRadarSeries
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -58,5 +75,4 @@ export declare class WjFlexRadarSeries extends wjcChartRadar.FlexRadarSeries imp
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
 }
-export declare class WjChartRadarModule {
-}
+export declare class WjChartRadarModule {}

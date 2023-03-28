@@ -1,7 +1,14 @@
-import { EventEmitter, AfterViewInit, ComponentFactoryResolver } from '@angular/core';
-import { ElementRef, Injector } from '@angular/core';
-import { OnInit, OnDestroy } from '@angular/core';
-import { IWjComponentMetadata, IWjDirectiveMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import {
+    EventEmitter,
+    AfterViewInit,
+    ComponentFactoryResolver,
+} from "@angular/core";
+import { ElementRef, Injector } from "@angular/core";
+import { OnInit, OnDestroy } from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjDirectiveMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjTooltipMeta: IWjDirectiveMeta;
 export declare class WjTooltip implements OnInit, OnDestroy, AfterViewInit {
     private static _toolTip;
@@ -27,7 +34,10 @@ export declare class WjComponentLoader implements OnInit {
     private _isInit;
     private _anchor;
     propertiesChange: EventEmitter<{}>;
-    constructor(_cmpResolver: ComponentFactoryResolver, _elementRef: ElementRef);
+    constructor(
+        _cmpResolver: ComponentFactoryResolver,
+        _elementRef: ElementRef
+    );
     component: any;
     properties: Object;
     ngOnInit(): void;
@@ -35,5 +45,4 @@ export declare class WjComponentLoader implements OnInit {
     private _updateProperties();
     private _addPropListener(component, propName, propChange);
 }
-export declare class WjCoreModule {
-}
+export declare class WjCoreModule {}

@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { XnOnlyNumberDirective } from './xn-only-number.directive';
+import { NgModule } from "@angular/core";
+import { XnOnlyNumberDirective } from "./xn-only-number.directive";
 
 @NgModule({
     imports: [],
     declarations: [XnOnlyNumberDirective],
     exports: [XnOnlyNumberDirective],
-    providers: []
+    providers: [],
 })
-export class XnOnlyNumberModule { }
+export class XnOnlyNumberModule {}

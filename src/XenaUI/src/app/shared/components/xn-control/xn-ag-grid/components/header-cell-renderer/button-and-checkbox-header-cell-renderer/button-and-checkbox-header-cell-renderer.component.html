@@ -1,18 +1,24 @@
-<base-header-cell-renderer [params]="params"
-                           [template]="template"
-                           [contentStyle]="'text-center full-width-height'">
+<base-header-cell-renderer
+    [params]="params"
+    [template]="template"
+    [contentStyle]="'text-center full-width-height'"
+>
 </base-header-cell-renderer>
 
 <ng-template #template>
     <span class="inline-block">
-        <span *ngIf="colDef">{{colDef.headerName}}</span>
-        <mat-checkbox color="primary"
-                      *ngIf="componentParent &&
-                            !componentParent.disabledAll &&
-                            !componentParent.dontShowCheckBoxHeader"
-                      [(ngModel)]="value"
-                      (click)="onClick($event)"
-                      (change)="onCheckboxChange($event)">
+        <span *ngIf="colDef">{{ colDef.headerName }}</span>
+        <mat-checkbox
+            color="primary"
+            *ngIf="
+                componentParent &&
+                !componentParent.disabledAll &&
+                !componentParent.dontShowCheckBoxHeader
+            "
+            [(ngModel)]="value"
+            (click)="onClick($event)"
+            (change)="onCheckboxChange($event)"
+        >
         </mat-checkbox>
     </span>
 </ng-template>

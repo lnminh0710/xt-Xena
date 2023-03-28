@@ -1,8 +1,13 @@
-import { Action } from '@ngrx/store';
-import { ReturnRefundActions } from 'app/state-management/store/actions';
-import { ReturnPaymentModel, FormOutputModel, ArticleOrder, ReturnRefundInvoiceNumberModel } from 'app/models';
-import { CustomAction } from 'app/state-management/store/actions/base';
-import * as baseReducer from 'app/state-management/store/reducer/reducer.base';
+import { Action } from "@ngrx/store";
+import { ReturnRefundActions } from "app/state-management/store/actions";
+import {
+    ReturnPaymentModel,
+    FormOutputModel,
+    ArticleOrder,
+    ReturnRefundInvoiceNumberModel,
+} from "app/models";
+import { CustomAction } from "app/state-management/store/actions/base";
+import * as baseReducer from "app/state-management/store/reducer/reducer.base";
 
 export interface SubReturnRefundState {
     refundPaymentData: FormOutputModel;
@@ -25,81 +30,88 @@ export const initialSubReturnRefundState: SubReturnRefundState = {
 };
 
 export interface ReturnRefundState {
-    features: { [id: string]: SubReturnRefundState }
+    features: { [id: string]: SubReturnRefundState };
 }
 
 const initialState: ReturnRefundState = {
-    features: {}
+    features: {},
 };
 
-export function returnRefundReducer(state = initialState, action: CustomAction): ReturnRefundState {
-    let feature = baseReducer.getFeature(action, state, initialSubReturnRefundState);
+export function returnRefundReducer(
+    state = initialState,
+    action: CustomAction
+): ReturnRefundState {
+    let feature = baseReducer.getFeature(
+        action,
+        state,
+        initialSubReturnRefundState
+    );
     switch (action.type) {
-        case ReturnRefundActions.SET_REFUND_PAYMENT: {           
+        case ReturnRefundActions.SET_REFUND_PAYMENT: {
             state = baseReducer.updateStateData(action, feature, state, {
-                refundPaymentData: action.payload
+                refundPaymentData: action.payload,
             });
             return Object.assign({}, state);
         }
         case ReturnRefundActions.CLEAR_REFUND_PAYMENT: {
             state = baseReducer.updateStateData(action, feature, state, {
-                refundPaymentData: null
+                refundPaymentData: null,
             });
             return Object.assign({}, state);
         }
 
         case ReturnRefundActions.UPDATE_INVOICE_NUMBER_DATA: {
             state = baseReducer.updateStateData(action, feature, state, {
-                invoiceNumberData: action.payload
+                invoiceNumberData: action.payload,
             });
             return Object.assign({}, state);
         }
 
         case ReturnRefundActions.SET_RETURN_PAYMENT: {
             state = baseReducer.updateStateData(action, feature, state, {
-                returnPaymentData: action.payload
+                returnPaymentData: action.payload,
             });
             return Object.assign({}, state);
         }
 
         case ReturnRefundActions.SET_KEEP_ARTICLE_ORDERS: {
             state = baseReducer.updateStateData(action, feature, state, {
-                keepArticleOrders: action.payload
+                keepArticleOrders: action.payload,
             });
             return Object.assign({}, state);
         }
 
         case ReturnRefundActions.SET_KEEP_ARTICLE_ORDERS_VALID: {
             state = baseReducer.updateStateData(action, feature, state, {
-                keepArticleOrdersValid: action.payload
+                keepArticleOrdersValid: action.payload,
             });
             return Object.assign({}, state);
         }
 
         case ReturnRefundActions.SET_ALL_EDIT_ARTICLE_ORDERS: {
             state = baseReducer.updateStateData(action, feature, state, {
-                allEditArticleOrders: action.payload
+                allEditArticleOrders: action.payload,
             });
             return Object.assign({}, state);
         }
 
         case ReturnRefundActions.CLEAR_KEEP_ARTICLE_ORDERS: {
             state = baseReducer.updateStateData(action, feature, state, {
-                keepArticleOrders: null
+                keepArticleOrders: null,
             });
             return Object.assign({}, state);
         }
 
         case ReturnRefundActions.CLEAR_ALL_EDIT_ARTICLE_ORDERS: {
             state = baseReducer.updateStateData(action, feature, state, {
-                allEditArticleOrders: null
+                allEditArticleOrders: null,
             });
             return Object.assign({}, state);
         }
 
         case ReturnRefundActions.REQUEST_UPDATE_INVOICE_NEW_DATA: {
             state = baseReducer.updateStateData(action, feature, state, {
-                invoiceNewData: action.payload
+                invoiceNewData: action.payload,
             });
             return Object.assign({}, state);
         }

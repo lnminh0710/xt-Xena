@@ -1,18 +1,17 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import * as Ps from 'perfect-scrollbar';
-import {
-    DomHandler
-} from 'app/services';
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import { Subject } from "rxjs/Subject";
+import * as Ps from "perfect-scrollbar";
+import { DomHandler } from "app/services";
 
 @Injectable()
 export class ScrollUtils {
     private moveStepScrollPercentage = 0.5;
 
-    constructor(private scrollBodyContainer: HTMLElement, private domHandler: DomHandler) {
-        
-    }
+    constructor(
+        private scrollBodyContainer: HTMLElement,
+        private domHandler: DomHandler
+    ) {}
 
     /**
      * check hasVerticalScrollof widget
@@ -60,7 +59,8 @@ export class ScrollUtils {
         if (this.hasVerticalScroll) {
             const scrollElem = this.scrollBodyContainer;
             if (scrollElem) {
-                const scrollTopMax = scrollElem.scrollHeight - scrollElem.clientHeight;
+                const scrollTopMax =
+                    scrollElem.scrollHeight - scrollElem.clientHeight;
                 if (Math.ceil(scrollElem.scrollTop) < scrollTopMax) {
                     iRet = true;
                 }
@@ -74,12 +74,12 @@ export class ScrollUtils {
      */
     scrollToPosition(mode) {
         switch (mode) {
-            case 'top':
-            case 'bottom':
+            case "top":
+            case "bottom":
                 this.scrollToTopBottom(mode);
                 break;
-            case 'left':
-            case 'right':
+            case "left":
+            case "right":
                 this.scrollToLeftRight(mode);
                 break;
         }
@@ -107,7 +107,8 @@ export class ScrollUtils {
         if (this.hasHorizontalScroll) {
             const scrollElem: HTMLElement = this.scrollBodyContainer;
             if (scrollElem) {
-                const scrollLeftMax = scrollElem.scrollWidth - scrollElem.clientWidth;
+                const scrollLeftMax =
+                    scrollElem.scrollWidth - scrollElem.clientWidth;
                 if (Math.ceil(scrollElem.scrollLeft) < scrollLeftMax) {
                     iRet = true;
                 }
@@ -122,12 +123,14 @@ export class ScrollUtils {
     private scrollToTopBottom(mode) {
         const scrollElem = this.scrollBodyContainer;
         if (scrollElem) {
-            const scrollTopMax = scrollElem.scrollHeight - scrollElem.clientHeight;
-            const moveStep = Math.round(scrollTopMax * this.moveStepScrollPercentage);
-            if (mode == 'bottom') {
+            const scrollTopMax =
+                scrollElem.scrollHeight - scrollElem.clientHeight;
+            const moveStep = Math.round(
+                scrollTopMax * this.moveStepScrollPercentage
+            );
+            if (mode == "bottom") {
                 scrollElem.scrollTop += moveStep;
-            }
-            else {
+            } else {
                 scrollElem.scrollTop -= moveStep;
             }
         }
@@ -139,18 +142,26 @@ export class ScrollUtils {
     private scrollToLeftRight(mode) {
         const scrollElem: HTMLElement = this.scrollBodyContainer;
         if (scrollElem) {
-            const scrollLeftMax = scrollElem.scrollWidth - scrollElem.clientWidth;
-            const moveStep = Math.round(scrollLeftMax * this.moveStepScrollPercentage);
-            if (mode == 'right') {
-                $(scrollElem).animate({
-                    scrollLeft: scrollElem.scrollLeft + moveStep
-                }, 500);
+            const scrollLeftMax =
+                scrollElem.scrollWidth - scrollElem.clientWidth;
+            const moveStep = Math.round(
+                scrollLeftMax * this.moveStepScrollPercentage
+            );
+            if (mode == "right") {
+                $(scrollElem).animate(
+                    {
+                        scrollLeft: scrollElem.scrollLeft + moveStep,
+                    },
+                    500
+                );
                 //scrollElem.scrollLeft += moveStep;
-            }
-            else {
-                $(scrollElem).animate({
-                    scrollLeft: scrollElem.scrollLeft - moveStep
-                }, 500);
+            } else {
+                $(scrollElem).animate(
+                    {
+                        scrollLeft: scrollElem.scrollLeft - moveStep,
+                    },
+                    500
+                );
                 //scrollElem.scrollLeft -= moveStep;
             }
         }
@@ -165,17 +176,21 @@ export class ScrollUtils {
             Ps.update(this.scrollBodyContainer);
             let elm;
             switch (mode) {
-                case 'left':
-                case 'right':
-                    elm = $(this.scrollBodyContainer).children('.ps-scrollbar-x-rail');
+                case "left":
+                case "right":
+                    elm = $(this.scrollBodyContainer).children(
+                        ".ps-scrollbar-x-rail"
+                    );
                     break;
-                case 'top':
-                case 'bottom':
-                    elm = $(this.scrollBodyContainer).children('.ps-scrollbar-y-rail');
+                case "top":
+                case "bottom":
+                    elm = $(this.scrollBodyContainer).children(
+                        ".ps-scrollbar-y-rail"
+                    );
                     break;
             }
             if (elm && elm.length) {
-                this.domHandler.addClass(elm[0], 'opacity-scroll-visible');
+                this.domHandler.addClass(elm[0], "opacity-scroll-visible");
             }
         }
     }
@@ -188,19 +203,22 @@ export class ScrollUtils {
         if (this.scrollBodyContainer) {
             let elm;
             switch (mode) {
-                case 'left':
-                case 'right':
-                    elm = $(this.scrollBodyContainer).children('.ps-scrollbar-x-rail');
+                case "left":
+                case "right":
+                    elm = $(this.scrollBodyContainer).children(
+                        ".ps-scrollbar-x-rail"
+                    );
                     break;
-                case 'top':
-                case 'bottom':
-                    elm = $(this.scrollBodyContainer).children('.ps-scrollbar-y-rail');
+                case "top":
+                case "bottom":
+                    elm = $(this.scrollBodyContainer).children(
+                        ".ps-scrollbar-y-rail"
+                    );
                     break;
             }
             if (elm && elm.length) {
-                this.domHandler.removeClass(elm[0], 'opacity-scroll-visible');
+                this.domHandler.removeClass(elm[0], "opacity-scroll-visible");
             }
         }
-    }   
-
+    }
 }

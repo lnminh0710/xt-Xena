@@ -1,2 +1,2 @@
-export * from './gesture-annotations';
-export * from './gesture-config';
+export * from "./gesture-annotations";
+export * from "./gesture-config";

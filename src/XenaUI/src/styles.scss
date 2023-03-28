@@ -3,24 +3,24 @@
 @import "~font-awesome/css/font-awesome.css";
 @import "~angular2-toaster/toaster.css";
 @import "~dragula/dist/dragula.css";
-@import '~primeng/resources/primeng.min.css';
-@import '~primeng/resources/themes/omega/theme.css';
-@import '~ng2-slim-loading-bar/style.css';
+@import "~primeng/resources/primeng.min.css";
+@import "~primeng/resources/themes/omega/theme.css";
+@import "~ng2-slim-loading-bar/style.css";
 
 @import "./sass_files/adminlte.scss";
 @import "public/assets/lib/adminlte/_all-skins.min.css";
-@import './sass_files/3rd-library-override.scss';
+@import "./sass_files/3rd-library-override.scss";
 @import "./sass_files/all-skins-override.scss";
-@import './sass_files/perfect-scrollbar.min.css';
-@import './sass_files/wijmo.min.css';
-@import './sass_files/wijmo-theme-override.scss';
-@import './sass_files/jquery-ui-override.scss';
-@import './sass_files/quill-override.scss';
-@import './sass_files/override/button-override.scss';
-@import './sass_files/override/mat-input-override.scss';
-@import './sass_files/override/material-input.scss';
-@import './sass_files/override/tag-input-override.scss';
-@import './sass_files/bootstrap4.scss';
+@import "./sass_files/perfect-scrollbar.min.css";
+@import "./sass_files/wijmo.min.css";
+@import "./sass_files/wijmo-theme-override.scss";
+@import "./sass_files/jquery-ui-override.scss";
+@import "./sass_files/quill-override.scss";
+@import "./sass_files/override/button-override.scss";
+@import "./sass_files/override/mat-input-override.scss";
+@import "./sass_files/override/material-input.scss";
+@import "./sass_files/override/tag-input-override.scss";
+@import "./sass_files/bootstrap4.scss";
 
 html,
 body,
@@ -28,14 +28,19 @@ div.page-wrapper {
     min-height: 100vh !important;
     max-height: 100vh !important;
     font-size: 12px;
-    font-family: Tahoma,'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: Tahoma, "Source Sans Pro", "Helvetica Neue", Helvetica, Arial,
+        sans-serif;
 }
 
-body#main, div.page-wrapper {
+body#main,
+div.page-wrapper {
     overflow: hidden;
 }
 
-input, select, button, .form-control {
+input,
+select,
+button,
+.form-control {
     font-size: 12px;
 }
 
@@ -54,7 +59,7 @@ a:active {
     display: inline-block;
     width: 39px;
     height: 27px;
-    background: url('~/public/assets/lib/credit/all_39x27.png') no-repeat !important;
+    background: url("~/public/assets/lib/credit/all_39x27.png") no-repeat !important;
     margin-right: 5px;
 
     &.credit-jp {
@@ -102,7 +107,8 @@ a:active {
     display: inline-block;
     width: 29px;
     height: 20px;
-    background: url('~/public/assets/lib/credit/all_cc_small_28x19.png') no-repeat !important;
+    background: url("~/public/assets/lib/credit/all_cc_small_28x19.png")
+        no-repeat !important;
     margin-right: 5px;
 
     &.credit-jp {
@@ -195,7 +201,7 @@ a:active {
 
     img#loading-img {
         position: absolute;
-        left: calc(100vw/2 - 50px);
+        left: calc(100vw / 2 - 50px);
         z-index: 9999;
     }
 }

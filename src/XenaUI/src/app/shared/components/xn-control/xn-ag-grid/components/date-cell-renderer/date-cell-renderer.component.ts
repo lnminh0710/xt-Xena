@@ -1,19 +1,26 @@
-import { Component, AfterViewInit, ViewChild, ViewContainerRef } from "@angular/core";
+import {
+    Component,
+    AfterViewInit,
+    ViewChild,
+    ViewContainerRef,
+} from "@angular/core";
 import { ICellEditorAngularComp } from "ag-grid-angular";
-import { BaseAgGridCellComponent } from '../../shared/base-ag-grid-cell-component';
+import { BaseAgGridCellComponent } from "../../shared/base-ag-grid-cell-component";
 
 @Component({
-    selector: 'date-cell-renderer',
-    templateUrl: './date-cell-renderer.html',
-    styleUrls: ['./date-cell-renderer.scss']
+    selector: "date-cell-renderer",
+    templateUrl: "./date-cell-renderer.html",
+    styleUrls: ["./date-cell-renderer.scss"],
 })
-export class DateCellRenderer extends BaseAgGridCellComponent<string> implements ICellEditorAngularComp, AfterViewInit {
-
+export class DateCellRenderer
+    extends BaseAgGridCellComponent<string>
+    implements ICellEditorAngularComp, AfterViewInit
+{
     public globalDateFormat: string;
     public dontShowCalendarWhenFocus: boolean;
     public dateFormat: string;
 
-    @ViewChild('input', { read: ViewContainerRef }) public input;
+    @ViewChild("input", { read: ViewContainerRef }) public input;
 
     constructor() {
         super();
@@ -22,7 +29,7 @@ export class DateCellRenderer extends BaseAgGridCellComponent<string> implements
     ngAfterViewInit() {
         setTimeout(() => {
             this.input.element.nativeElement.focus();
-        })
+        });
     }
 
     /**
@@ -32,11 +39,11 @@ export class DateCellRenderer extends BaseAgGridCellComponent<string> implements
     protected getCustomParam(params: any) {
         if (this.componentParent) {
             this.globalDateFormat = this.componentParent.globalDateFormat;
-            this.dontShowCalendarWhenFocus = this.componentParent.dontShowCalendarWhenFocus;
+            this.dontShowCalendarWhenFocus =
+                this.componentParent.dontShowCalendarWhenFocus;
             this.dateFormat = params.column.colDef.refData.format;
         }
     }
-
 
     /**
      * getValue

@@ -1,4 +1,4 @@
-import { PersonModel } from '../person.model';
+import { PersonModel } from "../person.model";
 
 export class ContactModel extends PersonModel {
     public idRepContactAddressType?: any = null;

@@ -1,15 +1,19 @@
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Uti } from 'app/utilities';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+} from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Uti } from "app/utilities";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 
 @Component({
-    selector: 'payment-type-select',
-    templateUrl: './payment-type-select.component.html'
-
+    selector: "payment-type-select",
+    templateUrl: "./payment-type-select.component.html",
 })
 export class PaymentTypeSelectComponent {
-
     public paymentTypeForm: FormGroup;
     public selectedKey: number;
 
@@ -19,25 +23,26 @@ export class PaymentTypeSelectComponent {
 
     @Output() changePaymentType: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('paymentType') paymentTypeCombobox: AngularMultiSelect;
+    @ViewChild("paymentType") paymentTypeCombobox: AngularMultiSelect;
 
-    constructor(
-    ) {
+    constructor() {
         this.paymentTypeForm = new FormGroup({
-            paymentType: new FormControl('', Validators.required)
+            paymentType: new FormControl("", Validators.required),
         });
         Uti.registerFormControlType(this.paymentTypeForm, {
-            dropdown: 'paymentType'
+            dropdown: "paymentType",
         });
     }
 
     public onChangeValue() {
-        if (this.paymentTypeCombobox && this.paymentTypeCombobox.selectedValue) {
+        if (
+            this.paymentTypeCombobox &&
+            this.paymentTypeCombobox.selectedValue
+        ) {
             const key = this.paymentTypeCombobox.selectedValue;
             this.selectedKey = key;
-            const option = this.paymentTypeList.find(p => p.key == key);
+            const option = this.paymentTypeList.find((p) => p.key == key);
             this.changePaymentType.emit(option);
         }
     }
-
 }

@@ -1,35 +1,71 @@
-<div class="form-container  margin-top--sd"
-     [ngClass]="{'submitted': emailSettingForm.submitted}"
-     *ngIf="isRendered">
-    <form [formGroup]="emailSettingForm" class="form-horizontal" id="emailSettingForm" novalidate>
-        <control-focus #controlFocusComponent formName="emailSettingForm"></control-focus>
-        <div class="row  height-pc-100">
-            <div class="height-pc-100  col-xs-12"
-                 [ngClass]="{'col-sm-9': (isUsingPlaceHolder || isUsingTemplate)}">
+<div
+    class="form-container margin-top--sd"
+    [ngClass]="{ submitted: emailSettingForm.submitted }"
+    *ngIf="isRendered"
+>
+    <form
+        [formGroup]="emailSettingForm"
+        class="form-horizontal"
+        id="emailSettingForm"
+        novalidate
+    >
+        <control-focus
+            #controlFocusComponent
+            formName="emailSettingForm"
+        ></control-focus>
+        <div class="row height-pc-100">
+            <div
+                class="height-pc-100 col-xs-12"
+                [ngClass]="{
+                    'col-sm-9': isUsingPlaceHolder || isUsingTemplate
+                }"
+            >
                 <div class="form-group">
-                    <label for="emailSubject"
-                           class="control-label col-xs-1  required"><label-translation [keyword]="'Email_Setting__Subject'"></label-translation>:</label>
+                    <label
+                        for="emailSubject"
+                        class="control-label col-xs-1 required"
+                        ><label-translation
+                            [keyword]="'Email_Setting__Subject'"
+                        ></label-translation
+                        >:</label
+                    >
                     <div class="col-xs-11">
-                        <input class="form-control xn-input"
-                               type="text"
-                               id="emailSubject"
-                               name="emailSubject"
-                               formControlName="emailSubject"
-                               autocomplete="off">
-                        <control-messages [type]="'textbox'"
-                                          [control]="emailSettingForm.controls.emailSubject"
-                                          [icon]="'newspaper-o'"></control-messages>
+                        <input
+                            class="form-control xn-input"
+                            type="text"
+                            id="emailSubject"
+                            name="emailSubject"
+                            formControlName="emailSubject"
+                            autocomplete="off"
+                        />
+                        <control-messages
+                            [type]="'textbox'"
+                            [control]="emailSettingForm.controls.emailSubject"
+                            [icon]="'newspaper-o'"
+                        ></control-messages>
                     </div>
                 </div>
-                <div class="form-group  form-group__text-editor">
-                    <label for="emailBody" class="control-label col-xs-1"><label-translation [keyword]="'Email_Setting__Content'"></label-translation>:</label>
-                    <div class="col-sm-11  height-pc-100"
-                         [ngClass]="{'quill-disable-editor': isUsingTemplate, 'quill-enable-editor': !isUsingTemplate}">
-                        <quill-editor #quilEditor
-                                      formControlName="emailBody"
-                                      [modules]="modules"
-                                      [customOptions]="customOptions"
-                                      (onContentChanged)="onContentChanged($event)">
+                <div class="form-group form-group__text-editor">
+                    <label for="emailBody" class="control-label col-xs-1"
+                        ><label-translation
+                            [keyword]="'Email_Setting__Content'"
+                        ></label-translation
+                        >:</label
+                    >
+                    <div
+                        class="col-sm-11 height-pc-100"
+                        [ngClass]="{
+                            'quill-disable-editor': isUsingTemplate,
+                            'quill-enable-editor': !isUsingTemplate
+                        }"
+                    >
+                        <quill-editor
+                            #quilEditor
+                            formControlName="emailBody"
+                            [modules]="modules"
+                            [customOptions]="customOptions"
+                            (onContentChanged)="onContentChanged($event)"
+                        >
                             <div quill-editor-toolbar>
                                 <form-quill-editor-toolbar></form-quill-editor-toolbar>
                             </div>
@@ -37,157 +73,266 @@
                     </div>
                 </div>
                 <div class="col-xs-11 col-xs-offset-1 email-setting__button">
-                    <button type="button"
-                            mat-raised-button
-                            class="mat-btn-green"
-                            (click)="usePlaceHolderClick()"
-                            [disabled]="isUsingPlaceHolder || isUsingTemplate">
-                        <span class="bt-t"><label-translation [keyword]="'Email_Setting__Insert_placeholder'"></label-translation></span>
+                    <button
+                        type="button"
+                        mat-raised-button
+                        class="mat-btn-green"
+                        (click)="usePlaceHolderClick()"
+                        [disabled]="isUsingPlaceHolder || isUsingTemplate"
+                    >
+                        <span class="bt-t"
+                            ><label-translation
+                                [keyword]="'Email_Setting__Insert_placeholder'"
+                            ></label-translation
+                        ></span>
                     </button>
-                    <button type="button"
-                            mat-raised-button
-                            class="mat-btn-green"
-                            (click)="useTemplateClick()"
-                            [disabled]="isUsingPlaceHolder || isUsingTemplate">
-                        <label-translation [keyword]="'Email_Setting__Use_a_template'"></label-translation>
+                    <button
+                        type="button"
+                        mat-raised-button
+                        class="mat-btn-green"
+                        (click)="useTemplateClick()"
+                        [disabled]="isUsingPlaceHolder || isUsingTemplate"
+                    >
+                        <label-translation
+                            [keyword]="'Email_Setting__Use_a_template'"
+                        ></label-translation>
                     </button>
-                    <button type="button"
-                            mat-raised-button
-                            class="mat-btn-orange  btn-save-template  pull-right"
-                            (click)="saveAsNewTemplateClick()"
-                            [disabled]="isUsingPlaceHolder || isUsingTemplate || !hasChangeEmailBody">
-                        <span class="bt-t"><label-translation [keyword]="'Email_Setting__Save_template'"></label-translation></span>
+                    <button
+                        type="button"
+                        mat-raised-button
+                        class="mat-btn-orange btn-save-template pull-right"
+                        (click)="saveAsNewTemplateClick()"
+                        [disabled]="
+                            isUsingPlaceHolder ||
+                            isUsingTemplate ||
+                            !hasChangeEmailBody
+                        "
+                    >
+                        <span class="bt-t"
+                            ><label-translation
+                                [keyword]="'Email_Setting__Save_template'"
+                            ></label-translation
+                        ></span>
                     </button>
-                    <button type="button"
-                            mat-raised-button
-                            class="mat-btn-blue  pull-right"
-                            [disabled]="!isCanSendEmail"
-                            (click)="sendEmailClick()">
-                        <span class="bt-t"><label-translation [keyword]="'Email_Setting__Send'"></label-translation></span>
-                    </button>
-                </div>
-            </div>
-            <div class="height-pc-100-sub-px-40  col-xs-12  no-padding-left"
-                 [ngClass]="{'col-sm-3': isUsingTemplate}"
-                 [hidden]="!isUsingTemplate || isUsingPlaceHolder">
-                <list-box [data]="contentTemplateData"
-                          (onClick)="contentTemplateDataClick($event)"></list-box>
-                <div class="col-xs-12  template-button">
-                    <button type="button"
-                            mat-raised-button
-                            class="mat-btn-blue"
-                            [disabled]="isBeginUsingTemplate"
-                            (click)="templateApplyClick()">
-                        <span class="bt-t"><label-translation [keyword]="'Email_Setting__Apply'"></label-translation></span>
-                    </button>
-                    <button type="button"
-                            mat-raised-button
-                            class="mat-btn-orange"
-                            [disabled]="isBeginUsingTemplate"
-                            (click)="templateDeleteClick()">
-                        <span class="bt-t"><label-translation [keyword]="'Email_Setting__Delete'"></label-translation></span>
-                    </button>
-                    <button type="button"
-                            mat-raised-button
-                            class="btn-cancel"
-                            (click)="templateCancelClick()">
-                        <span class="bt-t"><label-translation [keyword]="'Email_Setting__Cancel'"></label-translation></span>
+                    <button
+                        type="button"
+                        mat-raised-button
+                        class="mat-btn-blue pull-right"
+                        [disabled]="!isCanSendEmail"
+                        (click)="sendEmailClick()"
+                    >
+                        <span class="bt-t"
+                            ><label-translation
+                                [keyword]="'Email_Setting__Send'"
+                            ></label-translation
+                        ></span>
                     </button>
                 </div>
             </div>
-            <div class="height-pc-100-sub-px-40  col-xs-12  no-padding-left"
-                 [ngClass]="{'col-sm-3': isUsingPlaceHolder}"
-                 [hidden]="!isUsingPlaceHolder || isUsingTemplate">
-                <list-box [data]="placeholderData"
-                          [draggable]="true"
-                          [canClose]="true"
-                          (onClose)="placeholderDataClose($event)"></list-box>
+            <div
+                class="height-pc-100-sub-px-40 col-xs-12 no-padding-left"
+                [ngClass]="{ 'col-sm-3': isUsingTemplate }"
+                [hidden]="!isUsingTemplate || isUsingPlaceHolder"
+            >
+                <list-box
+                    [data]="contentTemplateData"
+                    (onClick)="contentTemplateDataClick($event)"
+                ></list-box>
+                <div class="col-xs-12 template-button">
+                    <button
+                        type="button"
+                        mat-raised-button
+                        class="mat-btn-blue"
+                        [disabled]="isBeginUsingTemplate"
+                        (click)="templateApplyClick()"
+                    >
+                        <span class="bt-t"
+                            ><label-translation
+                                [keyword]="'Email_Setting__Apply'"
+                            ></label-translation
+                        ></span>
+                    </button>
+                    <button
+                        type="button"
+                        mat-raised-button
+                        class="mat-btn-orange"
+                        [disabled]="isBeginUsingTemplate"
+                        (click)="templateDeleteClick()"
+                    >
+                        <span class="bt-t"
+                            ><label-translation
+                                [keyword]="'Email_Setting__Delete'"
+                            ></label-translation
+                        ></span>
+                    </button>
+                    <button
+                        type="button"
+                        mat-raised-button
+                        class="btn-cancel"
+                        (click)="templateCancelClick()"
+                    >
+                        <span class="bt-t"
+                            ><label-translation
+                                [keyword]="'Email_Setting__Cancel'"
+                            ></label-translation
+                        ></span>
+                    </button>
+                </div>
+            </div>
+            <div
+                class="height-pc-100-sub-px-40 col-xs-12 no-padding-left"
+                [ngClass]="{ 'col-sm-3': isUsingPlaceHolder }"
+                [hidden]="!isUsingPlaceHolder || isUsingTemplate"
+            >
+                <list-box
+                    [data]="placeholderData"
+                    [draggable]="true"
+                    [canClose]="true"
+                    (onClose)="placeholderDataClose($event)"
+                ></list-box>
             </div>
         </div>
     </form>
 </div>
 
-<p-dialog #pDialogEmailTemplate
-          header=""
-          [styleClass]="'email-template-dialog'"
-          [(visible)]="showDialog"
-          [resizable]="false"
-          [draggable]="false"
-          modal="modal"
-          width="500"
-          responsive="false"
-          appendTo="body"
-          (onShow)="onShow()"
-          [closable]="false"
-          (onClose)="onClose()">
+<p-dialog
+    #pDialogEmailTemplate
+    header=""
+    [styleClass]="'email-template-dialog'"
+    [(visible)]="showDialog"
+    [resizable]="false"
+    [draggable]="false"
+    modal="modal"
+    width="500"
+    responsive="false"
+    appendTo="body"
+    (onShow)="onShow()"
+    [closable]="false"
+    (onClose)="onClose()"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="fa  fa-floppy-o  header-icon  pull-left"></span>
-            <span class="header-text  pull-left"><label-translation [keyword]="'Email_Setting__Saving_Template'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="cancelSaveTemplateClick()">
+            <span class="fa fa-floppy-o header-icon pull-left"></span>
+            <span class="header-text pull-left"
+                ><label-translation
+                    [keyword]="'Email_Setting__Saving_Template'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="cancelSaveTemplateClick()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <div class="col-xs-12 no-padding  height-pc-100"
-         [hidden]="!isShowTemplateName">
-        <label for="emailSubject"
-               class="col-xs-12  control-label  required"><label-translation [keyword]="'Email_Setting__Template_subject'"></label-translation>:</label>
+    <div
+        class="col-xs-12 no-padding height-pc-100"
+        [hidden]="!isShowTemplateName"
+    >
+        <label for="emailSubject" class="col-xs-12 control-label required"
+            ><label-translation
+                [keyword]="'Email_Setting__Template_subject'"
+            ></label-translation
+            >:</label
+        >
         <div class="col-xs-12">
-            <input class="form-control xn-input"
-                   type="text"
-                   id="emailTemplateSubject"
-                   name="emailTemplateSubject"
-                   [(ngModel)]="emailTemplateSubject"
-                   (change)="emailTemplateSubjectChange($event)"
-                   autocomplete="off" />
-            <div class="alert alert-danger" *ngIf="(!emailTemplateSubject && emailTemplateSubmit)"><label-translation [keyword]="'Email_Setting__Required'"></label-translation></div>
-            <div class="alert alert-danger" *ngIf="isShowExistingEmailTemplate"><label-translation [keyword]="'Email_Setting__Email_subject_is_existing'"></label-translation>.</div>
+            <input
+                class="form-control xn-input"
+                type="text"
+                id="emailTemplateSubject"
+                name="emailTemplateSubject"
+                [(ngModel)]="emailTemplateSubject"
+                (change)="emailTemplateSubjectChange($event)"
+                autocomplete="off"
+            />
+            <div
+                class="alert alert-danger"
+                *ngIf="!emailTemplateSubject && emailTemplateSubmit"
+            >
+                <label-translation
+                    [keyword]="'Email_Setting__Required'"
+                ></label-translation>
+            </div>
+            <div class="alert alert-danger" *ngIf="isShowExistingEmailTemplate">
+                <label-translation
+                    [keyword]="'Email_Setting__Email_subject_is_existing'"
+                ></label-translation
+                >.
+            </div>
         </div>
     </div>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button type="button"
-                    mat-raised-button
-                    class="btn-cancel pull-right"
-                    [ngClass]="{'hidden': isShowTemplateName}"
-                    (click)="cancelSaveTemplateClick()">
-                <span class="bt-t"><label-translation [keyword]="'Email_Setting__Cancel'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="btn-cancel pull-right"
+                [ngClass]="{ hidden: isShowTemplateName }"
+                (click)="cancelSaveTemplateClick()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Email_Setting__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-green pull-right"
-                    [ngClass]="{'hidden': isShowTemplateName}"
-                    (click)="saveAsTemplateClick()">
-                <span class="bt-t"><label-translation [keyword]="'Email_Setting__Save_as'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-green pull-right"
+                [ngClass]="{ hidden: isShowTemplateName }"
+                (click)="saveAsTemplateClick()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Email_Setting__Save_as'"
+                    ></label-translation
+                ></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-orange pull-right"
-                    [ngClass]="{'hidden': isShowTemplateName}"
-                    [disabled]="!currentTemplate || !currentTemplate.id"
-                    (click)="updateTemplateClick()">
-                <span class="bt-t"><label-translation [keyword]="'Email_Setting__Update'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-orange pull-right"
+                [ngClass]="{ hidden: isShowTemplateName }"
+                [disabled]="!currentTemplate || !currentTemplate.id"
+                (click)="updateTemplateClick()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Email_Setting__Update'"
+                    ></label-translation
+                ></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="btn-cancel pull-right"
-                    [ngClass]="{'hidden': !isShowTemplateName}"
-                    (click)="cancelSaveAsTemplateClick()">
-                <span class="bt-t"><label-translation [keyword]="'Email_Setting__Cancel'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="btn-cancel pull-right"
+                [ngClass]="{ hidden: !isShowTemplateName }"
+                (click)="cancelSaveAsTemplateClick()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Email_Setting__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-orange pull-right"
-                    [ngClass]="{'hidden': !isShowTemplateName}"
-                    (click)="saveTemplateClick()">
-                <span class="bt-t"><label-translation [keyword]="'Email_Setting__Save'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-orange pull-right"
+                [ngClass]="{ hidden: !isShowTemplateName }"
+                (click)="saveTemplateClick()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Email_Setting__Save'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>
 </p-dialog>
-

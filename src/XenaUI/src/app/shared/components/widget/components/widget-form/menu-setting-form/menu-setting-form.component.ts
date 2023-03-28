@@ -1,27 +1,30 @@
-import { AfterViewInit, Component,
-    ElementRef, EventEmitter, OnDestroy,
-    Input, OnInit, Output, ViewChild} from '@angular/core';
-import * as uti from 'app/utilities';
-import * as wjcInput from 'wijmo/wijmo.angular2.input';
 import {
-    ModalService, WidgetFieldService
-} from 'app/services';
-import {
-    MessageModal, TypeForm
-} from 'app/app.constants';
-import { Uti } from 'app/utilities/uti';
-import {
-    MessageModel
-} from 'app/models';
-import { Subscription } from 'rxjs/Subscription';
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    OnDestroy,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+} from "@angular/core";
+import * as uti from "app/utilities";
+import * as wjcInput from "wijmo/wijmo.angular2.input";
+import { ModalService, WidgetFieldService } from "app/services";
+import { MessageModal, TypeForm } from "app/app.constants";
+import { Uti } from "app/utilities/uti";
+import { MessageModel } from "app/models";
+import { Subscription } from "rxjs/Subscription";
 
 @Component({
-    selector: 'menu-setting-form-component',
-    styleUrls: ['./menu-setting-form.component.scss'],
-    templateUrl: 'menu-setting-form.component.html'
+    selector: "menu-setting-form-component",
+    styleUrls: ["./menu-setting-form.component.scss"],
+    templateUrl: "menu-setting-form.component.html",
 })
-
-export class MenuSettingFormComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MenuSettingFormComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     private currentToggleElement: any;
     private currentToggleMenuSubscription: Subscription;
 
@@ -40,15 +43,14 @@ export class MenuSettingFormComponent implements OnInit, OnDestroy, AfterViewIni
     public showControlDialog = false;
     public showLinebreakDialog = false;
 
-    @ViewChild('menuSetting')
-
+    @ViewChild("menuSetting")
     private menuSetting: wjcInput.WjPopup;
 
     @Input() set control(value: any) {
         if (value) {
             this._control = value;
         }
-    };
+    }
 
     get control() {
         return this._control;
@@ -58,20 +60,20 @@ export class MenuSettingFormComponent implements OnInit, OnDestroy, AfterViewIni
         if (value) {
             this._column = value;
         }
-    };
+    }
 
     get column() {
-        return this._column
+        return this._column;
     }
 
     @Input() set panel(value: any) {
         if (value) {
             this._panel = value;
         }
-    };
+    }
 
     get panel() {
-        return this._panel
+        return this._panel;
     }
 
     @Input() canDelete: any;
@@ -85,17 +87,18 @@ export class MenuSettingFormComponent implements OnInit, OnDestroy, AfterViewIni
     @Output() onMenuClickAction = new EventEmitter<any>();
     @Output() onSettingDialogAction = new EventEmitter<any>();
 
-    constructor(private elementRef: ElementRef,
-                private modalService: ModalService,
-                private widgetFieldService: WidgetFieldService,
-    ) {
-    }
+    constructor(
+        private elementRef: ElementRef,
+        private modalService: ModalService,
+        private widgetFieldService: WidgetFieldService
+    ) {}
 
     ngOnInit() {
-        this.currentToggleMenuSubscription = this.widgetFieldService.currentToggleMenu.subscribe((value) => {
-            if (Uti.isFieldMenuClicked) return;
-            this.showToolButtons = value;
-        });
+        this.currentToggleMenuSubscription =
+            this.widgetFieldService.currentToggleMenu.subscribe((value) => {
+                if (Uti.isFieldMenuClicked) return;
+                this.showToolButtons = value;
+            });
     }
 
     ngOnDestroy(): void {
@@ -112,10 +115,17 @@ export class MenuSettingFormComponent implements OnInit, OnDestroy, AfterViewIni
         this.showToolButtons = false;
         this.onToggleAction.emit();
         setTimeout(() => {
-            this.currentToggleElement = $(event.target).closest('i.dropdown-toggle');
-            const topParent = $(this.elementRef.nativeElement).closest('div.widget-module-info-container, div.widget-edit-dialog');
+            this.currentToggleElement = $(event.target).closest(
+                "i.dropdown-toggle"
+            );
+            const topParent = $(this.elementRef.nativeElement).closest(
+                "div.widget-module-info-container, div.widget-edit-dialog"
+            );
             if (topParent)
-                this.position = {parent: topParent, toggleElement: this.currentToggleElement};
+                this.position = {
+                    parent: topParent,
+                    toggleElement: this.currentToggleElement,
+                };
         });
         Uti.isFieldMenuClicked = true;
         setTimeout(() => {
@@ -125,8 +135,10 @@ export class MenuSettingFormComponent implements OnInit, OnDestroy, AfterViewIni
 
     private initOwnerForMenuWidgetStatus() {
         if (this.menuSetting && !this.menuSetting.owner)
-            this.menuSetting.owner = $('#btnMenuSetting' + this.randomNumb, $(this.elementRef.nativeElement)).get(0);
-
+            this.menuSetting.owner = $(
+                "#btnMenuSetting" + this.randomNumb,
+                $(this.elementRef.nativeElement)
+            ).get(0);
     }
 
     private isCloseDDMenuFromInside = false;
@@ -134,16 +146,25 @@ export class MenuSettingFormComponent implements OnInit, OnDestroy, AfterViewIni
     public wjPopupHidden(event, menuWidgetStatus) {
         // hide all opening sub menu
         if (menuWidgetStatus) {
-            $('.sub-menu.filter-menu .sub-menu', menuWidgetStatus.hostElement).hide();
+            $(
+                ".sub-menu.filter-menu .sub-menu",
+                menuWidgetStatus.hostElement
+            ).hide();
         }
         if (this.isCloseDDMenuFromInside) {
             this.isCloseDDMenuFromInside = false;
             return;
         }
-        const container = $(this.elementRef.nativeElement).closest('div.box-default');
-        if (container.hasClass('edit-mode') || container.hasClass('edit-table-mode') ||
-            container.hasClass('edit-country-mode') || container.hasClass('edit-field-mode') ||
-            container.hasClass('edit-form-mode'))
+        const container = $(this.elementRef.nativeElement).closest(
+            "div.box-default"
+        );
+        if (
+            container.hasClass("edit-mode") ||
+            container.hasClass("edit-table-mode") ||
+            container.hasClass("edit-country-mode") ||
+            container.hasClass("edit-field-mode") ||
+            container.hasClass("edit-form-mode")
+        )
             return;
     }
 
@@ -169,46 +190,70 @@ export class MenuSettingFormComponent implements OnInit, OnDestroy, AfterViewIni
 
     public deletePanel() {
         if (this._panel && this._panel.layoutType === TypeForm.Panel) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                headerText: 'Delete Panel',
-                messageType: MessageModal.MessageType.error,
-                message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_This_Panel'},
-                    {key: '</p>'}],
-                buttonType1: MessageModal.ButtonType.danger,
-                callBack1: () => {
-                    this.onDeletePanel.emit(this._panel);
-                }
-            }));
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    headerText: "Delete Panel",
+                    messageType: MessageModal.MessageType.error,
+                    message: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Delete_This_Panel",
+                        },
+                        { key: "</p>" },
+                    ],
+                    buttonType1: MessageModal.ButtonType.danger,
+                    callBack1: () => {
+                        this.onDeletePanel.emit(this._panel);
+                    },
+                })
+            );
         }
     }
 
     public deleteColumn() {
         if (this._column && this._column.layoutType === TypeForm.Column) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                headerText: 'Delete Column',
-                messageType: MessageModal.MessageType.error,
-                message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_This_Column'},
-                    {key: '</p>'}],
-                buttonType1: MessageModal.ButtonType.danger,
-                callBack1: () => {
-                    this.onDeleteColumn.emit(this._column);
-                }
-            }));
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    headerText: "Delete Column",
+                    messageType: MessageModal.MessageType.error,
+                    message: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Delete_This_Column",
+                        },
+                        { key: "</p>" },
+                    ],
+                    buttonType1: MessageModal.ButtonType.danger,
+                    callBack1: () => {
+                        this.onDeleteColumn.emit(this._column);
+                    },
+                })
+            );
         }
     }
 
     public deleteLineBreak() {
-        if (this.lineBreak && this.lineBreak.layoutType === TypeForm.LineBreak) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                headerText: 'Delete Line Break',
-                messageType: MessageModal.MessageType.error,
-                message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_This_Line_Break'},
-                    {key: '</p>'}],
-                buttonType1: MessageModal.ButtonType.danger,
-                callBack1: () => {
-                    this.onDeleteLineBreak.emit(this.lineBreak);
-                }
-            }));
+        if (
+            this.lineBreak &&
+            this.lineBreak.layoutType === TypeForm.LineBreak
+        ) {
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    headerText: "Delete Line Break",
+                    messageType: MessageModal.MessageType.error,
+                    message: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Delete_This_Line_Break",
+                        },
+                        { key: "</p>" },
+                    ],
+                    buttonType1: MessageModal.ButtonType.danger,
+                    callBack1: () => {
+                        this.onDeleteLineBreak.emit(this.lineBreak);
+                    },
+                })
+            );
         }
     }
 

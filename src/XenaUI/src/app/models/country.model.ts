@@ -1,7 +1,7 @@
 export class Country {
     idValue: number = -1;
-    isoCode: string = '';
-    textValue: string = '';
+    isoCode: string = "";
+    textValue: string = "";
     isMain: boolean = false;
     isActive: boolean = false;
     idSalesCampaignWizardItems: number = null;

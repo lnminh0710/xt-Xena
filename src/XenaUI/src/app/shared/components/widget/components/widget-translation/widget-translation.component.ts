@@ -1,42 +1,57 @@
 import {
-    Component, Input, Output, EventEmitter, OnInit, OnDestroy,
-    AfterViewInit, ElementRef, ViewChild, ChangeDetectorRef
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
+    ChangeDetectorRef,
 } from "@angular/core";
 
 import {
     WidgetDetail,
     IDragDropCommunicationData,
     DragMode,
-    LayoutPageInfoModel
-} from 'app/models';
+    LayoutPageInfoModel,
+} from "app/models";
 
-import { TranslateModeEnum, TranslateDataTypeEnum } from 'app/app.constants';
-import { UUID } from 'angular2-uuid';
-import { GlobalSettingService, AppErrorHandler, ModalService, WidgetTemplateSettingService } from 'app/services';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { WijmoGridComponent } from 'app/shared/components/wijmo';
-import { WidgetUtils } from '../../utils';
-import { LayoutInfoState } from 'app/state-management/store/reducer/layout-info';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import * as commonReducer from 'app/state-management/store/reducer/xn-common';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import { WidgetType } from 'app/models';
-import { Uti } from 'app/utilities';
+import { TranslateModeEnum, TranslateDataTypeEnum } from "app/app.constants";
+import { UUID } from "angular2-uuid";
+import {
+    GlobalSettingService,
+    AppErrorHandler,
+    ModalService,
+    WidgetTemplateSettingService,
+} from "app/services";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import cloneDeep from "lodash-es/cloneDeep";
+import { WijmoGridComponent } from "app/shared/components/wijmo";
+import { WidgetUtils } from "../../utils";
+import { LayoutInfoState } from "app/state-management/store/reducer/layout-info";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import * as commonReducer from "app/state-management/store/reducer/xn-common";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { WidgetType } from "app/models";
+import { Uti } from "app/utilities";
 import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 
 @Component({
-    selector: 'widget-translation',
-    templateUrl: './widget-translation.component.html',
-    styleUrls: ['./widget-translation.component.scss']
+    selector: "widget-translation",
+    templateUrl: "./widget-translation.component.html",
+    styleUrls: ["./widget-translation.component.scss"],
 })
-export class WidgetTranslationComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-
+export class WidgetTranslationComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     public isFormChanged = false;
     private layoutPageInfo: LayoutPageInfoModel[];
     private layoutPageInfoModelStateSubscription: Subscription;
@@ -45,7 +60,7 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
     public originalField: string;
     private isConnectedTargetWidget: boolean;
 
-    @ViewChild('translateTextGrid') public xnAgGridComponent: XnAgGridComponent;
+    @ViewChild("translateTextGrid") public xnAgGridComponent: XnAgGridComponent;
 
     // Default : Readonly Mode
     @Input() editMode: boolean = false;
@@ -65,7 +80,8 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
         // }
     }
 
-    @Output() updateTranslationWidget = new EventEmitter<IDragDropCommunicationData>();
+    @Output() updateTranslationWidget =
+        new EventEmitter<IDragDropCommunicationData>();
     @Output() editingTranslateData = new EventEmitter<boolean>();
     @Output() startEditField = new EventEmitter<boolean>();
     @Output() cancelEdit = new EventEmitter<boolean>();
@@ -89,11 +105,10 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
         this._isActivated = status;
         if (!status) {
             this.ref.detach();
-        }
-        else {
+        } else {
             this.ref.reattach();
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
@@ -103,25 +118,26 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
 
     public gridData: any = {
         data: [],
-        columns: this.initColumnSetting()
-    }
+        columns: this.initColumnSetting(),
+    };
 
     public guid = UUID.UUID();
     public translateDataType = TranslateDataTypeEnum.Data;
 
     private gridDataModeAll: any = {
         data: [],
-        columns: []
+        columns: [],
     };
 
     private gridDataModeWidgetOnly: any = {
         data: [],
-        columns: []
+        columns: [],
     };
 
     private layoutPageInfoModelState: Observable<LayoutPageInfoModel[]>;
 
-    constructor(private store: Store<AppState>,
+    constructor(
+        private store: Store<AppState>,
         private _eref: ElementRef,
         private globalSettingService: GlobalSettingService,
         private appErrorHandler: AppErrorHandler,
@@ -131,7 +147,13 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
     ) {
         super(router);
 
-        this.layoutPageInfoModelState = store.select(state => commonReducer.getCommonState(state, this.ofModule.moduleNameTrim).layoutPageInfo);
+        this.layoutPageInfoModelState = store.select(
+            (state) =>
+                commonReducer.getCommonState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).layoutPageInfo
+        );
     }
 
     /**
@@ -139,36 +161,57 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
      */
     private loadData() {
         this.reset();
-        if (this._translateCommunicationData && this.layoutPageInfo && this.layoutPageInfo.length) {
+        if (
+            this._translateCommunicationData &&
+            this.layoutPageInfo &&
+            this.layoutPageInfo.length
+        ) {
             for (const item of this.layoutPageInfo) {
                 for (const widgetBox of item.widgetboxesTitle) {
-                    if (widgetBox.widgetDetail.id == this.translateCommunicationData.srcWidgetDetail.id) {
+                    if (
+                        widgetBox.widgetDetail.id ==
+                        this.translateCommunicationData.srcWidgetDetail.id
+                    ) {
                         this.isConnectedTargetWidget = true;
                         // service for translate grid data
-                        if (this._translateCommunicationData.srcWidgetDetail['gridSelectedRow']) {
-                            widgetBox.widgetDetail['gridSelectedRow'] = this._translateCommunicationData.srcWidgetDetail['gridSelectedRow'];
+                        if (
+                            this._translateCommunicationData.srcWidgetDetail[
+                                "gridSelectedRow"
+                            ]
+                        ) {
+                            widgetBox.widgetDetail["gridSelectedRow"] =
+                                this._translateCommunicationData.srcWidgetDetail[
+                                    "gridSelectedRow"
+                                ];
                         }
-                        this._translateCommunicationData.srcWidgetDetail = cloneDeep(widgetBox.widgetDetail);
+                        this._translateCommunicationData.srcWidgetDetail =
+                            cloneDeep(widgetBox.widgetDetail);
                         break;
                     }
                 }
             }
 
             if (this.isConnectedTargetWidget) {
-                let srcWidgetDetail = this._translateCommunicationData.srcWidgetDetail;
-                const listenKeyRequest = srcWidgetDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
+                let srcWidgetDetail =
+                    this._translateCommunicationData.srcWidgetDetail;
+                const listenKeyRequest =
+                    srcWidgetDetail.widgetDataType.listenKeyRequest(
+                        this.ofModule.moduleNameTrim
+                    );
                 const valid = this.checkProperties(listenKeyRequest);
                 if (valid) {
-                    this.getOriginalValueSubscription = this.getOriginalValue().subscribe((data: any) => {
-                        if (data) {
-                            this.originalValue = data.value.orgValue;
-                            this.originalField = data.value.orgField;
-                            this.getDataTranslateFromService();
-                            this.updateTranslationWidget.emit(this._translateCommunicationData);
-                        }
-                    });
-                }
-                else {
+                    this.getOriginalValueSubscription =
+                        this.getOriginalValue().subscribe((data: any) => {
+                            if (data) {
+                                this.originalValue = data.value.orgValue;
+                                this.originalField = data.value.orgField;
+                                this.getDataTranslateFromService();
+                                this.updateTranslationWidget.emit(
+                                    this._translateCommunicationData
+                                );
+                            }
+                        });
+                } else {
                     this.isConnectedTargetWidget = false;
                 }
             }
@@ -180,7 +223,7 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
      */
     private reset() {
         this.isConnectedTargetWidget = false;
-        this.originalValue = '';
+        this.originalValue = "";
         this.isFormChanged = false;
         this.editMode = false;
         this.resetGridData();
@@ -190,14 +233,17 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
      * ngOnInit
      */
     public ngOnInit() {
-        this.layoutPageInfoModelStateSubscription = this.layoutPageInfoModelState.subscribe((layoutInfoState: LayoutPageInfoModel[]) => {
-            this.appErrorHandler.executeAction(() => {
-                this.layoutPageInfo = layoutInfoState;
-                if (!this.isConnectedTargetWidget) {
-                    this.loadData();
+        this.layoutPageInfoModelStateSubscription =
+            this.layoutPageInfoModelState.subscribe(
+                (layoutInfoState: LayoutPageInfoModel[]) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.layoutPageInfo = layoutInfoState;
+                        if (!this.isConnectedTargetWidget) {
+                            this.loadData();
+                        }
+                    });
                 }
-            });
-        });
+            );
     }
 
     /**
@@ -207,12 +253,10 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
         Uti.unsubscribe(this);
     }
 
-
     /**
      * ngAfterViewInit
      */
-    ngAfterViewInit() {
-    }
+    ngAfterViewInit() {}
 
     /**
      * checkProperties
@@ -220,8 +264,7 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
      */
     private checkProperties(obj) {
         for (const key in obj) {
-            if (obj[key])
-                return true;
+            if (obj[key]) return true;
         }
         return false;
     }
@@ -231,27 +274,33 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
      */
     private getOriginalValue(): Observable<any> {
         let srcWidgetDetail = this._translateCommunicationData.srcWidgetDetail;
-        const listenKeyRequest = srcWidgetDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
-        return this.widgetTemplateSettingService.getWidgetDetailByRequestString(srcWidgetDetail, listenKeyRequest, true).map(
-            (result: WidgetDetail) => {
+        const listenKeyRequest =
+            srcWidgetDetail.widgetDataType.listenKeyRequest(
+                this.ofModule.moduleNameTrim
+            );
+        return this.widgetTemplateSettingService
+            .getWidgetDetailByRequestString(
+                srcWidgetDetail,
+                listenKeyRequest,
+                true
+            )
+            .map((result: WidgetDetail) => {
                 if (!result) return;
                 return this.appErrorHandler.executeAction(() => {
                     const _result = this.filterOriginalValue(result);
                     if (_result) {
                         return Observable.of({
                             orgValue: _result.Value,
-                            orgField: _result.ColumnName
+                            orgField: _result.ColumnName,
                         });
-                    }
-                    else {
+                    } else {
                         return Observable.of({
-                            orgValue: '',
-                            orgField: ''
+                            orgValue: "",
+                            orgField: "",
                         });
                     }
                 });
-            }
-        );
+            });
     }
 
     private filterOriginalValue(data: WidgetDetail): any {
@@ -261,7 +310,11 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
         switch (data.idRepWidgetType) {
             case WidgetType.FieldSet:
                 const fieldSetDataArr: Array<any> = data.contentDetail.data[1];
-                const fieldSetTranslateData = fieldSetDataArr.filter(p => p.OriginalColumnName == this.translateCommunicationData.fieldColumn);
+                const fieldSetTranslateData = fieldSetDataArr.filter(
+                    (p) =>
+                        p.OriginalColumnName ==
+                        this.translateCommunicationData.fieldColumn
+                );
                 if (fieldSetTranslateData.length) {
                     return fieldSetTranslateData[0];
                 }
@@ -269,14 +322,21 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
             case WidgetType.EditableGrid:
             case WidgetType.Combination:
             case WidgetType.TableWithFilter:
-                if (!this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'] ||
-                    !this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'].length) {
+                if (
+                    !this.translateCommunicationData.srcWidgetDetail[
+                        "gridSelectedRow"
+                    ] ||
+                    !this.translateCommunicationData.srcWidgetDetail[
+                        "gridSelectedRow"
+                    ].length
+                ) {
                     return null;
                 }
                 let result: any = {};
                 for (let item in data.contentDetail.columnSettings) {
                     if (item === this.translateCommunicationData.fieldColumn) {
-                        result.ColumnName = data.contentDetail.columnSettings[item].ColumnName;
+                        result.ColumnName =
+                            data.contentDetail.columnSettings[item].ColumnName;
                         break;
                     }
                 }
@@ -287,11 +347,26 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
     }
 
     private getCellValueForTranslation(): string {
-        if (!this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'][0][this.translateCommunicationData.fieldColumn]) return '';
-        if (typeof this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'][0][this.translateCommunicationData.fieldColumn] === 'object') {
-            return this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'][0][this.translateCommunicationData.fieldColumn].value || '';
+        if (
+            !this.translateCommunicationData.srcWidgetDetail[
+                "gridSelectedRow"
+            ][0][this.translateCommunicationData.fieldColumn]
+        )
+            return "";
+        if (
+            typeof this.translateCommunicationData.srcWidgetDetail[
+                "gridSelectedRow"
+            ][0][this.translateCommunicationData.fieldColumn] === "object"
+        ) {
+            return (
+                this.translateCommunicationData.srcWidgetDetail[
+                    "gridSelectedRow"
+                ][0][this.translateCommunicationData.fieldColumn].value || ""
+            );
         }
-        return this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'][0][this.translateCommunicationData.fieldColumn].toString();
+        return this.translateCommunicationData.srcWidgetDetail[
+            "gridSelectedRow"
+        ][0][this.translateCommunicationData.fieldColumn].toString();
     }
 
     /**
@@ -300,75 +375,74 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
     private initColumnSetting() {
         const colSetting = [
             {
-                title: 'IdTranslateLabelText',
-                data: 'IdTranslateLabelText',
+                title: "IdTranslateLabelText",
+                data: "IdTranslateLabelText",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'IdRepLanguage',
-                data: 'IdRepLanguage',
+                title: "IdRepLanguage",
+                data: "IdRepLanguage",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Mode',
-                data: 'Mode',
+                title: "Mode",
+                data: "Mode",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Language Name',
-                data: 'LanguageName',
+                title: "Language Name",
+                data: "LanguageName",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Readonly: '1',
-                                AutoSize: '1'
-                            }
-                        }
-                    ]
-                }
+                                Readonly: "1",
+                                AutoSize: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Translate Text',
-                data: 'TranslateText',
+                title: "Translate Text",
+                data: "TranslateText",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
-                            DisplayField: {
-                            }
-                        }
-                    ]
-                }
-            }
+                            DisplayField: {},
+                        },
+                    ],
+                },
+            },
         ];
         return colSetting;
     }
@@ -378,8 +452,7 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
      */
     public reload() {
         this.editMode = false;
-        if (!this.translateCommunicationData)
-            return;
+        if (!this.translateCommunicationData) return;
         this.getDataTranslateFromService();
     }
 
@@ -389,25 +462,49 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
     private getDataTranslateFromService() {
         let originalValue = this.originalValue;
         let widgetCloneID = this.translateCommunicationData.srcWidgetDetail.id;
-        let widgetMainID = '' + this.translateCommunicationData.srcWidgetDetail.idRepWidgetApp;
+        let widgetMainID =
+            "" + this.translateCommunicationData.srcWidgetDetail.idRepWidgetApp;
         if (widgetCloneID && widgetMainID) {
-
             let idTable = this.getIdtableForTranslation();
 
-            this.globalSettingService.getTranslateLabelText(originalValue, widgetMainID, widgetCloneID, this.translateDataType + '', idTable, this.originalField, this.globalSettingService.getFieldTableName(this.originalField, this.translateCommunicationData.srcWidgetDetail))
+            this.globalSettingService
+                .getTranslateLabelText(
+                    originalValue,
+                    widgetMainID,
+                    widgetCloneID,
+                    this.translateDataType + "",
+                    idTable,
+                    this.originalField,
+                    this.globalSettingService.getFieldTableName(
+                        this.originalField,
+                        this.translateCommunicationData.srcWidgetDetail
+                    )
+                )
                 .subscribe((response) => {
                     this.appErrorHandler.executeAction(() => {
-                        if (response && response.data && response.data.length >= 1) {
+                        if (
+                            response &&
+                            response.data &&
+                            response.data.length >= 1
+                        ) {
                             const dataIndex = 1;
                             if (response.data[dataIndex]) {
-                                this.gridData = this.initData(response.data[dataIndex]);
+                                this.gridData = this.initData(
+                                    response.data[dataIndex]
+                                );
                             }
-                            const hasTranslatedTextModeWidgetOnly = !isNil(this.gridDataModeWidgetOnly.data.find((item) =>
-                                !isNil(item.IdTranslateLabelText) &&
-                                item.IdTranslateLabelText > 0));
+                            const hasTranslatedTextModeWidgetOnly = !isNil(
+                                this.gridDataModeWidgetOnly.data.find(
+                                    (item) =>
+                                        !isNil(item.IdTranslateLabelText) &&
+                                        item.IdTranslateLabelText > 0
+                                )
+                            );
                             if (hasTranslatedTextModeWidgetOnly) {
                                 this.applyFor = TranslateModeEnum.WidgetOnly;
-                                this.gridData = cloneDeep(this.gridDataModeWidgetOnly);
+                                this.gridData = cloneDeep(
+                                    this.gridDataModeWidgetOnly
+                                );
                             } else {
                                 this.applyFor = TranslateModeEnum.All;
                                 this.gridData = cloneDeep(this.gridDataModeAll);
@@ -422,24 +519,38 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
                             });
                         }
                     });
-                })
-        }
-        else {
+                });
+        } else {
             this.resetGridData();
         }
     }
 
     private getIdtableForTranslation(): any {
-        switch (this.translateCommunicationData.srcWidgetDetail.idRepWidgetType) {
+        switch (
+            this.translateCommunicationData.srcWidgetDetail.idRepWidgetType
+        ) {
             case WidgetType.FieldSet:
-                if (this.translateCommunicationData.srcWidgetDetail.widgetDataType) {
-                    const listenKeyRequest = this.translateCommunicationData.srcWidgetDetail.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim);
+                if (
+                    this.translateCommunicationData.srcWidgetDetail
+                        .widgetDataType
+                ) {
+                    const listenKeyRequest =
+                        this.translateCommunicationData.srcWidgetDetail.widgetDataType.listenKeyRequest(
+                            this.ofModule.moduleNameTrim
+                        );
                     if (listenKeyRequest) {
-                        if (this.translateCommunicationData.srcWidgetDetail.widgetDataType.listenKey.main) {
-                            const key = this.translateCommunicationData.srcWidgetDetail.widgetDataType.listenKey.main.key;
+                        if (
+                            this.translateCommunicationData.srcWidgetDetail
+                                .widgetDataType.listenKey.main
+                        ) {
+                            const key =
+                                this.translateCommunicationData.srcWidgetDetail
+                                    .widgetDataType.listenKey.main.key;
                             return listenKeyRequest[key];
                         }
-                        return listenKeyRequest[Object.keys(listenKeyRequest)[0]];
+                        return listenKeyRequest[
+                            Object.keys(listenKeyRequest)[0]
+                        ];
                     }
                 }
                 break;
@@ -447,12 +558,28 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
             case WidgetType.EditableGrid:
             case WidgetType.Combination:
             case WidgetType.TableWithFilter:
-                if (!this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'] ||
-                    !this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'].length ||
-                    !this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'][0][this.translateCommunicationData.fieldColumn]) {
+                if (
+                    !this.translateCommunicationData.srcWidgetDetail[
+                        "gridSelectedRow"
+                    ] ||
+                    !this.translateCommunicationData.srcWidgetDetail[
+                        "gridSelectedRow"
+                    ].length ||
+                    !this.translateCommunicationData.srcWidgetDetail[
+                        "gridSelectedRow"
+                    ][0][this.translateCommunicationData.fieldColumn]
+                ) {
                     return null;
                 }
-                return this.translateCommunicationData.srcWidgetDetail['gridSelectedRow'][0][this.translateCommunicationData.srcWidgetDetail.widgetDataType.primaryKey.split(',')[0]] || null;
+                return (
+                    this.translateCommunicationData.srcWidgetDetail[
+                        "gridSelectedRow"
+                    ][0][
+                        this.translateCommunicationData.srcWidgetDetail.widgetDataType.primaryKey.split(
+                            ","
+                        )[0]
+                    ] || null
+                );
         }
         return null;
     }
@@ -471,10 +598,9 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
         if (!this.gridData) {
             this.gridData = {
                 data: [],
-                columns: this.initColumnSetting()
-            }
-        }
-        else {
+                columns: this.initColumnSetting(),
+            };
+        } else {
             this.gridData.data = [];
         }
     }
@@ -492,20 +618,24 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
                 IdRepLanguage: item.IdRepLanguage,
                 LanguageName: item.DefaultValue,
                 TranslateText: item.AllTranslateText,
-                Mode: TranslateModeEnum.All
+                Mode: TranslateModeEnum.All,
             });
             this.gridDataModeWidgetOnly.data.push({
                 IdTranslateLabelText: item.OnlyThisWidgetIdTranslateLabelText,
                 IdRepLanguage: item.IdRepLanguage,
                 LanguageName: item.DefaultValue,
                 TranslateText: item.OnlyThisWidgetTranslateText,
-                Mode: TranslateModeEnum.WidgetOnly
+                Mode: TranslateModeEnum.WidgetOnly,
             });
         });
         const cols = this.initColumnSetting();
         this.gridDataModeAll.columns = cols;
         this.gridDataModeWidgetOnly.columns = cols;
-        return cloneDeep(this.applyFor === TranslateModeEnum.All ? this.gridDataModeAll : this.gridDataModeWidgetOnly);
+        return cloneDeep(
+            this.applyFor === TranslateModeEnum.All
+                ? this.gridDataModeAll
+                : this.gridDataModeWidgetOnly
+        );
     }
 
     /**
@@ -557,35 +687,47 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
      */
     private prepareDataFroSaving(): any {
         const result = [];
-        const items: Array<any> = this.xnAgGridComponent ? this.xnAgGridComponent.itemsEdited : [];
+        const items: Array<any> = this.xnAgGridComponent
+            ? this.xnAgGridComponent.itemsEdited
+            : [];
         let editData = cloneDeep(items);
         (editData as Array<any>).forEach((item) => {
             const isDeleted = isEmpty(item.TranslateText);
             if (!(isDeleted && !item.IdTranslateLabelText)) {
                 const isModeAll = item.Mode === TranslateModeEnum.All;
-                const widgetCloneID = this.translateCommunicationData.srcWidgetDetail.id;
-                const widgetMainID = '' + this.translateCommunicationData.srcWidgetDetail.idRepWidgetApp;
+                const widgetCloneID =
+                    this.translateCommunicationData.srcWidgetDetail.id;
+                const widgetMainID =
+                    "" +
+                    this.translateCommunicationData.srcWidgetDetail
+                        .idRepWidgetApp;
                 const originalValue = this.originalValue;
 
                 let idTable = this.getIdtableForTranslation();
 
                 result.push({
-                    'IdTranslateLabelText': item.IdTranslateLabelText > 0 ? item.IdTranslateLabelText : null,
-                    'IdRepTranslateModuleType': this.translateDataType,
-                    'IdRepLanguage': item.IdRepLanguage,
-                    'TableName': this.globalSettingService.getFieldTableName(this.originalField, this.translateCommunicationData.srcWidgetDetail),
-                    'WidgetMainID': isModeAll ? null : widgetMainID,
-                    'WidgetCloneID': isModeAll ? null : widgetCloneID,
-                    'OriginalText': originalValue,
-                    'TranslatedText': item.TranslateText,
-                    'IsDeleted': isDeleted ? '1' : null,
-                    'IdTable': idTable,
-                    'FieldName': this.originalField
+                    IdTranslateLabelText:
+                        item.IdTranslateLabelText > 0
+                            ? item.IdTranslateLabelText
+                            : null,
+                    IdRepTranslateModuleType: this.translateDataType,
+                    IdRepLanguage: item.IdRepLanguage,
+                    TableName: this.globalSettingService.getFieldTableName(
+                        this.originalField,
+                        this.translateCommunicationData.srcWidgetDetail
+                    ),
+                    WidgetMainID: isModeAll ? null : widgetMainID,
+                    WidgetCloneID: isModeAll ? null : widgetCloneID,
+                    OriginalText: originalValue,
+                    TranslatedText: item.TranslateText,
+                    IsDeleted: isDeleted ? "1" : null,
+                    IdTable: idTable,
+                    FieldName: this.originalField,
                 });
             }
         });
 
-        return { 'Translations': result };
+        return { Translations: result };
     }
 
     /**
@@ -593,7 +735,11 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
      */
     public submit(callback?: any) {
         const saveData = this.prepareDataFroSaving();
-        if (!saveData || !saveData.Translations || !saveData.Translations.length) {
+        if (
+            !saveData ||
+            !saveData.Translations ||
+            !saveData.Translations.length
+        ) {
             this.isFormChanged = false;
             this.editMode = false;
             if (callback) {
@@ -601,18 +747,18 @@ export class WidgetTranslationComponent extends BaseComponent implements OnInit,
             }
             return;
         }
-        this.globalSettingService.saveTranslateLabelText(saveData).subscribe(
-            (response) => {
+        this.globalSettingService
+            .saveTranslateLabelText(saveData)
+            .subscribe((response) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (response && response.eventType === 'Successfully') {
+                    if (response && response.eventType === "Successfully") {
                         this.saveSuccessCallBack();
                         if (callback) {
                             callback();
                         }
                     }
                 });
-            }
-        );
+            });
     }
 
     /**

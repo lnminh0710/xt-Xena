@@ -1,6 +1,19 @@
-<div [formGroup]="form" class="form-group" style="margin-bottom: 0px !important">
+<div
+    [formGroup]="form"
+    class="form-group"
+    style="margin-bottom: 0px !important"
+>
     <ng-container *ngFor="let control of controlList">
-        <dynamic-control formControlName="{{control.key}}" [control]="control" (onUpdateValue)="onUpdateValue($event)"></dynamic-control>
-        <dynamic-filter [isRoot]="false" [form]="form" [controlList]="control.children" *ngIf="control.children && control.children.length"></dynamic-filter>
+        <dynamic-control
+            formControlName="{{ control.key }}"
+            [control]="control"
+            (onUpdateValue)="onUpdateValue($event)"
+        ></dynamic-control>
+        <dynamic-filter
+            [isRoot]="false"
+            [form]="form"
+            [controlList]="control.children"
+            *ngIf="control.children && control.children.length"
+        ></dynamic-filter>
     </ng-container>
 </div>

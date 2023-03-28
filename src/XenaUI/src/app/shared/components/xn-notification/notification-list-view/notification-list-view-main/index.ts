@@ -1,1 +1,1 @@
-export { NotificationListViewMainComponent } from './notification-list-view-main.component';
+export { NotificationListViewMainComponent } from "./notification-list-view-main.component";

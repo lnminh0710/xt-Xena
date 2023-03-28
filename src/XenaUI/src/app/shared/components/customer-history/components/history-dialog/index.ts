@@ -1,1 +1,1 @@
-export * from './history-dialog.component';
+export * from "./history-dialog.component";

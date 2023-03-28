@@ -1,28 +1,43 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { AppErrorHandler, UserProfileService, DatatableService, UserModuleWorkspaceService } from 'app/services';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import {Configuration, ModuleIdSettingGuid} from 'app/app.constants';
-import { Uti } from 'app/utilities';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { ToasterService } from 'angular2-toaster';
-import {Dialog} from "primeng/components/dialog/dialog";
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    Output,
+    EventEmitter,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    ViewChild,
+} from "@angular/core";
+import {
+    AppErrorHandler,
+    UserProfileService,
+    DatatableService,
+    UserModuleWorkspaceService,
+} from "app/services";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Configuration, ModuleIdSettingGuid } from "app/app.constants";
+import { Uti } from "app/utilities";
+import { FormGroup, Validators, FormBuilder } from "@angular/forms";
+import { ToasterService } from "angular2-toaster";
+import { Dialog } from "primeng/components/dialog/dialog";
 
 @Component({
-    selector: 'dialog-save-workspace-template',
-    styleUrls: ['./dialog-save-workspace-template.component.scss'],
-    templateUrl: './dialog-save-workspace-template.component.html',
+    selector: "dialog-save-workspace-template",
+    styleUrls: ["./dialog-save-workspace-template.component.scss"],
+    templateUrl: "./dialog-save-workspace-template.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
-export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implements OnInit, OnDestroy {
-
+export class DialogSaveWorkspaceTemplateComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public showDialog = false;
     public userDatasource: any;
     public isUserGridReadOnly = false;
     public isUserGridDisabled = false;
-    public sharingMode = 'SelectedUser';
+    public sharingMode = "SelectedUser";
     public formGroup: FormGroup;
     public submitted = false;
     public isResizable = true;
@@ -39,10 +54,14 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
 
     @Output() onClose = new EventEmitter<any>();
 
-    @ViewChild('userGrid') userGrid: XnAgGridComponent;
+    @ViewChild("userGrid") userGrid: XnAgGridComponent;
     private pDialogSaveWorkspaceTemplate: any;
-    @ViewChild('pDialogSaveWorkspaceTemplate') set pDialogSaveWorkspaceTemplateInstance(pDialogSaveWorkspaceTemplateInstance: Dialog) {
-        this.pDialogSaveWorkspaceTemplate = pDialogSaveWorkspaceTemplateInstance;
+    @ViewChild("pDialogSaveWorkspaceTemplate")
+    set pDialogSaveWorkspaceTemplateInstance(
+        pDialogSaveWorkspaceTemplateInstance: Dialog
+    ) {
+        this.pDialogSaveWorkspaceTemplate =
+            pDialogSaveWorkspaceTemplateInstance;
     }
     constructor(
         private appErrorHandler: AppErrorHandler,
@@ -54,7 +73,7 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
         private consts: Configuration,
         private formBuilder: FormBuilder,
         private toasterService: ToasterService,
-        private userModuleWorkspaceService: UserModuleWorkspaceService,
+        private userModuleWorkspaceService: UserModuleWorkspaceService
     ) {
         super(router);
     }
@@ -63,14 +82,12 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
         this.getUserList();
 
         this.formGroup = this.formBuilder.group({
-            idWorkspaceTemplate: '',
-            workspaceName: ['', Validators.required],
+            idWorkspaceTemplate: "",
+            workspaceName: ["", Validators.required],
         });
     }
 
-    ngOnDestroy() {
-
-    }
+    ngOnDestroy() {}
 
     public open(data?: any, idSettingsGUI?: any) {
         this.showDialog = true;
@@ -79,7 +96,7 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
             this.editData = data;
             this.formGroup.setValue({
                 idWorkspaceTemplate: data.IdWorkspaceTemplate,
-                workspaceName: data.WorkSpaceName
+                workspaceName: data.WorkSpaceName,
             });
         }
 
@@ -99,17 +116,28 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
         this.isMaximized = true;
         this.isResizable = false;
         this.isDraggable = false;
-        this.dialogStyleClass = this.consts.popupResizeClassName + '  ' + this.consts.popupFullViewClassName;
+        this.dialogStyleClass =
+            this.consts.popupResizeClassName +
+            "  " +
+            this.consts.popupFullViewClassName;
         if (this.pDialogSaveWorkspaceTemplate) {
-            this.preDialogW = this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.width;
-            this.preDialogH = this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.height;
-            this.preDialogLeft = this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.left;
-            this.preDialogTop = this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.top;
+            this.preDialogW =
+                this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.width;
+            this.preDialogH =
+                this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.height;
+            this.preDialogLeft =
+                this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.left;
+            this.preDialogTop =
+                this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.top;
 
-            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.width = $(document).width() + 'px';
-            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.height = $(document).height() + 'px';
-            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.top = '0px';
-            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.left = '0px';
+            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.width =
+                $(document).width() + "px";
+            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.height =
+                $(document).height() + "px";
+            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.top =
+                "0px";
+            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.left =
+                "0px";
         }
     }
 
@@ -121,15 +149,18 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
         this.isDraggable = true;
         this.dialogStyleClass = this.consts.popupResizeClassName;
         if (this.pDialogSaveWorkspaceTemplate) {
-            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.width = this.preDialogW;
-            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.height = this.preDialogH;
-            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.top = this.preDialogTop;
-            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.left = this.preDialogLeft;
+            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.width =
+                this.preDialogW;
+            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.height =
+                this.preDialogH;
+            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.top =
+                this.preDialogTop;
+            this.pDialogSaveWorkspaceTemplate.containerViewChild.nativeElement.style.left =
+                this.preDialogLeft;
         }
         // setTimeout(() => {
         //     this.bindResizeEvent();
         // }, 200);
-
     }
 
     private getUserList() {
@@ -139,11 +170,15 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
                     return;
                 }
 
-                let dataSource = this.datatableService.buildDataSource(data.contentDetail);
+                let dataSource = this.datatableService.buildDataSource(
+                    data.contentDetail
+                );
                 dataSource = this.processDataSource(dataSource);
 
                 if (dataSource.data.length) {
-                    const currentLoggedInUserIdx = dataSource.data.findIndex(x => x.IdLogin == this.uti.getUserInfo().id);
+                    const currentLoggedInUserIdx = dataSource.data.findIndex(
+                        (x) => x.IdLogin == this.uti.getUserInfo().id
+                    );
                     if (currentLoggedInUserIdx !== -1) {
                         dataSource.data.splice(currentLoggedInUserIdx, 1);
                     }
@@ -153,9 +188,11 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
 
                 setTimeout(() => {
                     if (this.editData) {
-                        this.sharingMode = this.editData.IsForAllUser ? 'Public' : 'SelectedUser';
+                        this.sharingMode = this.editData.IsForAllUser
+                            ? "Public"
+                            : "SelectedUser";
                         this.onSharingModeChanged();
-                        if (this.sharingMode === 'SelectedUser') {
+                        if (this.sharingMode === "SelectedUser") {
                             this.selectSharingUser(this.editData);
                         }
                     }
@@ -168,10 +205,13 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
 
     private selectSharingUser(data) {
         if (this.userGrid) {
-            this.userGrid.agGridDataSource.rowData.forEach(user => {
-                const found = data.ShareList.find(u => u.IdLogin == user.IdLogin);
+            this.userGrid.agGridDataSource.rowData.forEach((user) => {
+                const found = data.ShareList.find(
+                    (u) => u.IdLogin == user.IdLogin
+                );
                 if (found) {
-                    user.IdWorkspaceTemplateSharing = found.IdWorkspaceTemplateSharing;
+                    user.IdWorkspaceTemplateSharing =
+                        found.IdWorkspaceTemplateSharing;
                     user.select = true;
 
                     this.userGrid.updateRowData([user]);
@@ -183,65 +223,82 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
 
     private processDataSource(dataSource: any) {
         for (let i = 0; i < dataSource.columns.length; i++) {
-            if (dataSource.columns[i].data !== 'LoginName'
-                && dataSource.columns[i].data !== 'FirstName'
-                && dataSource.columns[i].data !== 'LastName'
-                && dataSource.columns[i].data !== 'Email') {
-                if (dataSource.columns[i].setting.Setting && dataSource.columns[i].setting.Setting.length) {
-                    if (dataSource.columns[i].setting.Setting[0].hasOwnProperty('DisplayField')) {
-                        dataSource.columns[i].setting.Setting[0].DisplayField.Hidden = '1';
-                        dataSource.columns[i].setting.Setting[0].DisplayField.ReadOnly = '1';
+            if (
+                dataSource.columns[i].data !== "LoginName" &&
+                dataSource.columns[i].data !== "FirstName" &&
+                dataSource.columns[i].data !== "LastName" &&
+                dataSource.columns[i].data !== "Email"
+            ) {
+                if (
+                    dataSource.columns[i].setting.Setting &&
+                    dataSource.columns[i].setting.Setting.length
+                ) {
+                    if (
+                        dataSource.columns[i].setting.Setting[0].hasOwnProperty(
+                            "DisplayField"
+                        )
+                    ) {
+                        dataSource.columns[
+                            i
+                        ].setting.Setting[0].DisplayField.Hidden = "1";
+                        dataSource.columns[
+                            i
+                        ].setting.Setting[0].DisplayField.ReadOnly = "1";
                     } else {
-                        dataSource.columns[i].setting.Setting[0].DisplayField = {
-                            Hidden: '1',
-                            ReadOnly: '1'
-                        };
+                        dataSource.columns[i].setting.Setting[0].DisplayField =
+                            {
+                                Hidden: "1",
+                                ReadOnly: "1",
+                            };
                     }
-
                 } else {
                     dataSource.columns[i].setting.Setting.push({
                         DisplayField: {
-                            Hidden: '1',
-                            ReadOnly: '1'
-                        }
+                            Hidden: "1",
+                            ReadOnly: "1",
+                        },
                     });
                 }
             }
         }
 
         dataSource.columns.splice(0, 0, {
-            data: 'IdWorkspaceTemplateSharing',
-            title: 'IdWorkspaceTemplateSharing',
+            data: "IdWorkspaceTemplateSharing",
+            title: "IdWorkspaceTemplateSharing",
             visible: false,
             setting: {
-                Setting: [{
-                    DisplayField: {
-                        Hidden: '1',
-                        ReadOnly: '1'
-                    }
-                }]
-            }
+                Setting: [
+                    {
+                        DisplayField: {
+                            Hidden: "1",
+                            ReadOnly: "1",
+                        },
+                    },
+                ],
+            },
         });
 
         dataSource.columns.splice(0, 0, {
-            data: 'select',
-            title: 'Select',
+            data: "select",
+            title: "Select",
             visible: true,
             setting: {
-                Setting: [{
-                    ControlType: {
-                        Type: 'Checkbox'
-                    }
-                }]
-            }
+                Setting: [
+                    {
+                        ControlType: {
+                            Type: "Checkbox",
+                        },
+                    },
+                ],
+            },
         });
 
         return dataSource;
     }
 
     public onSharingModeChanged() {
-        this.isUserGridDisabled = this.sharingMode === 'Public';
-        this.isUserGridReadOnly = this.sharingMode === 'Public';
+        this.isUserGridDisabled = this.sharingMode === "Public";
+        this.isUserGridReadOnly = this.sharingMode === "Public";
 
         this.changeDetectorRef.markForCheck();
 
@@ -249,8 +306,8 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
             if (this.userGrid) {
                 if (this.isUserGridDisabled) {
                     const data = this.userGrid.getGridData();
-                    data.forEach(item => {
-                        item['select'] = false;
+                    data.forEach((item) => {
+                        item["select"] = false;
                         this.userGrid.updateRowData([item]);
                     });
                 }
@@ -265,31 +322,46 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
         this.formGroup.updateValueAndValidity();
         try {
             if (!this.formGroup.valid) {
-                this.toasterService.pop('warning', 'Validation Fail', 'There are some fields do not pass validation.');
+                this.toasterService.pop(
+                    "warning",
+                    "Validation Fail",
+                    "There are some fields do not pass validation."
+                );
                 return;
             }
 
             const data: any = {
-                IdWorkspaceTemplate: this.formGroup.value.idWorkspaceTemplate || undefined,
+                IdWorkspaceTemplate:
+                    this.formGroup.value.idWorkspaceTemplate || undefined,
                 WorkSpaceName: this.formGroup.value.workspaceName,
                 ObjectNr: this.idSettingsGUI,
                 IsActive: 1,
                 IsUserDefault: 0,
-                IsForAllUser: this.sharingMode !== 'SelectedUser' ? 1 : 0,
+                IsForAllUser: this.sharingMode !== "SelectedUser" ? 1 : 0,
                 IsOwner: 1,
-                ShareList: this.buildShareList()
+                ShareList: this.buildShareList(),
             };
             if (this.idSettingsGUI === ModuleIdSettingGuid.AllModules) {
-                this.userModuleWorkspaceService.saveWorkspaceTemplateAll(data)
+                this.userModuleWorkspaceService
+                    .saveWorkspaceTemplateAll(data)
                     .subscribe((response) => {
-                        this.toasterService.pop('success', 'Success', `Workspace is saved successfully`);
+                        this.toasterService.pop(
+                            "success",
+                            "Success",
+                            `Workspace is saved successfully`
+                        );
 
                         this.cancel();
                     });
             } else {
-                this.userModuleWorkspaceService.saveWorkspaceTemplate(data)
+                this.userModuleWorkspaceService
+                    .saveWorkspaceTemplate(data)
                     .subscribe((response) => {
-                        this.toasterService.pop('success', 'Success', `Workspace is saved successfully`);
+                        this.toasterService.pop(
+                            "success",
+                            "Success",
+                            `Workspace is saved successfully`
+                        );
                         this.cancel();
                     });
             }
@@ -300,34 +372,44 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
 
     private buildShareList() {
         const result: any[] = [];
-        if (this.sharingMode === 'SelectedUser') {
+        if (this.sharingMode === "SelectedUser") {
             let found: any;
             if (this.editData && this.editData.ShareList.length) {
-                found = this.editData.ShareList.find(u => u.IdLogin == this.uti.getUserInfo().id);
+                found = this.editData.ShareList.find(
+                    (u) => u.IdLogin == this.uti.getUserInfo().id
+                );
             }
             result.push({
-                IdWorkspaceTemplateSharing: found ? found.IdWorkspaceTemplateSharing : undefined,
-                IdWorkspaceTemplate: this.formGroup.value.idWorkspaceTemplate || undefined,
+                IdWorkspaceTemplateSharing: found
+                    ? found.IdWorkspaceTemplateSharing
+                    : undefined,
+                IdWorkspaceTemplate:
+                    this.formGroup.value.idWorkspaceTemplate || undefined,
                 IdLogin: this.uti.getUserInfo().id,
-                IsActive: 1
+                IsActive: 1,
             });
 
-            this.userGrid.getGridData().forEach(user => {
+            this.userGrid.getGridData().forEach((user) => {
                 if (user.select) {
                     result.push({
-                        IdWorkspaceTemplateSharing: user.IdWorkspaceTemplateSharing || undefined,
-                        IdWorkspaceTemplate: this.formGroup.value.idWorkspaceTemplate || undefined,
+                        IdWorkspaceTemplateSharing:
+                            user.IdWorkspaceTemplateSharing || undefined,
+                        IdWorkspaceTemplate:
+                            this.formGroup.value.idWorkspaceTemplate ||
+                            undefined,
                         IdLogin: user.IdLogin,
                         IsActive: 1,
-                        IsDeleted: 0
+                        IsDeleted: 0,
                     });
                 } else if (!user.select && user.IdWorkspaceTemplateSharing) {
                     result.push({
-                        IdWorkspaceTemplateSharing: user.IdWorkspaceTemplateSharing,
-                        IdWorkspaceTemplate: this.formGroup.value.idWorkspaceTemplate,
+                        IdWorkspaceTemplateSharing:
+                            user.IdWorkspaceTemplateSharing,
+                        IdWorkspaceTemplate:
+                            this.formGroup.value.idWorkspaceTemplate,
                         IdLogin: user.IdLogin,
                         IsActive: 0,
-                        IsDeleted: 1
+                        IsDeleted: 1,
                     });
                 }
             });
@@ -335,5 +417,4 @@ export class DialogSaveWorkspaceTemplateComponent extends BaseComponent implemen
 
         return result;
     }
-
 }

@@ -1,5 +1,5 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcChart from 'wijmo/wijmo.chart';
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcChart from "wijmo/wijmo.chart";
 export declare class _RangeSlider {
     private static _HRANGESLIDER;
     private static _VRANGESLIDER;
@@ -42,7 +42,12 @@ export declare class _RangeSlider {
     private _startPt;
     _minPos: number;
     _maxPos: number;
-    constructor(container: HTMLElement, needSpaceClick: boolean, hasButtons?: boolean, options?: any);
+    constructor(
+        container: HTMLElement,
+        needSpaceClick: boolean,
+        hasButtons?: boolean,
+        options?: any
+    );
     buttonsVisible: boolean;
     isHorizontal: boolean;
     isVisible: boolean;

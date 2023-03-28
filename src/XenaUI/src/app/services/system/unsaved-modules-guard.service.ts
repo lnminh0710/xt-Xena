@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { CanDeactivate } from '@angular/router';
-import { HostListener } from '@angular/core';
+import { Injectable } from "@angular/core";
+import { CanDeactivate } from "@angular/router";
+import { HostListener } from "@angular/core";
 
 export abstract class UnsavedModuleCanDeactivate {
     abstract canDeactivate(): boolean;
@@ -8,7 +8,7 @@ export abstract class UnsavedModuleCanDeactivate {
 
     private timeout;
 
-    @HostListener('window:beforeunload', ['$event'])
+    @HostListener("window:beforeunload", ["$event"])
     beforeUnload($event: any) {
         if (!this.canDeactivate()) {
             $event.returnValue = true;
@@ -18,39 +18,50 @@ export abstract class UnsavedModuleCanDeactivate {
         }
     }
 
-    @HostListener('window:unload', ['$event'])
+    @HostListener("window:unload", ["$event"])
     unload($event: any) {
         clearTimeout(this.timeout);
 
         //Clear gs, widget by BrowserTabId
-        const browserTabIdKey = 'BrowserTabId';
+        const browserTabIdKey = "BrowserTabId";
         let browserTabId = sessionStorage.getItem(browserTabIdKey);
         if (browserTabId) {
-            Object.keys(localStorage).forEach(key => {
-                if (key.indexOf('__gs.') !== -1 || key.indexOf('__widget.') !== -1) {
+            Object.keys(localStorage).forEach((key) => {
+                if (
+                    key.indexOf("__gs.") !== -1 ||
+                    key.indexOf("__widget.") !== -1
+                ) {
                     if (key.indexOf(browserTabId) !== -1) {
                         localStorage.removeItem(key);
-                    }//if
-                }//if
+                    } //if
+                } //if
             });
             sessionStorage.removeItem(browserTabIdKey);
         }
 
         //Clear ModuleSetting
-        Object.keys(localStorage).forEach(key => {
-            if (key.indexOf('ModuleSetting:') !== -1 ) {
+        Object.keys(localStorage).forEach((key) => {
+            if (key.indexOf("ModuleSetting:") !== -1) {
                 localStorage.removeItem(key);
-            }//if
+            } //if
         });
     }
 }
 
 @Injectable()
-export class UnsavedModulesGuard implements CanDeactivate<UnsavedModuleCanDeactivate> {
+export class UnsavedModulesGuard
+    implements CanDeactivate<UnsavedModuleCanDeactivate>
+{
     canDeactivate(component: UnsavedModuleCanDeactivate): boolean {
-
-        if (typeof component.canDeactivate === "function" && !component.canDeactivate()) {
-            if (confirm('You have unsaved modules information! If you leave, your changes will be lost.')) {
+        if (
+            typeof component.canDeactivate === "function" &&
+            !component.canDeactivate()
+        ) {
+            if (
+                confirm(
+                    "You have unsaved modules information! If you leave, your changes will be lost."
+                )
+            ) {
                 return true;
             } else {
                 return false;

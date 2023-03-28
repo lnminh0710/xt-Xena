@@ -1,10 +1,10 @@
-﻿import { Injectable, ErrorHandler, Injector } from '@angular/core';
-import * as Raven from 'raven-js';
+﻿import { Injectable, ErrorHandler, Injector } from "@angular/core";
+import * as Raven from "raven-js";
 
-import { ModalService, CommonService } from 'app/services';
-import { MessageModal, } from 'app/app.constants';
-import { MessageModel, EmailModel } from 'app/models';
-import { Uti } from 'app/utilities';
+import { ModalService, CommonService } from "app/services";
+import { MessageModal } from "app/app.constants";
+import { MessageModel, EmailModel } from "app/models";
+import { Uti } from "app/utilities";
 
 @Injectable()
 export class AppErrorHandler implements ErrorHandler {
@@ -24,21 +24,27 @@ export class AppErrorHandler implements ErrorHandler {
 
             //this.showErrorDialog(error);
 
-            console.group('ErrorHandler');
+            console.group("ErrorHandler");
             if (error.message || error.stack) {
-                if (error.message)
-                    console.error(error.message);
-                if (error.stack)
-                    console.error(error.stack);
+                if (error.message) console.error(error.message);
+                if (error.stack) console.error(error.stack);
             } else {
-                console.log('handleError:', error);
+                console.log("handleError:", error);
             }
             console.groupEnd();
-
         } catch (handlingError) {
-            console.group('ErrorHandler');
-            console.warn('Error when trying to output error.');
-            console.error(console.log(JSON.stringify(handlingError, ["message", "arguments", "type", "name"])));
+            console.group("ErrorHandler");
+            console.warn("Error when trying to output error.");
+            console.error(
+                console.log(
+                    JSON.stringify(handlingError, [
+                        "message",
+                        "arguments",
+                        "type",
+                        "name",
+                    ])
+                )
+            );
             console.groupEnd();
         }
     }
@@ -47,8 +53,7 @@ export class AppErrorHandler implements ErrorHandler {
         try {
             return func();
         } catch (e) {
-            if (funcError)
-                funcError();
+            if (funcError) funcError();
             this.handleError(e);
         }
     }
@@ -56,14 +61,15 @@ export class AppErrorHandler implements ErrorHandler {
     private sendEmailToAdmin(error: any) {
         //after sendmail successfully -> reload page
         let email = new EmailModel({
-            ToEmail: '',
-            Subject: 'System error',
+            ToEmail: "",
+            Subject: "System error",
             Body: error.stack || error.message,
-            BrowserInfo: Uti.getBrowserInfo()
+            BrowserInfo: Uti.getBrowserInfo(),
         });
 
-        this.commonService.SendEmailWithImageAttached(email).subscribe(
-            (response: any) => {
+        this.commonService
+            .SendEmailWithImageAttached(email)
+            .subscribe((response: any) => {
                 location.reload();
             });
     }
@@ -71,16 +77,22 @@ export class AppErrorHandler implements ErrorHandler {
         if (this.isShowDialog) return;
 
         this.isShowDialog = true;
-        this.modalService.alertMessage(new MessageModel({
-            headerText: 'System error',
-            messageType: MessageModal.MessageType.error,
-            modalSize: MessageModal.ModalSize.small,
-            message: [{key: 'Modal_Message__All_System_Error_Contact_Supporting'}],
-            okText: 'Send error to admin',
-            callBack: () => {
-                this.isShowDialog = false;
-                this.sendEmailToAdmin(error);
-            }
-        }));
+        this.modalService.alertMessage(
+            new MessageModel({
+                headerText: "System error",
+                messageType: MessageModal.MessageType.error,
+                modalSize: MessageModal.ModalSize.small,
+                message: [
+                    {
+                        key: "Modal_Message__All_System_Error_Contact_Supporting",
+                    },
+                ],
+                okText: "Send error to admin",
+                callBack: () => {
+                    this.isShowDialog = false;
+                    this.sendEmailToAdmin(error);
+                },
+            })
+        );
     }
 }

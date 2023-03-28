@@ -1,407 +1,407 @@
-import { PersonTypeIdEnum } from 'app/app.constants';
+import { PersonTypeIdEnum } from "app/app.constants";
 export class FakeData {
     public createTabsData() {
         return [
             {
-                title: 'Xena',
-                projectType: 'Xena',
+                title: "Xena",
+                projectType: "Xena",
                 active: true,
                 data: [
                     {
                         id: 1,
-                        header: 'Person',
+                        header: "Person",
                         parentId: 0,
                         level: 0,
                         items: [
                             {
                                 id: 11,
-                                header: 'Customer',
-                                index: 'customer',
-                                type: 'customer',
+                                header: "Customer",
+                                index: "customer",
+                                type: "customer",
                                 idPersonType: PersonTypeIdEnum.Customer,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 12,
-                                header: 'Broker',
-                                index: 'broker',
-                                type: 'broker',
+                                header: "Broker",
+                                index: "broker",
+                                type: "broker",
                                 idPersonType: PersonTypeIdEnum.Broker,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 13,
-                                header: 'Cash Provider',
-                                index: 'cashprovider',
-                                type: 'cashprovider',
+                                header: "Cash Provider",
+                                index: "cashprovider",
+                                type: "cashprovider",
                                 idPersonType: PersonTypeIdEnum.CashProvider,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 14,
-                                header: 'Desktop Provider',
-                                index: 'desktopprovider',
-                                type: 'desktopprovider',
+                                header: "Desktop Provider",
+                                index: "desktopprovider",
+                                type: "desktopprovider",
                                 idPersonType: PersonTypeIdEnum.DesktopProvider,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 15,
-                                header: 'Freight Provider',
-                                index: 'freightprovider',
-                                type: 'freightprovider',
+                                header: "Freight Provider",
+                                index: "freightprovider",
+                                type: "freightprovider",
                                 idPersonType: PersonTypeIdEnum.FreightProvider,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 16,
-                                header: 'Mandant',
-                                index: 'mandant',
-                                type: 'mandant',
+                                header: "Mandant",
+                                index: "mandant",
+                                type: "mandant",
                                 idPersonType: PersonTypeIdEnum.Mandant,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 17,
-                                header: 'Post Provider',
-                                index: 'postprovider',
-                                type: 'postprovider',
+                                header: "Post Provider",
+                                index: "postprovider",
+                                type: "postprovider",
                                 idPersonType: PersonTypeIdEnum.PostProvider,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 18,
-                                header: 'Principal',
-                                index: 'principal',
-                                type: 'principal',
+                                header: "Principal",
+                                index: "principal",
+                                type: "principal",
                                 idPersonType: PersonTypeIdEnum.Principal,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 19,
-                                header: 'Print Provider',
-                                index: 'printprovider',
-                                type: 'printprovider',
+                                header: "Print Provider",
+                                index: "printprovider",
+                                type: "printprovider",
                                 idPersonType: PersonTypeIdEnum.PrintProvider,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 20,
-                                header: 'Provider',
-                                index: 'provider',
-                                type: 'provider',
+                                header: "Provider",
+                                index: "provider",
+                                type: "provider",
                                 idPersonType: PersonTypeIdEnum.Provider,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 21,
-                                header: 'Scan Center',
-                                index: 'scancenter',
-                                type: 'scancenter',
+                                header: "Scan Center",
+                                index: "scancenter",
+                                type: "scancenter",
                                 idPersonType: PersonTypeIdEnum.ScanCenter,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 22,
-                                header: 'Service Provider',
-                                index: 'serviceprovider',
-                                type: 'serviceprovider',
+                                header: "Service Provider",
+                                index: "serviceprovider",
+                                type: "serviceprovider",
                                 idPersonType: PersonTypeIdEnum.ServiceProvider,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 23,
-                                header: 'Supplier',
-                                index: 'supplier',
-                                type: 'supplier',
+                                header: "Supplier",
+                                index: "supplier",
+                                type: "supplier",
                                 idPersonType: PersonTypeIdEnum.Supplier,
                                 parentId: 1,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 24,
-                                header: 'Warehouse',
-                                index: 'warehouse',
-                                type: 'warehouse',
+                                header: "Warehouse",
+                                index: "warehouse",
+                                type: "warehouse",
                                 idPersonType: PersonTypeIdEnum.Warehouse,
                                 parentId: 1,
-                                level: 1
-                            }
-                        ]
+                                level: 1,
+                            },
+                        ],
                     },
                     {
                         id: 4,
-                        header: 'Others',
+                        header: "Others",
                         parentId: 0,
                         level: 0,
                         items: [
                             {
                                 id: 41,
-                                header: 'Orders',
-                                index: 'orders',
-                                type: 'orders',
+                                header: "Orders",
+                                index: "orders",
+                                type: "orders",
                                 parentId: 4,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 42,
-                                header: 'ReturnRefund',
-                                index: 'returnrefund',
-                                type: 'returnrefund',
+                                header: "ReturnRefund",
+                                index: "returnrefund",
+                                type: "returnrefund",
                                 parentId: 4,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 43,
-                                header: 'Stock Correction',
-                                index: 'stockcorrection',
-                                type: 'stockcorrection',
+                                header: "Stock Correction",
+                                index: "stockcorrection",
+                                type: "stockcorrection",
                                 parentId: 4,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 44,
-                                header: 'Warehouse Movement',
-                                index: 'warehousemovement',
-                                type: 'warehousemovement',
+                                header: "Warehouse Movement",
+                                index: "warehousemovement",
+                                type: "warehousemovement",
                                 parentId: 4,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 45,
-                                header: 'Article',
-                                index: 'article',
-                                type: 'article',
+                                header: "Article",
+                                index: "article",
+                                type: "article",
                                 parentId: 4,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 46,
-                                header: 'BusinessCosts',
-                                index: 'businesscosts',
-                                type: 'businesscosts',
+                                header: "BusinessCosts",
+                                index: "businesscosts",
+                                type: "businesscosts",
                                 parentId: 4,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 47,
-                                header: 'Campaign',
-                                index: 'campaign',
-                                type: 'campaign',
+                                header: "Campaign",
+                                index: "campaign",
+                                type: "campaign",
                                 parentId: 4,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 48,
-                                header: 'CashContractPRN',
-                                index: 'ccprn',
-                                type: 'ccprn',
+                                header: "CashContractPRN",
+                                index: "ccprn",
+                                type: "ccprn",
                                 parentId: 4,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 49,
-                                header: 'Notification',
-                                index: 'notification',
-                                type: 'notification',
+                                header: "Notification",
+                                index: "notification",
+                                type: "notification",
                                 parentId: 4,
-                                level: 1
+                                level: 1,
                             },
                             {
                                 id: 50,
-                                header: 'Mailing Data',
-                                index: 'mailingdata',
-                                type: 'mailingdata',
-                                object: 'MailingData',
+                                header: "Mailing Data",
+                                index: "mailingdata",
+                                type: "mailingdata",
+                                object: "MailingData",
                                 parentId: 4,
-                                level: 1
-                            }
-                        ]
-                    }
-                ]
+                                level: 1,
+                            },
+                        ],
+                    },
+                ],
             },
             {
-                title: 'Selection',
-                projectType: 'Selection',
+                title: "Selection",
+                projectType: "Selection",
                 active: false,
                 data: [
                     {
                         id: 21,
-                        header: 'Broker',
-                        index: 'selectionbroker',
-                        type: 'selectionbroker',
+                        header: "Broker",
+                        index: "selectionbroker",
+                        type: "selectionbroker",
                         parentId: 0,
-                        level: 0
+                        level: 0,
                     },
                     {
                         id: 22,
-                        header: 'Campaign',
-                        index: 'selectioncampaign',
-                        type: 'selectioncampaign',
+                        header: "Campaign",
+                        index: "selectioncampaign",
+                        type: "selectioncampaign",
                         parentId: 0,
-                        level: 0
+                        level: 0,
                     },
                     {
                         id: 23,
-                        header: 'Collect',
-                        index: 'selectioncollect',
-                        type: 'selectioncollect',
+                        header: "Collect",
+                        index: "selectioncollect",
+                        type: "selectioncollect",
                         parentId: 0,
-                        level: 0
-                    }
-                ]
+                        level: 0,
+                    },
+                ],
             },
             {
-                title: 'Reporting',
-                projectType: 'Reporting',
+                title: "Reporting",
+                projectType: "Reporting",
                 active: false,
                 data: [
                     {
                         id: 31,
-                        header: 'Customer',
-                        index: 'reporting_customer',
-                        type: 'reporting_customer',
+                        header: "Customer",
+                        index: "reporting_customer",
+                        type: "reporting_customer",
                         idPersonType: PersonTypeIdEnum.Customer,
                         parentId: 0,
-                        level: 0
-                    }
-                ]
+                        level: 0,
+                    },
+                ],
             },
-        ]
+        ];
     }
 
     public createGridColumns() {
         return [
             {
-                title: 'Id',
-                data: 'id',
+                title: "Id",
+                data: "id",
                 setting: {
-                    DataType: 'number',
+                    DataType: "number",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Module',
-                data: 'module',
+                title: "Module",
+                data: "module",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Time (s)',
-                data: 'time',
+                title: "Time (s)",
+                data: "time",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Sync Records',
-                data: 'syncRecords',
+                title: "Sync Records",
+                data: "syncRecords",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Sync Status',
-                data: 'syncStatus',
+                title: "Sync Status",
+                data: "syncStatus",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
+                                ReadOnly: "1",
                             },
                             ControlType: {
-                                Type: 'Icon'
-                            }
-                        }
-                    ]
-                }
+                                Type: "Icon",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'Index',
-                data: 'index',
+                title: "Index",
+                data: "index",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1',
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'TotalRecords',
-                data: 'totalRecords',
+                title: "TotalRecords",
+                data: "totalRecords",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1',
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                title: 'SynchronizedRecords',
-                data: 'synchronizedRecords',
+                title: "SynchronizedRecords",
+                data: "synchronizedRecords",
                 setting: {
-                    DataType: 'nvarchar',
+                    DataType: "nvarchar",
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1',
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
-            }
+                                Hidden: "1",
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
+            },
         ];
     }
 }

@@ -1,11 +1,23 @@
-import * as wjcGrid from 'wijmo/wijmo.grid';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector, ViewContainerRef, TemplateRef, Renderer } from '@angular/core';
-import { OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import * as ngCore from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcGrid from "wijmo/wijmo.grid";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import {
+    ElementRef,
+    Injector,
+    ViewContainerRef,
+    TemplateRef,
+    Renderer,
+} from "@angular/core";
+import { OnInit, OnDestroy, ChangeDetectorRef } from "@angular/core";
+import * as ngCore from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjFlexGridMeta: IWjComponentMeta;
-export declare class WjFlexGrid extends wjcGrid.FlexGrid implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexGrid
+    extends wjcGrid.FlexGrid
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -59,15 +71,28 @@ export declare class WjFlexGrid extends wjcGrid.FlexGrid implements OnInit, OnDe
     pastedCellNg: EventEmitter<any>;
     copyingNg: EventEmitter<any>;
     copiedNg: EventEmitter<any>;
-    constructor(elRef: ElementRef, injector: Injector, parentCmp: any, cdRef: ChangeDetectorRef);
+    constructor(
+        elRef: ElementRef,
+        injector: Injector,
+        parentCmp: any,
+        cdRef: ChangeDetectorRef
+    );
     created(): void;
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjFlexGridColumnMeta: IWjComponentMeta;
-export declare class WjFlexGridColumn extends wjcGrid.Column implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexGridColumn
+    extends wjcGrid.Column
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -81,7 +106,9 @@ export declare class WjFlexGridColumn extends wjcGrid.Column implements OnInit, 
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
 }
-export declare class WjFlexGridCellTemplate implements ngCore.OnInit, ngCore.OnDestroy {
+export declare class WjFlexGridCellTemplate
+    implements ngCore.OnInit, ngCore.OnDestroy
+{
     viewContainerRef: ViewContainerRef;
     templateRef: TemplateRef<any>;
     elRef: ElementRef;
@@ -97,11 +124,22 @@ export declare class WjFlexGridCellTemplate implements ngCore.OnInit, ngCore.OnD
     grid: WjFlexGrid;
     column: WjFlexGridColumn;
     ownerControl: any;
-    constructor(viewContainerRef: ViewContainerRef, templateRef: TemplateRef<any>, elRef: ElementRef, parentCmp: any, domRenderer: Renderer, injector: Injector, cdRef: ChangeDetectorRef);
+    constructor(
+        viewContainerRef: ViewContainerRef,
+        templateRef: TemplateRef<any>,
+        elRef: ElementRef,
+        parentCmp: any,
+        domRenderer: Renderer,
+        injector: Injector,
+        cdRef: ChangeDetectorRef
+    );
     static _getTemplContextProp(templateType: CellTemplateType): string;
     ngOnInit(): void;
     ngOnDestroy(): void;
-    _instantiateTemplate(parent: HTMLElement, dataContext: any): {
+    _instantiateTemplate(
+        parent: HTMLElement,
+        dataContext: any
+    ): {
         viewRef: ngCore.EmbeddedViewRef<any>;
         rootElement: Element;
     };
@@ -120,5 +158,4 @@ export declare enum CellTemplateType {
     ColumnFooter = 9,
     BottomLeft = 10,
 }
-export declare class WjGridModule {
-}
+export declare class WjGridModule {}

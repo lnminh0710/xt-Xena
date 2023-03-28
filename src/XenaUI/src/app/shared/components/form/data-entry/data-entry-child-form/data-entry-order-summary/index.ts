@@ -1,1 +1,1 @@
-export * from './data-entry-order-summary.component';
+export * from "./data-entry-order-summary.component";

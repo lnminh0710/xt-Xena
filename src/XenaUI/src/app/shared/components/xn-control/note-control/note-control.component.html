@@ -50,48 +50,126 @@
     </div> -->
     <div class="content mini-scrollbar" *ngIf="formArrays.controls.length">
         <form [formGroup]="formArrays">
-            <ng-container *ngFor="let rowForm of formArrays.controls; let i = index">
-                <div class="note-record" [formGroupName]="i"
-                    [class.not-owner]="rowForm.get('IdLogin')?.value != currentUser.id">
-                    <ng-container *ngFor="let formName of Object.keys(rowForm['controls']); let idx = index">
-                        <ng-container *ngIf="formName === 'date' || formName === 'Notes'">
-                            <mat-form-field *ngIf="rowForm.get('Editing')?.value" class="{{formName}}-form"
-                                appearance="outline" [class.d-none]="formName === 'date'">
-                                <textarea matInput [formControlName]="formName"
-                                    (focus)="onFocus($event, rowForm.get(formName, i))"
-                                    [attr.control-key]="formName"></textarea>
+            <ng-container
+                *ngFor="let rowForm of formArrays.controls; let i = index"
+            >
+                <div
+                    class="note-record"
+                    [formGroupName]="i"
+                    [class.not-owner]="
+                        rowForm.get('IdLogin')?.value != currentUser.id
+                    "
+                >
+                    <ng-container
+                        *ngFor="
+                            let formName of Object.keys(rowForm['controls']);
+                            let idx = index
+                        "
+                    >
+                        <ng-container
+                            *ngIf="formName === 'date' || formName === 'Notes'"
+                        >
+                            <mat-form-field
+                                *ngIf="rowForm.get('Editing')?.value"
+                                class="{{ formName }}-form"
+                                appearance="outline"
+                                [class.d-none]="formName === 'date'"
+                            >
+                                <textarea
+                                    matInput
+                                    [formControlName]="formName"
+                                    (focus)="
+                                        onFocus(
+                                            $event,
+                                            rowForm.get(formName, i)
+                                        )
+                                    "
+                                    [attr.control-key]="formName"
+                                ></textarea>
                             </mat-form-field>
-                            <div *ngIf="!rowForm.get('Editing')?.value" class="{{formName}}-form"
-                                [class.deleted]="rowForm.get('IsDeleted')?.value === NoteEnum.ONE || rowForm.get('IsDeleted')?.value === true"
-                                [class.d-none]="formName === 'date'">
-                                <div [innerHTML]="rowForm.get(formName)?.value">
-                                </div>
+                            <div
+                                *ngIf="!rowForm.get('Editing')?.value"
+                                class="{{ formName }}-form"
+                                [class.deleted]="
+                                    rowForm.get('IsDeleted')?.value ===
+                                        NoteEnum.ONE ||
+                                    rowForm.get('IsDeleted')?.value === true
+                                "
+                                [class.d-none]="formName === 'date'"
+                            >
+                                <div
+                                    [innerHTML]="rowForm.get(formName)?.value"
+                                ></div>
                             </div>
                         </ng-container>
                         <ng-container *ngIf="formName === 'date'">
-                            <div class="d-flex align-items-center position-relative">
+                            <div
+                                class="d-flex align-items-center position-relative"
+                            >
                                 <span class="date-value ml-3 mr-1">
-                                    {{rowForm.get('date').value | date : globalDateFormat}}
-                                    <span class="time-value">&nbsp;{{rowForm.get('date').value | date : formatDate}}</span>
+                                    {{
+                                        rowForm.get("date").value
+                                            | date : globalDateFormat
+                                    }}
+                                    <span class="time-value"
+                                        >&nbsp;{{
+                                            rowForm.get("date").value
+                                                | date : formatDate
+                                        }}</span
+                                    >
                                 </span>
-                                <div *ngIf="!!rowForm.get('LoginName') && !!rowForm.get('LoginName').value"
+                                <div
+                                    *ngIf="
+                                        !!rowForm.get('LoginName') &&
+                                        !!rowForm.get('LoginName').value
+                                    "
                                     class="position-relative login-name"
-                                    [class.adding]="rowForm.get('Removeable')?.value"
-                                    [class.editing]="rowForm.get('Editing')?.value">
+                                    [class.adding]="
+                                        rowForm.get('Removeable')?.value
+                                    "
+                                    [class.editing]="
+                                        rowForm.get('Editing')?.value
+                                    "
+                                >
                                     &nbsp;-&nbsp;
                                     <span>
-                                        {{rowForm.get('LoginName')?.value}}
+                                        {{ rowForm.get("LoginName")?.value }}
                                     </span>
                                 </div>
                                 <span
-                                    *ngIf="rowForm.get('IsDeleted')?.value === NoteEnum.ZERO || rowForm.get('IsDeleted')?.value === false"
-                                    class="icon-list">
+                                    *ngIf="
+                                        rowForm.get('IsDeleted')?.value ===
+                                            NoteEnum.ZERO ||
+                                        rowForm.get('IsDeleted')?.value ===
+                                            false
+                                    "
+                                    class="icon-list"
+                                >
                                     <!-- [tooltip]="tooltipRemoveButton" -->
-                                    <i *ngIf="!rowForm.get('Editing')?.value && noteAction !== NOTE_ACTION_ENUM.VIEW_MODE"
-                                        class="icon icon-transform fa fa-trash-o red-color" container="body"
-                                        [class.not-owner]="rowForm.get('IdLogin')?.value != currentUser.id"
-                                        (click)="rowForm.get('IdLogin')?.value == currentUser.id && showConfirmDelModal(rowForm, NoteEnum.ONE)"
-                                        [attr.control-key]="'Note_Control__dateRemove'"></i>
+                                    <i
+                                        *ngIf="
+                                            !rowForm.get('Editing')?.value &&
+                                            noteAction !==
+                                                NOTE_ACTION_ENUM.VIEW_MODE
+                                        "
+                                        class="icon icon-transform fa fa-trash-o red-color"
+                                        container="body"
+                                        [class.not-owner]="
+                                            rowForm.get('IdLogin')?.value !=
+                                            currentUser.id
+                                        "
+                                        (click)="
+                                            rowForm.get('IdLogin')?.value ==
+                                                currentUser.id &&
+                                                showConfirmDelModal(
+                                                    rowForm,
+                                                    NoteEnum.ONE
+                                                )
+                                        "
+                                        [attr.control-key]="
+                                            'Note_Control__dateRemove'
+                                        "
+                                    ></i>
                                     <!-- <i
                                         *ngIf="!rowForm.get('Editing')?.value"
                                         class="icon icon-transform fal fa-pencil"
@@ -100,10 +178,16 @@
                                         [tooltip]="'Edit'"
                                         (click)="rowForm.get('IdLogin')?.value == currentUser.id && editForm(rowForm, true, i)"
                                     ></i> -->
-                                    <i *ngIf="rowForm.get('Cancelable')?.value" class="icon icon-transform fal fa-undo"
-                                        container="body" [tooltip]="tooltipCancelButton"
+                                    <i
+                                        *ngIf="rowForm.get('Cancelable')?.value"
+                                        class="icon icon-transform fal fa-undo"
+                                        container="body"
+                                        [tooltip]="tooltipCancelButton"
                                         (click)="editForm(rowForm, false, i)"
-                                        [attr.control-key]="'Note_Control__dateCancel'"></i>
+                                        [attr.control-key]="
+                                            'Note_Control__dateCancel'
+                                        "
+                                    ></i>
                                     <!-- <i *ngIf="rowForm.get('Editing')?.value && !rowForm.get('removeable')?.value"
                                         class="icon icon-transform fal fa-save" container="body"
                                         [class.disabled]="!rowForm.get('Notes')?.value?.trim()"
@@ -124,23 +208,37 @@
     <img class="spinner" src="public/assets/img/loading-spinner.gif" />
 </ng-template>
 <ng-template #tooltipShareButton>
-    <label-translation [keyword]="'NOTE_CONTROL__ShareTooltip'"></label-translation>
+    <label-translation
+        [keyword]="'NOTE_CONTROL__ShareTooltip'"
+    ></label-translation>
 </ng-template>
 <ng-template #tooltipDownloadButton>
-    <label-translation [keyword]="'NOTE_CONTROL__DownloadTooltip'"></label-translation>
+    <label-translation
+        [keyword]="'NOTE_CONTROL__DownloadTooltip'"
+    ></label-translation>
 </ng-template>
 <ng-template #tooltipPrintButton>
-    <label-translation [keyword]="'NOTE_CONTROL__PrintTooltip'"></label-translation>
+    <label-translation
+        [keyword]="'NOTE_CONTROL__PrintTooltip'"
+    ></label-translation>
 </ng-template>
 <ng-template #tooltipRemoveButton>
-    <label-translation [keyword]="'NOTE_CONTROL__RemoveTooltip'"></label-translation>
+    <label-translation
+        [keyword]="'NOTE_CONTROL__RemoveTooltip'"
+    ></label-translation>
 </ng-template>
 <ng-template #tooltipSaveButton>
-    <label-translation [keyword]="'NOTE_CONTROL__SaveTooltip'"></label-translation>
+    <label-translation
+        [keyword]="'NOTE_CONTROL__SaveTooltip'"
+    ></label-translation>
 </ng-template>
 <ng-template #tooltipAddButton>
-    <label-translation [keyword]="'NOTE_CONTROL__AddTooltip'"></label-translation>
+    <label-translation
+        [keyword]="'NOTE_CONTROL__AddTooltip'"
+    ></label-translation>
 </ng-template>
 <ng-template #tooltipCancelButton>
-    <label-translation [keyword]="'NOTE_CONTROL__CancelTooltip'"></label-translation>
+    <label-translation
+        [keyword]="'NOTE_CONTROL__CancelTooltip'"
+    ></label-translation>
 </ng-template>

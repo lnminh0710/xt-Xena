@@ -27,7 +27,7 @@
     padding: 7px;
     white-space: no-wrap;
     vertical-align: middle;
-    background-color: #0F5E8C;
+    background-color: #0f5e8c;
     opacity: 1;
     position: absolute;
     z-index: 848;
@@ -228,7 +228,7 @@
     position: absolute;
     width: 99%;
     height: 99%;
-    background-color: #BCF1F9;
+    background-color: #bcf1f9;
     opacity: 0.75;
     border-radius: 10px;
     top: 0;
@@ -238,7 +238,8 @@
     }
 }
 
-.link-widget-container, .link-icon {
+.link-widget-container,
+.link-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -261,7 +262,7 @@
 
     .tab-collapsed {
         .link-text {
-            font-size:small;
+            font-size: small;
         }
     }
 }

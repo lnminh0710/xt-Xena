@@ -1,32 +1,44 @@
 import {
-    Component, OnInit, Input, Output, ElementRef, EventEmitter,
-    Renderer, forwardRef, OnDestroy, ViewChild, AfterViewInit, ChangeDetectorRef
-} from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
+    Component,
+    OnInit,
+    Input,
+    Output,
+    ElementRef,
+    EventEmitter,
+    Renderer,
+    forwardRef,
+    OnDestroy,
+    ViewChild,
+    AfterViewInit,
+    ChangeDetectorRef,
+} from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { FormControl } from "@angular/forms";
+import { Subscription } from "rxjs/Subscription";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
 import {
     ProcessDataActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
+    CustomAction,
+} from "app/state-management/store/actions";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
 import {
-    PropertyPanelService, AppErrorHandler,
-    GlobalSettingService, ModalService
-} from 'app/services';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import { BaseComponent, ModuleList } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import { GlobalSettingModel, MessageModel } from 'app/models';
-import { GlobalSettingConstant, Configuration } from 'app/app.constants';
-import { Uti } from 'app/utilities';
-import unionBy from 'lodash-es/unionBy';
-import sortBy from 'lodash-es/sortBy';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isEqual from 'lodash-es/isEqual';
-import {AngularMultiSelect} from '../xn-control/xn-dropdown';
+    PropertyPanelService,
+    AppErrorHandler,
+    GlobalSettingService,
+    ModalService,
+} from "app/services";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import { BaseComponent, ModuleList } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { GlobalSettingModel, MessageModel } from "app/models";
+import { GlobalSettingConstant, Configuration } from "app/app.constants";
+import { Uti } from "app/utilities";
+import unionBy from "lodash-es/unionBy";
+import sortBy from "lodash-es/sortBy";
+import cloneDeep from "lodash-es/cloneDeep";
+import isEqual from "lodash-es/isEqual";
+import { AngularMultiSelect } from "../xn-control/xn-dropdown";
 
 export interface IAttribute {
     [key: string]: any;
@@ -60,22 +72,31 @@ const paginationConfig: IPaginationConfig = {
     previousText: '<i class="fa fa-chevron-left"></i>',
     nextText: '<i class="fa fa-chevron-right"></i>',
     lastText: '<i class="fa fa-forward"></i>',
-    rotate: false
+    rotate: false,
 };
 
 @Component({
-    selector: 'xn-pagination',
-    styleUrls: ['./xn-pagination.component.scss'],
-    templateUrl: './xn-pagination.component.html',
+    selector: "xn-pagination",
+    styleUrls: ["./xn-pagination.component.scss"],
+    templateUrl: "./xn-pagination.component.html",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => XnPaginationComponent),
-            multi: true
-        }],
+            multi: true,
+        },
+    ],
 })
-
-export class XnPaginationComponent extends BaseComponent implements ControlValueAccessor, OnInit, OnDestroy, IPaginationConfig, IAttribute, AfterViewInit {
+export class XnPaginationComponent
+    extends BaseComponent
+    implements
+        ControlValueAccessor,
+        OnInit,
+        OnDestroy,
+        IPaginationConfig,
+        IAttribute,
+        AfterViewInit
+{
     @Input() public allowEdit = true;
     @Input() public maxSize: number;
     @Input() public boundaryLinks: boolean;
@@ -90,7 +111,7 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
 
     @Input() public set itemsPerPage(v: number) {
         this._itemsPerPage = v;
-        if (this.pagingDropdownData.filter(x => x.value == v).length) {
+        if (this.pagingDropdownData.filter((x) => x.value == v).length) {
             this.totalPages = this.calculateTotalPages();
         }
     }
@@ -121,14 +142,16 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
     }
 
     @Output() private numPages: EventEmitter<number> = new EventEmitter();
-    @Output() private pageChanged: EventEmitter<IPageChangedEvent> = new EventEmitter();
-    @Output() private pageNumberDefault: EventEmitter<number> = new EventEmitter();
+    @Output() private pageChanged: EventEmitter<IPageChangedEvent> =
+        new EventEmitter();
+    @Output() private pageNumberDefault: EventEmitter<number> =
+        new EventEmitter();
 
-    @ViewChild('pagingDropdown') pagingDropdown: AngularMultiSelect;
+    @ViewChild("pagingDropdown") pagingDropdown: AngularMultiSelect;
 
     pagerControl = new FormControl();
 
-    public globalNumberFormat = '';
+    public globalNumberFormat = "";
     public config: any;
     public classMap: string;
     private _itemsPerPage: number;
@@ -141,7 +164,11 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
     private pagingDropdownDataChangeStateSubscription: Subscription;
     private globalPropertiesState: Observable<any>;
     private currentPagingDropdownGlobalSetting: any = {};
-    private defaultPagingDropdownData: Array<any> = [25, Configuration.pageIndex, 100];
+    private defaultPagingDropdownData: Array<any> = [
+        25,
+        Configuration.pageIndex,
+        100,
+    ];
     public pagingDropdownData: Array<any> = [];
     public isDisableRemoveButton: boolean;
     private _keywordSearch: string;
@@ -159,9 +186,9 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
 
     public set page(value) {
         const _previous = this._page;
-        this._page = (value > this.totalPages) ? this.totalPages : (value || 1);
+        this._page = value > this.totalPages ? this.totalPages : value || 1;
 
-        if (_previous === this._page || typeof _previous === 'undefined') {
+        if (_previous === this._page || typeof _previous === "undefined") {
             return;
         }
 
@@ -177,7 +204,7 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
     private firstLoad = true;
     private isTypingPagesize = false;
     private isInputGreaterThanMaximumPagesize = false;
-    private currentPageSize :any;
+    private currentPageSize: any;
 
     constructor(
         public renderer: Renderer,
@@ -196,15 +223,20 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
         super(router);
 
         this.config = this.config || paginationConfig;
-        this.globalPropertiesState = store.select(state => propertyPanelReducer.getPropertyPanelState(state, ModuleList.Base.moduleNameTrim).globalProperties);
+        this.globalPropertiesState = store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    ModuleList.Base.moduleNameTrim
+                ).globalProperties
+        );
     }
 
     private getMaxItemsPerPage() {
         if (!this.maxItemsPerPage) {
             if (Configuration.PublicSettings.maxPageSize) {
                 this.maxItemsPerPage = Configuration.PublicSettings.maxPageSize;
-            }
-            else {
+            } else {
                 this.maxItemsPerPage = paginationConfig.maxItemsPerPage;
             }
         }
@@ -214,38 +246,67 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
         this.getMaxItemsPerPage();
         this.getPagingComboData();
 
-        this.classMap = this.elementRef.nativeElement.getAttribute('class') || '';
+        this.classMap =
+            this.elementRef.nativeElement.getAttribute("class") || "";
 
         // watch for maxSize
-        this.maxSize = typeof this.maxSize !== 'undefined' ? this.maxSize : paginationConfig.maxSize;
-        this.rotate = typeof this.rotate !== 'undefined' ? this.rotate : paginationConfig.rotate;
-        this.boundaryLinks = typeof this.boundaryLinks !== 'undefined' ? this.boundaryLinks : paginationConfig.boundaryLinks;
-        this.directionLinks = typeof this.directionLinks !== 'undefined' ? this.directionLinks : paginationConfig.directionLinks;
+        this.maxSize =
+            typeof this.maxSize !== "undefined"
+                ? this.maxSize
+                : paginationConfig.maxSize;
+        this.rotate =
+            typeof this.rotate !== "undefined"
+                ? this.rotate
+                : paginationConfig.rotate;
+        this.boundaryLinks =
+            typeof this.boundaryLinks !== "undefined"
+                ? this.boundaryLinks
+                : paginationConfig.boundaryLinks;
+        this.directionLinks =
+            typeof this.directionLinks !== "undefined"
+                ? this.directionLinks
+                : paginationConfig.directionLinks;
 
         // this.maxItemsPerPage = typeof this.maxItemsPerPage !== 'undefined' ? this.maxItemsPerPage : paginationConfig.maxItemsPerPage;
         // this.getMaxItemsPerPage();
 
         // Set text
-        this.firstText = typeof this.firstText !== 'undefined' ? this.firstText : paginationConfig.firstText;
-        this.previousText = typeof this.previousText !== 'undefined' ? this.previousText : paginationConfig.previousText;
-        this.lastText = typeof this.lastText !== 'undefined' ? this.lastText : paginationConfig.lastText;
-        this.nextText = typeof this.nextText !== 'undefined' ? this.nextText : paginationConfig.nextText;
+        this.firstText =
+            typeof this.firstText !== "undefined"
+                ? this.firstText
+                : paginationConfig.firstText;
+        this.previousText =
+            typeof this.previousText !== "undefined"
+                ? this.previousText
+                : paginationConfig.previousText;
+        this.lastText =
+            typeof this.lastText !== "undefined"
+                ? this.lastText
+                : paginationConfig.lastText;
+        this.nextText =
+            typeof this.nextText !== "undefined"
+                ? this.nextText
+                : paginationConfig.nextText;
 
         // base class
-        this.itemsPerPage = typeof this.itemsPerPage !== 'undefined' ? this.itemsPerPage : paginationConfig.itemsPerPage;
+        this.itemsPerPage =
+            typeof this.itemsPerPage !== "undefined"
+                ? this.itemsPerPage
+                : paginationConfig.itemsPerPage;
         this.totalPages = this.calculateTotalPages();
 
         // this class
         //this.pages = this.getPages(this.page, this.totalPages);
         this.inited = true;
 
-        this.pagerControlValueChangesSubscription = this.pagerControl.valueChanges
-            .debounceTime(1000)
-            .subscribe(newValue => {
-                this.appErrorHandler.executeAction(() => {
-                    this.selectPage(+newValue);
+        this.pagerControlValueChangesSubscription =
+            this.pagerControl.valueChanges
+                .debounceTime(1000)
+                .subscribe((newValue) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.selectPage(+newValue);
+                    });
                 });
-            });
         this.subscribeGlobalProperties();
         this.subcribePagingDropdownDataChange();
 
@@ -300,9 +361,9 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
     }
 
     private getPagingComboData() {
-        this.globalSettingService.getAllGlobalSettings('-1').subscribe(
-            data => this.getAllGlobalSettingSuccess(data),
-            error => this.serviceError(error)
+        this.globalSettingService.getAllGlobalSettings("-1").subscribe(
+            (data) => this.getAllGlobalSettingSuccess(data),
+            (error) => this.serviceError(error)
         );
     }
 
@@ -311,15 +372,18 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
         let lastPagesize: any = 1;
         if (!data || !data.length) {
             customPagingData = this.defaultPagingDropdownData;
-        }
-        else {
+        } else {
             const pagingDataSettings = this.getCurrentPagingDropdown(data);
             //model as Object
-            if (pagingDataSettings && pagingDataSettings.selectedValue && pagingDataSettings.data) {
+            if (
+                pagingDataSettings &&
+                pagingDataSettings.selectedValue &&
+                pagingDataSettings.data
+            ) {
                 customPagingData = pagingDataSettings.data;
                 lastPagesize = pagingDataSettings.selectedValue;
-            }
-            else {//model as Array
+            } else {
+                //model as Array
                 customPagingData = pagingDataSettings;
             }
 
@@ -328,7 +392,8 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
                 lastPagesize = customPagingData[customPagingData.length - 1];
         }
 
-        this.pagingDropdownData = this.buildDataForPagingDropdown(customPagingData);
+        this.pagingDropdownData =
+            this.buildDataForPagingDropdown(customPagingData);
         this.updatePageSize();
 
         this.pageNumberDefault.emit(lastPagesize || 0);
@@ -357,8 +422,14 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
     }
 
     private getCurrentPagingDropdown(data: GlobalSettingModel[]): any {
-        this.currentPagingDropdownGlobalSetting = data.find(x => x.globalName === this.globalSettingConstant.gridPagingDropdown);
-        if (!this.currentPagingDropdownGlobalSetting || !this.currentPagingDropdownGlobalSetting.idSettingsGlobal) {
+        this.currentPagingDropdownGlobalSetting = data.find(
+            (x) =>
+                x.globalName === this.globalSettingConstant.gridPagingDropdown
+        );
+        if (
+            !this.currentPagingDropdownGlobalSetting ||
+            !this.currentPagingDropdownGlobalSetting.idSettingsGlobal
+        ) {
             return this.defaultPagingDropdownData;
         }
         return JSON.parse(this.currentPagingDropdownGlobalSetting.jsonSettings);
@@ -367,33 +438,44 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
     private buildDataForPagingDropdown(rawData: Array<any>): Array<any> {
         rawData = rawData || [];
         const arr = unionBy(rawData, this.defaultPagingDropdownData);
-        let itemList: Array<any> = sortBy(arr, [function (o) { return o; }])
-            .map(x => {
-                return {
-                    text: x,
-                    value: x
-                }
-            });
-        const rs = itemList.filter(p => p.value <= this.maxItemsPerPage);
+        let itemList: Array<any> = sortBy(arr, [
+            function (o) {
+                return o;
+            },
+        ]).map((x) => {
+            return {
+                text: x,
+                value: x,
+            };
+        });
+        const rs = itemList.filter((p) => p.value <= this.maxItemsPerPage);
         return rs;
     }
 
     private subscribeGlobalProperties() {
-        this.globalPropertiesStateSubscription = this.globalPropertiesState.subscribe((globalProperties: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (globalProperties) {
-                    this.globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(globalProperties);
-                }
+        this.globalPropertiesStateSubscription =
+            this.globalPropertiesState.subscribe((globalProperties: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (globalProperties) {
+                        this.globalNumberFormat =
+                            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                                globalProperties
+                            );
+                    }
+                });
             });
-        });
     }
 
     // Create page object used in template
-    private makePage(number: number, text: string, isActive: boolean): { number: number, text: string, active: boolean } {
+    private makePage(
+        number: number,
+        text: string,
+        isActive: boolean
+    ): { number: number; text: string; active: boolean } {
         return {
             number: number,
             text: text,
-            active: isActive
+            active: isActive,
         };
     }
 
@@ -403,13 +485,17 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
         // Default page limits
         let startPage = 1;
         let endPage = totalPages;
-        const isMaxSized = typeof this.maxSize !== 'undefined' && this.maxSize < totalPages;
+        const isMaxSized =
+            typeof this.maxSize !== "undefined" && this.maxSize < totalPages;
 
         // recompute if maxSize
         if (isMaxSized) {
             if (this.rotate) {
                 // Current page is displayed in the middle of the visible ones
-                startPage = Math.max(currentPage - Math.floor(this.maxSize / 2), 1);
+                startPage = Math.max(
+                    currentPage - Math.floor(this.maxSize / 2),
+                    1
+                );
                 endPage = startPage + this.maxSize - 1;
 
                 // Adjust if limit is exceeded
@@ -419,7 +505,9 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
                 }
             } else {
                 // Visible pages are paginated with maxSize
-                startPage = ((Math.ceil(currentPage / this.maxSize) - 1) * this.maxSize) + 1;
+                startPage =
+                    (Math.ceil(currentPage / this.maxSize) - 1) * this.maxSize +
+                    1;
 
                 // Adjust last page if limit is exceeded
                 endPage = Math.min(startPage + this.maxSize - 1, totalPages);
@@ -428,19 +516,27 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
 
         // Add page number links
         for (let number = startPage; number <= endPage; number++) {
-            const page = this.makePage(number, number.toString(), number === currentPage);
+            const page = this.makePage(
+                number,
+                number.toString(),
+                number === currentPage
+            );
             pages.push(page);
         }
 
         // Add links to move between page sets
         if (isMaxSized && !this.rotate) {
             if (startPage > 1) {
-                const previousPageSet = this.makePage(startPage - 1, '...', false);
+                const previousPageSet = this.makePage(
+                    startPage - 1,
+                    "...",
+                    false
+                );
                 pages.unshift(previousPageSet);
             }
 
             if (endPage < totalPages) {
-                const nextPageSet = this.makePage(endPage + 1, '...', false);
+                const nextPageSet = this.makePage(endPage + 1, "...", false);
                 pages.push(nextPageSet);
             }
         }
@@ -450,15 +546,16 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
 
     // base class
     private calculateTotalPages(): number {
-        const totalPages = this.itemsPerPage < 1 ? 1 : Math.ceil(this.totalItems / this.itemsPerPage);
+        const totalPages =
+            this.itemsPerPage < 1
+                ? 1
+                : Math.ceil(this.totalItems / this.itemsPerPage);
         return Math.max(totalPages || 0, 1);
     }
 
-    onChange = (_: any) => {
-    };
+    onChange = (_: any) => {};
 
-    onTouched = () => {
-    };
+    onTouched = () => {};
 
     registerOnChange(fn: (_: any) => {}): void {
         this.onChange = fn;
@@ -480,24 +577,34 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
         }
 
         this.modalService.confirmDeleteMessageHtmlContent({
-            headerText: 'Delete item',
-            message: [{key: '<p>'},
-                {key: 'Modal_Message__Are_You_Sure_You_Want_To_Remove_This_Page_Size_Item'},
-                {key: '</p>'}],
+            headerText: "Delete item",
+            message: [
+                { key: "<p>" },
+                {
+                    key: "Modal_Message__Are_You_Sure_You_Want_To_Remove_This_Page_Size_Item",
+                },
+                { key: "</p>" },
+            ],
             callBack1: () => {
-                Uti.removeItemInArray(this.pagingDropdownData, {
-                    value: this.itemsPerPage
-                }, 'value');
-                const dropDownData: Array<any> = this.pagingDropdownData.map(x => {
-                    return +x.value
-                });
+                Uti.removeItemInArray(
+                    this.pagingDropdownData,
+                    {
+                        value: this.itemsPerPage,
+                    },
+                    "value"
+                );
+                const dropDownData: Array<any> = this.pagingDropdownData.map(
+                    (x) => {
+                        return +x.value;
+                    }
+                );
                 if (dropDownData.length) {
                     this.pagingDropdown.text = dropDownData[0];
                     this.pagingDropdown.selectedValue = dropDownData[0] || 1;
                     this.pagingDropdown.refresh();
                 }
                 this.savePagingDropdownData(dropDownData);
-            }
+            },
         });
     }
 
@@ -505,29 +612,29 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
         let isValid = true;
         const numOfPage: number = Number(this.pagingDropdown.text.trim());
         if (isNaN(numOfPage) || !numOfPage) {
-            this.pagingDropdown.text = '';
-        }
-        else if (numOfPage > this.maxItemsPerPage) {
+            this.pagingDropdown.text = "";
+        } else if (numOfPage > this.maxItemsPerPage) {
             if (this.pagingDropdownData && this.pagingDropdownData.length) {
-                this.pagingDropdown.selectedValue = this.pagingDropdownData[this.pagingDropdownData.length - 1].value;
+                this.pagingDropdown.selectedValue =
+                    this.pagingDropdownData[
+                        this.pagingDropdownData.length - 1
+                    ].value;
             }
             isValid = false;
         }
         return isValid;
     }
 
-
     pagingDropdownKeyup(e: any) {
         this.isInputGreaterThanMaximumPagesize = false;
-        if (e.which === 32 ||
-            e.keyCode === 32 ||
-            !this.pagingDropdown.text) return;
+        if (e.which === 32 || e.keyCode === 32 || !this.pagingDropdown.text)
+            return;
         let isValid = this.validatePagingNumber();
         if (!isValid) {
-            this.pagingDropdown.text = this.maxItemsPerPage + '';
+            this.pagingDropdown.text = this.maxItemsPerPage + "";
             this.modalService.warningMessage([
-                { key: 'Modal_Message__Grid_Paging_Page_Size_First' },
-                { key: this.maxItemsPerPage + '' },
+                { key: "Modal_Message__Grid_Paging_Page_Size_First" },
+                { key: this.maxItemsPerPage + "" },
             ]);
             this.isInputGreaterThanMaximumPagesize = true;
             return;
@@ -557,15 +664,15 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
     }
 
     pageSizeChange(forceSave?: boolean) {
-      if(!this.pagingDropdown.readyToSearch && !forceSave)return;
+        if (!this.pagingDropdown.readyToSearch && !forceSave) return;
 
         setTimeout(() => {
             // if (this.isInputGreaterThanMaximumPagesize) return;
             let isValid = this.validatePagingNumber();
             if (!isValid) {
                 this.modalService.warningMessage([
-                    { key: 'Modal_Message__Grid_Paging_Page_Size_First' },
-                    { key: this.maxItemsPerPage + '' },
+                    { key: "Modal_Message__Grid_Paging_Page_Size_First" },
+                    { key: this.maxItemsPerPage + "" },
                 ]);
                 return;
             }
@@ -592,16 +699,18 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
                 this._page = 1;
             }
 
-            
-            const itemsPerPage = this.itemsPerPage ? this.itemsPerPage : Uti.parFloatFromObject(this.pagingDropdown.text, 0)
+            const itemsPerPage = this.itemsPerPage
+                ? this.itemsPerPage
+                : Uti.parFloatFromObject(this.pagingDropdown.text, 0);
 
-            if(this.currentPageSize !== itemsPerPage){
-              this.callEventPageChanged(this._page);
+            if (this.currentPageSize !== itemsPerPage) {
+                this.callEventPageChanged(this._page);
             }
 
             if (!isNaN(numOfPage) && numOfPage) {
                 //don't allow remove the default value
-                this.isDisableRemoveButton = this.defaultPagingDropdownData.includes(numOfPage);
+                this.isDisableRemoveButton =
+                    this.defaultPagingDropdownData.includes(numOfPage);
 
                 // if (!dontSavePagingData && !this.isTypingPagesize)
                 //     this.savePagingData(true);
@@ -615,7 +724,9 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
         //    return;
         //}
 
-        const itemsPerPage = this.itemsPerPage ? this.itemsPerPage : Uti.parFloatFromObject(this.pagingDropdown.text, 0)
+        const itemsPerPage = this.itemsPerPage
+            ? this.itemsPerPage
+            : Uti.parFloatFromObject(this.pagingDropdown.text, 0);
         this.currentPageSize = itemsPerPage;
         this.pagingDropdown.readyToSearch = false;
 
@@ -631,20 +742,22 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
 
             this.pageChanged.emit({
                 page: page,
-                itemsPerPage
+                itemsPerPage,
             });
         }, 200);
     }
 
     public savePagingData(forceSave?: boolean) {
-      if (!this.allowEdit)
-            return;
+        if (!this.allowEdit) return;
         let isValid = this.validatePagingNumber();
         if (!isValid) {
             return;
         }
-        const dropDownData: Array<any> = this.pagingDropdownData.map(x => { return +x.value });
-        const currentPageSize = +this.pagingDropdown.textInput.nativeElement.value;
+        const dropDownData: Array<any> = this.pagingDropdownData.map((x) => {
+            return +x.value;
+        });
+        const currentPageSize =
+            +this.pagingDropdown.textInput.nativeElement.value;
         if (this.rebuildPagingDropdownData(dropDownData)) {
             setTimeout(() => {
                 this.itemsPerPage = currentPageSize;
@@ -655,8 +768,13 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
             if (
                 this.currentPagingDropdownGlobalSetting &&
                 this.currentPagingDropdownGlobalSetting.jsonSettings &&
-                isEqual(JSON.parse(this.currentPagingDropdownGlobalSetting.jsonSettings).data ,dropDownData)
-                ) {
+                isEqual(
+                    JSON.parse(
+                        this.currentPagingDropdownGlobalSetting.jsonSettings
+                    ).data,
+                    dropDownData
+                )
+            ) {
                 return;
             }
 
@@ -665,39 +783,58 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
     }
 
     private subcribePagingDropdownDataChange() {
-        this.pagingDropdownDataChangeStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.PAGNATION_DATA_CHANGE;
-        }).map((action: CustomAction) => {
-            return action.payload;
-        }).subscribe((data) => {
-            this.appErrorHandler.executeAction(() => {
-                const currentItem = cloneDeep(this.pagingDropdown.selectedItem);
-                this.isReUpdateDataSource = true;
-                this.pagingDropdownData = data;
-                this.updatePageSize();
-                this.ref.detectChanges();
-                if (!currentItem || !currentItem.value) return;
-                const current = data.find(x => x.value == currentItem.value);
-                if (!current || !current.value) return;
-                const index = Uti.getIndexOfItemInArray(data, current, 'value');
-                setTimeout(() => {
-                    this.pagingDropdown.selectedIndex = index;
-                }, 1000);
+        this.pagingDropdownDataChangeStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return action.type === ProcessDataActions.PAGNATION_DATA_CHANGE;
+            })
+            .map((action: CustomAction) => {
+                return action.payload;
+            })
+            .subscribe((data) => {
+                this.appErrorHandler.executeAction(() => {
+                    const currentItem = cloneDeep(
+                        this.pagingDropdown.selectedItem
+                    );
+                    this.isReUpdateDataSource = true;
+                    this.pagingDropdownData = data;
+                    this.updatePageSize();
+                    this.ref.detectChanges();
+                    if (!currentItem || !currentItem.value) return;
+                    const current = data.find(
+                        (x) => x.value == currentItem.value
+                    );
+                    if (!current || !current.value) return;
+                    const index = Uti.getIndexOfItemInArray(
+                        data,
+                        current,
+                        "value"
+                    );
+                    setTimeout(() => {
+                        this.pagingDropdown.selectedIndex = index;
+                    }, 1000);
+                });
             });
-        });
     }
 
     private rebuildPagingDropdownData(dropDownData: any): boolean {
-        if (!this.pagingDropdown.text || this.pagingDropdown.textInput.nativeElement.value == '0') return false;
+        if (
+            !this.pagingDropdown.text ||
+            this.pagingDropdown.textInput.nativeElement.value == "0"
+        )
+            return false;
 
-        const value = +this.pagingDropdown.textInput.nativeElement.value
-        if(dropDownData.indexOf(value) === -1){
-          dropDownData.push(value);
+        const value = +this.pagingDropdown.textInput.nativeElement.value;
+        if (dropDownData.indexOf(value) === -1) {
+            dropDownData.push(value);
         }
-        dropDownData = dropDownData.sort(function (a, b) { return a - b });
+        dropDownData = dropDownData.sort(function (a, b) {
+            return a - b;
+        });
         this.pagingDropdownData = this.buildDataForPagingDropdown(dropDownData);
         this.updatePageSize();
-        this.store.dispatch(this.processDataActions.pagnationDataChange(this.pagingDropdownData));
+        this.store.dispatch(
+            this.processDataActions.pagnationDataChange(this.pagingDropdownData)
+        );
         return true;
     }
 
@@ -705,21 +842,35 @@ export class XnPaginationComponent extends BaseComponent implements ControlValue
         if (!this.pagingDropdown || !this.pagingDropdown.selectedValue) {
             return;
         }
-        if (!this.currentPagingDropdownGlobalSetting || !this.currentPagingDropdownGlobalSetting.idSettingsGlobal || !this.currentPagingDropdownGlobalSetting.globalName) {
+        if (
+            !this.currentPagingDropdownGlobalSetting ||
+            !this.currentPagingDropdownGlobalSetting.idSettingsGlobal ||
+            !this.currentPagingDropdownGlobalSetting.globalName
+        ) {
             this.currentPagingDropdownGlobalSetting = new GlobalSettingModel({
                 globalName: this.globalSettingConstant.gridPagingDropdown,
-                description: 'Grid paging drop down data',
-                globalType: this.globalSettingConstant.gridPagingDropdown
+                description: "Grid paging drop down data",
+                globalType: this.globalSettingConstant.gridPagingDropdown,
             });
         }
-        this.currentPagingDropdownGlobalSetting.idSettingsGUI = '-1';
-        this.currentPagingDropdownGlobalSetting.jsonSettings = JSON.stringify({ data: dropDownData, selectedValue: this.pagingDropdown.selectedValue });
+        this.currentPagingDropdownGlobalSetting.idSettingsGUI = "-1";
+        this.currentPagingDropdownGlobalSetting.jsonSettings = JSON.stringify({
+            data: dropDownData,
+            selectedValue: this.pagingDropdown.selectedValue,
+        });
         this.currentPagingDropdownGlobalSetting.isActive = true;
 
-        this.globalSettingService.saveGlobalSetting(this.currentPagingDropdownGlobalSetting).subscribe(
-            _data => {
-                this.globalSettingService.saveUpdateCache('-1', this.currentPagingDropdownGlobalSetting, _data);
-            },
-            error => this.serviceError(error));
+        this.globalSettingService
+            .saveGlobalSetting(this.currentPagingDropdownGlobalSetting)
+            .subscribe(
+                (_data) => {
+                    this.globalSettingService.saveUpdateCache(
+                        "-1",
+                        this.currentPagingDropdownGlobalSetting,
+                        _data
+                    );
+                },
+                (error) => this.serviceError(error)
+            );
     }
 }

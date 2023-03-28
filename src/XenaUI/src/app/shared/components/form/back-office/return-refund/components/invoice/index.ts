@@ -1,1 +1,1 @@
-export * from './return-refund-invoice.component';
+export * from "./return-refund-invoice.component";

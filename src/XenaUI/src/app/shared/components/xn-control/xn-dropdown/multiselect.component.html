@@ -1,40 +1,54 @@
-<div class="cuppa-dropdown height-100-pc"
-     xn-click-outside (clickOutside)="closeDropdownOnClickOut($event)">
-
+<div
+    class="cuppa-dropdown height-100-pc"
+    xn-click-outside
+    (clickOutside)="closeDropdownOnClickOut($event)"
+>
     <div class="selected-list height-100-pc" #selectedList>
-        <div class="c-btn height-100-pc" [ngClass]="{'disabled': settings.disabled}" [attr.tabindex]="-1">
-
-            <span *ngIf="settings.singleSelection && !badgeTempl" class="c-text">
-                <input #textInput class="c-text-input"
-                       *ngIf="!isNumberic"
-                       [attr.disabled]="isDisabled ? '' : null"
-                       type="text"
-                       placeholder="Please Select"
-                       id="{{controlId}}"
-                       (focus)="focusText($event)"
-                       (blur)="lostFocusText($event)"
-                       (keydown.enter)="enterTextInput($event)"
-                       (keydown.ArrowUp)="focusUp($event)"
-                       (keydown.ArrowDown)="focusDown($event)"
-                       (keydown.tab)="tab($event)"
-                       (keydown)="onSearchChange($event, $event.target.value)" />
-                <input #textInput class="c-text-input"
-                       *ngIf="isNumberic"
-                       [attr.disabled]="isDisabled ? '' : null"
-                       type="text"
-                       placeholder="Please Select"
-                       id="{{controlId}}"
-                       xn-numeric
-                       [min]="1"
-                       [typeNumber]="typeNumber"
-                       [format]="numberFormat"
-                       (focus)="focusText($event)"
-                       (blur)="lostFocusText($event)"
-                       (keydown.enter)="enterTextInput($event)"
-                       (keydown.ArrowUp)="focusUp($event)"
-                       (keydown.ArrowDown)="focusDown($event)"
-                       (keydown.tab)="tab($event)"
-                       (keydown)="onSearchChange($event, $event.target.value)" />
+        <div
+            class="c-btn height-100-pc"
+            [ngClass]="{ disabled: settings.disabled }"
+            [attr.tabindex]="-1"
+        >
+            <span
+                *ngIf="settings.singleSelection && !badgeTempl"
+                class="c-text"
+            >
+                <input
+                    #textInput
+                    class="c-text-input"
+                    *ngIf="!isNumberic"
+                    [attr.disabled]="isDisabled ? '' : null"
+                    type="text"
+                    placeholder="Please Select"
+                    id="{{ controlId }}"
+                    (focus)="focusText($event)"
+                    (blur)="lostFocusText($event)"
+                    (keydown.enter)="enterTextInput($event)"
+                    (keydown.ArrowUp)="focusUp($event)"
+                    (keydown.ArrowDown)="focusDown($event)"
+                    (keydown.tab)="tab($event)"
+                    (keydown)="onSearchChange($event, $event.target.value)"
+                />
+                <input
+                    #textInput
+                    class="c-text-input"
+                    *ngIf="isNumberic"
+                    [attr.disabled]="isDisabled ? '' : null"
+                    type="text"
+                    placeholder="Please Select"
+                    id="{{ controlId }}"
+                    xn-numeric
+                    [min]="1"
+                    [typeNumber]="typeNumber"
+                    [format]="numberFormat"
+                    (focus)="focusText($event)"
+                    (blur)="lostFocusText($event)"
+                    (keydown.enter)="enterTextInput($event)"
+                    (keydown.ArrowUp)="focusUp($event)"
+                    (keydown.ArrowDown)="focusDown($event)"
+                    (keydown.tab)="tab($event)"
+                    (keydown)="onSearchChange($event, $event.target.value)"
+                />
             </span>
             <!--<span class="c-list" *ngIf="selectedItems?.length > 0 && settings.singleSelection && badgeTempl ">
                     <div class="c-token" *ngFor="let item of selectedItems;trackBy: trackByFn.bind(this);let k = index">
@@ -59,14 +73,22 @@
                     </span>
                 </div>
             </div>-->
-            <span class="countplaceholder" *ngIf="selectedItems?.length > settings.badgeShowLimit">+{{selectedItems?.length - settings.badgeShowLimit }}</span>
+            <span
+                class="countplaceholder"
+                *ngIf="selectedItems?.length > settings.badgeShowLimit"
+                >+{{ selectedItems?.length - settings.badgeShowLimit }}</span
+            >
             <span class="c-angle-down bt-down" (click)="toggleDropdown($event)">
                 <i class="fa fa-caret-down c-down"></i>
             </span>
         </div>
     </div>
     <div #dropdownList class="dropdown-list wjmo-ddl" [hidden]="!isActive">
-        <div class="list-area" [ngClass]="{'single-select-mode': settings.singleSelection }" *ngIf="isActive">
+        <div
+            class="list-area"
+            [ngClass]="{ 'single-select-mode': settings.singleSelection }"
+            *ngIf="isActive"
+        >
             <!-- TODO: Off some features -->
             <!--<div class="pure-checkbox select-all" *ngIf="settings.enableCheckAll && !settings.singleSelection && !settings.limitSelection && data?.length > 0"
                  (click)="toggleSelectAll()">
@@ -128,68 +150,160 @@
                 </div>
             </div>-->
             <!--default-->
-            <div *ngIf="!settings.groupBy && !settings.lazyLoading && itemTempl == undefined && !itemFormatter"
-                 [style.maxHeight]="settings.maxHeight+'px'" style="overflow: auto;" tabindex="1">
+            <div
+                *ngIf="
+                    !settings.groupBy &&
+                    !settings.lazyLoading &&
+                    itemTempl == undefined &&
+                    !itemFormatter
+                "
+                [style.maxHeight]="settings.maxHeight + 'px'"
+                style="overflow: auto"
+                tabindex="1"
+            >
                 <ul class="lazyContainer">
-                    <li #itemList *ngFor="let item of data ; let i = index;"
-                        (click)="onItemClick($event,item,i)"
-                        class="pure-checkbox" [ngClass]="{'selected-item': isSelected(item) == true }">
+                    <li
+                        #itemList
+                        *ngFor="let item of data; let i = index"
+                        (click)="onItemClick($event, item, i)"
+                        class="pure-checkbox"
+                        [ngClass]="{
+                            'selected-item': isSelected(item) == true
+                        }"
+                    >
                         <ng-container *ngIf="isContentHtml">
-                            <div [innerHTML]="item[settings.labelKey] | safeHtml"></div>
+                            <div
+                                [innerHTML]="item[settings.labelKey] | safeHtml"
+                            ></div>
                         </ng-container>
                         <ng-container *ngIf="!isContentHtml">
-                            <label>{{item[settings.labelKey]}}</label>
+                            <label>{{ item[settings.labelKey] }}</label>
                         </ng-container>
                     </li>
                 </ul>
             </div>
 
             <!--itemFormatter-->
-            <div *ngIf="!settings.groupBy && !settings.lazyLoading && itemTempl == undefined && itemFormatter"
-                 [style.maxHeight]="settings.maxHeight+'px'" style="overflow: auto;" tabindex="1">
+            <div
+                *ngIf="
+                    !settings.groupBy &&
+                    !settings.lazyLoading &&
+                    itemTempl == undefined &&
+                    itemFormatter
+                "
+                [style.maxHeight]="settings.maxHeight + 'px'"
+                style="overflow: auto"
+                tabindex="1"
+            >
                 <ul class="lazyContainer itemFormatter">
-                    <li #itemList *ngFor="let item of data; let i = index;"
-                        (click)="onItemClick($event,item,i)"
-                        class="pure-checkbox wj-listbox-item" [ngClass]="{'selected-item': isSelected(item) == true }">
+                    <li
+                        #itemList
+                        *ngFor="let item of data; let i = index"
+                        (click)="onItemClick($event, item, i)"
+                        class="pure-checkbox wj-listbox-item"
+                        [ngClass]="{
+                            'selected-item': isSelected(item) == true
+                        }"
+                    >
                         <!--<input *ngIf="settings.showCheckbox" type="checkbox" [checked]="isSelected(item)" [disabled]="settings.limitSelection == selectedItems?.length && !isSelected(item)" />-->
-                        <label style="width: 100%; font-weight: normal"><div [innerHTML]="itemFormatter(i, item) | safeHtml"></div></label>
+                        <label style="width: 100%; font-weight: normal"
+                            ><div
+                                [innerHTML]="itemFormatter(i, item) | safeHtml"
+                            ></div
+                        ></label>
                     </li>
                 </ul>
             </div>
 
-
-            <div *ngIf="!settings.groupBy && settings.lazyLoading && itemTempl == undefined" [style.maxHeight]="settings.maxHeight+'px'" style="overflow: auto;">
-                <virtual-scroll [items]="data" (vsUpdate)="viewPortItems = $event" (vsEnd)="onScrollEnd($event)" [ngStyle]="{'height': settings.maxHeight+'px'}">
+            <div
+                *ngIf="
+                    !settings.groupBy &&
+                    settings.lazyLoading &&
+                    itemTempl == undefined
+                "
+                [style.maxHeight]="settings.maxHeight + 'px'"
+                style="overflow: auto"
+            >
+                <virtual-scroll
+                    [items]="data"
+                    (vsUpdate)="viewPortItems = $event"
+                    (vsEnd)="onScrollEnd($event)"
+                    [ngStyle]="{ height: settings.maxHeight + 'px' }"
+                >
                     <ul class="lazyContainer">
-                        <li *ngFor="let item of viewPortItems; let i = index;" (click)="onItemClick($event,item,i)"
-                            class="pure-checkbox" [ngClass]="{'selected-item': isSelected(item) == true }">
+                        <li
+                            *ngFor="let item of viewPortItems; let i = index"
+                            (click)="onItemClick($event, item, i)"
+                            class="pure-checkbox"
+                            [ngClass]="{
+                                'selected-item': isSelected(item) == true
+                            }"
+                        >
                             <!--<input *ngIf="settings.showCheckbox" type="checkbox" [checked]="isSelected(item)" [disabled]="settings.limitSelection == selectedItems?.length && !isSelected(item)" />-->
-                            <label>{{item[settings.labelKey]}}</label>
+                            <label>{{ item[settings.labelKey] }}</label>
                         </li>
                     </ul>
                 </virtual-scroll>
             </div>
 
-            <div *ngIf="!settings.groupBy && !settings.lazyLoading && itemTempl != undefined" [style.maxHeight]="settings.maxHeight+'px'" style="overflow: auto;">
+            <div
+                *ngIf="
+                    !settings.groupBy &&
+                    !settings.lazyLoading &&
+                    itemTempl != undefined
+                "
+                [style.maxHeight]="settings.maxHeight + 'px'"
+                style="overflow: auto"
+            >
                 <ul class="lazyContainer">
-                    <li *ngFor="let item of data; let i = index;" (click)="onItemClick($event,item,i)"
-                        class="pure-checkbox" [ngClass]="{'selected-item': isSelected(item) == true }">
+                    <li
+                        *ngFor="let item of data; let i = index"
+                        (click)="onItemClick($event, item, i)"
+                        class="pure-checkbox"
+                        [ngClass]="{
+                            'selected-item': isSelected(item) == true
+                        }"
+                    >
                         <!--<input *ngIf="settings.showCheckbox" type="checkbox" [checked]="isSelected(item)" [disabled]="settings.limitSelection == selectedItems?.length && !isSelected(item)" />-->
                         <label></label>
-                        <c-templateRenderer [data]="itemTempl" [item]="item"></c-templateRenderer>
+                        <c-templateRenderer
+                            [data]="itemTempl"
+                            [item]="item"
+                        ></c-templateRenderer>
                     </li>
                 </ul>
             </div>
 
-            <div *ngIf="!settings.groupBy && settings.lazyLoading && itemTempl != undefined" [style.maxHeight]="settings.maxHeight+'px'" style="overflow: auto;">
-                <virtual-scroll [items]="data" (vsUpdate)="viewPortItems = $event" (vsEnd)="onScrollEnd($event)" [ngStyle]="{'height': settings.maxHeight+'px'}">
-
+            <div
+                *ngIf="
+                    !settings.groupBy &&
+                    settings.lazyLoading &&
+                    itemTempl != undefined
+                "
+                [style.maxHeight]="settings.maxHeight + 'px'"
+                style="overflow: auto"
+            >
+                <virtual-scroll
+                    [items]="data"
+                    (vsUpdate)="viewPortItems = $event"
+                    (vsEnd)="onScrollEnd($event)"
+                    [ngStyle]="{ height: settings.maxHeight + 'px' }"
+                >
                     <ul class="lazyContainer">
-                        <li *ngFor="let item of viewPortItems; let i = index;" (click)="onItemClick($event,item,i)"
-                            class="pure-checkbox" [ngClass]="{'selected-item': isSelected(item) == true }">
+                        <li
+                            *ngFor="let item of viewPortItems; let i = index"
+                            (click)="onItemClick($event, item, i)"
+                            class="pure-checkbox"
+                            [ngClass]="{
+                                'selected-item': isSelected(item) == true
+                            }"
+                        >
                             <!--<input *ngIf="settings.showCheckbox" type="checkbox" [checked]="isSelected(item)" [disabled]="settings.limitSelection == selectedItems?.length && !isSelected(item)" />-->
                             <label></label>
-                            <c-templateRenderer [data]="itemTempl" [item]="item"></c-templateRenderer>
+                            <c-templateRenderer
+                                [data]="itemTempl"
+                                [item]="item"
+                            ></c-templateRenderer>
                         </li>
                     </ul>
                 </virtual-scroll>
@@ -268,14 +382,11 @@
                 </ul>
             </div>-->
 
-            <h5 class="list-message" *ngIf="data?.length == 0">{{settings.noDataLabel}}</h5>
+            <h5 class="list-message" *ngIf="data?.length == 0">
+                {{ settings.noDataLabel }}
+            </h5>
         </div>
     </div>
 
-    <div class="disabled" *ngIf="isDisabled">
-
-    </div>
-
+    <div class="disabled" *ngIf="isDisabled"></div>
 </div>
-
-

@@ -1,31 +1,45 @@
-<button class="mat-btn-red  pull-left  d-a"
-        mat-raised-button
-        xn-tooltip
-        [tooltipText]="'Delete All'"
-        [tooltipPlacement]="'right'"
-        container="body"
-        (click)="deleteAll()">
-    <span class="fa  fa-trash"></span>
+<button
+    class="mat-btn-red pull-left d-a"
+    mat-raised-button
+    xn-tooltip
+    [tooltipText]="'Delete All'"
+    [tooltipPlacement]="'right'"
+    container="body"
+    (click)="deleteAll()"
+>
+    <span class="fa fa-trash"></span>
 </button>
 <ul class="n n-w">
-    <li *ngFor="let item of currentTab.histories"
-        [ngClass]="{'active': item.active}"
+    <li
+        *ngFor="let item of currentTab.histories"
+        [ngClass]="{ active: item.active }"
         (click)="textClicked(item)"
         (mouseenter)="onMouseEnterText(item, $event)"
-        (mouseleave)="onMouseLeaveText(item, $event)">
+        (mouseleave)="onMouseLeaveText(item, $event)"
+    >
         <div class="h">
-            <div class="h-t"
-                [ngStyle]="{'min-width': numberWidth + 'px'}"
-                *ngIf="item.showTooltip">{{item.text}}</div>
-            <div class="h-n"
-                [ngStyle]="{'min-width': numberWidth + 'px'}"
-                *ngIf="item.showNumber && (item.num != undefined)">({{item.num}})</div>
+            <div
+                class="h-t"
+                [ngStyle]="{ 'min-width': numberWidth + 'px' }"
+                *ngIf="item.showTooltip"
+            >
+                {{ item.text }}
+            </div>
+            <div
+                class="h-n"
+                [ngStyle]="{ 'min-width': numberWidth + 'px' }"
+                *ngIf="item.showNumber && item.num != undefined"
+            >
+                ({{ item.num }})
+            </div>
         </div>
         <a>
-            <span>{{item.text}}</span>
-            <i *ngIf="item.showNumber"
+            <span>{{ item.text }}</span>
+            <i
+                *ngIf="item.showNumber"
                 (click)="deleteItem(item)"
-                class="fa  fa-times-circle  d-i"></i>
+                class="fa fa-times-circle d-i"
+            ></i>
         </a>
     </li>
 </ul>

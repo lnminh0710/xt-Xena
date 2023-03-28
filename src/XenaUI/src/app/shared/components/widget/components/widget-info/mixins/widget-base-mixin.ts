@@ -1,25 +1,33 @@
-import { Input, ChangeDetectorRef } from '@angular/core';
+import { Input, ChangeDetectorRef } from "@angular/core";
 
-import { WidgetUtils } from '../../../utils';
-import { MixinWidgetCommunication } from './widget-communication';
-import { MixinWidgetProperty } from './widget-property';
-import { MixinWidgetTreeView } from './widget-tree-view';
-import { MixinWidgetTable } from './widget-table';
-import { MixinWidgetFileManagement } from './file-management';
+import { WidgetUtils } from "../../../utils";
+import { MixinWidgetCommunication } from "./widget-communication";
+import { MixinWidgetProperty } from "./widget-property";
+import { MixinWidgetTreeView } from "./widget-tree-view";
+import { MixinWidgetTable } from "./widget-table";
+import { MixinWidgetFileManagement } from "./file-management";
 import {
-    PropertyPanelService, ModalService,
-    WidgetTemplateSettingService, TreeViewService,
-    DatatableService, GlobalSettingService, ArticleService, PersonService
-} from 'app/services';
-import { WidgetDetail, Module, FieldFilter, WidgetPropertyModel, WidgetState } from 'app/models';
-import { XnWidgetMenuStatusComponent } from '../../xn-widget-menu-status';
+    PropertyPanelService,
+    ModalService,
+    WidgetTemplateSettingService,
+    TreeViewService,
+    DatatableService,
+    GlobalSettingService,
+    ArticleService,
+    PersonService,
+} from "app/services";
 import {
-    FilterModeEnum
-} from 'app/app.constants';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { PropertyPanelActions } from 'app/state-management/store/actions';
-
+    WidgetDetail,
+    Module,
+    FieldFilter,
+    WidgetPropertyModel,
+    WidgetState,
+} from "app/models";
+import { XnWidgetMenuStatusComponent } from "../../xn-widget-menu-status";
+import { FilterModeEnum } from "app/app.constants";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { PropertyPanelActions } from "app/state-management/store/actions";
 
 export interface WidgetDetailInfo {
     widgetStatesInfo: Array<WidgetState>;
@@ -52,7 +60,6 @@ export interface WidgetMenu {
  * WidgetModuleBase
  */
 export class WidgetModuleBase {
-
     constructor(
         public store: Store<AppState>,
         public widgetUtils: WidgetUtils,
@@ -66,7 +73,13 @@ export class WidgetModuleBase {
         public personService: PersonService,
         public changeDetectorRef: ChangeDetectorRef,
         public propertyPanelActions: PropertyPanelActions
-    ) { }
+    ) {}
 }
 
-export const BaseWidgetModuleInfoMixin = MixinWidgetFileManagement(MixinWidgetTable(MixinWidgetTreeView(MixinWidgetProperty(MixinWidgetCommunication(WidgetModuleBase)))));
+export const BaseWidgetModuleInfoMixin = MixinWidgetFileManagement(
+    MixinWidgetTable(
+        MixinWidgetTreeView(
+            MixinWidgetProperty(MixinWidgetCommunication(WidgetModuleBase))
+        )
+    )
+);

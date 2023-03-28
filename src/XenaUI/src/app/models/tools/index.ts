@@ -1,1 +1,1 @@
-export * from './doublet-check';
+export * from "./doublet-check";

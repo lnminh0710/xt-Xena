@@ -1,26 +1,38 @@
 <div class="waveWrapper waveAnimation">
     <div class="l-m">
-        <div class="l-p"
-             [ngClass]="{'submit': isFormSubmit}"
-             id="wrapper">
+        <div class="l-p" [ngClass]="{ submit: isFormSubmit }" id="wrapper">
             <div class="l-lg">
-                <img src="public/assets/img/Logo.png" alt="" class="lg">
+                <img src="public/assets/img/Logo.png" alt="" class="lg" />
                 <span>XENA</span>
             </div>
             <div class="l-fr">
                 <div class="f-t">LOGIN</div>
-                <input id="username" style="display:none" type="text" name="fakeusernameremembered">
-                <input id="password" style="display:none" type="password" name="fakepasswordremembered">
+                <input
+                    id="username"
+                    style="display: none"
+                    type="text"
+                    name="fakeusernameremembered"
+                />
+                <input
+                    id="password"
+                    style="display: none"
+                    type="password"
+                    name="fakepasswordremembered"
+                />
                 <div class="f-ur">
-                    <div class="margin-top--md  selection-input-customize">
-                        <div class="group"
-                             [ngClass]="{'error': isLoginNameError}">
-                            <input required
-                                   [(ngModel)]="model.loginName"
-                                   id="real-login-name"
-                                   name="realloginname"
-                                   (change)="loginNameChange()"
-                                   autocomplete="off">
+                    <div class="margin-top--md selection-input-customize">
+                        <div
+                            class="group"
+                            [ngClass]="{ error: isLoginNameError }"
+                        >
+                            <input
+                                required
+                                [(ngModel)]="model.loginName"
+                                id="real-login-name"
+                                name="realloginname"
+                                (change)="loginNameChange()"
+                                autocomplete="off"
+                            />
                             <span class="text-highlight"></span>
                             <span class="bar"></span>
                             <label>Login Name</label>
@@ -28,16 +40,20 @@
                     </div>
                 </div>
                 <div class="f-pw">
-                    <div class="margin-top--md  selection-input-customize">
-                        <div class="group"
-                             [ngClass]="{'error': isPasswordError}">
-                            <input required
-                                   [(ngModel)]="model.password"
-                                   id="real-password"
-                                   name="realpassword"
-                                   (change)="passwordChange()"
-                                   autocomplete="off"
-                                   class="cipher">
+                    <div class="margin-top--md selection-input-customize">
+                        <div
+                            class="group"
+                            [ngClass]="{ error: isPasswordError }"
+                        >
+                            <input
+                                required
+                                [(ngModel)]="model.password"
+                                id="real-password"
+                                name="realpassword"
+                                (change)="passwordChange()"
+                                autocomplete="off"
+                                class="cipher"
+                            />
                             <span class="text-highlight"></span>
                             <span class="bar"></span>
                             <label>Password</label>
@@ -49,37 +65,48 @@
                 </div>
                 <div class="f-r-fp">
                     <div class="f-rm">
-                        <mat-checkbox name="remember"
-                                      color="primary"
-                                      [(ngModel)]="model.remember"
-                                      (keyup.enter)="login()">
+                        <mat-checkbox
+                            name="remember"
+                            color="primary"
+                            [(ngModel)]="model.remember"
+                            (keyup.enter)="login()"
+                        >
                             Remember
                         </mat-checkbox>
                     </div>
                     <div class="f-fp">
-                        <a [routerLink]="[forgotpasswordUrl]" class="pull-right  link-to">Forgot password?</a>
+                        <a
+                            [routerLink]="[forgotpasswordUrl]"
+                            class="pull-right link-to"
+                            >Forgot password?</a
+                        >
                     </div>
                 </div>
                 <div class="f-sb">
-                    <button [disabled]="loading"
-                            class="mat-btn-blue  pull-right"
-                            mat-raised-button
-                            (click)="login()">
-                            Sign In
+                    <button
+                        [disabled]="loading"
+                        class="mat-btn-blue pull-right"
+                        mat-raised-button
+                        (click)="login()"
+                    >
+                        Sign In
                     </button>
                 </div>
             </div>
             <div class="l-ft">
                 <div class="ft-lg">
-                    <img src="public/assets/img/footer-logo.png" alt="" class="lg-ft">
+                    <img
+                        src="public/assets/img/footer-logo.png"
+                        alt=""
+                        class="lg-ft"
+                    />
                 </div>
                 <div class="ft-v">
-                    <span>{{buildVersion}}</span>
+                    <span>{{ buildVersion }}</span>
                 </div>
             </div>
         </div>
-        <div class="w-t" [innerHTML]="welcomeHtml">
-        </div>
+        <div class="w-t" [innerHTML]="welcomeHtml"></div>
     </div>
 
     <div class="waveWrapperInner bgTop">
@@ -90,6 +117,5 @@
     </div>
     <div class="waveWrapperInner bgBottom">
         <div class="wave waveBottom"></div>
-
     </div>
 </div>

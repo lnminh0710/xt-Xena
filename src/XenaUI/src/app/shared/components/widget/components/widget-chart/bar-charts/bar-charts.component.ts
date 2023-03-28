@@ -1,13 +1,12 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import { BaseWidget } from 'app/pages/private/base';
-import {ChartTypeNgx} from '../chart.model';
+import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
+import { BaseWidget } from "app/pages/private/base";
+import { ChartTypeNgx } from "../chart.model";
 
 @Component({
-    selector: 'xena-bar-chart',
-    templateUrl: './bar-charts.component.html',
+    selector: "xena-bar-chart",
+    templateUrl: "./bar-charts.component.html",
     encapsulation: ViewEncapsulation.None,
 })
-
 export class BarChartsComponent extends BaseWidget implements OnInit {
     public _chartType: string;
     public _colorType: string;
@@ -30,7 +29,7 @@ export class BarChartsComponent extends BaseWidget implements OnInit {
     public proChartType: typeof ChartTypeNgx = ChartTypeNgx;
     @Input() set chartType(chartType: string) {
         this._chartType = chartType;
-    };
+    }
     @Input() set scheme(colorType: string) {
         this._colorType = colorType;
     }
@@ -68,7 +67,7 @@ export class BarChartsComponent extends BaseWidget implements OnInit {
         this._legendTitle = legendTitle;
     }
     @Input() set disableTooltip(disableTooltip: boolean) {
-        this._disableTooltip = disableTooltip
+        this._disableTooltip = disableTooltip;
     }
     @Input() set xAxisLabel(xAxisLabel: string) {
         this._xAxisLabel = xAxisLabel;
@@ -83,7 +82,5 @@ export class BarChartsComponent extends BaseWidget implements OnInit {
         super();
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 }
-

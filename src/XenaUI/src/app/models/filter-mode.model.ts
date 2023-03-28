@@ -1,8 +1,12 @@
-import { FilterModeEnum, WidgetLayoutSettingModeEnum, WidgetFormTypeEnum } from 'app/app.constants';
+import {
+    FilterModeEnum,
+    WidgetLayoutSettingModeEnum,
+    WidgetFormTypeEnum,
+} from "app/app.constants";
 
 export class FilterMode {
     public mode: FilterModeEnum = FilterModeEnum.ShowAll;
-    public value: string = '';
+    public value: string = "";
     public selected: boolean = false;
     public isSub: boolean = false;
 
@@ -12,9 +16,9 @@ export class FilterMode {
 }
 
 export class FieldFilter {
-    public fieldDisplayName: string = '';
-    public fieldName: string = '';
-    public dataType?: string = '';
+    public fieldDisplayName: string = "";
+    public fieldName: string = "";
+    public dataType?: string = "";
     public selected: boolean = false;
     public isHidden: boolean = false;
     public isEditable: boolean = true;
@@ -36,9 +40,9 @@ export class ColumnLayoutSetting {
 
 export class RowSetting {
     public showTotalRow: boolean = false;
-    public positionTotalRow: string = '';
-    public backgroundTotalRow: string = '';
-    public colorTextTotalRow: string = '';
+    public positionTotalRow: string = "";
+    public backgroundTotalRow: string = "";
+    public colorTextTotalRow: string = "";
 
     public constructor(init?: Partial<RowSetting>) {
         Object.assign(this, init);
@@ -48,7 +52,7 @@ export class RowSetting {
 export class WidgetLayoutSettingMode {
     public widgetLayoutSettingMode: WidgetLayoutSettingModeEnum = null;
     public selected: boolean = false;
-    public label: string = '';
+    public label: string = "";
 
     public constructor(init?: Partial<WidgetLayoutSettingMode>) {
         Object.assign(this, init);
@@ -58,7 +62,7 @@ export class WidgetLayoutSettingMode {
 export class WidgetFormType {
     public widgetFormType: WidgetFormTypeEnum = null;
     public selected: boolean = false;
-    public label: string = '';
+    public label: string = "";
 
     public constructor(init?: Partial<WidgetFormType>) {
         Object.assign(this, init);

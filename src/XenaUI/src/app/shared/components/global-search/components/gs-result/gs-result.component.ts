@@ -1,41 +1,59 @@
 import {
-    Component, OnInit, OnChanges, Input, Output, ChangeDetectorRef, ChangeDetectionStrategy,
-    EventEmitter, SimpleChanges, OnDestroy, ViewChild
-} from '@angular/core';
-import { Module, TabModel, ControlGridModel } from 'app/models';
-import { SearchService, DatatableService, PropertyPanelService, AppErrorHandler, ModalService } from 'app/services';
-import { IPageChangedEvent } from 'app/shared/components/xn-pager/xn-pagination.component';
-import camelCase from 'lodash-es/camelCase';
-import cloneDeep from 'lodash-es/cloneDeep';
+    Component,
+    OnInit,
+    OnChanges,
+    Input,
+    Output,
+    ChangeDetectorRef,
+    ChangeDetectionStrategy,
+    EventEmitter,
+    SimpleChanges,
+    OnDestroy,
+    ViewChild,
+} from "@angular/core";
+import { Module, TabModel, ControlGridModel } from "app/models";
 import {
-    Store,
-    ReducerManagerDispatcher
-} from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import { ModuleList } from 'app/pages/private/base';
+    SearchService,
+    DatatableService,
+    PropertyPanelService,
+    AppErrorHandler,
+    ModalService,
+} from "app/services";
+import { IPageChangedEvent } from "app/shared/components/xn-pager/xn-pagination.component";
+import camelCase from "lodash-es/camelCase";
+import cloneDeep from "lodash-es/cloneDeep";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { Subscription } from "rxjs/Subscription";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import { ModuleList } from "app/pages/private/base";
 import {
     ProcessDataActions,
     CustomAction,
-    GlobalSearchActions
-} from 'app/state-management/store/actions';
-import * as uti from 'app/utilities';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { Configuration, MenuModuleId, LocalStorageKey } from 'app/app.constants';
-import { Uti } from 'app/utilities';
-import { WidgetModuleInfoTranslationComponent } from '../../../widget/components/widget-module-info-translation';
+    GlobalSearchActions,
+} from "app/state-management/store/actions";
+import * as uti from "app/utilities";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import {
+    Configuration,
+    MenuModuleId,
+    LocalStorageKey,
+} from "app/app.constants";
+import { Uti } from "app/utilities";
+import { WidgetModuleInfoTranslationComponent } from "../../../widget/components/widget-module-info-translation";
 
 @Component({
-    selector: 'gs-result',
-    templateUrl: './gs-result.component.html',
-    styleUrls: ['./gs-result.component.scss'],
+    selector: "gs-result",
+    templateUrl: "./gs-result.component.html",
+    styleUrls: ["./gs-result.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { '(mouserelease)': 'rightClicked($event)' }
+    host: { "(mouserelease)": "rightClicked($event)" },
 })
-export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy {
+export class GlobalSearchResultComponent
+    implements OnInit, OnChanges, OnDestroy
+{
     public menuModuleId = MenuModuleId;
     @Input() parentInstance: any = null;
 
@@ -47,7 +65,7 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     @Input() isWithStar: boolean = false;
     @Input() searchIndex: string; // Used for elasticsearch
     @Input() allowDrag: any = {
-        value: false
+        value: false,
     };
     @Input() gridContextMenuData: any;
     @Input() activeModule: Module = null;
@@ -57,13 +75,17 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
         if (this.moduleLocal && this.moduleLocal.iconName) {
             const icon = this.moduleLocal.iconName;
             this.customDragContent = {
-                dragIcon: `<span class='text-center' style='font-size: 35px'><i aria-hidden='true' class='fa ` + icon + `'></i></span>`,
-                data: module
-            }
+                dragIcon:
+                    `<span class='text-center' style='font-size: 35px'><i aria-hidden='true' class='fa ` +
+                    icon +
+                    `'></i></span>`,
+                data: module,
+            };
 
             if (!this.preventSearch) {
                 //this.allowMasterDetail = this.moduleLocal.idSettingsGUI == MenuModuleId.customer;
-                this.treeViewMode = this.moduleLocal.idSettingsGUI == MenuModuleId.customer;
+                this.treeViewMode =
+                    this.moduleLocal.idSettingsGUI == MenuModuleId.customer;
             }
         }
     }
@@ -87,7 +109,7 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     }
 
     @Input() tabs: TabModel[];
-    @Input() cssClass: string
+    @Input() cssClass: string;
 
     @Output() onRowClicked: EventEmitter<any> = new EventEmitter();
     @Output() onRowDoubleClicked: EventEmitter<any> = new EventEmitter();
@@ -97,7 +119,7 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     @Output() addToHistoryAction: EventEmitter<any> = new EventEmitter();
     @Output() onPinGroupTranslateClick: EventEmitter<any> = new EventEmitter();
 
-    public globalNumberFormat = '';
+    public globalNumberFormat = "";
     public that: any;
     public totalResults: number = 0;
     public numberOfEntries: number = 0;
@@ -128,7 +150,8 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     private advanceSearchSubscription: Subscription;
 
     @ViewChild(XnAgGridComponent) public agGridComponent: XnAgGridComponent;
-    @ViewChild('widgetInfoTranslation') widgetModuleInfoTranslationComponent: WidgetModuleInfoTranslationComponent;
+    @ViewChild("widgetInfoTranslation")
+    widgetModuleInfoTranslationComponent: WidgetModuleInfoTranslationComponent;
 
     constructor(
         private searchService: SearchService,
@@ -147,7 +170,13 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     }
 
     ngOnInit() {
-        this.globalPropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, ModuleList.Base.moduleNameTrim).globalProperties);
+        this.globalPropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    ModuleList.Base.moduleNameTrim
+                ).globalProperties
+        );
         this.subscribeGlobalProperties();
         this.subscribeOkToChangeSearchResultState();
         this.subscribeAdvanceSearchState();
@@ -167,52 +196,68 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     ngOnChanges(changes: SimpleChanges) {
         if (this.dontAllowSearchWhenInit) {
             this.dontAllowSearchWhenInit = false;
-            this.searchData('');
+            this.searchData("");
             return;
         }
 
-        if (!changes['keyword']) return;
+        if (!changes["keyword"]) return;
 
-        const hasChanges = this.hasChanges(changes['keyword']);
+        const hasChanges = this.hasChanges(changes["keyword"]);
         if (hasChanges && this.lastKeyword != this.keyword) {
             this.search();
         }
     }
 
     private subscribeGlobalProperties() {
-        this.globalPropertiesStateSubscription = this.globalPropertiesState.subscribe((globalProperties: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (globalProperties) {
-                    this.globalProperties = globalProperties;
-                    this.globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(globalProperties);
-                }
+        this.globalPropertiesStateSubscription =
+            this.globalPropertiesState.subscribe((globalProperties: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (globalProperties) {
+                        this.globalProperties = globalProperties;
+                        this.globalNumberFormat =
+                            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                                globalProperties
+                            );
+                    }
+                });
             });
-        });
     }
 
     private subscribeOkToChangeSearchResultState() {
-        this.okToChangeSearchResultStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            if (action.type === ProcessDataActions.OK_TO_CHANGE_SEARCH_RESULT) {
-                let module = this.moduleLocal;
-                if (module.idSettingsGUIParent == ModuleList.Administration.idSettingsGUI) {
-                    module = ModuleList.Administration;
+        this.okToChangeSearchResultStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                if (
+                    action.type ===
+                    ProcessDataActions.OK_TO_CHANGE_SEARCH_RESULT
+                ) {
+                    let module = this.moduleLocal;
+                    if (
+                        module.idSettingsGUIParent ==
+                        ModuleList.Administration.idSettingsGUI
+                    ) {
+                        module = ModuleList.Administration;
+                    }
+
+                    return action.module.idSettingsGUI == module.idSettingsGUI;
                 }
 
-                return action.module.idSettingsGUI == module.idSettingsGUI;
-            }
-
-            return false;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.willChangeCell) {
-                    this.willChangeCell = null;
-                }
+                return false;
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.willChangeCell) {
+                        this.willChangeCell = null;
+                    }
+                });
             });
-        });
     }
 
     private hasChanges(changes) {
-        return changes && changes.hasOwnProperty('currentValue') && changes.hasOwnProperty('previousValue');
+        return (
+            changes &&
+            changes.hasOwnProperty("currentValue") &&
+            changes.hasOwnProperty("previousValue")
+        );
     }
 
     public sizeColumnsToFit() {
@@ -235,7 +280,12 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
             this.searchDataTimeout = null;
         }
         this.searchDataTimeout = setTimeout(() => {
-            if (this.modalService.isStopSearchWhenEmptySize(this.pageSize, this.pageIndex)) {
+            if (
+                this.modalService.isStopSearchWhenEmptySize(
+                    this.pageSize,
+                    this.pageIndex
+                )
+            ) {
                 this.onSearchCompleted.emit();
                 return;
             }
@@ -247,51 +297,78 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
 
             this.lastKeyword = keyword;
             const pageSize = this.pageSize;
-            this.searchServiceSubscription = this.searchService.search(this.searchIndex, keyword, this.moduleLocal.idSettingsGUI, this.pageIndex, pageSize, null, null, null, this.isWithStar)
+            this.searchServiceSubscription = this.searchService
+                .search(
+                    this.searchIndex,
+                    keyword,
+                    this.moduleLocal.idSettingsGUI,
+                    this.pageIndex,
+                    pageSize,
+                    null,
+                    null,
+                    null,
+                    this.isWithStar
+                )
                 .finally(() => {
                     this.changeDetectorRef();
                 })
-                .subscribe((response: any) => {
-                    this.appErrorHandler.executeAction(() => {
-                        response = response.item;
-                        this.dataResult = this.datatableService.buildDataSourceFromEsSearchResult(response, this.COLUMN_SETTING_INDEX);
-                        this.buildDataResultForModules();
-                        this.totalResults = response.total;
-                        this.numberOfEntries = response && response.results ? response.results.length : 0;
+                .subscribe(
+                    (response: any) => {
+                        this.appErrorHandler.executeAction(() => {
+                            response = response.item;
+                            this.dataResult =
+                                this.datatableService.buildDataSourceFromEsSearchResult(
+                                    response,
+                                    this.COLUMN_SETTING_INDEX
+                                );
+                            this.buildDataResultForModules();
+                            this.totalResults = response.total;
+                            this.numberOfEntries =
+                                response && response.results
+                                    ? response.results.length
+                                    : 0;
+                            this.onSearchCompleted.emit();
+                            if (this.agGridComponent && pageSize) {
+                                this.agGridComponent.isSearching = false;
+                                this.agGridComponent.refresh();
+                                this.changeDetectorRef();
+                            }
+                            this.addToHistory(keyword, this.totalResults);
+                        });
+                    },
+                    (err) => {
+                        //reset data on grid
+                        this.dataResult = {
+                            data: [],
+                            columns:
+                                this.dataResult && this.dataResult.columns
+                                    ? this.dataResult.columns
+                                    : [],
+                            totalResults: 0,
+                            idSettingsGUI: this.moduleLocal.idSettingsGUI,
+                        };
+                        this.totalResults = 0;
+                        this.numberOfEntries = 0;
                         this.onSearchCompleted.emit();
-                        if (this.agGridComponent && pageSize) {
+                        //show error
+                        this.toasterService.pop(
+                            "error",
+                            "Error",
+                            "Search failed please try again"
+                        );
+                        if (this.agGridComponent) {
                             this.agGridComponent.isSearching = false;
-                            this.agGridComponent.refresh();
                             this.changeDetectorRef();
                         }
-                        this.addToHistory(keyword, this.totalResults);
-                    });
-                }, (err) => {
-                    //reset data on grid
-                    this.dataResult = {
-                        'data': [],
-                        'columns': this.dataResult && this.dataResult.columns ? this.dataResult.columns : [],
-                        'totalResults': 0,
-                        idSettingsGUI: this.moduleLocal.idSettingsGUI
-                    };
-                    this.totalResults = 0;
-                    this.numberOfEntries = 0;
-                    this.onSearchCompleted.emit();
-                    //show error
-                    this.toasterService.pop('error', 'Error', 'Search failed please try again');
-                    if (this.agGridComponent) {
-                        this.agGridComponent.isSearching = false;
-                        this.changeDetectorRef();
                     }
-                });
+                );
         });
     }
 
     onRowDoubleClick(data: any) {
-        if (!data)
-            return;
+        if (!data) return;
         let model: any = {};
-        Object.keys(data).forEach(key => {
+        Object.keys(data).forEach((key) => {
             model[camelCase(key)] = data[key];
         });
         this.onRowClicked.emit(model);
@@ -304,8 +381,7 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
         this.pageSize = event.itemsPerPage;
         if (!this.tab || (this.tab && !this.tab.activeAdvanceSearchStatus)) {
             this.search();
-        }
-        else {
+        } else {
             if (this.advancedSearchCondition) {
                 this.searchAdvanceData(this.advancedSearchCondition);
             }
@@ -327,10 +403,15 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
         this.willChangeCell = cloneDeep(e);
 
         let module = this.moduleLocal;
-        if (module.idSettingsGUIParent == ModuleList.Administration.idSettingsGUI) {
+        if (
+            module.idSettingsGUIParent ==
+            ModuleList.Administration.idSettingsGUI
+        ) {
             module = ModuleList.Administration;
         }
-        this.store.dispatch(this.processDataActions.requestChangeSearchResult(module));
+        this.store.dispatch(
+            this.processDataActions.requestChangeSearchResult(module)
+        );
     }
 
     // #region [Grid mouse up/down]
@@ -345,7 +426,11 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     }
 
     public gridKeyDown($event) {
-        if ((this.moduleLocal && this.activeModule) && this.moduleLocal.idSettingsGUI !== this.activeModule.idSettingsGUI) {
+        if (
+            this.moduleLocal &&
+            this.activeModule &&
+            this.moduleLocal.idSettingsGUI !== this.activeModule.idSettingsGUI
+        ) {
             return;
         }
 
@@ -357,11 +442,19 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     public gridMouseUp($event) {
         if (this.moduleLocal && this.activeModule) {
             if (this.activeModule.idSettingsGUI != 5) {
-                if (this.moduleLocal.idSettingsGUI !== this.activeModule.idSettingsGUI) {
+                if (
+                    this.moduleLocal.idSettingsGUI !==
+                    this.activeModule.idSettingsGUI
+                ) {
                     return;
                 }
             } else {
-                if (this.activeSubModule && this.activeSubModule.idSettingsGUI && this.moduleLocal.idSettingsGUI !== this.activeSubModule.idSettingsGUI) {
+                if (
+                    this.activeSubModule &&
+                    this.activeSubModule.idSettingsGUI &&
+                    this.moduleLocal.idSettingsGUI !==
+                        this.activeSubModule.idSettingsGUI
+                ) {
                     return;
                 }
             }
@@ -393,14 +486,18 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
         this.agGridComponent.rowGrouping = data;
     }
 
-    onResultSelect(data: Array<any>, isDeselectAllRowMaster?: boolean, isDeselectAllRowDetail?: boolean) {
+    onResultSelect(
+        data: Array<any>,
+        isDeselectAllRowMaster?: boolean,
+        isDeselectAllRowDetail?: boolean
+    ) {
         this.isDeselectAllRowMaster = isDeselectAllRowMaster;
         this.isDeselectAllRowDetail = isDeselectAllRowDetail;
         clearTimeout(this.rowClickTimer);
         this.rowClickTimer = setTimeout(() => {
             if (!this.isMouseDown) {
                 const model: any = {};
-                data.forEach(item => {
+                data.forEach((item) => {
                     model[camelCase(item.key)] = item.value;
                 });
                 this.onRowClicked.emit(model);
@@ -415,8 +512,7 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
      * updateStateForTabData
      **/
     private updateStateForTabData() {
-        if (!Configuration.PublicSettings.enableGSNewWindow)
-            return;
+        if (!Configuration.PublicSettings.enableGSNewWindow) return;
 
         if (this.tab) {
             if (!this.tab.payload) {
@@ -438,64 +534,99 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     private addToHistory(keyword: string, numberOfResult: number) {
         this.addToHistoryAction.emit({
             keyword: keyword,
-            numberOfResult: numberOfResult
-        })
+            numberOfResult: numberOfResult,
+        });
     }
 
     public searchAdvance(formData) {
         const pageSize = this.pageSize;
-        this.searchServiceSubscription = this.searchService.searchAdvance(this.searchIndex, this.moduleLocal.idSettingsGUI, this.pageIndex, pageSize, formData)
+        this.searchServiceSubscription = this.searchService
+            .searchAdvance(
+                this.searchIndex,
+                this.moduleLocal.idSettingsGUI,
+                this.pageIndex,
+                pageSize,
+                formData
+            )
             .finally(() => {
                 if (this.tab) {
                     this.tab.activeAdvanceSearchStatus = true;
                 }
                 this.changeDetectorRef();
             })
-            .subscribe((response: any) => {
-                this.appErrorHandler.executeAction(() => {
-                    response = response.item;
-                    this.dataResult = this.datatableService.buildDataSourceFromEsSearchResult(response, this.COLUMN_SETTING_INDEX);
-                    this.buildDataResultForModules();
-                    this.totalResults = response.total;
-                    this.numberOfEntries = response && response.results ? response.results.length : 0;
+            .subscribe(
+                (response: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        response = response.item;
+                        this.dataResult =
+                            this.datatableService.buildDataSourceFromEsSearchResult(
+                                response,
+                                this.COLUMN_SETTING_INDEX
+                            );
+                        this.buildDataResultForModules();
+                        this.totalResults = response.total;
+                        this.numberOfEntries =
+                            response && response.results
+                                ? response.results.length
+                                : 0;
+                        this.onSearchCompleted.emit();
+                        if (this.agGridComponent && pageSize) {
+                            this.agGridComponent.isSearching = false;
+                            this.changeDetectorRef();
+                        }
+                    });
+                },
+                (err) => {
+                    //reset data on grid
+                    this.dataResult = {
+                        data: [],
+                        columns:
+                            this.dataResult && this.dataResult.columns
+                                ? this.dataResult.columns
+                                : [],
+                        totalResults: 0,
+                        idSettingsGUI: this.moduleLocal.idSettingsGUI,
+                    };
+                    this.totalResults = 0;
+                    this.numberOfEntries = 0;
                     this.onSearchCompleted.emit();
-                    if (this.agGridComponent && pageSize) {
+                    //show error
+                    this.toasterService.pop(
+                        "error",
+                        "Error",
+                        "Search failed please try again"
+                    );
+                    if (this.agGridComponent) {
                         this.agGridComponent.isSearching = false;
                         this.changeDetectorRef();
                     }
-                });
-            }, (err) => {
-                //reset data on grid
-                this.dataResult = {
-                    'data': [],
-                    'columns': this.dataResult && this.dataResult.columns ? this.dataResult.columns : [],
-                    'totalResults': 0,
-                    idSettingsGUI: this.moduleLocal.idSettingsGUI
-                };
-                this.totalResults = 0;
-                this.numberOfEntries = 0;
-                this.onSearchCompleted.emit();
-                //show error
-                this.toasterService.pop('error', 'Error', 'Search failed please try again');
-                if (this.agGridComponent) {
-                    this.agGridComponent.isSearching = false;
-                    this.changeDetectorRef();
                 }
-            });
+            );
     }
 
     private browserTabId: string = Uti.defineBrowserTabId();
     public subscribeAdvanceSearchState() {
-
-        const localStorageGSFieldCondition = LocalStorageKey.buildKey(LocalStorageKey.LocalStorageGSFieldCondition, this.browserTabId);
-        this.advanceSearchSubscription = Observable.fromEvent<StorageEvent>(window, 'storage').filter((evt) => {
-            return evt.key == localStorageGSFieldCondition && evt.newValue !== null && evt.newValue != 'undefined';
-        }).subscribe(evt => {
-            if (evt.newValue) {
-                this.advancedSearchCondition = JSON.parse(evt.newValue);
-                this.searchAdvanceData(this.advancedSearchCondition);
-            }
-        });
+        const localStorageGSFieldCondition = LocalStorageKey.buildKey(
+            LocalStorageKey.LocalStorageGSFieldCondition,
+            this.browserTabId
+        );
+        this.advanceSearchSubscription = Observable.fromEvent<StorageEvent>(
+            window,
+            "storage"
+        )
+            .filter((evt) => {
+                return (
+                    evt.key == localStorageGSFieldCondition &&
+                    evt.newValue !== null &&
+                    evt.newValue != "undefined"
+                );
+            })
+            .subscribe((evt) => {
+                if (evt.newValue) {
+                    this.advancedSearchCondition = JSON.parse(evt.newValue);
+                    this.searchAdvanceData(this.advancedSearchCondition);
+                }
+            });
     }
 
     public reattach() {
@@ -510,7 +641,7 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
 
     public openTranslateDialog(event) {
         let translateInDialog = true;
-        if (event && event.mode == 'row') {
+        if (event && event.mode == "row") {
             translateInDialog = false;
         }
         if (translateInDialog) {
@@ -527,15 +658,25 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     }
 
     private searchAdvanceData(advancedSearchCondition) {
-        if (advancedSearchCondition.browserTabId && advancedSearchCondition.browserTabId != this.browserTabId)
+        if (
+            advancedSearchCondition.browserTabId &&
+            advancedSearchCondition.browserTabId != this.browserTabId
+        )
             return;
-        if (advancedSearchCondition.moduleId == this.moduleLocal.idSettingsGUI) {
-            if (advancedSearchCondition.formData && advancedSearchCondition.formData.length) {
+        if (
+            advancedSearchCondition.moduleId == this.moduleLocal.idSettingsGUI
+        ) {
+            if (
+                advancedSearchCondition.formData &&
+                advancedSearchCondition.formData.length
+            ) {
                 this.searchAdvance(advancedSearchCondition.formData);
-                let value = '';
-                (advancedSearchCondition.formData as Array<any>).forEach(p => {
-                    value += p.value + ' ';
-                });
+                let value = "";
+                (advancedSearchCondition.formData as Array<any>).forEach(
+                    (p) => {
+                        value += p.value + " ";
+                    }
+                );
                 this.hightlightKeywords = value;
             }
         }
@@ -560,34 +701,58 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
 
         this.foundInModalWidth = window.screen.width - 200;
         this.foundInModalHeight = window.screen.height - 300;
-        this.foundInBodyHeight = { 'height': (this.foundInModalHeight - 76) + 'px' };
+        this.foundInBodyHeight = {
+            height: this.foundInModalHeight - 76 + "px",
+        };
         this.foundInShowDialog = true;
 
-        const fieldName: Array<string> = ['idPerson'];
+        const fieldName: Array<string> = ["idPerson"];
         const fieldValue: Array<string> = [$event.data.IdPerson];
 
-        let searchIndex = '';
+        let searchIndex = "";
         switch ($event.type) {
-            case 'Contact':
-                searchIndex = $event.data.FoundIn.type;//customercontact, customerfootcontact
+            case "Contact":
+                searchIndex = $event.data.FoundIn.type; //customercontact, customerfootcontact
                 break;
         }
 
         if (!searchIndex) return;
-        this.searchService.search(searchIndex, this.keyword, this.moduleLocal.idSettingsGUI, 1, this.foundInPageSize, null, fieldName, fieldValue, true)
+        this.searchService
+            .search(
+                searchIndex,
+                this.keyword,
+                this.moduleLocal.idSettingsGUI,
+                1,
+                this.foundInPageSize,
+                null,
+                fieldName,
+                fieldValue,
+                true
+            )
             .finally(() => {
                 this.changeDetectorRef();
             })
-            .subscribe((response: any) => {
-                this.appErrorHandler.executeAction(() => {
-                    response = response.item;
-                    this.foundInDataResult = this.datatableService.buildDataSourceFromEsSearchResult(response, 1);
-                });
-            }, (err) => {
-                //show error
-                this.toasterService.pop('error', 'Error', 'Search Contact failed please try again');
-                console.log(err);
-            });
+            .subscribe(
+                (response: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        response = response.item;
+                        this.foundInDataResult =
+                            this.datatableService.buildDataSourceFromEsSearchResult(
+                                response,
+                                1
+                            );
+                    });
+                },
+                (err) => {
+                    //show error
+                    this.toasterService.pop(
+                        "error",
+                        "Error",
+                        "Search Contact failed please try again"
+                    );
+                    console.log(err);
+                }
+            );
     }
 
     public foundInCloseDialog() {
@@ -602,7 +767,8 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
         this.dataResult.idSettingsGUI = this.moduleLocal.idSettingsGUI;
         switch (this.moduleLocal.idSettingsGUI) {
             case MenuModuleId.customer:
-                this.dataResult.funcGetData = this.searchCustomerFoot.bind(this);
+                this.dataResult.funcGetData =
+                    this.searchCustomerFoot.bind(this);
                 break;
         }
     }
@@ -610,16 +776,31 @@ export class GlobalSearchResultComponent implements OnInit, OnChanges, OnDestroy
     private searchCustomerFoot(params) {
         //https://www.ag-grid.com/javascript-grid-server-side-model-tree-data/
         //console.log(params);
-        if (params && params.parentNode && params.parentNode.data && params.parentNode.data.MatchingGroup) {
+        if (
+            params &&
+            params.parentNode &&
+            params.parentNode.data &&
+            params.parentNode.data.MatchingGroup
+        ) {
             const data = params.parentNode.data;
-            this.searchService.searchCustomerFoot(data.MatchingGroup, this.lastKeyword)
+            this.searchService
+                .searchCustomerFoot(data.MatchingGroup, this.lastKeyword)
                 .subscribe((response: any) => {
                     this.appErrorHandler.executeAction(() => {
                         response = response.item;
-                        const model = this.datatableService.buildDataSourceFromEsSearchResult(response, 1);
+                        const model =
+                            this.datatableService.buildDataSourceFromEsSearchResult(
+                                response,
+                                1
+                            );
                         if (model.data) {
-                            model.data = model.data.filter(n => n.IdPerson != data.IdPerson);
-                            params.successCallback(model.data, model.data.length);
+                            model.data = model.data.filter(
+                                (n) => n.IdPerson != data.IdPerson
+                            );
+                            params.successCallback(
+                                model.data,
+                                model.data.length
+                            );
                         }
                     });
                 });

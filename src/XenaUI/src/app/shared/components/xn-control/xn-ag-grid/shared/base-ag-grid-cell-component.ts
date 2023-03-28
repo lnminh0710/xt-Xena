@@ -1,21 +1,19 @@
-import { Output, EventEmitter } from '@angular/core';
-import { XnAgGridComponent } from '../pages/ag-grid-container/xn-ag-grid.component';
+import { Output, EventEmitter } from "@angular/core";
+import { XnAgGridComponent } from "../pages/ag-grid-container/xn-ag-grid.component";
 import { ColDef } from "ag-grid-community";
 
 /**
  * BaseAgGridCellComponent
  */
 export abstract class BaseAgGridCellComponent<T> {
-
     public params: any;
     public value: T;
     public cellStartedEdit: boolean;
     public colDef: ColDef;
 
-    constructor() {
-    }
+    constructor() {}
 
-    protected getCustomParam(params: any) { }
+    protected getCustomParam(params: any) {}
 
     public get componentParent(): XnAgGridComponent {
         if (this.params && this.params.context) {
@@ -32,8 +30,7 @@ export abstract class BaseAgGridCellComponent<T> {
      * getColDef
      **/
     protected getColDef(): ColDef {
-        if (this.params && this.params.column)
-            return this.params.column.colDef;
+        if (this.params && this.params.column) return this.params.column.colDef;
         return null;
     }
 
@@ -48,10 +45,16 @@ export abstract class BaseAgGridCellComponent<T> {
         this.colDef = this.getColDef();
         this.getCustomParam(params);
 
-        if (this.colDef && this.colDef.refData && this.colDef.refData.controlType &&
-            this.colDef.refData.controlType.toLowerCase() == 'checkbox') {
-            this.value = this.params.valueFormatted != undefined ? this.params.valueFormatted : this.params.value;
+        if (
+            this.colDef &&
+            this.colDef.refData &&
+            this.colDef.refData.controlType &&
+            this.colDef.refData.controlType.toLowerCase() == "checkbox"
+        ) {
+            this.value =
+                this.params.valueFormatted != undefined
+                    ? this.params.valueFormatted
+                    : this.params.value;
         }
     }
-
 }

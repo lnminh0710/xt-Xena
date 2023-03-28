@@ -1,4 +1,4 @@
-@import '~sass_files/color.scss';
+@import "~sass_files/color.scss";
 
 .layout-setting-aside {
     position: absolute;
@@ -19,7 +19,6 @@
         z-index: 100;
         background-color: $view-mode;
     }
-
 
     .margin-top-4px {
         margin-top: 4px;

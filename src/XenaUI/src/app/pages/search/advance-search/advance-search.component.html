@@ -1,57 +1,91 @@
 <h4 class="a-s-t">
-    <label-translation [keyword]="'Advance_search__Advance_Search'"></label-translation>
+    <label-translation
+        [keyword]="'Advance_search__Advance_Search'"
+    ></label-translation>
 </h4>
-<div resourceTranslation class="a-s"
-	[perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
-	<split  direction="horizontal"
-    [gutterSize]="5">
-		<split-area [size]="35"
-			[perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
-			<div class="p">
-				<advance-search-profile #advanceSearchProfile
-					[formData]="getProfileData()"
-					(onExposeDataAction)="onExposeDataHandler($event)"
-					(onNewAction)="newSearch()"
-					(onConfirmNoAction)="onConfirmNoHandler()">
-				</advance-search-profile>
-			</div>
-		</split-area>
-		<split-area [size]="65"
-			[perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
-			<div class="r">
-				<div class="b"
-					[perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
-		            <advance-search-builder 
-		            	[builderList]="formData"
-		            	[moduleId]="moduleId"
-		            	(onMeetLastInputAction)="onMeetLastInputHandler()"
-		            	(onDirtyAction)="onDirtyHandler()">
-		            </advance-search-builder>
-				</div>
-				<div class="c-m">
-			        <button type="button"
-			                mat-raised-button
-			                [disabled]="isDisableNewSearch"
-			                class="add mat-btn-green"
-			                aria-label="New search"
-			                tooltip="New search"
-			                placement="top"
-			                (click)="onClickNewSearch()">
-			            <span class="fa fa-plus"></span>
-			            <span class="bt-t-i-s"><label-translation [keyword]="'Advance_search__Newsearch'"></label-translation></span>
-			        </button>
-				    <button type="button"
-				            mat-raised-button
-				            [disabled]="isDisableSearch"
-				            class="mat-btn-blue pull-right"
-				            (click)="search()">
-				        <span class="fa fa-search"></span>
-				        <span class="bt-t-i-s"><label-translation [keyword]="'Advance_search__Search'"></label-translation></span>
-				    </button>
-				</div>
-			</div>
-		</split-area>
-	</split>
+<div
+    resourceTranslation
+    class="a-s"
+    [perfect-scrollbar]="{ suppressScrollX: false, suppressScrollY: false }"
+>
+    <split direction="horizontal" [gutterSize]="5">
+        <split-area
+            [size]="35"
+            [perfect-scrollbar]="{
+                suppressScrollX: false,
+                suppressScrollY: false
+            }"
+        >
+            <div class="p">
+                <advance-search-profile
+                    #advanceSearchProfile
+                    [formData]="getProfileData()"
+                    (onExposeDataAction)="onExposeDataHandler($event)"
+                    (onNewAction)="newSearch()"
+                    (onConfirmNoAction)="onConfirmNoHandler()"
+                >
+                </advance-search-profile>
+            </div>
+        </split-area>
+        <split-area
+            [size]="65"
+            [perfect-scrollbar]="{
+                suppressScrollX: false,
+                suppressScrollY: false
+            }"
+        >
+            <div class="r">
+                <div
+                    class="b"
+                    [perfect-scrollbar]="{
+                        suppressScrollX: false,
+                        suppressScrollY: false
+                    }"
+                >
+                    <advance-search-builder
+                        [builderList]="formData"
+                        [moduleId]="moduleId"
+                        (onMeetLastInputAction)="onMeetLastInputHandler()"
+                        (onDirtyAction)="onDirtyHandler()"
+                    >
+                    </advance-search-builder>
+                </div>
+                <div class="c-m">
+                    <button
+                        type="button"
+                        mat-raised-button
+                        [disabled]="isDisableNewSearch"
+                        class="add mat-btn-green"
+                        aria-label="New search"
+                        tooltip="New search"
+                        placement="top"
+                        (click)="onClickNewSearch()"
+                    >
+                        <span class="fa fa-plus"></span>
+                        <span class="bt-t-i-s"
+                            ><label-translation
+                                [keyword]="'Advance_search__Newsearch'"
+                            ></label-translation
+                        ></span>
+                    </button>
+                    <button
+                        type="button"
+                        mat-raised-button
+                        [disabled]="isDisableSearch"
+                        class="mat-btn-blue pull-right"
+                        (click)="search()"
+                    >
+                        <span class="fa fa-search"></span>
+                        <span class="bt-t-i-s"
+                            ><label-translation
+                                [keyword]="'Advance_search__Search'"
+                            ></label-translation
+                        ></span>
+                    </button>
+                </div>
+            </div>
+        </split-area>
+    </split>
 </div>
 <xn-message-modal></xn-message-modal>
 <toaster-container [toasterconfig]="toastrConfig"></toaster-container>

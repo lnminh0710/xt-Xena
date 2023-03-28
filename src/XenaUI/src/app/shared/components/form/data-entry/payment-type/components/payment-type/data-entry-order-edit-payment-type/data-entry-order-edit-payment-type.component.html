@@ -1,19 +1,23 @@
-<div class="edit-payment-type"
-    [ngClass]="{'hidden': hiddenPayment}">
-    <div class="lost-amount"
-        *ngIf="!clearPayment">
-        <label-translation [keyword]="'ODE_Payment_Master__Lost_Amount'"></label-translation>
-        <mat-checkbox color="primary"
-                      class="inline-checkbox"
-                      [(ngModel)]="lostAmountStatus"
-                      (change)="onlostAmountChange()">
+<div class="edit-payment-type" [ngClass]="{ hidden: hiddenPayment }">
+    <div class="lost-amount" *ngIf="!clearPayment">
+        <label-translation
+            [keyword]="'ODE_Payment_Master__Lost_Amount'"
+        ></label-translation>
+        <mat-checkbox
+            color="primary"
+            class="inline-checkbox"
+            [(ngModel)]="lostAmountStatus"
+            (change)="onlostAmountChange()"
+        >
         </mat-checkbox>
     </div>
-    <data-entry-order-payment-type #currentComponent
-                                [translatedSource]="translatedSource"
-                                [layoutViewMode]="orderDataEntryWidgetLayoutMode"
-                                [tabID]="tabID"
-                                (outputData)="outputDataHandler($event)">
+    <data-entry-order-payment-type
+        #currentComponent
+        [translatedSource]="translatedSource"
+        [layoutViewMode]="orderDataEntryWidgetLayoutMode"
+        [tabID]="tabID"
+        (outputData)="outputDataHandler($event)"
+    >
     </data-entry-order-payment-type>
     <div class="loading" *ngIf="isDataProcessing"></div>
     <div class="modal-loading" *ngIf="isDataProcessing">

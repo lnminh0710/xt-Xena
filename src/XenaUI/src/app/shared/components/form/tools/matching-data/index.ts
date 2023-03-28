@@ -1,1 +1,1 @@
-export { MatchingDataComponent } from './matching-data.component';
+export { MatchingDataComponent } from "./matching-data.component";

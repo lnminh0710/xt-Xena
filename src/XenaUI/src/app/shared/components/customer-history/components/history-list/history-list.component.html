@@ -9,17 +9,20 @@
                 </a>
             </div>-->
 
-            <ag-grid-angular #agGrid style="width: 100%" 
-                             class="ag-theme-balham"
-                             [gridOptions]="gridOptions"
-                             [columnDefs]="gridOptions.columnDefs"
-                             [rowData]="gridOptions.rowData"
-                             [suppressDragLeaveHidesColumns]="true"
-                             [suppressContextMenu]="true"
-                             [domLayout]="'autoHeight'"
-                             enableColResize
-                             rowSelection="single"
-                             (gridReady)="onReady($event)">
+            <ag-grid-angular
+                #agGrid
+                style="width: 100%"
+                class="ag-theme-balham"
+                [gridOptions]="gridOptions"
+                [columnDefs]="gridOptions.columnDefs"
+                [rowData]="gridOptions.rowData"
+                [suppressDragLeaveHidesColumns]="true"
+                [suppressContextMenu]="true"
+                [domLayout]="'autoHeight'"
+                enableColResize
+                rowSelection="single"
+                (gridReady)="onReady($event)"
+            >
             </ag-grid-angular>
 
             <!--<div class="arrow-right-icon">
@@ -33,12 +36,14 @@
     </div>
 </div>
 
-
 <ng-template #headerCell let-data>
     <history-header [data]="data"></history-header>
 </ng-template>
 
 <ng-template #bodyCell let-data>
     <history-body [data]="data.body"></history-body>
-    <history-footer class="history-footer" [data]="data.footer"></history-footer>
+    <history-footer
+        class="history-footer"
+        [data]="data.footer"
+    ></history-footer>
 </ng-template>

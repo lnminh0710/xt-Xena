@@ -1,5 +1,5 @@
-import { TabPageViewSplitModel } from './tab-page-view-split.model';
-import { PageModel } from 'app/models/page.model';
+import { TabPageViewSplitModel } from "./tab-page-view-split.model";
+import { PageModel } from "app/models/page.model";
 
 export class TabPageViewModel {
     public Page: PageModel = null;

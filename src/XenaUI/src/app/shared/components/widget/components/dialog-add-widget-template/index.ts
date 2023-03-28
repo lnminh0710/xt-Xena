@@ -1,1 +1,1 @@
-export * from './dialog-add-widget-template.component';
+export * from "./dialog-add-widget-template.component";

@@ -41,7 +41,8 @@ $minControlHeight: 18px;
     // min-width: 240px;
     overflow: hidden;
 }
-.container-inline-label, .container-inline-content {
+.container-inline-label,
+.container-inline-content {
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
     break-inside: avoid;
@@ -59,7 +60,8 @@ $minControlHeight: 18px;
     // display: grid;
     height: 100%;
 }
-.item-inline-label, .item-inline-content {
+.item-inline-label,
+.item-inline-content {
     //line-height: 1.2;
     font-size: 12px;
     overflow-x: hidden;
@@ -74,11 +76,14 @@ $minControlHeight: 18px;
     overflow: hidden;
     width: 100%;
 }
-.edit-form-mode .item-inline-label, .edit-form-mode .item-inline-content,
-.edit-language-mode .item-inline-label, .edit-language-mode .item-inline-content {
+.edit-form-mode .item-inline-label,
+.edit-form-mode .item-inline-content,
+.edit-language-mode .item-inline-label,
+.edit-language-mode .item-inline-content {
     min-height: 32px;
 }
-.edit-form-mode .single-group .item-inline-label.readonly, .edit-form-mode .single-group .item-inline-content.readonly {
+.edit-form-mode .single-group .item-inline-label.readonly,
+.edit-form-mode .single-group .item-inline-content.readonly {
     min-height: 26px;
 }
 .item-inline-label {
@@ -88,7 +93,8 @@ $minControlHeight: 18px;
 .hidden {
     display: none !important;
 }
-.xn-hidden, .columns .xn-hidden {
+.xn-hidden,
+.columns .xn-hidden {
     display: none;
 }
 .columns .xn-show {
@@ -185,5 +191,4 @@ $padding: 3px;
 
 .align-self-bottom {
     align-self: flex-end;
-
 }

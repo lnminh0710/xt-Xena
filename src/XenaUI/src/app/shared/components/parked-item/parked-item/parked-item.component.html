@@ -1,50 +1,107 @@
-<div class="panel"
-     [ngClass]="{'red-bg': selectedParkedItemLocal && selectedParkedItemLocal.id && selectedParkedItemLocal.id.value == parkedItem.id.value && activeModule.idSettingsGUI == 7,
-                 'blue-bg': standAlone}"
-     [class.active]="(standAlone || isSelectionProject) && selectedParkedItemLocal && selectedParkedItemLocal.id && selectedParkedItemLocal.id.value == parkedItem.id.value">
-    <a mat-raised-button
-       *ngIf="!standAlone && !isNewItem && (accessRight && accessRight.read)"
-       class="mat-btn-red--icon  mat-btn-small--icon  btn-circle  close-btn  btn-remove"
-       (click)="close(parkedItem)">
+<div
+    class="panel"
+    [ngClass]="{
+        'red-bg':
+            selectedParkedItemLocal &&
+            selectedParkedItemLocal.id &&
+            selectedParkedItemLocal.id.value == parkedItem.id.value &&
+            activeModule.idSettingsGUI == 7,
+        'blue-bg': standAlone
+    }"
+    [class.active]="
+        (standAlone || isSelectionProject) &&
+        selectedParkedItemLocal &&
+        selectedParkedItemLocal.id &&
+        selectedParkedItemLocal.id.value == parkedItem.id.value
+    "
+>
+    <a
+        mat-raised-button
+        *ngIf="!standAlone && !isNewItem && accessRight && accessRight.read"
+        class="mat-btn-red--icon mat-btn-small--icon btn-circle close-btn btn-remove"
+        (click)="close(parkedItem)"
+    >
         <i class="fa fa-times-circle"></i>
     </a>
-    <div class="parkedItemHeader panel-header"
-         [ngClass]="{'new-inserted-data':isNewInsertedItem,
-                     'red-bg': selectedParkedItemLocal && selectedParkedItemLocal.id && selectedParkedItemLocal.id.value == parkedItem.id.value && activeModule.idSettingsGUI == 7 }"
-         *ngIf="!standAlone && accessRight && accessRight.read">
-        <div class="new-mark" *ngIf="isNewInsertedItem"><label-translation [keyword]="'Parked_item__new'"></label-translation></div>
+    <div
+        class="parkedItemHeader panel-header"
+        [ngClass]="{
+            'new-inserted-data': isNewInsertedItem,
+            'red-bg':
+                selectedParkedItemLocal &&
+                selectedParkedItemLocal.id &&
+                selectedParkedItemLocal.id.value == parkedItem.id.value &&
+                activeModule.idSettingsGUI == 7
+        }"
+        *ngIf="!standAlone && accessRight && accessRight.read"
+    >
+        <div class="new-mark" *ngIf="isNewInsertedItem">
+            <label-translation
+                [keyword]="'Parked_item__new'"
+            ></label-translation>
+        </div>
         <div class="line"></div>
         <div class="line"></div>
         <div class="line"></div>
     </div>
-    <div class="parkedItemBody panel-body"
-         [ngClass]="{'text-center': isNewItem, 'small-height': smallHeight, 'stand-alone': standAlone}"
-         [perfect-scrollbar]="perfectScrollbarConfig">
+    <div
+        class="parkedItemBody panel-body"
+        [ngClass]="{
+            'text-center': isNewItem,
+            'small-height': smallHeight,
+            'stand-alone': standAlone
+        }"
+        [perfect-scrollbar]="perfectScrollbarConfig"
+    >
         <table *ngIf="parkedItemFields.length && !isNewItem">
             <tbody>
-                <tr *ngFor="let field of parkedItemFields; let i = index;trackBy: itemsTrackBy">
-                    <td class="text-center col-xs-1"
-                        [ngClass]="{'header-row': i == 0 }">
-                        <i class="fa {{field.icon}}"
-                           aria-hidden="true"
-                           container="body"
-                           xn-tooltip
-                           [tooltipText]="field.fieldName"
-                           [tooltipPlacement]="field.tooltipPlacement"></i>
+                <tr
+                    *ngFor="
+                        let field of parkedItemFields;
+                        let i = index;
+                        trackBy: itemsTrackBy
+                    "
+                >
+                    <td
+                        class="text-center col-xs-1"
+                        [ngClass]="{ 'header-row': i == 0 }"
+                    >
+                        <i
+                            class="fa {{ field.icon }}"
+                            aria-hidden="true"
+                            container="body"
+                            xn-tooltip
+                            [tooltipText]="field.fieldName"
+                            [tooltipPlacement]="field.tooltipPlacement"
+                        ></i>
                     </td>
                     <ng-template [ngIf]="field.fieldName">
-                        <td *ngIf="field.fieldName.toLowerCase().indexOf('date') > -1 && field.fieldValue"
-                            [ngClass]="{'header-row': i == 0 }"
-                            class="field-value-cell text-left">
-                            {{formatDate(field.fieldValue)}}
+                        <td
+                            *ngIf="
+                                field.fieldName.toLowerCase().indexOf('date') >
+                                    -1 && field.fieldValue
+                            "
+                            [ngClass]="{ 'header-row': i == 0 }"
+                            class="field-value-cell text-left"
+                        >
+                            {{ formatDate(field.fieldValue) }}
                         </td>
-                        <td *ngIf="field.fieldName.toLowerCase().indexOf('date') == -1"
-                            [ngClass]="{'header-row': i == 0 }"
+                        <td
+                            *ngIf="
+                                field.fieldName.toLowerCase().indexOf('date') ==
+                                -1
+                            "
+                            [ngClass]="{ 'header-row': i == 0 }"
                             class="field-value-cell text-left"
                             xn-tooltip
-                            [tooltipText]="field.fieldValue && field.fieldValue.length > 20 ? field.fieldValue : ''"
-                            container="body">
-                            {{field.fieldValue}}
+                            [tooltipText]="
+                                field.fieldValue && field.fieldValue.length > 20
+                                    ? field.fieldValue
+                                    : ''
+                            "
+                            container="body"
+                        >
+                            {{ field.fieldValue }}
                         </td>
                     </ng-template>
                 </tr>
@@ -53,53 +110,86 @@
 
         <ng-template [ngIf]="!standAlone && isNewItem">
             <h1>
-                <i aria-hidden="true" class="fa {{activeModule.iconName}}"></i>
+                <i
+                    aria-hidden="true"
+                    class="fa {{ activeModule.iconName }}"
+                ></i>
             </h1>
-            <h5><label-translation [keyword]="'Parked_item__New_Storage_Point'"></label-translation></h5>
+            <h5>
+                <label-translation
+                    [keyword]="'Parked_item__New_Storage_Point'"
+                ></label-translation>
+            </h5>
         </ng-template>
 
         <table *ngIf="parkedItemFields.length && isNewItem && standAlone">
             <tbody>
-                <tr *ngFor="let field of parkedItemFields; let i = index;trackBy: itemsTrackBy">
-                    <td class="text-center col-xs-1"
-                        [ngClass]="{'header-row': i == 0 }">
-                        <i class="fa {{field.icon}}"
-                           aria-hidden="true"
-                           xn-tooltip
-                           [tooltipText]="field.fieldName"
-                           [tooltipPlacement]="field.tooltipPlacement"
-                           container="body"></i>
+                <tr
+                    *ngFor="
+                        let field of parkedItemFields;
+                        let i = index;
+                        trackBy: itemsTrackBy
+                    "
+                >
+                    <td
+                        class="text-center col-xs-1"
+                        [ngClass]="{ 'header-row': i == 0 }"
+                    >
+                        <i
+                            class="fa {{ field.icon }}"
+                            aria-hidden="true"
+                            xn-tooltip
+                            [tooltipText]="field.fieldName"
+                            [tooltipPlacement]="field.tooltipPlacement"
+                            container="body"
+                        ></i>
                     </td>
                     <ng-template [ngIf]="field.fieldName">
-                        <td *ngIf="field.fieldName.toLowerCase().indexOf('date') > -1 && field.fieldValue"
-                            [ngClass]="{'header-row': i == 0 }"
-                            class="field-value-cell text-left">
-                            {{formatDate(field.fieldValue)}}
+                        <td
+                            *ngIf="
+                                field.fieldName.toLowerCase().indexOf('date') >
+                                    -1 && field.fieldValue
+                            "
+                            [ngClass]="{ 'header-row': i == 0 }"
+                            class="field-value-cell text-left"
+                        >
+                            {{ formatDate(field.fieldValue) }}
                         </td>
-                        <td *ngIf="field.fieldName.toLowerCase().indexOf('date') == -1"
-                            [ngClass]="{'header-row': i == 0 }"
+                        <td
+                            *ngIf="
+                                field.fieldName.toLowerCase().indexOf('date') ==
+                                -1
+                            "
+                            [ngClass]="{ 'header-row': i == 0 }"
                             class="field-value-cell text-left"
                             xn-tooltip
-                            [tooltipText]="field.fieldValue && field.fieldValue.length > 20 ? field.fieldValue : ''"
-                            container="body">
-                            {{field.fieldValue}}
+                            [tooltipText]="
+                                field.fieldValue && field.fieldValue.length > 20
+                                    ? field.fieldValue
+                                    : ''
+                            "
+                            container="body"
+                        >
+                            {{ field.fieldValue }}
                         </td>
                     </ng-template>
                 </tr>
             </tbody>
         </table>
     </div>
-    <div class="parkedItemFooter panel-footer"
-         *ngIf="!isNewItem">
+    <div class="parkedItemFooter panel-footer" *ngIf="!isNewItem">
         <div class="row">
             <div class="col-xs-4 text-center">
-                <i class="fa fa-pencil edit-icon" aria-hidden="true"></i> <strong>0</strong>
+                <i class="fa fa-pencil edit-icon" aria-hidden="true"></i>
+                <strong>0</strong>
             </div>
             <div class="col-xs-4 text-center">
-                <i class="fa fa-star star-icon" aria-hidden="true"></i> <strong>0</strong>
+                <i class="fa fa-star star-icon" aria-hidden="true"></i>
+                <strong>0</strong>
             </div>
             <div class="col-xs-4 text-center">
-                <i class="fa fa-check check-icon" aria-hidden="true"></i> <strong>0</strong>
+                <i class="fa fa-check check-icon" aria-hidden="true"></i>
+                <strong>0</strong>
             </div>
         </div>
     </div>

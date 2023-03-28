@@ -1,6 +1,6 @@
-import * as wjcGrid from 'wijmo/wijmo.grid';
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcSelf from 'wijmo/wijmo.grid.detail';
+import * as wjcGrid from "wijmo/wijmo.grid";
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcSelf from "wijmo/wijmo.grid.detail";
 export declare enum DetailVisibilityMode {
     Code = 0,
     Selection = 1,
@@ -40,7 +40,12 @@ export declare class FlexGridDetailProvider {
 }
 export declare class DetailMergeManager extends wjcGrid.MergeManager {
     constructor(grid: wjcGrid.FlexGrid);
-    getMergedRange(p: wjcGrid.GridPanel, r: number, c: number, clip?: boolean): wjcGrid.CellRange;
+    getMergedRange(
+        p: wjcGrid.GridPanel,
+        r: number,
+        c: number,
+        clip?: boolean
+    ): wjcGrid.CellRange;
 }
 export declare class DetailRow extends wjcGrid.Row {
     _detail: HTMLElement;

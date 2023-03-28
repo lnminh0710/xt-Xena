@@ -1,26 +1,37 @@
-import { Component, Input, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import {
-    ArticleService,
-    AppErrorHandler
-} from 'app/services';
-import { ArticleMediaModel, ArticleGroupsMedia, SharingTreeMedia } from 'app/models/article-media.model';
-import { GalleryImage, Module, WidgetDetail } from 'app/models';
-import { UploadFileMode, Configuration } from 'app/app.constants';
-import { FileUploadComponent } from 'app/shared/components/xn-file';
-import { ArticleImageGalleryComponent } from '../../components/article-image-gallery';
-import { Subscription } from 'rxjs/Subscription';
-import { BaseWidget } from 'app/pages/private/base';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Uti } from 'app/utilities';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
+    Component,
+    Input,
+    OnInit,
+    ViewChild,
+    OnDestroy,
+    Output,
+    EventEmitter,
+} from "@angular/core";
+import { ArticleService, AppErrorHandler } from "app/services";
+import {
+    ArticleMediaModel,
+    ArticleGroupsMedia,
+    SharingTreeMedia,
+} from "app/models/article-media.model";
+import { GalleryImage, Module, WidgetDetail } from "app/models";
+import { UploadFileMode, Configuration } from "app/app.constants";
+import { FileUploadComponent } from "app/shared/components/xn-file";
+import { ArticleImageGalleryComponent } from "../../components/article-image-gallery";
+import { Subscription } from "rxjs/Subscription";
+import { BaseWidget } from "app/pages/private/base";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { Uti } from "app/utilities";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
 
 @Component({
-    selector: 'article-media-manager',
-    styleUrls: ['./article-media-manager.component.scss'],
-    templateUrl: './article-media-manager.component.html'
+    selector: "article-media-manager",
+    styleUrls: ["./article-media-manager.component.scss"],
+    templateUrl: "./article-media-manager.component.html",
 })
-
-export class ArticleMediaManagerComponent extends BaseWidget implements OnInit, OnDestroy {
+export class ArticleMediaManagerComponent
+    extends BaseWidget
+    implements OnInit, OnDestroy
+{
     public uploadFileMode: UploadFileMode = UploadFileMode.ArticleMedia;
     private _idArticle: number;
     public hasBaseDropZoneOver = false;
@@ -30,8 +41,9 @@ export class ArticleMediaManagerComponent extends BaseWidget implements OnInit, 
     private articleServiceSubscription: Subscription;
     private _currentModule = new BehaviorSubject<Module>(null);
 
-    @ViewChild('fileUpload') fileUpload: FileUploadComponent;
-    @ViewChild(ArticleImageGalleryComponent) articleImageGalleryComponent: ArticleImageGalleryComponent;
+    @ViewChild("fileUpload") fileUpload: FileUploadComponent;
+    @ViewChild(ArticleImageGalleryComponent)
+    articleImageGalleryComponent: ArticleImageGalleryComponent;
 
     @Input()
     set idArticle(value) {
@@ -50,11 +62,16 @@ export class ArticleMediaManagerComponent extends BaseWidget implements OnInit, 
         }
         this._currentModule.subscribe((ofModule: Module) => {
             this.appErrorHandler.executeAction(() => {
-                if (ofModule && data.widgetDataType &&
+                if (
+                    ofModule &&
+                    data.widgetDataType &&
                     data.widgetDataType.listenKey &&
-                    data.widgetDataType.listenKey.main) {
+                    data.widgetDataType.listenKey.main
+                ) {
                     const key = data.widgetDataType.listenKey.main.key;
-                    this.idArticle = data.widgetDataType.listenKeyRequest(ofModule.moduleNameTrim)[key];
+                    this.idArticle = data.widgetDataType.listenKeyRequest(
+                        ofModule.moduleNameTrim
+                    )[key];
                 }
             });
         });
@@ -85,8 +102,7 @@ export class ArticleMediaManagerComponent extends BaseWidget implements OnInit, 
         super();
     }
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
@@ -94,31 +110,39 @@ export class ArticleMediaManagerComponent extends BaseWidget implements OnInit, 
 
     private getArticleMedia() {
         if (this.idArticle) {
-            this.articleServiceSubscription = this.articleService.getArticleMedia(this.idArticle).subscribe(rs => {
-                this.appErrorHandler.executeAction(() => {
-                    if (!rs || !rs.item.collectionData) {
-                        this.galleryImages = [];
-                        return;
-                    }
-                    const collectionData: Array<any> = rs.item.collectionData;
-                    this.galleryImages = [];
-                    collectionData.forEach(data => {
-                        if (data.mediaName.value) {
-                            const articleImage = new GalleryImage({                                
-                                source: Uti.getFileUrl(data.mediaName.value, this.uploadFileMode),
-                                title: data.mediaTitle.value,
-                                description: data.mediaDescription.value,
-                                isMain: data.isActive.value === 'True',
-                                isDeleted: data.isDeleted.value === 'True'
-                            });
-                            articleImage['article'] = data;
-                            this.galleryImages.push(articleImage);
+            this.articleServiceSubscription = this.articleService
+                .getArticleMedia(this.idArticle)
+                .subscribe((rs) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (!rs || !rs.item.collectionData) {
+                            this.galleryImages = [];
+                            return;
                         }
+                        const collectionData: Array<any> =
+                            rs.item.collectionData;
+                        this.galleryImages = [];
+                        collectionData.forEach((data) => {
+                            if (data.mediaName.value) {
+                                const articleImage = new GalleryImage({
+                                    source: Uti.getFileUrl(
+                                        data.mediaName.value,
+                                        this.uploadFileMode
+                                    ),
+                                    title: data.mediaTitle.value,
+                                    description: data.mediaDescription.value,
+                                    isMain: data.isActive.value === "True",
+                                    isDeleted: data.isDeleted.value === "True",
+                                });
+                                articleImage["article"] = data;
+                                this.galleryImages.push(articleImage);
+                            }
+                        });
+                        this.noEntryDataEvent.emit(
+                            this.galleryImages.length == 0
+                        );
+                        this.emitCompletedRenderEvent();
                     });
-                    this.noEntryDataEvent.emit(this.galleryImages.length == 0);
-                    this.emitCompletedRenderEvent();
                 });
-            });
         }
     }
 
@@ -135,29 +159,32 @@ export class ArticleMediaManagerComponent extends BaseWidget implements OnInit, 
             mediaName: response.fileName,
             mediaSize: response.size,
             mediaRelativePath: response.path,
-            mediaTitle: '',
-            mediaDescription: ''
+            mediaTitle: "",
+            mediaDescription: "",
         });
 
         const articleMediaModel: ArticleMediaModel = new ArticleMediaModel({
             articleGroupsMedia: articleGroupsMedia,
-            sharingTreeMedia: sharingTreeMedia
+            sharingTreeMedia: sharingTreeMedia,
         });
 
-        this.articleServiceSubscription = this.articleService.insertArticleMedia(articleMediaModel).subscribe(rs => {
-            this.appErrorHandler.executeAction(() => {
-                if (rs) {
-                    this.getArticleMedia();
-                }
+        this.articleServiceSubscription = this.articleService
+            .insertArticleMedia(articleMediaModel)
+            .subscribe((rs) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (rs) {
+                        this.getArticleMedia();
+                    }
+                });
             });
-        });
     }
 
     onMainImageChange(event: any) {
         const activeImage: GalleryImage = event.activeImage;
-        const previousActiveImages: Array<GalleryImage> = event.previousActiveImages;
+        const previousActiveImages: Array<GalleryImage> =
+            event.previousActiveImages;
         this.updateStatusArticleImage(activeImage);
-        previousActiveImages.forEach(previousActiveImage => {
+        previousActiveImages.forEach((previousActiveImage) => {
             this.updateStatusArticleImage(previousActiveImage);
         });
     }
@@ -169,26 +196,32 @@ export class ArticleMediaManagerComponent extends BaseWidget implements OnInit, 
     private updateStatusArticleImage(image: GalleryImage) {
         const articleMediaModel: any = {
             articleGroupsMedia: {
-                idArticleGroupsMedia: image['article'].idArticleGroupsMedia.value,
+                idArticleGroupsMedia:
+                    image["article"].idArticleGroupsMedia.value,
                 isActive: image.isMain,
-                isDeleted: image.isDeleted
+                isDeleted: image.isDeleted,
             },
             sharingTreeMedia: {
-                idSharingTreeMedia: image['article'].idSharingTreeMedia.value
-            }
+                idSharingTreeMedia: image["article"].idSharingTreeMedia.value,
+            },
         };
 
-        this.articleServiceSubscription = this.articleService.updateArticleMedia(articleMediaModel).subscribe(rs => {
-            if (rs) {
-                this.toasterService.pop('success', 'Success', 'Article Media updated successfully');
-            }
-        });
+        this.articleServiceSubscription = this.articleService
+            .updateArticleMedia(articleMediaModel)
+            .subscribe((rs) => {
+                if (rs) {
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "Article Media updated successfully"
+                    );
+                }
+            });
     }
 
     public close() {
         this.showDialog = false;
-        if (this.fileUpload)
-            this.fileUpload.clearItem();
+        if (this.fileUpload) this.fileUpload.clearItem();
         this.emitCompletedRenderEvent();
     }
 

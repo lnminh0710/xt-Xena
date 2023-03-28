@@ -1,54 +1,75 @@
 ﻿<!--upload button-->
-<div ng2FileDrop
-     [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
-     (fileOver)="fileOverBase($event)"
-     (onFileDrop)="onFileDrop($event)"
-     class="my-drop-zone">
-    <article-image-gallery [galleryImages]="galleryImages" *ngIf="galleryImages"
-                           [currentModule]="currentModule"
-                           (onMainImageChange)="onMainImageChange($event)"
-                           (onSaveArticleMediaSuccess)="onSaveArticleMediaSuccess($event)"
-                           (onRemoveImage)="onRemoveImage($event)"></article-image-gallery>
+<div
+    ng2FileDrop
+    [ngClass]="{ 'nv-file-over': hasBaseDropZoneOver }"
+    (fileOver)="fileOverBase($event)"
+    (onFileDrop)="onFileDrop($event)"
+    class="my-drop-zone"
+>
+    <article-image-gallery
+        [galleryImages]="galleryImages"
+        *ngIf="galleryImages"
+        [currentModule]="currentModule"
+        (onMainImageChange)="onMainImageChange($event)"
+        (onSaveArticleMediaSuccess)="onSaveArticleMediaSuccess($event)"
+        (onRemoveImage)="onRemoveImage($event)"
+    ></article-image-gallery>
 </div>
 
-<p-dialog [styleClass]="'upload-file-dialog'"
-          *ngIf="showDialog"
-          header=""
-          [(visible)]="showDialog"
-          modal="modal"
-          width="900"
-          height="500"
-          responsive="true"
-          appendTo="body"
-          (onAfterHide)="close()">
+<p-dialog
+    [styleClass]="'upload-file-dialog'"
+    *ngIf="showDialog"
+    header=""
+    [(visible)]="showDialog"
+    modal="modal"
+    width="900"
+    height="500"
+    responsive="true"
+    appendTo="body"
+    (onAfterHide)="close()"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="fa  fa-upload  header-icon  pull-left"></span>
-            <span class="header-text  pull-left"><label-translation [keyword]="'ArticleMediaManager__Upload_File'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="close()">
+            <span class="fa fa-upload header-icon pull-left"></span>
+            <span class="header-text pull-left"
+                ><label-translation
+                    [keyword]="'ArticleMediaManager__Upload_File'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="close()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <div class="col-xs-12 no-padding" style="height:100%">
-        <file-upload #fileUpload
-                     [uploadFileMode]="uploadFileMode"
-                     [inputFilesData]="dropFiles"
-                     [maxSizeLimit]="imageMaxSizeLimit"
-                     (onCompleteItem)="onCompleteUploadItem($event)"></file-upload>
+    <div class="col-xs-12 no-padding" style="height: 100%">
+        <file-upload
+            #fileUpload
+            [uploadFileMode]="uploadFileMode"
+            [inputFilesData]="dropFiles"
+            [maxSizeLimit]="imageMaxSizeLimit"
+            (onCompleteItem)="onCompleteUploadItem($event)"
+        ></file-upload>
     </div>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button type="button"
-                    mat-raised-button
-                    class="pull-right  new-size"
-                    title="Close"
-                    (click)="close()">
-                <span class="bt-t"><label-translation [keyword]="'ArticleMediaManager__Close'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="pull-right new-size"
+                title="Close"
+                (click)="close()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'ArticleMediaManager__Close'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>

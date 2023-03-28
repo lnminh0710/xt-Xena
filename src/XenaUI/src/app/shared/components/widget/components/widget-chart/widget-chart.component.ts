@@ -1,17 +1,16 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {BaseWidget} from 'app/pages/private/base';
-import {ChartTypeNgx} from './chart.model';
-import {WidgetChartService} from './widget-chart.service';
-import {WidgetDetail, LayoutPageInfoModel} from 'app/models';
-import cloneDeep from 'lodash-es/cloneDeep';
+import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core";
+import { BaseWidget } from "app/pages/private/base";
+import { ChartTypeNgx } from "./chart.model";
+import { WidgetChartService } from "./widget-chart.service";
+import { WidgetDetail, LayoutPageInfoModel } from "app/models";
+import cloneDeep from "lodash-es/cloneDeep";
 
 @Component({
-    selector: 'chart-widget',
-    styleUrls: ['./widget-chart.component.scss'],
-    templateUrl: './widget-chart.component.html',
+    selector: "chart-widget",
+    styleUrls: ["./widget-chart.component.scss"],
+    templateUrl: "./widget-chart.component.html",
     encapsulation: ViewEncapsulation.None,
 })
-
 export class WidgetChartComponent extends BaseWidget implements OnInit {
     public _chartType: string;
     public _colorType: string;
@@ -31,13 +30,17 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
 
     @Input() set chartType(chartType: string) {
         this._chartType = chartType;
-    };
+    }
 
     @Input() set chartSeries(chartSeries: any) {
         this._chartSeries = chartSeries;
 
-        this.buildChartData(this.widgetDetail, this.layoutInfo, this.chartObjData);
-    };
+        this.buildChartData(
+            this.widgetDetail,
+            this.layoutInfo,
+            this.chartObjData
+        );
+    }
 
     @Input() set scheme(colorType: string) {
         this._colorType = colorType;
@@ -153,7 +156,9 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
         this._showYAxisAreaLineChart = showYAxisAreaLineChart;
     }
 
-    @Input() set showGirdLinesAreaLineChart(showGirdLinesAreaLineChart: boolean) {
+    @Input() set showGirdLinesAreaLineChart(
+        showGirdLinesAreaLineChart: boolean
+    ) {
         this._showGirdLinesAreaLineChart = showGirdLinesAreaLineChart;
     }
 
@@ -165,11 +170,15 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
         this._showLegendAreaLineChart = showLegendAreaLineChart;
     }
 
-    @Input() set disableTooltipAreaLineChart(disableTooltipAreaLineChart: boolean) {
+    @Input() set disableTooltipAreaLineChart(
+        disableTooltipAreaLineChart: boolean
+    ) {
         this._disableTooltipAreaLineChart = disableTooltipAreaLineChart;
     }
 
-    @Input() set showXAxisLabelAreaLineChart(showXAxisLabelAreaLineChart: boolean) {
+    @Input() set showXAxisLabelAreaLineChart(
+        showXAxisLabelAreaLineChart: boolean
+    ) {
         this._showXAxisLabelAreaLineChart = showXAxisLabelAreaLineChart;
     }
 
@@ -177,7 +186,9 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
         this._xAxisLabelAreaLineChart = xAxisLabelAreaLineChart;
     }
 
-    @Input() set showYAxisLabelAreaLineChart(showYAxisLabelAreaLineChart: boolean) {
+    @Input() set showYAxisLabelAreaLineChart(
+        showYAxisLabelAreaLineChart: boolean
+    ) {
         this._showYAxisLabelAreaLineChart = showYAxisLabelAreaLineChart;
     }
 
@@ -208,13 +219,21 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
     @Input() set chartData(data: any[]) {
         this.chartObjData = data;
 
-        this.buildChartData(this.widgetDetail, this.layoutInfo, this.chartObjData);
+        this.buildChartData(
+            this.widgetDetail,
+            this.layoutInfo,
+            this.chartObjData
+        );
     }
 
     @Input() set layoutPageInfo(layoutPageInfo: LayoutPageInfoModel[]) {
         this.layoutInfo = layoutPageInfo;
 
-        this.buildChartData(this.widgetDetail, this.layoutInfo, this.chartObjData);
+        this.buildChartData(
+            this.widgetDetail,
+            this.layoutInfo,
+            this.chartObjData
+        );
     }
 
     private widgetDetail: WidgetDetail;
@@ -226,9 +245,7 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
     public dataPrint: any[];
     public columnPrint: any[];
 
-    constructor(
-        private widgetChartService: WidgetChartService
-    ) {
+    constructor(private widgetChartService: WidgetChartService) {
         super();
     }
 
@@ -236,16 +253,25 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
         this.view = undefined;
     }
 
-    private buildChartData(widgetDetail: WidgetDetail, layoutPageInfo: LayoutPageInfoModel[], chartObjData) {
+    private buildChartData(
+        widgetDetail: WidgetDetail,
+        layoutPageInfo: LayoutPageInfoModel[],
+        chartObjData
+    ) {
         if (layoutPageInfo && widgetDetail) {
             this.single = [];
             let widgetDetailData;
-            if (widgetDetail.syncWidgetIds && widgetDetail.syncWidgetIds.length) {
+            if (
+                widgetDetail.syncWidgetIds &&
+                widgetDetail.syncWidgetIds.length
+            ) {
                 const parentWidgetId = widgetDetail.syncWidgetIds[0];
                 let parentWidgetDetail: WidgetDetail;
 
                 for (let i = 0; i < layoutPageInfo.length; i++) {
-                    const parentWidget = layoutPageInfo[i].widgetboxesTitle.find(x => x.id == parentWidgetId);
+                    const parentWidget = layoutPageInfo[
+                        i
+                    ].widgetboxesTitle.find((x) => x.id == parentWidgetId);
                     if (parentWidget) {
                         parentWidgetDetail = parentWidget.widgetDetail;
                         break;
@@ -253,24 +279,33 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
                 }
 
                 if (parentWidgetDetail) {
-                    widgetDetailData = parentWidgetDetail.contentDetail.collectionData;
-                    const columnSettings = parentWidgetDetail.contentDetail.columnSettings;
+                    widgetDetailData =
+                        parentWidgetDetail.contentDetail.collectionData;
+                    const columnSettings =
+                        parentWidgetDetail.contentDetail.columnSettings;
                     if (columnSettings) {
-                        this.columnPrint = Object.keys(columnSettings).map(i => columnSettings[i].ColumnName);
+                        this.columnPrint = Object.keys(columnSettings).map(
+                            (i) => columnSettings[i].ColumnName
+                        );
                         this.dataPrint = widgetDetailData;
                     }
                 }
-                if (parentWidgetDetail && parentWidgetDetail['dataChanged'] &&
-                    this._chartSeries.xSeries && this._chartSeries.xSeries.length > 0
-                    && this._chartSeries.ySeries && this._chartSeries.ySeries.length > 0) {
-                    delete parentWidgetDetail['dataChanged'][0].DT_RowId;
+                if (
+                    parentWidgetDetail &&
+                    parentWidgetDetail["dataChanged"] &&
+                    this._chartSeries.xSeries &&
+                    this._chartSeries.xSeries.length > 0 &&
+                    this._chartSeries.ySeries &&
+                    this._chartSeries.ySeries.length > 0
+                ) {
+                    delete parentWidgetDetail["dataChanged"][0].DT_RowId;
                     const xValue = this._chartSeries.xSeries;
-                    const dataEdited = parentWidgetDetail['dataChanged'];
+                    const dataEdited = parentWidgetDetail["dataChanged"];
                     if (this.cachedData && this.cachedData.length > 0) {
                         const updateCached = this.cachedData.map((value) => {
                             dataEdited.forEach((valueEdit) => {
                                 if (valueEdit[xValue] == value[xValue]) {
-                                    value = {...valueEdit}
+                                    value = { ...valueEdit };
                                 }
                             });
                             return value;
@@ -283,7 +318,7 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
                         const data = widgetDetailData.map((value) => {
                             dataEdited.forEach((valueEdit) => {
                                 if (valueEdit[xValue] == value[xValue]) {
-                                    value = {...valueEdit}
+                                    value = { ...valueEdit };
                                 }
                             });
                             return value;
@@ -303,9 +338,16 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
                     case ChartTypeNgx.VerticalBarChart:
                     case ChartTypeNgx.HorizontalBarChart:
                         if (this.cachedData && this.cachedData.length > 0) {
-                            return this.single = this.widgetChartService.buildSingleData(this.cachedData, this._chartSeries);
+                            return (this.single =
+                                this.widgetChartService.buildSingleData(
+                                    this.cachedData,
+                                    this._chartSeries
+                                ));
                         }
-                        this.single = this.widgetChartService.buildSingleData(widgetDetailData, this._chartSeries);
+                        this.single = this.widgetChartService.buildSingleData(
+                            widgetDetailData,
+                            this._chartSeries
+                        );
                         break;
                     case ChartTypeNgx.GroupedVerticalBarChart:
                     case ChartTypeNgx.GroupedHorizontalBarChart:
@@ -318,25 +360,45 @@ export class WidgetChartComponent extends BaseWidget implements OnInit {
                     case ChartTypeNgx.AreaChart:
                     case ChartTypeNgx.NormalizedAreaChart:
                         if (this.cachedData && this.cachedData.length > 0) {
-                            return this.multi = this.widgetChartService.buildMultiData(this.cachedData, this._chartSeries);
+                            return (this.multi =
+                                this.widgetChartService.buildMultiData(
+                                    this.cachedData,
+                                    this._chartSeries
+                                ));
                         }
-                        this.multi = this.widgetChartService.buildMultiData(widgetDetailData, this._chartSeries);
+                        this.multi = this.widgetChartService.buildMultiData(
+                            widgetDetailData,
+                            this._chartSeries
+                        );
                         break;
 
                     case ChartTypeNgx.ComboChart:
                         if (this.cachedData && this.cachedData.length > 0) {
-                            this.single = this.widgetChartService.buildSingleData(this.cachedData, this._chartSeries);
-                            this.multi = this.widgetChartService.buildMultiData(this.cachedData, {
-                                xSeries: this._chartSeries.zSeries,
-                                ySeries: this._chartSeries.kSeries
-                            });
+                            this.single =
+                                this.widgetChartService.buildSingleData(
+                                    this.cachedData,
+                                    this._chartSeries
+                                );
+                            this.multi = this.widgetChartService.buildMultiData(
+                                this.cachedData,
+                                {
+                                    xSeries: this._chartSeries.zSeries,
+                                    ySeries: this._chartSeries.kSeries,
+                                }
+                            );
                             return;
                         }
-                        this.single = this.widgetChartService.buildSingleData(widgetDetailData, this._chartSeries);
-                        this.multi = this.widgetChartService.buildMultiData(widgetDetailData, {
-                            xSeries: this._chartSeries.zSeries,
-                            ySeries: this._chartSeries.kSeries
-                        });
+                        this.single = this.widgetChartService.buildSingleData(
+                            widgetDetailData,
+                            this._chartSeries
+                        );
+                        this.multi = this.widgetChartService.buildMultiData(
+                            widgetDetailData,
+                            {
+                                xSeries: this._chartSeries.zSeries,
+                                ySeries: this._chartSeries.kSeries,
+                            }
+                        );
                         break;
                     default:
                         break;

@@ -1,12 +1,12 @@
-import {TinyEmitter} from 'tiny-emitter'
-import Handler from './Handler'
-import {on} from './utils'
+import { TinyEmitter } from "tiny-emitter";
+import Handler from "./Handler";
+import { on } from "./utils";
 
 const comparator = (l, r) => {
     return l.position - r.position;
-}
+};
 
-const typeName = name => `${name}-gradient(`;
+const typeName = (name) => `${name}-gradient(`;
 
 /**
  * Main Grapick class
@@ -24,7 +24,7 @@ export default class Grapick extends TinyEmitter {
 
     constructor(protected options = {}) {
         super();
-        const pfx = 'grp';
+        const pfx = "grp";
         options = Object.assign({}, options);
         const defaults = {
             // Class prefix
@@ -35,7 +35,7 @@ export default class Grapick extends TinyEmitter {
 
             // Element to use for the custom color picker, eg. '<div class="my-custom-el"></div>'
             // Will be added inside the color picker container
-            colorEl: '',
+            colorEl: "",
 
             // Minimum handler position, default: 0
             min: 0,
@@ -44,25 +44,24 @@ export default class Grapick extends TinyEmitter {
             max: 100,
 
             // Any supported gradient direction: '90deg' (default), 'top', 'bottom', 'right', '135deg', etc.
-            direction: '90deg',
+            direction: "90deg",
 
             // Gradient type, available options: 'linear' (default) | 'radial' | 'repeating-linear' | 'repeating-radial'
-            type: 'linear',
+            type: "linear",
 
             // Gradient input height, default: '30px'
-            height: '30px',
+            height: "30px",
 
             // Gradient input width, default: '100%'
-            width: '100%',
+            width: "100%",
         };
 
         for (const name in defaults) {
-            if (!(name in options))
-                options[name] = defaults[name];
+            if (!(name in options)) options[name] = defaults[name];
         }
 
-        let el = options['el'];
-        el = typeof el == 'string' ? document.querySelector(el) : el;
+        let el = options["el"];
+        el = typeof el == "string" ? document.querySelector(el) : el;
 
         if (!(el instanceof HTMLElement)) {
             throw new Error(`Element not found, given ${el}`);
@@ -71,13 +70,12 @@ export default class Grapick extends TinyEmitter {
         this.el = el;
         this.handlers = [];
         this.options = options;
-        this.on('handler:color:change', (h, c) => this.change(c));
-        this.on('handler:position:change', (h, c) => this.change(c));
-        this.on('handler:remove', h => this.change(1));
-        this.on('handler:add', h => this.change(1));
+        this.on("handler:color:change", (h, c) => this.change(c));
+        this.on("handler:position:change", (h, c) => this.change(c));
+        this.on("handler:remove", (h) => this.change(1));
+        this.on("handler:add", (h) => this.change(1));
         this.render();
     }
-
 
     /**
      * Set custom color picker
@@ -109,7 +107,6 @@ export default class Grapick extends TinyEmitter {
         this.colorPicker = cp;
     }
 
-
     /**
      * Get the complete style value
      * @return {string}
@@ -124,9 +121,8 @@ export default class Grapick extends TinyEmitter {
         const color = this.getColorValue();
         const t = type || this.getType();
         const a = angle || this.getDirection();
-        return color ? `${t}-gradient(${a}, ${color})` : '';
+        return color ? `${t}-gradient(${a}, ${color})` : "";
     }
-
 
     /**
      * Get the gradient value with the browser prefix if necessary
@@ -136,10 +132,10 @@ export default class Grapick extends TinyEmitter {
         const previewEl = this.previewEl;
         const value = this.getValue(type, angle);
         // tslint:disable-next-line:no-unused-expression
-        !this.sandEl && (this.sandEl = document.createElement('div'))
+        !this.sandEl && (this.sandEl = document.createElement("div"));
 
         if (!previewEl || !value) {
-            return '';
+            return "";
         }
 
         const style = this.sandEl.style;
@@ -158,7 +154,6 @@ export default class Grapick extends TinyEmitter {
         return style.backgroundImage;
     }
 
-
     /**
      * Parse and apply the value to the picker
      * @param {string} value Any valid gradient string
@@ -168,11 +163,11 @@ export default class Grapick extends TinyEmitter {
      * ga.setValue('linear-gradient(90deg, rgba(18, 215, 151, 0.75) 31.25%, white 85.1562%)');
      * ga.setValue('-webkit-radial-gradient(left, red 10%, blue 85%)');
      */
-    setValue(value = '', options = {}) {
+    setValue(value = "", options = {}) {
         let type = this.type;
         let direction = this.direction;
-        const start = value.indexOf('(') + 1;
-        const end = value.lastIndexOf(')');
+        const start = value.indexOf("(") + 1;
+        const end = value.lastIndexOf(")");
         const gradients = value.substring(start, end);
         const values = gradients.split(/,(?![^(]*\)) /);
         this.clear(options);
@@ -187,25 +182,29 @@ export default class Grapick extends TinyEmitter {
         }
 
         let typeFound;
-        const types = ['repeating-linear', 'repeating-radial', 'linear', 'radial'];
-        types.forEach(name => {
+        const types = [
+            "repeating-linear",
+            "repeating-radial",
+            "linear",
+            "radial",
+        ];
+        types.forEach((name) => {
             if (value.indexOf(typeName(name)) > -1 && !typeFound) {
                 typeFound = 1;
                 type = name;
             }
-        })
+        });
 
         this.setDirection(direction, options);
         this.setType(type, options);
         values.forEach((v: any) => {
-            const hdlValues = v.split(' ');
+            const hdlValues = v.split(" ");
             const position = parseFloat(hdlValues.pop());
-            const color = hdlValues.join('');
+            const color = hdlValues.join("");
             this.addHandler(position, color, 0, options);
-        })
+        });
         this.updatePreview();
     }
-
 
     /**
      * Get only colors value
@@ -221,9 +220,8 @@ export default class Grapick extends TinyEmitter {
         let handlers = this.handlers;
         handlers.sort(comparator);
         handlers = handlers.length == 1 ? [handlers[0], handlers[0]] : handlers;
-        return handlers.map(handler => handler.getValue()).join(', ');
+        return handlers.map((handler) => handler.getValue()).join(", ");
     }
-
 
     /**
      * Get an array with browser specific values
@@ -241,10 +239,10 @@ export default class Grapick extends TinyEmitter {
      */
     getPrefixedValues(type, angle) {
         const value = this.getValue(type, angle);
-        return ['-moz-', '-webkit-', '-o-', '-ms-'].map(prefix =>
-            `${prefix}${value}`);
+        return ["-moz-", "-webkit-", "-o-", "-ms-"].map(
+            (prefix) => `${prefix}${value}`
+        );
     }
-
 
     /**
      * Trigger change
@@ -255,12 +253,11 @@ export default class Grapick extends TinyEmitter {
     change(complete = 1, options = {}) {
         this.updatePreview();
         // tslint:disable-next-line:no-unused-expression
-        !options['silent'] && this.emit('change', complete);
+        !options["silent"] && this.emit("change", complete);
         // TODO can't make it work with jsdom
         // timerChange && clearTimeout(timerChange);
         // timerChange = setTimeout(() => this.emit('change', complete), 0);
     }
-
 
     /**
      * Set gradient direction, eg. 'top', 'left', 'bottom', 'right', '90deg', etc.
@@ -269,19 +266,17 @@ export default class Grapick extends TinyEmitter {
      * @param {Boolean} [options.silent] Don't trigger events
      */
     setDirection(direction, options = {}) {
-        this.options['direction'] = direction;
+        this.options["direction"] = direction;
         this.change(1, options);
     }
-
 
     /**
      * Set gradient direction, eg. 'top', 'left', 'bottom', 'right', '90deg', etc.
      * @param {string} direction Any supported direction
      */
     getDirection() {
-        return this.options['direction'];
+        return this.options["direction"];
     }
-
 
     /**
      * Set gradient type, available options: 'linear' or 'radial'
@@ -290,19 +285,17 @@ export default class Grapick extends TinyEmitter {
      * @param {Boolean} [options.silent] Don't trigger events
      */
     setType(type, options = {}) {
-        this.options['type'] = type;
+        this.options["type"] = type;
         this.change(1, options);
     }
-
 
     /**
      * Get gradient type
      * @return {string}
      */
     getType() {
-        return  this.options['type'];
+        return this.options["type"];
     }
-
 
     /**
      * Add gradient handler
@@ -316,10 +309,9 @@ export default class Grapick extends TinyEmitter {
     addHandler(position, color, select = 1, options = {}) {
         const handler = new Handler(this, position, color, select);
         // tslint:disable-next-line:no-unused-expression
-        !options['silent'] && this.emit('handler:add', handler);
+        !options["silent"] && this.emit("handler:add", handler);
         return handler;
     }
-
 
     /**
      * Get handler by index
@@ -330,7 +322,6 @@ export default class Grapick extends TinyEmitter {
         return this.handlers[index];
     }
 
-
     /**
      * Get all handlers
      * @return {Array}
@@ -338,7 +329,6 @@ export default class Grapick extends TinyEmitter {
     getHandlers() {
         return this.handlers;
     }
-
 
     /**
      * Remove all handlers
@@ -356,7 +346,6 @@ export default class Grapick extends TinyEmitter {
             handlers[i].remove(options);
         }
     }
-
 
     /**
      * Return selected handler if one exists
@@ -376,53 +365,64 @@ export default class Grapick extends TinyEmitter {
         return null;
     }
 
-
     /**
      * Update preview element
      */
     updatePreview() {
         const previewEl = this.previewEl;
         // tslint:disable-next-line:no-unused-expression
-        previewEl && (previewEl.style.backgroundImage = this.getSafeValue('linear', 'to right'));
+        previewEl &&
+            (previewEl.style.backgroundImage = this.getSafeValue(
+                "linear",
+                "to right"
+            ));
     }
-
 
     initEvents() {
         const opt = this.options;
-        const min = opt['min'];
-        const max = opt['max'];
+        const min = opt["min"];
+        const max = opt["max"];
         const pEl = this.previewEl;
         let percentage = 0;
         const elDim = {};
         // tslint:disable-next-line:no-unused-expression
-        pEl && on(pEl, 'click', e => {
-            // First of all, find a position of the click in percentage
-            elDim['w'] = pEl.clientWidth;
-            elDim['h'] = pEl.clientHeight;
-            const x = e.offsetX - pEl.clientLeft;
-            const y = e.offsetY - pEl.clientTop;
-            percentage = x / elDim['w'] * 100;
+        pEl &&
+            on(pEl, "click", (e) => {
+                // First of all, find a position of the click in percentage
+                elDim["w"] = pEl.clientWidth;
+                elDim["h"] = pEl.clientHeight;
+                const x = e.offsetX - pEl.clientLeft;
+                const y = e.offsetY - pEl.clientTop;
+                percentage = (x / elDim["w"]) * 100;
 
-            if (percentage > max || percentage < min) {
-                return;
-            }
+                if (percentage > max || percentage < min) {
+                    return;
+                }
 
-            // Now let's find the pixel color by using the canvas
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = elDim['w'];
-            canvas.height = elDim['h'];
-            const grad = context.createLinearGradient(0, 0, elDim['w'], elDim['h']);
-            this.getHandlers().forEach(h => grad.addColorStop(h.position / 100, h.color));
-            context.fillStyle = grad;
-            context.fillRect(0, 0, canvas.width, canvas.height);
-            canvas.style.background = 'black';
-            const rgba = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
-            const color = `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3]})`;
-            this.addHandler(percentage, color);
-        });
+                // Now let's find the pixel color by using the canvas
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.width = elDim["w"];
+                canvas.height = elDim["h"];
+                const grad = context.createLinearGradient(
+                    0,
+                    0,
+                    elDim["w"],
+                    elDim["h"]
+                );
+                this.getHandlers().forEach((h) =>
+                    grad.addColorStop(h.position / 100, h.color)
+                );
+                context.fillStyle = grad;
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                canvas.style.background = "black";
+                const rgba = canvas
+                    .getContext("2d")
+                    .getImageData(x, y, 1, 1).data;
+                const color = `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3]})`;
+                this.addHandler(percentage, color);
+            });
     }
-
 
     /**
      * Render the gradient picker
@@ -430,9 +430,9 @@ export default class Grapick extends TinyEmitter {
     render() {
         const opt = this.options;
         const el = this.el;
-        const pfx = opt['pfx'];
-        const height = opt['height'];
-        const width = opt['width'];
+        const pfx = opt["pfx"];
+        const height = opt["height"];
+        const width = opt["width"];
 
         if (!el) {
             return;
@@ -448,7 +448,7 @@ export default class Grapick extends TinyEmitter {
         const wrapperEl = el.querySelector(`.${wrapperCls}`);
         const previewEl = el.querySelector(`.${previewCls}`);
         const styleWrap = wrapperEl.style;
-        styleWrap.position = 'relative';
+        styleWrap.position = "relative";
         this.wrapperEl = wrapperEl;
         this.previewEl = previewEl;
 

@@ -1,1 +1,1 @@
-export * from './edit-layout-setting.component';
+export * from "./edit-layout-setting.component";

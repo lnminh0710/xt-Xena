@@ -1,71 +1,88 @@
-<div [ngSwitch]="item.dataType" [ngStyle]="{'padding': item.dataType === 'Button' ? '4px' : ''}">
+<div
+    [ngSwitch]="item.dataType"
+    [ngStyle]="{ padding: item.dataType === 'Button' ? '4px' : '' }"
+>
     <ng-template [ngSwitchCase]="'String'">
-        <input type="text"
-               class="no-boder"
-               [ngClass]="{'prop-dirty': item.dirty}"
-               [disabled]="item.disabled"
-               [ngModel]="item.value"
-               [attr.maxlength]="item.maxLength"
-               (ngModelChange)="onInputChanged($event)"
-               autocomplete="off" />
+        <input
+            type="text"
+            class="no-boder"
+            [ngClass]="{ 'prop-dirty': item.dirty }"
+            [disabled]="item.disabled"
+            [ngModel]="item.value"
+            [attr.maxlength]="item.maxLength"
+            (ngModelChange)="onInputChanged($event)"
+            autocomplete="off"
+        />
     </ng-template>
     <ng-template [ngSwitchCase]="'Number'">
-        <input [(ngModel)]="item.value"
-                           type="text"
-                           xn-numeric
-                           [min]="0"
-                           [format]="'D'"
-                           class="no-border full-width no-margin-left"
-                           [ngClass]="{'prop-dirty': item.dirty}"
-                           (ngModelChange)="onInputChanged(item.value)">
+        <input
+            [(ngModel)]="item.value"
+            type="text"
+            xn-numeric
+            [min]="0"
+            [format]="'D'"
+            class="no-border full-width no-margin-left"
+            [ngClass]="{ 'prop-dirty': item.dirty }"
+            (ngModelChange)="onInputChanged(item.value)"
+        />
     </ng-template>
     <ng-template [ngSwitchCase]="'Boolean'">
-        <mat-checkbox color="primary"
-                      class="checkbox-item"
-                      [(ngModel)]="item.value"
-                      [disabled]="item.disabled"
-                      (change)="onCheckboxChanged(item)">
-            {{item.valueDescription}}
+        <mat-checkbox
+            color="primary"
+            class="checkbox-item"
+            [(ngModel)]="item.value"
+            [disabled]="item.disabled"
+            (change)="onCheckboxChanged(item)"
+        >
+            {{ item.valueDescription }}
         </mat-checkbox>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'Button'">
-        <button class="btn-reset mat-btn-white new-size mat-raised-button"
-                (click)="resetBackground(true)">
-            {{item.title}}
+        <button
+            class="btn-reset mat-btn-white new-size mat-raised-button"
+            (click)="resetBackground(true)"
+        >
+            {{ item.title }}
         </button>
     </ng-template>
     <ng-template [ngSwitchCase]="'Object'">
-        <xn-combo-box #propCombo
-                      wjDropdownHelper
-                      class="full-width no-border property-combobox"
-                      *ngIf="item.options && (item.options.length >= 0)"
-                      [itemsSource]="item.options"
-                      [displayMemberPath]="'value'"
-                      [selectedValuePath]="'key'"
-                      [isDisabled]="item.disabled"
-                      [isRequired]="false"
-                      [selectedValue]="item.value"
-                      [itemFormatter]="itemFormatterFunc"
-                      [isContentHtml]="true"
-                      (gotFocus)="onPropComboFocused($event)">
+        <xn-combo-box
+            #propCombo
+            wjDropdownHelper
+            class="full-width no-border property-combobox"
+            *ngIf="item.options && item.options.length >= 0"
+            [itemsSource]="item.options"
+            [displayMemberPath]="'value'"
+            [selectedValuePath]="'key'"
+            [isDisabled]="item.disabled"
+            [isRequired]="false"
+            [selectedValue]="item.value"
+            [itemFormatter]="itemFormatterFunc"
+            [isContentHtml]="true"
+            (gotFocus)="onPropComboFocused($event)"
+        >
         </xn-combo-box>
     </ng-template>
     <ng-template [ngSwitchCase]="'MultiSelect'">
         <div class="input-group full-width">
-            <input type="text"
-                   class="no-boder cursor-pointer"
-                   [readonly]="true"
-                   [disabled]="item.disabled"
-                   [ngModel]="multiSelectInputValue"
-                   (click)="showMultiSelectDialog(item)"
-                   autocomplete="off">
+            <input
+                type="text"
+                class="no-boder cursor-pointer"
+                [readonly]="true"
+                [disabled]="item.disabled"
+                [ngModel]="multiSelectInputValue"
+                (click)="showMultiSelectDialog(item)"
+                autocomplete="off"
+            />
             <span class="input-group-btn">
-                <button type="button"
-                        class="no-border  mat-btn-non-fix"
-                        mat-raised-button
-                        [disabled]="item.disabled"
-                        (click)="showMultiSelectDialog(item)">
+                <button
+                    type="button"
+                    class="no-border mat-btn-non-fix"
+                    mat-raised-button
+                    [disabled]="item.disabled"
+                    (click)="showMultiSelectDialog(item)"
+                >
                     &hellip;
                 </button>
             </span>
@@ -73,48 +90,58 @@
     </ng-template>
     <ng-template [ngSwitchCase]="'FieldFormat'">
         <div class="input-group full-width">
-            <input type="text"
-                   class="no-boder cursor-pointer"
-                   [readonly]="true"
-                   [disabled]="item.disabled"
-                   (click)="showFieldFormatDialog(item)"
-                   autocomplete="off" />
+            <input
+                type="text"
+                class="no-boder cursor-pointer"
+                [readonly]="true"
+                [disabled]="item.disabled"
+                (click)="showFieldFormatDialog(item)"
+                autocomplete="off"
+            />
             <span class="input-group-btn">
-                <button type="button"
-                        class="no-border  mat-btn-non-fix"
-                        mat-raised-button
-                        [disabled]="item.disabled"
-                        (click)="showFieldFormatDialog(item)">
+                <button
+                    type="button"
+                    class="no-border mat-btn-non-fix"
+                    mat-raised-button
+                    [disabled]="item.disabled"
+                    (click)="showFieldFormatDialog(item)"
+                >
                     &hellip;
                 </button>
             </span>
         </div>
     </ng-template>
     <ng-template [ngSwitchCase]="'Color'">
-        <wj-input-color #propColor
-                        class="full-width no-border"
-                        [ngClass]="{'prop-dirty': item.dirty}"
-                        [isDisabled]="item.disabled"
-                        [isRequired]="false"
-                        [(value)]="item.value"
-                        (textChanged)="onColorTextChanged($event)"
-                        (gotFocus)="propColor.isDroppedDown = true">
+        <wj-input-color
+            #propColor
+            class="full-width no-border"
+            [ngClass]="{ 'prop-dirty': item.dirty }"
+            [isDisabled]="item.disabled"
+            [isRequired]="false"
+            [(value)]="item.value"
+            (textChanged)="onColorTextChanged($event)"
+            (gotFocus)="propColor.isDroppedDown = true"
+        >
         </wj-input-color>
     </ng-template>
     <ng-template [ngSwitchCase]="'Order'">
         <div class="input-group full-width">
-            <input type="text"
-                   class="no-boder cursor-pointer"
-                   [readonly]="true"
-                   [disabled]="item.disabled"
-                   (click)="showOrderByFieldDialog()"
-                   autocomplete="off" />
+            <input
+                type="text"
+                class="no-boder cursor-pointer"
+                [readonly]="true"
+                [disabled]="item.disabled"
+                (click)="showOrderByFieldDialog()"
+                autocomplete="off"
+            />
             <span class="input-group-btn">
-                <button type="button"
-                        mat-raised-button
-                        class="no-border  mat-btn-non-fix"
-                        [disabled]="item.disabled"
-                        (click)="showOrderByFieldDialog()">
+                <button
+                    type="button"
+                    mat-raised-button
+                    class="no-border mat-btn-non-fix"
+                    [disabled]="item.disabled"
+                    (click)="showOrderByFieldDialog()"
+                >
                     &hellip;
                 </button>
             </span>
@@ -122,18 +149,22 @@
     </ng-template>
     <ng-template [ngSwitchCase]="'ShowDropDownOfField'">
         <div class="input-group full-width">
-            <input type="text"
-                   class="no-boder cursor-pointer"
-                   [readonly]="true"
-                   [disabled]="item.disabled"
-                   (click)="showDropdownFocusDialog(item)"
-                   autocomplete="off" />
+            <input
+                type="text"
+                class="no-boder cursor-pointer"
+                [readonly]="true"
+                [disabled]="item.disabled"
+                (click)="showDropdownFocusDialog(item)"
+                autocomplete="off"
+            />
             <span class="input-group-btn">
-                <button type="button"
-                        mat-raised-button
-                        class="no-border  mat-btn-non-fix"
-                        [disabled]="item.disabled"
-                        (click)="showDropdownFocusDialog(item)">
+                <button
+                    type="button"
+                    mat-raised-button
+                    class="no-border mat-btn-non-fix"
+                    [disabled]="item.disabled"
+                    (click)="showDropdownFocusDialog(item)"
+                >
                     &hellip;
                 </button>
             </span>
@@ -141,19 +172,23 @@
     </ng-template>
     <ng-template [ngSwitchCase]="'ShowGradientColor'">
         <div class="input-group full-width">
-            <input type="text"
-                   class="no-boder cursor-pointer"
-                   [ngStyle]="{'background': item.value}"
-                   [readonly]="true"
-                   [disabled]="item.disabled"
-                   (click)="showDialogBackGroundGradient(item)"
-                   autocomplete="off" />
+            <input
+                type="text"
+                class="no-boder cursor-pointer"
+                [ngStyle]="{ background: item.value }"
+                [readonly]="true"
+                [disabled]="item.disabled"
+                (click)="showDialogBackGroundGradient(item)"
+                autocomplete="off"
+            />
             <span class="input-group-btn">
-                <button type="button"
-                        mat-raised-button
-                        class="no-border  mat-btn-non-fix"
-                        [disabled]="item.disabled"
-                        (click)="showDialogBackGroundGradient(item)">
+                <button
+                    type="button"
+                    mat-raised-button
+                    class="no-border mat-btn-non-fix"
+                    [disabled]="item.disabled"
+                    (click)="showDialogBackGroundGradient(item)"
+                >
                     &hellip;
                 </button>
             </span>
@@ -161,16 +196,20 @@
     </ng-template>
     <ng-template [ngSwitchCase]="'ShowImageGallery'">
         <div class="input-group full-width">
-            <input type="text"
-                   class="no-boder cursor-pointer"
-                   [ngModel]="item.value | formatImage"
-                   autocomplete="off" />
+            <input
+                type="text"
+                class="no-boder cursor-pointer"
+                [ngModel]="item.value | formatImage"
+                autocomplete="off"
+            />
             <span class="input-group-btn">
-                <button type="button"
-                        mat-raised-button
-                        class="no-border  mat-btn-non-fix"
-                        [disabled]="item.disabled"
-                        (click)="showDialogBackGroundImageGallery(item)">
+                <button
+                    type="button"
+                    mat-raised-button
+                    class="no-border mat-btn-non-fix"
+                    [disabled]="item.disabled"
+                    (click)="showDialogBackGroundImageGallery(item)"
+                >
                     &hellip;
                 </button>
             </span>
@@ -178,64 +217,85 @@
     </ng-template>
     <ng-template [ngSwitchCase]="'DateFormat'">
         <div class="input-group full-width">
-            <input type="text"
-                   class="no-boder cursor-pointer"
-                   [readonly]="true"
-                   [disabled]="item.disabled"
-                   [ngModel]="item.value"
-                   (click)="showDateFormatDialog(item)"
-                   autocomplete="off" />
+            <input
+                type="text"
+                class="no-boder cursor-pointer"
+                [readonly]="true"
+                [disabled]="item.disabled"
+                [ngModel]="item.value"
+                (click)="showDateFormatDialog(item)"
+                autocomplete="off"
+            />
             <span class="input-group-btn">
-                <button type="button"
-                        mat-raised-button
-                        class="no-border  mat-btn-non-fix"
-                        [disabled]="item.disabled"
-                        (click)="showDateFormatDialog(item)">
+                <button
+                    type="button"
+                    mat-raised-button
+                    class="no-border mat-btn-non-fix"
+                    [disabled]="item.disabled"
+                    (click)="showDateFormatDialog(item)"
+                >
                     &hellip;
                 </button>
             </span>
         </div>
     </ng-template>
     <ng-template [ngSwitchCase]="'MultiSelectCombobox'">
-        <wj-multi-select #propMultiSelectCombobox
-		                 wjDropdownHelper
-                         class="full-width no-border property-combobox"
-                         [itemsSource]="item.options"
-                         [displayMemberPath]="'value'"
-                         [selectedValuePath]="'key'"
-                         [isDisabled]="item.disabled"
-                         [isRequired]="false"
-                         (checkedItemsChanged)="onPropMultiSelectComboboxChanged(propMultiSelectCombobox)">
+        <wj-multi-select
+            #propMultiSelectCombobox
+            wjDropdownHelper
+            class="full-width no-border property-combobox"
+            [itemsSource]="item.options"
+            [displayMemberPath]="'value'"
+            [selectedValuePath]="'key'"
+            [isDisabled]="item.disabled"
+            [isRequired]="false"
+            (checkedItemsChanged)="
+                onPropMultiSelectComboboxChanged(propMultiSelectCombobox)
+            "
+        >
         </wj-multi-select>
     </ng-template>
 </div>
 
-<property-panel-grid-value-dialog *ngIf="item.dataType == 'MultiSelect'"
-                                  #propertyPanelGridValueDialog
-                                  (onApply)="onMultiSelectApply($event)"></property-panel-grid-value-dialog>
-<property-panel-order-field-dialog *ngIf="item.dataType == 'Order'"
-                                   #propertyPanelOrderFieldDialog
-                                   [usingModule]="usingModule"
-                                   (onApply)="onOrderNumberFieldApply($event)"></property-panel-order-field-dialog>
-<property-panel-show-dropdown-focus *ngIf="item.dataType == 'ShowDropDownOfField'"
-                                    #propertyPanelDropdownFocusDialog
-                                    [usingModule]="usingModule"
-                                    (onApply)="onSelectDropdownApply($event)"></property-panel-show-dropdown-focus>
-<property-panel-grid-field-data-dialog *ngIf="item.dataType == 'FieldFormat'"
-                                       #propertyPanelGridFieldDataDialog
-                                       [usingModule]="usingModule"
-                                       (onApply)="onFieldFormatApply($event)"></property-panel-grid-field-data-dialog>
-<property-panel-date-format-dialog *ngIf="item.dataType == 'DateFormat'"
-                                   #propertyPanelDateFormatDialog
-                                   (onApply)="onDateFormatDialogApply($event)"></property-panel-date-format-dialog>
-<property-background-gradient *ngIf="item.dataType == 'ShowGradientColor'"
-                              #propertyBackgroundGradient
-                              [propertiesGradient]="item"
-                              [usingModule]="usingModule"
-                              (onApply)="onSelectBackgroundGradient($event)"
+<property-panel-grid-value-dialog
+    *ngIf="item.dataType == 'MultiSelect'"
+    #propertyPanelGridValueDialog
+    (onApply)="onMultiSelectApply($event)"
+></property-panel-grid-value-dialog>
+<property-panel-order-field-dialog
+    *ngIf="item.dataType == 'Order'"
+    #propertyPanelOrderFieldDialog
+    [usingModule]="usingModule"
+    (onApply)="onOrderNumberFieldApply($event)"
+></property-panel-order-field-dialog>
+<property-panel-show-dropdown-focus
+    *ngIf="item.dataType == 'ShowDropDownOfField'"
+    #propertyPanelDropdownFocusDialog
+    [usingModule]="usingModule"
+    (onApply)="onSelectDropdownApply($event)"
+></property-panel-show-dropdown-focus>
+<property-panel-grid-field-data-dialog
+    *ngIf="item.dataType == 'FieldFormat'"
+    #propertyPanelGridFieldDataDialog
+    [usingModule]="usingModule"
+    (onApply)="onFieldFormatApply($event)"
+></property-panel-grid-field-data-dialog>
+<property-panel-date-format-dialog
+    *ngIf="item.dataType == 'DateFormat'"
+    #propertyPanelDateFormatDialog
+    (onApply)="onDateFormatDialogApply($event)"
+></property-panel-date-format-dialog>
+<property-background-gradient
+    *ngIf="item.dataType == 'ShowGradientColor'"
+    #propertyBackgroundGradient
+    [propertiesGradient]="item"
+    [usingModule]="usingModule"
+    (onApply)="onSelectBackgroundGradient($event)"
 ></property-background-gradient>
-<property-background-image *ngIf="item.dataType == 'ShowImageGallery'"
-                           #propertyBackgroundImage
-                           [usingModule]="usingModule"
-                           (onApply)="onSelectImage($event)">
+<property-background-image
+    *ngIf="item.dataType == 'ShowImageGallery'"
+    #propertyBackgroundImage
+    [usingModule]="usingModule"
+    (onApply)="onSelectImage($event)"
+>
 </property-background-image>

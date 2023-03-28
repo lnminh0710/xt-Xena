@@ -1,1 +1,1 @@
-﻿export * from './sorting-goods-edit-form.component';
+﻿export * from "./sorting-goods-edit-form.component";

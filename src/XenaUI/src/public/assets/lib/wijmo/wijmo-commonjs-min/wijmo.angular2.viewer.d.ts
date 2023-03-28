@@ -1,11 +1,17 @@
-import * as wjcViewer from 'wijmo/wijmo.viewer';
-import * as wjcCore from 'wijmo/wijmo';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector } from '@angular/core';
-import { OnInit, OnDestroy } from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcViewer from "wijmo/wijmo.viewer";
+import * as wjcCore from "wijmo/wijmo";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import { ElementRef, Injector } from "@angular/core";
+import { OnInit, OnDestroy } from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjReportViewerMeta: IWjComponentMeta;
-export declare class WjReportViewer extends wjcViewer.ReportViewer implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjReportViewer
+    extends wjcViewer.ReportViewer
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -29,11 +35,19 @@ export declare class WjReportViewer extends wjcViewer.ReportViewer implements On
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
     onSelectMouseModeChanged(e?: wjcCore.EventArgs): void;
 }
 export declare var wjPdfViewerMeta: IWjComponentMeta;
-export declare class WjPdfViewer extends wjcViewer.PdfViewer implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjPdfViewer
+    extends wjcViewer.PdfViewer
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -57,8 +71,12 @@ export declare class WjPdfViewer extends wjcViewer.PdfViewer implements OnInit, 
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
     onSelectMouseModeChanged(e?: wjcCore.EventArgs): void;
 }
-export declare class WjViewerModule {
-}
+export declare class WjViewerModule {}

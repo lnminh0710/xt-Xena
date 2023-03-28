@@ -1,4 +1,4 @@
-import { UUID } from 'angular2-uuid';
+import { UUID } from "angular2-uuid";
 
 /**
  * HistoryHeaderMenuItem
@@ -15,7 +15,7 @@ export class HistoryHeaderMenuItem {
 
 export class HistoryHeaderMenuItemAction {
     public type: number = null;
-    public query: string = '';
+    public query: string = "";
 
     constructor(init?: Partial<HistoryHeaderMenuItemAction>) {
         Object.assign(this, init);
@@ -44,8 +44,8 @@ export class HistoryHeaderInfo {
 }
 
 export class HistoryHeaderInfoContent {
-    public text: string = '';
-    public icon: string = '';
+    public text: string = "";
+    public icon: string = "";
 
     public constructor(init?: Partial<HistoryHeaderInfoContent>) {
         Object.assign(this, init);

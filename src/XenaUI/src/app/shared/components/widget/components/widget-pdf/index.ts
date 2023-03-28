@@ -1,1 +1,1 @@
-export * from './widget-pdf.module'
+export * from "./widget-pdf.module";

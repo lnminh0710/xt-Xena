@@ -5,7 +5,7 @@ export class AccessRightModel {
     public delete: boolean = false;
     public export: boolean = false;
 
-	public constructor(init?: Partial<AccessRightModel>) {
-		Object.assign(this, init);
-	}
+    public constructor(init?: Partial<AccessRightModel>) {
+        Object.assign(this, init);
+    }
 }

@@ -1,8 +1,8 @@
-import { Action } from '@ngrx/store';
-import { WidgetTemplateSettingModel } from 'app/models';
-import { WidgetTemplateActions } from 'app/state-management/store/actions/widget-template/index';
-import { CustomAction } from 'app/state-management/store/actions/base';
-import * as baseReducer from 'app/state-management/store/reducer/reducer.base';
+import { Action } from "@ngrx/store";
+import { WidgetTemplateSettingModel } from "app/models";
+import { WidgetTemplateActions } from "app/state-management/store/actions/widget-template/index";
+import { CustomAction } from "app/state-management/store/actions/base";
+import * as baseReducer from "app/state-management/store/reducer/reducer.base";
 
 export interface SubWidgetTemplateSettingState {
     mainWidgetTemplateSettings: WidgetTemplateSettingModel[];
@@ -17,25 +17,31 @@ export const initialSubWidgetTemplateState: SubWidgetTemplateSettingState = {
 };
 
 export interface WidgetTemplateSettingState {
-    features: { [id: string]: SubWidgetTemplateSettingState }
+    features: { [id: string]: SubWidgetTemplateSettingState };
 }
 
 const initialState: WidgetTemplateSettingState = {
-    features: {}
+    features: {},
 };
 
-export function widgetTemplateSettingReducer(state = initialState, action: CustomAction): WidgetTemplateSettingState {
-    let feature = baseReducer.getFeature(action, state, initialSubWidgetTemplateState);
+export function widgetTemplateSettingReducer(
+    state = initialState,
+    action: CustomAction
+): WidgetTemplateSettingState {
+    let feature = baseReducer.getFeature(
+        action,
+        state,
+        initialSubWidgetTemplateState
+    );
     switch (action.type) {
         case WidgetTemplateActions.LOAD_All_WIDGET_TEMPLATE_SETTING_BY_MODULE_ID_SUCCESS: {
             if (action.payload && action.payload.length > 0) {
                 state = baseReducer.updateStateData(action, feature, state, {
-                    mainWidgetTemplateSettings: [...action.payload]
+                    mainWidgetTemplateSettings: [...action.payload],
                 });
-            }
-            else {
+            } else {
                 state = baseReducer.updateStateData(action, feature, state, {
-                    mainWidgetTemplateSettings: []
+                    mainWidgetTemplateSettings: [],
                 });
             }
 
@@ -43,7 +49,7 @@ export function widgetTemplateSettingReducer(state = initialState, action: Custo
         }
         case WidgetTemplateActions.UPDATE_EDIT_MODE_STATUS: {
             state = baseReducer.updateStateData(action, feature, state, {
-                enableWidgetTemplate: action.payload
+                enableWidgetTemplate: action.payload,
             });
             return Object.assign({}, state);
         }

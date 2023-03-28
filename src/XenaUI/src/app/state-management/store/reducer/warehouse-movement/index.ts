@@ -1,2 +1,2 @@
-﻿export * from './warehouse-movement.reducer';
-export * from './warehouse-movement.selectors';
+﻿export * from "./warehouse-movement.reducer";
+export * from "./warehouse-movement.selectors";

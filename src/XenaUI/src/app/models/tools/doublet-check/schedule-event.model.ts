@@ -1,9 +1,5 @@
-import {
-    DateConfiguration
-} from 'app/app.constants';
-import {
-    Uti
-} from 'app/utilities/uti';
+import { DateConfiguration } from "app/app.constants";
+import { Uti } from "app/utilities/uti";
 
 export class ScheduleEvent {
     public id: number;
@@ -24,14 +20,16 @@ export class ScheduleEvent {
     public stopDate: Date;
     public activeSchedule: boolean;
 
-    public IsAutoMatching:boolean
+    public IsAutoMatching: boolean;
 
     public constructor(init?: Partial<ScheduleEvent>) {
         Object.assign(this, init);
         if (!this) return;
-        if(this.hour >= 0 && this.minute >= 0)
-        {
-            this.at = ('0' + this.hour).slice(-2) + ':' + ('0' + this.minute).slice(-2);
+        if (this.hour >= 0 && this.minute >= 0) {
+            this.at =
+                ("0" + this.hour).slice(-2) +
+                ":" +
+                ("0" + this.minute).slice(-2);
         }
         if (this.on) {
             const value = this.buildSortData(this.on);
@@ -42,20 +40,20 @@ export class ScheduleEvent {
     }
     private buildSortData(on: any): any {
         const result: any = {
-            sort: on
+            sort: on,
         };
-        const weekDayIndex = DateConfiguration.WEEK_DAY.indexOf(on)
+        const weekDayIndex = DateConfiguration.WEEK_DAY.indexOf(on);
         if (weekDayIndex > -1) {
             result.sort = weekDayIndex.toString();
             return result;
         }
-        const monthDayIndex = DateConfiguration.MONTH_DAY.indexOf(on)
+        const monthDayIndex = DateConfiguration.MONTH_DAY.indexOf(on);
         if (monthDayIndex > -1) {
             result.sort = monthDayIndex;
             return result;
         }
         if (this.dateFormat) {
-            result.sort = Uti.joinDateToNumber(on, 'yyyyMMdd');
+            result.sort = Uti.joinDateToNumber(on, "yyyyMMdd");
         }
         return result;
     }

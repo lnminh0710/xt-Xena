@@ -1,73 +1,78 @@
 import {
-    Component, Input, Output,
-    EventEmitter, OnInit, OnDestroy,
-    AfterViewInit, ElementRef, ViewChild,
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
     ChangeDetectorRef,
-
     OnChanges,
-    SimpleChanges
+    SimpleChanges,
 } from "@angular/core";
 import {
     ControlGridModel,
     ControlGridColumnModel,
     ApiResultResponse,
     MessageModel,
-
-    GlobalSettingModel
-} from 'app/models';
+    GlobalSettingModel,
+} from "app/models";
 import {
     AppErrorHandler,
     CountrySelectionService,
     RuleService,
     DatatableService,
     ModalService,
-
-    GlobalSettingService
-} from 'app/services';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import isEqual from 'lodash-es/isEqual';
-import camelCase from 'lodash-es/camelCase';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
+    GlobalSettingService,
+} from "app/services";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import isEqual from "lodash-es/isEqual";
+import camelCase from "lodash-es/camelCase";
+import cloneDeep from "lodash-es/cloneDeep";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
 import {
     GridActions,
     ProcessDataActions,
     FilterActions,
-
-    CustomAction
-} from 'app/state-management/store/actions';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { Uti } from 'app/utilities';
+    CustomAction,
+} from "app/state-management/store/actions";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { Uti } from "app/utilities";
 import {
     RuleEnum,
     MapFromWidgetAppToFilterId,
-    MessageModal
-} from 'app/app.constants';
+    MessageModal,
+} from "app/app.constants";
 import { BaseComponent } from "app/pages/private/base";
 import { Router } from "@angular/router";
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import * as moduleSettingReducer from 'app/state-management/store/reducer/module-setting';
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import * as moduleSettingReducer from "app/state-management/store/reducer/module-setting";
 import { XnAgGridComponent } from "../xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 import { SplitComponent } from "angular-split";
 
 const ID_STRING = {
-    ID_SELECT_ALL: '0',
-    COUNTRY_ID: 'IdSelectionProjectCountry',
-    COUNTRY_LANGUAGE_ID: 'IdCountrylanguage',
-    MEDIACODE: 'MediaCode',
-    ID_SHARING_TREE_GROUPS: 'IdSharingTreeGroups',
-    PRIORITY: 'Priority'
-}
+    ID_SELECT_ALL: "0",
+    COUNTRY_ID: "IdSelectionProjectCountry",
+    COUNTRY_LANGUAGE_ID: "IdCountrylanguage",
+    MEDIACODE: "MediaCode",
+    ID_SHARING_TREE_GROUPS: "IdSharingTreeGroups",
+    PRIORITY: "Priority",
+};
 
 @Component({
-    selector: 'group-priority-grid',
-    templateUrl: './group-priority-grid.component.html',
-    styleUrls: ['./group-priority-grid.component.scss']
+    selector: "group-priority-grid",
+    templateUrl: "./group-priority-grid.component.html",
+    styleUrls: ["./group-priority-grid.component.scss"],
 })
-export class GroupPriorityGridComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+export class GroupPriorityGridComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit, OnChanges
+{
     public countryGridData: ControlGridModel;
     public filterGridData: any;
     public perfectScrollbarConfig: any = {};
@@ -77,7 +82,7 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     public splitterConfig = {
         leftHorizontal: 60,
         rightHorizontal: 40,
-    }
+    };
     private isForAllCountry: boolean;
     private validationError = {};
     private cacheData = {};
@@ -98,12 +103,12 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     private selectedEntity: any = null;
     private widgetListenKey = null;
     private countryData: any = {
-        data: []
+        data: [],
     };
     private profileData: any = null;
     private showCountriesUpdatedWarning = false;
     private showAllCountriesAffectWarning = {
-        whenUpdate: false
+        whenUpdate: false,
     };
 
     @Input() countryGridId: string;
@@ -117,9 +122,9 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     @Output() onGridEditSuccess = new EventEmitter<any>();
     @Output() onSaveSuccess = new EventEmitter<any>();
 
-    @ViewChild('countryGrid') countryGrid: XnAgGridComponent;
-    @ViewChild('groupPriorityGrid') groupPriorityGrid: XnAgGridComponent;
-    @ViewChild('horizontalSplit') horizontalSplit: SplitComponent;
+    @ViewChild("countryGrid") countryGrid: XnAgGridComponent;
+    @ViewChild("groupPriorityGrid") groupPriorityGrid: XnAgGridComponent;
+    @ViewChild("horizontalSplit") horizontalSplit: SplitComponent;
 
     constructor(
         private store: Store<AppState>,
@@ -134,12 +139,24 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
         private dispatcher: ReducerManagerDispatcher,
         private changeDetectorRef: ChangeDetectorRef,
         private globalSettingService: GlobalSettingService,
-        private elementRef: ElementRef,
+        private elementRef: ElementRef
     ) {
         super(router);
 
-        this.selectedEntityState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).selectedEntity);
-        this.widgetListenKeyState = store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).widgetListenKey);
+        this.selectedEntityState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedEntity
+        );
+        this.widgetListenKeyState = store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).widgetListenKey
+        );
     }
 
     /**
@@ -159,8 +176,8 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
 
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
-        }
+            suppressScrollY: false,
+        };
     }
 
     /**
@@ -171,7 +188,7 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     }
 
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes['readOnly']) {
+        if (changes["readOnly"]) {
             this.validateGroupPriorityGrid();
         }
     }
@@ -179,130 +196,194 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     /**
      * ngAfterViewInit
      */
-    public ngAfterViewInit() {
-    }
+    public ngAfterViewInit() {}
 
     ngAfterContentChecked(): void {
-        if (this.elementRef.nativeElement.offsetParent != null && this.showCountriesUpdatedWarning) {
+        if (
+            this.elementRef.nativeElement.offsetParent != null &&
+            this.showCountriesUpdatedWarning
+        ) {
             this.reload();
             this.showCountriesUpdatedWarning = false;
         }
     }
 
     private loadColumnLayoutSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
             .subscribe((data: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (data && data.length) {
-                        let gridColLayoutSettings = data.filter(p => p.globalType == 'GridColLayout');
-                        if (gridColLayoutSettings && gridColLayoutSettings.length) {
-                            gridColLayoutSettings.forEach(setting => {
-                                this.columnsLayoutSettings[setting.globalName] = JSON.parse(setting.jsonSettings);
+                        let gridColLayoutSettings = data.filter(
+                            (p) => p.globalType == "GridColLayout"
+                        );
+                        if (
+                            gridColLayoutSettings &&
+                            gridColLayoutSettings.length
+                        ) {
+                            gridColLayoutSettings.forEach((setting) => {
+                                this.columnsLayoutSettings[setting.globalName] =
+                                    JSON.parse(setting.jsonSettings);
                             });
                         }
 
                         this.changeDetectorRef.detectChanges();
                     }
-                })
-            })
+                });
+            });
     }
 
     private loadSplitterSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
             .subscribe((data: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (data && data.length) {
-                        let selectionWidgetSplitterSettings = data.filter(p => p.globalName == this.idRepWidgetApp && p.globalType == 'WidgetSplitter');
-                        if (selectionWidgetSplitterSettings && selectionWidgetSplitterSettings.length) {
-                            selectionWidgetSplitterSettings.forEach(setting => {
-                                this.splitterConfig = JSON.parse(setting.jsonSettings);
-                                this.horizontalSplit.updateArea(this.horizontalSplit.areas[0].component, 1, this.splitterConfig.leftHorizontal, 20);
-                                this.horizontalSplit.updateArea(this.horizontalSplit.areas[1].component, 1, this.splitterConfig.rightHorizontal, 20);
-                            });
+                        let selectionWidgetSplitterSettings = data.filter(
+                            (p) =>
+                                p.globalName == this.idRepWidgetApp &&
+                                p.globalType == "WidgetSplitter"
+                        );
+                        if (
+                            selectionWidgetSplitterSettings &&
+                            selectionWidgetSplitterSettings.length
+                        ) {
+                            selectionWidgetSplitterSettings.forEach(
+                                (setting) => {
+                                    this.splitterConfig = JSON.parse(
+                                        setting.jsonSettings
+                                    );
+                                    this.horizontalSplit.updateArea(
+                                        this.horizontalSplit.areas[0].component,
+                                        1,
+                                        this.splitterConfig.leftHorizontal,
+                                        20
+                                    );
+                                    this.horizontalSplit.updateArea(
+                                        this.horizontalSplit.areas[1].component,
+                                        1,
+                                        this.splitterConfig.rightHorizontal,
+                                        20
+                                    );
+                                }
+                            );
                         }
 
                         this.changeDetectorRef.detectChanges();
                     }
-                })
-            })
+                });
+            });
     }
 
     private saveSplitterSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
-            .subscribe(getAllGlobalSettings => {
-                let selectionWidgetSplitterSettings = getAllGlobalSettings.find(x => x.globalName == this.idRepWidgetApp && x.globalType == 'WidgetSplitter')
-                if (!selectionWidgetSplitterSettings || !selectionWidgetSplitterSettings.idSettingsGlobal || !selectionWidgetSplitterSettings.globalName) {
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
+            .subscribe((getAllGlobalSettings) => {
+                let selectionWidgetSplitterSettings = getAllGlobalSettings.find(
+                    (x) =>
+                        x.globalName == this.idRepWidgetApp &&
+                        x.globalType == "WidgetSplitter"
+                );
+                if (
+                    !selectionWidgetSplitterSettings ||
+                    !selectionWidgetSplitterSettings.idSettingsGlobal ||
+                    !selectionWidgetSplitterSettings.globalName
+                ) {
                     selectionWidgetSplitterSettings = new GlobalSettingModel({
                         globalName: this.idRepWidgetApp,
-                        globalType: 'WidgetSplitter',
-                        description: 'WidgetSplitter',
-                        isActive: true
+                        globalType: "WidgetSplitter",
+                        description: "WidgetSplitter",
+                        isActive: true,
                     });
                 }
                 selectionWidgetSplitterSettings.idSettingsGUI = -1;
-                selectionWidgetSplitterSettings.jsonSettings = JSON.stringify(this.splitterConfig)
+                selectionWidgetSplitterSettings.jsonSettings = JSON.stringify(
+                    this.splitterConfig
+                );
                 selectionWidgetSplitterSettings.isActive = true;
 
-                this.globalSettingService.saveGlobalSetting(selectionWidgetSplitterSettings)
-                    .subscribe(data => {
-                        this.globalSettingService.saveUpdateCache('-1', selectionWidgetSplitterSettings, data);
+                this.globalSettingService
+                    .saveGlobalSetting(selectionWidgetSplitterSettings)
+                    .subscribe((data) => {
+                        this.globalSettingService.saveUpdateCache(
+                            "-1",
+                            selectionWidgetSplitterSettings,
+                            data
+                        );
                     });
             });
     }
 
     private loadRulesByCountry(countryId, countryLanguageId) {
-        return this.ruleService.getProjectRules(RuleEnum.OrdersGroup, this.selectedEntity[camelCase(this.widgetListenKey)], countryId)
+        return this.ruleService
+            .getProjectRules(
+                RuleEnum.OrdersGroup,
+                this.selectedEntity[camelCase(this.widgetListenKey)],
+                countryId
+            )
             .map((response: ApiResultResponse) => {
                 return {
                     ...response,
                     countryId,
-                    countryLanguageId
+                    countryLanguageId,
                 };
-            })
+            });
     }
 
     private preloadData() {
         let countries = this.countryGrid.getGridData();
         let observableBatch = [];
-        countries.forEach(country => {
+        countries.forEach((country) => {
             if (country[ID_STRING.COUNTRY_ID]) {
-                observableBatch.push(this.loadRulesByCountry(country[ID_STRING.COUNTRY_ID], country[ID_STRING.COUNTRY_LANGUAGE_ID]))
+                observableBatch.push(
+                    this.loadRulesByCountry(
+                        country[ID_STRING.COUNTRY_ID],
+                        country[ID_STRING.COUNTRY_LANGUAGE_ID]
+                    )
+                );
             }
         });
 
-        Observable.forkJoin(observableBatch).finally(() => {
-            this.changeDetectorRef.detectChanges();
-        }).subscribe((results: Array<any>) => {
-            results.forEach(result => {
-                if (result.item && result.item[0]) {
-                    let rulesFromService = result.item[0][0];
-                    this.cacheIdData[result.countryId] = rulesFromService.IdSelectionProjectRules;
-                    let newData = this.buildDataWithPriority(Uti.tryParseJson(rulesFromService.JsonCaseRules));
+        Observable.forkJoin(observableBatch)
+            .finally(() => {
+                this.changeDetectorRef.detectChanges();
+            })
+            .subscribe((results: Array<any>) => {
+                results.forEach((result) => {
+                    if (result.item && result.item[0]) {
+                        let rulesFromService = result.item[0][0];
+                        this.cacheIdData[result.countryId] =
+                            rulesFromService.IdSelectionProjectRules;
+                        let newData = this.buildDataWithPriority(
+                            Uti.tryParseJson(rulesFromService.JsonCaseRules)
+                        );
 
-                    this.cacheData[result.countryLanguageId] = {
-                        gridData: {
-                            data: cloneDeep(newData),
-                            columns: this.filterGridData.columns
-                        },
-                        isDirty: false
-                    };
-                } else {
-                    this.cacheData[result.countryLanguageId] = {
-                        gridData: {
-                            data: cloneDeep(this.buildDataWithPriority(null)),
-                            columns: this.filterGridData.columns
-                        },
-                        isDirty: false
-                    };
-                }
+                        this.cacheData[result.countryLanguageId] = {
+                            gridData: {
+                                data: cloneDeep(newData),
+                                columns: this.filterGridData.columns,
+                            },
+                            isDirty: false,
+                        };
+                    } else {
+                        this.cacheData[result.countryLanguageId] = {
+                            gridData: {
+                                data: cloneDeep(
+                                    this.buildDataWithPriority(null)
+                                ),
+                                columns: this.filterGridData.columns,
+                            },
+                            isDirty: false,
+                        };
+                    }
+                });
+
+                setTimeout(() => {
+                    this.countryGrid.selectRowIndex(0);
+                }, 200);
+
+                this.changeDetectorRef.detectChanges();
             });
-
-            setTimeout(() => {
-                this.countryGrid.selectRowIndex(0);
-            }, 200);
-
-            this.changeDetectorRef.detectChanges();
-        });
     }
 
     public countrySelectionChanged() {
@@ -331,27 +412,39 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
 
         if (this.showAllCountriesAffectWarning.whenUpdate) {
             this.modalService.alertMessage({
-                message: [{key: 'Modal_Message__All_Country_Checkbox_is_Checked_Affect'}],
+                message: [
+                    {
+                        key: "Modal_Message__All_Country_Checkbox_is_Checked_Affect",
+                    },
+                ],
             });
 
             this.showAllCountriesAffectWarning.whenUpdate = false;
         }
 
-
         if (this.isForAllCountry) {
-            this.countryGrid.getGridData().forEach(country => {
-                let selectingCountryItem = this.cacheData[country[ID_STRING.COUNTRY_LANGUAGE_ID]];
+            this.countryGrid.getGridData().forEach((country) => {
+                let selectingCountryItem =
+                    this.cacheData[country[ID_STRING.COUNTRY_LANGUAGE_ID]];
                 if (!selectingCountryItem) return;
                 selectingCountryItem.isDirty = true;
-                selectingCountryItem.gridData.data = cloneDeep(this.groupPriorityGrid.getGridData());
-            })
-        }
-        else {
-            let selectingCountryItem = this.cacheData[this.countryGrid.selectedNode.data[ID_STRING.COUNTRY_LANGUAGE_ID]];
+                selectingCountryItem.gridData.data = cloneDeep(
+                    this.groupPriorityGrid.getGridData()
+                );
+            });
+        } else {
+            let selectingCountryItem =
+                this.cacheData[
+                    this.countryGrid.selectedNode.data[
+                        ID_STRING.COUNTRY_LANGUAGE_ID
+                    ]
+                ];
             if (!selectingCountryItem) return;
             selectingCountryItem.isDirty = true;
 
-            selectingCountryItem.gridData.data = cloneDeep(this.groupPriorityGrid.getGridData());
+            selectingCountryItem.gridData.data = cloneDeep(
+                this.groupPriorityGrid.getGridData()
+            );
         }
 
         this.emitAllTableEvents();
@@ -385,88 +478,120 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     }
 
     private _subscribeWidgetListenKeyState() {
-        this.widgetListenKeyStateSubscription = this.widgetListenKeyState.subscribe((widgetListenKeyState: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.widgetListenKey = widgetListenKeyState;
+        this.widgetListenKeyStateSubscription =
+            this.widgetListenKeyState.subscribe(
+                (widgetListenKeyState: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.widgetListenKey = widgetListenKeyState;
 
-                this.changeDetectorRef.detectChanges();
-            });
-        });
+                        this.changeDetectorRef.detectChanges();
+                    });
+                }
+            );
     }
 
     private _subscribeSelectedEntityState() {
-        this.selectedEntityStateSubscription = this.selectedEntityState.subscribe((selectedEntityState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (isEmpty(selectedEntityState) && !isEmpty(this.selectedEntity)) {
-                    this.selectedEntity = null;
+        this.selectedEntityStateSubscription =
+            this.selectedEntityState.subscribe((selectedEntityState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        isEmpty(selectedEntityState) &&
+                        !isEmpty(this.selectedEntity)
+                    ) {
+                        this.selectedEntity = null;
+
+                        this.changeDetectorRef.detectChanges();
+                        return;
+                    }
+
+                    //if (this.countryGrid) {
+                    //    this.countryGrid.flex.select(new wjcGrid.CellRange(-1, -1, -1, -1));
+                    //}
+
+                    if (this.groupPriorityGrid) {
+                        this.groupPriorityGrid
+                            .getCurrentNodeItems()
+                            .forEach((item) => {
+                                item[ID_STRING.PRIORITY] = "";
+                                this.groupPriorityGrid.updateRowData([item]);
+                            });
+                    }
+
+                    if (isEqual(this.selectedEntity, selectedEntityState)) {
+                        return;
+                    }
+
+                    this.selectedEntity = selectedEntityState;
+
+                    this.initCountryGridData();
+                    this.initfilterGridData();
 
                     this.changeDetectorRef.detectChanges();
-                    return;
-                }
-
-                //if (this.countryGrid) {
-                //    this.countryGrid.flex.select(new wjcGrid.CellRange(-1, -1, -1, -1));
-                //}
-
-                if (this.groupPriorityGrid) {
-                    this.groupPriorityGrid.getCurrentNodeItems().forEach((item) => {
-                        item[ID_STRING.PRIORITY] = '';
-                        this.groupPriorityGrid.updateRowData([item]);
-                    })
-                }
-
-                if (isEqual(this.selectedEntity, selectedEntityState)) {
-                    return;
-                }
-
-                this.selectedEntity = selectedEntityState;
-
-                this.initCountryGridData();
-                this.initfilterGridData();
-
-                this.changeDetectorRef.detectChanges();
+                });
             });
-        });
     }
 
     private _subscribeRequestSaveWidgetState() {
-        this.requestSaveWidgetStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE_WIDGET && action.module.idSettingsGUI == this.ofModule.idSettingsGUI && action.payload && this.elementRef.nativeElement.offsetParent != null;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.submit();
+        this.requestSaveWidgetStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE_WIDGET &&
+                    action.module.idSettingsGUI ==
+                        this.ofModule.idSettingsGUI &&
+                    action.payload &&
+                    this.elementRef.nativeElement.offsetParent != null
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.submit();
+                });
             });
-        });
     }
 
     private _subscribeRequestLoadProfileState() {
-        this.requestSaveWidgetStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === FilterActions.REQUEST_LOAD_PROFILE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return action.payload;
-        }).subscribe((profileData) => {
-            this.appErrorHandler.executeAction(() => {
-                if (profileData) {
-                    if (profileData.IdSelectionWidget == MapFromWidgetAppToFilterId[this.idRepWidgetApp]) {
-                        this.initProfileData(profileData);
-                    } else {
-                        this.profileData = null;
-                    }
+        this.requestSaveWidgetStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === FilterActions.REQUEST_LOAD_PROFILE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .map((action: CustomAction) => {
+                return action.payload;
+            })
+            .subscribe((profileData) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (profileData) {
+                        if (
+                            profileData.IdSelectionWidget ==
+                            MapFromWidgetAppToFilterId[this.idRepWidgetApp]
+                        ) {
+                            this.initProfileData(profileData);
+                        } else {
+                            this.profileData = null;
+                        }
 
-                    this.changeDetectorRef.detectChanges();
-                }
+                        this.changeDetectorRef.detectChanges();
+                    }
+                });
             });
-        });
     }
 
     private _subscribeSelectionCountriesAreUpdatedState() {
-        this.selectionCountriesAreUpdatedStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.SELECTION_COUNTRIES_ARE_UPDATED && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.showCountriesUpdatedWarning = true;
+        this.selectionCountriesAreUpdatedStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        ProcessDataActions.SELECTION_COUNTRIES_ARE_UPDATED &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.showCountriesUpdatedWarning = true;
+                });
             });
-        });
     }
 
     private initProfileData(profileData) {
@@ -492,19 +617,31 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
      * initCountryGridData
      */
     private initCountryGridData(callBack?: any) {
-        this.countrySelectionServiceSubscription = this.countrySelectionService.getSelectionProjectCountry(this.selectedEntity[camelCase(this.widgetListenKey)], RuleEnum.OrdersGroup)
+        this.countrySelectionServiceSubscription = this.countrySelectionService
+            .getSelectionProjectCountry(
+                this.selectedEntity[camelCase(this.widgetListenKey)],
+                RuleEnum.OrdersGroup
+            )
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.length || isNil(response.item[1])) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.length ||
+                        isNil(response.item[1])
+                    ) {
                         return;
                     }
 
-                    response.item[1] = response.item[1].filter(item => {
-                        return typeof item.IdCountrylanguage !== 'object';
+                    response.item[1] = response.item[1].filter((item) => {
+                        return typeof item.IdCountrylanguage !== "object";
                     });
 
-                    let tableData: any = this.datatableService.formatDataTableFromRawData(response.item);
-                    tableData = this.datatableService.buildDataSource(tableData);
+                    let tableData: any =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item
+                        );
+                    tableData =
+                        this.datatableService.buildDataSource(tableData);
 
                     const config = {
                         allowDelete: false,
@@ -512,10 +649,13 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                         allowDownload: false,
                         allowSelectAll: false,
                         hasDisableRow: false,
-                        hasCountrySelectAll: true
-                    }
+                        hasCountrySelectAll: true,
+                    };
 
-                    tableData = this.datatableService.buildWijmoDataSource(tableData, config);
+                    tableData = this.datatableService.buildWijmoDataSource(
+                        tableData,
+                        config
+                    );
 
                     this.countryGridData = tableData;
                     if (callBack) {
@@ -536,18 +676,33 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
      * initfilterGridData
      */
     private initfilterGridData() {
-        this.blacklistServiceSubscription = this.ruleService.getOrdersGroups()
+        this.blacklistServiceSubscription = this.ruleService
+            .getOrdersGroups()
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.length || isNil(response.item[1])) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.length ||
+                        isNil(response.item[1])
+                    ) {
                         return;
                     }
 
-                    let tableData: any = this.datatableService.formatDataTableFromRawData(response.item);
-                    tableData = this.datatableService.buildDataSource(tableData);
+                    let tableData: any =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item
+                        );
+                    tableData =
+                        this.datatableService.buildDataSource(tableData);
                     tableData = this.datatableService.appendRowId(tableData);
-                    tableData.columns = this.initColumnCountryGridSetting(tableData.columns);
-                    tableData.data = Uti.addMorePropertyToArray(tableData.data, ID_STRING.PRIORITY, '');
+                    tableData.columns = this.initColumnCountryGridSetting(
+                        tableData.columns
+                    );
+                    tableData.data = Uti.addMorePropertyToArray(
+                        tableData.data,
+                        ID_STRING.PRIORITY,
+                        ""
+                    );
                     this.filterGridData = tableData;
                     this.cacheData = {};
                     this.cacheIdData = {};
@@ -565,15 +720,18 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
 
     public submit(callback?: any) {
         if (this.isValidationError()) {
-            this.modalService.warningMessage([{
-                key: 'Modal_Message__The_Value_You_Entered_Is_Not_Valid'
-            }]);
+            this.modalService.warningMessage([
+                {
+                    key: "Modal_Message__The_Value_You_Entered_Is_Not_Valid",
+                },
+            ]);
             return;
         }
 
         this.checkAllCountriesBeforeSubmit();
 
-        this.ruleServiceSubscription = this.ruleService.saveProjectRules(this.createJsonData())
+        this.ruleServiceSubscription = this.ruleService
+            .saveProjectRules(this.createJsonData())
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
@@ -583,7 +741,9 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                         callback();
                     }
 
-                    this.store.dispatch(this.processDataActions.saveWidgetSuccess(this.ofModule));
+                    this.store.dispatch(
+                        this.processDataActions.saveWidgetSuccess(this.ofModule)
+                    );
                     this.reset();
                     this.onSaveSuccess.emit();
 
@@ -596,13 +756,25 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     private checkAllCountriesBeforeSubmit() {
         if (this.isForAllCountry) {
             let selectingCountry = this.countryGrid.getSelectedNode().data;
-            let mainData = this.cacheData[selectingCountry[ID_STRING.COUNTRY_LANGUAGE_ID]].gridData.data;
-            Object.keys(this.cacheData).forEach(idCountryLanguage => {
-                if (idCountryLanguage != selectingCountry[ID_STRING.COUNTRY_LANGUAGE_ID]) {
-                    mainData.forEach(main => {
-                        let found = this.cacheData[idCountryLanguage].gridData.data.find(i => i[ID_STRING.ID_SHARING_TREE_GROUPS] == main[ID_STRING.ID_SHARING_TREE_GROUPS]);
+            let mainData =
+                this.cacheData[selectingCountry[ID_STRING.COUNTRY_LANGUAGE_ID]]
+                    .gridData.data;
+            Object.keys(this.cacheData).forEach((idCountryLanguage) => {
+                if (
+                    idCountryLanguage !=
+                    selectingCountry[ID_STRING.COUNTRY_LANGUAGE_ID]
+                ) {
+                    mainData.forEach((main) => {
+                        let found = this.cacheData[
+                            idCountryLanguage
+                        ].gridData.data.find(
+                            (i) =>
+                                i[ID_STRING.ID_SHARING_TREE_GROUPS] ==
+                                main[ID_STRING.ID_SHARING_TREE_GROUPS]
+                        );
                         if (found) {
-                            found[ID_STRING.PRIORITY] = main[ID_STRING.PRIORITY];
+                            found[ID_STRING.PRIORITY] =
+                                main[ID_STRING.PRIORITY];
 
                             this.cacheData[idCountryLanguage].isDirty = true;
                         }
@@ -644,18 +816,24 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     public createJsonData(isCreateTemplate?: boolean) {
         return {
             IdSelectionWidget: RuleEnum.OrdersGroup,
-            IdSelectionProject: this.selectedEntity[camelCase(this.widgetListenKey)],
-            JsonRules: this.buildCountryRuleForSave(isCreateTemplate)
+            IdSelectionProject:
+                this.selectedEntity[camelCase(this.widgetListenKey)],
+            JsonRules: this.buildCountryRuleForSave(isCreateTemplate),
         };
     }
 
     public createJsonDataForProfile(): Observable<any> {
-        return this.ruleService.getProjectRulesForTemplate(RuleEnum.OrdersGroup, this.selectedEntity[camelCase(this.widgetListenKey)])
+        return this.ruleService
+            .getProjectRulesForTemplate(
+                RuleEnum.OrdersGroup,
+                this.selectedEntity[camelCase(this.widgetListenKey)]
+            )
             .map((response: ApiResultResponse) => {
                 let saveData = {
                     IdSelectionWidget: RuleEnum.OrdersGroup,
-                    IdSelectionProject: this.selectedEntity[camelCase(this.widgetListenKey)],
-                    JsonRules: []
+                    IdSelectionProject:
+                        this.selectedEntity[camelCase(this.widgetListenKey)],
+                    JsonRules: [],
                 };
 
                 if (!isEmpty(this.cacheData)) {
@@ -664,10 +842,19 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                         Rules: [
                             {
                                 IsActive: 1,
-                                MediaCode: this.currentSelectedGridItem('countryGrid')[ID_STRING.MEDIACODE],
-                                rules: this.buildRuleForSave(this.cacheData[this.currentSelectedGridItem('countryGrid')[ID_STRING.COUNTRY_LANGUAGE_ID]].gridData.data)
-                            }
-                        ]
+                                MediaCode:
+                                    this.currentSelectedGridItem("countryGrid")[
+                                        ID_STRING.MEDIACODE
+                                    ],
+                                rules: this.buildRuleForSave(
+                                    this.cacheData[
+                                        this.currentSelectedGridItem(
+                                            "countryGrid"
+                                        )[ID_STRING.COUNTRY_LANGUAGE_ID]
+                                    ].gridData.data
+                                ),
+                            },
+                        ],
                     });
                 }
 
@@ -678,30 +865,30 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     private initFilterGridSetting(): ControlGridColumnModel[] {
         const colSetting = [
             new ControlGridColumnModel({
-                title: 'IdSharingTreeGroups',
-                data: 'IdSharingTreeGroups',
+                title: "IdSharingTreeGroups",
+                data: "IdSharingTreeGroups",
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
-                title: 'GroupName',
-                data: 'GroupName',
+                title: "GroupName",
+                data: "GroupName",
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
                 title: "IconName",
@@ -711,16 +898,16 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
+                                ReadOnly: "1",
+                            },
                         },
                         {
                             ControlType: {
-                                Type: "icon"
-                            }
-                        }
-                    ]
-                }
+                                Type: "icon",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
                 title: "Priority",
@@ -730,11 +917,11 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                     Setting: [
                         {
                             ControlType: {
-                                Type: "Priority"
-                            }
-                        }
-                    ]
-                }
+                                Type: "Priority",
+                            },
+                        },
+                    ],
+                },
             }),
         ];
         return colSetting;
@@ -743,21 +930,25 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     /**
      * initColumnCountryGridSetting
      */
-    private initColumnCountryGridSetting(columns: any): ControlGridColumnModel[] {
-        columns.push(new ControlGridColumnModel({
-            title: "Priority",
-            data: "Priority",
-            readOnly: false,
-            setting: {
-                Setting: [
-                    {
-                        ControlType: {
-                            Type: "Priority"
-                        }
-                    }
-                ]
-            }
-        }));
+    private initColumnCountryGridSetting(
+        columns: any
+    ): ControlGridColumnModel[] {
+        columns.push(
+            new ControlGridColumnModel({
+                title: "Priority",
+                data: "Priority",
+                readOnly: false,
+                setting: {
+                    Setting: [
+                        {
+                            ControlType: {
+                                Type: "Priority",
+                            },
+                        },
+                    ],
+                },
+            })
+        );
         return columns;
     }
     private buildCountryRuleForSave(isCreateTemplate: boolean) {
@@ -770,8 +961,12 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                 //}
 
                 const countries = this.countryGrid.getCurrentNodeItems();
-                const countryId = countries.find(c => c[ID_STRING.COUNTRY_LANGUAGE_ID] == keys[i])[ID_STRING.COUNTRY_ID];
-                const mediaCode = countries.find(c => c[ID_STRING.COUNTRY_LANGUAGE_ID] == keys[i])[ID_STRING.MEDIACODE];
+                const countryId = countries.find(
+                    (c) => c[ID_STRING.COUNTRY_LANGUAGE_ID] == keys[i]
+                )[ID_STRING.COUNTRY_ID];
+                const mediaCode = countries.find(
+                    (c) => c[ID_STRING.COUNTRY_LANGUAGE_ID] == keys[i]
+                )[ID_STRING.MEDIACODE];
                 if (this.cacheData[keys[i]].isDirty || isCreateTemplate) {
                     result.push({
                         IdSelectionProjectCountry: countryId,
@@ -779,11 +974,16 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                         Rules: [
                             {
                                 IsActive: 1,
-                                IdSelectionProjectRules: this.buildIdSelectionProjectRules(countryId),
+                                IdSelectionProjectRules:
+                                    this.buildIdSelectionProjectRules(
+                                        countryId
+                                    ),
                                 MediaCode: mediaCode,
-                                rules: this.buildRuleForSave(this.cacheData[keys[i]].gridData.data)
-                            }
-                        ]
+                                rules: this.buildRuleForSave(
+                                    this.cacheData[keys[i]].gridData.data
+                                ),
+                            },
+                        ],
                     });
                 }
             }
@@ -799,9 +999,13 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
         if (this.cacheData) {
             let keys = Object.keys(this.cacheData);
             for (let i = 0; i < keys.length; i++) {
-                if (keys[i] == '0') continue;
-                const countryId = this.countryGridData.data.find(c => c[ID_STRING.COUNTRY_LANGUAGE_ID] == keys[i])[ID_STRING.COUNTRY_ID];
-                const mediaCode = this.countryGridData.data.find(c => c[ID_STRING.COUNTRY_LANGUAGE_ID] == keys[i])[ID_STRING.MEDIACODE];
+                if (keys[i] == "0") continue;
+                const countryId = this.countryGridData.data.find(
+                    (c) => c[ID_STRING.COUNTRY_LANGUAGE_ID] == keys[i]
+                )[ID_STRING.COUNTRY_ID];
+                const mediaCode = this.countryGridData.data.find(
+                    (c) => c[ID_STRING.COUNTRY_LANGUAGE_ID] == keys[i]
+                )[ID_STRING.MEDIACODE];
                 if (this.cacheData[keys[i]].isDirty) {
                     result.push({
                         IdSelectionProjectCountry: countryId,
@@ -809,11 +1013,16 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                         Rules: [
                             {
                                 IsActive: 1,
-                                IdSelectionProjectRules: this.buildIdSelectionProjectRules(countryId),
+                                IdSelectionProjectRules:
+                                    this.buildIdSelectionProjectRules(
+                                        countryId
+                                    ),
                                 MediaCode: mediaCode,
-                                rules: this.buildRuleForSave(this.cacheData[keys[i]].gridData.data)
-                            }
-                        ]
+                                rules: this.buildRuleForSave(
+                                    this.cacheData[keys[i]].gridData.data
+                                ),
+                            },
+                        ],
                     });
 
                     ignoreCountryIds.push(countryId);
@@ -821,22 +1030,28 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
             }
         }
 
-        ignoreCountryIds.forEach(countryId => {
-            allRules = allRules.filter(r => r[ID_STRING.COUNTRY_ID] != countryId);
+        ignoreCountryIds.forEach((countryId) => {
+            allRules = allRules.filter(
+                (r) => r[ID_STRING.COUNTRY_ID] != countryId
+            );
         });
 
         let newCountryList = [];
         for (let i = 0; i < allRules.length; i++) {
-            if (newCountryList.indexOf(allRules[i][ID_STRING.COUNTRY_ID]) === -1) {
+            if (
+                newCountryList.indexOf(allRules[i][ID_STRING.COUNTRY_ID]) === -1
+            ) {
                 newCountryList.push(allRules[i][ID_STRING.COUNTRY_ID]);
             }
         }
 
-        newCountryList.forEach(countryId => {
+        newCountryList.forEach((countryId) => {
             result.push({
                 IdSelectionProjectCountry: countryId,
-                IdCountrylanguage: this.countryGridData.data.find(c => c[ID_STRING.COUNTRY_ID] == countryId)[ID_STRING.COUNTRY_LANGUAGE_ID],
-                Rules: this.buildRulesForHiddenCountry(allRules, countryId)
+                IdCountrylanguage: this.countryGridData.data.find(
+                    (c) => c[ID_STRING.COUNTRY_ID] == countryId
+                )[ID_STRING.COUNTRY_LANGUAGE_ID],
+                Rules: this.buildRulesForHiddenCountry(allRules, countryId),
             });
         });
 
@@ -844,7 +1059,10 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     }
 
     private currentSelectedGridItem(gridObject): any {
-        return Uti.mapArrayToObject((this[gridObject].selectedItem() || []), true);
+        return Uti.mapArrayToObject(
+            this[gridObject].selectedItem() || [],
+            true
+        );
     }
 
     private buildIdSelectionProjectRules(countryId) {
@@ -858,13 +1076,13 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
 
     private buildRuleForSave(rules) {
         let result: any[] = [];
-        rules.forEach(rule => {
+        rules.forEach((rule) => {
             if (rule[ID_STRING.PRIORITY]) {
                 result.push({
                     value: {
                         IdSharingTreeGroups: rule.IdSharingTreeGroups,
-                        [ID_STRING.PRIORITY]: rule[ID_STRING.PRIORITY]
-                    }
+                        [ID_STRING.PRIORITY]: rule[ID_STRING.PRIORITY],
+                    },
                 });
             }
         });
@@ -879,9 +1097,12 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
             if (allRules[i][ID_STRING.COUNTRY_ID] == countryId) {
                 result.push({
                     IsActive: 1,
-                    IdSelectionProjectRules: allRules[i].IdSelectionProjectRules,
-                    MediaCode: !isNil(allRules[i].Mediacode) ? allRules[i][ID_STRING.MEDIACODE] : null,
-                    rules: JSON.parse(allRules[i].JsonCaseRules).rules
+                    IdSelectionProjectRules:
+                        allRules[i].IdSelectionProjectRules,
+                    MediaCode: !isNil(allRules[i].Mediacode)
+                        ? allRules[i][ID_STRING.MEDIACODE]
+                        : null,
+                    rules: JSON.parse(allRules[i].JsonCaseRules).rules,
                 });
             }
         }
@@ -911,13 +1132,22 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                 let profile = this.profileData[0];
                 let rules = profile.Rules;
                 if (rules) {
-                    let selectingCountry = this.countryGrid.getSelectedNode().data;
+                    let selectingCountry =
+                        this.countryGrid.getSelectedNode().data;
                     if (this.isForAllCountry) {
-                        this.countryGrid.getGridData().forEach(country => {
-                            this.processApplyProfile(rules, country, selectingCountry);
+                        this.countryGrid.getGridData().forEach((country) => {
+                            this.processApplyProfile(
+                                rules,
+                                country,
+                                selectingCountry
+                            );
                         });
                     } else {
-                        this.processApplyProfile(rules, selectingCountry, selectingCountry);
+                        this.processApplyProfile(
+                            rules,
+                            selectingCountry,
+                            selectingCountry
+                        );
                     }
                 }
 
@@ -926,13 +1156,6 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                 this.onTableEditSuccess();
                 this.changeDetectorRef.detectChanges();
                 return;
-
-
-
-
-
-
-
 
                 //let rulesOfThisCountryId = this.profileData.find(r => r[ID_STRING.COUNTRY_LANGUAGE_ID] == countryLanguageId);
                 //if (rulesOfThisCountryId && rulesOfThisCountryId.Rules && rulesOfThisCountryId.Rules.length) {
@@ -955,17 +1178,26 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
             if (this.cacheData[countryLanguageId]) {
                 this.filterGridData = {
                     data: this.cacheData[countryLanguageId].gridData.data,
-                    columns: this.initFilterGridSetting()
+                    columns: this.initFilterGridSetting(),
                 };
                 this.validateGroupPriorityGrid();
             } else {
-                this.ruleServiceSubscription = this.ruleService.getProjectRules(RuleEnum.OrdersGroup, this.selectedEntity[camelCase(this.widgetListenKey)], countryId)
+                this.ruleServiceSubscription = this.ruleService
+                    .getProjectRules(
+                        RuleEnum.OrdersGroup,
+                        this.selectedEntity[camelCase(this.widgetListenKey)],
+                        countryId
+                    )
                     .subscribe((response: ApiResultResponse) => {
                         this.appErrorHandler.executeAction(() => {
-                            if (!response || !response.item || !response.item.length) {
+                            if (
+                                !response ||
+                                !response.item ||
+                                !response.item.length
+                            ) {
                                 this.cacheData[countryLanguageId] = {
                                     gridData: cloneDeep(this.filterGridData),
-                                    isDirty: false
+                                    isDirty: false,
                                 };
 
                                 this.changeDetectorRef.detectChanges();
@@ -973,12 +1205,15 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                             }
 
                             let rulesFromService = response.item[0][0];
-                            this.cacheIdData[countryId] = rulesFromService.IdSelectionProjectRules;
-                            this.setPriorityForFilterGird(Uti.tryParseJson(rulesFromService.JsonCaseRules));
+                            this.cacheIdData[countryId] =
+                                rulesFromService.IdSelectionProjectRules;
+                            this.setPriorityForFilterGird(
+                                Uti.tryParseJson(rulesFromService.JsonCaseRules)
+                            );
 
                             this.cacheData[countryLanguageId] = {
                                 gridData: cloneDeep(this.filterGridData),
-                                isDirty: false
+                                isDirty: false,
                             };
 
                             this.validateGroupPriorityGrid();
@@ -994,19 +1229,22 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     private processApplyProfile(rules, country, selectingCountry) {
         let data = this.buildDataWithPriority(rules[0]);
 
-        if (country[ID_STRING.COUNTRY_LANGUAGE_ID] == selectingCountry[ID_STRING.COUNTRY_LANGUAGE_ID]) {
+        if (
+            country[ID_STRING.COUNTRY_LANGUAGE_ID] ==
+            selectingCountry[ID_STRING.COUNTRY_LANGUAGE_ID]
+        ) {
             this.filterGridData = {
                 data: data,
-                columns: this.initFilterGridSetting()
+                columns: this.initFilterGridSetting(),
             };
         }
 
         this.cacheData[country[ID_STRING.COUNTRY_LANGUAGE_ID]] = {
             gridData: {
                 data: cloneDeep(data),
-                columns: this.initFilterGridSetting()
+                columns: this.initFilterGridSetting(),
             },
-            isDirty: true
+            isDirty: true,
         };
     }
 
@@ -1016,9 +1254,9 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
 
         if (this.groupPriorityGrid) {
             this.groupPriorityGrid.getCurrentNodeItems().forEach((item) => {
-                item.Priority = '';
+                item.Priority = "";
                 this.groupPriorityGrid.updateRowData([item]);
-            })
+            });
         }
 
         this.validateGroupPriorityGrid();
@@ -1028,13 +1266,20 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     private setPriorityForFilterGird(newPriorityData: any) {
         let data = this.groupPriorityGrid.getCurrentNodeItems();
         if (!data || !data.length) return;
-        if (!newPriorityData || !newPriorityData.rules || !newPriorityData.rules.length) {
+        if (
+            !newPriorityData ||
+            !newPriorityData.rules ||
+            !newPriorityData.rules.length
+        ) {
             for (let item of data) {
-                item[ID_STRING.PRIORITY] = '';
+                item[ID_STRING.PRIORITY] = "";
             }
         } else {
             for (let item of data) {
-                const priority = this.getPriorityFromRule(newPriorityData.rules, item.IdSharingTreeGroups);
+                const priority = this.getPriorityFromRule(
+                    newPriorityData.rules,
+                    item.IdSharingTreeGroups
+                );
                 item[ID_STRING.PRIORITY] = priority;
             }
         }
@@ -1052,13 +1297,20 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     private buildDataWithPriority(newPriorityData: any) {
         let data = this.groupPriorityGrid.getCurrentNodeItems();
         if (!data || !data.length) return;
-        if (!newPriorityData || !newPriorityData.rules || !newPriorityData.rules.length) {
+        if (
+            !newPriorityData ||
+            !newPriorityData.rules ||
+            !newPriorityData.rules.length
+        ) {
             for (let item of data) {
-                item[ID_STRING.PRIORITY] = '';
+                item[ID_STRING.PRIORITY] = "";
             }
         } else {
             for (let item of data) {
-                const priority = this.getPriorityFromRule(newPriorityData.rules, item.IdSharingTreeGroups);
+                const priority = this.getPriorityFromRule(
+                    newPriorityData.rules,
+                    item.IdSharingTreeGroups
+                );
                 item[ID_STRING.PRIORITY] = priority;
             }
         }
@@ -1066,14 +1318,17 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
         return data;
     }
 
-    private getPriorityFromRule(newPriorityDataRules: any, idSharingTreeGroups: any): any {
+    private getPriorityFromRule(
+        newPriorityDataRules: any,
+        idSharingTreeGroups: any
+    ): any {
         for (let item of newPriorityDataRules) {
             if (!item.value || !item.value.IdSharingTreeGroups) continue;
             if (item.value.IdSharingTreeGroups == idSharingTreeGroups) {
                 return item.value.Priority;
             }
         }
-        return '';
+        return "";
     }
 
     /**
@@ -1082,40 +1337,40 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
     private initGroupPriorityGridSetting(): ControlGridColumnModel[] {
         const colSetting = [
             new ControlGridColumnModel({
-                title: 'IdSharingTreeGroups',
-                data: 'IdSharingTreeGroups',
+                title: "IdSharingTreeGroups",
+                data: "IdSharingTreeGroups",
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
-                title: 'GroupName',
-                data: 'GroupName'
+                title: "GroupName",
+                data: "GroupName",
             }),
             new ControlGridColumnModel({
-                title: 'IconName',
-                data: 'IconName',
+                title: "IconName",
+                data: "IconName",
                 setting: {
                     Setting: [
                         {
-                            "DisplayField": {
-                                "Hidden": "0",
-                                "ReadOnly": "1"
-                            }
+                            DisplayField: {
+                                Hidden: "0",
+                                ReadOnly: "1",
+                            },
                         },
                         {
-                            "ControlType": {
-                                "Type": "icon"
-                            }
-                        }
-                    ]
-                }
+                            ControlType: {
+                                Type: "icon",
+                            },
+                        },
+                    ],
+                },
             }),
             new ControlGridColumnModel({
                 title: "Priority",
@@ -1125,11 +1380,11 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
                     Setting: [
                         {
                             ControlType: {
-                                Type: "Priority"
-                            }
-                        }
-                    ]
-                }
+                                Type: "Priority",
+                            },
+                        },
+                    ],
+                },
             }),
         ];
         return colSetting;
@@ -1137,7 +1392,8 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
 
     public onCountryGridEditEnded($event) {
         if (this.cacheData) {
-            this.cacheData[$event[ID_STRING.COUNTRY_LANGUAGE_ID]].isDirty = true;
+            this.cacheData[$event[ID_STRING.COUNTRY_LANGUAGE_ID]].isDirty =
+                true;
 
             this.emitAllTableEvents();
 
@@ -1174,10 +1430,16 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
             let readOnly = this.checkGroupPriorityGridReadOnly();
             let disabled = this.checkGroupPriorityGridDisabled();
 
-            if (readOnly !== this.isGroupPriorityGridReadOnly || disabled !== this.isGroupPriorityGridDisabled) {
+            if (
+                readOnly !== this.isGroupPriorityGridReadOnly ||
+                disabled !== this.isGroupPriorityGridDisabled
+            ) {
                 this.isGroupPriorityGridReadOnly = readOnly;
                 this.isGroupPriorityGridDisabled = disabled;
-                this.groupPriorityGrid.toggleColumns(['FilterExtended', 'Delete', 'Edit'], !this.isGroupPriorityGridReadOnly);
+                this.groupPriorityGrid.toggleColumns(
+                    ["FilterExtended", "Delete", "Edit"],
+                    !this.isGroupPriorityGridReadOnly
+                );
                 this.changeDetectorRef.detectChanges();
 
                 if (this.groupPriorityGrid) {
@@ -1187,10 +1449,19 @@ export class GroupPriorityGridComponent extends BaseComponent implements OnInit,
         }, 200);
     }
     public checkGroupPriorityGridReadOnly() {
-        return this.readOnly || (this.countryGrid != null && this.countryGrid.selectedNode != null && !this.countryGrid.selectedNode.data['IsActive']);
+        return (
+            this.readOnly ||
+            (this.countryGrid != null &&
+                this.countryGrid.selectedNode != null &&
+                !this.countryGrid.selectedNode.data["IsActive"])
+        );
     }
 
     public checkGroupPriorityGridDisabled() {
-        return this.countryGrid != null && this.countryGrid.selectedNode != null && !this.countryGrid.selectedNode.data['IsActive'];
+        return (
+            this.countryGrid != null &&
+            this.countryGrid.selectedNode != null &&
+            !this.countryGrid.selectedNode.data["IsActive"]
+        );
     }
 }

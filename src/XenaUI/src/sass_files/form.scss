@@ -4,7 +4,8 @@
     margin-top: $spacing-size-sd;
 }
 
-input::-ms-clear, input::-ms-reveal {
+input::-ms-clear,
+input::-ms-reveal {
     display: none;
 }
 
@@ -71,7 +72,6 @@ input::-ms-clear, input::-ms-reveal {
     }
 }
 
-
 .red {
     color: red;
 }
@@ -131,8 +131,10 @@ input::-ms-clear, input::-ms-reveal {
     border-color: $light-dark-orange;
 }
 
-.form-group .form-control:focus, .form-group .xn-input:focus,
-.form-group .xn-select:focus, .form-group .xn-input--no-icon:focus,
+.form-group .form-control:focus,
+.form-group .xn-input:focus,
+.form-group .xn-select:focus,
+.form-group .xn-input--no-icon:focus,
 .form-group .xn-select--no-icon:focus {
     border-color: $light-dark-orange !important;
 }
@@ -201,10 +203,19 @@ xn-date-picker.ng-pristine.ng-invalid:focus,
     color: $gray20;
 }
 
-customer-form, app-cust-contact-form, app-ad-form, app-ad-contact-form, app-ad-cash-provider-prn-form,
-article-form, app-article-purchasing-form, app-campaign-combine-t1-form, media-code-t2-form,
-app-business-cost-form, app-business-cost-row-form, app-order-data-entry-form {
-    input[type=text].form-control {
+customer-form,
+app-cust-contact-form,
+app-ad-form,
+app-ad-contact-form,
+app-ad-cash-provider-prn-form,
+article-form,
+app-article-purchasing-form,
+app-campaign-combine-t1-form,
+media-code-t2-form,
+app-business-cost-form,
+app-business-cost-row-form,
+app-order-data-entry-form {
+    input[type="text"].form-control {
         padding-right: 18px;
     }
 }
@@ -217,21 +228,34 @@ app-business-cost-form, app-business-cost-row-form, app-order-data-entry-form {
     display: none !important;
 }
 
-.submitted, .edited {
+.submitted,
+.edited {
     .pristine-alert {
         display: block !important;
     }
 
-    input.ng-invalid, input.ng-invalid:focus, select.ng-invalid,
-    .wj-state-invalid, .wj-state-invalid:focus,
-    wj-combo-box.ng-invalid, wj-combo-box.ng-invalid:focus,
-    xn-combo-box.ng-invalid, xn-combo-box.ng-invalid:focus,
-    wj-multi-select.ng-invalid, wj-multi-select.ng-invalid:focus,
-    xn-date-picker.ng-invalid, xn-date-picker.ng-invalid:focus,
-    wj-auto-complete.ng-invalid, wj-auto-complete.ng-invalid:focus,
-    wj-input-date.ng-invalid, wj-input-date.ng-invalid:focus,
-    wj-input-number.ng-invalid, wj-input-number.ng-invalid:focus,
-    select.ng-invalid:focus, textarea.ng-invalid, textarea.ng-invalid:focus,
+    input.ng-invalid,
+    input.ng-invalid:focus,
+    select.ng-invalid,
+    .wj-state-invalid,
+    .wj-state-invalid:focus,
+    wj-combo-box.ng-invalid,
+    wj-combo-box.ng-invalid:focus,
+    xn-combo-box.ng-invalid,
+    xn-combo-box.ng-invalid:focus,
+    wj-multi-select.ng-invalid,
+    wj-multi-select.ng-invalid:focus,
+    xn-date-picker.ng-invalid,
+    xn-date-picker.ng-invalid:focus,
+    wj-auto-complete.ng-invalid,
+    wj-auto-complete.ng-invalid:focus,
+    wj-input-date.ng-invalid,
+    wj-input-date.ng-invalid:focus,
+    wj-input-number.ng-invalid,
+    wj-input-number.ng-invalid:focus,
+    select.ng-invalid:focus,
+    textarea.ng-invalid,
+    textarea.ng-invalid:focus,
     .form-group wj-combo-box.ng-pristine.ng-invalid,
     .form-group xn-combo-box.ng-pristine.ng-invalid,
     .form-group wj-multi-select.ng-pristine.ng-invalid,
@@ -250,7 +274,8 @@ app-business-cost-form, app-business-cost-row-form, app-order-data-entry-form {
         border: 1px solid $error !important;
     }
 
-    .wj-state-invalid.xn-select-not-required, .wj-state-invalid.xn-select-not-required:focus {
+    .wj-state-invalid.xn-select-not-required,
+    .wj-state-invalid.xn-select-not-required:focus {
         border: 1px solid $gray11 !important;
     }
 }
@@ -272,14 +297,14 @@ p-calendar {
         border-bottom: none;
     }
 
-    .ui-calendar input[type=text] {
+    .ui-calendar input[type="text"] {
         width: 100% !important;
         padding-left: 40px;
         border-radius: 4px;
         height: 34px;
     }
 
-    .ui-calendar input[type=text]:focus {
+    .ui-calendar input[type="text"]:focus {
         border-color: $light-dark-orange !important;
     }
 
@@ -301,7 +326,7 @@ p-calendar {
 }
 
 form.campaign-cost-form {
-    p-calendar[name=prePaymentDate] .ui-datepicker {
+    p-calendar[name="prePaymentDate"] .ui-datepicker {
         width: auto !important;
     }
 }
@@ -315,7 +340,9 @@ wj-combo-box {
 }
 
 xn-table-uploaded-files {
-    .btn-del-editable-table, .btn-upload-editable-table, .icon-editable-table {
+    .btn-del-editable-table,
+    .btn-upload-editable-table,
+    .icon-editable-table {
         background-color: transparent !important;
         border: none !important;
         margin-top: -13px !important;
@@ -323,7 +350,8 @@ xn-table-uploaded-files {
         padding-top: 1px !important;
     }
 
-    .btn-del-editable-table:hover, .btn-upload-editable-table:hover {
+    .btn-del-editable-table:hover,
+    .btn-upload-editable-table:hover {
         background-color: $gray21 !important;
     }
 
@@ -360,27 +388,29 @@ xn-file-explorer {
 
 form {
     xn-file-explorer {
-        .btn-del-editable-table, .icon-editable-table, .btn-upload-editable-table {
+        .btn-del-editable-table,
+        .icon-editable-table,
+        .btn-upload-editable-table {
             margin-top: -4px !important;
         }
     }
 }
 
 /*app-business-cost-header-form {*/
-    .wj-control[disabled] {
-        cursor: not-allowed;
-        border: 1px solid $gray7 !important;
-        opacity: .3;
-        background-color: $gray22 !important;
+.wj-control[disabled] {
+    cursor: not-allowed;
+    border: 1px solid $gray7 !important;
+    opacity: 0.3;
+    background-color: $gray22 !important;
 
-        & .wj-input-group .wj-form-control {
-            background-color: transparent !important;
-        }
-
-        & .wj-input-group .wj-input-group-btn button {
-            background-color: $gray22;
-        }
+    & .wj-input-group .wj-form-control {
+        background-color: transparent !important;
     }
+
+    & .wj-input-group .wj-input-group-btn button {
+        background-color: $gray22;
+    }
+}
 /*}*/
 
 form .wj-numeric {
@@ -388,7 +418,8 @@ form .wj-numeric {
 }
 
 customer-form {
-    .xn-input.custom-wj-input-control, .form-group .xn-input.custom-wj-input-control {
+    .xn-input.custom-wj-input-control,
+    .form-group .xn-input.custom-wj-input-control {
         padding-left: 0;
     }
 }
@@ -412,9 +443,9 @@ customer-form {
         }
     }
     .wjDOB {
-      input {
-        padding: 0px 8px !important;
-      }
+        input {
+            padding: 0px 8px !important;
+        }
     }
 }
 
@@ -513,7 +544,8 @@ app-order-data-entry-form.width375 {
 app-order-data-entry-form .form-container {
     min-width: 375px;
 
-    & .xn-input.custom-wj-input-control, .form-group .xn-input.custom-wj-input-control {
+    & .xn-input.custom-wj-input-control,
+    .form-group .xn-input.custom-wj-input-control {
         padding-left: 0;
         padding-right: 0;
     }
@@ -525,7 +557,10 @@ widget-user-management-info {
     .custom-wj-input-control,
     xn-date-picker,
     app-order-data-entry-form .form-container .xn-input.custom-wj-input-control,
-    app-order-data-entry-form .form-container .form-group .xn-input.custom-wj-input-control {
+    app-order-data-entry-form
+        .form-container
+        .form-group
+        .xn-input.custom-wj-input-control {
         height: 26px;
     }
 
@@ -534,7 +569,10 @@ widget-user-management-info {
     }
 
     app-order-data-entry-form .form-container .xn-input.custom-wj-input-control,
-    app-order-data-entry-form .form-container .form-group .xn-input.custom-wj-input-control {
+    app-order-data-entry-form
+        .form-container
+        .form-group
+        .xn-input.custom-wj-input-control {
         padding: 0;
     }
 
@@ -570,7 +608,8 @@ widget-user-management-info {
         margin-top: -23px !important;
     }
 
-    div.order-date-item, div.item-order-date {
+    div.order-date-item,
+    div.item-order-date {
         wj-input-number {
             .wj-input-group .wj-form-control {
                 padding-left: 2px;

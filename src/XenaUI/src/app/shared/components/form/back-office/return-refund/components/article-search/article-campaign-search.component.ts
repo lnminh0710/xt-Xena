@@ -1,41 +1,59 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from "@angular/core";
-import { ControlGridModel, SimpleTabModel } from 'app/models';
-import { DataEntryService, AppErrorHandler, DatatableService, DomHandler, PropertyPanelService } from 'app/services';
-import { WjInputNumber } from 'wijmo/wijmo.angular2.input';
-import { Subscription } from 'rxjs/Subscription';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Uti } from 'app/utilities';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import { BaseComponent, ModuleList } from 'app/pages/private/base';
-import { Router } from '@angular/router';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
+} from "@angular/core";
+import { ControlGridModel, SimpleTabModel } from "app/models";
+import {
+    DataEntryService,
+    AppErrorHandler,
+    DatatableService,
+    DomHandler,
+    PropertyPanelService,
+} from "app/services";
+import { WjInputNumber } from "wijmo/wijmo.angular2.input";
+import { Subscription } from "rxjs/Subscription";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Uti } from "app/utilities";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import { BaseComponent, ModuleList } from "app/pages/private/base";
+import { Router } from "@angular/router";
 import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 
 @Component({
-    selector: 'article-campaign-search',
-    templateUrl: './article-campaign-search.component.html'
+    selector: "article-campaign-search",
+    templateUrl: "./article-campaign-search.component.html",
 })
-export class ArticleCampaignSearchComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-
+export class ArticleCampaignSearchComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     showDialog = false;
     selectedArticleItemQuantity: number;
-    public globalNumberFormat = '';
+    public globalNumberFormat = "";
     public that: any;
     private globalPropertiesStateSubscription: Subscription;
     private globalPropertiesState: Observable<any>;
 
-    @ViewChild('wijQuantNum')
+    @ViewChild("wijQuantNum")
     wijQuantNum: ElementRef;
 
-    @ViewChild('grid') grid: XnAgGridComponent;
+    @ViewChild("grid") grid: XnAgGridComponent;
 
     @Input() set mediaCode(value: string) {
         if (value) {
             this.getArticleData(value);
         }
     }
-    
+
     @Input() parentInstance: any = null;
     @Input() gridId: string;
 
@@ -47,7 +65,8 @@ export class ArticleCampaignSearchComponent extends BaseComponent implements OnI
     private dataEntryServiceSubscription: Subscription;
     private selectedItem: any;
 
-    constructor(private _eref: ElementRef,
+    constructor(
+        private _eref: ElementRef,
         private datatableService: DatatableService,
         private appErrorHandler: AppErrorHandler,
         private dataEntryService: DataEntryService,
@@ -58,7 +77,13 @@ export class ArticleCampaignSearchComponent extends BaseComponent implements OnI
         super(router);
         this.that = this;
 
-        this.globalPropertiesState = store.select(state => propertyPanelReducer.getPropertyPanelState(state, ModuleList.Base.moduleNameTrim).globalProperties);
+        this.globalPropertiesState = store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    ModuleList.Base.moduleNameTrim
+                ).globalProperties
+        );
     }
 
     /**
@@ -78,8 +103,7 @@ export class ArticleCampaignSearchComponent extends BaseComponent implements OnI
     /**
      * ngAfterViewInit
      */
-    ngAfterViewInit() {
-    }
+    ngAfterViewInit() {}
 
     public makeContextMenu(data?: any) {
         if (!this.parentInstance || !this.parentInstance.makeContextMenu) {
@@ -93,24 +117,34 @@ export class ArticleCampaignSearchComponent extends BaseComponent implements OnI
      * @param mediacode
      */
     private getArticleData(mediacode: string) {
-        this.dataEntryServiceSubscription = this.dataEntryService.getArticleDataByMediacodeNr(mediacode).subscribe((response) => {
-            this.appErrorHandler.executeAction(() => {
-                if (response) {
-                    response = this.datatableService.formatDataTableFromRawData(response.data);
-                    this.dataSource = this.datatableService.buildDataSource(response);
-                }
+        this.dataEntryServiceSubscription = this.dataEntryService
+            .getArticleDataByMediacodeNr(mediacode)
+            .subscribe((response) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (response) {
+                        response =
+                            this.datatableService.formatDataTableFromRawData(
+                                response.data
+                            );
+                        this.dataSource =
+                            this.datatableService.buildDataSource(response);
+                    }
+                });
             });
-        });
     }
 
     private subscribeGlobalProperties() {
-        this.globalPropertiesStateSubscription = this.globalPropertiesState.subscribe((globalProperties: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (globalProperties) {
-                    this.globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(globalProperties);
-                }
+        this.globalPropertiesStateSubscription =
+            this.globalPropertiesState.subscribe((globalProperties: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (globalProperties) {
+                        this.globalNumberFormat =
+                            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                                globalProperties
+                            );
+                    }
+                });
             });
-        });
     }
 
     /**
@@ -129,7 +163,7 @@ export class ArticleCampaignSearchComponent extends BaseComponent implements OnI
      * @param $event
      */
     quantityChange($event: any) {
-        this.displayError = !(!!this.selectedArticleItemQuantity);
+        this.displayError = !!!this.selectedArticleItemQuantity;
     }
 
     /**
@@ -145,8 +179,7 @@ export class ArticleCampaignSearchComponent extends BaseComponent implements OnI
      */
     private focusQuantityTextbox() {
         setTimeout(() => {
-            if (this.wijQuantNum)
-                this.wijQuantNum.nativeElement.focus();
+            if (this.wijQuantNum) this.wijQuantNum.nativeElement.focus();
         }, 100);
     }
 
@@ -164,7 +197,7 @@ export class ArticleCampaignSearchComponent extends BaseComponent implements OnI
             ArticleNr: this.selectedItem.ArticleNr,
             ArticleNameShort: this.selectedItem.ArticleNameShort,
             Quantity: this.selectedArticleItemQuantity,
-            SalesPrice: this.selectedItem.SalesPrice
+            SalesPrice: this.selectedItem.SalesPrice,
         });
     }
 
@@ -174,5 +207,4 @@ export class ArticleCampaignSearchComponent extends BaseComponent implements OnI
             this.dataSource.data = [];
         }
     }
-
 }

@@ -5,9 +5,8 @@
     display: inline-block;
     width: 32px;
     height: 32px;
-    background: url('../public/assets/img/flags.png') no-repeat;
+    background: url("../public/assets/img/flags.png") no-repeat;
 }
-
 
 .flag.flag-do {
     background-position: -256px -96px;
@@ -81,7 +80,8 @@
     background-position: -160px -320px;
 }
 
-.flag.flag-jp, .flag.flag-ja {
+.flag.flag-jp,
+.flag.flag-ja {
     background-position: -448px -192px;
 }
 

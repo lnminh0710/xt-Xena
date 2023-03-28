@@ -1,9 +1,16 @@
-import { Component, Output, Input, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import {
+    Component,
+    Output,
+    Input,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+} from "@angular/core";
 
 @Component({
-    selector: 'sel-select-group',
-    styleUrls: ['./select-group.component.scss'],
-    templateUrl: './select-group.component.html'
+    selector: "sel-select-group",
+    styleUrls: ["./select-group.component.scss"],
+    templateUrl: "./select-group.component.html",
 })
 export class SelSelectGroupComponent implements OnInit, OnDestroy {
     @Input() mainList: any;
@@ -13,19 +20,17 @@ export class SelSelectGroupComponent implements OnInit, OnDestroy {
     @Output() addNewGroupClicked: EventEmitter<any> = new EventEmitter();
 
     public perfectScrollbarConfig: any = {};
-    
-    constructor() {
-    }
+
+    constructor() {}
 
     public ngOnInit() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
 
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     public itemChanged($event: any) {
         this.listCheckedChange.emit();

@@ -1,4 +1,4 @@
-import {  WidgetPropertyModel } from 'app/models';
+import { WidgetPropertyModel } from "app/models";
 
 /**
  * RawFieldEntity
@@ -6,13 +6,13 @@ import {  WidgetPropertyModel } from 'app/models';
  * So we create this model to map.
  */
 export class RawFieldEntity {
-    public ColumnName: string = '';
-    public DataLength: string = '';
-    public DataType: string = '';
-    public OrderBy: string = '';
-    public OriginalColumnName: string = '';
-    public Setting: string = '';
-    public Value: string = '';
+    public ColumnName: string = "";
+    public DataLength: string = "";
+    public DataType: string = "";
+    public OrderBy: string = "";
+    public OriginalColumnName: string = "";
+    public Setting: string = "";
+    public Value: string = "";
 
     public constructor(init?: Partial<RawFieldEntity>) {
         Object.assign(this, init);
@@ -23,13 +23,16 @@ export class RawFieldEntity {
         if (this.Setting) {
             const settingArray = JSON.parse(this.Setting);
             for (let i = 0; i < settingArray.length; i++) {
-                if (settingArray[i].DisplayField && settingArray[i].DisplayField.Hidden == '1') {
+                if (
+                    settingArray[i].DisplayField &&
+                    settingArray[i].DisplayField.Hidden == "1"
+                ) {
                     display = false;
                 }
             }
         }
         let dataSetting: DataSetting = new DataSetting({
-            display: display
+            display: display,
         });
         return new FieldEntity({
             columnName: this.ColumnName,
@@ -38,28 +41,30 @@ export class RawFieldEntity {
             orderBy: this.OrderBy,
             originalColumnName: this.OriginalColumnName,
             value: this.Value,
-            setting: dataSetting
+            setting: dataSetting,
         });
     }
-
 
     toStyleFormatFieldEntity() {
         let display = true;
         if (this.Setting) {
             const settingArray = JSON.parse(this.Setting);
             for (let i = 0; i < settingArray.length; i++) {
-                if (settingArray[i].DisplayField && settingArray[i].DisplayField.Hidden == '1') {
+                if (
+                    settingArray[i].DisplayField &&
+                    settingArray[i].DisplayField.Hidden == "1"
+                ) {
                     display = false;
                 }
             }
         }
         let dataSetting: DataSetting = new DataSetting({
-            display: display
+            display: display,
         });
         return new StyleFormatFieldEntity({
             columnName: this.ColumnName,
             originalColumnName: this.OriginalColumnName,
-            setting: dataSetting
+            setting: dataSetting,
         });
     }
 }
@@ -68,8 +73,8 @@ export class RawFieldEntity {
  * BaseFieldEntity
  */
 export class BaseFieldEntity {
-    public columnName: string = '';
-    public originalColumnName: string = '';
+    public columnName: string = "";
+    public originalColumnName: string = "";
     public setting: DataSetting = null;
 
     public constructor(init?: Partial<BaseFieldEntity>) {
@@ -81,10 +86,10 @@ export class BaseFieldEntity {
  * FieldEntity
  */
 export class FieldEntity extends BaseFieldEntity {
-    public dataLength: string = '';
-    public dataType: string = '';
-    public orderBy: string = '';
-    public value: string = '';
+    public dataLength: string = "";
+    public dataType: string = "";
+    public orderBy: string = "";
+    public value: string = "";
 
     public constructor(init?: Partial<FieldEntity>) {
         super(init);
@@ -109,7 +114,7 @@ export class StyleFormatFieldEntity extends BaseFieldEntity {
  */
 export class DataSetting {
     public display: boolean = false;
-    
+
     public constructor(init?: Partial<DataSetting>) {
         Object.assign(this, init);
     }

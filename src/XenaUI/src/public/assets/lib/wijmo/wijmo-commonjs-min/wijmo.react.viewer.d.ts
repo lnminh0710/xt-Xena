@@ -1,4 +1,4 @@
-import * as wjcReactBase from 'wijmo/wijmo.react.base';
+import * as wjcReactBase from "wijmo/wijmo.react.base";
 export declare class ReportViewer extends wjcReactBase.ComponentBase {
     constructor(props: any);
 }

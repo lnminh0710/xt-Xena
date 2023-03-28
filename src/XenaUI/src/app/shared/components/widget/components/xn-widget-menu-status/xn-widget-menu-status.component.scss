@@ -4,7 +4,7 @@ $widthOfRightMenu: 400px;
 .xn-widget-menu-status {
     overflow: hidden;
 
-    input[type=image] {
+    input[type="image"] {
         cursor: pointer;
     }
 
@@ -20,7 +20,7 @@ $widthOfRightMenu: 400px;
             border-radius: 30px;
 
             &.has-data {
-                background-color: #FB8C00;
+                background-color: #fb8c00;
                 color: white;
             }
         }
@@ -59,7 +59,8 @@ $widthOfRightMenu: 400px;
         filter: brightness(85%);
     }
 
-    .edit-widget:hover, .opening-edit-dropdown {
+    .edit-widget:hover,
+    .opening-edit-dropdown {
         padding-right: 0 !important;
         margin-right: 4px !important;
     }
@@ -153,7 +154,8 @@ $widthOfRightMenu: 400px;
         margin-left: -1px;
     }
 
-    .front, .back {
+    .front,
+    .back {
         backface-visibility: hidden;
         transform-style: preserve-3d;
         transform: rotateY(0deg);
@@ -267,12 +269,13 @@ $widthOfRightMenu: 400px;
 
 .badge-delete {
     float: left;
-    background-color: #C62828;
+    background-color: #c62828;
     font-size: 10px;
     margin-left: -5px;
 }
 
-.search-btn, .excel-btn {
+.search-btn,
+.excel-btn {
     font-size: 16pt;
 }
 
@@ -289,7 +292,8 @@ $widthOfRightMenu: 400px;
         width: auto;
         min-width: 150px;
         border: 1px solid #d3d3d3;
-        box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+            0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
         border-radius: 4px;
     }
 
@@ -323,11 +327,15 @@ $widthOfRightMenu: 400px;
         padding: 5px;
     }
 
-    li:hover, li:focus, li:active {
+    li:hover,
+    li:focus,
+    li:active {
         background-color: #f5f5f5;
     }
 
-    a:hover, a:focus, a:active {
+    a:hover,
+    a:focus,
+    a:active {
         text-decoration: none;
         color: #000;
     }

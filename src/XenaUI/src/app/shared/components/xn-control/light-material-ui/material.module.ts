@@ -9,7 +9,7 @@ import { MatSlideToggleModule } from "./slide-toggle";
         MatButtonModule,
         MatCheckboxModule,
         MatRadioModule,
-        MatSlideToggleModule
-    ]
+        MatSlideToggleModule,
+    ],
 })
-export class MaterialModule { }
+export class MaterialModule {}

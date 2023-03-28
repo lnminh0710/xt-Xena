@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { DelayContentDirective } from './delay-content.directive';
+import { NgModule } from "@angular/core";
+import { DelayContentDirective } from "./delay-content.directive";
 
 @NgModule({
     imports: [],
     declarations: [DelayContentDirective],
     exports: [DelayContentDirective],
-    providers: []
+    providers: [],
 })
-export class DelayContentModule { }
+export class DelayContentModule {}

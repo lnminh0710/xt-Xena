@@ -1,23 +1,35 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { TabSummaryModel } from 'app/models/tab-summary/tab-summary.model';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { AppState } from 'app/state-management/store';
-import { Store } from '@ngrx/store';
-import { AppErrorHandler } from 'app/services';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import { BaseComponent } from 'app/pages/private/base';
-import { Uti } from 'app/utilities';
-import { PageModel } from 'app/models';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { TabSummaryModel } from "app/models/tab-summary/tab-summary.model";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { AppState } from "app/state-management/store";
+import { Store } from "@ngrx/store";
+import { AppErrorHandler } from "app/services";
+import * as tabSummaryReducer from "app/state-management/store/reducer/tab-summary";
+import { BaseComponent } from "app/pages/private/base";
+import { Uti } from "app/utilities";
+import { PageModel } from "app/models";
 
 @Component({
-    selector: 'app-tool-container',
-    templateUrl: './tool-container.component.html',
-    styleUrls: ['./tool-container.component.scss']
+    selector: "app-tool-container",
+    templateUrl: "./tool-container.component.html",
+    styleUrls: ["./tool-container.component.scss"],
 })
-export class ToolContainerComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-    public tabId = 'ScanDispatcher';
+export class ToolContainerComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
+    public tabId = "ScanDispatcher";
     private selectedTabHeaderModel: Observable<TabSummaryModel>;
     private selectedTabHeaderModelSubscription: Subscription;
 
@@ -33,9 +45,15 @@ export class ToolContainerComponent extends BaseComponent implements OnInit, OnD
         private _eref: ElementRef,
         protected router: Router
     ) {
-        super(router)
+        super(router);
 
-        this.selectedTabHeaderModel = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedTab);
+        this.selectedTabHeaderModel = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedTab
+        );
     }
 
     /**
@@ -55,18 +73,23 @@ export class ToolContainerComponent extends BaseComponent implements OnInit, OnD
     /**
      * ngAfterViewInit
      */
-    ngAfterViewInit() {
-    }
+    ngAfterViewInit() {}
 
     private subscribeSelectedTabHeaderModel() {
-        this.selectedTabHeaderModelSubscription = this.selectedTabHeaderModel.subscribe((selectedTabHeader: TabSummaryModel) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!selectedTabHeader || !selectedTabHeader.tabSummaryInfor) {
-                    return;
+        this.selectedTabHeaderModelSubscription =
+            this.selectedTabHeaderModel.subscribe(
+                (selectedTabHeader: TabSummaryModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            !selectedTabHeader ||
+                            !selectedTabHeader.tabSummaryInfor
+                        ) {
+                            return;
+                        }
+                        this.tabId = selectedTabHeader.tabSummaryInfor.tabID;
+                    });
                 }
-                this.tabId = selectedTabHeader.tabSummaryInfor.tabID;
-            });
-        });
+            );
     }
 
     public widgetDeleted(event) {

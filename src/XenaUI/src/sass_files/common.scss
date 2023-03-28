@@ -75,7 +75,7 @@ p-dialog {
     box-shadow: none !important;
 
     control-messages {
-        opacity: .4;
+        opacity: 0.4;
     }
 
     select,
@@ -230,7 +230,6 @@ xn-message-modal .custom-modal-medium {
     z-index: 666;
 }
 
-
 .block-ui {
     background: #a1a1a1f0;
     opacity: 0.2;
@@ -257,7 +256,7 @@ xn-message-modal .custom-modal-medium {
     position: absolute;
     z-index: 1070;
     display: block;
-    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
@@ -294,7 +293,8 @@ xn-message-modal .custom-modal-medium {
     }
 }
 
-.xn-tooltip, .xn-tooltip-top {
+.xn-tooltip,
+.xn-tooltip-top {
     padding: 5px 0;
     margin-top: -3px;
 
@@ -346,31 +346,34 @@ xn-message-modal .custom-modal-medium {
     }
 }
 
-.xn-tooltip .xn-tooltip-arrow, .xn-tooltip-top .xn-tooltip-arrow, .xn-tooltip-bottom .xn-tooltip-arrow {
+.xn-tooltip .xn-tooltip-arrow,
+.xn-tooltip-top .xn-tooltip-arrow,
+.xn-tooltip-bottom .xn-tooltip-arrow {
     left: calc(50% - 2.5px);
 }
 
-.xn-tooltip-left .xn-tooltip-arrow, .xn-tooltip-right .xn-tooltip-arrow {
+.xn-tooltip-left .xn-tooltip-arrow,
+.xn-tooltip-right .xn-tooltip-arrow {
     top: calc(50% - 2.5px);
     left: 100%;
 }
 
 .xn-tooltip.xn-show {
-    opacity: .9;
-    display: block!important;
+    opacity: 0.9;
+    display: block !important;
 }
 
 .xn-fade {
-    transition: opacity .15s linear;
+    transition: opacity 0.15s linear;
 }
 
 .widget-dropdown-menu.show {
-	.ps-container {
-		.ps-content {
-			max-height: 400px;
-			overflow-y: auto;
-		}
-	}
+    .ps-container {
+        .ps-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    }
 }
 
 .toast-message {

@@ -1,2 +1,1 @@
-﻿export { ParkedItemProjectStatusComponent } from './parked-item-project-status.component'
-
+﻿export { ParkedItemProjectStatusComponent } from "./parked-item-project-status.component";

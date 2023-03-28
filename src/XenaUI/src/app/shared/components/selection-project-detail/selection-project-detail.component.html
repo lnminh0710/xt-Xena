@@ -1,136 +1,175 @@
-<split direction="vertical"
-       [gutterSize]="5"
-       (dragEnd)="dragEnd($event)"
-       #verticalSplit>
-    <split-area [size]="splitterConfig.leftVertical" [perfect-scrollbar]="perfectScrollbarConfig">
-        <div class="d-flex h-100"
-             *ngIf="!readOnly">
+<split
+    direction="vertical"
+    [gutterSize]="5"
+    (dragEnd)="dragEnd($event)"
+    #verticalSplit
+>
+    <split-area
+        [size]="splitterConfig.leftVertical"
+        [perfect-scrollbar]="perfectScrollbarConfig"
+    >
+        <div class="d-flex h-100" *ngIf="!readOnly">
             <div class="left-grid flex-grow-1">
-                <xn-ag-grid #leftGrid
-                            [id]="leftGridId"
-                            [dataSource]="leftGridData"
-                            [hasSearch]="true"
-                            [pageSize]="pageSize"
-                            [serverPaging]="true"
-                            [isShowedHeader]="true"
-                            [isUsedSearchTextboxInside]="true"
-                            [headerTitle]="'Selection to exclude'"
-                            [globalProperties]="globalProperties"
-                            [columnsLayoutSettings]="columnsLayoutSettings[leftGridId]"
-                            (rowDoubleClicked)="leftGridRowDoubleClick($event)"
-                            (onTableSearch)="onLeftGridSearch($event)"
-                            (pageChanged)="onPageChanged($event)"
-                            (pageNumberChanged)="onPageNumberChanged($event)">
+                <xn-ag-grid
+                    #leftGrid
+                    [id]="leftGridId"
+                    [dataSource]="leftGridData"
+                    [hasSearch]="true"
+                    [pageSize]="pageSize"
+                    [serverPaging]="true"
+                    [isShowedHeader]="true"
+                    [isUsedSearchTextboxInside]="true"
+                    [headerTitle]="'Selection to exclude'"
+                    [globalProperties]="globalProperties"
+                    [columnsLayoutSettings]="columnsLayoutSettings[leftGridId]"
+                    (rowDoubleClicked)="leftGridRowDoubleClick($event)"
+                    (onTableSearch)="onLeftGridSearch($event)"
+                    (pageChanged)="onPageChanged($event)"
+                    (pageNumberChanged)="onPageNumberChanged($event)"
+                >
                 </xn-ag-grid>
             </div>
             <div class="command-panel">
                 <div class="spacing-top"></div>
                 <div class="command__button">
-                    <button (click)="addProject()"
-                            class="mat-btn-blue  mat-btn-non-fix--icon"
-                            mat-raised-button
-                            xn-tooltip
-                            [tooltipText]="'Add'"
-                            [tooltipPlacement]="'top'"
-                            container="body">
+                    <button
+                        (click)="addProject()"
+                        class="mat-btn-blue mat-btn-non-fix--icon"
+                        mat-raised-button
+                        xn-tooltip
+                        [tooltipText]="'Add'"
+                        [tooltipPlacement]="'top'"
+                        container="body"
+                    >
                         <i class="fa fa-step-forward" aria-hidden="true"></i>
                     </button>
                 </div>
                 <div class="spacing-bottom"></div>
                 <div class="command__button">
-                    <button (click)="removeProject()"
-                            class="mat-btn-blue  mat-btn-non-fix--icon"
-                            mat-raised-button
-                            xn-tooltip
-                            [tooltipText]="'Remove'"
-                            [tooltipPlacement]="'top'"
-                            container="body">
+                    <button
+                        (click)="removeProject()"
+                        class="mat-btn-blue mat-btn-non-fix--icon"
+                        mat-raised-button
+                        xn-tooltip
+                        [tooltipText]="'Remove'"
+                        [tooltipPlacement]="'top'"
+                        container="body"
+                    >
                         <i class="fa fa-step-backward" aria-hidden="true"></i>
                     </button>
                 </div>
                 <div class="command__button">
-                    <button (click)="removeAllProjects()"
-                            class="mat-btn-blue  mat-btn-non-fix--icon"
-                            mat-raised-button
-                            xn-tooltip
-                            [tooltipText]="'Remove all'"
-                            [tooltipPlacement]="'top'"
-                            container="body">
+                    <button
+                        (click)="removeAllProjects()"
+                        class="mat-btn-blue mat-btn-non-fix--icon"
+                        mat-raised-button
+                        xn-tooltip
+                        [tooltipText]="'Remove all'"
+                        [tooltipPlacement]="'top'"
+                        container="body"
+                    >
                         <i class="fa fa-fast-backward" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
             <div class="right-grid flex-grow-1">
-                <xn-ag-grid #rightGrid
-                            [id]="rightGridId"
-                            [dataSource]="rightGridData"
-                            [isShowedHeader]="true"
-                            [headerTitle]="'Excluded selection'"
-                            [globalProperties]="globalProperties"
-                            [columnsLayoutSettings]="columnsLayoutSettings[rightGridId]"
-                            (rowDoubleClicked)="rightGridRowDoubleClick($event)"
-                            (rowClick)="rightGridRowClick($event)">
+                <xn-ag-grid
+                    #rightGrid
+                    [id]="rightGridId"
+                    [dataSource]="rightGridData"
+                    [isShowedHeader]="true"
+                    [headerTitle]="'Excluded selection'"
+                    [globalProperties]="globalProperties"
+                    [columnsLayoutSettings]="columnsLayoutSettings[rightGridId]"
+                    (rowDoubleClicked)="rightGridRowDoubleClick($event)"
+                    (rowClick)="rightGridRowClick($event)"
+                >
                 </xn-ag-grid>
             </div>
         </div>
-        <div class="d-flex h-100"
-             *ngIf="readOnly">
+        <div class="d-flex h-100" *ngIf="readOnly">
             <div class="right-grid flex-grow-1">
-                <xn-ag-grid [id]="rightGridId"
-                            [dataSource]="rightGridData"
-                            [isShowedHeader]="true"
-                            [headerTitle]="'Excluded selection'"
-                            [globalProperties]="globalProperties"
-                            [columnsLayoutSettings]="columnsLayoutSettings[rightGridId]"
-                            (rowClick)="rightGridRowClick($event)">
+                <xn-ag-grid
+                    [id]="rightGridId"
+                    [dataSource]="rightGridData"
+                    [isShowedHeader]="true"
+                    [headerTitle]="'Excluded selection'"
+                    [globalProperties]="globalProperties"
+                    [columnsLayoutSettings]="columnsLayoutSettings[rightGridId]"
+                    (rowClick)="rightGridRowClick($event)"
+                >
                 </xn-ag-grid>
             </div>
         </div>
     </split-area>
-    <split-area [size]="splitterConfig.rightVertical" [perfect-scrollbar]="perfectScrollbarConfig">
-        <split direction="horizontal"
-               [gutterSize]="5"
-               (dragEnd)="dragEnd($event)"
-               #horizontalSplit>
-            <split-area [size]="splitterConfig.topHorizontal" [perfect-scrollbar]="perfectScrollbarConfig">
+    <split-area
+        [size]="splitterConfig.rightVertical"
+        [perfect-scrollbar]="perfectScrollbarConfig"
+    >
+        <split
+            direction="horizontal"
+            [gutterSize]="5"
+            (dragEnd)="dragEnd($event)"
+            #horizontalSplit
+        >
+            <split-area
+                [size]="splitterConfig.topHorizontal"
+                [perfect-scrollbar]="perfectScrollbarConfig"
+            >
                 <div class="h-100">
-                    <xn-ag-grid #bottomLeftGrid
-                                [id]="bottomLeftGridId"
-                                [dataSource]="bottomLeftGridData"
-                                [isShowedHeader]="true"
-                                [readOnly]="false"
-                                [headerTitle]="'Excluded Countries'"
-                                [isEditting]="!readOnly"
-                                [globalProperties]="globalProperties"
-                                [columnsLayoutSettings]="columnsLayoutSettings[bottomLeftGridId]"
-                                (rowClick)="bottomLeftGridRowClick($event)"
-                                (cellEditingStarted)="onTableEditStart()"
-                                (cellEditingStopped)="onTableEditEnd()"
-                                (cellValueChanged)="onBottomLeftGridEditSuccess($event)"
-                                (onCheckAllChecked)="onBottomLeftGridIsActiveAllChanged($event)">
+                    <xn-ag-grid
+                        #bottomLeftGrid
+                        [id]="bottomLeftGridId"
+                        [dataSource]="bottomLeftGridData"
+                        [isShowedHeader]="true"
+                        [readOnly]="false"
+                        [headerTitle]="'Excluded Countries'"
+                        [isEditting]="!readOnly"
+                        [globalProperties]="globalProperties"
+                        [columnsLayoutSettings]="
+                            columnsLayoutSettings[bottomLeftGridId]
+                        "
+                        (rowClick)="bottomLeftGridRowClick($event)"
+                        (cellEditingStarted)="onTableEditStart()"
+                        (cellEditingStopped)="onTableEditEnd()"
+                        (cellValueChanged)="onBottomLeftGridEditSuccess($event)"
+                        (onCheckAllChecked)="
+                            onBottomLeftGridIsActiveAllChanged($event)
+                        "
+                    >
                     </xn-ag-grid>
                 </div>
             </split-area>
-            <split-area [size]="splitterConfig.botHorizontal" [perfect-scrollbar]="perfectScrollbarConfig">
+            <split-area
+                [size]="splitterConfig.botHorizontal"
+                [perfect-scrollbar]="perfectScrollbarConfig"
+            >
                 <div class="h-100">
-                    <xn-ag-grid #bottomRightGrid
-                                [id]="bottomRightGridId"
-                                [dataSource]="bottomRightGridData"
-                                [isShowedHeader]="true"
-                                [readOnly]="false"
-                                [headerTitle]="'Excluded Mediacodes'"
-                                [isEditting]="!readOnly"
-                                [globalProperties]="globalProperties"
-                                [disabledAll]="isBottomRightGridDisabled"
-                                [columnsLayoutSettings]="columnsLayoutSettings[bottomRightGridId]"
-                                (cellEditingStarted)="onTableEditStart()"
-                                (cellEditingStopped)="onTableEditEnd()"
-                                (cellValueChanged)="onBottomRightGridEditSuccess($event)"
-                                (onCheckAllChecked)="onBottomRightGridIsActiveAllChanged($event)">
+                    <xn-ag-grid
+                        #bottomRightGrid
+                        [id]="bottomRightGridId"
+                        [dataSource]="bottomRightGridData"
+                        [isShowedHeader]="true"
+                        [readOnly]="false"
+                        [headerTitle]="'Excluded Mediacodes'"
+                        [isEditting]="!readOnly"
+                        [globalProperties]="globalProperties"
+                        [disabledAll]="isBottomRightGridDisabled"
+                        [columnsLayoutSettings]="
+                            columnsLayoutSettings[bottomRightGridId]
+                        "
+                        (cellEditingStarted)="onTableEditStart()"
+                        (cellEditingStopped)="onTableEditEnd()"
+                        (cellValueChanged)="
+                            onBottomRightGridEditSuccess($event)
+                        "
+                        (onCheckAllChecked)="
+                            onBottomRightGridIsActiveAllChanged($event)
+                        "
+                    >
                     </xn-ag-grid>
                 </div>
             </split-area>
         </split>
-
     </split-area>
 </split>

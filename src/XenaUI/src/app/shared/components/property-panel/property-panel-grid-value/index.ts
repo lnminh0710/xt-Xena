@@ -1,2 +1,1 @@
-﻿export { PropertyPanelGridValueComponent } from './property-panel-grid-value.component'
-
+﻿export { PropertyPanelGridValueComponent } from "./property-panel-grid-value.component";

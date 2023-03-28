@@ -1,1 +1,1 @@
-﻿export * from './wm-select-article';
+﻿export * from "./wm-select-article";

@@ -1,10 +1,16 @@
-import * as wjcGridMultirow from 'wijmo/wijmo.grid.multirow';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector } from '@angular/core';
-import { OnInit, OnDestroy } from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcGridMultirow from "wijmo/wijmo.grid.multirow";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import { ElementRef, Injector } from "@angular/core";
+import { OnInit, OnDestroy } from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjMultiRowMeta: IWjComponentMeta;
-export declare class WjMultiRow extends wjcGridMultirow.MultiRow implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjMultiRow
+    extends wjcGridMultirow.MultiRow
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -63,7 +69,11 @@ export declare class WjMultiRow extends wjcGridMultirow.MultiRow implements OnIn
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
-export declare class WjGridMultirowModule {
-}
+export declare class WjGridMultirowModule {}

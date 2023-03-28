@@ -1,1 +1,1 @@
-export * from './hot-key-setting-dialog.component';
+export * from "./hot-key-setting-dialog.component";

@@ -1,1 +1,1 @@
-export * from './module-search-dialog.component';
+export * from "./module-search-dialog.component";

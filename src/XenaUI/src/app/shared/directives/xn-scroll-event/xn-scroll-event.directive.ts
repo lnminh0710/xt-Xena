@@ -1,29 +1,33 @@
-import { Directive, HostListener, Output, EventEmitter, Input } from '@angular/core';
+import {
+    Directive,
+    HostListener,
+    Output,
+    EventEmitter,
+    Input,
+} from "@angular/core";
 
 export type ScrollEvent = {
-    originalEvent: Event,
-    isReachingBottom: boolean
+    originalEvent: Event;
+    isReachingBottom: boolean;
 };
 
 @Directive({
-    selector: '[xn-detect-scroll]'
+    selector: "[xn-detect-scroll]",
 })
-
 export class DetectScrollDirective {
-
     @Output()
     public onScroll = new EventEmitter<ScrollEvent>();
 
     @Input()
     public bottomOffset: number = 100;
 
-    constructor() { }
+    constructor() {}
 
     /**
-     * Scroll 
+     * Scroll
      * @param $event
      */
-    @HostListener('scroll', ['$event'])
+    @HostListener("scroll", ["$event"])
     public scrolled($event: Event) {
         this.elementScrollEvent($event);
     }
@@ -37,10 +41,13 @@ export class DetectScrollDirective {
         if (target.scrollHeight > target.offsetHeight) {
             const scrollPosition = target.scrollHeight - target.scrollTop;
             const offsetHeight = target.offsetHeight;
-            const isReachingBottom = (scrollPosition - offsetHeight) < this.bottomOffset;
-            const emitValue: ScrollEvent = { isReachingBottom, originalEvent: $event };
+            const isReachingBottom =
+                scrollPosition - offsetHeight < this.bottomOffset;
+            const emitValue: ScrollEvent = {
+                isReachingBottom,
+                originalEvent: $event,
+            };
             this.onScroll.emit(emitValue);
         }
     }
 }
-

@@ -1,16 +1,15 @@
 // Import all the theming functionality.
-@import '../core';
-@import '../../button/button-theme';
-@import '../../checkbox/checkbox-theme';
-@import '../../radio/radio-theme';
-@import '../../slide-toggle/slide-toggle-theme';
-
+@import "../core";
+@import "../../button/button-theme";
+@import "../../checkbox/checkbox-theme";
+@import "../../radio/radio-theme";
+@import "../../slide-toggle/slide-toggle-theme";
 
 // Create a theme.
 @mixin angular-material-theme($theme) {
-  @include mat-core-theme($theme);
-  @include mat-button-theme($theme);
-  @include mat-checkbox-theme($theme);
-  @include mat-radio-theme($theme);
-  @include mat-slide-toggle-theme($theme);
+    @include mat-core-theme($theme);
+    @include mat-button-theme($theme);
+    @include mat-checkbox-theme($theme);
+    @include mat-radio-theme($theme);
+    @include mat-slide-toggle-theme($theme);
 }

@@ -1,4 +1,3 @@
-
 import {
     Component,
     OnInit,
@@ -7,41 +6,41 @@ import {
     OnDestroy,
     EventEmitter,
     ChangeDetectorRef,
-    ViewChild
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import { Uti } from 'app/utilities';
+    ViewChild,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Uti } from "app/utilities";
 import {
     NotificationService,
-    AppErrorHandler, PropertyPanelService
-} from 'app/services';
-import { Subscription } from 'rxjs/Subscription';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { User } from 'app/models';
+    AppErrorHandler,
+    PropertyPanelService,
+} from "app/services";
+import { Subscription } from "rxjs/Subscription";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { User } from "app/models";
 import {
     MainNotificationTypeEnum,
-    NotificationStatusEnum
-} from 'app/app.constants';
-import { NotificationListViewChildComponent } from '../notification-list-view-child';
-import { format } from 'date-fns/esm';
-import { parse } from 'date-fns/esm';
+    NotificationStatusEnum,
+} from "app/app.constants";
+import { NotificationListViewChildComponent } from "../notification-list-view-child";
+import { format } from "date-fns/esm";
+import { parse } from "date-fns/esm";
 
 @Component({
-    selector: 'notification-list-view-main',
-    styleUrls: ['./notification-list-view-main.component.scss'],
-    templateUrl: './notification-list-view-main.component.html'
+    selector: "notification-list-view-main",
+    styleUrls: ["./notification-list-view-main.component.scss"],
+    templateUrl: "./notification-list-view-main.component.html",
 })
-export class NotificationListViewMainComponent extends BaseComponent implements OnInit, OnDestroy {
+export class NotificationListViewMainComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public isShowArchivePopup: boolean = false;
     public isShowDetailPopup: boolean = false;
     public isDataArchived: boolean = false;
-    public archiveTitle: string = '';
-    public typeArchive: string = '';
+    public archiveTitle: string = "";
+    public typeArchive: string = "";
     public detailData: any = {};
     private userData: User = new User();
 
@@ -55,13 +54,17 @@ export class NotificationListViewMainComponent extends BaseComponent implements 
 
     @Output() updateAutoClose: EventEmitter<boolean> = new EventEmitter();
 
-    @ViewChild('autoLetterListComponent') autoLetterListComponent: NotificationListViewChildComponent;
-    @ViewChild('feedbackListComponent') feedbackListComponent: NotificationListViewChildComponent;
-    @ViewChild('sendToAdminListComponent') sendToAdminListComponent: NotificationListViewChildComponent;
+    @ViewChild("autoLetterListComponent")
+    autoLetterListComponent: NotificationListViewChildComponent;
+    @ViewChild("feedbackListComponent")
+    feedbackListComponent: NotificationListViewChildComponent;
+    @ViewChild("sendToAdminListComponent")
+    sendToAdminListComponent: NotificationListViewChildComponent;
 
     private globalDateFormat: string = null;
 
-    constructor(private notificationService: NotificationService,
+    constructor(
+        private notificationService: NotificationService,
         private appErrorHandler: AppErrorHandler,
         private toasterService: ToasterService,
         private changeDetectorRef: ChangeDetectorRef,
@@ -70,7 +73,7 @@ export class NotificationListViewMainComponent extends BaseComponent implements 
         router?: Router
     ) {
         super(router);
-        this.userData = (new Uti()).getUserInfo();
+        this.userData = new Uti().getUserInfo();
     }
     public ngOnInit() {
         this.setGlobalFormat();
@@ -86,7 +89,11 @@ export class NotificationListViewMainComponent extends BaseComponent implements 
     public archiveItemOkActionHandler(dataArchive: any, typeArchive: string) {
         this.typeArchive = typeArchive;
         this.archivedItem([dataArchive], () => {
-            Uti.removeItemInArray(this[this.listName], dataArchive, 'IdNotification');
+            Uti.removeItemInArray(
+                this[this.listName],
+                dataArchive,
+                "IdNotification"
+            );
             this.updateAutoClose.emit(true);
         });
     }
@@ -114,7 +121,7 @@ export class NotificationListViewMainComponent extends BaseComponent implements 
     }
     public closeArchivePopupActionHandler() {
         this.isShowArchivePopup = false;
-        this.typeArchive = '';
+        this.typeArchive = "";
         setTimeout(() => {
             this.updateAutoClose.emit(true);
         }, 200);
@@ -130,62 +137,97 @@ export class NotificationListViewMainComponent extends BaseComponent implements 
     }
     public archiveItemFromPopupActionHandler() {
         this.archivedItem([this.detailData], () => {
-            Uti.removeItemInArray(this[this.typeArchive + 'List'], this.detailData, 'IdNotification');
+            Uti.removeItemInArray(
+                this[this.typeArchive + "List"],
+                this.detailData,
+                "IdNotification"
+            );
             this.closeDetailPopupActionHandler();
         });
     }
     public showDetailActionHandler(item: any) {
-        this.notificationService.getNotifications({
-            IdLoginNotification: this.userData.id,
-            MainNotificationType: MainNotificationTypeEnum[Uti.upperCaseFirstLetter(this.typeArchive)],
-            NotificationStatus: NotificationStatusEnum.Archive,
-            IdNotification: item.id
-        }).subscribe((response: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response) || !response.item.data || response.item.data.length < 2) {
-                    return;
-                }
+        this.notificationService
+            .getNotifications({
+                IdLoginNotification: this.userData.id,
+                MainNotificationType:
+                    MainNotificationTypeEnum[
+                        Uti.upperCaseFirstLetter(this.typeArchive)
+                    ],
+                NotificationStatus: NotificationStatusEnum.Archive,
+                IdNotification: item.id,
+            })
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.data ||
+                        response.item.data.length < 2
+                    ) {
+                        return;
+                    }
 
-                let dataItem = Object.assign({}, response.item.data[1][0]);
-                dataItem.Children = response.item.data[1].filter(x => !Uti.isNullUndefinedEmptyObject(x.PicturePath));
+                    let dataItem = Object.assign({}, response.item.data[1][0]);
+                    dataItem.Children = response.item.data[1].filter(
+                        (x) => !Uti.isNullUndefinedEmptyObject(x.PicturePath)
+                    );
 
-                const createDate = Uti.parseISODateToDate(dataItem.SysCreateDate); //parse(dataItem.CreateDate, 'dd.MM.yyyy', new Date());
-                dataItem.CreateDateDisplay = this.uti.formatLocale(createDate, this.globalDateFormat + ' HH:mm:ss');
+                    const createDate = Uti.parseISODateToDate(
+                        dataItem.SysCreateDate
+                    ); //parse(dataItem.CreateDate, 'dd.MM.yyyy', new Date());
+                    dataItem.CreateDateDisplay = this.uti.formatLocale(
+                        createDate,
+                        this.globalDateFormat + " HH:mm:ss"
+                    );
 
-                this.isDataArchived = true;
-                this.isShowDetailPopup = true;
-                this.detailData = dataItem;
-                this.changeDetectorRef.detectChanges();
-                this.updateAutoClose.emit(false);
+                    this.isDataArchived = true;
+                    this.isShowDetailPopup = true;
+                    this.detailData = dataItem;
+                    this.changeDetectorRef.detectChanges();
+                    this.updateAutoClose.emit(false);
+                });
             });
-        });
     }
-    
+
     /*************************************************************************************************/
     /***************************************PRIVATE METHOD********************************************/
-    
+
     private setGlobalFormat() {
-        if (this.propertyPanelService.globalProperties && this.propertyPanelService.globalProperties.length) {
-            this.globalDateFormat = this.propertyPanelService.buildGlobalDateFormatFromProperties(this.propertyPanelService.globalProperties);
+        if (
+            this.propertyPanelService.globalProperties &&
+            this.propertyPanelService.globalProperties.length
+        ) {
+            this.globalDateFormat =
+                this.propertyPanelService.buildGlobalDateFormatFromProperties(
+                    this.propertyPanelService.globalProperties
+                );
         }
     }
     private removeActiveItem() {
-        for (let item of this[this.typeArchive + 'List']) {
+        for (let item of this[this.typeArchive + "List"]) {
             item.isFocused = false;
         }
     }
     private showDetailItemActionHandler(item: any, rawData: Array<any>) {
         this.isDataArchived = false;
         this.isShowDetailPopup = true;
-        item.Children = rawData.filter(x => x.IdNotification === item.IdNotification && !Uti.isNullUndefinedEmptyObject(item.PicturePath));
+        item.Children = rawData.filter(
+            (x) =>
+                x.IdNotification === item.IdNotification &&
+                !Uti.isNullUndefinedEmptyObject(item.PicturePath)
+        );
         this.detailData = item;
         this.updateAutoClose.emit(false);
     }
     private archivedItem(items: Array<any>, callBack?: Function) {
-        this.notificationService.setArchivedNotifications(this.buildArchivedData(items))
+        this.notificationService
+            .setArchivedNotifications(this.buildArchivedData(items))
             .subscribe((responseData: any) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(responseData) || !responseData.item.returnID) return;
+                    if (
+                        !Uti.isResquestSuccess(responseData) ||
+                        !responseData.item.returnID
+                    )
+                        return;
                     if (callBack) {
                         callBack();
                     }
@@ -195,22 +237,26 @@ export class NotificationListViewMainComponent extends BaseComponent implements 
     }
 
     private archiveItemSuccess() {
-        this.toasterService.pop('success', 'Success', 'Notification is archived');
-        this[this.typeArchive + 'ListComponent'].refreshScrollBar();
+        this.toasterService.pop(
+            "success",
+            "Success",
+            "Notification is archived"
+        );
+        this[this.typeArchive + "ListComponent"].refreshScrollBar();
     }
 
     private buildArchivedData(items: Array<any>): Array<any> {
-        return items.map(x => {
+        return items.map((x) => {
             return {
                 IdNotification: x.IdNotification,
-                IsActive: '0'
+                IsActive: "0",
             };
         });
     }
     private get listName(): string {
-        return this.typeArchive + 'List';
+        return this.typeArchive + "List";
     }
     private get rawName(): string {
-        return this.typeArchive + 'RawList';
+        return this.typeArchive + "RawList";
     }
 }

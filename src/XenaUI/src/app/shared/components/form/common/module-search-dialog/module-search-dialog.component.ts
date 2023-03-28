@@ -1,18 +1,30 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from "@angular/core";
-import {Configuration} from 'app/app.constants';
-import { Module } from 'app/models';
-import { GlobalSearchResultComponent } from 'app/shared/components/global-search/components/gs-result';
-import {Dialog} from 'primeng/components/dialog/dialog';
-import { ModalService } from 'app/services';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
+} from "@angular/core";
+import { Configuration } from "app/app.constants";
+import { Module } from "app/models";
+import { GlobalSearchResultComponent } from "app/shared/components/global-search/components/gs-result";
+import { Dialog } from "primeng/components/dialog/dialog";
+import { ModalService } from "app/services";
 
 @Component({
-    selector: 'module-search-dialog',
-    templateUrl: './module-search-dialog.component.html',
-    styleUrls: ['./module-search-dialog.component.scss']
+    selector: "module-search-dialog",
+    templateUrl: "./module-search-dialog.component.html",
+    styleUrls: ["./module-search-dialog.component.scss"],
 })
-export class ModuleSearchDialogComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ModuleSearchDialogComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     public allowDrag: any = {
-        value: false
+        value: false,
     };
 
     @Input() headerTitle: string;
@@ -23,7 +35,7 @@ export class ModuleSearchDialogComponent implements OnInit, OnDestroy, AfterView
     @Output() onItemSelect: EventEmitter<any> = new EventEmitter();
     @Output() onDialogClose: EventEmitter<any> = new EventEmitter();
 
-    @Input() keyword = '*';
+    @Input() keyword = "*";
 
     perfectScrollbarConfig: any = {};
 
@@ -34,24 +46,24 @@ export class ModuleSearchDialogComponent implements OnInit, OnDestroy, AfterView
     private preDialogLeft: string;
     private preDialogTop: string;
 
-
     public isWithStarStatus = false;
     public isResizable = true;
     public isDraggable = true;
     public isMaximized = false;
     public dialogStyleClass = this.consts.popupResizeClassName;
-    @ViewChild('gsResult')
+    @ViewChild("gsResult")
     gsResult: GlobalSearchResultComponent;
     private pDialogModuleSearch: any;
-    @ViewChild('pDialogModuleSearch') set pDialogModuleSearchInstance(pDialogModuleSearchInstance: Dialog) {
+    @ViewChild("pDialogModuleSearch") set pDialogModuleSearchInstance(
+        pDialogModuleSearchInstance: Dialog
+    ) {
         this.pDialogModuleSearch = pDialogModuleSearchInstance;
     }
-    constructor(private _eref: ElementRef,
-                private consts: Configuration,
-                private modalService: ModalService,
-    ) {
-
-    }
+    constructor(
+        private _eref: ElementRef,
+        private consts: Configuration,
+        private modalService: ModalService
+    ) {}
 
     /**
      * ngOnInit
@@ -59,28 +71,26 @@ export class ModuleSearchDialogComponent implements OnInit, OnDestroy, AfterView
     ngOnInit() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
 
     /**
      * ngOnDestroy
      */
-    ngOnDestroy() {
-    }
+    ngOnDestroy() {}
 
     /**
      * ngAfterViewInit
      */
-    ngAfterViewInit() {
-    }
+    ngAfterViewInit() {}
 
     /**
      * open
      */
     open(keyword?: string) {
         this.showDialog = true;
-        this.keyword = keyword || '*';
+        this.keyword = keyword || "*";
     }
 
     /**
@@ -90,7 +100,7 @@ export class ModuleSearchDialogComponent implements OnInit, OnDestroy, AfterView
         this.isMaximized = false;
         this.showDialog = false;
         this.onDialogClose.emit();
-        this.keyword = '*';
+        this.keyword = "*";
     }
 
     /**
@@ -106,7 +116,13 @@ export class ModuleSearchDialogComponent implements OnInit, OnDestroy, AfterView
      * @param value
      */
     search(value: string) {
-        if (this.modalService.isStopSearchWhenEmptySize(this.gsResult.pageSize, this.gsResult.pageIndex)) return;
+        if (
+            this.modalService.isStopSearchWhenEmptySize(
+                this.gsResult.pageSize,
+                this.gsResult.pageIndex
+            )
+        )
+            return;
         if (!value) {
             this.isSearching = false;
             return;
@@ -147,17 +163,28 @@ export class ModuleSearchDialogComponent implements OnInit, OnDestroy, AfterView
         this.isMaximized = true;
         this.isResizable = false;
         this.isDraggable = false;
-        this.dialogStyleClass = this.consts.popupResizeClassName + '  ' + this.consts.popupFullViewClassName;
+        this.dialogStyleClass =
+            this.consts.popupResizeClassName +
+            "  " +
+            this.consts.popupFullViewClassName;
         if (this.pDialogModuleSearch) {
-            this.preDialogW = this.pDialogModuleSearch.containerViewChild.nativeElement.style.width;
-            this.preDialogH = this.pDialogModuleSearch.containerViewChild.nativeElement.style.height;
-            this.preDialogLeft = this.pDialogModuleSearch.containerViewChild.nativeElement.style.left;
-            this.preDialogTop = this.pDialogModuleSearch.containerViewChild.nativeElement.style.top;
+            this.preDialogW =
+                this.pDialogModuleSearch.containerViewChild.nativeElement.style.width;
+            this.preDialogH =
+                this.pDialogModuleSearch.containerViewChild.nativeElement.style.height;
+            this.preDialogLeft =
+                this.pDialogModuleSearch.containerViewChild.nativeElement.style.left;
+            this.preDialogTop =
+                this.pDialogModuleSearch.containerViewChild.nativeElement.style.top;
 
-            this.pDialogModuleSearch.containerViewChild.nativeElement.style.width = $(document).width() + 'px';
-            this.pDialogModuleSearch.containerViewChild.nativeElement.style.height = $(document).height() + 'px';
-            this.pDialogModuleSearch.containerViewChild.nativeElement.style.top = '0px';
-            this.pDialogModuleSearch.containerViewChild.nativeElement.style.left = '0px';
+            this.pDialogModuleSearch.containerViewChild.nativeElement.style.width =
+                $(document).width() + "px";
+            this.pDialogModuleSearch.containerViewChild.nativeElement.style.height =
+                $(document).height() + "px";
+            this.pDialogModuleSearch.containerViewChild.nativeElement.style.top =
+                "0px";
+            this.pDialogModuleSearch.containerViewChild.nativeElement.style.left =
+                "0px";
         }
     }
 
@@ -169,10 +196,14 @@ export class ModuleSearchDialogComponent implements OnInit, OnDestroy, AfterView
         this.isDraggable = true;
         this.dialogStyleClass = this.consts.popupResizeClassName;
         if (this.pDialogModuleSearch) {
-            this.pDialogModuleSearch.containerViewChild.nativeElement.style.width = this.preDialogW;
-            this.pDialogModuleSearch.containerViewChild.nativeElement.style.height = this.preDialogH;
-            this.pDialogModuleSearch.containerViewChild.nativeElement.style.top = this.preDialogTop;
-            this.pDialogModuleSearch.containerViewChild.nativeElement.style.left = this.preDialogLeft;
+            this.pDialogModuleSearch.containerViewChild.nativeElement.style.width =
+                this.preDialogW;
+            this.pDialogModuleSearch.containerViewChild.nativeElement.style.height =
+                this.preDialogH;
+            this.pDialogModuleSearch.containerViewChild.nativeElement.style.top =
+                this.preDialogTop;
+            this.pDialogModuleSearch.containerViewChild.nativeElement.style.left =
+                this.preDialogLeft;
         }
     }
 }

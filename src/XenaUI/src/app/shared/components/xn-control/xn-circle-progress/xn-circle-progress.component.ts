@@ -4,8 +4,15 @@
     https://github.com/bootsoon/ng-circle-progress
 */
 
-import {Component, EventEmitter, Input, OnChanges, Output, ChangeDetectorRef} from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+    ChangeDetectorRef,
+} from "@angular/core";
+import { Subscription, Observable } from "rxjs";
 
 interface CircleProgressOptionsInterface {
     class?: string;
@@ -50,10 +57,10 @@ interface CircleProgressOptionsInterface {
 }
 
 class CircleProgressOptions implements CircleProgressOptionsInterface {
-    class = '';
-    backgroundColor = 'transparent';
+    class = "";
+    backgroundColor = "transparent";
     backgroundOpacity = 1;
-    backgroundStroke = 'transparent';
+    backgroundStroke = "transparent";
     backgroundStrokeWidth = 0;
     backgroundPadding = 5;
     percent = 0;
@@ -62,22 +69,22 @@ class CircleProgressOptions implements CircleProgressOptionsInterface {
     toFixed = 0;
     maxPercent = 1000;
     renderOnClick = true;
-    units = '%';
-    unitsFontSize = '10';
-    unitsColor = '#444444';
+    units = "%";
+    unitsFontSize = "10";
+    unitsColor = "#444444";
     outerStrokeWidth = 8;
-    outerStrokeColor = '#78C000';
-    outerStrokeLinecap = 'round';
-    innerStrokeColor = '#8bd1e8';
+    outerStrokeColor = "#78C000";
+    outerStrokeLinecap = "round";
+    innerStrokeColor = "#8bd1e8";
     innerStrokeWidth = 8;
     titleFormat = undefined;
-    title: string | Array<String> = 'auto';
-    titleColor = '#444444';
-    titleFontSize = '20';
+    title: string | Array<String> = "auto";
+    titleColor = "#444444";
+    titleFontSize = "20";
     subtitleFormat = undefined;
-    subtitle: string | Array<String> = 'progress';
-    subtitleColor = '#A9A9A9';
-    subtitleFontSize = '10';
+    subtitle: string | Array<String> = "progress";
+    subtitleColor = "#A9A9A9";
+    subtitleFontSize = "10";
     animation = true;
     animateTitle = false;
     animateSubtitle = false;
@@ -92,65 +99,91 @@ class CircleProgressOptions implements CircleProgressOptionsInterface {
 }
 
 @Component({
-    selector: 'circle-progress',
+    selector: "circle-progress",
     template: `
-        <svg xmlns="http://www.w3.org/2000/svg" *ngIf="svg"
-             [attr.viewBox]="svg.viewBox" preserveAspectRatio="xMidYMid meet"
-             [attr.height]="svg.height" [attr.width]="svg.width" (click)="emitClickEvent($event)" [attr.class]="options.class">
-            <circle *ngIf="options.showBackground"
-                    [attr.cx]="svg.backgroundCircle.cx"
-                    [attr.cy]="svg.backgroundCircle.cy"
-                    [attr.r]="svg.backgroundCircle.r"
-                    [attr.fill]="svg.backgroundCircle.fill"
-                    [attr.fill-opacity]="svg.backgroundCircle.fillOpacity"
-                    [attr.stroke]="svg.backgroundCircle.stroke"
-                    [attr.stroke-width]="svg.backgroundCircle.strokeWidth"/>
-            <circle *ngIf="options.showInnerStroke"
-                    [attr.cx]="svg.circle.cx"
-                    [attr.cy]="svg.circle.cy"
-                    [attr.r]="svg.circle.r"
-                    [attr.fill]="svg.circle.fill"
-                    [attr.stroke]="svg.circle.stroke"
-                    [attr.stroke-width]="svg.circle.strokeWidth"/>
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            *ngIf="svg"
+            [attr.viewBox]="svg.viewBox"
+            preserveAspectRatio="xMidYMid meet"
+            [attr.height]="svg.height"
+            [attr.width]="svg.width"
+            (click)="emitClickEvent($event)"
+            [attr.class]="options.class"
+        >
+            <circle
+                *ngIf="options.showBackground"
+                [attr.cx]="svg.backgroundCircle.cx"
+                [attr.cy]="svg.backgroundCircle.cy"
+                [attr.r]="svg.backgroundCircle.r"
+                [attr.fill]="svg.backgroundCircle.fill"
+                [attr.fill-opacity]="svg.backgroundCircle.fillOpacity"
+                [attr.stroke]="svg.backgroundCircle.stroke"
+                [attr.stroke-width]="svg.backgroundCircle.strokeWidth"
+            />
+            <circle
+                *ngIf="options.showInnerStroke"
+                [attr.cx]="svg.circle.cx"
+                [attr.cy]="svg.circle.cy"
+                [attr.r]="svg.circle.r"
+                [attr.fill]="svg.circle.fill"
+                [attr.stroke]="svg.circle.stroke"
+                [attr.stroke-width]="svg.circle.strokeWidth"
+            />
             <path
-                    [attr.d]="svg.path.d"
-                    [attr.stroke]="svg.path.stroke"
-                    [attr.stroke-width]="svg.path.strokeWidth"
-                    [attr.stroke-linecap]="svg.path.strokeLinecap"
-                    [attr.fill]="svg.path.fill"/>
-            <text *ngIf="options.showTitle || options.showUnits || options.showSubtitle"
-                  alignment-baseline="baseline"
-                  [attr.x]="svg.circle.cx"
-                  [attr.y]="svg.circle.cy"
-                  [attr.text-anchor]="svg.title.textAnchor">
+                [attr.d]="svg.path.d"
+                [attr.stroke]="svg.path.stroke"
+                [attr.stroke-width]="svg.path.strokeWidth"
+                [attr.stroke-linecap]="svg.path.strokeLinecap"
+                [attr.fill]="svg.path.fill"
+            />
+            <text
+                *ngIf="
+                    options.showTitle ||
+                    options.showUnits ||
+                    options.showSubtitle
+                "
+                alignment-baseline="baseline"
+                [attr.x]="svg.circle.cx"
+                [attr.y]="svg.circle.cy"
+                [attr.text-anchor]="svg.title.textAnchor"
+            >
                 <ng-container *ngIf="options.showTitle">
-                    <tspan *ngFor="let tspan of svg.title.tspans"
-                           [attr.x]="svg.title.x"
-                           [attr.y]="svg.title.y"
-                           [attr.dy]="tspan.dy"
-                           [attr.font-size]="svg.title.fontSize"
-                           [attr.fill]="svg.title.color">{{tspan.span}}
+                    <tspan
+                        *ngFor="let tspan of svg.title.tspans"
+                        [attr.x]="svg.title.x"
+                        [attr.y]="svg.title.y"
+                        [attr.dy]="tspan.dy"
+                        [attr.font-size]="svg.title.fontSize"
+                        [attr.fill]="svg.title.color"
+                    >
+                        {{ tspan.span }}
                     </tspan>
                 </ng-container>
-                <tspan *ngIf="options.showUnits"
-                       [attr.font-size]="svg.units.fontSize"
-                       [attr.fill]="svg.units.color">{{svg.units.text}}
+                <tspan
+                    *ngIf="options.showUnits"
+                    [attr.font-size]="svg.units.fontSize"
+                    [attr.fill]="svg.units.color"
+                >
+                    {{ svg.units.text }}
                 </tspan>
                 <ng-container *ngIf="options.showSubtitle">
-                    <tspan *ngFor="let tspan of svg.subtitle.tspans"
-                           [attr.x]="svg.subtitle.x"
-                           [attr.y]="svg.subtitle.y"
-                           [attr.dy]="tspan.dy"
-                           [attr.font-size]="svg.subtitle.fontSize"
-                           [attr.fill]="svg.subtitle.color">{{tspan.span}}
+                    <tspan
+                        *ngFor="let tspan of svg.subtitle.tspans"
+                        [attr.x]="svg.subtitle.x"
+                        [attr.y]="svg.subtitle.y"
+                        [attr.dy]="tspan.dy"
+                        [attr.font-size]="svg.subtitle.fontSize"
+                        [attr.fill]="svg.subtitle.color"
+                    >
+                        {{ tspan.span }}
                     </tspan>
                 </ng-container>
             </text>
         </svg>
-    `
+    `,
 })
 export class CircleProgressComponent implements OnChanges {
-
     @Output() onClick: EventEmitter<any> = new EventEmitter();
 
     @Input() class: string;
@@ -201,7 +234,7 @@ export class CircleProgressComponent implements OnChanges {
     @Input() clockwise: boolean;
     @Input() responsive: boolean;
 
-    @Input('options') templateOptions: CircleProgressOptions;
+    @Input("options") templateOptions: CircleProgressOptions;
 
     svg: any;
 
@@ -215,29 +248,40 @@ export class CircleProgressComponent implements OnChanges {
         }
     };
     polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
-        let angleInRadius = angleInDegrees * Math.PI / 180;
+        let angleInRadius = (angleInDegrees * Math.PI) / 180;
         let x = centerX + Math.sin(angleInRadius) * radius;
         let y = centerY - Math.cos(angleInRadius) * radius;
-        return {x: x, y: y};
+        return { x: x, y: y };
     };
     draw = (percent: number) => {
         // make percent reasonable
-        percent = (percent === undefined) ? this.options.percent : Math.abs(percent);
+        percent =
+            percent === undefined ? this.options.percent : Math.abs(percent);
         // circle percent shouldn't be greater than 100%.
-        let circlePercent = (percent > 100) ? 100 : percent;
+        let circlePercent = percent > 100 ? 100 : percent;
         // determine box size
-        let boxSize = this.options.radius * 2 + this.options.outerStrokeWidth * 2;
+        let boxSize =
+            this.options.radius * 2 + this.options.outerStrokeWidth * 2;
         if (this.options.showBackground) {
-            boxSize += (this.options.backgroundStrokeWidth * 2 + this.max(0, this.options.backgroundPadding * 2));
+            boxSize +=
+                this.options.backgroundStrokeWidth * 2 +
+                this.max(0, this.options.backgroundPadding * 2);
         }
         // the centre of the circle
-        let centre = {x: boxSize / 2, y: boxSize / 2};
+        let centre = { x: boxSize / 2, y: boxSize / 2 };
         // the start point of the arc
-        let startPoint = {x: centre.x, y: centre.y - this.options.radius};
+        let startPoint = { x: centre.x, y: centre.y - this.options.radius };
         // get the end point of the arc
-        let endPoint = this.polarToCartesian(centre.x, centre.y, this.options.radius, 360 * (this.options.clockwise ?
-            circlePercent :
-            (100 - circlePercent)) / 100);  // ####################
+        let endPoint = this.polarToCartesian(
+            centre.x,
+            centre.y,
+            this.options.radius,
+            (360 *
+                (this.options.clockwise
+                    ? circlePercent
+                    : 100 - circlePercent)) /
+                100
+        ); // ####################
         // We'll get an end point with the same [x, y] as the start point when percent is 100%, so move x a little bit.
         if (circlePercent === 100) {
             endPoint.x = endPoint.x + (this.options.clockwise ? -0.01 : +0.01);
@@ -245,27 +289,40 @@ export class CircleProgressComponent implements OnChanges {
         // largeArcFlag and sweepFlag
         let largeArcFlag, sweepFlag;
         if (circlePercent > 50) {
-            [largeArcFlag, sweepFlag] = this.options.clockwise ? [1, 1] : [1, 0];
+            [largeArcFlag, sweepFlag] = this.options.clockwise
+                ? [1, 1]
+                : [1, 0];
         } else {
-            [largeArcFlag, sweepFlag] = this.options.clockwise ? [0, 1] : [0, 0];
+            [largeArcFlag, sweepFlag] = this.options.clockwise
+                ? [0, 1]
+                : [0, 0];
         }
         // percent may not equal the actual percent
-        let titlePercent = this.options.animateTitle ? percent : this.options.percent;
-        let titleTextPercent = titlePercent > this.options.maxPercent ?
-            `${this.options.maxPercent.toFixed(this.options.toFixed)}+` : titlePercent.toFixed(this.options.toFixed);
-        let subtitlePercent = this.options.animateSubtitle ? percent : this.options.percent;
+        let titlePercent = this.options.animateTitle
+            ? percent
+            : this.options.percent;
+        let titleTextPercent =
+            titlePercent > this.options.maxPercent
+                ? `${this.options.maxPercent.toFixed(this.options.toFixed)}+`
+                : titlePercent.toFixed(this.options.toFixed);
+        let subtitlePercent = this.options.animateSubtitle
+            ? percent
+            : this.options.percent;
         // get title object
         let title = {
             x: centre.x,
             y: centre.y,
-            textAnchor: 'middle',
+            textAnchor: "middle",
             color: this.options.titleColor,
             fontSize: this.options.titleFontSize,
             texts: [],
-            tspans: []
+            tspans: [],
         };
         // from v0.9.9, both title and titleFormat(...) may be an array of string.
-        if (this.options.titleFormat !== undefined && this.options.titleFormat.constructor.name === 'Function') {
+        if (
+            this.options.titleFormat !== undefined &&
+            this.options.titleFormat.constructor.name === "Function"
+        ) {
             let formatted = this.options.titleFormat(titlePercent);
             if (formatted instanceof Array) {
                 title.texts = [...formatted];
@@ -273,11 +330,11 @@ export class CircleProgressComponent implements OnChanges {
                 title.texts.push(formatted.toString());
             }
         } else {
-            if (this.options.title === 'auto') {
+            if (this.options.title === "auto") {
                 title.texts.push(titleTextPercent);
             } else {
                 if (this.options.title instanceof Array) {
-                    title.texts = [...this.options.title]
+                    title.texts = [...this.options.title];
                 } else {
                     title.texts.push(this.options.title.toString());
                 }
@@ -287,14 +344,17 @@ export class CircleProgressComponent implements OnChanges {
         let subtitle = {
             x: centre.x,
             y: centre.y,
-            textAnchor: 'middle',
+            textAnchor: "middle",
             color: this.options.subtitleColor,
             fontSize: this.options.subtitleFontSize,
             texts: [],
-            tspans: []
-        }
+            tspans: [],
+        };
         // from v0.9.9, both subtitle and subtitleFormat(...) may be an array of string.
-        if (this.options.subtitleFormat !== undefined && this.options.subtitleFormat.constructor.name === 'Function') {
+        if (
+            this.options.subtitleFormat !== undefined &&
+            this.options.subtitleFormat.constructor.name === "Function"
+        ) {
             let formatted = this.options.subtitleFormat(subtitlePercent);
             if (formatted instanceof Array) {
                 subtitle.texts = [...formatted];
@@ -303,7 +363,7 @@ export class CircleProgressComponent implements OnChanges {
             }
         } else {
             if (this.options.subtitle instanceof Array) {
-                subtitle.texts = [...this.options.subtitle]
+                subtitle.texts = [...this.options.subtitle];
             } else {
                 subtitle.texts.push(this.options.subtitle.toString());
             }
@@ -312,23 +372,30 @@ export class CircleProgressComponent implements OnChanges {
         let units = {
             text: `${this.options.units}`,
             fontSize: this.options.unitsFontSize,
-            color: this.options.unitsColor
+            color: this.options.unitsColor,
         };
         // get total count of text lines to be shown
-        let rowCount = 0, rowNum = 1;
+        let rowCount = 0,
+            rowNum = 1;
         this.options.showTitle && (rowCount += title.texts.length);
         this.options.showSubtitle && (rowCount += subtitle.texts.length);
         // calc dy for each tspan for title
         if (this.options.showTitle) {
             for (let span of title.texts) {
-                title.tspans.push({span: span, dy: this.getRelativeY(rowNum, rowCount)});
+                title.tspans.push({
+                    span: span,
+                    dy: this.getRelativeY(rowNum, rowCount),
+                });
                 rowNum++;
             }
         }
         // calc dy for each tspan for subtitle
         if (this.options.showSubtitle) {
             for (let span of subtitle.texts) {
-                subtitle.tspans.push({span: span, dy: this.getRelativeY(rowNum, rowCount)})
+                subtitle.tspans.push({
+                    span: span,
+                    dy: this.getRelativeY(rowNum, rowCount),
+                });
                 rowNum++;
             }
         }
@@ -336,12 +403,15 @@ export class CircleProgressComponent implements OnChanges {
         this.svg = {
             viewBox: `0 0 ${boxSize} ${boxSize}`,
             // Set both width and height to '100%' if it's responsive
-            width: this.options.responsive ? '100%' : boxSize,
-            height: this.options.responsive ? '100%' : boxSize,
+            width: this.options.responsive ? "100%" : boxSize,
+            height: this.options.responsive ? "100%" : boxSize,
             backgroundCircle: {
                 cx: centre.x,
                 cy: centre.y,
-                r: this.options.radius + this.options.outerStrokeWidth / 2 + this.options.backgroundPadding,
+                r:
+                    this.options.radius +
+                    this.options.outerStrokeWidth / 2 +
+                    this.options.backgroundPadding,
                 fill: this.options.backgroundColor,
                 fillOpacity: this.options.backgroundOpacity,
                 stroke: this.options.backgroundStroke,
@@ -354,13 +424,17 @@ export class CircleProgressComponent implements OnChanges {
                 stroke: this.options.outerStrokeColor,
                 strokeWidth: this.options.outerStrokeWidth,
                 strokeLinecap: this.options.outerStrokeLinecap,
-                fill: 'none'
+                fill: "none",
             },
             circle: {
                 cx: centre.x,
                 cy: centre.y,
-                r: this.options.radius - this.options.space - this.options.outerStrokeWidth / 2 - this.options.innerStrokeWidth / 2,
-                fill: 'none',
+                r:
+                    this.options.radius -
+                    this.options.space -
+                    this.options.outerStrokeWidth / 2 -
+                    this.options.innerStrokeWidth / 2,
+                fill: "none",
                 stroke: this.options.innerStrokeColor,
                 strokeWidth: this.options.innerStrokeWidth,
             },
@@ -380,7 +454,10 @@ export class CircleProgressComponent implements OnChanges {
                 step = 1;
             } else {
                 // show title or subtitle animation even if the arc is full, we also need to finish it in 100 times.
-                step = Math.round(this.min(this.options.percent, this.options.maxPercent) / times);
+                step = Math.round(
+                    this.min(this.options.percent, this.options.maxPercent) /
+                        times
+                );
             }
         } else {
             // we will finish in as many times as the number of percent.
@@ -393,28 +470,39 @@ export class CircleProgressComponent implements OnChanges {
         if (interval < MIN_INTERVAL) {
             interval = MIN_INTERVAL;
             times = this.options.animationDuration / interval;
-            if (!this.options.animateTitle && !this.options.animateSubtitle && this.options.percent > 100) {
+            if (
+                !this.options.animateTitle &&
+                !this.options.animateSubtitle &&
+                this.options.percent > 100
+            ) {
                 step = Math.round(100 / times);
             } else {
-                step = Math.round(this.min(this.options.percent, this.options.maxPercent) / times);
+                step = Math.round(
+                    this.min(this.options.percent, this.options.maxPercent) /
+                        times
+                );
             }
         }
         // step must be greater than 0.
         if (step < 1) {
             step = 1;
         }
-        return {times: times, step: step, interval: interval};
+        return { times: times, step: step, interval: interval };
     };
     animate = () => {
         if (this._timerSubscription && !this._timerSubscription.closed) {
             this._timerSubscription.unsubscribe();
         }
-        let {step: step, interval: interval} = this.getAnimationParameters();
+        let { step: step, interval: interval } = this.getAnimationParameters();
         let count = 0;
         this._timerSubscription = Observable.interval(20).subscribe(() => {
             count += step;
             if (count <= this.options.percent) {
-                if (!this.options.animateTitle && !this.options.animateSubtitle && count >= 100) {
+                if (
+                    !this.options.animateTitle &&
+                    !this.options.animateSubtitle &&
+                    count >= 100
+                ) {
                     this.draw(this.options.percent);
                     this._timerSubscription.unsubscribe();
                 } else {
@@ -438,7 +526,10 @@ export class CircleProgressComponent implements OnChanges {
         for (let name of Object.keys(this.options)) {
             if (this.hasOwnProperty(name) && this[name] !== undefined) {
                 this.options[name] = this[name];
-            } else if (this.templateOptions && this.templateOptions[name] !== undefined) {
+            } else if (
+                this.templateOptions &&
+                this.templateOptions[name] !== undefined
+            ) {
                 this.options[name] = this.templateOptions[name];
             }
         }
@@ -447,15 +538,24 @@ export class CircleProgressComponent implements OnChanges {
         this.options.space = +this.options.space;
         this.options.percent = Math.abs(+this.options.percent);
         this.options.maxPercent = Math.abs(+this.options.maxPercent);
-        this.options.animationDuration = Math.abs(this.options.animationDuration);
-        this.options.outerStrokeWidth = Math.abs(+this.options.outerStrokeWidth);
-        this.options.innerStrokeWidth = Math.abs(+this.options.innerStrokeWidth);
+        this.options.animationDuration = Math.abs(
+            this.options.animationDuration
+        );
+        this.options.outerStrokeWidth = Math.abs(
+            +this.options.outerStrokeWidth
+        );
+        this.options.innerStrokeWidth = Math.abs(
+            +this.options.innerStrokeWidth
+        );
         this.options.backgroundPadding = +this.options.backgroundPadding;
     };
     private getRelativeY = (rowNum: number, rowCount: number): string => {
         // why '-0.18em'? It's a magic number when property 'alignment-baseline' equals 'baseline'. :)
-        let initialOffset = -0.18, offset = 1;
-        return (initialOffset + offset * (rowNum - rowCount / 2)).toFixed(2) + 'em';
+        let initialOffset = -0.18,
+            offset = 1;
+        return (
+            (initialOffset + offset * (rowNum - rowCount / 2)).toFixed(2) + "em"
+        );
     };
 
     private min = (a, b) => {
@@ -466,16 +566,13 @@ export class CircleProgressComponent implements OnChanges {
         return a > b ? a : b;
     };
 
-    constructor(
-        private ref: ChangeDetectorRef) {
-    }
+    constructor(private ref: ChangeDetectorRef) {}
 
     public isDrawing(): boolean {
-        return (this._timerSubscription && !this._timerSubscription.closed);
+        return this._timerSubscription && !this._timerSubscription.closed;
     }
 
     ngOnChanges(changes) {
         this.render();
     }
-
 }

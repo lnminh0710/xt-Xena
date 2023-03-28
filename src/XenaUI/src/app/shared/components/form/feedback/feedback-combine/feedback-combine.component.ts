@@ -6,28 +6,20 @@ import {
     EventEmitter,
     ViewChild,
     OnDestroy,
-    ChangeDetectorRef
-} from '@angular/core';
-import {
-    BaseComponent, ModuleList
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    FeedbackPopupComponent
-} from 'app/shared/components/form';
+    ChangeDetectorRef,
+} from "@angular/core";
+import { BaseComponent, ModuleList } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { FeedbackPopupComponent } from "app/shared/components/form";
 import html2canvas from "html2canvas";
-import { Configuration } from 'app/app.constants';
+import { Configuration } from "app/app.constants";
 import {
     CommonService,
     AppErrorHandler,
     DataEntryService,
-    DataEntryProcess
-} from 'app/services';
-import {
-    Uti
-} from 'app/utilities';
+    DataEntryProcess,
+} from "app/services";
+import { Uti } from "app/utilities";
 import {
     EmailModel,
     ApiResultResponse,
@@ -36,34 +28,31 @@ import {
     TabSummaryModel,
     BrowserInfoModel,
     FormModel,
-    SendOrderToAdministatorModel
-} from 'app/models';
-import {
-    ToasterService
-} from 'angular2-toaster/angular2-toaster';
-import {
-    Observable
-} from 'rxjs/Observable';
-import {
-    Store
-} from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { XnCommonActions } from 'app/state-management/store/actions';
-import { Subscription } from 'rxjs/Subscription';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import * as dataEntryReducer from 'app/state-management/store/reducer/data-entry';
-import * as parkedItemReducer from 'app/state-management/store/reducer/parked-item';
-import { DataEntryActions } from 'app/state-management/store/actions';
+    SendOrderToAdministatorModel,
+} from "app/models";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { Observable } from "rxjs/Observable";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { XnCommonActions } from "app/state-management/store/actions";
+import { Subscription } from "rxjs/Subscription";
+import * as tabSummaryReducer from "app/state-management/store/reducer/tab-summary";
+import * as dataEntryReducer from "app/state-management/store/reducer/data-entry";
+import * as parkedItemReducer from "app/state-management/store/reducer/parked-item";
+import { DataEntryActions } from "app/state-management/store/actions";
 // import { toPng } from 'html-to-image';
 // import { domtoimage } from 'dom-to-image';
 // declare var domtoimage: any;
 
 @Component({
-    selector: 'feedback-combine',
-    styleUrls: ['./feedback-combine.component.scss'],
-    templateUrl: './feedback-combine.component.html'
+    selector: "feedback-combine",
+    styleUrls: ["./feedback-combine.component.scss"],
+    templateUrl: "./feedback-combine.component.html",
 })
-export class FeedbackCombineComponent extends BaseComponent implements OnInit, OnDestroy {
+export class FeedbackCombineComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public isShowFeedBack: boolean = false;
     public isShowCapture: boolean = false;
     public feedbackData: any = {};
@@ -73,8 +62,8 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
     public imageTemps: Array<any> = [];
     public showImageReview: boolean = false;
     public imageViewerConfig: any = {
-        style: '',
-        styleClass: '',
+        style: "",
+        styleClass: "",
         panelWidth: 0,
         panelHeight: 0,
         frameWidth: null,
@@ -85,15 +74,15 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         transitionInterval: null,
         showCaption: false,
         item: {},
-    }
+    };
     public feedbackStoreData: any = {};
     public scanningStatusData: any = {};
 
     private idScansContainerItems: number;
-    private dataUrl: string = '';
+    private dataUrl: string = "";
     private img = new Image();
     private canvas: any;
-    private fileAttachedUrl: string = '';
+    private fileAttachedUrl: string = "";
     private activeModuleState: Observable<Module>;
     private activeSubModuleState: Observable<Module>;
     private selectedTabState: Observable<TabSummaryModel>;
@@ -120,8 +109,9 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
 
     private browserInfo: BrowserInfoModel = new BrowserInfoModel();
     @Output() outputData: EventEmitter<any> = new EventEmitter();
-    @ViewChild('feedbackPopup') feedbackPopup: FeedbackPopupComponent;
-    constructor(private commonService: CommonService,
+    @ViewChild("feedbackPopup") feedbackPopup: FeedbackPopupComponent;
+    constructor(
+        private commonService: CommonService,
         private store: Store<AppState>,
         private appErrorHandler: AppErrorHandler,
         private xnCommonActions: XnCommonActions,
@@ -129,7 +119,8 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         private dataEntryAction: DataEntryActions,
         private dataEntryService: DataEntryService,
         private dataEntryProcess: DataEntryProcess,
-        private toasterService: ToasterService, router?: Router
+        private toasterService: ToasterService,
+        router?: Router
     ) {
         super(router);
         this.registerSubscribeData(store);
@@ -149,17 +140,17 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         this.registerSubscribeData(this.store);
         this.subscribeTabData();
     }
-    public ngOnDestroy() { }
+    public ngOnDestroy() {}
     public actionRemoveHandler(captureItem: any) {
         const datas = [...this.captureItems];
-        Uti.removeItemInArray(datas, captureItem, 'id');
+        Uti.removeItemInArray(datas, captureItem, "id");
         this.captureItems = [];
         setTimeout(() => {
             this.captureItems = datas;
         });
 
         const imageTemps = [...this.imageTemps];
-        Uti.removeItemInArray(imageTemps, captureItem, 'id');
+        Uti.removeItemInArray(imageTemps, captureItem, "id");
         this.imageTemps = [];
         setTimeout(() => {
             this.imageTemps = imageTemps;
@@ -170,7 +161,7 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         const captureItems = [...this.captureItems];
         for (let item of this.imageTemps) {
             if (captureItem.id === item.id) {
-                item.image = this.createImageWithData(captureItem)
+                item.image = this.createImageWithData(captureItem);
                 break;
             }
         }
@@ -181,9 +172,9 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         const newItem = {
             id: captureItem.id,
             image: this.createImageWithData(captureItem),
-            text: '',
-            canRemove: true
-        }
+            text: "",
+            canRemove: true,
+        };
         this.imageTemps.push(newItem);
         this.feedbackPopup.makePopupSize();
         this.feedbackPopup.updateSendToAdminImageToCaptureList();
@@ -202,12 +193,12 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         this.captureItems = this.imageTemps = [];
         this.img = this.canvas = null;
         this.feedbackPopup.makePopupSize();
-        this.dataUrl = '';
+        this.dataUrl = "";
         this.store.dispatch(this.xnCommonActions.showFeedbackClicked(false));
     }
     public showFeedback() {
         this.isShowFeedBack = true;
-        html2canvas(document.body).then(result => {
+        html2canvas(document.body).then((result) => {
             this.img = new Image();
             this.canvas = document.createElement("canvas");
             this.img.src = result.toDataURL();
@@ -250,7 +241,13 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
                 if (this.scanningStatusStateSubscription) {
                     this.scanningStatusStateSubscription.unsubscribe();
                 }
-                this.scanningStatusState = this.store.select(state => dataEntryReducer.getDataEntryState(state, this.feedbackStoreData.tabID).scanningStatusData);
+                this.scanningStatusState = this.store.select(
+                    (state) =>
+                        dataEntryReducer.getDataEntryState(
+                            state,
+                            this.feedbackStoreData.tabID
+                        ).scanningStatusData
+                );
                 this.subscribeScansContainerItems();
             }
         }, 200);
@@ -283,14 +280,19 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         this.isSending = true;
         this.makeMoreBrowserInfo();
         let feedBackModel = this.createFeedBackModel();
-        if (Configuration.PublicSettings && Configuration.PublicSettings.systemInfo) {
-            feedBackModel.DatabaseName = Configuration.PublicSettings.systemInfo.CurrentDatabase;
-            feedBackModel.Subject = '[' + feedBackModel.DatabaseName + ']-' + feedBackModel.Subject;
+        if (
+            Configuration.PublicSettings &&
+            Configuration.PublicSettings.systemInfo
+        ) {
+            feedBackModel.DatabaseName =
+                Configuration.PublicSettings.systemInfo.CurrentDatabase;
+            feedBackModel.Subject =
+                "[" + feedBackModel.DatabaseName + "]-" + feedBackModel.Subject;
         }
         this.sendEmail(feedBackModel);
     }
     public removeItemHandle($event) {
-        Uti.removeItemInArray(this.captureItems, $event, 'id');
+        Uti.removeItemInArray(this.captureItems, $event, "id");
     }
     public showImageReviewHandle($event) {
         this.showImageReview = true;
@@ -298,7 +300,7 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         setTimeout(() => {
             let overlay = $(".ui-widget-overlay.ui-dialog-mask");
             if (!overlay || !overlay.length || overlay.length !== 2) return;
-            $(overlay[1]).addClass('ui-widget-overlay-second');
+            $(overlay[1]).addClass("ui-widget-overlay-second");
         }, 300);
     }
     public closeImageReviewHandle() {
@@ -317,7 +319,11 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
     }
     private checkDataBeforeSendEmail(): boolean {
         if (!this.feedbackStoreData) {
-            this.toasterService.pop('warning', 'Warning', 'Has no data to send!');
+            this.toasterService.pop(
+                "warning",
+                "Warning",
+                "Has no data to send!"
+            );
             return false;
         }
         if (!this.feedbackStoreData.isSendToAdmin) {
@@ -326,20 +332,34 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         if (this.idScansContainerItems) {
             return true;
         }
-        this.toasterService.pop('warning', 'Warning', 'Please select a document to send to admin!');
+        this.toasterService.pop(
+            "warning",
+            "Warning",
+            "Please select a document to send to admin!"
+        );
         return false;
     }
     private createFeedBackModel() {
         return new EmailModel({
-            ToEmail: '',
-            Subject: '[' + this.feedbackData.formValue.priority + ']-' + '[' + this.feedbackData.formValue.typeText + ']: ' + this.feedbackData.formValue.subject,
+            ToEmail: "",
+            Subject:
+                "[" +
+                this.feedbackData.formValue.priority +
+                "]-" +
+                "[" +
+                this.feedbackData.formValue.typeText +
+                "]: " +
+                this.feedbackData.formValue.subject,
             Body: this.feedbackData.formValue.content,
             ImageAttached: this.buildEmailAttached(),
             Priority: this.feedbackData.formValue.priority,
             BrowserInfo: Uti.getBrowserInfo(this.browserInfo),
             IdRepNotificationType: this.feedbackData.formValue.type,
-            Type: ((this.feedbackStoreData && this.feedbackStoreData.isSendToAdmin) ? 'SendToAdmin' : 'FeedBack'),
-            FileAttachedUrl: this.fileAttachedUrl
+            Type:
+                this.feedbackStoreData && this.feedbackStoreData.isSendToAdmin
+                    ? "SendToAdmin"
+                    : "FeedBack",
+            FileAttachedUrl: this.fileAttachedUrl,
         });
     }
     private sendEmail(email: any) {
@@ -348,56 +368,80 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
                 this.appErrorHandler.executeAction(() => {
                     this.isSending = false;
                     if (!Uti.isResquestSuccess(response) || !response.item) {
-                        this.toasterService.pop('error', 'Failed', 'Email sending is failed');
+                        this.toasterService.pop(
+                            "error",
+                            "Failed",
+                            "Email sending is failed"
+                        );
                         return;
                     }
                     this.sendEmailOnSuccess();
                 });
             },
-            error => {
+            (error) => {
                 //this.toasterService.pop('error', 'Failed', 'Email sending is failed');
                 this.sendEmailOnSuccess();
-            });
+            }
+        );
     }
     private sendEmailOnSuccess() {
         this.sendToAdmin();
         this.store.dispatch(this.xnCommonActions.reLoadFeedbacData());
         if (this.feedbackStoreData && !this.feedbackStoreData.isSendToAdmin) {
-            this.toasterService.pop('success', 'Success', 'Email sending is successful');
+            this.toasterService.pop(
+                "success",
+                "Success",
+                "Email sending is successful"
+            );
         }
         this.hideFeedback();
     }
 
     private sendToAdmin() {
         if (this.feedbackStoreData && this.feedbackStoreData.isSendToAdmin) {
-            this.dataEntryService.sendOrderToAdministrator(this.createSendToAdminModel()).subscribe((response: any) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (!response || !response.returnID) {
-                        this.toasterService.pop('error', 'Failed', 'Can not send to Admin!');
-                        return;
-                    }
-                    this.toasterService.pop('success', 'Success', 'The message has sent to Admin');
-                    // Skip this item
-                    this.store.dispatch(this.dataEntryAction.dataEntryScanningStatusCallSkip(true, this.feedbackStoreData.tabID));
+            this.dataEntryService
+                .sendOrderToAdministrator(this.createSendToAdminModel())
+                .subscribe((response: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (!response || !response.returnID) {
+                            this.toasterService.pop(
+                                "error",
+                                "Failed",
+                                "Can not send to Admin!"
+                            );
+                            return;
+                        }
+                        this.toasterService.pop(
+                            "success",
+                            "Success",
+                            "The message has sent to Admin"
+                        );
+                        // Skip this item
+                        this.store.dispatch(
+                            this.dataEntryAction.dataEntryScanningStatusCallSkip(
+                                true,
+                                this.feedbackStoreData.tabID
+                            )
+                        );
+                    });
                 });
-            });
         }
     }
     private createSendToAdminModel() {
-        let user = (new Uti()).getUserInfo();
+        let user = new Uti().getUserInfo();
         return new SendOrderToAdministatorModel({
             idLoginToAdmin: parseFloat(user.id),
             idRepNotificationType: this.feedbackData.formValue.type,
             idScansContainerItems: this.idScansContainerItems || null,
-            notes: this.feedbackData.formValue.content
+            notes: this.feedbackData.formValue.content,
         });
     }
     private getCroppedImg(): Array<any> {
-        const result = this.imageTemps.map(x => {
+        const result = this.imageTemps.map((x) => {
             return {
                 Source: x.image,
-                Text: x.text
-            }
+                Text: x.text,
+            };
         });
         return result;
     }
@@ -405,7 +449,17 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         this.canvas.width = captureItem.width;
         this.canvas.height = captureItem.height;
         var ctx = this.canvas.getContext("2d");
-        ctx.drawImage(this.img, captureItem.left, captureItem.top, captureItem.width, captureItem.height, 0, 0, captureItem.width, captureItem.height);
+        ctx.drawImage(
+            this.img,
+            captureItem.left,
+            captureItem.top,
+            captureItem.width,
+            captureItem.height,
+            0,
+            0,
+            captureItem.width,
+            captureItem.height
+        );
         const dataURL = ctx.canvas.toDataURL();
         return dataURL;
     }
@@ -415,142 +469,246 @@ export class FeedbackCombineComponent extends BaseComponent implements OnInit, O
         this.imageViewerConfig.panelHeight = document.height() - 300;
     }
     private registerSubscribeDataGlobal(store: Store<AppState>) {
-        this.activeModuleState = store.select(state => state.mainModule.activeModule);
-        this.activeSubModuleState = store.select(state => state.mainModule.activeSubModule);
+        this.activeModuleState = store.select(
+            (state) => state.mainModule.activeModule
+        );
+        this.activeSubModuleState = store.select(
+            (state) => state.mainModule.activeSubModule
+        );
 
-        this.orderDataMediaCodeState = store.select(state => dataEntryReducer.getDataEntryState(state, this.browserInfo.SelectedODETab).orderDataWidgetMediaCode);
-        this.selectedCampaignNumberState = this.store.select(state => dataEntryReducer.getDataEntryState(state, this.browserInfo.SelectedODETab).selectedCampaignNumberData);
-        this.dataEntryCustomerDataState = this.store.select(state => dataEntryReducer.getDataEntryState(state, this.browserInfo.SelectedODETab).customerId);
+        this.orderDataMediaCodeState = store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(
+                    state,
+                    this.browserInfo.SelectedODETab
+                ).orderDataWidgetMediaCode
+        );
+        this.selectedCampaignNumberState = this.store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(
+                    state,
+                    this.browserInfo.SelectedODETab
+                ).selectedCampaignNumberData
+        );
+        this.dataEntryCustomerDataState = this.store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(
+                    state,
+                    this.browserInfo.SelectedODETab
+                ).customerId
+        );
     }
     private registerSubscribeData(store: Store<AppState>) {
-        this.selectedTabState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedTab);
-        this.selectedSimpleTabState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedSimpleTab);
-        this.selectedODETabState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedODETab);
-        this.selectedSubTabState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedSubTab);
-        this.selectedParkedItemState = store.select(state => parkedItemReducer.getParkedItemState(state, this.ofModule.moduleNameTrim).selectedParkedItem);
+        this.selectedTabState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedTab
+        );
+        this.selectedSimpleTabState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedSimpleTab
+        );
+        this.selectedODETabState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedODETab
+        );
+        this.selectedSubTabState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedSubTab
+        );
+        this.selectedParkedItemState = store.select(
+            (state) =>
+                parkedItemReducer.getParkedItemState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedParkedItem
+        );
     }
 
     private getImageToBase64(fileName: string) {
         // Uti.toDataURL('/api/FileManager/GetFile?&name=20190110-144232.723_Order.tiff.1.png&mode=1', (result) => {
-        Uti.toDataURL('/api/FileManager/GetScanFile?&name='+fileName, (result) => {
-            if (!result) return;
-            this.browserInfo.SendToAdminImage = result;
-            this.feedbackPopup.addImageOfSendToAdmin();
-        });
+        Uti.toDataURL(
+            "/api/FileManager/GetScanFile?&name=" + fileName,
+            (result) => {
+                if (!result) return;
+                this.browserInfo.SendToAdminImage = result;
+                this.feedbackPopup.addImageOfSendToAdmin();
+            }
+        );
     }
 
     private subscribeModuleData() {
-        this.activeModuleStateSubscription = this.activeModuleState.subscribe((module: Module) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!module) {
-                    this.browserInfo.Module = null;
-                    return;
-                }
-                this.browserInfo.Module = module.moduleName;
+        this.activeModuleStateSubscription = this.activeModuleState.subscribe(
+            (module: Module) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!module) {
+                        this.browserInfo.Module = null;
+                        return;
+                    }
+                    this.browserInfo.Module = module.moduleName;
+                });
+            }
+        );
+        this.activeSubModuleStateSubscription =
+            this.activeSubModuleState.subscribe((module: Module) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!module) {
+                        this.browserInfo.SubModule = null;
+                        return;
+                    }
+                    this.browserInfo.SubModule = module.moduleName;
+                });
             });
-        });
-        this.activeSubModuleStateSubscription = this.activeSubModuleState.subscribe((module: Module) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!module) {
-                    this.browserInfo.SubModule = null;
-                    return;
-                }
-                this.browserInfo.SubModule = module.moduleName;
-            });
-        });
     }
     private subscribeTabData() {
-        if (this.selectedTabStateSubscription) this.selectedTabStateSubscription.unsubscribe();
-        this.selectedTabStateSubscription = this.selectedTabState.subscribe((selectedTab: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!selectedTab || !selectedTab.tabSummaryInfor) {
-                    this.browserInfo.SelectedTab = null;
-                    return;
+        if (this.selectedTabStateSubscription)
+            this.selectedTabStateSubscription.unsubscribe();
+        this.selectedTabStateSubscription = this.selectedTabState.subscribe(
+            (selectedTab: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!selectedTab || !selectedTab.tabSummaryInfor) {
+                        this.browserInfo.SelectedTab = null;
+                        return;
+                    }
+                    this.browserInfo.SelectedTab =
+                        selectedTab.tabSummaryInfor.tabName;
+                });
+            }
+        );
+        if (this.selectedSimpleTabStateSubscription)
+            this.selectedSimpleTabStateSubscription.unsubscribe();
+        this.selectedSimpleTabStateSubscription =
+            this.selectedSimpleTabState.subscribe(
+                (selectedSimpleTab: SimpleTabModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (!selectedSimpleTab) {
+                            this.browserInfo.SelectedSubTab = null;
+                            return;
+                        }
+                        this.browserInfo.SelectedSubTab =
+                            selectedSimpleTab.TabName;
+                    });
                 }
-                this.browserInfo.SelectedTab = selectedTab.tabSummaryInfor.tabName;
-            });
-        });
-        if (this.selectedSimpleTabStateSubscription) this.selectedSimpleTabStateSubscription.unsubscribe();
-        this.selectedSimpleTabStateSubscription = this.selectedSimpleTabState.subscribe((selectedSimpleTab: SimpleTabModel) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!selectedSimpleTab) {
-                    this.browserInfo.SelectedSubTab = null;
-                    return;
+            );
+        if (this.selectedODETabStateSubscription)
+            this.selectedODETabStateSubscription.unsubscribe();
+        this.selectedODETabStateSubscription =
+            this.selectedODETabState.subscribe(
+                (selectedODETab: SimpleTabModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (!selectedODETab) {
+                            this.browserInfo.SelectedODETab = null;
+                            return;
+                        }
+                        this.browserInfo.SelectedODETab =
+                            selectedODETab.TabName;
+                    });
                 }
-                this.browserInfo.SelectedSubTab = selectedSimpleTab.TabName;
+            );
+        if (this.selectedSubTabStateSubscription)
+            this.selectedSubTabStateSubscription.unsubscribe();
+        this.selectedSubTabStateSubscription =
+            this.selectedSubTabState.subscribe((selectedSubTab: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!selectedSubTab) {
+                        this.browserInfo.SelectedSubTab = null;
+                        return;
+                    }
+                    this.browserInfo.SelectedSubTab = selectedSubTab.title;
+                });
             });
-        });
-        if (this.selectedODETabStateSubscription) this.selectedODETabStateSubscription.unsubscribe();
-        this.selectedODETabStateSubscription = this.selectedODETabState.subscribe((selectedODETab: SimpleTabModel) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!selectedODETab) {
-                    this.browserInfo.SelectedODETab = null;
-                    return;
+        if (this.selectedParkedItemStateSubscription)
+            this.selectedParkedItemStateSubscription.unsubscribe();
+        this.selectedParkedItemStateSubscription =
+            this.selectedParkedItemState.subscribe(
+                (selectedParkedItem: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (!selectedParkedItem || !selectedParkedItem.id) {
+                            this.browserInfo.EntityId = null;
+                            return;
+                        }
+                        this.browserInfo.EntityId = selectedParkedItem.id.value;
+                    });
                 }
-                this.browserInfo.SelectedODETab = selectedODETab.TabName;
-            });
-        });
-        if (this.selectedSubTabStateSubscription) this.selectedSubTabStateSubscription.unsubscribe();
-        this.selectedSubTabStateSubscription = this.selectedSubTabState.subscribe((selectedSubTab: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!selectedSubTab) {
-                    this.browserInfo.SelectedSubTab = null;
-                    return;
-                }
-                this.browserInfo.SelectedSubTab = selectedSubTab.title;
-            });
-        });
-        if (this.selectedParkedItemStateSubscription) this.selectedParkedItemStateSubscription.unsubscribe();
-        this.selectedParkedItemStateSubscription = this.selectedParkedItemState.subscribe((selectedParkedItem: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!selectedParkedItem || !selectedParkedItem.id) {
-                    this.browserInfo.EntityId = null;
-                    return;
-                }
-                this.browserInfo.EntityId = selectedParkedItem.id.value;
-            });
-        });
+            );
     }
     private subscribeEntityIdData() {
-        this.orderDataMediaCodeStateSubscription = this.orderDataMediaCodeState.subscribe((orderDataMediaCode: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.browserInfo.Mediacode = orderDataMediaCode || null;
-            });
-        });
-        this.selectedCampaignNumberStateSubcription = this.selectedCampaignNumberState.subscribe((campaignNumber: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.browserInfo.CampaignNumber = campaignNumber || null;
-            });
-        });
-        this.dataEntryCustomerDataStateSubcription = this.dataEntryCustomerDataState.subscribe((customerData: number) => {
-            this.appErrorHandler.executeAction(() => {
-                this.browserInfo.CustomerNumber = customerData ? customerData.toString() : '';
-            });
-        });
+        this.orderDataMediaCodeStateSubscription =
+            this.orderDataMediaCodeState.subscribe(
+                (orderDataMediaCode: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.browserInfo.Mediacode = orderDataMediaCode || null;
+                    });
+                }
+            );
+        this.selectedCampaignNumberStateSubcription =
+            this.selectedCampaignNumberState.subscribe(
+                (campaignNumber: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.browserInfo.CampaignNumber =
+                            campaignNumber || null;
+                    });
+                }
+            );
+        this.dataEntryCustomerDataStateSubcription =
+            this.dataEntryCustomerDataState.subscribe(
+                (customerData: number) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.browserInfo.CustomerNumber = customerData
+                            ? customerData.toString()
+                            : "";
+                    });
+                }
+            );
     }
 
     private subscribeScansContainerItems(): void {
-        this.scanningStatusStateSubscription = this.scanningStatusState.subscribe((scanningStatusState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (scanningStatusState.length) {
-                    if (!scanningStatusState || !scanningStatusState.length) {
-                        this.fileAttachedUrl = '';
-                        this.browserInfo.IdScansContainerItems = null;
-                        this.browserInfo.SendToAdminImage = null;
-                        this.scanningStatusData = [];
-                        return;
+        this.scanningStatusStateSubscription =
+            this.scanningStatusState.subscribe((scanningStatusState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (scanningStatusState.length) {
+                        if (
+                            !scanningStatusState ||
+                            !scanningStatusState.length
+                        ) {
+                            this.fileAttachedUrl = "";
+                            this.browserInfo.IdScansContainerItems = null;
+                            this.browserInfo.SendToAdminImage = null;
+                            this.scanningStatusData = [];
+                            return;
+                        }
+                        this.idScansContainerItems =
+                            scanningStatusState[0].idScansContainerItems;
+                        this.fileAttachedUrl =
+                            this.dataEntryService.buildImageFullPath(
+                                scanningStatusState,
+                                "pdf"
+                            );
+                        this.getImageToBase64(
+                            this.dataEntryService.buildImageFullPath(
+                                scanningStatusState
+                            )
+                        );
+                        this.scanningStatusData = scanningStatusState;
+                        this.browserInfo.IdScansContainerItems =
+                            scanningStatusState[0].idScansContainerItems;
                     }
-                    this.idScansContainerItems = scanningStatusState[0].idScansContainerItems;
-                    this.fileAttachedUrl = this.dataEntryService.buildImageFullPath(scanningStatusState, 'pdf');
-                    this.getImageToBase64(this.dataEntryService.buildImageFullPath(scanningStatusState));
-                    this.scanningStatusData = scanningStatusState;
-                    this.browserInfo.IdScansContainerItems = scanningStatusState[0].idScansContainerItems;
-                }
+                });
             });
-        });
     }
     private makeMoreBrowserInfo() {
         this.browserInfo.Url = window.location.href;
-        this.browserInfo.CaptureTime = (new Date()).toString();
+        this.browserInfo.CaptureTime = new Date().toString();
     }
 }

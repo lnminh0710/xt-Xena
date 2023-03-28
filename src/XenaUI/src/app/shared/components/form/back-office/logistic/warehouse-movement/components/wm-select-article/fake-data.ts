@@ -1,5 +1,5 @@
 ﻿// TODO: will remove this file when has service
-import { ControlGridModel } from 'app/models';
+import { ControlGridModel } from "app/models";
 
 export class WarehuoseMovementEditFormFakeData {
     public createArriveArticleData(): ControlGridModel {
@@ -50,156 +50,155 @@ export class WarehuoseMovementEditFormFakeData {
                 // }
 
                 {
-                    title: 'IdWarehouseMovementGoodsIssue',
-                    data: 'idWarehouseMovementGoodsIssue',
+                    title: "IdWarehouseMovementGoodsIssue",
+                    data: "idWarehouseMovementGoodsIssue",
                     visible: false,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Article Id',
-                    data: 'articleId',
+                    title: "Article Id",
+                    data: "articleId",
                     visible: false,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Article #',
-                    data: 'articleNumber',
+                    title: "Article #",
+                    data: "articleNumber",
                     visible: true,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    ReadOnly: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    ReadOnly: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Add to Art #',
-                    data: 'addToArticleNumber',
+                    title: "Add to Art #",
+                    data: "addToArticleNumber",
                     visible: true,
                     readOnly: false,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Article Name',
-                    data: 'articleName',
+                    title: "Article Name",
+                    data: "articleName",
                     visible: true,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    ReadOnly: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    ReadOnly: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Qty',
-                    data: 'quantity',
+                    title: "Qty",
+                    data: "quantity",
                     visible: true,
                     readOnly: false,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Fake price',
-                    data: 'fakePrice',
+                    title: "Fake price",
+                    data: "fakePrice",
                     visible: true,
                     readOnly: false,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Purchasing Price',
-                    data: 'purchasingPrice',
+                    title: "Purchasing Price",
+                    data: "purchasingPrice",
                     visible: true,
                     readOnly: false,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'OnStock',
-                    data: 'onStock',
+                    title: "OnStock",
+                    data: "onStock",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Available',
-                    data: 'available',
+                    title: "Available",
+                    data: "available",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Is Active',
-                    data: 'IsActive',
+                    title: "Is Active",
+                    data: "IsActive",
                     visible: true,
                     readOnly: false,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
         });
     }
 }
-

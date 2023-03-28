@@ -1,62 +1,70 @@
 import {
-    Component, OnInit, OnDestroy, Input, Output, EventEmitter
-} from '@angular/core';
-import {FormGroup, Validators, FormBuilder} from '@angular/forms';
+    Component,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter,
+} from "@angular/core";
+import { FormGroup, Validators, FormBuilder } from "@angular/forms";
 import {
-    DropdownListModel, ControlGridModel, MessageModel,
-    ApiResultResponse, FormOutputModel
-} from 'app/models';
-import {Configuration} from 'app/app.constants';
-import {Subscription} from 'rxjs/Subscription';
-import {
-    ComboBoxTypeConstant,
-    MessageModal
-} from 'app/app.constants';
+    DropdownListModel,
+    ControlGridModel,
+    MessageModel,
+    ApiResultResponse,
+    FormOutputModel,
+} from "app/models";
+import { Configuration } from "app/app.constants";
+import { Subscription } from "rxjs/Subscription";
+import { ComboBoxTypeConstant, MessageModal } from "app/app.constants";
 import {
     CommonService,
     ModalService,
     DatatableService,
     PropertyPanelService,
-    AppErrorHandler
-} from 'app/services';
-import {Uti} from 'app/utilities';
-import {Router} from '@angular/router';
-import {BaseComponent} from 'app/pages/private/base';
-import {
-    ReducerManagerDispatcher
-} from '@ngrx/store';
+    AppErrorHandler,
+} from "app/services";
+import { Uti } from "app/utilities";
+import { Router } from "@angular/router";
+import { BaseComponent } from "app/pages/private/base";
+import { ReducerManagerDispatcher } from "@ngrx/store";
 import {
     ProcessDataActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import cloneDeep from 'lodash-es/cloneDeep';
+    CustomAction,
+} from "app/state-management/store/actions";
+import cloneDeep from "lodash-es/cloneDeep";
 
 @Component({
-    selector: 'warehouse-movement-cost',
-    templateUrl: './warehouse-movement-cost.component.html'
+    selector: "warehouse-movement-cost",
+    templateUrl: "./warehouse-movement-cost.component.html",
 })
-export class WarehouseMovementCostComponent extends BaseComponent implements OnInit, OnDestroy {
+export class WarehouseMovementCostComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     private isDirty = false;
     private outputModel = new FormOutputModel();
     private commonServiceSubscription: Subscription;
     private formValuesChangeSubscription: Subscription;
     private dispatcherSubscription: Subscription;
 
-    public globalNumberFormat = '';
+    public globalNumberFormat = "";
     public isRenderForm: boolean;
-    public currencyList: Array<DropdownListModel> = new Array<DropdownListModel>();
+    public currencyList: Array<DropdownListModel> =
+        new Array<DropdownListModel>();
     public costForm: FormGroup;
     public costGrid: ControlGridModel;
-    public descriptionList: Array<DropdownListModel> = new Array<DropdownListModel>(
-        new DropdownListModel({
-            idValue: 1,
-            textValue: 'Customs costs'
-        }),
-        new DropdownListModel({
-            idValue: 2,
-            textValue: 'Transport costs'
-        })
-    );
+    public descriptionList: Array<DropdownListModel> =
+        new Array<DropdownListModel>(
+            new DropdownListModel({
+                idValue: 1,
+                textValue: "Customs costs",
+            }),
+            new DropdownListModel({
+                idValue: 2,
+                textValue: "Transport costs",
+            })
+        );
 
     @Input() set globalProperties(data: any[]) {
         this.setInputGlobalProperties(data);
@@ -90,7 +98,7 @@ export class WarehouseMovementCostComponent extends BaseComponent implements OnI
     }
 
     public add() {
-        this.costForm['submitted'] = true;
+        this.costForm["submitted"] = true;
         this.costForm.updateValueAndValidity();
         if (!this.costForm.valid) {
             return;
@@ -99,9 +107,19 @@ export class WarehouseMovementCostComponent extends BaseComponent implements OnI
         const newGridData = this.costGrid.data;
         const formValue = this.costForm.value;
         newGridData.push({
-            description: this.getBy(this.descriptionList, 'idValue', formValue.description, 'textValue'),
+            description: this.getBy(
+                this.descriptionList,
+                "idValue",
+                formValue.description,
+                "textValue"
+            ),
             cost: formValue.cost,
-            currency: this.getBy(this.currencyList, 'idValue', formValue.currency, 'textValue')
+            currency: this.getBy(
+                this.currencyList,
+                "idValue",
+                formValue.currency,
+                "textValue"
+            ),
         });
         let newGrid = this.createCostGrid(newGridData);
         newGrid = this.datatableService.appendRowId(newGrid);
@@ -114,18 +132,25 @@ export class WarehouseMovementCostComponent extends BaseComponent implements OnI
 
     public onDeleteColumnClickHandler(eventData) {
         if (eventData) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                messageType: MessageModal.MessageType.error,
-                headerText: 'Delete Cost',
-                message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_This_Cost'},
-                    {key: '</p>'}],
-                buttonType1: MessageModal.ButtonType.danger,
-                callBack1: () => {
-                    this.deleteCost(eventData);
-                    this.isDirty = true;
-                    this.setFormOutputData(null);
-                }
-            }));
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    messageType: MessageModal.MessageType.error,
+                    headerText: "Delete Cost",
+                    message: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Delete_This_Cost",
+                        },
+                        { key: "</p>" },
+                    ],
+                    buttonType1: MessageModal.ButtonType.danger,
+                    callBack1: () => {
+                        this.deleteCost(eventData);
+                        this.isDirty = true;
+                        this.setFormOutputData(null);
+                    },
+                })
+            );
         }
     }
 
@@ -135,20 +160,27 @@ export class WarehouseMovementCostComponent extends BaseComponent implements OnI
     /********************************************************************************************/
 
     private subscribeSave() {
-        this.dispatcherSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.submit();
+        this.dispatcherSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.submit();
+                });
             });
-        });
     }
 
     private submit() {
         if (!this.isDirty) {
-            this.modalService.warningMessage([{
-                key: 'Modal_Message__No_Entry_Data_For_Saving'
-            }]);
+            this.modalService.warningMessage([
+                {
+                    key: "Modal_Message__No_Entry_Data_For_Saving",
+                },
+            ]);
             this.setFormOutputData(null);
             return;
         }
@@ -156,21 +188,24 @@ export class WarehouseMovementCostComponent extends BaseComponent implements OnI
     }
 
     private setInputGlobalProperties(data: any) {
-        this.globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(data);
+        this.globalNumberFormat =
+            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                data
+            );
     }
 
     private initForm() {
         this.costForm = this.formBuilder.group({
-            description: ['', Validators.required],
-            cost: ['', Validators.required],
-            currency: ['', Validators.required]
+            description: ["", Validators.required],
+            cost: ["", Validators.required],
+            currency: ["", Validators.required],
         });
-        this.costForm['submitted'] = false;
+        this.costForm["submitted"] = false;
         this.isRenderForm = true;
     }
 
     private getBy(dataList, byFieldName, byValue, resultFieldName) {
-        const result = dataList.find(i => i[byFieldName] == byValue);
+        const result = dataList.find((i) => i[byFieldName] == byValue);
         if (result) {
             return result[resultFieldName];
         }
@@ -179,24 +214,23 @@ export class WarehouseMovementCostComponent extends BaseComponent implements OnI
     }
 
     private initData() {
-        const keys: Array<number> = [
-            ComboBoxTypeConstant.currency
-        ];
+        const keys: Array<number> = [ComboBoxTypeConstant.currency];
 
-        this.commonServiceSubscription = this.commonService.getListComboBox(keys.join(','))
+        this.commonServiceSubscription = this.commonService
+            .getListComboBox(keys.join(","))
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
                         return;
                     }
-                    this.currencyList = response.item['currency'];
+                    this.currencyList = response.item["currency"];
                 });
             });
 
         this.costGrid = {
             columns: this.createCostGridColumns(),
-            data: []
-        }
+            data: [],
+        };
         console.log(this.costGrid);
     }
 
@@ -205,7 +239,7 @@ export class WarehouseMovementCostComponent extends BaseComponent implements OnI
             submitResult: submitResult,
             formValue: this.costForm.value,
             isValid: this.costForm.valid,
-            isDirty: this.costForm.dirty
+            isDirty: this.costForm.dirty,
         });
     }
 
@@ -224,38 +258,43 @@ export class WarehouseMovementCostComponent extends BaseComponent implements OnI
     private createCostGrid(data?): ControlGridModel {
         return new ControlGridModel({
             columns: this.createCostGridColumns(),
-            data: data || []
+            data: data || [],
         });
     }
 
     public createCostGridColumns() {
         const columns = [];
-        columns.push(this.makeColumn('Description', 'descriptionId', true, true));
-        columns.push(this.makeColumn('Cost', 'cost', true, true));
-        columns.push(this.makeColumn('Currency', 'currency', true, true));
-        columns.push(this.makeColumn('Delete', 'delete', true, true));
+        columns.push(
+            this.makeColumn("Description", "descriptionId", true, true)
+        );
+        columns.push(this.makeColumn("Cost", "cost", true, true));
+        columns.push(this.makeColumn("Currency", "currency", true, true));
+        columns.push(this.makeColumn("Delete", "delete", true, true));
         return columns;
     }
 
-    private makeColumn(title: any,
-                       columnName: string,
-                       visible: boolean,
-                       readOnly?: boolean): any {
+    private makeColumn(
+        title: any,
+        columnName: string,
+        visible: boolean,
+        readOnly?: boolean
+    ): any {
         return {
             title: title,
             data: columnName,
             visible: visible,
             readOnly: readOnly,
-            setting: {
-            }
-        }
+            setting: {},
+        };
     }
 
     private deleteCost(eventData: any) {
         //TODO: update later
         setTimeout(() => {
             let newGridData = this.costGrid.data;
-            newGridData = newGridData.filter(dt => dt.DT_RowId !== eventData.DT_RowId);
+            newGridData = newGridData.filter(
+                (dt) => dt.DT_RowId !== eventData.DT_RowId
+            );
             // this.costGrid = this.createCostGrid(newGridData);
         }, 500);
     }
@@ -271,7 +310,7 @@ export class WarehouseMovementCostComponent extends BaseComponent implements OnI
             formValue: {},
             isValid: true,
             isDirty: this.isDirty,
-            returnID: returnID
+            returnID: returnID,
         });
     }
 }

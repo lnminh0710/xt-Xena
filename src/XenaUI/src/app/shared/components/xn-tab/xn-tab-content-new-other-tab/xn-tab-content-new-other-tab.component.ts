@@ -1,22 +1,30 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { AppState } from 'app/state-management/store';
-import { SubLayoutInfoState } from 'app/state-management/store/reducer/layout-info';
-import * as layoutInfoReducer from 'app/state-management/store/reducer/layout-info';
-import { BaseComponent } from 'app/pages/private/base';
-import { AppErrorHandler } from '../../../../services';
-import { Uti } from 'app/utilities';
+import {
+    Component,
+    OnInit,
+    Input,
+    OnDestroy,
+    Output,
+    EventEmitter,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { AppState } from "app/state-management/store";
+import { SubLayoutInfoState } from "app/state-management/store/reducer/layout-info";
+import * as layoutInfoReducer from "app/state-management/store/reducer/layout-info";
+import { BaseComponent } from "app/pages/private/base";
+import { AppErrorHandler } from "../../../../services";
+import { Uti } from "app/utilities";
 
 @Component({
-    selector: 'app-xn-tab-content-new-other-tab',
-    templateUrl: './xn-tab-content-new-other-tab.component.html',
+    selector: "app-xn-tab-content-new-other-tab",
+    templateUrl: "./xn-tab-content-new-other-tab.component.html",
 })
-
-export class XnTabContentNewOtherTabComponent extends BaseComponent implements OnInit, OnDestroy {
-
+export class XnTabContentNewOtherTabComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public tabData: any = null;
     public perfectScrollbarConfig: Object = {};
     public contentStyle: Object = {};
@@ -32,17 +40,22 @@ export class XnTabContentNewOtherTabComponent extends BaseComponent implements O
     constructor(
         private store: Store<AppState>,
         protected router: Router,
-        private appErrorHandler: AppErrorHandler,
+        private appErrorHandler: AppErrorHandler
     ) {
         super(router);
 
-        this.layoutInfoModel = store.select(state => layoutInfoReducer.getLayoutInfoState(state, this.ofModule.moduleNameTrim));
+        this.layoutInfoModel = store.select((state) =>
+            layoutInfoReducer.getLayoutInfoState(
+                state,
+                this.ofModule.moduleNameTrim
+            )
+        );
     }
 
     ngOnInit() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
 
         this.subscribeLayoutInfoModel();
@@ -53,14 +66,16 @@ export class XnTabContentNewOtherTabComponent extends BaseComponent implements O
     }
 
     subscribeLayoutInfoModel() {
-        this.layoutInfoModelSubscription = this.layoutInfoModel.subscribe((layoutInfo: SubLayoutInfoState) => {
-            this.appErrorHandler.executeAction(() => {
-                this.contentStyle = {
-                    // 'height': `calc(100vh - ${layoutInfo.globalSearchHeight}px - ${layoutInfo.headerHeight}px - ${layoutInfo.tabHeaderHeight}px - ${layoutInfo.formPadding}px)`
-                    'height': `calc(100vh - ${layoutInfo.headerHeight}px - ${layoutInfo.tabHeaderHeight}px - ${layoutInfo.formPadding}px)`
-                };
-            });
-        });
+        this.layoutInfoModelSubscription = this.layoutInfoModel.subscribe(
+            (layoutInfo: SubLayoutInfoState) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.contentStyle = {
+                        // 'height': `calc(100vh - ${layoutInfo.globalSearchHeight}px - ${layoutInfo.headerHeight}px - ${layoutInfo.tabHeaderHeight}px - ${layoutInfo.formPadding}px)`
+                        height: `calc(100vh - ${layoutInfo.headerHeight}px - ${layoutInfo.tabHeaderHeight}px - ${layoutInfo.formPadding}px)`,
+                    };
+                });
+            }
+        );
     }
 
     onChanged(data) {
@@ -68,5 +83,4 @@ export class XnTabContentNewOtherTabComponent extends BaseComponent implements O
             this.onFormChanged.emit(data);
         }
     }
-
 }

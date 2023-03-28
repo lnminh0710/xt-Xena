@@ -1,5 +1,5 @@
-import * as wjcChart from 'wijmo/wijmo.chart';
-import * as wjcCore from 'wijmo/wijmo';
+import * as wjcChart from "wijmo/wijmo.chart";
+import * as wjcCore from "wijmo/wijmo";
 export declare class TrendLineBase extends wjcChart.SeriesBase {
     private _sampleCount;
     private _bind;
@@ -126,8 +126,15 @@ export declare class Waterfall extends wjcChart.SeriesBase {
     styles: any;
     getValues(dim: number): number[];
     legendItemLength(): number;
-    measureLegendItem(engine: wjcChart.IRenderEngine, index: number): wjcCore.Size;
-    drawLegendItem(engine: wjcChart.IRenderEngine, rect: wjcCore.Rect, index: number): void;
+    measureLegendItem(
+        engine: wjcChart.IRenderEngine,
+        index: number
+    ): wjcCore.Size;
+    drawLegendItem(
+        engine: wjcChart.IRenderEngine,
+        rect: wjcCore.Rect,
+        index: number
+    ): void;
     _clearValues(): void;
     _invalidate(): void;
     private _rendering(sender, args);
@@ -166,8 +173,20 @@ export declare class BoxWhisker extends wjcChart.SeriesBase {
     showOutliers: boolean;
     private _rendering(sender, args);
     _convertPoints(points: number[], axis: wjcChart._IAxis): number[];
-    _drawBoxWhisker(engine: wjcChart.IRenderEngine, xs: any, ys: any, prevXS: any, prevYS: any, series: wjcChart._ISeries): void;
-    _renderLabels(engine: wjcChart.IRenderEngine, smap: wjcChart._IHitArea[], chart: wjcChart.FlexChartCore, lblAreas: wjcChart._RectArea[]): void;
+    _drawBoxWhisker(
+        engine: wjcChart.IRenderEngine,
+        xs: any,
+        ys: any,
+        prevXS: any,
+        prevYS: any,
+        series: wjcChart._ISeries
+    ): void;
+    _renderLabels(
+        engine: wjcChart.IRenderEngine,
+        smap: wjcChart._IHitArea[],
+        chart: wjcChart.FlexChartCore,
+        lblAreas: wjcChart._RectArea[]
+    ): void;
 }
 export declare class _BoxPlot {
     private _data;
@@ -182,7 +201,11 @@ export declare class _BoxPlot {
     private _outlierPoints;
     private _innerPoints;
     private _showOutliers;
-    constructor(data: number[], quartileCalculation: QuartileCalculation, showOutliers: boolean);
+    constructor(
+        data: number[],
+        quartileCalculation: QuartileCalculation,
+        showOutliers: boolean
+    );
     readonly showOutliers: boolean;
     readonly min: number;
     readonly max: number;
@@ -229,7 +252,10 @@ export declare class ErrorBar extends wjcChart.Series {
     errorBarStyle: any;
     endStyle: ErrorBarEndStyle;
     direction: ErrorBarDirection;
-    getDataRect(currentRect?: wjcCore.Rect, calculatedRect?: wjcCore.Rect): wjcCore.Rect;
+    getDataRect(
+        currentRect?: wjcCore.Rect,
+        calculatedRect?: wjcCore.Rect
+    ): wjcCore.Rect;
     private _getCustomValue(i);
     _calculateErrorValue(): void;
     _clearValues(): void;

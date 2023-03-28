@@ -1,1 +1,1 @@
-export { ArticleMediaManagerComponent } from './article-media-manager.component';
+export { ArticleMediaManagerComponent } from "./article-media-manager.component";

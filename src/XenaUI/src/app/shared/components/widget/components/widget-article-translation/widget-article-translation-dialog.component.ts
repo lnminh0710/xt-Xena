@@ -1,20 +1,27 @@
 import {
-    Component, Input, Output, EventEmitter, OnInit, OnDestroy,
-    AfterViewInit, ElementRef, ViewChild
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
 } from "@angular/core";
-import {
-    WidgetDetail
-} from 'app/models';
-import { WidgetArticleTranslationComponent } from './';
-import { BaseWidget } from 'app/pages/private/base';
+import { WidgetDetail } from "app/models";
+import { WidgetArticleTranslationComponent } from "./";
+import { BaseWidget } from "app/pages/private/base";
 
 @Component({
-    selector: 'widget-article-translation-dialog',
-    templateUrl: './widget-article-translation-dialog.component.html',
-    styleUrls: ['./widget-article-translation-dialog.component.scss']
+    selector: "widget-article-translation-dialog",
+    templateUrl: "./widget-article-translation-dialog.component.html",
+    styleUrls: ["./widget-article-translation-dialog.component.scss"],
 })
-export class WidgetArticleTranslationDialogComponent extends BaseWidget implements OnInit, OnDestroy, AfterViewInit {
-
+export class WidgetArticleTranslationDialogComponent
+    extends BaseWidget
+    implements OnInit, OnDestroy, AfterViewInit
+{
     @Input()
     data: WidgetDetail;
 
@@ -24,7 +31,7 @@ export class WidgetArticleTranslationDialogComponent extends BaseWidget implemen
     @Input()
     idArticle: any;
 
-    @ViewChild('articleTranslation')
+    @ViewChild("articleTranslation")
     public articleTranslation: WidgetArticleTranslationComponent;
 
     @Output()
@@ -37,32 +44,25 @@ export class WidgetArticleTranslationDialogComponent extends BaseWidget implemen
     onCloseTranslationDialog = new EventEmitter<any>();
 
     public showDialog = false;
-    
+
     constructor() {
         super();
-    }  
+    }
 
     /**
      * ngOnInit
      */
-    public ngOnInit() {
-        
-    }
+    public ngOnInit() {}
 
     /**
      * ngOnDestroy
      */
-    public ngOnDestroy() {
-       
-    }
-
+    public ngOnDestroy() {}
 
     /**
      * ngAfterViewInit
      */
-    public ngAfterViewInit() {
-
-    }
+    public ngAfterViewInit() {}
 
     public open() {
         this.showDialog = true;
@@ -78,7 +78,7 @@ export class WidgetArticleTranslationDialogComponent extends BaseWidget implemen
         //}
     }
 
-    public apply() {        
+    public apply() {
         const itemsEdited = this.articleTranslation.getItemsEdited();
         if (itemsEdited && itemsEdited.length) {
             this.onItemsEditedTranslateData.emit(itemsEdited);
@@ -94,5 +94,4 @@ export class WidgetArticleTranslationDialogComponent extends BaseWidget implemen
         this.close();
         this.onSuccessTranslated.emit(this.data);
     }
-
 }

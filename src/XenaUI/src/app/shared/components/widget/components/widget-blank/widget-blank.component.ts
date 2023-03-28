@@ -1,21 +1,30 @@
 import {
-    Component, Input, Output, EventEmitter,
-    OnInit, OnDestroy, AfterViewInit, ElementRef, ChangeDetectionStrategy
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ChangeDetectionStrategy,
 } from "@angular/core";
-import { ModalService } from 'app/services';
-import { MessageModel, WidgetDetail, Module } from 'app/models';
-import { MessageModal } from 'app/app.constants';
-import { PropertyPanelActions, LayoutInfoActions } from 'app/state-management/store/actions';
-import { AppState } from 'app/state-management/store';
-import { Store } from '@ngrx/store';
+import { ModalService } from "app/services";
+import { MessageModel, WidgetDetail, Module } from "app/models";
+import { MessageModal } from "app/app.constants";
+import {
+    PropertyPanelActions,
+    LayoutInfoActions,
+} from "app/state-management/store/actions";
+import { AppState } from "app/state-management/store";
+import { Store } from "@ngrx/store";
 
 @Component({
-    selector: 'widget-blank',
-    templateUrl: './widget-blank.component.html',
-    styleUrls: ['./widget-blank.component.scss']
+    selector: "widget-blank",
+    templateUrl: "./widget-blank.component.html",
+    styleUrls: ["./widget-blank.component.scss"],
 })
 export class WidgetBlankComponent implements OnInit, OnDestroy, AfterViewInit {
-
     @Input() data: WidgetDetail;
     @Input() currentModule: Module;
     @Input() allowDesignEdit: boolean;
@@ -33,48 +42,59 @@ export class WidgetBlankComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @Output() onRemoveWidget = new EventEmitter<WidgetDetail>();
 
-    constructor(private _eref: ElementRef,
+    constructor(
+        private _eref: ElementRef,
         public modalService: ModalService,
         private store: Store<AppState>,
         private propertyPanelActions: PropertyPanelActions,
-        private layoutInfoActions: LayoutInfoActions) {
-
-    }
+        private layoutInfoActions: LayoutInfoActions
+    ) {}
 
     /**
      * ngOnInit
      */
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     /**
      * ngOnDestroy
      */
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     /**
      * ngAfterViewInit
      */
-    public ngAfterViewInit() {
-    }
+    public ngAfterViewInit() {}
 
     /**
      *removeWidget
      * */
     public removeWidget(): void {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            messageType: MessageModal.MessageType.error,
-            headerText: 'Remove Widget',
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Remove_This_Widget'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.onRemoveWidget.emit(this.data);
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                messageType: MessageModal.MessageType.error,
+                headerText: "Remove Widget",
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Remove_This_Widget" },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.onRemoveWidget.emit(this.data);
 
-                this.store.dispatch(this.propertyPanelActions.clearProperties(this.currentModule));
-                this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.currentModule));
-            }
-        }));
+                    this.store.dispatch(
+                        this.propertyPanelActions.clearProperties(
+                            this.currentModule
+                        )
+                    );
+                    this.store.dispatch(
+                        this.layoutInfoActions.setRightPropertyPanelWidth(
+                            "0",
+                            this.currentModule
+                        )
+                    );
+                },
+            })
+        );
     }
 }

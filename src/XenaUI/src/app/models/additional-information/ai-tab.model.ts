@@ -1,8 +1,8 @@
-﻿import { AdditionalInfromationTabContentModel } from './ai-tab-content.model'
+﻿import { AdditionalInfromationTabContentModel } from "./ai-tab-content.model";
 
 export class AdditionalInfromationTabModel {
-    public TabID: string = '';
-    public TabName?: string = '';
+    public TabID: string = "";
+    public TabName?: string = "";
     public Active?: boolean = false;
     public Disabled?: boolean = false;
     public Removable?: boolean = false;

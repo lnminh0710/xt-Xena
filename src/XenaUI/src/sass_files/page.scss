@@ -90,7 +90,8 @@
 
 .grid-placeholder {
     background-color: rgba(191, 160, 160, 0.3);
-    box-shadow: inset -6px -1px 8px 0 rgba(0, 0, 0, 0.2), inset 5px 0px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: inset -6px -1px 8px 0 rgba(0, 0, 0, 0.2),
+        inset 5px 0px 20px 0 rgba(0, 0, 0, 0.19);
     transition: width 0.25s, height 0.25s, transform 0.5s, top 0.5s, left 0.5s;
 }
 
@@ -99,22 +100,24 @@
     display: block;
 }
 
-
 .scroll-visible {
-    .ps-scrollbar-x-rail, .ps-scrollbar-y-rail {
+    .ps-scrollbar-x-rail,
+    .ps-scrollbar-y-rail {
         opacity: 0.6 !important;
     }
 }
 
 .scroll-invisible {
-    .ps-scrollbar-x-rail, .ps-scrollbar-y-rail {
+    .ps-scrollbar-x-rail,
+    .ps-scrollbar-y-rail {
         opacity: 0 !important;
     }
 }
 
 /* Custom for customer history widget table*/
 .customer-history-container {
-    .ps-scrollbar-x-rail, .ps-scrollbar-y-rail {
+    .ps-scrollbar-x-rail,
+    .ps-scrollbar-y-rail {
         opacity: 0 !important;
     }
 
@@ -125,7 +128,8 @@
     }
 }
 
-.customer-history__header-menu, .gallery-container__header-menu {
+.customer-history__header-menu,
+.gallery-container__header-menu {
     .popover-content {
         padding: 0;
         min-width: 200px;
@@ -144,7 +148,8 @@
     }
 }
 
-.prime-dialog-history, .prime-dialog-article-orders {
+.prime-dialog-history,
+.prime-dialog-article-orders {
     z-index: 1234 !important;
 
     .ui-dialog-content {
@@ -218,7 +223,8 @@ widget-container widget-module-info,
 
 widget-module-info {
     xn-widget-menu-status {
-        .hidden-widget-btn, .widget-save-btn,
+        .hidden-widget-btn,
+        .widget-save-btn,
         .widget-del-row-btn,
         .widget-add-row-btn,
         .widget-reset-btn,
@@ -228,8 +234,10 @@ widget-module-info {
     }
 
     .edit-mode,
-    .edit-form-mode, .edit-field-mode,
-    .edit-table-mode, .edit-country-mode {
+    .edit-form-mode,
+    .edit-field-mode,
+    .edit-table-mode,
+    .edit-country-mode {
         xn-widget-menu-status .edit-widget {
             display: none !important;
         }
@@ -279,7 +287,8 @@ widget-module-info {
             opacity: 1 !important;
         }
 
-        .xn-widget-menu-status .box-header-btns-container-outer.visibility-hidden {
+        .xn-widget-menu-status
+            .box-header-btns-container-outer.visibility-hidden {
             visibility: hidden !important;
             opacity: 0 !important;
         }
@@ -372,7 +381,8 @@ widget-module-info {
         display: inline-block;
         width: 11px;
         height: 11px;
-        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADGGlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjaY2BgnuDo4uTKJMDAUFBUUuQe5BgZERmlwH6egY2BmYGBgYGBITG5uMAxIMCHgYGBIS8/L5UBFTAyMHy7xsDIwMDAcFnX0cXJlYE0wJpcUFTCwMBwgIGBwSgltTiZgYHhCwMDQ3p5SUEJAwNjDAMDg0hSdkEJAwNjAQMDg0h2SJAzAwNjCwMDE09JakUJAwMDg3N+QWVRZnpGiYKhpaWlgmNKflKqQnBlcUlqbrGCZ15yflFBflFiSWoKAwMD1A4GBgYGXpf8EgX3xMw8BSMDVQYqg4jIKAUICxE+CDEESC4tKoMHJQODAIMCgwGDA0MAQyJDPcMChqMMbxjFGV0YSxlXMN5jEmMKYprAdIFZmDmSeSHzGxZLlg6WW6x6rK2s99gs2aaxfWMPZ9/NocTRxfGFM5HzApcj1xZuTe4FPFI8U3mFeCfxCfNN45fhXyygI7BD0FXwilCq0A/hXhEVkb2i4aJfxCaJG4lfkaiQlJM8JpUvLS19QqZMVl32llyfvIv8H4WtioVKekpvldeqFKiaqP5UO6jepRGqqaT5QeuA9iSdVF0rPUG9V/pHDBYY1hrFGNuayJsym740u2C+02KJ5QSrOutcmzjbQDtXe2sHY0cdJzVnJRcFV3k3BXdlD3VPXS8Tbxsfd99gvwT//ID6wIlBS4N3hVwMfRnOFCEXaRUVEV0RMzN2T9yDBLZE3aSw5IaUNak30zkyLDIzs+ZmX8xlz7PPryjYVPiuWLskq3RV2ZsK/cqSql01jLVedVPrHzbqNdU0n22VaytsP9op3VXUfbpXta+x/+5Em0mzJ/+dGj/t8AyNmf2zvs9JmHt6vvmCpYtEFrcu+bYsc/m9lSGrTq9xWbtvveWGbZtMNm/ZarJt+w6rnft3u+45uy9s/4ODOYd+Hmk/Jn58xUnrU+fOJJ/9dX7SRe1LR68kXv13fc5Nm1t379TfU75/4mHeY7En+59lvhB5efB1/lv5dxc+NH0y/fzq64Lv4T8Ffp360/rP8f9/AA0ADzT6lvFdAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAEZSURBVHjaXM/NK6wBGIbx38yQDPmaaQ75mCklIzud8lEnNpSckyU7CZNXvQv/gZW1HSULq9mdDWvJhlIWkhSysWAjO+NMZyzeJvIsr677qic269sdGNauzKt1M1W6Y7nmu+nQlf+8mzD5SY/9i32pduh2IS3pvlJhVxpSel1q1Br/0ltxJmPfrcS7tPqIzjrTZ9NNov9TfXbiwo2DynVMQV9EX5w6d+soqrYr6FGqbsoyxmlRkPdWpZGat23Ib0UpG/6WEqPQZdukEUU5a4rRW0ldHtX44V7mrf7P3SrUyXpS1ulBs9a4PfOahHIGhZKmK0tjtbasqRMalBNK+SWMW/BTSiBrQKDBlMVSwpxxDQIDsgJtxgQfAwC7hEM6ecvBSwAAAABJRU5ErkJggg==') no-repeat;
+        background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAACXBIWXMAAA7EAAAOxAGVKw4bAAADGGlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjaY2BgnuDo4uTKJMDAUFBUUuQe5BgZERmlwH6egY2BmYGBgYGBITG5uMAxIMCHgYGBIS8/L5UBFTAyMHy7xsDIwMDAcFnX0cXJlYE0wJpcUFTCwMBwgIGBwSgltTiZgYHhCwMDQ3p5SUEJAwNjDAMDg0hSdkEJAwNjAQMDg0h2SJAzAwNjCwMDE09JakUJAwMDg3N+QWVRZnpGiYKhpaWlgmNKflKqQnBlcUlqbrGCZ15yflFBflFiSWoKAwMD1A4GBgYGXpf8EgX3xMw8BSMDVQYqg4jIKAUICxE+CDEESC4tKoMHJQODAIMCgwGDA0MAQyJDPcMChqMMbxjFGV0YSxlXMN5jEmMKYprAdIFZmDmSeSHzGxZLlg6WW6x6rK2s99gs2aaxfWMPZ9/NocTRxfGFM5HzApcj1xZuTe4FPFI8U3mFeCfxCfNN45fhXyygI7BD0FXwilCq0A/hXhEVkb2i4aJfxCaJG4lfkaiQlJM8JpUvLS19QqZMVl32llyfvIv8H4WtioVKekpvldeqFKiaqP5UO6jepRGqqaT5QeuA9iSdVF0rPUG9V/pHDBYY1hrFGNuayJsym740u2C+02KJ5QSrOutcmzjbQDtXe2sHY0cdJzVnJRcFV3k3BXdlD3VPXS8Tbxsfd99gvwT//ID6wIlBS4N3hVwMfRnOFCEXaRUVEV0RMzN2T9yDBLZE3aSw5IaUNak30zkyLDIzs+ZmX8xlz7PPryjYVPiuWLskq3RV2ZsK/cqSql01jLVedVPrHzbqNdU0n22VaytsP9op3VXUfbpXta+x/+5Em0mzJ/+dGj/t8AyNmf2zvs9JmHt6vvmCpYtEFrcu+bYsc/m9lSGrTq9xWbtvveWGbZtMNm/ZarJt+w6rnft3u+45uy9s/4ODOYd+Hmk/Jn58xUnrU+fOJJ/9dX7SRe1LR68kXv13fc5Nm1t379TfU75/4mHeY7En+59lvhB5efB1/lv5dxc+NH0y/fzq64Lv4T8Ffp360/rP8f9/AA0ADzT6lvFdAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAEZSURBVHjaXM/NK6wBGIbx38yQDPmaaQ75mCklIzud8lEnNpSckyU7CZNXvQv/gZW1HSULq9mdDWvJhlIWkhSysWAjO+NMZyzeJvIsr677qic269sdGNauzKt1M1W6Y7nmu+nQlf+8mzD5SY/9i32pduh2IS3pvlJhVxpSel1q1Br/0ltxJmPfrcS7tPqIzjrTZ9NNov9TfXbiwo2DynVMQV9EX5w6d+soqrYr6FGqbsoyxmlRkPdWpZGat23Ib0UpG/6WEqPQZdukEUU5a4rRW0ldHtX44V7mrf7P3SrUyXpS1ulBs9a4PfOahHIGhZKmK0tjtbasqRMalBNK+SWMW/BTSiBrQKDBlMVSwpxxDQIDsgJtxgQfAwC7hEM6ecvBSwAAAABJRU5ErkJggg==")
+            no-repeat;
     }
 
     & .widget-info__resize_bottom {
@@ -443,7 +453,8 @@ widget-module-info {
 
 .xn-common-dialog-full-view,
 .widget-edit-dialog-full-view {
-    div.ui-dialog-titlebar, .widget-info__resize_bottom {
+    div.ui-dialog-titlebar,
+    .widget-info__resize_bottom {
         cursor: default;
     }
 

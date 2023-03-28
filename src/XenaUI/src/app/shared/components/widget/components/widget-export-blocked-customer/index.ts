@@ -1,1 +1,1 @@
-export * from './widget-export-blocked-customer.component';
+export * from "./widget-export-blocked-customer.component";

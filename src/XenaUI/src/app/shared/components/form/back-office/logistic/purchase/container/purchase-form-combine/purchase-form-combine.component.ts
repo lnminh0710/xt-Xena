@@ -1,55 +1,75 @@
 import {
-    Component, OnInit, OnDestroy,
-    EventEmitter, Output,
-    ViewChild, AfterViewInit,
-    ChangeDetectorRef
-} from '@angular/core';
-import { Router } from '@angular/router';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+    Component,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+    Output,
+    ViewChild,
+    AfterViewInit,
+    ChangeDetectorRef,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 import {
     AppErrorHandler,
     ModalService,
     SearchService,
-    DatatableService
-} from 'app/services';
-import { PurchaseFormHeaderComponent, PurchaseFormArticleComponent } from 'app/shared/components/form';
+    DatatableService,
+} from "app/services";
+import {
+    PurchaseFormHeaderComponent,
+    PurchaseFormArticleComponent,
+} from "app/shared/components/form";
 import {
     ModuleSettingActions,
     CustomAction,
-    ProcessDataActions
-} from 'app/state-management/store/actions';
-import { RequestSavingMode } from 'app/app.constants';
-import { TabSummaryActions } from 'app/state-management/store/actions/tab-summary';
-import { ApiResultResponse, ControlGridModel, ControlGridColumnModel } from 'app/models';
-import { Uti } from 'app/utilities';
-import { WijmoGridComponent } from 'app/shared/components/wijmo';
-import { BaseComponent } from 'app/pages/private/base';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import * as moduleSettingReducer from 'app/state-management/store/reducer/module-setting';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
+    ProcessDataActions,
+} from "app/state-management/store/actions";
+import { RequestSavingMode } from "app/app.constants";
+import { TabSummaryActions } from "app/state-management/store/actions/tab-summary";
+import {
+    ApiResultResponse,
+    ControlGridModel,
+    ControlGridColumnModel,
+} from "app/models";
+import { Uti } from "app/utilities";
+import { WijmoGridComponent } from "app/shared/components/wijmo";
+import { BaseComponent } from "app/pages/private/base";
+import * as tabSummaryReducer from "app/state-management/store/reducer/tab-summary";
+import * as moduleSettingReducer from "app/state-management/store/reducer/module-setting";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
 
 @Component({
-    selector: 'purchase-form-combine',
-    styleUrls: ['./purchase-form-combine.component.scss'],
-    templateUrl: './purchase-form-combine.component.html'
+    selector: "purchase-form-combine",
+    styleUrls: ["./purchase-form-combine.component.scss"],
+    templateUrl: "./purchase-form-combine.component.html",
 })
-export class PurchaseFormCombineComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class PurchaseFormCombineComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     private _progressStatus;
 
     set progressStatus(value) {
         this._progressStatus = value;
         if (this.toolbarSetting) {
-            this.toolbarSetting.SaveNext = this._progressStatus == 1 ? '1' : '0';
+            this.toolbarSetting.SaveNext =
+                this._progressStatus == 1 ? "1" : "0";
         }
-        this.store.dispatch(this.moduleSettingActions.selectToolbarSetting(this.toolbarSetting, this.ofModule));
+        this.store.dispatch(
+            this.moduleSettingActions.selectToolbarSetting(
+                this.toolbarSetting,
+                this.ofModule
+            )
+        );
     }
 
     get progressStatus() {
         return this._progressStatus;
-    };
+    }
 
     public showDialog = false;
     public campaignExistingData: ControlGridModel;
@@ -87,12 +107,15 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
     private step1ClickSubscription: Subscription;
     private step2ClickSubscription: Subscription;
 
-    @ViewChild('purchaseFormHeaderComponent') purchaseFormHeaderComponent: PurchaseFormHeaderComponent;
-    @ViewChild('purchaseFormArticleComponent') purchaseFormArticleComponent: PurchaseFormArticleComponent;
+    @ViewChild("purchaseFormHeaderComponent")
+    purchaseFormHeaderComponent: PurchaseFormHeaderComponent;
+    @ViewChild("purchaseFormArticleComponent")
+    purchaseFormArticleComponent: PurchaseFormArticleComponent;
 
     @Output() outputData: EventEmitter<any> = new EventEmitter();
 
-    constructor(private store: Store<AppState>,
+    constructor(
+        private store: Store<AppState>,
         private appErrorHandler: AppErrorHandler,
         private modalService: ModalService,
         private tabSummaryActions: TabSummaryActions,
@@ -105,15 +128,33 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
     ) {
         super(router);
 
-        this.formEditModeState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditMode);
-        this.formEditDataState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditData);
-        this.toolbarSettingState = store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).toolbarSetting);
+        this.formEditModeState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditMode
+        );
+        this.formEditDataState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditData
+        );
+        this.toolbarSettingState = store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).toolbarSetting
+        );
     }
 
     public ngOnInit() {
         this.campaignExistingData = {
             data: [],
-            columns: []
+            columns: [],
         };
         this.subcribeRequestSaveState();
         this.subscribeFormEditModeState();
@@ -147,77 +188,110 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
             this.progressStatus = 1;
             this.setShowForm1(true);
         }
-        this.store.dispatch(this.tabSummaryActions.setFormEditDataActiveSubTab(this.showForm1, this.ofModule));
-        this.store.dispatch(this.tabSummaryActions.setFormEditTextDataSubTab({
-            main: 'Header',
-            detail: 'Article'
-        }, this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.setFormEditDataActiveSubTab(
+                this.showForm1,
+                this.ofModule
+            )
+        );
+        this.store.dispatch(
+            this.tabSummaryActions.setFormEditTextDataSubTab(
+                {
+                    main: "Header",
+                    detail: "Article",
+                },
+                this.ofModule
+            )
+        );
     }
 
     /**
      * subcribeToolbarSettingState
      */
     private subcribeToolbarSettingState() {
-        this.toolbarSettingStateSubscription = this.toolbarSettingState.subscribe((toolbarSettingState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.toolbarSetting = toolbarSettingState;
+        this.toolbarSettingStateSubscription =
+            this.toolbarSettingState.subscribe((toolbarSettingState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.toolbarSetting = toolbarSettingState;
+                });
             });
-        });
     }
 
     /**
      * subscribeFormEditModeState
      */
     private subscribeFormEditModeState() {
-        this.formEditModeStateSubscription = this.formEditModeState.subscribe((formEditModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.formEditMode = formEditModeState;
-            });
-        });
+        this.formEditModeStateSubscription = this.formEditModeState.subscribe(
+            (formEditModeState: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.formEditMode = formEditModeState;
+                });
+            }
+        );
 
-        this.formEditDataStateSubscription = this.formEditDataState.subscribe((formEditDataState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.formEditData = formEditDataState;
-            });
-        });
+        this.formEditDataStateSubscription = this.formEditDataState.subscribe(
+            (formEditDataState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.formEditData = formEditDataState;
+                });
+            }
+        );
     }
     private subscribeStep1Click() {
-        this.step1ClickSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === TabSummaryActions.SET_FORM_EDIT_SUB_TAB_1_CLICK && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.step1Click(null);
+        this.step1ClickSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        TabSummaryActions.SET_FORM_EDIT_SUB_TAB_1_CLICK &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.step1Click(null);
+                });
             });
-        });
     }
     private subscribeStep2Click() {
-        this.step2ClickSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === TabSummaryActions.SET_FORM_EDIT_SUB_TAB_2_CLICK && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.step2Click(null);
+        this.step2ClickSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        TabSummaryActions.SET_FORM_EDIT_SUB_TAB_2_CLICK &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.step2Click(null);
+                });
             });
-        });
     }
 
     private currentSavingMode: RequestSavingMode;
 
     private subcribeRequestSaveState() {
-        this.dispatcherSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return {
-                savingMode: action.payload
-            };
-        }).subscribe((requestSaveState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.currentSavingMode = RequestSavingMode.SaveAndClose;
-                if (requestSaveState.savingMode) {
-                    this.currentSavingMode = requestSaveState.savingMode;
-                }
-                this.onSubmit(this.showForm1);
+        this.dispatcherSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .map((action: CustomAction) => {
+                return {
+                    savingMode: action.payload,
+                };
+            })
+            .subscribe((requestSaveState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.currentSavingMode = RequestSavingMode.SaveAndClose;
+                    if (requestSaveState.savingMode) {
+                        this.currentSavingMode = requestSaveState.savingMode;
+                    }
+                    this.onSubmit(this.showForm1);
+                });
             });
-        });
     }
 
     private onSubmit(showForm1: boolean) {
@@ -240,7 +314,10 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
             this.form1aHasChangeValue = false;
         }, 1000);
         this.idSalesCampaignWizard = $event.returnID;
-        if (this.form1aSaveCallback || this.currentSavingMode === RequestSavingMode.SaveAndNext) {
+        if (
+            this.form1aSaveCallback ||
+            this.currentSavingMode === RequestSavingMode.SaveAndNext
+        ) {
             this.progressStatus = 2;
             this.setShowForm1(false);
             this.form1aSaveCallback = false;
@@ -250,7 +327,7 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
                 isValid: true,
                 isDirty: false,
                 returnID: this.idSalesCampaignWizard,
-                savingMode: RequestSavingMode.SaveAndNext
+                savingMode: RequestSavingMode.SaveAndNext,
             });
             return;
         }
@@ -258,9 +335,10 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
         this.outputData.emit({
             submitResult: true,
             formValue: this.outPutFormHeader.formValue,
-            isValid: true, isDirty: false,
+            isValid: true,
+            isDirty: false,
             returnID: this.outPutFormHeader.returnID,
-            savingMode: this.currentSavingMode
+            savingMode: this.currentSavingMode,
         });
     }
 
@@ -287,7 +365,7 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
                 isValid: true,
                 isDirty: false,
                 returnID: this.idSalesCampaignWizard,
-                savingMode: RequestSavingMode.SaveOnly
+                savingMode: RequestSavingMode.SaveOnly,
             });
             return;
         }
@@ -297,7 +375,7 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
             formValue: this.outPutFormArticle.formValue,
             isValid: true,
             isDirty: false,
-            returnID: this.idSalesCampaignWizard
+            returnID: this.idSalesCampaignWizard,
         });
     }
 
@@ -321,8 +399,7 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
     }
 
     private step2Click(event) {
-        if (!this.idSalesCampaignWizard)
-            return;
+        if (!this.idSalesCampaignWizard) return;
 
         if (this.showForm1 && this.form1aHasChangeValue) {
             this.confirmSavingWhenChangeStatus(true);
@@ -353,20 +430,22 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
             isValid: true,
             isDirty: false,
             returnID: null,
-            savingMode: this.currentSavingMode
+            savingMode: this.currentSavingMode,
         });
     }
 
     private confirmSavingWhenChangeStatus(showBusinessCostHeaderForm: boolean) {
         this.modalService.unsavedWarningMessageDefault({
-            headerText: 'Saving Changes',
-            onModalSaveAndExit: () => { this.saveDataWhenChangeStatus(showBusinessCostHeaderForm); },
+            headerText: "Saving Changes",
+            onModalSaveAndExit: () => {
+                this.saveDataWhenChangeStatus(showBusinessCostHeaderForm);
+            },
             onModalExit: () => {
                 this.form1aHasChangeValue = false;
                 this.form1bHasChangeValue = false;
                 if (this.showForm1) this.gotoStep2();
                 else this.gotoStep1();
-            }
+            },
         });
     }
 
@@ -379,7 +458,12 @@ export class PurchaseFormCombineComponent extends BaseComponent implements OnIni
 
     private setShowForm1(value: boolean) {
         this.showForm1 = value;
-        this.store.dispatch(this.tabSummaryActions.setFormEditDataActiveSubTab(this.showForm1, this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.setFormEditDataActiveSubTab(
+                this.showForm1,
+                this.ofModule
+            )
+        );
     }
 
     /**

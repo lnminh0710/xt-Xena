@@ -1,10 +1,10 @@
 ﻿export class WidgetPropertyModel {
-    public id: string = '';
-    public name: string = '';
+    public id: string = "";
+    public name: string = "";
     public value: any = null;
     public translatedValue: any = null;
     public disabled: boolean = false;
-    public dataType: string = '';
+    public dataType: string = "";
     public options: any[] = [];
     public children: any[] = [];
     public dirty: boolean = false;
@@ -25,7 +25,7 @@ export class WidgetPropertiesStateModel {
 }
 
 export class VersionPropertiesModel {
-    public version: string = '';
+    public version: string = "";
     public properties: Array<WidgetPropertyModel> = [];
 
     public constructor(init?: Partial<VersionPropertiesModel>) {

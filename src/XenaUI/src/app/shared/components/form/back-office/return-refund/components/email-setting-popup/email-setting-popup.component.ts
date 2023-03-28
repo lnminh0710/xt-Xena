@@ -1,35 +1,51 @@
-import { Component, OnInit, OnDestroy, ViewChild, Output, EventEmitter, Input } from '@angular/core';
-import { Dialog } from 'primeng/primeng';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    Output,
+    EventEmitter,
+    Input,
+} from "@angular/core";
+import { Dialog } from "primeng/primeng";
 import {
     ModalService,
     BlockedOrderService,
     AppErrorHandler,
-    CommonService
-} from 'app/services';
-import { Configuration } from 'app/app.constants';
-import { EmailSettingComponent } from '../email-setting';
-import { Uti } from 'app/utilities';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
+    CommonService,
+} from "app/services";
+import { Configuration } from "app/app.constants";
+import { EmailSettingComponent } from "../email-setting";
+import { Uti } from "app/utilities";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
 import {
     EmailTemplateModel,
     PlaceHolderModel,
     EmailModel,
-    ApiResultResponse
-} from 'app/models';
-import { Subscription } from 'rxjs/Subscription';
-import { Router } from '@angular/router';
-import { BaseComponent } from 'app/pages/private/base';
+    ApiResultResponse,
+} from "app/models";
+import { Subscription } from "rxjs/Subscription";
+import { Router } from "@angular/router";
+import { BaseComponent } from "app/pages/private/base";
 
 @Component({
-    selector: 'email-setting-popup',
-    templateUrl: './email-setting-popup.component.html'
+    selector: "email-setting-popup",
+    templateUrl: "./email-setting-popup.component.html",
 })
-export class EmailSettingPopupComponent extends BaseComponent implements OnInit, OnDestroy {
+export class EmailSettingPopupComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     private popupSize = {};
-    private customCssClassName = 'email-setting-popup';
+    private customCssClassName = "email-setting-popup";
     private isDirty = false;
     private isSaveWhenClose = false;
-    private fullHeightClassName = this.consts.popupFullHeightClassName + '  ' + this.consts.popupResizeClassName + '  ' + this.customCssClassName;
+    private fullHeightClassName =
+        this.consts.popupFullHeightClassName +
+        "  " +
+        this.consts.popupResizeClassName +
+        "  " +
+        this.customCssClassName;
     private currentChangingData: any = {};
     private inputEmailSettingData: any = {};
 
@@ -37,15 +53,15 @@ export class EmailSettingPopupComponent extends BaseComponent implements OnInit,
     public emailSettingData: any = {
         emailSettingData: new Array<EmailTemplateModel>(),
         placeholderData: new Array<EmailTemplateModel>(),
-        settingData: {}
+        settingData: {},
     };
     public dialogStyleClass = this.fullHeightClassName;
     public isResizable = true;
     public isDraggable = true;
     public isMaximized = false;
 
-    @ViewChild('pDialogEmailSetting') pDialogEmailSetting: Dialog;
-    @ViewChild('emailSetting') emailSetting: EmailSettingComponent;
+    @ViewChild("pDialogEmailSetting") pDialogEmailSetting: Dialog;
+    @ViewChild("emailSetting") emailSetting: EmailSettingComponent;
     @Input() set data(data: any) {
         this.inputEmailSettingData = data;
     }
@@ -68,8 +84,7 @@ export class EmailSettingPopupComponent extends BaseComponent implements OnInit,
         super(router);
     }
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
@@ -78,46 +93,61 @@ export class EmailSettingPopupComponent extends BaseComponent implements OnInit,
     public showPopup() {
         if (!this.showDialogData) return;
 
-        this.blockedOrderService.getTextTemplate(Uti.getValueFromArrayByKey(this.inputEmailSettingData, 'IdRepSalesOrderStatus'))
-            .subscribe(
-                (response: any) => {
-                    this.appErrorHandler.executeAction(() => {
-                        if (!response || !response.item.data || !response.item.data.length) {
-                            return;
-                        }
-                        this.emailSettingData = {
-                            contentTemplateData: response.item.data[1].map(x => {
-                                return new EmailTemplateModel({
-                                    id: x.IdTextTemplate,
-                                    name: x.TemplateText,
-                                    emailBody: x.Description
-                                });
-                            }),
-                            placeholderData: this.emailSettingData['placeholderData'],
-                            settingData: this.inputEmailSettingData
-                        }
-                    });
+        this.blockedOrderService
+            .getTextTemplate(
+                Uti.getValueFromArrayByKey(
+                    this.inputEmailSettingData,
+                    "IdRepSalesOrderStatus"
+                )
+            )
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !response ||
+                        !response.item.data ||
+                        !response.item.data.length
+                    ) {
+                        return;
+                    }
+                    this.emailSettingData = {
+                        contentTemplateData: response.item.data[1].map((x) => {
+                            return new EmailTemplateModel({
+                                id: x.IdTextTemplate,
+                                name: x.TemplateText,
+                                emailBody: x.Description,
+                            });
+                        }),
+                        placeholderData:
+                            this.emailSettingData["placeholderData"],
+                        settingData: this.inputEmailSettingData,
+                    };
                 });
-        this.blockedOrderService.getMailingListOfPlaceHolder()
-            .subscribe(
-                (response: any) => {
-                    this.appErrorHandler.executeAction(() => {
-                        if (!response || !response.item.data || !response.item.data.length) {
-                            return;
-                        }
-                        this.emailSettingData = {
-                            placeholderData: response.item.data[1].map(x => {
-                                return new PlaceHolderModel({
-                                    id: x.OriginalColumnName,
-                                    name: x.Value,
-                                    data: '<<' + x.ColumnName + '>>'
-                                });
-                            }),
-                            contentTemplateData: this.emailSettingData['contentTemplateData'],
-                            settingData: this.inputEmailSettingData
-                        }
-                    });
+            });
+        this.blockedOrderService
+            .getMailingListOfPlaceHolder()
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        !response ||
+                        !response.item.data ||
+                        !response.item.data.length
+                    ) {
+                        return;
+                    }
+                    this.emailSettingData = {
+                        placeholderData: response.item.data[1].map((x) => {
+                            return new PlaceHolderModel({
+                                id: x.OriginalColumnName,
+                                name: x.Value,
+                                data: "<<" + x.ColumnName + ">>",
+                            });
+                        }),
+                        contentTemplateData:
+                            this.emailSettingData["contentTemplateData"],
+                        settingData: this.inputEmailSettingData,
+                    };
                 });
+            });
     }
 
     public emailSettingOutput($event: any) {
@@ -129,39 +159,58 @@ export class EmailSettingPopupComponent extends BaseComponent implements OnInit,
     public callSaveEmailTemplateData($event: any) {
         if (!this.isDirty) return;
 
-        this.blockedOrderService.saveTextTemplate($event)
-            .subscribe(
-                (response: any) => {
-                    this.appErrorHandler.executeAction(() => {
-                        if (!response || !response.item.returnID) {
-                            this.toasterService.pop('error', 'Failed', 'Saving email template is failed');
-                            return;
-                        }
-                        if ($event.IsDeleted && $event.IsDeleted !== '0') {
-                            this.emailSetting.callBackAfterDeleteTemplateItem();
-                        } else {
-                            this.emailSetting.callBackAfterSaveEmailTemplate(!$event.IdTextTemplate, response.item.returnID);
-                        }
-                        this.isDirty = false;
-                        if (this.isSaveWhenClose) {
-                            this.isSaveWhenClose = false;
-                            this.close();
-                        }
-                    });
+        this.blockedOrderService
+            .saveTextTemplate($event)
+            .subscribe((response: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!response || !response.item.returnID) {
+                        this.toasterService.pop(
+                            "error",
+                            "Failed",
+                            "Saving email template is failed"
+                        );
+                        return;
+                    }
+                    if ($event.IsDeleted && $event.IsDeleted !== "0") {
+                        this.emailSetting.callBackAfterDeleteTemplateItem();
+                    } else {
+                        this.emailSetting.callBackAfterSaveEmailTemplate(
+                            !$event.IdTextTemplate,
+                            response.item.returnID
+                        );
+                    }
+                    this.isDirty = false;
+                    if (this.isSaveWhenClose) {
+                        this.isSaveWhenClose = false;
+                        this.close();
+                    }
                 });
+            });
     }
 
     public callSendEmail(email: EmailModel) {
         if (!email || !email.Subject) return;
-        email.ToEmail = Uti.getValueFromArrayByKey(this.inputEmailSettingData, 'Email');
-        this.commonService.sendEmail(email).subscribe(
-            (response: ApiResultResponse) => {
+        email.ToEmail = Uti.getValueFromArrayByKey(
+            this.inputEmailSettingData,
+            "Email"
+        );
+        this.commonService
+            .sendEmail(email)
+            .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response) || !response.item) {
-                        this.toasterService.pop('error', 'Failed', 'Email sending is failed');
+                        this.toasterService.pop(
+                            "error",
+                            "Failed",
+                            "Email sending is failed"
+                        );
                         return;
                     }
-                    this.toasterService.pop('success', 'Success', 'Email sending is successful');
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "Email sending is successful"
+                    );
                     this.isDirty = false;
                     this.close();
                 });
@@ -178,12 +227,14 @@ export class EmailSettingPopupComponent extends BaseComponent implements OnInit,
 
     private confirmWhenClose() {
         this.modalService.unsavedWarningMessageDefault({
-            headerText: 'Saving Changes',
+            headerText: "Saving Changes",
             onModalSaveAndExit: () => {
                 this.isSaveWhenClose = true;
                 this.callSaveEmailTemplateData(this.currentChangingData);
             },
-            onModalExit: () => { this.closeDialog(); }
+            onModalExit: () => {
+                this.closeDialog();
+            },
         });
     }
 
@@ -198,7 +249,10 @@ export class EmailSettingPopupComponent extends BaseComponent implements OnInit,
         this.isMaximized = true;
         this.isResizable = false;
         this.isDraggable = false;
-        this.dialogStyleClass = this.fullHeightClassName + '  ' + this.consts.popupFullViewClassName;
+        this.dialogStyleClass =
+            this.fullHeightClassName +
+            "  " +
+            this.consts.popupFullViewClassName;
         Uti.popupMaximize(this.pDialogEmailSetting, this.popupSize);
     }
 

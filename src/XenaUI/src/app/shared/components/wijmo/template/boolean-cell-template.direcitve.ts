@@ -1,6 +1,6 @@
-﻿import { Directive, Input, TemplateRef } from '@angular/core';
+﻿import { Directive, Input, TemplateRef } from "@angular/core";
 
-@Directive({ selector: '[booleanCellTemplate]' })
+@Directive({ selector: "[booleanCellTemplate]" })
 export class BooleanCellTemplateDirective {
-    constructor(public template: TemplateRef<any>) { }
+    constructor(public template: TemplateRef<any>) {}
 }

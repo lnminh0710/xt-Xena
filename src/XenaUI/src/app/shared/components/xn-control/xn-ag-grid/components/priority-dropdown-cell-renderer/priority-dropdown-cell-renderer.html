@@ -1,19 +1,21 @@
 <ng-container [ngSwitch]="cellStartedEdit">
     <ng-container *ngSwitchCase="true">
-        <xn-combo-box #cellCombo
-                      wjDropdownHelper
-                      [isShowWhenFocus]="isShowDropdownWhenFocusCombobox"
-                      [isInWidget]="true"
-                      [isInTable]="true"
-                      class="full-width no-border"
-                      [(text)]="key"
-                      [itemsSource]="options"
-                      [displayMemberPath]="'label'"
-                      [selectedValuePath]="'value'"
-                      [(selectedValue)]="key"
-                      [isRequired]="false"
-                      placeholder="Please select"
-                      (selectedIndexChanged)="onPriorityChangeValue(cellCombo)">
+        <xn-combo-box
+            #cellCombo
+            wjDropdownHelper
+            [isShowWhenFocus]="isShowDropdownWhenFocusCombobox"
+            [isInWidget]="true"
+            [isInTable]="true"
+            class="full-width no-border"
+            [(text)]="key"
+            [itemsSource]="options"
+            [displayMemberPath]="'label'"
+            [selectedValuePath]="'value'"
+            [(selectedValue)]="key"
+            [isRequired]="false"
+            placeholder="Please select"
+            (selectedIndexChanged)="onPriorityChangeValue(cellCombo)"
+        >
         </xn-combo-box>
     </ng-container>
     <ng-container *ngSwitchDefault>

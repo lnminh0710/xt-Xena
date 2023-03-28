@@ -1,73 +1,116 @@
-<div class="dispatcher-step1  xn-padding--sd"
-    [ngClass]="{'xn-disabled': !isRenderCompleted}"
-    [perfect-scrollbar]="{suppressScrollX: true, suppressScrollY: false}">
+<div
+    class="dispatcher-step1 xn-padding--sd"
+    [ngClass]="{ 'xn-disabled': !isRenderCompleted }"
+    [perfect-scrollbar]="{ suppressScrollX: true, suppressScrollY: false }"
+>
     <div class="dispatcher-step1-command">
-        <button type="button"
-                mat-raised-button
-                class="mat-btn-blue xn-margin"
-                id="btn-continue-set-quantity"
-                (click)="onDispatchClick()">
-            <span class="bt-t"><label-translation [keyword]="'DF_step1__Dispatch'"></label-translation></span>
+        <button
+            type="button"
+            mat-raised-button
+            class="mat-btn-blue xn-margin"
+            id="btn-continue-set-quantity"
+            (click)="onDispatchClick()"
+        >
+            <span class="bt-t"
+                ><label-translation
+                    [keyword]="'DF_step1__Dispatch'"
+                ></label-translation
+            ></span>
         </button>
     </div>
     <div class="dispatcher-step1-pool">
         <div class="dispatcher-step1-grid">
             <div class="dispatcher-step1-grid-header">
-                <div><label-translation [keyword]="'DF_step1__Pools'"></label-translation></div>
                 <div>
-                    <label-translation [keyword]="'DF_step1__N_of_entries'"></label-translation>: {{poolRightData.data.length}}
+                    <label-translation
+                        [keyword]="'DF_step1__Pools'"
+                    ></label-translation>
+                </div>
+                <div>
+                    <label-translation
+                        [keyword]="'DF_step1__N_of_entries'"
+                    ></label-translation
+                    >: {{ poolRightData.data.length }}
                 </div>
             </div>
             <div class="dispatcher-step1-grid-flex">
                 <div class="dispatcher-step1-grid-left">
-                    <xn-ag-grid #poolLeftGrid
-                                *ngIf="poolLeftData && poolLeftData.columns && poolLeftData.columns.length"
-                                [id]="poolLeftGridId"
-                                [dataSource]="poolLeftData"
-                                [rowGrouping]="rowLeftGrouping"
-                                [globalProperties]="globalProperties"
-                                [isShowedEditButtons]="false"
-                                [fitWidthColumn]="true"
-                                [autoSelectFirstRow]="true"
-                                (onRowGroupPanel)="handleRowLeftGrouping($event)"
-                                (rowClick)="poolLeftGridRowClick($event)">
+                    <xn-ag-grid
+                        #poolLeftGrid
+                        *ngIf="
+                            poolLeftData &&
+                            poolLeftData.columns &&
+                            poolLeftData.columns.length
+                        "
+                        [id]="poolLeftGridId"
+                        [dataSource]="poolLeftData"
+                        [rowGrouping]="rowLeftGrouping"
+                        [globalProperties]="globalProperties"
+                        [isShowedEditButtons]="false"
+                        [fitWidthColumn]="true"
+                        [autoSelectFirstRow]="true"
+                        (onRowGroupPanel)="handleRowLeftGrouping($event)"
+                        (rowClick)="poolLeftGridRowClick($event)"
+                    >
                     </xn-ag-grid>
                 </div>
                 <div class="dispatcher-step1-grid-right">
-                    <xn-ag-grid #poolRightGrid
-                                *ngIf="poolRightData && poolRightData.columns && poolRightData.columns.length"
-                                [id]="poolRightGridId"
-                                [dataSource]="poolRightData"
-                                [readOnly]="false"
-                                [rowGrouping]="rowRightGrouping"
-                                [globalProperties]="globalProperties"
-                                [isEditting]="true"
-                                [autoSelectFirstRow]="true"
-                                [fitWidthColumn]="true"
-                                (onRowGroupPanel)="handleRowRightGrouping($event)"
-                                (rowClick)="onPoolRightGridRowClick($event)"
-                                (cellEditingStopped)="onPoolRightGridRowEditEnded($event)">
+                    <xn-ag-grid
+                        #poolRightGrid
+                        *ngIf="
+                            poolRightData &&
+                            poolRightData.columns &&
+                            poolRightData.columns.length
+                        "
+                        [id]="poolRightGridId"
+                        [dataSource]="poolRightData"
+                        [readOnly]="false"
+                        [rowGrouping]="rowRightGrouping"
+                        [globalProperties]="globalProperties"
+                        [isEditting]="true"
+                        [autoSelectFirstRow]="true"
+                        [fitWidthColumn]="true"
+                        (onRowGroupPanel)="handleRowRightGrouping($event)"
+                        (rowClick)="onPoolRightGridRowClick($event)"
+                        (cellEditingStopped)="
+                            onPoolRightGridRowEditEnded($event)
+                        "
+                    >
                     </xn-ag-grid>
                 </div>
             </div>
         </div>
         <div class="dispatcher-step1-checkboxes">
             <div class="dispatcher-form__step1__right">
-                <div class="xn__form-header  col-xs-12  table-border  table-border-bg">
-                    <p class="pull-left xn__form-header-title"><label-translation [keyword]="'DF_step1__Data_entry_center'"></label-translation></p>
+                <div
+                    class="xn__form-header col-xs-12 table-border table-border-bg"
+                >
+                    <p class="pull-left xn__form-header-title">
+                        <label-translation
+                            [keyword]="'DF_step1__Data_entry_center'"
+                        ></label-translation>
+                    </p>
                 </div>
-                <div class="dispatcher-form__step1__right-body  col-xs-12"
-                     [perfect-scrollbar]="perfectScrollbarConfig">
-                    <div class="df__step1__right-item  col-xs-12"
-                         *ngFor="let item of dataEntryCenters">
-                        <mat-radio-group name="dp-st1-radio"
-                                         [(ngModel)]="dataEntryCenter">
-                            <mat-radio-button class="xn-padding-left-5"
-                                              color="primary"
-                                              name="dp-st1-radio"
-                                              value="{{item.idValue}}"
-                                              (change)="dataEntryCenterClicked(item)">
-                                {{item.textValue}}
+                <div
+                    class="dispatcher-form__step1__right-body col-xs-12"
+                    [perfect-scrollbar]="perfectScrollbarConfig"
+                >
+                    <div
+                        class="df__step1__right-item col-xs-12"
+                        *ngFor="let item of dataEntryCenters"
+                    >
+                        <mat-radio-group
+                            name="dp-st1-radio"
+                            [(ngModel)]="dataEntryCenter"
+                        >
+                            <mat-radio-button
+                                class="xn-padding-left-5"
+                                color="primary"
+                                name="dp-st1-radio"
+                                value="{{ item.idValue }}"
+                                (change)="dataEntryCenterClicked(item)"
+                            >
+                                {{ item.textValue }}
                             </mat-radio-button>
                         </mat-radio-group>
                     </div>

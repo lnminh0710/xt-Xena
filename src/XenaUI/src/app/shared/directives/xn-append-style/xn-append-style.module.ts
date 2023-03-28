@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { XnAppendStyleDirective } from './xn-append-style.directive';
+import { NgModule } from "@angular/core";
+import { XnAppendStyleDirective } from "./xn-append-style.directive";
 
 @NgModule({
     imports: [],
     declarations: [XnAppendStyleDirective],
     exports: [XnAppendStyleDirective],
-    providers: []
+    providers: [],
 })
-export class XnAppendStyleModule { }
+export class XnAppendStyleModule {}

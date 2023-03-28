@@ -1,1 +1,1 @@
-export * from './dynamic-filter.component';
+export * from "./dynamic-filter.component";

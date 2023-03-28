@@ -16,7 +16,10 @@ wj-flex-grid {
     padding: 0;
 }
 
-.btn-del-editable-table, .btn-plus-editable-table, .icon-editable-table, .btn-upload-editable-table {
+.btn-del-editable-table,
+.btn-plus-editable-table,
+.icon-editable-table,
+.btn-upload-editable-table {
     width: 24px;
     height: 24px;
     background-color: transparent;
@@ -26,7 +29,9 @@ wj-flex-grid {
     border-width: 0px;
 }
 
-.btn-del-editable-table:hover, .btn-plus-editable-table:hover, .btn-upload-editable-table:hover {
+.btn-del-editable-table:hover,
+.btn-plus-editable-table:hover,
+.btn-upload-editable-table:hover {
     background-color: #e3e3e3;
 }
 
@@ -51,7 +56,8 @@ wj-flex-grid {
     opacity: 1;
 }
 
-.btn-plus-editable-table.disabled, .btn-plus-editable-table.disabled:focus {
+.btn-plus-editable-table.disabled,
+.btn-plus-editable-table.disabled:focus {
     color: #808080 !important;
     opacity: 1;
     background-color: transparent;
@@ -65,8 +71,9 @@ wj-flex-grid {
     float: left;
 }
 
-.table__command, .table__search {
-    border: 1px solid #DDDDDD;
+.table__command,
+.table__search {
+    border: 1px solid #dddddd;
     border-bottom: none;
     display: flex;
     justify-content: space-between;
@@ -82,7 +89,7 @@ wj-flex-grid {
 }
 
 .table__search__header--border {
-    border: 1px solid #DDDDDD;
+    border: 1px solid #dddddd;
 }
 
 .table__search__header {
@@ -97,13 +104,15 @@ wj-flex-grid {
     justify-content: space-between;
 }
 
-.col-header-icon-readonly, .col-header-icon {
+.col-header-icon-readonly,
+.col-header-icon {
     padding: 0 3px;
     width: 100%;
     text-align: center;
 }
 
-.col-header-icon, .col-header {
+.col-header-icon,
+.col-header {
     border-bottom: 3px solid orange;
     position: absolute;
     width: 100%;
@@ -114,7 +123,8 @@ wj-flex-grid {
     z-index: 1;
 }
 
-.cell-icon, .cell-img {
+.cell-icon,
+.cell-img {
     width: 100%;
     text-align: center;
 }
@@ -138,7 +148,7 @@ wj-flex-grid {
     margin-top: -50px;
     position: absolute;
     background-color: #fff;
-    box-shadow: 0 3px 9px rgba(0,0,0,.5);
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
     z-index: 5;
 
     & .close-btn {

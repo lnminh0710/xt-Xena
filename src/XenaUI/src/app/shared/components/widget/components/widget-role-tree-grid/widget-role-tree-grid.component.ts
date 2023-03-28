@@ -1,28 +1,37 @@
 import {
-    Component, Input, Output, EventEmitter, OnInit,
-    OnDestroy, AfterViewInit, ElementRef, ChangeDetectorRef, ViewChild
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ChangeDetectorRef,
+    ViewChild,
 } from "@angular/core";
-import {
-    ControlGridModel, ControlGridColumnModel
-} from 'app/models';
-import isObject from 'lodash-es/isObject';
-import cloneDeep from 'lodash-es/cloneDeep';
+import { ControlGridModel, ControlGridColumnModel } from "app/models";
+import isObject from "lodash-es/isObject";
+import cloneDeep from "lodash-es/cloneDeep";
 // import sortBy from 'lodash-es/sortBy';
-import { WijmoGridComponent } from 'app/shared/components/wijmo';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import { WidgetDetail } from 'app/models';
+import { WijmoGridComponent } from "app/shared/components/wijmo";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { WidgetDetail } from "app/models";
 
 @Component({
-    selector: 'widget-role-tree-grid',
-    templateUrl: './widget-role-tree-grid.component.html',
-    styleUrls: ['./widget-role-tree-grid.component.scss']
+    selector: "widget-role-tree-grid",
+    templateUrl: "./widget-role-tree-grid.component.html",
+    styleUrls: ["./widget-role-tree-grid.component.scss"],
 })
-export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class WidgetRoleTreeGridComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     // Const
-    private IdKey = 'IdLoginAccessRightsModule';
-    private ParentIdKey = 'MasterIdLoginAccessRightsModule';
-    private IdLoginRolesKey = 'IdLoginRoles';
+    private IdKey = "IdLoginAccessRightsModule";
+    private ParentIdKey = "MasterIdLoginAccessRightsModule";
+    private IdLoginRolesKey = "IdLoginRoles";
 
     private idLoginRoles: number;
 
@@ -44,11 +53,10 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
         this._isActivated = status;
         if (!status) {
             this.ref.detach();
-        }
-        else {
+        } else {
             this.ref.reattach();
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
@@ -69,7 +77,9 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
             return;
         }
         const key = data.widgetDataType.listenKey.key;
-        this.idLoginRoles = data.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim)[key];
+        this.idLoginRoles = data.widgetDataType.listenKeyRequest(
+            this.ofModule.moduleNameTrim
+        )[key];
     }
     @Input() isEditting: boolean = false;
     @Input() gridStyle: any;
@@ -85,34 +95,38 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
 
     @ViewChild(WijmoGridComponent) wijmoGridComponent: WijmoGridComponent;
 
-
-    constructor(private _eref: ElementRef, private ref: ChangeDetectorRef, protected router: Router) {
+    constructor(
+        private _eref: ElementRef,
+        private ref: ChangeDetectorRef,
+        protected router: Router
+    ) {
         super(router);
     }
 
     /**
      * ngOnInit
      */
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     /**
      * ngOnDestroy
      */
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     /**
      * ngAfterViewInit
      */
-    public ngAfterViewInit() {
-    }
+    public ngAfterViewInit() {}
 
     /**
      * formatData
      */
     private formatData() {
-        if (this.dataSource && this.dataSource.data && this.dataSource.data.length) {
+        if (
+            this.dataSource &&
+            this.dataSource.data &&
+            this.dataSource.data.length
+        ) {
             for (let i = 0; i < this.dataSource.data.length; i++) {
                 this.dataSource.data[i].children = [];
             }
@@ -129,23 +143,30 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
     private buildTree(tree, item) {
         // If item then have parent
         if (item) {
-            for (let i = 0; i < tree.length; i++) { // Find the parent
-                if (String(tree[i][this.IdKey]) === String(item[this.ParentIdKey])) {
+            for (let i = 0; i < tree.length; i++) {
+                // Find the parent
+                if (
+                    String(tree[i][this.IdKey]) ===
+                    String(item[this.ParentIdKey])
+                ) {
                     tree[i].children.push(item);
                     break;
-                }
-                else
-                    this.buildTree(tree[i].children, item);
+                } else this.buildTree(tree[i].children, item);
             }
         }
         // If no item then is a root item
         else {
             let idx = 0;
             while (idx < tree.length) {
-                if (!isObject(tree[idx][this.ParentIdKey]) && tree[idx][this.ParentIdKey])
-                    this.buildTree(tree, tree.splice(idx, 1)[0]) // if have parent then remove it from the array to relocate it to the right place
-                else
-                    idx++;
+                if (
+                    !isObject(tree[idx][this.ParentIdKey]) &&
+                    tree[idx][this.ParentIdKey]
+                )
+                    this.buildTree(
+                        tree,
+                        tree.splice(idx, 1)[0]
+                    ); // if have parent then remove it from the array to relocate it to the right place
+                else idx++;
             }
         }
     }
@@ -156,7 +177,7 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
      * @param fieldName
      */
     public onCheckboxChanged(item: any, fieldName: string) {
-        item['IsEdited'] = true;
+        item["IsEdited"] = true;
         let status = item[fieldName];
         status = status ? 1 : 0;
         item[fieldName] = status;
@@ -165,7 +186,9 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
             this.setStausForChildrenNode(item.children, fieldName, status);
         }
         if (item[this.ParentIdKey]) {
-            let parent = this.dataSource.data.find(p => p[this.IdKey] == item[this.ParentIdKey]);
+            let parent = this.dataSource.data.find(
+                (p) => p[this.IdKey] == item[this.ParentIdKey]
+            );
             if (parent) {
                 this.setStatusForParent(parent, fieldName);
             }
@@ -175,10 +198,10 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
 
     public checkAllItems(colName, e) {
         this.wijmoGridComponent.gridData.sourceCollection.forEach((item) => {
-            if (!item['BorderStatus']) {
+            if (!item["BorderStatus"]) {
                 this.wijmoGridComponent.gridData.editItem(item);
                 item[colName] = e.checked;
-                item['isEdited'] = true;
+                item["isEdited"] = true;
                 this.onCheckboxChanged(item, colName);
                 this.wijmoGridComponent.gridData.commitEdit();
             }
@@ -195,14 +218,14 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
         if (parentNode.children) {
             let status = 0;
             let children: Array<any> = parentNode.children;
-            children.forEach(child => {
+            children.forEach((child) => {
                 if (child[fieldName]) {
                     status = 1;
                 }
             });
             parentNode[fieldName] = status;
             parentNode[this.IdLoginRolesKey] = this.idLoginRoles;
-            parentNode['IsEdited'] = true;
+            parentNode["IsEdited"] = true;
         }
     }
 
@@ -213,10 +236,10 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
      * @param status
      */
     private setStausForChildrenNode(childs: Array<any>, fieldName, status) {
-        childs.forEach(child => {
+        childs.forEach((child) => {
             child[fieldName] = status;
             child[this.IdLoginRolesKey] = this.idLoginRoles;
-            child['IsEdited'] = true;
+            child["IsEdited"] = true;
             if (child.children && child.children.length) {
                 this.setStausForChildrenNode(child.children, fieldName, status);
             }
@@ -239,8 +262,8 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
      * @param datasource
      */
     private getEditedData(editedArray: Array<any>, data: Array<any>) {
-        data.forEach(item => {
-            if (item['IsEdited']) {
+        data.forEach((item) => {
+            if (item["IsEdited"]) {
                 editedArray.push(item);
             }
             if (item.children && item.children.length) {
@@ -261,7 +284,9 @@ export class WidgetRoleTreeGridComponent extends BaseComponent implements OnInit
      * getHTMLTable
      */
     public getHTMLTable() {
-        return this.wijmoGridComponent ? this.wijmoGridComponent.getHTMLTable() : '';
+        return this.wijmoGridComponent
+            ? this.wijmoGridComponent.getHTMLTable()
+            : "";
     }
 
     /**

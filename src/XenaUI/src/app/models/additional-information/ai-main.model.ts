@@ -1,5 +1,5 @@
-import { AdditionalInfromationTabModel } from './ai-tab.model'
-import { AdditionalInfromationPageModel } from './ai-page.model'
+import { AdditionalInfromationTabModel } from "./ai-tab.model";
+import { AdditionalInfromationPageModel } from "./ai-page.model";
 
 export class AdditionalInfromationMainModel {
     public SimpleTabs: AdditionalInfromationTabModel[] = null;

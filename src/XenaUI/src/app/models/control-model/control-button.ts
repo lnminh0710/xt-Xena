@@ -1,7 +1,7 @@
-﻿import { ControlBase } from './control-base';
+﻿import { ControlBase } from "./control-base";
 
 export class ButtonControl extends ControlBase<string> {
-    public controlType: string = 'button';
+    public controlType: string = "button";
     public clickFunc: Function = null;
 
     public constructor(init?: Partial<ButtonControl>) {

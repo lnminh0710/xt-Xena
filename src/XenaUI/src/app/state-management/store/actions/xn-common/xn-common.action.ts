@@ -1,103 +1,105 @@
-import { Injectable } from '@angular/core';
-import { Action } from '@ngrx/store';
-import { LayoutPageInfoModel, HotKey } from 'app/models';
-import { CustomAction } from 'app/state-management/store/actions/base';
-import {
-    Module
-} from 'app/models';
+import { Injectable } from "@angular/core";
+import { Action } from "@ngrx/store";
+import { LayoutPageInfoModel, HotKey } from "app/models";
+import { CustomAction } from "app/state-management/store/actions/base";
+import { Module } from "app/models";
 
 @Injectable()
 export class XnCommonActions {
-    static LOAD_COMBO_BOX_LIST = '[COMBOBOX] LOAD COMBO BOX LIST';
+    static LOAD_COMBO_BOX_LIST = "[COMBOBOX] LOAD COMBO BOX LIST";
     loadComboBoxList(comboboxIds: any[], module: Module): CustomAction {
         return {
             type: XnCommonActions.LOAD_COMBO_BOX_LIST,
             module: module,
-            payload: comboboxIds
+            payload: comboboxIds,
         };
     }
 
-    static LOAD_COMBO_BOX_LIST_SUCCESS = '[COMBOBOX] LOAD COMBO BOX LIST Successfully';
+    static LOAD_COMBO_BOX_LIST_SUCCESS =
+        "[COMBOBOX] LOAD COMBO BOX LIST Successfully";
     loadComboBoxListSuccess(listComboBox: any, module: Module): CustomAction {
         return {
             type: XnCommonActions.LOAD_COMBO_BOX_LIST_SUCCESS,
             module: module,
-            payload: listComboBox
+            payload: listComboBox,
         };
     }
 
-    static GET_MODULE_TO_PERSON_TYPE = '[COMMON] GET MODULE TO PERSON TYPE';
+    static GET_MODULE_TO_PERSON_TYPE = "[COMMON] GET MODULE TO PERSON TYPE";
     getModuleToPersonType(data: any, module: Module): CustomAction {
         return {
             type: XnCommonActions.GET_MODULE_TO_PERSON_TYPE,
             module: module,
-            payload: data
+            payload: data,
         };
     }
 
-    static SET_WIDGETBOXES_INFO = '[LayoutInfo] Set Widget boxes';
-    setWidgetboxesInfo(data: LayoutPageInfoModel, module: Module): CustomAction {
+    static SET_WIDGETBOXES_INFO = "[LayoutInfo] Set Widget boxes";
+    setWidgetboxesInfo(
+        data: LayoutPageInfoModel,
+        module: Module
+    ): CustomAction {
         return {
             type: XnCommonActions.SET_WIDGETBOXES_INFO,
             module: module,
-            payload: data
+            payload: data,
         };
     }
 
-    static CHANGE_COUNTRY_CODE = '[COMMON] Change Country Code';
+    static CHANGE_COUNTRY_CODE = "[COMMON] Change Country Code";
     changeCountryCode(data: any, module: Module): CustomAction {
         return {
             type: XnCommonActions.CHANGE_COUNTRY_CODE,
             module: module,
-            payload: data
+            payload: data,
         };
     }
 
-    static ADD_HOT_KEY = '[COMMON] Add Hot Key';
+    static ADD_HOT_KEY = "[COMMON] Add Hot Key";
     addHotKey(data: HotKey, module: Module): CustomAction {
         return {
             type: XnCommonActions.ADD_HOT_KEY,
             module: module,
-            payload: data
+            payload: data,
         };
     }
 
-    static CONTEXT_MENU_CLICKED = '[COMMON] MENU CLICKED';
+    static CONTEXT_MENU_CLICKED = "[COMMON] MENU CLICKED";
     contextMenuClicked(data: any, module: Module): CustomAction {
         return {
             type: XnCommonActions.CONTEXT_MENU_CLICKED,
             module: module,
-            payload: data
+            payload: data,
         };
     }
 
-    static SHOW_FEEDBACK = '[COMMON] SHOW FEEDBACK';
+    static SHOW_FEEDBACK = "[COMMON] SHOW FEEDBACK";
     showFeedbackClicked(data: any): CustomAction {
         return {
             type: XnCommonActions.SHOW_FEEDBACK,
-            payload: data
+            payload: data,
         };
     }
 
-    static SHOW_FEEDBACK_COMPLETE = '[COMMON] SHOW FEEDBACK COMPLETE';
+    static SHOW_FEEDBACK_COMPLETE = "[COMMON] SHOW FEEDBACK COMPLETE";
     showFeedbackComplete(): CustomAction {
         return {
             type: XnCommonActions.SHOW_FEEDBACK_COMPLETE,
         };
     }
 
-    static STORE_FEEDBACK_DATA = '[COMMON] STORE FEEDBACK DATA';
+    static STORE_FEEDBACK_DATA = "[COMMON] STORE FEEDBACK DATA";
     storeFeedbacData(data: any): CustomAction {
         return {
             type: XnCommonActions.STORE_FEEDBACK_DATA,
-            payload: data
+            payload: data,
         };
     }
 
-    static RELOAD_FEEDBACK_DATA = '[COMMON] RELOAD FEEDBACK DATA';
+    static RELOAD_FEEDBACK_DATA = "[COMMON] RELOAD FEEDBACK DATA";
     reLoadFeedbacData(): CustomAction {
         return {
-            type: XnCommonActions.RELOAD_FEEDBACK_DATA
+            type: XnCommonActions.RELOAD_FEEDBACK_DATA,
         };
     }
 }

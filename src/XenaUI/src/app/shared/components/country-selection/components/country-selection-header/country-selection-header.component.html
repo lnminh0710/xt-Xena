@@ -1,136 +1,201 @@
-
-<div class="col-xs-12  height-pc-100  no-padding  country-selection-header">
-    <div class="collapse-panel  {{collapsePanelLeftClass}}"
-         (click)="collapseLeft()">
-        <i *ngIf="!isLeftCollapse" class="fa  fa-caret-left"></i>
-        <i *ngIf="isLeftCollapse" class="fa  fa-caret-right"></i>
+<div class="col-xs-12 height-pc-100 no-padding country-selection-header">
+    <div
+        class="collapse-panel  {{ collapsePanelLeftClass }}"
+        (click)="collapseLeft()"
+    >
+        <i *ngIf="!isLeftCollapse" class="fa fa-caret-left"></i>
+        <i *ngIf="isLeftCollapse" class="fa fa-caret-right"></i>
     </div>
-    <div *ngIf="documentMode==moduleId.Broker"
-         class="collapse-panel  {{collapsePanelRightClass}}"
-         (click)="collapseRight()">
-        <i *ngIf="isRightCollapse" class="fa  fa-caret-left"></i>
-        <i *ngIf="!isRightCollapse" class="fa  fa-caret-right"></i>
+    <div
+        *ngIf="documentMode == moduleId.Broker"
+        class="collapse-panel  {{ collapsePanelRightClass }}"
+        (click)="collapseRight()"
+    >
+        <i *ngIf="isRightCollapse" class="fa fa-caret-left"></i>
+        <i *ngIf="!isRightCollapse" class="fa fa-caret-right"></i>
     </div>
-    <split class="min-width-1000 height-pc-100"
-           direction="horizontal"
-           (dragEnd)="dragEnd($event)"
-           (dragProgress)="dragStart($event)"
-           (dragStart)="dragStart($event)"
-           [gutterSize]="5"
-           [perfect-scrollbar]="perfectScrollbarConfig">
-        <split-area [size]="selectedCountryClass"
-                    class="sel-country-selected">
-            <div [hidden]="isLeftCollapse"
-                 class="col-xs-12  no-padding-right  height-pc-100"
-                 [perfect-scrollbar]="perfectScrollbarConfig">
+    <split
+        class="min-width-1000 height-pc-100"
+        direction="horizontal"
+        (dragEnd)="dragEnd($event)"
+        (dragProgress)="dragStart($event)"
+        (dragStart)="dragStart($event)"
+        [gutterSize]="5"
+        [perfect-scrollbar]="perfectScrollbarConfig"
+    >
+        <split-area [size]="selectedCountryClass" class="sel-country-selected">
+            <div
+                [hidden]="isLeftCollapse"
+                class="col-xs-12 no-padding-right height-pc-100"
+                [perfect-scrollbar]="perfectScrollbarConfig"
+            >
                 <div class="col-xs-12">
-                    <label class="label-title"><label-translation [keyword]="'Selected country'"></label-translation></label>
+                    <label class="label-title"
+                        ><label-translation
+                            [keyword]="'Selected country'"
+                        ></label-translation
+                    ></label>
                 </div>
-                <sel-country-selected [mainList]="countrySelectedList"
-                                      (checkedChangeOutput)="countrySelectedChanged($event)">
+                <sel-country-selected
+                    [mainList]="countrySelectedList"
+                    (checkedChangeOutput)="countrySelectedChanged($event)"
+                >
                 </sel-country-selected>
             </div>
         </split-area>
-        <split-area [size]="countryCheckListClass"
-                    class="sel-country-check-list">
-            <div class="height-pc-100"
-                 [perfect-scrollbar]="perfectScrollbarConfig">
+        <split-area
+            [size]="countryCheckListClass"
+            class="sel-country-check-list"
+        >
+            <div
+                class="height-pc-100"
+                [perfect-scrollbar]="perfectScrollbarConfig"
+            >
                 <!--If document is Broker-->
-                <div *ngIf="documentMode==moduleId.Broker"
-                     class="country-selection-middle  col-xs-12  no-padding  margin-top--md">
-                    <label class="col-xs-3  label-title"><label-translation [keyword]="'Country choose'"></label-translation></label>
-                    <div class="col-xs-4  no-padding  input-searching">
-                        <app-xn-input-debounce delayTimer="600"
-                                               placeholder="Search Here"
-                                               (onValueChanged)="filterCountry($event)"
-                                               [value]="textSearch"
-                                               cssClass="country-seletion__search-text"
-                                               id="txt-coubntry-selection-search-text"
-                                               [isLoading]="isLoading">
+                <div
+                    *ngIf="documentMode == moduleId.Broker"
+                    class="country-selection-middle col-xs-12 no-padding margin-top--md"
+                >
+                    <label class="col-xs-3 label-title"
+                        ><label-translation
+                            [keyword]="'Country choose'"
+                        ></label-translation
+                    ></label>
+                    <div class="col-xs-4 no-padding input-searching">
+                        <app-xn-input-debounce
+                            delayTimer="600"
+                            placeholder="Search Here"
+                            (onValueChanged)="filterCountry($event)"
+                            [value]="textSearch"
+                            cssClass="country-seletion__search-text"
+                            id="txt-coubntry-selection-search-text"
+                            [isLoading]="isLoading"
+                        >
                         </app-xn-input-debounce>
-                        <a mat-button
-                           class="mat-btn-blue  searching-button"
-                           (click)="filterCountry(textSearch)">
-                            <i class="fa  fa-search"></i>
+                        <a
+                            mat-button
+                            class="mat-btn-blue searching-button"
+                            (click)="filterCountry(textSearch)"
+                        >
+                            <i class="fa fa-search"></i>
                         </a>
                     </div>
                 </div>
-                <div class="col-xs-12  no-padding  margin-bottom--sd">
-                    <sel-country-check-list #selCountryCheckListComponent
-                                            [data]="countryData"
-                                            (outputData)="countryCheckListOutputData($event)"
-                                            (formChange)="onCountryCheckListChanged($event)"></sel-country-check-list>
+                <div class="col-xs-12 no-padding margin-bottom--sd">
+                    <sel-country-check-list
+                        #selCountryCheckListComponent
+                        [data]="countryData"
+                        (outputData)="countryCheckListOutputData($event)"
+                        (formChange)="onCountryCheckListChanged($event)"
+                    ></sel-country-check-list>
                 </div>
             </div>
         </split-area>
         <!--If document is Broker-->
-        <split-area *ngIf="documentMode==moduleId.Broker" [size]="20"
-                    class="sel-select-group">
-            <div [hidden]="isRightCollapse"
-                 class="col-xs-12  height-pc-100  no-padding-right"
-                 [perfect-scrollbar]="perfectScrollbarConfig">
+        <split-area
+            *ngIf="documentMode == moduleId.Broker"
+            [size]="20"
+            class="sel-select-group"
+        >
+            <div
+                [hidden]="isRightCollapse"
+                class="col-xs-12 height-pc-100 no-padding-right"
+                [perfect-scrollbar]="perfectScrollbarConfig"
+            >
                 <div class="col-xs-12">
-                    <label class="label-title"><label-translation [keyword]="'Selected group'"></label-translation></label>
+                    <label class="label-title"
+                        ><label-translation
+                            [keyword]="'Selected group'"
+                        ></label-translation
+                    ></label>
                 </div>
-                <sel-select-group [mainList]="groupList"
-                                  [disabledSaveChange]="disabledSaveChange"
-                                  (listCheckedChange)="groupListCheckedChange()"
-                                  (saveSelectCountry)="saveSelectCountry()"
-                                  (addNewGroupClicked)="addNewGroupClicked()">
+                <sel-select-group
+                    [mainList]="groupList"
+                    [disabledSaveChange]="disabledSaveChange"
+                    (listCheckedChange)="groupListCheckedChange()"
+                    (saveSelectCountry)="saveSelectCountry()"
+                    (addNewGroupClicked)="addNewGroupClicked()"
+                >
                 </sel-select-group>
             </div>
         </split-area>
     </split>
 </div>
-<p-dialog header=""
-          [(visible)]="showDialog"
-          [resizable]="false"
-          modal="modal"
-          width="500"
-          responsive="true"
-          appendTo="body"
-          (onAfterHide)="cancelCreatingNewGroup()">
+<p-dialog
+    header=""
+    [(visible)]="showDialog"
+    [resizable]="false"
+    modal="modal"
+    width="500"
+    responsive="true"
+    appendTo="body"
+    (onAfterHide)="cancelCreatingNewGroup()"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="fa  fa-plus  header-icon  pull-left"></span>
-            <span class="header-text  pull-left"><label-translation [keyword]="'Add New Group'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="cancelCreatingNewGroup()">
+            <span class="fa fa-plus header-icon pull-left"></span>
+            <span class="header-text pull-left"
+                ><label-translation
+                    [keyword]="'Add New Group'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="cancelCreatingNewGroup()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <div *ngIf="showDialog"
-         class="col-xs-12">
-        <div class="margin-top--md  selection-input-customize">
+    <div *ngIf="showDialog" class="col-xs-12">
+        <div class="margin-top--md selection-input-customize">
             <div class="group">
-                <input type="text" required
-                       [(ngModel)]="newGroupName"
-                       (change)="newGroupNameChanged()">
+                <input
+                    type="text"
+                    required
+                    [(ngModel)]="newGroupName"
+                    (change)="newGroupNameChanged()"
+                />
                 <span class="text-highlight"></span>
                 <span class="bar"></span>
-                <label><label-translation [keyword]="'Group name'"></label-translation></label>
+                <label
+                    ><label-translation
+                        [keyword]="'Group name'"
+                    ></label-translation
+                ></label>
             </div>
-            <div *ngIf="showRequired" class="alert  alert-danger"><label-translation [keyword]="requiredMessage"></label-translation></div>
+            <div *ngIf="showRequired" class="alert alert-danger">
+                <label-translation
+                    [keyword]="requiredMessage"
+                ></label-translation>
+            </div>
         </div>
     </div>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button type="button"
-                    mat-raised-button
-                    class="pull-right  margin-left--sd  xn-margin"
-                    (click)="cancelCreatingNewGroup()">
-                <span class="bt-t-i"><label-translation [keyword]="'Cancel'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="pull-right margin-left--sd xn-margin"
+                (click)="cancelCreatingNewGroup()"
+            >
+                <span class="bt-t-i"
+                    ><label-translation [keyword]="'Cancel'"></label-translation
+                ></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-blue  pull-right xn-margin"
-                    id="btn-continue-set-quantity"
-                    (click)="createNewGroup()">
-                <span class="bt-t"><label-translation [keyword]="'Create'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-blue pull-right xn-margin"
+                id="btn-continue-set-quantity"
+                (click)="createNewGroup()"
+            >
+                <span class="bt-t"
+                    ><label-translation [keyword]="'Create'"></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>

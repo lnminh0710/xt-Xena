@@ -1,11 +1,17 @@
-import {Component, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
-import cloneDeep from 'lodash-es/cloneDeep';
+import {
+    Component,
+    Output,
+    EventEmitter,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+} from "@angular/core";
+import cloneDeep from "lodash-es/cloneDeep";
 
 @Component({
-    selector: 'property-panel-grid-value-dialog',
-    styleUrls: ['./property-panel-grid-value-dialog.component.scss'],
-    templateUrl: './property-panel-grid-value-dialog.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: "property-panel-grid-value-dialog",
+    styleUrls: ["./property-panel-grid-value-dialog.component.scss"],
+    templateUrl: "./property-panel-grid-value-dialog.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PropertyPanelGridValueDialogComponent {
     public showDialog = false;
@@ -14,9 +20,7 @@ export class PropertyPanelGridValueDialogComponent {
 
     @Output() onApply = new EventEmitter<any>();
 
-    constructor(
-        private changeDetectorRef: ChangeDetectorRef
-    ) {
+    constructor(private changeDetectorRef: ChangeDetectorRef) {
         this.checkAll = false;
     }
 
@@ -36,7 +40,9 @@ export class PropertyPanelGridValueDialogComponent {
 
     public apply() {
         this.close();
-        this.onApply.emit(this.displayFields.filter(i => i.selected === true));
+        this.onApply.emit(
+            this.displayFields.filter((i) => i.selected === true)
+        );
     }
 
     public onCheckboxChanged() {
@@ -65,5 +71,4 @@ export class PropertyPanelGridValueDialogComponent {
     public itemsTrackBy(index, item) {
         return item ? item.value : undefined;
     }
-
 }

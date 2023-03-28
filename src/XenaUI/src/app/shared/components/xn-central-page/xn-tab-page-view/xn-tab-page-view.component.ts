@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { TabPageViewModel, PageModel, TabPageViewSplitModel } from 'app/models';
+import { Component, OnInit, Input } from "@angular/core";
+import { TabPageViewModel, PageModel, TabPageViewSplitModel } from "app/models";
 
 @Component({
-    selector: 'app-xn-tab-page-view',
-    templateUrl: './xn-tab-page-view.component.html'
+    selector: "app-xn-tab-page-view",
+    templateUrl: "./xn-tab-page-view.component.html",
 })
 export class XnTabPageViewComponent implements OnInit {
     public tabPageView: TabPageViewModel;
@@ -19,21 +19,19 @@ export class XnTabPageViewComponent implements OnInit {
     @Input() isActivated;
     @Input() tabID: string;
 
-    constructor() {
-    }
+    constructor() {}
 
     private setDoublePage() {
-        this.isDoublePage = !($.isEmptyObject(this.tabPageView.Split));
+        this.isDoublePage = !$.isEmptyObject(this.tabPageView.Split);
     }
 
     ngOnInit() {
         if ($.isEmptyObject(this.tabPageView)) {
             this.tabPageView = new TabPageViewModel({
                 Page: new PageModel(),
-                Split: new TabPageViewSplitModel()
+                Split: new TabPageViewSplitModel(),
             });
         }
         this.setDoublePage();
     }
-
 }

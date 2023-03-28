@@ -1,1 +1,1 @@
-export { WidgetUtils } from './widget-utils';
+export { WidgetUtils } from "./widget-utils";

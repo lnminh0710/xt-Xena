@@ -11,60 +11,60 @@ import {
     animate,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    ElementRef
-} from '@angular/core';
-import {
-    Store,
-    ReducerManagerDispatcher
-} from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+    ElementRef,
+} from "@angular/core";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 import {
     PropertyPanelActions,
     LayoutInfoActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import { SubLayoutInfoState } from 'app/state-management/store/reducer/layout-info';
+    CustomAction,
+} from "app/state-management/store/actions";
+import { SubLayoutInfoState } from "app/state-management/store/reducer/layout-info";
 import {
     AppErrorHandler,
     PropertyPanelService,
-    ModalService
-} from 'app/services';
-import { ResizeEvent } from 'angular-resizable-element';
-import {
-    WidgetPropertyModel,
-    WidgetPropertiesStateModel,
-} from 'app/models';
-import * as layoutInfoReducer from 'app/state-management/store/reducer/layout-info';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import { Uti } from 'app/utilities';
-import { MenuModuleId } from 'app/app.constants';
+    ModalService,
+} from "app/services";
+import { ResizeEvent } from "angular-resizable-element";
+import { WidgetPropertyModel, WidgetPropertiesStateModel } from "app/models";
+import * as layoutInfoReducer from "app/state-management/store/reducer/layout-info";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Uti } from "app/utilities";
+import { MenuModuleId } from "app/app.constants";
 
 @Component({
-    selector: 'property-panel',
-    styleUrls: ['./property-panel.component.scss'],
-    templateUrl: './property-panel.component.html',
+    selector: "property-panel",
+    styleUrls: ["./property-panel.component.scss"],
+    templateUrl: "./property-panel.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
-        trigger(
-            'enterAnimation', [
-                transition(':enter', [
-                    style({ transform: 'translateX(100%)', opacity: 1 }),
-                    animate('100ms', style({ transform: 'translateX(0)', opacity: 1 }))
-                ]),
-                transition(':leave', [
-                    style({ transform: 'translateX(0)', opacity: 1 }),
-                    animate('100ms', style({ transform: 'translateX(100%)', opacity: 1 }))
-                ])
-            ]
-        )
-    ]
+        trigger("enterAnimation", [
+            transition(":enter", [
+                style({ transform: "translateX(100%)", opacity: 1 }),
+                animate(
+                    "100ms",
+                    style({ transform: "translateX(0)", opacity: 1 })
+                ),
+            ]),
+            transition(":leave", [
+                style({ transform: "translateX(0)", opacity: 1 }),
+                animate(
+                    "100ms",
+                    style({ transform: "translateX(100%)", opacity: 1 })
+                ),
+            ]),
+        ]),
+    ],
 })
-
-export class PropertyPanelComponent extends BaseComponent implements OnInit, OnDestroy {
+export class PropertyPanelComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     private el: HTMLElement;
     private propertyPanelStyle = {};
     public propertyPanelBodyStyle = {};
@@ -109,8 +109,19 @@ export class PropertyPanelComponent extends BaseComponent implements OnInit, OnD
     ) {
         super(router);
 
-        this.layoutInfoState = store.select(state => layoutInfoReducer.getLayoutInfoState(state, this.ofModule.moduleNameTrim));
-        this.isExpandState = store.select(state => propertyPanelReducer.getPropertyPanelState(state, this.ofModule.moduleNameTrim).isExpand);
+        this.layoutInfoState = store.select((state) =>
+            layoutInfoReducer.getLayoutInfoState(
+                state,
+                this.ofModule.moduleNameTrim
+            )
+        );
+        this.isExpandState = store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).isExpand
+        );
         this.el = elementRef.nativeElement;
     }
 
@@ -119,8 +130,15 @@ export class PropertyPanelComponent extends BaseComponent implements OnInit, OnD
     }
 
     ngOnDestroy() {
-        this.store.dispatch(this.propertyPanelActions.clearProperties(this.ofModule));
-        this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.ofModule));
+        this.store.dispatch(
+            this.propertyPanelActions.clearProperties(this.ofModule)
+        );
+        this.store.dispatch(
+            this.layoutInfoActions.setRightPropertyPanelWidth(
+                "0",
+                this.ofModule
+            )
+        );
 
         Uti.unsubscribe(this);
     }
@@ -130,87 +148,167 @@ export class PropertyPanelComponent extends BaseComponent implements OnInit, OnD
     }
 
     private subscribe() {
-        this.layoutInfoStateSubscription = this.layoutInfoState.subscribe((layoutInfoState: SubLayoutInfoState) => {
-            this.appErrorHandler.executeAction(() => {
-                if (layoutInfoState) {
-                    this.layoutInfo = layoutInfoState;
-                    this.buildPropertyPanelStyle(this.layoutInfo, this.isGlobalLocal);
-                }
-            });
-        });
-
-        this.isExpandStateSubscription = this.isExpandState.subscribe((isExpandState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.isExpand = isExpandState;
-                this.buildPropertyPanelStyle(this.layoutInfo, this.isGlobalLocal);
-            });
-        });
-
-        this.requestClearPropertiesSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === PropertyPanelActions.REQUEST_CLEAR_PROPERTIES && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((requestChangeTabState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.propertyPanelService.isDirty(this.properties)) {
-                    let options = {
-                        headerText: 'Saving Changes',
-                        message: [{key: 'Modal_Message__Saving_Change_Widget_Properties'}],
-                        onModalSaveAndExit: () => {
-                            this.savePanel();
-                        },
-                        onModalExit: () => {
-                            this.store.dispatch(this.propertyPanelActions.requestRollbackProperties(
-                                {
-                                    data: this.parentData,
-                                    isGlobal: this.isGlobal
-                                },
-                                this.ofModule
-                            ));
-                            this.store.dispatch(this.propertyPanelActions.togglePanel(this.ofModule, false));
-                            this.store.dispatch(this.propertyPanelActions.requestClearPropertiesSuccess(this.ofModule));
-                        }
+        this.layoutInfoStateSubscription = this.layoutInfoState.subscribe(
+            (layoutInfoState: SubLayoutInfoState) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (layoutInfoState) {
+                        this.layoutInfo = layoutInfoState;
+                        this.buildPropertyPanelStyle(
+                            this.layoutInfo,
+                            this.isGlobalLocal
+                        );
                     }
+                });
+            }
+        );
 
-                    this.showWarningDialog(options);
-                } else {
-                    this.store.dispatch(this.propertyPanelActions.togglePanel(this.ofModule, false));
-                    this.store.dispatch(this.propertyPanelActions.requestClearPropertiesSuccess(this.ofModule));
-                }
-            });
-        });
+        this.isExpandStateSubscription = this.isExpandState.subscribe(
+            (isExpandState: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.isExpand = isExpandState;
+                    this.buildPropertyPanelStyle(
+                        this.layoutInfo,
+                        this.isGlobalLocal
+                    );
+                });
+            }
+        );
 
-        this.dispatcher.filter((action: CustomAction) => {
-            return action.type === PropertyPanelActions.CLEAR_PROPERTIES_WHEN_CLICK_REFRESH_BTN && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((requestChangeTabState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.propertyPanelService.isDirty(this.properties)) {
-                    this.store.dispatch(this.propertyPanelActions.checkDirtyPropertiesOfWidget(this.ofModule, true));
-                    let options = {
-                        headerText: 'Saving Changes',
-                        message: [{ key: 'Modal_Message__Saving_Change_Widget_Properties' }],
-                        onModalSaveAndExit: () => {
-                            this.savePanel();
-                        },
-                        onModalExit: () => {
-                            this.store.dispatch(this.propertyPanelActions.requestRollbackProperties(
+        this.requestClearPropertiesSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        PropertyPanelActions.REQUEST_CLEAR_PROPERTIES &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((requestChangeTabState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.propertyPanelService.isDirty(this.properties)) {
+                        let options = {
+                            headerText: "Saving Changes",
+                            message: [
                                 {
-                                    data: this.parentData,
-                                    isGlobal: this.isGlobal
+                                    key: "Modal_Message__Saving_Change_Widget_Properties",
                                 },
-                                this.ofModule
-                            ));
-                            this.store.dispatch(this.propertyPanelActions.togglePanel(this.ofModule, false));
-                            this.store.dispatch(this.propertyPanelActions.requestClearPropertiesSuccess(this.ofModule));
-                        }
-                    }
+                            ],
+                            onModalSaveAndExit: () => {
+                                this.savePanel();
+                            },
+                            onModalExit: () => {
+                                this.store.dispatch(
+                                    this.propertyPanelActions.requestRollbackProperties(
+                                        {
+                                            data: this.parentData,
+                                            isGlobal: this.isGlobal,
+                                        },
+                                        this.ofModule
+                                    )
+                                );
+                                this.store.dispatch(
+                                    this.propertyPanelActions.togglePanel(
+                                        this.ofModule,
+                                        false
+                                    )
+                                );
+                                this.store.dispatch(
+                                    this.propertyPanelActions.requestClearPropertiesSuccess(
+                                        this.ofModule
+                                    )
+                                );
+                            },
+                        };
 
-                    this.showWarningDialog(options);
-                } else {
-                    this.store.dispatch(this.propertyPanelActions.checkDirtyPropertiesOfWidget(this.ofModule, false));
-                    this.store.dispatch(this.propertyPanelActions.togglePanel(this.ofModule, false));
-                    this.store.dispatch(this.propertyPanelActions.requestClearPropertiesSuccess(this.ofModule));
-                }
+                        this.showWarningDialog(options);
+                    } else {
+                        this.store.dispatch(
+                            this.propertyPanelActions.togglePanel(
+                                this.ofModule,
+                                false
+                            )
+                        );
+                        this.store.dispatch(
+                            this.propertyPanelActions.requestClearPropertiesSuccess(
+                                this.ofModule
+                            )
+                        );
+                    }
+                });
             });
-        });
+
+        this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        PropertyPanelActions.CLEAR_PROPERTIES_WHEN_CLICK_REFRESH_BTN &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe((requestChangeTabState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.propertyPanelService.isDirty(this.properties)) {
+                        this.store.dispatch(
+                            this.propertyPanelActions.checkDirtyPropertiesOfWidget(
+                                this.ofModule,
+                                true
+                            )
+                        );
+                        let options = {
+                            headerText: "Saving Changes",
+                            message: [
+                                {
+                                    key: "Modal_Message__Saving_Change_Widget_Properties",
+                                },
+                            ],
+                            onModalSaveAndExit: () => {
+                                this.savePanel();
+                            },
+                            onModalExit: () => {
+                                this.store.dispatch(
+                                    this.propertyPanelActions.requestRollbackProperties(
+                                        {
+                                            data: this.parentData,
+                                            isGlobal: this.isGlobal,
+                                        },
+                                        this.ofModule
+                                    )
+                                );
+                                this.store.dispatch(
+                                    this.propertyPanelActions.togglePanel(
+                                        this.ofModule,
+                                        false
+                                    )
+                                );
+                                this.store.dispatch(
+                                    this.propertyPanelActions.requestClearPropertiesSuccess(
+                                        this.ofModule
+                                    )
+                                );
+                            },
+                        };
+
+                        this.showWarningDialog(options);
+                    } else {
+                        this.store.dispatch(
+                            this.propertyPanelActions.checkDirtyPropertiesOfWidget(
+                                this.ofModule,
+                                false
+                            )
+                        );
+                        this.store.dispatch(
+                            this.propertyPanelActions.togglePanel(
+                                this.ofModule,
+                                false
+                            )
+                        );
+                        this.store.dispatch(
+                            this.propertyPanelActions.requestClearPropertiesSuccess(
+                                this.ofModule
+                            )
+                        );
+                    }
+                });
+            });
     }
 
     private showWarningDialog(options) {
@@ -222,15 +320,24 @@ export class PropertyPanelComponent extends BaseComponent implements OnInit, OnD
             return;
         }
 
-        let topPos = parseInt(layoutInfoState.headerHeight, null) + parseInt(layoutInfoState.smallHeaderLineHeight, null);
+        let topPos =
+            parseInt(layoutInfoState.headerHeight, null) +
+            parseInt(layoutInfoState.smallHeaderLineHeight, null);
         if (!isGlobal) {
-            topPos = topPos + parseInt(layoutInfoState.dashboardPaddingTop, null) +
+            topPos =
+                topPos +
+                parseInt(layoutInfoState.dashboardPaddingTop, null) +
                 (this.ofModule.idSettingsGUI == MenuModuleId.orderDataEntry
-                ? (parseInt(layoutInfoState.tabHeaderHeightOrderDataEntry, null) + parseInt(layoutInfoState.formPadding, null))
-                : parseInt(layoutInfoState.tabHeaderHeight, null));
+                    ? parseInt(
+                          layoutInfoState.tabHeaderHeightOrderDataEntry,
+                          null
+                      ) + parseInt(layoutInfoState.formPadding, null)
+                    : parseInt(layoutInfoState.tabHeaderHeight, null));
         }
-        this.propertyPanelStyle['top'] = `calc(${topPos}px)`;
-        this.propertyPanelStyle['right'] = `calc(${layoutInfoState.rightMenuWidth}px)`;
+        this.propertyPanelStyle["top"] = `calc(${topPos}px)`;
+        this.propertyPanelStyle[
+            "right"
+        ] = `calc(${layoutInfoState.rightMenuWidth}px)`;
 
         // let height = `calc(100vh - ${layoutInfoState.globalSearchHeight}px
         let height = `calc(100vh - ${layoutInfoState.headerHeight}px
@@ -244,15 +351,25 @@ export class PropertyPanelComponent extends BaseComponent implements OnInit, OnD
         height += ` - ${layoutInfoState.propertyPanelHeader}px)`;
 
         this.propertyPanelBodyStyle = {
-            'min-height': height,
-            'max-height': height,
-            'width': '100%'
+            "min-height": height,
+            "max-height": height,
+            width: "100%",
         };
 
         setTimeout(() => {
-            if (this.isExpand && this.el.children[0] && layoutInfoState.rightPropertyPanelWidth !== this.el.children[0].clientWidth.toString()) {
+            if (
+                this.isExpand &&
+                this.el.children[0] &&
+                layoutInfoState.rightPropertyPanelWidth !==
+                    this.el.children[0].clientWidth.toString()
+            ) {
                 this.propertyWidth = this.el.children[0].clientWidth.toString();
-                this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth(this.propertyWidth, this.ofModule));
+                this.store.dispatch(
+                    this.layoutInfoActions.setRightPropertyPanelWidth(
+                        this.propertyWidth,
+                        this.ofModule
+                    )
+                );
             }
         }, 200);
 
@@ -262,49 +379,73 @@ export class PropertyPanelComponent extends BaseComponent implements OnInit, OnD
     public closePanel() {
         if (this.propertyPanelService.isDirty(this.properties)) {
             let options = {
-                headerText: 'Saving Changes',
-                message: [{key: 'Modal_Message__Saving_Change_Widget_Properties'}],
+                headerText: "Saving Changes",
+                message: [
+                    { key: "Modal_Message__Saving_Change_Widget_Properties" },
+                ],
                 onModalSaveAndExit: () => {
                     this.savePanel();
                     this.onClose.emit();
                 },
                 onModalExit: () => {
-                    this.store.dispatch(this.propertyPanelActions.requestRollbackProperties(
-                        {
-                            data: this.parentData,
-                            isGlobal: this.isGlobal
-                        },
-                        this.ofModule
-                    ));
-                    this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.ofModule));
+                    this.store.dispatch(
+                        this.propertyPanelActions.requestRollbackProperties(
+                            {
+                                data: this.parentData,
+                                isGlobal: this.isGlobal,
+                            },
+                            this.ofModule
+                        )
+                    );
+                    this.store.dispatch(
+                        this.layoutInfoActions.setRightPropertyPanelWidth(
+                            "0",
+                            this.ofModule
+                        )
+                    );
                     this.onClose.emit();
-                }
-            }
+                },
+            };
 
             this.showWarningDialog(options);
-
         } else {
-            this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.ofModule));
+            this.store.dispatch(
+                this.layoutInfoActions.setRightPropertyPanelWidth(
+                    "0",
+                    this.ofModule
+                )
+            );
             this.onClose.emit();
         }
     }
 
     private savePanel() {
-        this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.ofModule));
+        this.store.dispatch(
+            this.layoutInfoActions.setRightPropertyPanelWidth(
+                "0",
+                this.ofModule
+            )
+        );
         this.onSave.emit(this.parentData);
     }
 
     public onResizeEnd(event: ResizeEvent) {
-        this.propertyPanelStyle['width'] = `${event.rectangle.width}px`;
-        this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth(event.rectangle.width.toString(), this.ofModule));
+        this.propertyPanelStyle["width"] = `${event.rectangle.width}px`;
+        this.store.dispatch(
+            this.layoutInfoActions.setRightPropertyPanelWidth(
+                event.rectangle.width.toString(),
+                this.ofModule
+            )
+        );
         this.changeDetectorRef.markForCheck();
     }
 
     public propertiesChange(event) {
-        const widgetPropertiesStateModel: WidgetPropertiesStateModel = new WidgetPropertiesStateModel({
-            widgetData: this.parentData,
-            widgetProperties: this.properties
-        });
+        const widgetPropertiesStateModel: WidgetPropertiesStateModel =
+            new WidgetPropertiesStateModel({
+                widgetData: this.parentData,
+                widgetProperties: this.properties,
+            });
 
         this.onChange.emit(widgetPropertiesStateModel);
     }

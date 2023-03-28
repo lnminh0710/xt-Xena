@@ -37,14 +37,15 @@
     }
 
     .q-remove-icon::before {
-        content: '❌';
+        content: "❌";
     }
 
     .q-add-icon::before {
-        content: '➕';
+        content: "➕";
     }
 
-    .q-switch-group, .q-button-group {
+    .q-switch-group,
+    .q-button-group {
         font-family: "Lucida Grande", Tahoma, Verdana, sans-serif;
         overflow: hidden;
     }
@@ -58,7 +59,9 @@
         background-color: white;
     }
 
-    .q-input-control, .q-operator-control, .q-field-control {
+    .q-input-control,
+    .q-operator-control,
+    .q-field-control {
         display: inline-block;
         padding: 5px 8px;
         color: #555;
@@ -70,11 +73,14 @@
         width: auto;
     }
 
-    .q-operator-control, .q-field-control, .q-input-control:not([type='checkbox']) {
+    .q-operator-control,
+    .q-field-control,
+    .q-input-control:not([type="checkbox"]) {
         min-height: 32px;
     }
 
-    .q-switch-group label, .q-button {
+    .q-switch-group label,
+    .q-button {
         float: left;
         min-height: 30px;
         color: rgba(0, 0, 0, 0.6);
@@ -93,15 +99,15 @@
 
         &:hover {
             cursor: pointer;
-            background-color: #F0F0F0;
+            background-color: #f0f0f0;
         }
 
         &.success {
-            color: #75BE47;
+            color: #75be47;
         }
 
         &.danger {
-            color: #B3415D;
+            color: #b3415d;
         }
     }
 
@@ -145,7 +151,7 @@
             position: relative;
             padding: 4px 6px;
             margin-top: 4px;
-            border: 1px solid #CCCCCC;
+            border: 1px solid #cccccc;
             -webkit-transition: all 0.1s ease-in-out;
             -moz-transition: all 0.1s ease-in-out;
             -ms-transition: all 0.1s ease-in-out;
@@ -175,10 +181,11 @@
                 top: 50%;
             }
 
-            &::before, &::after {
-                content: '';
+            &::before,
+            &::after {
+                content: "";
                 left: -12px;
-                border-color: #CCC;
+                border-color: #ccc;
                 border-style: none;
                 width: 9px;
                 height: calc(50% + 6px);
@@ -193,7 +200,8 @@
 
     .q-tree.and {
         > .q-item {
-            &::before, &::after {
+            &::before,
+            &::after {
                 border-color: #3c8dbc;
             }
         }
@@ -201,7 +209,8 @@
 
     .q-tree.or {
         > .q-item {
-            &::before, &::after {
+            &::before,
+            &::after {
                 border-color: #d58512;
             }
         }

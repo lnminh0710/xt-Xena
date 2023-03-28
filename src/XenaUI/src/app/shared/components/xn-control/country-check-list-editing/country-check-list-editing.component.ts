@@ -1,4 +1,3 @@
-
 import {
     Component,
     OnInit,
@@ -7,39 +6,33 @@ import {
     ElementRef,
     ChangeDetectorRef,
     ViewChild,
-    EventEmitter
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import { CommonService,
-    AppErrorHandler,
-    ModalService } from 'app/services';
-import { ComboBoxTypeConstant,
-    MessageModal,
-    KeyCode } from 'app/app.constants';
-import { ApiResultResponse,
-    MessageModel } from 'app/models';
-import { Uti } from 'app/utilities';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { XnCountryCheckListComponent } from 'app/shared/components/xn-control/';
-import {AngularMultiSelect} from "../xn-dropdown";
+    EventEmitter,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { CommonService, AppErrorHandler, ModalService } from "app/services";
+import { ComboBoxTypeConstant, MessageModal, KeyCode } from "app/app.constants";
+import { ApiResultResponse, MessageModel } from "app/models";
+import { Uti } from "app/utilities";
+import cloneDeep from "lodash-es/cloneDeep";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { XnCountryCheckListComponent } from "app/shared/components/xn-control/";
+import { AngularMultiSelect } from "../xn-dropdown";
 
 @Component({
-    selector: 'country-check-list-editing',
-    styleUrls: ['./country-check-list-editing.component.scss'],
-    templateUrl: './country-check-list-editing.component.html'
+    selector: "country-check-list-editing",
+    styleUrls: ["./country-check-list-editing.component.scss"],
+    templateUrl: "./country-check-list-editing.component.html",
 })
-export class CountryCheckListEditingComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CountryCheckListEditingComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public countryCheckListData: Array<any> = [];
     public countriesGroup: Array<CountryGroup> = [];
     public showDialog: boolean = false;
     public showDialogSelectGroupName: boolean = false;
-    public groupName: string = '';
+    public groupName: string = "";
     public submitAddGroupName: boolean = false;
     public submitUpdateCountryGroup: boolean = false;
     public disabledAdd: boolean = true;
@@ -54,8 +47,9 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     private _isSelectedGroupNameFocused: boolean = false;
     private _currentCheckedCountriesData: Array<any> = [];
 
-    @ViewChild('groupSelectedControl') groupSelectedControl: AngularMultiSelect;
-    @ViewChild('countryCheckList') countryCheckList: XnCountryCheckListComponent;
+    @ViewChild("groupSelectedControl") groupSelectedControl: AngularMultiSelect;
+    @ViewChild("countryCheckList")
+    countryCheckList: XnCountryCheckListComponent;
 
     @Output() outputData: EventEmitter<any> = new EventEmitter();
 
@@ -66,20 +60,21 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
         private _modalService: ModalService,
         private _changeDetectorRef: ChangeDetectorRef,
         private _toasterService: ToasterService,
-        router ? : Router) {
+        router?: Router
+    ) {
         super(router);
         this.getDropdownlistData();
         this.getCountriesGroupData();
     }
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     public countryGroupChecked(group: CountryGroup) {
-        const checkList = this.countriesGroup.filter(x => x.checked);
-        this.disabledUpdate = this.disabledDelete = !(checkList && checkList.length);
+        const checkList = this.countriesGroup.filter((x) => x.checked);
+        this.disabledUpdate = this.disabledDelete = !(
+            checkList && checkList.length
+        );
 
         this.countryCheckList.setActive(group.countryIds, group.checked, true);
     }
@@ -87,7 +82,10 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     public countryGroupDoubleClick(group: CountryGroup) {
         group.editing = true;
         setTimeout(() => {
-            $('#group-name-editing-' + group.id, this._elementRef.nativeElement).focus();
+            $(
+                "#group-name-editing-" + group.id,
+                this._elementRef.nativeElement
+            ).focus();
         });
     }
 
@@ -102,9 +100,9 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     public cancelUpdateGroupName(group: CountryGroup) {
         if (group.dirty) {
             this._modalService.unsavedWarningMessageDefault({
-                headerText: 'Saving Data',
+                headerText: "Saving Data",
                 onModalSaveAndExit: this.updateGroupName.bind(this),
-                onModalExit: this.unEditingGroupName.bind(this)
+                onModalExit: this.unEditingGroupName.bind(this),
             });
         } else {
             this.unEditingGroupName(group);
@@ -112,10 +110,16 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     }
 
     public groupNameKeyup($event: any, group: CountryGroup) {
-        if (($event.which === KeyCode.Enter && $event.keyCode === KeyCode.Enter)) {
+        if (
+            $event.which === KeyCode.Enter &&
+            $event.keyCode === KeyCode.Enter
+        ) {
             this.updateGroupName(group);
         }
-        if (($event.which === KeyCode.Escape && $event.keyCode === KeyCode.Escape)) {
+        if (
+            $event.which === KeyCode.Escape &&
+            $event.keyCode === KeyCode.Escape
+        ) {
             this.cancelUpdateGroupName(group);
         }
         if (!Uti.isNotCharacterKey($event.keyCode)) {
@@ -124,44 +128,50 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     }
 
     public addGroup() {
-        this.groupName = '';
+        this.groupName = "";
         this.showDialog = true;
     }
 
     public updateGroup() {
-        const checkedItem = this.countriesGroup.filter(x => x.checked);
+        const checkedItem = this.countriesGroup.filter((x) => x.checked);
         if (checkedItem && checkedItem.length > 1) {
             this.buildDataForGroupsSelected();
             this.showDialogSelectGroupName = true;
-        } else if (checkedItem && checkedItem.length === 1){
+        } else if (checkedItem && checkedItem.length === 1) {
             this._edittingCountryGroup = checkedItem[0];
-            this.saveCountryGroup({}, 'Update');
+            this.saveCountryGroup({}, "Update");
         }
     }
 
     public deleteGroup() {
-        this._modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Delete Group',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_These_Groups'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.saveDeleteGroups();
-            }
-        }));
+        this._modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Delete Group",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Delete_These_Groups",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.saveDeleteGroups();
+                },
+            })
+        );
     }
 
     public close() {
         if (this._isDirtyGroupName) {
-
             this._modalService.unsavedWarningMessageDefault({
-                headerText: 'Saving Data',
+                headerText: "Saving Data",
                 onModalSaveAndExit: () => {
                     // TODO: will make right new data when has service
-                    this.saveCountryGroup({}, 'New');
+                    this.saveCountryGroup({}, "New");
                 },
-                onModalExit: this.closePopup.bind(this)
+                onModalExit: this.closePopup.bind(this),
             });
         } else {
             this.closePopup();
@@ -173,7 +183,7 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
         if (!this.groupName) return;
 
         // TODO: will make right new data when has service
-        this.saveCountryGroup({}, 'New');
+        this.saveCountryGroup({}, "New");
     }
 
     public groupNameChanged() {
@@ -181,8 +191,11 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     }
 
     public getDataForCountryCheckList(data: any) {
-        this._currentCheckedCountriesData = data.filter(x => x.isActive);
-        this.disabledAdd = !(this._currentCheckedCountriesData && this._currentCheckedCountriesData.length);
+        this._currentCheckedCountriesData = data.filter((x) => x.isActive);
+        this.disabledAdd = !(
+            this._currentCheckedCountriesData &&
+            this._currentCheckedCountriesData.length
+        );
         this.outputData.emit(this._currentCheckedCountriesData);
     }
 
@@ -190,19 +203,21 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
         if (this._isSelectedGroupNameFocused) {
             this._isDirtySelectedGroupName = true;
         }
-        this._edittingCountryGroup = this.countriesGroup.find(x => x.id == this.groupSelectedControl.selectedValue);
+        this._edittingCountryGroup = this.countriesGroup.find(
+            (x) => x.id == this.groupSelectedControl.selectedValue
+        );
     }
 
     public closeSelectGroupPopup() {
         if (this._isDirtySelectedGroupName) {
             this._modalService.unsavedWarningMessageDefault({
-                headerText: 'Saving Data',
+                headerText: "Saving Data",
                 onModalSaveAndExit: () => {
                     // TODO: will make right update data when has service
-                    this.saveCountryGroup({}, 'Update');
+                    this.saveCountryGroup({}, "Update");
                     this.closeSelectedGroupPopup();
                 },
-                onModalExit: this.closeSelectedGroupPopup.bind(this)
+                onModalExit: this.closeSelectedGroupPopup.bind(this),
             });
         } else {
             this.closeSelectedGroupPopup();
@@ -213,7 +228,7 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
         if (!this.groupSelectedControl.selectedValue) return;
         this.submitUpdateCountryGroup = true;
         // TODO: will make right update data when has service
-        this.saveCountryGroup({}, 'Update');
+        this.saveCountryGroup({}, "Update");
     }
 
     public onGroupSelectedKeyup($event: any) {
@@ -232,8 +247,11 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     }
 
     public groupNamePopupKeyup($event) {
-        if (($event.which === KeyCode.Enter && $event.keyCode === KeyCode.Enter)) {
-            this.createGroupName()
+        if (
+            $event.which === KeyCode.Enter &&
+            $event.keyCode === KeyCode.Enter
+        ) {
+            this.createGroupName();
         }
     }
 
@@ -242,7 +260,7 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
 
     private closePopup() {
         this.submitAddGroupName = this.showDialog = false;
-        this.groupName = '';
+        this.groupName = "";
     }
 
     private closeSelectedGroupPopup() {
@@ -260,16 +278,22 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     }
 
     private getDropdownlistData() {
-        this._comService.getListComboBox(ComboBoxTypeConstant.countryCode+'')
+        this._comService
+            .getListComboBox(ComboBoxTypeConstant.countryCode + "")
             .subscribe((response: ApiResultResponse) => {
                 this._appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.countryCode) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.countryCode
+                    ) {
                         this._countriesRawData = [];
                         this.countryCheckListData = [];
                         return;
                     }
                     this._countriesRawData = response.item.countryCode;
-                    this.countryCheckListData = cloneDeep(this._countriesRawData);
+                    this.countryCheckListData = cloneDeep(
+                        this._countriesRawData
+                    );
                 });
             });
     }
@@ -291,22 +315,28 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     }
 
     private saveDeleteGroups() {
-        const deleteGroups = this.countriesGroup.filter(x => x.checked).map(x => {
-            return {
-                'Id': x.id,
-                'IsDeleted': 1
-            }
-        });
-        this.saveCountryGroup(deleteGroups, 'Delete');
+        const deleteGroups = this.countriesGroup
+            .filter((x) => x.checked)
+            .map((x) => {
+                return {
+                    Id: x.id,
+                    IsDeleted: 1,
+                };
+            });
+        this.saveCountryGroup(deleteGroups, "Delete");
 
         // TODO: will remove this line when have service, push in service success
         this.uncheckDeletedCountries();
-        this.countriesGroup = this.countriesGroup.filter(x => !x.checked);
-        this._toasterService.pop('success', 'Success', 'Data is saved successfully');
+        this.countriesGroup = this.countriesGroup.filter((x) => !x.checked);
+        this._toasterService.pop(
+            "success",
+            "Success",
+            "Data is saved successfully"
+        );
     }
 
     private uncheckDeletedCountries() {
-        const checkedCountries = this.countriesGroup.filter(x => x.checked);
+        const checkedCountries = this.countriesGroup.filter((x) => x.checked);
         let idList: Array<any> = [];
         for (let item of checkedCountries) {
             idList = [...idList, ...item.countryIds];
@@ -317,21 +347,34 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
 
     private saveCountryGroup(savingData: any, mode: string) {
         switch (mode) {
-            case 'New':
-                this.countriesGroup.push(new CountryGroup({
-                    id: Uti.getTempId2(),
-                    text: this.groupName,
-                    checked: true,
-                    originalText: this.groupName,
-                    countryIds: this._currentCheckedCountriesData.map(x => {return x.idValue;})
-                }));
+            case "New":
+                this.countriesGroup.push(
+                    new CountryGroup({
+                        id: Uti.getTempId2(),
+                        text: this.groupName,
+                        checked: true,
+                        originalText: this.groupName,
+                        countryIds: this._currentCheckedCountriesData.map(
+                            (x) => {
+                                return x.idValue;
+                            }
+                        ),
+                    })
+                );
                 this.closePopup();
                 break;
-            case 'Update':
-                this._edittingCountryGroup.countryIds = this._currentCheckedCountriesData.map(x => {return x.idValue;});
+            case "Update":
+                this._edittingCountryGroup.countryIds =
+                    this._currentCheckedCountriesData.map((x) => {
+                        return x.idValue;
+                    });
                 this.closeSelectedGroupPopup();
         }
-        this._toasterService.pop('success', 'Success', 'Data is saved successfully');
+        this._toasterService.pop(
+            "success",
+            "Success",
+            "Data is saved successfully"
+        );
         // this._comService.saveCountryGroup(savingData)
         //     .subscribe((response: ApiResultResponse) => {
         //         this._appErrorHandler.executeAction(() => {
@@ -348,20 +391,23 @@ export class CountryCheckListEditingComponent extends BaseComponent implements O
     }
 
     private buildDataForGroupsSelected() {
-        this.groupsSelected = this.countriesGroup.filter(x => x.checked);
+        this.groupsSelected = this.countriesGroup.filter((x) => x.checked);
     }
 
     private focusOnTemplateName() {
         setTimeout(() => {
-            $('#txt-template-name-for-upload-file', this._elementRef.nativeElement).focus();
+            $(
+                "#txt-template-name-for-upload-file",
+                this._elementRef.nativeElement
+            ).focus();
         });
     }
 }
 
 class CountryGroup {
     public id: number = null;
-    public text: string = '';
-    public originalText: string = '';
+    public text: string = "";
+    public originalText: string = "";
     public countryIds: Array<any> = [];
     public checked: boolean = false;
     public editing: boolean = false;
@@ -376,22 +422,22 @@ class F {
         return [
             new CountryGroup({
                 id: 1,
-                text: 'Country Group 1',
-                originalText: 'Country Group 1',
-                countryIds: ['151', '14', '13', '21']
+                text: "Country Group 1",
+                originalText: "Country Group 1",
+                countryIds: ["151", "14", "13", "21"],
             }),
             new CountryGroup({
                 id: 2,
-                text: 'Country Group 2',
-                originalText: 'Country Group 2',
-                countryIds: ['204', '241', '73']
+                text: "Country Group 2",
+                originalText: "Country Group 2",
+                countryIds: ["204", "241", "73"],
             }),
             new CountryGroup({
                 id: 3,
-                text: 'Country Group 3',
-                originalText: 'Country Group 3',
-                countryIds: ['151', '241', '73', '21']
-            })
+                text: "Country Group 3",
+                originalText: "Country Group 3",
+                countryIds: ["151", "241", "73", "21"],
+            }),
         ];
     }
 }

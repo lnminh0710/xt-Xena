@@ -1,6 +1,6 @@
-import { TabSummaryInfoModel } from './tab-summary-info.model';
-import { TabSummaryDataModel } from './tab-summary-data.model';
-import { AccessRightModel } from '../access-right.model';
+import { TabSummaryInfoModel } from "./tab-summary-info.model";
+import { TabSummaryDataModel } from "./tab-summary-data.model";
+import { AccessRightModel } from "../access-right.model";
 
 export class TabSummaryModel {
     public tabSummaryInfor: TabSummaryInfoModel = new TabSummaryInfoModel();

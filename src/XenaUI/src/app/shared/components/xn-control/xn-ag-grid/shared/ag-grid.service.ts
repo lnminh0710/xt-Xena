@@ -1,8 +1,17 @@
-import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ControlGridModel, AutoGroupColumnDefModel } from 'app/models';
-import { ColDef, CellClassParams, TooltipParams, GridOptions } from "ag-grid-community";
-import { DatatableService, AccessRightsService, PropertyPanelService } from 'app/services';
+import { Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import { ControlGridModel, AutoGroupColumnDefModel } from "app/models";
+import {
+    ColDef,
+    CellClassParams,
+    TooltipParams,
+    GridOptions,
+} from "ag-grid-community";
+import {
+    DatatableService,
+    AccessRightsService,
+    PropertyPanelService,
+} from "app/services";
 import {
     CheckboxReadOnlyCellRenderer,
     CheckboxEditableCellRenderer,
@@ -21,26 +30,27 @@ import {
     RefTextboxCellRenderer,
     MasterUnmergeCheckboxCellRenderer,
     PriorityDropdownCellRenderer,
-    AutoCompleteCellRenderer
-} from '../components';
-import { ColHeaderKey, GridLocale } from './ag-grid-constant';
-import isObject from 'lodash-es/isObject';
-import toNumber from 'lodash-es/toNumber';
-import isNil from 'lodash-es/isNil';
-import { parse, compareAsc } from 'date-fns/esm';
+    AutoCompleteCellRenderer,
+} from "../components";
+import { ColHeaderKey, GridLocale } from "./ag-grid-constant";
+import isObject from "lodash-es/isObject";
+import toNumber from "lodash-es/toNumber";
+import isNil from "lodash-es/isNil";
+import { parse, compareAsc } from "date-fns/esm";
 
+import { Uti } from "app/utilities";
 import {
-    Uti
-} from 'app/utilities';
-import { AccessRightTypeEnum, ArticlesInvoiceQuantity } from 'app/app.constants';
-import { CustomHeaderCellRenderer } from 'app/shared/components/xn-control/xn-ag-grid/components/header-cell-renderer/custom-header-cell-renderer/custom-header-cell-renderer.component';
+    AccessRightTypeEnum,
+    ArticlesInvoiceQuantity,
+} from "app/app.constants";
+import { CustomHeaderCellRenderer } from "app/shared/components/xn-control/xn-ag-grid/components/header-cell-renderer/custom-header-cell-renderer/custom-header-cell-renderer.component";
 import { QuantityKeepRendererComponent } from "../components/quantity-keep-renderer/quantity-keep-renderer.component";
 import { QuantityBackToWareHouseRendererComponent } from "../components/quantity-back-to-ware-house-renderer/quantity-back-to-ware-house-renderer.component";
 import { QuantityDefectRendererComponent } from "../components/quantity-defect-renderer/quantity-defect-renderer.component";
 
 /**
-* GridConfig
-*/
+ * GridConfig
+ */
 export interface IAgGridData {
     columnDefs: Array<ColDef>;
     rowData: Array<any>;
@@ -50,32 +60,34 @@ export interface IAgGridData {
 
 @Injectable()
 export class AgGridService {
-
     constructor(
         private datatableService: DatatableService,
         private accessRightService: AccessRightsService,
         private propertyPanelService: PropertyPanelService,
         private translateService: TranslateService,
         private uti: Uti
-    ) {
-    }
+    ) {}
 
     /**
      * mapDataSource
      * @param controlGridModel
      */
-    public mapDataSource(controlGridModel: ControlGridModel, config): IAgGridData {
+    public mapDataSource(
+        controlGridModel: ControlGridModel,
+        config
+    ): IAgGridData {
         const dataSource: IAgGridData = {
             rowData: [],
-            columnDefs: []
+            columnDefs: [],
         };
         try {
-
             if (!controlGridModel || !controlGridModel.columns) {
                 return dataSource;
             }
 
-            const statusCol = controlGridModel.columns.find(p => p.data == ColHeaderKey.BorderStatus);
+            const statusCol = controlGridModel.columns.find(
+                (p) => p.data == ColHeaderKey.BorderStatus
+            );
 
             if (config.masterDetail) {
                 dataSource.columnDefs.push(this.createMasterDetailGroupCol());
@@ -84,7 +96,7 @@ export class AgGridService {
             if (statusCol) {
                 dataSource.columnDefs.push({
                     lockPosition: true,
-                    cellClass: 'status-header-col',
+                    cellClass: "status-header-col",
                     width: 38,
                     maxWidth: 38,
                     suppressMenu: true,
@@ -95,96 +107,116 @@ export class AgGridService {
                     suppressSizeToFit: true,
                     suppressAutoSize: true,
                     cellRenderer: function (params) {
-                        if (params.node.data && (
-                            params.node.data[ColHeaderKey.BorderStatus] == true
-                            || params.node.data[ColHeaderKey.BorderStatus] == 1
-                            || params.node.data[ColHeaderKey.BorderStatus] == 'true'
-                        )) {
+                        if (
+                            params.node.data &&
+                            (params.node.data[ColHeaderKey.BorderStatus] ==
+                                true ||
+                                params.node.data[ColHeaderKey.BorderStatus] ==
+                                    1 ||
+                                params.node.data[ColHeaderKey.BorderStatus] ==
+                                    "true")
+                        ) {
                             return '<i class="fa fa-exclamation-circle background-status-red" style="font-size:medium;"></i>';
                         }
-                        return '';
-                    }
+                        return "";
+                    },
                 });
             }
 
             if (config.hasRowColCheckAll && controlGridModel.columns) {
                 controlGridModel.columns.splice(0, 0, {
-                    data: 'rowColCheckAll',
+                    data: "rowColCheckAll",
                     readOnly: false,
-                    title: 'Check All',
+                    title: "Check All",
                     visible: false,
-                    setting: {}
+                    setting: {},
                 });
             }
-            
-            controlGridModel = this.datatableService.buildWijmoDataSource(controlGridModel, null, { isFormatMediaSize: true, treeViewMode: config.treeViewMode });
 
-            controlGridModel.columns.forEach(col => {
+            controlGridModel = this.datatableService.buildWijmoDataSource(
+                controlGridModel,
+                null,
+                { isFormatMediaSize: true, treeViewMode: config.treeViewMode }
+            );
+
+            controlGridModel.columns.forEach((col) => {
                 const readOnlyFromConfig = config.readOnly || col.readOnly;
-                const disableRowByValue = this.datatableService.getDisableRowByValue(col);
+                const disableRowByValue =
+                    this.datatableService.getDisableRowByValue(col);
                 let colDef: ColDef = {
                     headerName: col.title,
                     field: col.data,
                     colId: col.data,
                     editable: this.buildEditable.bind(this, col.readOnly),
                     hide: !col.visible,
-                    headerClass: !col.readOnly ? 'editable-col' : '',
+                    headerClass: !col.readOnly ? "editable-col" : "",
                     headerComponentFramework: CustomHeaderCellRenderer,
                     suppressToolPanel: !col.visible,
                     enableRowGroup: true,
                     refData: {
                         setting: col.setting,
                         controlType: col.controlType,
-                        disableRowByValue: disableRowByValue
+                        disableRowByValue: disableRowByValue,
                     },
                     cellClassRules: {
-                        'invalid-cell': this.cellValidation.bind(this),
-                        'positive-qty': this.quantityCellWithColor.bind(this, true),
-                        'negative-qty': this.quantityCellWithColor.bind(this, false),
-                        'in-active-cell': this.inActiveCellClassRules.bind(this)
+                        "invalid-cell": this.cellValidation.bind(this),
+                        "positive-qty": this.quantityCellWithColor.bind(
+                            this,
+                            true
+                        ),
+                        "negative-qty": this.quantityCellWithColor.bind(
+                            this,
+                            false
+                        ),
+                        "in-active-cell":
+                            this.inActiveCellClassRules.bind(this),
                     },
                     headerTooltip: col.title,
                     tooltip: this.buildTooltip.bind(this),
                     cellStyle: this.buildCellStyle.bind(this, col),
-                    filter: 'agTextColumnFilter'
+                    filter: "agTextColumnFilter",
                 };
 
                 if (colDef.hide) {
                     // Return empty to ignore quick search
                     colDef.getQuickFilterText = function (params) {
-                        return '';
-                    }
+                        return "";
+                    };
                 }
                 if (col.setting && col.setting.width) {
                     colDef.width = col.setting.width;
                 }
-                if (col.data == 'MediaSize') {
-                    col.controlType = '';
-                    col.setting.DataLength = '255';
-                    col.setting.DataType = 'nvarchar';
+                if (col.data == "MediaSize") {
+                    col.controlType = "";
+                    col.setting.DataLength = "255";
+                    col.setting.DataType = "nvarchar";
                 }
                 switch (col.controlType.toLowerCase()) {
-                    case 'checkbox':
+                    case "checkbox":
                         // Read-only
                         if (readOnlyFromConfig) {
                             colDef = Object.assign(colDef, {
-                                cellRendererFramework: CheckboxReadOnlyCellRenderer
+                                cellRendererFramework:
+                                    CheckboxReadOnlyCellRenderer,
                             });
-                        }
-                        else {
-                            if (col.data == ColHeaderKey.MasterCheckbox ||
-                                col.data == ColHeaderKey.UnMergeCheckbox) {
+                        } else {
+                            if (
+                                col.data == ColHeaderKey.MasterCheckbox ||
+                                col.data == ColHeaderKey.UnMergeCheckbox
+                            ) {
                                 colDef = Object.assign(colDef, {
-                                    cellRendererFramework: MasterUnmergeCheckboxCellRenderer,
-                                    editable: false
-                                });
-                            }
-                            else {
-                                colDef = Object.assign(colDef, {
-                                    cellRendererFramework: CheckboxEditableCellRenderer,
-                                    headerComponentFramework: CheckboxHeaderCellRenderer,
+                                    cellRendererFramework:
+                                        MasterUnmergeCheckboxCellRenderer,
                                     editable: false,
-                                    suppressSorting: true
+                                });
+                            } else {
+                                colDef = Object.assign(colDef, {
+                                    cellRendererFramework:
+                                        CheckboxEditableCellRenderer,
+                                    headerComponentFramework:
+                                        CheckboxHeaderCellRenderer,
+                                    editable: false,
+                                    suppressSorting: true,
                                 });
                             }
                         }
@@ -195,9 +227,10 @@ export class AgGridService {
                         dataSource.columnDefs.push(colDef);
                         break;
 
-                    case 'buttonandcheckbox':
+                    case "buttonandcheckbox":
                         colDef = Object.assign(colDef, {
-                            cellRendererFramework: ButtonAndCheckboxCellRenderer,
+                            cellRendererFramework:
+                                ButtonAndCheckboxCellRenderer,
                             // headerComponentFramework: ButtonAndCheckboxHeaderCellRenderer,
                             // suppressToolPanel: true,
                             editable: false,
@@ -208,38 +241,64 @@ export class AgGridService {
                         colDef.valueFormatter = this.boolFormatter.bind(this);
                         dataSource.columnDefs.push(colDef);
                         break;
-                    case 'combobox':
+                    case "combobox":
                         colDef = Object.assign(colDef, {
                             cellRendererFramework: DropdownCellRenderer,
                             cellEditorFramework: DropdownCellRenderer,
-                            comparator: function (valueA, valueB, nodeA, nodeB, isInverted) {
-                                if (isObject(valueA) && isObject(valueB) && !isNil(valueA.key) && !isNil(valueB.key)) {
-                                    return ('' + valueA.value).localeCompare(valueB.value);
+                            comparator: function (
+                                valueA,
+                                valueB,
+                                nodeA,
+                                nodeB,
+                                isInverted
+                            ) {
+                                if (
+                                    isObject(valueA) &&
+                                    isObject(valueB) &&
+                                    !isNil(valueA.key) &&
+                                    !isNil(valueB.key)
+                                ) {
+                                    return ("" + valueA.value).localeCompare(
+                                        valueB.value
+                                    );
                                 }
 
                                 return false;
-                            }
+                            },
                         });
 
                         dataSource.columnDefs.push(colDef);
                         break;
 
-                    case 'priority':
+                    case "priority":
                         colDef = Object.assign(colDef, {
                             cellRendererFramework: PriorityDropdownCellRenderer,
                             cellEditorFramework: PriorityDropdownCellRenderer,
-                            comparator: function (valueA, valueB, nodeA, nodeB, isInverted) {
-                                if (isObject(valueA) && isObject(valueB) && !isNil(valueA.key) && !isNil(valueB.key)) {
-                                    return ('' + valueA.value).localeCompare(valueB.value);
+                            comparator: function (
+                                valueA,
+                                valueB,
+                                nodeA,
+                                nodeB,
+                                isInverted
+                            ) {
+                                if (
+                                    isObject(valueA) &&
+                                    isObject(valueB) &&
+                                    !isNil(valueA.key) &&
+                                    !isNil(valueB.key)
+                                ) {
+                                    return ("" + valueA.value).localeCompare(
+                                        valueB.value
+                                    );
                                 }
 
                                 return false;
-                            }
+                            },
                         });
                         dataSource.columnDefs.push(colDef);
                         break;
 
-                    case 'reftextbox':
+                    case "reftextbox":
                         colDef = Object.assign(colDef, {
                             cellRendererFramework: RefTextboxCellRenderer,
                             cellEditorFramework: RefTextboxCellRenderer,
@@ -247,128 +306,177 @@ export class AgGridService {
                         dataSource.columnDefs.push(colDef);
                         break;
 
-                    case 'numeric':
+                    case "numeric":
                         {
                             const colNameLowerCase = col.data.toLowerCase();
 
-                            if (colNameLowerCase === 'qtykeep') {
+                            if (colNameLowerCase === "qtykeep") {
                                 colDef = Object.assign(colDef, {
-                                    cellRendererFramework: QuantityKeepRendererComponent,
+                                    cellRendererFramework:
+                                        QuantityKeepRendererComponent,
                                     editable: false,
                                     minWidth: 100,
                                 });
                                 return dataSource.columnDefs.push(colDef);
                             }
-                            if (colNameLowerCase === 'qtybacktowarehouse') {
+                            if (colNameLowerCase === "qtybacktowarehouse") {
                                 colDef = Object.assign(colDef, {
-                                    cellRendererFramework: QuantityBackToWareHouseRendererComponent,
-                                    valueFormatter: this.numericFormatter.bind(this),
+                                    cellRendererFramework:
+                                        QuantityBackToWareHouseRendererComponent,
+                                    valueFormatter:
+                                        this.numericFormatter.bind(this),
                                     editable: false,
                                     minWidth: 100,
                                 });
                                 return dataSource.columnDefs.push(colDef);
                             }
-                            if (colNameLowerCase === 'qtydefect') {
+                            if (colNameLowerCase === "qtydefect") {
                                 colDef = Object.assign(colDef, {
-                                    cellRendererFramework: QuantityDefectRendererComponent,
-                                    valueFormatter: this.numericFormatter.bind(this),
+                                    cellRendererFramework:
+                                        QuantityDefectRendererComponent,
+                                    valueFormatter:
+                                        this.numericFormatter.bind(this),
                                     editable: false,
                                     minWidth: 100,
                                 });
                                 return dataSource.columnDefs.push(colDef);
                             }
                             colDef = Object.assign(colDef, {
-                                cellEditorFramework: NumericEditableCellRenderer,
-                                cellClass: 'text-right',
-                                valueFormatter: this.numericFormatter.bind(this),
+                                cellEditorFramework:
+                                    NumericEditableCellRenderer,
+                                cellClass: "text-right",
+                                valueFormatter:
+                                    this.numericFormatter.bind(this),
                                 refData: {
                                     setting: col.setting,
                                     controlType: col.controlType,
-                                    allowNumberSeparator: this.allowNumberSeparator(col)
+                                    allowNumberSeparator:
+                                        this.allowNumberSeparator(col),
                                 },
-                                enableValue: true
+                                enableValue: true,
                             });
                             dataSource.columnDefs.push(colDef);
                         }
                         break;
-                    case 'button':
+                    case "button":
                         colDef = Object.assign(colDef, {
                             cellRendererFramework: TemplateButtonCellRenderer,
                             editable: false,
                             cellRendererParams: {
-                                mode: this.getColButtonMode(col)
+                                mode: this.getColButtonMode(col),
                             },
                             width: colDef.width || 100,
                             maxWidth: colDef.width || 100,
                             minWidth: colDef.width || 100,
-                            hide: this.buildButtonColumnHideFromAccessRight(col)
+                            hide: this.buildButtonColumnHideFromAccessRight(
+                                col
+                            ),
                         });
                         dataSource.columnDefs.push(colDef);
                         break;
 
-                    case 'countryflag':
+                    case "countryflag":
                         colDef = Object.assign(colDef, {
                             cellRendererFramework: CountryFlagCellRenderer,
                             editable: false,
-                            autoHeight: true
+                            autoHeight: true,
                         });
                         dataSource.columnDefs.push(colDef);
                         break;
-                    case 'icon':
+                    case "icon":
                         colDef = Object.assign(colDef, {
                             cellRendererFramework: IconCellRenderer,
                             editable: false,
-                            tooltip: ''
+                            tooltip: "",
                         });
                         dataSource.columnDefs.push(colDef);
                         break;
 
-                    case 'date':
-                    case 'datetimepicker':
+                    case "date":
+                    case "datetimepicker":
                         colDef = Object.assign(colDef, {
                             cellEditorFramework: DateCellRenderer,
                             valueFormatter: this.dateFormatter.bind(this),
-                            comparator: function (valueA, valueB, nodeA, nodeB, isInverted) {
-                                if (valueA && typeof valueA === 'string' && valueA.indexOf('/') !== -1 && valueB && typeof valueB === 'string' && valueB.indexOf('/') !== -1) {
-                                    let aDateObj = parse(valueA, 'MM/dd/yyyy', new Date());
-                                    let bDateObj = parse(valueB, 'MM/dd/yyyy', new Date());
+                            comparator: function (
+                                valueA,
+                                valueB,
+                                nodeA,
+                                nodeB,
+                                isInverted
+                            ) {
+                                if (
+                                    valueA &&
+                                    typeof valueA === "string" &&
+                                    valueA.indexOf("/") !== -1 &&
+                                    valueB &&
+                                    typeof valueB === "string" &&
+                                    valueB.indexOf("/") !== -1
+                                ) {
+                                    let aDateObj = parse(
+                                        valueA,
+                                        "MM/dd/yyyy",
+                                        new Date()
+                                    );
+                                    let bDateObj = parse(
+                                        valueB,
+                                        "MM/dd/yyyy",
+                                        new Date()
+                                    );
 
-                                    if (!(aDateObj instanceof Date && !isNaN(aDateObj.getTime()))) {
+                                    if (
+                                        !(
+                                            aDateObj instanceof Date &&
+                                            !isNaN(aDateObj.getTime())
+                                        )
+                                    ) {
                                         aDateObj = new Date(valueA);
                                     }
-                                    if (!(bDateObj instanceof Date && !isNaN(bDateObj.getTime()))) {
+                                    if (
+                                        !(
+                                            bDateObj instanceof Date &&
+                                            !isNaN(bDateObj.getTime())
+                                        )
+                                    ) {
                                         bDateObj = new Date(valueB);
                                     }
 
-                                    if (aDateObj instanceof Date && !isNaN(aDateObj.getTime()) && bDateObj instanceof Date && !isNaN(bDateObj.getTime())) {
+                                    if (
+                                        aDateObj instanceof Date &&
+                                        !isNaN(aDateObj.getTime()) &&
+                                        bDateObj instanceof Date &&
+                                        !isNaN(bDateObj.getTime())
+                                    ) {
                                         return compareAsc(aDateObj, bDateObj);
                                     }
-                                } else if (valueA instanceof Date && valueB instanceof Date) {
+                                } else if (
+                                    valueA instanceof Date &&
+                                    valueB instanceof Date
+                                ) {
                                     return compareAsc(valueA, valueB);
                                 }
 
                                 return false;
-                            }
+                            },
                         });
                         dataSource.columnDefs.push(colDef);
                         break;
 
-                    case 'textarea':
+                    case "textarea":
                         colDef = Object.assign(colDef, {
-                            cellEditor: "agLargeTextCellEditor"
+                            cellEditor: "agLargeTextCellEditor",
                         });
                         dataSource.columnDefs.push(colDef);
                         break;
 
-                    case 'creditcard':
+                    case "creditcard":
                         colDef = Object.assign(colDef, {
                             cellRendererFramework: CreditCardCellRenderer,
-                            editable: false
+                            editable: false,
                         });
                         dataSource.columnDefs.push(colDef);
                         break;
 
-                    case 'autocomplete':
+                    case "autocomplete":
                         colDef = Object.assign(colDef, {
                             cellRendererFramework: AutoCompleteCellRenderer,
                             cellEditorFramework: AutoCompleteCellRenderer,
@@ -377,69 +485,87 @@ export class AgGridService {
                                 controlType: col.controlType,
                             },
                             enableValue: true,
-                            comparator: function (valueA, valueB, nodeA, nodeB, isInverted) {
-                                if (isObject(valueA) && isObject(valueB) && !isNil(valueA.key) && !isNil(valueB.key)) {
-                                    return ('' + valueA.value).localeCompare(valueB.value);
+                            comparator: function (
+                                valueA,
+                                valueB,
+                                nodeA,
+                                nodeB,
+                                isInverted
+                            ) {
+                                if (
+                                    isObject(valueA) &&
+                                    isObject(valueB) &&
+                                    !isNil(valueA.key) &&
+                                    !isNil(valueB.key)
+                                ) {
+                                    return ("" + valueA.value).localeCompare(
+                                        valueB.value
+                                    );
                                 }
 
                                 return false;
-                            }
+                            },
                         });
                         dataSource.columnDefs.push(colDef);
                         break;
 
                     default:
-                        colDef.cellRenderer = this.cellRendererHandle.bind(this);
+                        colDef.cellRenderer =
+                            this.cellRendererHandle.bind(this);
                         dataSource.columnDefs.push(colDef);
                         break;
                 }
-            });//for columns
+            }); //for columns
 
             if (config.allowDelete) {
                 dataSource.columnDefs.push({
                     field: ColHeaderKey.Delete,
-                    headerClass: 'editable-col',
-                    cellClass: 'text-center',
+                    headerClass: "editable-col",
+                    cellClass: "text-center",
                     cellRendererFramework: ControlCheckboxCellRenderer,
                     editable: false,
                     suppressToolPanel: true,
                     suppressSorting: true,
                     headerComponentFramework: DeleteCheckboxHeaderCellRenderer,
                     width: 100,
-                    minWidth: 100
+                    minWidth: 100,
                 });
             }
 
             if (config.allowSelectAll) {
                 dataSource.columnDefs.push({
                     field: ColHeaderKey.SelectAll,
-                    headerClass: 'editable-col',
-                    cellClass: 'text-center',
+                    headerClass: "editable-col",
+                    cellClass: "text-center",
                     cellRendererFramework: ControlCheckboxCellRenderer,
                     editable: false,
                     suppressToolPanel: true,
                     suppressSorting: true,
-                    headerComponentFramework: SelectAllCheckboxHeaderCellRenderer,
+                    headerComponentFramework:
+                        SelectAllCheckboxHeaderCellRenderer,
                     width: 100,
-                    minWidth: 100
+                    minWidth: 100,
                 });
             }
 
             if (config.allowMediaCode) {
                 dataSource.columnDefs.push({
                     field: ColHeaderKey.Mediacode,
-                    headerName: 'Mediacode price',
-                    headerClass: 'editable-col',
-                    cellClass: 'text-center',
+                    headerName: "Mediacode price",
+                    headerClass: "editable-col",
+                    cellClass: "text-center",
                     cellRendererFramework: TemplateButtonCellRenderer,
                     editable: false,
                     cellRendererParams: {
-                        mode: 'Mediacode'
-                    }
+                        mode: "Mediacode",
+                    },
                 });
             }
 
-            const enabledServerSideDatasource = this.isEnabledServerSideDatasource(controlGridModel.idSettingsGUI);
+            const enabledServerSideDatasource =
+                this.isEnabledServerSideDatasource(
+                    controlGridModel.idSettingsGUI
+                );
             if (config.treeViewMode && !enabledServerSideDatasource) {
                 this.buildTreeData(controlGridModel);
             }
@@ -452,28 +578,31 @@ export class AgGridService {
             //}
 
             dataSource.rowData = controlGridModel.data;
-            dataSource.enabledServerSideDatasource = enabledServerSideDatasource;
+            dataSource.enabledServerSideDatasource =
+                enabledServerSideDatasource;
             dataSource.funcGetData = controlGridModel.funcGetData;
-        }
-        catch (e) {
+        } catch (e) {
             console.log(e);
         }
         return dataSource;
     }
 
     private isEnabledServerSideDatasource(idSettingsGUI?: number) {
-        return idSettingsGUI === 2;//!Customer
+        return idSettingsGUI === 2; //!Customer
     }
 
-    public buildAutoGroupColumnDefForModules(model: ControlGridModel, gridOptions: GridOptions) {
+    public buildAutoGroupColumnDefForModules(
+        model: ControlGridModel,
+        gridOptions: GridOptions
+    ) {
         //Customer
         if (model.idSettingsGUI === 2) {
             //choose Server-Side Row Model
-            gridOptions.rowModelType = 'serverSide';
+            gridOptions.rowModelType = "serverSide";
             gridOptions.enableFilter = false;
             //indicate if row is a group node
             gridOptions.isServerSideGroup = function (dataItem) {
-                return dataItem.MatchingText == 'Master';
+                return dataItem.MatchingText == "Master";
             };
 
             //specify which group key to use
@@ -482,7 +611,7 @@ export class AgGridService {
             };
 
             model.autoGroupColumnDef = new AutoGroupColumnDefModel({
-                headerName: 'Id Person',
+                headerName: "Id Person",
                 width: 35,
                 isFitColumn: true,
             });
@@ -491,10 +620,10 @@ export class AgGridService {
 
     private createMasterDetailGroupCol(): ColDef {
         return {
-            field: 'MasterDetailColumn',
+            field: "MasterDetailColumn",
             lockPosition: true,
-            headerName: '',
-            cellClass: 'status-header-col master-detail-col',
+            headerName: "",
+            cellClass: "status-header-col master-detail-col",
             maxWidth: 30,
             suppressMenu: true,
             suppressSorting: true,
@@ -506,9 +635,9 @@ export class AgGridService {
             valueGetter: "node.rowIndex",
             cellRenderer: "agGroupCellRenderer",
             pinnedRowCellRenderer: function (params) {
-                return '';
+                return "";
             },
-            pinned: 'left'
+            pinned: "left",
         };
     }
 
@@ -517,7 +646,7 @@ export class AgGridService {
             field: languageName,
             lockPosition: true,
             headerName: languageName,
-            pinned: 'right'
+            pinned: "right",
         };
     }
 
@@ -531,7 +660,7 @@ export class AgGridService {
             if (propName) {
                 result.push({
                     key: propName,
-                    value: selectedRow[propName]
+                    value: selectedRow[propName],
                 });
             }
         }
@@ -543,11 +672,11 @@ export class AgGridService {
      * @param settingCol
      */
     protected getColButtonMode(settingCol: any) {
-        let mode = '';
+        let mode = "";
         if (settingCol) {
             mode = this.datatableService.getControlTypeValue(settingCol);
 
-            if (!mode && settingCol.controlType === 'Button') {
+            if (!mode && settingCol.controlType === "Button") {
                 mode = settingCol.data;
             }
         }
@@ -560,19 +689,31 @@ export class AgGridService {
      */
     public numericFormatter(params) {
         try {
-            if (params && params.value != null && params.colDef && params.colDef.refData && params.colDef.refData.setting && params.colDef.refData.setting.DataType === 'money') {
+            if (
+                params &&
+                params.value != null &&
+                params.colDef &&
+                params.colDef.refData &&
+                params.colDef.refData.setting &&
+                params.colDef.refData.setting.DataType === "money"
+            ) {
                 return params.value.toFixed(2);
             }
 
-            const globalNumberFormat = params.context.componentParent.globalNumberFormat;
-            const allowNumberSeparator = params.colDef.refData.allowNumberSeparator;
+            const globalNumberFormat =
+                params.context.componentParent.globalNumberFormat;
+            const allowNumberSeparator =
+                params.colDef.refData.allowNumberSeparator;
             if (allowNumberSeparator) {
-                if (globalNumberFormat == 'N') {
-                    return params.value ? params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : null;
+                if (globalNumberFormat == "N") {
+                    return params.value
+                        ? params.value
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        : null;
                 }
             }
-        }
-        catch{ }
+        } catch {}
         return params.value;
     }
 
@@ -582,14 +723,22 @@ export class AgGridService {
      */
     public boolFormatter(params) {
         try {
-            if (params.value == 'True' || params.value == 'true' || params.value == true || params.value == 1) {
+            if (
+                params.value == "True" ||
+                params.value == "true" ||
+                params.value == true ||
+                params.value == 1
+            ) {
                 params.value = true;
-            }
-            else if (params.value == 'False' || params.value == 'false' || params.value == false || params.value == 0) {
+            } else if (
+                params.value == "False" ||
+                params.value == "false" ||
+                params.value == false ||
+                params.value == 0
+            ) {
                 params.value = false;
             }
-        }
-        catch{ }
+        } catch {}
         return params.value;
     }
 
@@ -600,25 +749,41 @@ export class AgGridService {
     public dateFormatter(params) {
         try {
             const colDef = params.column.getColDef();
-            colDef.refData.format = this.getDateFormat(params, params.context.componentParent.globalDateFormat);
-            return !params.value ? '' : this.uti.formatLocale(new Date(params.value), this.getDateFormat(params, params.context.componentParent.globalDateFormat));
-        }
-        catch{ }
+            colDef.refData.format = this.getDateFormat(
+                params,
+                params.context.componentParent.globalDateFormat
+            );
+            return !params.value
+                ? ""
+                : this.uti.formatLocale(
+                      new Date(params.value),
+                      this.getDateFormat(
+                          params,
+                          params.context.componentParent.globalDateFormat
+                      )
+                  );
+        } catch {}
         return params.value;
     }
 
     public getDateFormat(params, globalDateFormat) {
         const colDef = params.column.getColDef();
-        let isDOB = this.datatableService.hasDisplayField(colDef.refData, 'IsDOB');
+        let isDOB = this.datatableService.hasDisplayField(
+            colDef.refData,
+            "IsDOB"
+        );
         if (!isDOB) {
             return globalDateFormat;
         }
 
-        if (!params.data.hasOwnProperty('IsoCode')) {
+        if (!params.data.hasOwnProperty("IsoCode")) {
             return globalDateFormat;
         }
 
-        let DOBFormatByCountryProp = this.propertyPanelService.getItemRecursive(params.context.componentParent.globalProps, 'DOBFormatByCountry');
+        let DOBFormatByCountryProp = this.propertyPanelService.getItemRecursive(
+            params.context.componentParent.globalProps,
+            "DOBFormatByCountry"
+        );
         if (!DOBFormatByCountryProp || !DOBFormatByCountryProp.value) {
             return globalDateFormat;
         }
@@ -634,15 +799,17 @@ export class AgGridService {
         let allowNumberSeparator = true;
         try {
             if (this.datatableService.hasControlType(settingCol)) {
-                const controlType = this.datatableService.getSettingContainsControlType(settingCol.setting.Setting).ControlType;
-                return !controlType.AllowNumberSeparator ? true : controlType.AllowNumberSeparator;
+                const controlType =
+                    this.datatableService.getSettingContainsControlType(
+                        settingCol.setting.Setting
+                    ).ControlType;
+                return !controlType.AllowNumberSeparator
+                    ? true
+                    : controlType.AllowNumberSeparator;
             }
-        }
-        catch{
-        }
+        } catch {}
         return true;
     }
-
 
     private cellRendererHandle(params: any) {
         // process for hightlightKeywords
@@ -656,9 +823,16 @@ export class AgGridService {
     private highLightKeyWord(params): any {
         if (!params.value) return params.value;
 
-        let hightlightKeywords = (params.context.componentParent.hightlightKeywords + '').trim();
+        let hightlightKeywords = (
+            params.context.componentParent.hightlightKeywords + ""
+        ).trim();
         let content = params.value;
-        if (hightlightKeywords && hightlightKeywords !== '*' && typeof content === 'string' || content instanceof String) {
+        if (
+            (hightlightKeywords &&
+                hightlightKeywords !== "*" &&
+                typeof content === "string") ||
+            content instanceof String
+        ) {
             //return this.highLightText(params.value, hightlightKeywords)
             //hight,light
             const arrKeywords = hightlightKeywords.split(/[,+]/);
@@ -667,42 +841,52 @@ export class AgGridService {
                 if (keywords) {
                     content = this.highLightText(content, keywords);
                 }
-            }//for
-            content = content.replace(/s____s/g, '<span class="hight-light__keyword">');
-            content = content.replace(/e____e/g, '</span>');
+            } //for
+            content = content.replace(
+                /s____s/g,
+                '<span class="hight-light__keyword">'
+            );
+            content = content.replace(/e____e/g, "</span>");
             return content;
         }
         return params.value;
     }
 
     private highLightText(content, hightlightKeywords): any {
-        hightlightKeywords = hightlightKeywords.split('*').join('');
+        hightlightKeywords = hightlightKeywords.split("*").join("");
 
         let regTxt;
-        hightlightKeywords = hightlightKeywords.replace(/\?|\+|\%|\>|\<|\$|/g, "");
+        hightlightKeywords = hightlightKeywords.replace(
+            /\?|\+|\%|\>|\<|\$|/g,
+            ""
+        );
 
         if (/ or | and | [&] |[&]| [|] |[|]/i.test(hightlightKeywords)) {
-            hightlightKeywords = hightlightKeywords.replace(/OR|AND|&|\|/gi, function (matched) {
-                return '|';
-            });
+            hightlightKeywords = hightlightKeywords.replace(
+                /OR|AND|&|\|/gi,
+                function (matched) {
+                    return "|";
+                }
+            );
             hightlightKeywords = hightlightKeywords.replace(/ +/g, "");
-        }
-        else {
+        } else {
             hightlightKeywords = hightlightKeywords.replace(/ +/g, "|");
         }
         if (/ [&&] |[&&]| [||] |[||]|/i.test(hightlightKeywords)) {
-            hightlightKeywords = hightlightKeywords.replace(/&&|\|\|/gi, function (matched) {
-                return '|';
-            });
+            hightlightKeywords = hightlightKeywords.replace(
+                /&&|\|\|/gi,
+                function (matched) {
+                    return "|";
+                }
+            );
             hightlightKeywords = hightlightKeywords.replace(/ +/g, "");
-        }
-        else {
+        } else {
             hightlightKeywords = hightlightKeywords.replace(/ +/g, "|");
         }
-        regTxt = new RegExp(hightlightKeywords, 'gi');
+        regTxt = new RegExp(hightlightKeywords, "gi");
         let result = content.replace(regTxt, function (str) {
             //return '<span class="hight-light__keyword">' + str + '</span>';
-            return 's____s' + str + 'e____e';
+            return "s____s" + str + "e____e";
         });
         return result;
     }
@@ -711,7 +895,11 @@ export class AgGridService {
         if (cellClassParams.context.componentParent.isArticleInvoiceHasError) {
             return this.quantityArticleInvoice(cellClassParams);
         }
-        if (cellClassParams.node.rowPinned === 'bottom' || cellClassParams.node.rowPinned === 'top') { //Ignore total row
+        if (
+            cellClassParams.node.rowPinned === "bottom" ||
+            cellClassParams.node.rowPinned === "top"
+        ) {
+            //Ignore total row
             return false;
         }
 
@@ -723,7 +911,10 @@ export class AgGridService {
             return false;
         }
 
-        const column: any = cellClassParams && cellClassParams.colDef && cellClassParams.colDef.refData;
+        const column: any =
+            cellClassParams &&
+            cellClassParams.colDef &&
+            cellClassParams.colDef.refData;
         const item = cellClassParams && cellClassParams.data;
         const property = cellClassParams.colDef.field;
         let applyClass = false;
@@ -731,74 +922,139 @@ export class AgGridService {
             return;
         }
 
-
-        if (this.datatableService.hasValidation(column, 'IsRequired')) {
-            if (isNil(item[property]) || item[property] === '' || item[property] === 0 || (typeof item[property] === 'object' && !item[property]['key'])) {
+        if (this.datatableService.hasValidation(column, "IsRequired")) {
+            if (
+                isNil(item[property]) ||
+                item[property] === "" ||
+                item[property] === 0 ||
+                (typeof item[property] === "object" && !item[property]["key"])
+            ) {
                 applyClass = true;
             }
         }
 
-        if (this.datatableService.hasValidation(column, 'RequiredFrom')) {
-            let fromFieldName = this.datatableService.getSettingContainsValidation(column.setting.Setting).Validation.RequiredFrom;
+        if (this.datatableService.hasValidation(column, "RequiredFrom")) {
+            let fromFieldName =
+                this.datatableService.getSettingContainsValidation(
+                    column.setting.Setting
+                ).Validation.RequiredFrom;
 
-            if (!isNil(item[fromFieldName])
-                && item[fromFieldName] !== ''
-                && (isNil(item[property]) || item[property] === '' || item[property] === 0 || (typeof item[property] === 'object' && !item[property]['key']))) {
+            if (
+                !isNil(item[fromFieldName]) &&
+                item[fromFieldName] !== "" &&
+                (isNil(item[property]) ||
+                    item[property] === "" ||
+                    item[property] === 0 ||
+                    (typeof item[property] === "object" &&
+                        !item[property]["key"]))
+            ) {
                 applyClass = true;
             }
         }
 
         let compareWithArray: any = { Validation: {} };
-        if (this.datatableService.hasValidation(column, 'CompareWithArray', compareWithArray)
-            && this['isGridRendered']) {
-            if (compareWithArray['Validation']
-                && compareWithArray['Validation']['arrayName']
-                && compareWithArray['Validation']['propertyName']
-                && item[property]) {
-                if (this.datatableService[compareWithArray['Validation']['arrayName']]
-                    && this.datatableService[compareWithArray['Validation']['arrayName']].length) {
-                    const _item = this.datatableService[compareWithArray['Validation']['arrayName']].find(x => x[compareWithArray['Validation']['propertyName']] == item[property]);
-                    applyClass = !(_item && _item[compareWithArray['Validation']['propertyName']]);
+        if (
+            this.datatableService.hasValidation(
+                column,
+                "CompareWithArray",
+                compareWithArray
+            ) &&
+            this["isGridRendered"]
+        ) {
+            if (
+                compareWithArray["Validation"] &&
+                compareWithArray["Validation"]["arrayName"] &&
+                compareWithArray["Validation"]["propertyName"] &&
+                item[property]
+            ) {
+                if (
+                    this.datatableService[
+                        compareWithArray["Validation"]["arrayName"]
+                    ] &&
+                    this.datatableService[
+                        compareWithArray["Validation"]["arrayName"]
+                    ].length
+                ) {
+                    const _item = this.datatableService[
+                        compareWithArray["Validation"]["arrayName"]
+                    ].find(
+                        (x) =>
+                            x[compareWithArray["Validation"]["propertyName"]] ==
+                            item[property]
+                    );
+                    applyClass = !(
+                        _item &&
+                        _item[compareWithArray["Validation"]["propertyName"]]
+                    );
                 } else {
                     applyClass = true;
                 }
             }
         }
 
-        if (this.datatableService.hasValidation(column, 'Comparison')) {
+        if (this.datatableService.hasValidation(column, "Comparison")) {
             let compareThem = {
-                '<=': (x, y) => { return x <= y },
-                '<': (x, y) => { return x < y },
-                '=': (x, y) => { return x == y },
-                '>': (x, y) => { return x > y },
-                '>=': (x, y) => { return x >= y }
+                "<=": (x, y) => {
+                    return x <= y;
+                },
+                "<": (x, y) => {
+                    return x < y;
+                },
+                "=": (x, y) => {
+                    return x == y;
+                },
+                ">": (x, y) => {
+                    return x > y;
+                },
+                ">=": (x, y) => {
+                    return x >= y;
+                },
             };
 
-            let comparisonRules = this.datatableService.getSettingContainsValidation(column.setting.Setting).Validation.Comparison;
+            let comparisonRules =
+                this.datatableService.getSettingContainsValidation(
+                    column.setting.Setting
+                ).Validation.Comparison;
             for (let i = 0; i < comparisonRules.length; i++) {
                 let leftData = parseFloat(item[property]) || 0.0;
-                let rightData = parseFloat(item[comparisonRules[i].With]) || 0.0;
-                if (compareThem[comparisonRules[i].Operator](leftData, rightData) === false) {
+                let rightData =
+                    parseFloat(item[comparisonRules[i].With]) || 0.0;
+                if (
+                    compareThem[comparisonRules[i].Operator](
+                        leftData,
+                        rightData
+                    ) === false
+                ) {
                     applyClass = true;
                     break;
                 }
             }
         }
 
-        if (this.datatableService.hasValidation(column, 'ValidationRange')) {
-            if (item['ValidationRangeFrom']
-                && item['ValidationRangeTo']
-                && !(item[property] >= item['ValidationRangeFrom']
-                    && item[property] <= item['ValidationRangeTo'])) {
+        if (this.datatableService.hasValidation(column, "ValidationRange")) {
+            if (
+                item["ValidationRangeFrom"] &&
+                item["ValidationRangeTo"] &&
+                !(
+                    item[property] >= item["ValidationRangeFrom"] &&
+                    item[property] <= item["ValidationRangeTo"]
+                )
+            ) {
                 applyClass = true;
             }
         }
 
-        if (this.datatableService.hasValidation(column, 'IsUniqued')) {
-            if (!isNil(item[property]) && item[property] !== '') {
-                let uniqueList = cellClassParams.context.componentParent.getCurrentNodeItems().filter(x => !isNil(x[property]) && (x.DT_RowId != item.DT_RowId || x.id != item.id));
+        if (this.datatableService.hasValidation(column, "IsUniqued")) {
+            if (!isNil(item[property]) && item[property] !== "") {
+                let uniqueList = cellClassParams.context.componentParent
+                    .getCurrentNodeItems()
+                    .filter(
+                        (x) =>
+                            !isNil(x[property]) &&
+                            (x.DT_RowId != item.DT_RowId || x.id != item.id)
+                    );
                 if (uniqueList.length) {
-                    uniqueList = uniqueList.map(dt => {
+                    uniqueList = uniqueList.map((dt) => {
                         return dt ? dt.MediaCode.trim() : null;
                     });
 
@@ -810,9 +1066,16 @@ export class AgGridService {
         }
 
         if (this.datatableService.hasValidation(column)) {
-            const regexData = this.datatableService.buildWijmoGridValidationExpression(item, column);
+            const regexData =
+                this.datatableService.buildWijmoGridValidationExpression(
+                    item,
+                    column
+                );
             if (regexData && regexData.Regex) {
-                const regex = new RegExp(decodeURIComponent(regexData.Regex), 'g');
+                const regex = new RegExp(
+                    decodeURIComponent(regexData.Regex),
+                    "g"
+                );
 
                 if (!regex.test(item[property])) {
                     applyClass = true;
@@ -828,21 +1091,32 @@ export class AgGridService {
         const property = cellClassParams.colDef.field;
         let applyClass = false;
         if (!item.IsActive) return;
-        const sum = toNumber(item[ArticlesInvoiceQuantity.QtyKeep]) + toNumber(item[ArticlesInvoiceQuantity.QtyBackToWareHouse]) + toNumber(item[ArticlesInvoiceQuantity.QtyDefect]);
+        const sum =
+            toNumber(item[ArticlesInvoiceQuantity.QtyKeep]) +
+            toNumber(item[ArticlesInvoiceQuantity.QtyBackToWareHouse]) +
+            toNumber(item[ArticlesInvoiceQuantity.QtyDefect]);
         if (!sum) return applyClass;
-        if ((property === ArticlesInvoiceQuantity.QtyKeep || property == ArticlesInvoiceQuantity.QtyBackToWareHouse || property === ArticlesInvoiceQuantity.QtyDefect)) {
-            if (sum > item['Quantity'] || sum < item['Quantity']) {
+        if (
+            property === ArticlesInvoiceQuantity.QtyKeep ||
+            property == ArticlesInvoiceQuantity.QtyBackToWareHouse ||
+            property === ArticlesInvoiceQuantity.QtyDefect
+        ) {
+            if (sum > item["Quantity"] || sum < item["Quantity"]) {
                 applyClass = true;
             }
         }
         return applyClass;
     }
 
-    protected quantityCellWithColor(checkPositiveQuantity: boolean, cellClassParams: CellClassParams) {
-        const enableQtyWithColor = cellClassParams.context.componentParent.enableQtyWithColor;
+    protected quantityCellWithColor(
+        checkPositiveQuantity: boolean,
+        cellClassParams: CellClassParams
+    ) {
+        const enableQtyWithColor =
+            cellClassParams.context.componentParent.enableQtyWithColor;
         const property = cellClassParams.colDef.field;
         let applyClass = false;
-        if (enableQtyWithColor && property == 'QtyWithColor') {
+        if (enableQtyWithColor && property == "QtyWithColor") {
             const item = cellClassParams.data;
             const value = item[property];
             if (!isNil(value)) {
@@ -862,10 +1136,12 @@ export class AgGridService {
     protected inActiveCellClassRules(cellClassParams: CellClassParams) {
         let applyClass = false;
         //
-        if (cellClassParams.context.componentParent.allowSelectAll
-            && cellClassParams.context.componentParent.isDisableRowWithSelectAll
-            && cellClassParams.colDef.field != ColHeaderKey.SelectAll
-            && !cellClassParams.data[ColHeaderKey.SelectAll]) {
+        if (
+            cellClassParams.context.componentParent.allowSelectAll &&
+            cellClassParams.context.componentParent.isDisableRowWithSelectAll &&
+            cellClassParams.colDef.field != ColHeaderKey.SelectAll &&
+            !cellClassParams.data[ColHeaderKey.SelectAll]
+        ) {
             applyClass = true;
         }
 
@@ -889,27 +1165,41 @@ export class AgGridService {
         return !data[parentNodeKeyName];
     }
 
-    private getParentNode(data: any, allData: any[], parentNodeKeyName: string, nodeKeyName: string) {
-        return allData.find(x => x[nodeKeyName] == data[parentNodeKeyName]);
+    private getParentNode(
+        data: any,
+        allData: any[],
+        parentNodeKeyName: string,
+        nodeKeyName: string
+    ) {
+        return allData.find((x) => x[nodeKeyName] == data[parentNodeKeyName]);
     }
 
     private buildTooltip(params: TooltipParams) {
-
         if (!params.data) {
             return null;
         }
 
         if (params.context.componentParent.customTooltip) {
-            return params.context.componentParent.customTooltip.preText + params.data[params.context.componentParent.customTooltip.fieldName];
+            return (
+                params.context.componentParent.customTooltip.preText +
+                params.data[
+                    params.context.componentParent.customTooltip.fieldName
+                ]
+            );
         }
 
-        if (typeof params.data[params.colDef.field] !== 'object') {
-            let value = params.valueFormatted ? params.valueFormatted : params.value;
+        if (typeof params.data[params.colDef.field] !== "object") {
+            let value = params.valueFormatted
+                ? params.valueFormatted
+                : params.value;
             if (!value) {
                 value = params.data[params.colDef.field];
             }
             return value;
-        } else if (params.data[params.colDef.field] && params.data[params.colDef.field].hasOwnProperty('key')) {
+        } else if (
+            params.data[params.colDef.field] &&
+            params.data[params.colDef.field].hasOwnProperty("key")
+        ) {
             return params.data[params.colDef.field].value;
         }
 
@@ -919,17 +1209,28 @@ export class AgGridService {
     private buildCellStyle(col: any, params) {
         let borderRightColor: any = {};
         const gridStyle = params.context.componentParent.gridStyle;
-        const gridStyleGlobal = params.context.componentParent._rowBackgroundGlobal;
-        const rowBackGroundWidget = params.context.componentParent._rowBackground;
+        const gridStyleGlobal =
+            params.context.componentParent._rowBackgroundGlobal;
+        const rowBackGroundWidget =
+            params.context.componentParent._rowBackground;
         // Have odd or even Color and Row BackGround turn on in Widget properties
-        if (gridStyle && gridStyle.rowStyle && gridStyle.rowStyle['border-right'] && rowBackGroundWidget) {
+        if (
+            gridStyle &&
+            gridStyle.rowStyle &&
+            gridStyle.rowStyle["border-right"] &&
+            rowBackGroundWidget
+        ) {
             borderRightColor = {
-                'border-right-color': `${gridStyle.rowStyle['border-right']} !important`
+                "border-right-color": `${gridStyle.rowStyle["border-right"]} !important`,
             };
         }
-        if (gridStyleGlobal && gridStyleGlobal['borderRow'] && !rowBackGroundWidget) {
+        if (
+            gridStyleGlobal &&
+            gridStyleGlobal["borderRow"] &&
+            !rowBackGroundWidget
+        ) {
             borderRightColor = {
-                'border-right-color': `${gridStyleGlobal['borderRow']} !important`
+                "border-right-color": `${gridStyleGlobal["borderRow"]} !important`,
             };
         }
         return col.customStyle || borderRightColor;
@@ -942,14 +1243,24 @@ export class AgGridService {
      * @param controlGridModel
      */
     private buildTreeData(controlGridModel: ControlGridModel) {
-        let parentNodeKeyName = this.datatableService.getNodeKeyName(controlGridModel.columns, true);
-        let nodeKeyName = this.datatableService.getNodeKeyName(controlGridModel.columns);
-        this.buildTree(controlGridModel.data, null, nodeKeyName, parentNodeKeyName);
+        let parentNodeKeyName = this.datatableService.getNodeKeyName(
+            controlGridModel.columns,
+            true
+        );
+        let nodeKeyName = this.datatableService.getNodeKeyName(
+            controlGridModel.columns
+        );
+        this.buildTree(
+            controlGridModel.data,
+            null,
+            nodeKeyName,
+            parentNodeKeyName
+        );
         this.buildHierarchyPathTree(controlGridModel.data, null);
         let results = [];
         this.flattenTreeData(controlGridModel.data, results);
-        results.forEach(result => {
-            const rs = controlGridModel.data.find(p => p == result);
+        results.forEach((result) => {
+            const rs = controlGridModel.data.find((p) => p == result);
             if (!rs) {
                 controlGridModel.data.push(result);
             }
@@ -964,12 +1275,12 @@ export class AgGridService {
     private buildTree(tree, item, idKey, parentIdKey) {
         // If item then have parent
         if (item) {
-            for (let i = 0; i < tree.length; i++) { // Find the parent
+            for (let i = 0; i < tree.length; i++) {
+                // Find the parent
                 if (String(tree[i][idKey]) === String(item[parentIdKey])) {
                     tree[i].children.push(item);
                     break;
-                }
-                else
+                } else
                     this.buildTree(tree[i].children, item, idKey, parentIdKey);
             }
         }
@@ -977,10 +1288,18 @@ export class AgGridService {
         else {
             let idx = 0;
             while (idx < tree.length) {
-                if (tree[idx][parentIdKey] && tree[idx][idKey] != tree[idx][parentIdKey] && !isObject(tree[idx][parentIdKey]))
-                    this.buildTree(tree, tree.splice(idx, 1)[0], idKey, parentIdKey); // if have parent then remove it from the array to relocate it to the right place
-                else
-                    idx++;
+                if (
+                    tree[idx][parentIdKey] &&
+                    tree[idx][idKey] != tree[idx][parentIdKey] &&
+                    !isObject(tree[idx][parentIdKey])
+                )
+                    this.buildTree(
+                        tree,
+                        tree.splice(idx, 1)[0],
+                        idKey,
+                        parentIdKey
+                    ); // if have parent then remove it from the array to relocate it to the right place
+                else idx++;
             }
         }
     }
@@ -988,17 +1307,24 @@ export class AgGridService {
     /**
      * buildHierarchyPathTree
      **/
-    private buildHierarchyPathTree(treeData: Array<any>, orgHierarchyPath: Array<string>) {
-        treeData.forEach(data => {
+    private buildHierarchyPathTree(
+        treeData: Array<any>,
+        orgHierarchyPath: Array<string>
+    ) {
+        treeData.forEach((data) => {
             const groupName = data.GroupName || data.ModuleName;
             if (!orgHierarchyPath) {
                 data[ColHeaderKey.TreeViewPath] = [groupName];
-            }
-            else {
-                data[ColHeaderKey.TreeViewPath] = orgHierarchyPath.concat([groupName]);
+            } else {
+                data[ColHeaderKey.TreeViewPath] = orgHierarchyPath.concat([
+                    groupName,
+                ]);
             }
             if (data.children && data.children.length) {
-                this.buildHierarchyPathTree(data.children, data[ColHeaderKey.TreeViewPath]);
+                this.buildHierarchyPathTree(
+                    data.children,
+                    data[ColHeaderKey.TreeViewPath]
+                );
             }
         });
     }
@@ -1009,7 +1335,7 @@ export class AgGridService {
      * @param result
      */
     private flattenTreeData(treeData: Array<any>, result: Array<any>) {
-        treeData.forEach(data => {
+        treeData.forEach((data) => {
             result.push(data);
             if (data.children && data.children.length) {
                 this.flattenTreeData(data.children, result);
@@ -1022,43 +1348,55 @@ export class AgGridService {
     private buildButtonColumnHideFromAccessRight(col) {
         let accessRight: any;
         switch (col.data) {
-            case 'Run':
-                accessRight = this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, {
-                    idSettingsGUIParent: 8,
-                    idSettingsGUI: 39,
-                    idRepWidgetApp: 122,
-                    widgetButtonName: 'Run'
-                });
+            case "Run":
+                accessRight = this.accessRightService.getAccessRight(
+                    AccessRightTypeEnum.WidgetButton,
+                    {
+                        idSettingsGUIParent: 8,
+                        idSettingsGUI: 39,
+                        idRepWidgetApp: 122,
+                        widgetButtonName: "Run",
+                    }
+                );
                 if (accessRight) {
                     return !accessRight.read;
                 }
                 break;
 
-            case 'StartStop':
-                accessRight = this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, {
-                    idSettingsGUIParent: 9,
-                    idSettingsGUI: 40,
-                    idRepWidgetApp: 129,
-                    widgetButtonName: 'StartStop'
-                });
+            case "StartStop":
+                accessRight = this.accessRightService.getAccessRight(
+                    AccessRightTypeEnum.WidgetButton,
+                    {
+                        idSettingsGUIParent: 9,
+                        idSettingsGUI: 40,
+                        idRepWidgetApp: 129,
+                        widgetButtonName: "StartStop",
+                    }
+                );
                 if (accessRight) {
                     return !accessRight.read;
                 }
                 break;
 
-            case 'Setting':
-                let accessRight1 = this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, {
-                    idSettingsGUIParent: 8,
-                    idSettingsGUI: 39,
-                    idRepWidgetApp: 122,
-                    widgetButtonName: 'Setting'
-                });
-                let accessRight2 = this.accessRightService.getAccessRight(AccessRightTypeEnum.WidgetButton, {
-                    idSettingsGUIParent: 9,
-                    idSettingsGUI: 40,
-                    idRepWidgetApp: 129,
-                    widgetButtonName: 'Setting'
-                });
+            case "Setting":
+                let accessRight1 = this.accessRightService.getAccessRight(
+                    AccessRightTypeEnum.WidgetButton,
+                    {
+                        idSettingsGUIParent: 8,
+                        idSettingsGUI: 39,
+                        idRepWidgetApp: 122,
+                        widgetButtonName: "Setting",
+                    }
+                );
+                let accessRight2 = this.accessRightService.getAccessRight(
+                    AccessRightTypeEnum.WidgetButton,
+                    {
+                        idSettingsGUIParent: 9,
+                        idSettingsGUI: 40,
+                        idRepWidgetApp: 129,
+                        widgetButtonName: "Setting",
+                    }
+                );
                 if (accessRight1 && accessRight2) {
                     return !accessRight1.read || !accessRight2.read;
                 } else if (accessRight1) {
@@ -1081,7 +1419,8 @@ export class AgGridService {
             if (!colReadOnly) {
                 deleteStatus = true;
                 do {
-                    const isPrevent = params.context.componentParent.preventDefault(params);
+                    const isPrevent =
+                        params.context.componentParent.preventDefault(params);
                     if (isPrevent) {
                         deleteStatus = false;
                         break;
@@ -1094,7 +1433,14 @@ export class AgGridService {
                     }
                     // Case 2: Check if this cell disabled.
                     // Cell disabled by IsActive Column
-                    const inactiveRowWithIsActive = params.node.data && (params.node.data[ColHeaderKey.IsActive] == false || params.node.data[ColHeaderKey.IsActive] == 0 || params.node.data[ColHeaderKey.IsActiveDisableRow] == false || params.node.data[ColHeaderKey.IsActiveDisableRow] == 0);
+                    const inactiveRowWithIsActive =
+                        params.node.data &&
+                        (params.node.data[ColHeaderKey.IsActive] == false ||
+                            params.node.data[ColHeaderKey.IsActive] == 0 ||
+                            params.node.data[ColHeaderKey.IsActiveDisableRow] ==
+                                false ||
+                            params.node.data[ColHeaderKey.IsActiveDisableRow] ==
+                                0);
                     if (inactiveRowWithIsActive) {
                         deleteStatus = false;
                         break;
@@ -1106,7 +1452,9 @@ export class AgGridService {
                         let ignoreCol;
                         if (setting.ignoreCols && setting.ignoreCols.length) {
                             if (Array.isArray(setting.ignoreCols)) {
-                                ignoreCol = setting.ignoreCols.find(p => p == params.colDef.field);
+                                ignoreCol = setting.ignoreCols.find(
+                                    (p) => p == params.colDef.field
+                                );
                             }
                         }
                         if (!ignoreCol) {
@@ -1128,8 +1476,8 @@ export class AgGridService {
                 suppressRowGroups: true,
                 suppressValues: true,
                 suppressPivots: true,
-                suppressPivotMode: true
-            }
+                suppressPivotMode: true,
+            };
         }
         let sideBar = {
             toolPanels: [
@@ -1139,14 +1487,14 @@ export class AgGridService {
                     labelKey: "columns",
                     iconKey: "columns",
                     toolPanel: "agColumnsToolPanel",
-                    toolPanelParams: toolPanelParams
+                    toolPanelParams: toolPanelParams,
                 },
                 {
                     id: "filters",
                     labelDefault: "Filters",
                     labelKey: "filters",
                     iconKey: "filter",
-                    toolPanel: "agFiltersToolPanel"
+                    toolPanel: "agFiltersToolPanel",
                 },
                 {
                     id: "translation",
@@ -1155,10 +1503,10 @@ export class AgGridService {
                     iconKey: "translation",
                     toolPanel: "translationToolPanelRenderer",
                     toolPanelParams: {
-                        componentParent: parentContext
-                    }
-                }
-            ]
+                        componentParent: parentContext,
+                    },
+                },
+            ],
         };
         return sideBar;
     }
@@ -1172,7 +1520,9 @@ export class AgGridService {
             result = this.inactiveRowByColSetting(columns, params.node);
         }
         return {
-            inactiveRowByValueSetting: result ? result.inactiveRowByValueSetting : null,
+            inactiveRowByValueSetting: result
+                ? result.inactiveRowByValueSetting
+                : null,
             ignoreCols: result ? result.ignoreCols : null,
         };
     }
@@ -1186,12 +1536,20 @@ export class AgGridService {
         let inactiveRowByValueSetting;
         let ignoreCols;
         if (columns && columns.length) {
-            const colSetting = columns.find(p => p.colDef && p.colDef.refData && p.colDef.refData.disableRowByValue);
+            const colSetting = columns.find(
+                (p) =>
+                    p.colDef &&
+                    p.colDef.refData &&
+                    p.colDef.refData.disableRowByValue
+            );
             if (colSetting && colSetting.colDef && colSetting.colDef.refData) {
-                const disableRowByValue = colSetting.colDef.refData.disableRowByValue;
+                const disableRowByValue =
+                    colSetting.colDef.refData.disableRowByValue;
                 if (disableRowByValue) {
-                    ignoreCols = disableRowByValue['IgnoreColumns'];
-                    const items = (disableRowByValue['Values'] as Array<any>).filter(p => p == rowNode.data[colSetting.colDef.field]);
+                    ignoreCols = disableRowByValue["IgnoreColumns"];
+                    const items = (
+                        disableRowByValue["Values"] as Array<any>
+                    ).filter((p) => p == rowNode.data[colSetting.colDef.field]);
                     if (items && items.length) {
                         inactiveRowByValueSetting = true;
                     }
@@ -1200,17 +1558,17 @@ export class AgGridService {
         }
         return {
             inactiveRowByValueSetting,
-            ignoreCols
+            ignoreCols,
         };
     }
 
     public createEmptyRowClickData(columns) {
-        let result: { key: string, value: any }[] = [];
+        let result: { key: string; value: any }[] = [];
 
         columns.forEach((col) => {
             result.push({
                 key: col.headerName,
-                value: null
+                value: null,
             });
         });
 
@@ -1219,15 +1577,23 @@ export class AgGridService {
 
     public buildContextMenuForTranslation(contextMenuItems: Array<any>) {
         if (contextMenuItems && contextMenuItems.length) {
-            contextMenuItems.forEach(item => {
+            contextMenuItems.forEach((item) => {
                 if (isObject(item)) {
                     let key = item.key;
                     let name: string = item.name;
                     if (!key && name) {
-                        key = name.replace(/(<([^>]+)>)/ig, '').trim().replace(/ /g, "_");
+                        key = name
+                            .replace(/(<([^>]+)>)/gi, "")
+                            .trim()
+                            .replace(/ /g, "_");
                     }
                     if (key) {
-                        item.name = '<label-translation keyword="' + key + '">' + this.translateService.instant(key, item.params) + '</label-translation>'; // this.translateService.instant(key, item.params) + ' <span class="hidden key-translation" keyword="' + key + '"></span>';
+                        item.name =
+                            '<label-translation keyword="' +
+                            key +
+                            '">' +
+                            this.translateService.instant(key, item.params) +
+                            "</label-translation>"; // this.translateService.instant(key, item.params) + ' <span class="hidden key-translation" keyword="' + key + '"></span>';
                     }
                     if (item.subMenu && item.subMenu.length) {
                         this.buildContextMenuForTranslation(item.subMenu);
@@ -1241,8 +1607,13 @@ export class AgGridService {
         // let locale = GridLocale;
         const localeKeys = Object.keys(GridLocale);
         let localeText = {};
-        localeKeys.forEach(key => {
-            localeText[key] = '<label-translation keyword="' + key + '">' + this.translateService.instant(key) + '</label-translation>';//this.translateService.instant(key) + ' <span class="hidden key-translation" keyword="' + key + '"></span>'
+        localeKeys.forEach((key) => {
+            localeText[key] =
+                '<label-translation keyword="' +
+                key +
+                '">' +
+                this.translateService.instant(key) +
+                "</label-translation>"; //this.translateService.instant(key) + ' <span class="hidden key-translation" keyword="' + key + '"></span>'
         });
         return localeText;
     }

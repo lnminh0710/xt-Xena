@@ -1,6 +1,6 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcSelf from 'wijmo/wijmo.pdf';
-declare global  {
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcSelf from "wijmo/wijmo.pdf";
+declare global {
     interface Function {
         __super__: any;
         __proto__: any;
@@ -199,11 +199,21 @@ export declare var _IE: boolean;
 export declare function saveBlob(blob: Blob, fileName: string): void;
 export declare function ptToPx(value: number): number;
 export declare function pxToPt(value: number): number;
-export declare function _asColor(colorOrString: any, clone?: boolean): wjcCore.Color;
+export declare function _asColor(
+    colorOrString: any,
+    clone?: boolean
+): wjcCore.Color;
 export declare function _asPdfPen(penOrColor: any, nullOK?: boolean): PdfPen;
-export declare function _asPdfBrush(brushOrColor: any, nullOK?: boolean): PdfBrush;
+export declare function _asPdfBrush(
+    brushOrColor: any,
+    nullOK?: boolean
+): PdfBrush;
 export declare function _asPdfFont(font: PdfFont, nullOK?: boolean): PdfFont;
-export declare function _asPt(value: any, emptyOK?: boolean, emptyValue?: number): number;
+export declare function _asPt(
+    value: any,
+    emptyOK?: boolean,
+    emptyValue?: number
+): number;
 export declare function _formatMacros(str: string, dict: any): string;
 export declare function _compare(a: any, b: any): boolean;
 export declare function _shallowCopy(src: any): any;
@@ -249,7 +259,14 @@ export declare class PdfLinearGradientBrush extends PdfGradientBrush {
     private _y1;
     private _x2;
     private _y2;
-    constructor(x1: number, y1: number, x2: number, y2: number, stops: PdfGradientStop[], opacity?: number);
+    constructor(
+        x1: number,
+        y1: number,
+        x2: number,
+        y2: number,
+        stops: PdfGradientStop[],
+        opacity?: number
+    );
     x1: number;
     y1: number;
     x2: number;
@@ -265,7 +282,16 @@ export declare class PdfRadialGradientBrush extends PdfGradientBrush {
     private _x2;
     private _y2;
     private _r2;
-    constructor(x1: number, y1: number, r1: number, x2: number, y2: number, r2: number, stops: PdfGradientStop[], opacity?: number);
+    constructor(
+        x1: number,
+        y1: number,
+        r1: number,
+        x2: number,
+        y2: number,
+        r2: number,
+        stops: PdfGradientStop[],
+        opacity?: number
+    );
     x1: number;
     y1: number;
     r1: number;
@@ -292,7 +318,14 @@ export declare class PdfPen {
     private _join;
     private _miterLimit;
     private _dashPattern;
-    constructor(colorOrBrushOrOptions?: any, width?: number, dashPattern?: PdfDashPattern, cap?: PdfLineCapStyle, join?: PdfLineJoinStyle, miterLimit?: number);
+    constructor(
+        colorOrBrushOrOptions?: any,
+        width?: number,
+        dashPattern?: PdfDashPattern,
+        cap?: PdfLineCapStyle,
+        join?: PdfLineJoinStyle,
+        miterLimit?: number
+    );
     color: wjcCore.Color;
     brush: PdfBrush;
     width: number;
@@ -307,22 +340,22 @@ export declare class PdfFont {
     static _DEF_NATIVE_NAME: string;
     static _DEF_FAMILY_NAME: string;
     static _KNOWN_WEIGHTS: {
-        'normal': number;
-        'bold': number;
-        '100': number;
-        '200': number;
-        '300': number;
-        '400': number;
-        '500': number;
-        '600': number;
-        '700': number;
-        '800': number;
-        '900': number;
+        normal: number;
+        bold: number;
+        "100": number;
+        "200": number;
+        "300": number;
+        "400": number;
+        "500": number;
+        "600": number;
+        "700": number;
+        "800": number;
+        "900": number;
     };
     static _KNOWN_STYLES: {
-        'normal': number;
-        'italic': number;
-        'oblique': number;
+        normal: number;
+        italic: number;
+        oblique: number;
     };
     static _DEF_PDFKIT_FONT: wjcSelf.PdfFont;
     static _DEF_FONT: wjcSelf.PdfFont;
@@ -330,7 +363,12 @@ export declare class PdfFont {
     private _size;
     private _style;
     private _weight;
-    constructor(family?: string, size?: number, style?: string, weight?: string);
+    constructor(
+        family?: string,
+        size?: number,
+        style?: string,
+        weight?: string
+    );
     family: string;
     size: number;
     style: string;
@@ -365,16 +403,46 @@ export declare class PdfPageArea {
     readonly height: number;
     readonly width: number;
     readonly paths: PdfPaths;
-    drawText(text: string, x?: number, y?: number, options?: IPdfTextDrawSettings): IPdfTextMeasurementInfo;
-    drawImage(url: string, x?: number, y?: number, options?: IPdfImageDrawSettings): PdfPageArea;
-    drawSvg(url: string, x?: number, y?: number, options?: IPdfSvgDrawSettings): PdfPageArea;
+    drawText(
+        text: string,
+        x?: number,
+        y?: number,
+        options?: IPdfTextDrawSettings
+    ): IPdfTextMeasurementInfo;
+    drawImage(
+        url: string,
+        x?: number,
+        y?: number,
+        options?: IPdfImageDrawSettings
+    ): PdfPageArea;
+    drawSvg(
+        url: string,
+        x?: number,
+        y?: number,
+        options?: IPdfSvgDrawSettings
+    ): PdfPageArea;
     lineHeight(font?: PdfFont): number;
-    measureText(text: string, font?: PdfFont, options?: IPdfTextMeasurementSettings): IPdfTextMeasurementInfo;
+    measureText(
+        text: string,
+        font?: PdfFont,
+        options?: IPdfTextMeasurementSettings
+    ): IPdfTextMeasurementInfo;
     moveDown(lines?: number, font?: PdfFont): PdfPageArea;
     moveUp(lines?: number, font?: PdfFont): PdfPageArea;
-    scale(xFactor: number, yFactor?: number, origin?: wjcCore.Point): PdfPageArea;
+    scale(
+        xFactor: number,
+        yFactor?: number,
+        origin?: wjcCore.Point
+    ): PdfPageArea;
     translate(x: number, y: number): PdfPageArea;
-    transform(a: number, b: number, c: number, d: number, e: number, f: number): PdfPageArea;
+    transform(
+        a: number,
+        b: number,
+        c: number,
+        d: number,
+        e: number,
+        f: number
+    ): PdfPageArea;
     rotate(angle: number, origin?: wjcCore.Point): PdfPageArea;
     _assertPathStarted(): void;
     _initialize(doc: PdfDocument, xo: number, yo: number): void;
@@ -401,7 +469,12 @@ export declare class PdfRunningTitle extends PdfPageArea {
     constructor(options?: any);
     declarative: PdfRunningTitleDeclarativeContent;
     height: number;
-    drawText(text: any, x?: any, y?: any, options?: IPdfTextDrawSettings): IPdfTextMeasurementInfo;
+    drawText(
+        text: any,
+        x?: any,
+        y?: any,
+        options?: IPdfTextDrawSettings
+    ): IPdfTextMeasurementInfo;
 }
 export declare class _PdfImageHelper {
     private static DATAURI_CACHE;
@@ -416,17 +489,34 @@ export declare class PdfPaths {
     moveTo(x: number, y: number): PdfPaths;
     lineTo(x: number, y: number): PdfPaths;
     quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): PdfPaths;
-    bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): PdfPaths;
+    bezierCurveTo(
+        cp1x: number,
+        cp1y: number,
+        cp2x: number,
+        cp2y: number,
+        x: number,
+        y: number
+    ): PdfPaths;
     svgPath(path: string): PdfPaths;
     closePath(): PdfPaths;
     rect(x: number, y: number, width: number, height: number): PdfPaths;
-    roundedRect(x: number, y: number, width: number, height: number, cornerRadius?: number): PdfPaths;
+    roundedRect(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        cornerRadius?: number
+    ): PdfPaths;
     ellipse(x: number, y: number, radiusX: number, radiusY?: number): PdfPaths;
     circle(x: number, y: number, radius: number): PdfPaths;
     polygon(points: number[][]): PdfPaths;
     clip(rule?: PdfFillRule): PdfPaths;
     fill(brushOrColor?: any, rule?: PdfFillRule): PdfPaths;
-    fillAndStroke(brushOrColor?: any, penOrColor?: any, rule?: PdfFillRule): PdfPaths;
+    fillAndStroke(
+        brushOrColor?: any,
+        penOrColor?: any,
+        rule?: PdfFillRule
+    ): PdfPaths;
     stroke(penOrColor?: any): PdfPaths;
     _hasPathBuffer(): boolean;
     private _writePathBuffer();
@@ -439,8 +529,15 @@ export declare class _PdfSvgPathHelper {
     private static _updateOffset(value, offset, cmd, cmdIdx, argIdx);
 }
 export declare class _XhrHelper {
-    static arrayBufferAsync(url: string, success: (xhr: XMLHttpRequest, data: ArrayBuffer) => void, error?: (xhr: XMLHttpRequest) => void): void;
-    static arrayBuffer(url: string, error?: (xhr: XMLHttpRequest) => void): ArrayBuffer;
+    static arrayBufferAsync(
+        url: string,
+        success: (xhr: XMLHttpRequest, data: ArrayBuffer) => void,
+        error?: (xhr: XMLHttpRequest) => void
+    ): void;
+    static arrayBuffer(
+        url: string,
+        error?: (xhr: XMLHttpRequest) => void
+    ): ArrayBuffer;
     static text(url: string, error?: (xhr: XMLHttpRequest) => void): string;
     private static _getData(url, settings, success, error?);
 }
@@ -525,7 +622,10 @@ export declare type _TDictionary<T> = {
     [key: string]: T;
 };
 export declare function _compressSpaces(value: string): string;
-export declare function _resolveUrlIfRelative(url: string, urlResolver: (url: string) => string): string;
+export declare function _resolveUrlIfRelative(
+    url: string,
+    urlResolver: (url: string) => string
+): string;
 export interface _ISvgCssPropertyValue {
     value: string;
     important: boolean;
@@ -539,8 +639,15 @@ export declare class _SvgCssRule {
 export declare class _SvgCssHelper {
     static matchesSelector(node: Element, selector: string): boolean;
     static getSpecificity(selector: string): number;
-    static getComputedStyle(node: SVGElement, registeredRules: _TDictionary<_SvgCssRule>): _TDictionary<string>;
-    static registerFontFace(doc: PdfDocument, rule: _SvgCssRule, urlResolver?: (url: string) => string): void;
+    static getComputedStyle(
+        node: SVGElement,
+        registeredRules: _TDictionary<_SvgCssRule>
+    ): _TDictionary<string>;
+    static registerFontFace(
+        doc: PdfDocument,
+        rule: _SvgCssRule,
+        urlResolver?: (url: string) => string
+    ): void;
 }
 export declare enum _SvgNumConversion {
     Default = 1,
@@ -557,7 +664,13 @@ export declare enum _SvgAttrType {
     String = 2,
 }
 export declare class _SvgAttr<T> {
-    static parseValue(value: any, attrType: _SvgAttrType, viewPort: wjcCore.Size, lCtx: _SvgLengthContext, numConv: _SvgNumConversion): any;
+    static parseValue(
+        value: any,
+        attrType: _SvgAttrType,
+        viewPort: wjcCore.Size,
+        lCtx: _SvgLengthContext,
+        numConv: _SvgNumConversion
+    ): any;
     private _owner;
     private _value;
     private _defValue;
@@ -567,7 +680,15 @@ export declare class _SvgAttr<T> {
     private _inheritable;
     private _pCtx;
     private _nc;
-    constructor(owner: _SvgElementBase, propName: string, propType: _SvgAttrType, defValue?: any, nc?: wjcSelf._SvgNumConversion, lCtx?: wjcSelf._SvgLengthContext, inheritable?: boolean);
+    constructor(
+        owner: _SvgElementBase,
+        propName: string,
+        propType: _SvgAttrType,
+        defValue?: any,
+        nc?: wjcSelf._SvgNumConversion,
+        lCtx?: wjcSelf._SvgLengthContext,
+        inheritable?: boolean
+    );
     readonly hasVal: boolean;
     val: T;
     protected readonly _val: any;
@@ -575,13 +696,30 @@ export declare class _SvgAttr<T> {
     protected _parse(value: any, nc?: _SvgNumConversion): any;
 }
 export declare class _SvgNumAttr extends _SvgAttr<number> {
-    constructor(owner: _SvgElementBase, propName: string, defValue?: any, nc?: wjcSelf._SvgNumConversion, pCtx?: wjcSelf._SvgLengthContext, inheritable?: boolean);
+    constructor(
+        owner: _SvgElementBase,
+        propName: string,
+        defValue?: any,
+        nc?: wjcSelf._SvgNumConversion,
+        pCtx?: wjcSelf._SvgLengthContext,
+        inheritable?: boolean
+    );
 }
 export declare class _SvgStrAttr extends _SvgAttr<string> {
-    constructor(owner: _SvgElementBase, propName: string, defValue?: any, inheritable?: boolean);
+    constructor(
+        owner: _SvgElementBase,
+        propName: string,
+        defValue?: any,
+        inheritable?: boolean
+    );
 }
 export declare class _SvgColorAttr extends _SvgAttr<string> {
-    constructor(owner: _SvgElementBase, propName: string, defValue?: any, inheritable?: boolean);
+    constructor(
+        owner: _SvgElementBase,
+        propName: string,
+        defValue?: any,
+        inheritable?: boolean
+    );
     asHref(): string;
     protected _parse(value: any): any;
 }
@@ -604,7 +742,9 @@ export declare class _SvgPointsArrayAttr extends _SvgAttr<wjcCore.Point[]> {
     constructor(owner: _SvgElementBase, propName: string);
     protected _parse(value: any): wjcCore.Point[];
 }
-export declare class _SvgTransformAttr extends _SvgAttr<((doc: PdfPageArea) => void)[]> {
+export declare class _SvgTransformAttr extends _SvgAttr<
+    ((doc: PdfPageArea) => void)[]
+> {
     constructor(owner: _SvgElementBase);
     apply(element: _SvgElementBase): void;
     protected _parse(value: any): ((doc: PdfPageArea) => void)[];
@@ -683,7 +823,11 @@ export declare enum _SvgRenderMode {
     Clip = 2,
 }
 export interface _ISvgElementBaseCtor {
-    new (ctx: _ISvgRenderContext, node: SVGElement, defRenderMode?: _SvgRenderMode): _SvgElementBase;
+    new (
+        ctx: _ISvgRenderContext,
+        node: SVGElement,
+        defRenderMode?: _SvgRenderMode
+    ): _SvgElementBase;
 }
 export declare class _SvgElementBase {
     private _children;
@@ -694,7 +838,11 @@ export declare class _SvgElementBase {
     private _viewport;
     private _defRenderMode;
     private _curRenderMode;
-    constructor(ctx: _ISvgRenderContext, node: SVGElement, defRenderMode?: wjcSelf._SvgRenderMode);
+    constructor(
+        ctx: _ISvgRenderContext,
+        node: SVGElement,
+        defRenderMode?: wjcSelf._SvgRenderMode
+    );
     readonly children: _SvgElementBase[];
     readonly ctx: _ISvgRenderContext;
     parent: _SvgElementBase;
@@ -713,7 +861,11 @@ export declare class _SvgElementBase {
 }
 export declare class _SvgClippableElementBase extends _SvgElementBase {
     private _clipPath;
-    constructor(ctx: _ISvgRenderContext, node: SVGElement, defRenderMode?: wjcSelf._SvgRenderMode);
+    constructor(
+        ctx: _ISvgRenderContext,
+        node: SVGElement,
+        defRenderMode?: wjcSelf._SvgRenderMode
+    );
     protected _render(): void;
 }
 export declare class _SvgTransformableElementBase extends _SvgClippableElementBase {
@@ -758,8 +910,7 @@ export declare class _SvgClipPathElementImpl extends _SvgElementBase {
 export declare class _SvgDefsElementImpl extends _SvgClippableElementBase {
     constructor(ctx: _ISvgRenderContext, node: SVGElement);
 }
-export declare class _SvgGElementImpl extends _SvgTransformableElementBase {
-}
+export declare class _SvgGElementImpl extends _SvgTransformableElementBase {}
 export declare class _SvgLinearGradientElementImpl extends _SvgElementBase {
     private _x1;
     private _x2;
@@ -852,7 +1003,11 @@ export declare class _SvgRenderer {
     private _registeredCssRules;
     private _svg;
     private _doc;
-    constructor(svgString: string, area: PdfPageArea, urlResolver?: (url: string) => string);
+    constructor(
+        svgString: string,
+        area: PdfPageArea,
+        urlResolver?: (url: string) => string
+    );
     readonly root: _SvgSvgElementImpl;
     render(viewPort?: wjcCore.Size): void;
     private _parse(svg);

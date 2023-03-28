@@ -1,18 +1,24 @@
-import { Injectable, Output, EventEmitter, Injector, ViewChild } from '@angular/core';
-import { AppErrorHandler } from 'app/services';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Configuration } from 'app/app.constants';
-import { FormOutputModel } from 'app/models';
-import camelCase from 'lodash-es/camelCase';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isEmpty from 'lodash-es/isEmpty';
-import lowerFirst from 'lodash-es/lowerFirst';
-import { Uti, CustomValidators } from 'app/utilities';
-import { Subscription } from 'rxjs/Subscription';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import { ControlFocusComponent } from 'app/shared/components/form';
-import { Observable } from 'rxjs/Observable';
+import {
+    Injectable,
+    Output,
+    EventEmitter,
+    Injector,
+    ViewChild,
+} from "@angular/core";
+import { AppErrorHandler } from "app/services";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { Configuration } from "app/app.constants";
+import { FormOutputModel } from "app/models";
+import camelCase from "lodash-es/camelCase";
+import cloneDeep from "lodash-es/cloneDeep";
+import isEmpty from "lodash-es/isEmpty";
+import lowerFirst from "lodash-es/lowerFirst";
+import { Uti, CustomValidators } from "app/utilities";
+import { Subscription } from "rxjs/Subscription";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { ControlFocusComponent } from "app/shared/components/form";
+import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export abstract class FormBase extends BaseComponent {
@@ -50,19 +56,16 @@ export abstract class FormBase extends BaseComponent {
     private crossFormGroupDataOld: any = {};
     private mandatoryColorCached: any;
 
-    @ViewChild('focusControl') focusControl: ControlFocusComponent;
+    @ViewChild("focusControl") focusControl: ControlFocusComponent;
 
     @Output() outputData: EventEmitter<any> = new EventEmitter();
 
-    constructor(
-        protected injector: Injector,
-        protected router: Router
-    ) {
+    constructor(protected injector: Injector, protected router: Router) {
         super(router);
 
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
 
         this.formBuilder = new FormBuilder();
@@ -78,14 +81,14 @@ export abstract class FormBase extends BaseComponent {
     public abstract prepareSubmitData(): any;
 
     protected callSubmit() {
-        this.formGroup['submitted'] = true;
+        this.formGroup["submitted"] = true;
         this.formGroup.updateValueAndValidity();
     }
 
     protected initForm(objectGroup: any, autoSubscribe: boolean = false) {
         this.formGroup = this.formBuilder.group(objectGroup);
-        this.formGroup['leftCharacters'] = this.maxCharactersNotes;
-        this.formGroup['submitted'] = false;
+        this.formGroup["leftCharacters"] = this.maxCharactersNotes;
+        this.formGroup["submitted"] = false;
         if (autoSubscribe) {
             this.subscribeFormValueChange();
         }
@@ -129,34 +132,59 @@ export abstract class FormBase extends BaseComponent {
     private addMandatoryGroup(groupItem: any) {
         this.mandatoryGroup.push({
             fieldName: camelCase(groupItem.Fieldname),
-            groupName: groupItem.Groups
+            groupName: groupItem.Groups,
         });
-        if (this.mandatoryGroupItems.indexOf(groupItem.Groups) < 0 && groupItem.Groups != '0') {
+        if (
+            this.mandatoryGroupItems.indexOf(groupItem.Groups) < 0 &&
+            groupItem.Groups != "0"
+        ) {
             this.mandatoryGroupItems.push(groupItem.Groups);
         }
     }
 
-
     protected makeValidationForFormControl() {
         this.setCrossFormGroupData();
         const groupChanged: Array<any> = this.getGroupItemChange();
-        if (!groupChanged || !groupChanged.length)
-            return;
+        if (!groupChanged || !groupChanged.length) return;
 
         let groupFields: Array<any> = [];
-        groupChanged.forEach(groupItem => {
-            groupFields = this.mandatoryGroup.filter(x => { return x.groupName == groupItem.groupName });
+        groupChanged.forEach((groupItem) => {
+            groupFields = this.mandatoryGroup.filter((x) => {
+                return x.groupName == groupItem.groupName;
+            });
             if (groupFields) {
                 for (let groupField of groupFields) {
                     // add validatoin for all item in this group
-                    this.addValidationForControl(this.formGroup.controls, groupField.fieldName);
+                    this.addValidationForControl(
+                        this.formGroup.controls,
+                        groupField.fieldName
+                    );
                 }
                 // remove validation for control in special
                 for (let groupField of groupFields) {
-                    if ((typeof this.crossFormGroupData[groupField.fieldName] === 'object' && !isEmpty(this.crossFormGroupData[groupField.fieldName]))
-                        || (this.crossFormGroupData[groupField.fieldName] && typeof this.crossFormGroupData[groupField.fieldName] === 'string' && !!this.crossFormGroupData[groupField.fieldName].trim())
-                        || (typeof this.crossFormGroupData[groupField.fieldName] === 'boolean' && this.crossFormGroupData[groupField.fieldName])) {
-                        this.removeValidationWithoutThisControl(groupField.fieldName, groupFields);
+                    if (
+                        (typeof this.crossFormGroupData[
+                            groupField.fieldName
+                        ] === "object" &&
+                            !isEmpty(
+                                this.crossFormGroupData[groupField.fieldName]
+                            )) ||
+                        (this.crossFormGroupData[groupField.fieldName] &&
+                            typeof this.crossFormGroupData[
+                                groupField.fieldName
+                            ] === "string" &&
+                            !!this.crossFormGroupData[
+                                groupField.fieldName
+                            ].trim()) ||
+                        (typeof this.crossFormGroupData[
+                            groupField.fieldName
+                        ] === "boolean" &&
+                            this.crossFormGroupData[groupField.fieldName])
+                    ) {
+                        this.removeValidationWithoutThisControl(
+                            groupField.fieldName,
+                            groupFields
+                        );
                         break;
                     }
                 }
@@ -172,7 +200,8 @@ export abstract class FormBase extends BaseComponent {
     }
 
     protected subscribeFormValueChange(func1?: Function) {
-        if (this.formValuesChangeSubscription) this.formValuesChangeSubscription.unsubscribe();
+        if (this.formValuesChangeSubscription)
+            this.formValuesChangeSubscription.unsubscribe();
 
         this.formValuesChangeSubscription = this.formGroup.valueChanges
             .debounceTime(this.consts.valueChangeDeboundTimeDefault)
@@ -197,17 +226,41 @@ export abstract class FormBase extends BaseComponent {
     protected getFieldNameChanged() {
         let changedFields: Array<string> = [];
         for (let item in this.crossFormGroupData) {
-            if (Uti.isDateValid(this.crossFormGroupData[item]) || Uti.isDateValid(this.crossFormGroupDataOld[item])) {
-                var date1 = this.crossFormGroupData[item] ? this.crossFormGroupData[item].getFullYear() + '/' + (this.crossFormGroupData[item].getMonth() + 1) + '/' + this.crossFormGroupData[item].getDate() : '';
-                var date2 = this.crossFormGroupDataOld[item] ? this.crossFormGroupDataOld[item].getFullYear() + '/' + (this.crossFormGroupDataOld[item].getMonth() + 1) + '/' + this.crossFormGroupDataOld[item].getDate() : '';
+            if (
+                Uti.isDateValid(this.crossFormGroupData[item]) ||
+                Uti.isDateValid(this.crossFormGroupDataOld[item])
+            ) {
+                var date1 = this.crossFormGroupData[item]
+                    ? this.crossFormGroupData[item].getFullYear() +
+                      "/" +
+                      (this.crossFormGroupData[item].getMonth() + 1) +
+                      "/" +
+                      this.crossFormGroupData[item].getDate()
+                    : "";
+                var date2 = this.crossFormGroupDataOld[item]
+                    ? this.crossFormGroupDataOld[item].getFullYear() +
+                      "/" +
+                      (this.crossFormGroupDataOld[item].getMonth() + 1) +
+                      "/" +
+                      this.crossFormGroupDataOld[item].getDate()
+                    : "";
                 if (date1 !== date2) {
                     changedFields.push(item);
                 }
-            } else if (typeof this.crossFormGroupData[item] === 'object' || typeof this.crossFormGroupDataOld[item] === 'object') {
-                if (JSON.stringify(this.crossFormGroupData[item]) !== JSON.stringify(this.crossFormGroupDataOld[item])) {
+            } else if (
+                typeof this.crossFormGroupData[item] === "object" ||
+                typeof this.crossFormGroupDataOld[item] === "object"
+            ) {
+                if (
+                    JSON.stringify(this.crossFormGroupData[item]) !==
+                    JSON.stringify(this.crossFormGroupDataOld[item])
+                ) {
                     changedFields.push(item);
                 }
-            } else if (this.crossFormGroupData[item] !== this.crossFormGroupDataOld[item]) {
+            } else if (
+                this.crossFormGroupData[item] !==
+                this.crossFormGroupDataOld[item]
+            ) {
                 changedFields.push(item);
             }
         }
@@ -218,15 +271,16 @@ export abstract class FormBase extends BaseComponent {
         let groupItems: Array<string> = [];
 
         const fieldNameChanged: Array<string> = this.getFieldNameChanged();
-        if (!fieldNameChanged || !fieldNameChanged.length)
-            return groupItems;
+        if (!fieldNameChanged || !fieldNameChanged.length) return groupItems;
 
-        fieldNameChanged.forEach(field => {
-            let groupField = this.mandatoryGroup.find(x => { return x.fieldName == field });
-            if (groupField && groupField.groupName != '0') {
+        fieldNameChanged.forEach((field) => {
+            let groupField = this.mandatoryGroup.find((x) => {
+                return x.fieldName == field;
+            });
+            if (groupField && groupField.groupName != "0") {
                 groupItems.push(groupField);
             }
-        })
+        });
         return groupItems;
     }
 
@@ -242,7 +296,10 @@ export abstract class FormBase extends BaseComponent {
         }
         for (let item in formControls) {
             if (formControls[item].controls) {
-                this.setDefaultDataForControl(formControls[item].controls, controlName);
+                this.setDefaultDataForControl(
+                    formControls[item].controls,
+                    controlName
+                );
             }
         }
     }
@@ -251,24 +308,37 @@ export abstract class FormBase extends BaseComponent {
         for (let item in formControls) {
             if (item == controlName) {
                 this.mandatoryColor[item] = this.mandatoryColorCached[item];
-                formControls[item].setValidators([formControls[item]['isTextBox'] ? CustomValidators.required : Validators.required,
-                        CustomValidators.regularExpression]);
-                formControls[item].setErrors({ 'required': true });
+                formControls[item].setValidators([
+                    formControls[item]["isTextBox"]
+                        ? CustomValidators.required
+                        : Validators.required,
+                    CustomValidators.regularExpression,
+                ]);
+                formControls[item].setErrors({ required: true });
                 formControls[item].updateValueAndValidity();
                 return;
             }
         }
         for (let item in formControls) {
             if (formControls[item].controls) {
-                this.addValidationForControl(formControls[item].controls, controlName);
+                this.addValidationForControl(
+                    formControls[item].controls,
+                    controlName
+                );
             }
         }
     }
 
-    private removeValidationWithoutThisControl(fieldName: string, groupFields: any) {
+    private removeValidationWithoutThisControl(
+        fieldName: string,
+        groupFields: any
+    ) {
         for (let groupField of groupFields) {
             if (groupField.fieldName != fieldName) {
-                this.removeValidationForControl(this.formGroup.controls, groupField.fieldName);
+                this.removeValidationForControl(
+                    this.formGroup.controls,
+                    groupField.fieldName
+                );
             }
         }
     }
@@ -277,7 +347,7 @@ export abstract class FormBase extends BaseComponent {
         for (let item in formControls) {
             if (item == controlName) {
                 if (!this.crossFormGroupData[item])
-                    this.mandatoryColor[item] = '';
+                    this.mandatoryColor[item] = "";
                 formControls[item].clearValidators();
                 formControls[item].setErrors(null);
                 formControls[item].updateValueAndValidity();
@@ -286,22 +356,33 @@ export abstract class FormBase extends BaseComponent {
         }
         for (let item in formControls) {
             if (formControls[item].controls) {
-                this.removeValidationForControl(formControls[item].controls, controlName);
+                this.removeValidationForControl(
+                    formControls[item].controls,
+                    controlName
+                );
             }
         }
     }
 
     private setCrossFormGroupData() {
-        if (!this.formGroup || !this.formGroup.controls) { return; }
+        if (!this.formGroup || !this.formGroup.controls) {
+            return;
+        }
         this.crossFormGroupDataOld = cloneDeep(this.crossFormGroupData);
         this.crossFormGroupData = {};
-        this.makeCrossFormGroupData(this.crossFormGroupData, this.formGroup.controls);
+        this.makeCrossFormGroupData(
+            this.crossFormGroupData,
+            this.formGroup.controls
+        );
     }
 
     private makeCrossFormGroupData(crossFormGroupData, data) {
         for (const item in data) {
-            if (data[item] && data[item]['controls']) {
-                this.makeCrossFormGroupData(crossFormGroupData, data[item]['controls']);
+            if (data[item] && data[item]["controls"]) {
+                this.makeCrossFormGroupData(
+                    crossFormGroupData,
+                    data[item]["controls"]
+                );
             } else {
                 crossFormGroupData[item] = data[item].value;
             }
@@ -313,12 +394,27 @@ export abstract class FormBase extends BaseComponent {
         this.outputData.emit(this.outputModel);
     }
 
-    protected setFormOutputData(submitResult: any, returnID?: any, message?: string, dontShowMessage?: boolean) {
-        this.setValueOutputModel(submitResult, returnID, message, dontShowMessage);
+    protected setFormOutputData(
+        submitResult: any,
+        returnID?: any,
+        message?: string,
+        dontShowMessage?: boolean
+    ) {
+        this.setValueOutputModel(
+            submitResult,
+            returnID,
+            message,
+            dontShowMessage
+        );
         this.outputData.emit(this.outputModel);
     }
 
-    private setValueOutputModel(submitResult: any, returnID?: any, message?: string, dontShowMessage?: boolean) {
+    private setValueOutputModel(
+        submitResult: any,
+        returnID?: any,
+        message?: string,
+        dontShowMessage?: boolean
+    ) {
         this.outputModel = new FormOutputModel({
             submitResult: submitResult,
             formValue: this.formGroup.value,
@@ -326,7 +422,7 @@ export abstract class FormBase extends BaseComponent {
             isDirty: this.isDirty(),
             returnID: returnID,
             errorMessage: message || null,
-            dontShowMessage: dontShowMessage
+            dontShowMessage: dontShowMessage,
         });
     }
 
@@ -335,27 +431,33 @@ export abstract class FormBase extends BaseComponent {
         if (!currentData || !currentData.sharingAddressHiddenFields) {
             return;
         }
-        let rawHiddenData = currentData['sharingAddressHiddenFields'].value;
-        let arrHidden = rawHiddenData.split(';');
+        let rawHiddenData = currentData["sharingAddressHiddenFields"].value;
+        let arrHidden = rawHiddenData.split(";");
         for (let item of arrHidden) {
             this.hiddenFields[lowerFirst(item)] = true;
             this.removeValidationForControl(this.formGroup.controls, item);
         }
     }
 
-
     protected updateLeftCharacters(event) {
         setTimeout(() => {
-            this.formGroup['leftCharacters'] = this.maxCharactersNotes - event.target.value.length;
+            this.formGroup["leftCharacters"] =
+                this.maxCharactersNotes - event.target.value.length;
         });
     }
 
     protected onCountryChangedHandler($event: any) {
         $event = $event || {};
         this.countrySelectedItem = $event;
-        this.buidlHiddenFields({ sharingAddressHiddenFields: { value: $event.sharingAddressHiddenFields || '' } });
+        this.buidlHiddenFields({
+            sharingAddressHiddenFields: {
+                value: $event.sharingAddressHiddenFields || "",
+            },
+        });
         if (this.focusControl) {
-            const noFocusFirstControl = this.focusControl.hasControl() ? true : false ;
+            const noFocusFirstControl = this.focusControl.hasControl()
+                ? true
+                : false;
             this.focusControl.initControl(noFocusFirstControl);
         }
     }

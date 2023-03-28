@@ -1,14 +1,11 @@
-import { Action, ActionReducer } from '@ngrx/store';
-import {
-    Module,
-    ParkedItemModel
-} from 'app/models';
-import { ModuleActions } from 'app/state-management/store/actions/main-module/index';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isEmpty from 'lodash-es/isEmpty';
-import { CustomAction } from 'app/state-management/store/actions/base';
-import { LocalStorageKey } from 'app/app.constants';
-import { Uti } from 'app/utilities';
+import { Action, ActionReducer } from "@ngrx/store";
+import { Module, ParkedItemModel } from "app/models";
+import { ModuleActions } from "app/state-management/store/actions/main-module/index";
+import cloneDeep from "lodash-es/cloneDeep";
+import isEmpty from "lodash-es/isEmpty";
+import { CustomAction } from "app/state-management/store/actions/base";
+import { LocalStorageKey } from "app/app.constants";
+import { Uti } from "app/utilities";
 
 export interface ModuleState {
     mainModules: Module[];
@@ -42,26 +39,41 @@ const initialState: ModuleState = {
     dirtyModules: [],
 };
 
-export function mainModuleStateReducer(state = initialState, action: CustomAction): ModuleState {
+export function mainModuleStateReducer(
+    state = initialState,
+    action: CustomAction
+): ModuleState {
     switch (action.type) {
         case ModuleActions.LOAD_MAIN_MODULES_SUCCESS: {
-            return Object.assign({}, state, { mainModules: [...state.mainModules, ...action.payload] });
+            return Object.assign({}, state, {
+                mainModules: [...state.mainModules, ...action.payload],
+            });
         }
 
         case ModuleActions.ACTIVE_MODULE: {
-            return Object.assign({}, state, { activeModule: action.payload, activeSubModule: {} });
+            return Object.assign({}, state, {
+                activeModule: action.payload,
+                activeSubModule: {},
+            });
         }
 
         case ModuleActions.ACTIVE_SUB_MODULE: {
             const subModule: Module = action.payload;
-            if (subModule.idSettingsGUI == -1 && (subModule.isCanNew || subModule.isCanSearch)) {
-                const rs = state.subModules.filter(p => p.idSettingsGUI == subModule.idSettingsGUIParent);
+            if (
+                subModule.idSettingsGUI == -1 &&
+                (subModule.isCanNew || subModule.isCanSearch)
+            ) {
+                const rs = state.subModules.filter(
+                    (p) => p.idSettingsGUI == subModule.idSettingsGUIParent
+                );
                 if (rs.length > 0) {
                     return Object.assign({}, state, { activeSubModule: rs[0] });
                 }
                 return Object.assign({}, state, { activeSubModule: {} });
             }
-            return Object.assign({}, state, { activeSubModule: action.payload });
+            return Object.assign({}, state, {
+                activeSubModule: action.payload,
+            });
         }
 
         case ModuleActions.GET_SUB_MODULE_SUCCESS: {
@@ -86,34 +98,55 @@ export function mainModuleStateReducer(state = initialState, action: CustomActio
 
         case ModuleActions.ADD_WORKING_MODULE: {
             return Object.assign({}, state, {
-                workingModules: Object.assign([], updateWorkingModules(action.payload, state.workingModules))
+                workingModules: Object.assign(
+                    [],
+                    updateWorkingModules(action.payload, state.workingModules)
+                ),
             });
         }
 
         case ModuleActions.REMOVE_WORKING_MODULE: {
             return Object.assign({}, state, {
-                workingModules: Object.assign([], removeWorkingModule(action.payload, state.workingModules))
+                workingModules: Object.assign(
+                    [],
+                    removeWorkingModule(action.payload, state.workingModules)
+                ),
             });
         }
 
         case ModuleActions.RESET_SELECTING_WORKING_MODULE_PARKED_ITEM: {
             return Object.assign({}, state, {
-                workingModules: Object.assign([], resetSelectingWorkingModuleParkedItem(action.payload, state.workingModules))
+                workingModules: Object.assign(
+                    [],
+                    resetSelectingWorkingModuleParkedItem(
+                        action.payload,
+                        state.workingModules
+                    )
+                ),
             });
         }
 
         case ModuleActions.MOVE_SELECTED_PARKED_ITEM_TO_TOP: {
             return Object.assign({}, state, {
-                workingModules: Object.assign([], moveSelectedParkedItemToTop(action.payload, state.workingModules))
+                workingModules: Object.assign(
+                    [],
+                    moveSelectedParkedItemToTop(
+                        action.payload,
+                        state.workingModules
+                    )
+                ),
             });
         }
 
         case ModuleActions.STORE_MODULE_STATES: {
             let newModuleStates = cloneDeep(state.moduleStates);
 
-            newModuleStates = updateModuleStates(action.payload, newModuleStates);
+            newModuleStates = updateModuleStates(
+                action.payload,
+                newModuleStates
+            );
             return Object.assign({}, state, {
-                moduleStates: newModuleStates
+                moduleStates: newModuleStates,
             });
         }
 
@@ -122,28 +155,39 @@ export function mainModuleStateReducer(state = initialState, action: CustomActio
 
             newModuleStates = clearModuleState(action.payload, newModuleStates);
             return Object.assign({}, state, {
-                moduleStates: newModuleStates
+                moduleStates: newModuleStates,
             });
         }
 
         case ModuleActions.REQUEST_CREATE_NEW_MODULE_ITEM: {
             return Object.assign({}, state, {
-                requestCreateNewModuleItem: cloneDeep(action.payload)
+                requestCreateNewModuleItem: cloneDeep(action.payload),
             });
         }
 
         case ModuleActions.SEARCH_KEYWORD_MODULE: {
             const _module: Module = cloneDeep(action.payload);
-            if (_module.idSettingsGUI == -1 && (_module.isCanNew || _module.isCanSearch)) {
-                let rs = state.subModules.filter(p => p.idSettingsGUI == _module.idSettingsGUIParent);
+            if (
+                _module.idSettingsGUI == -1 &&
+                (_module.isCanNew || _module.isCanSearch)
+            ) {
+                let rs = state.subModules.filter(
+                    (p) => p.idSettingsGUI == _module.idSettingsGUIParent
+                );
                 if (rs.length > 0) {
                     _module.idSettingsGUI = rs[0].idSettingsGUI;
-                    return Object.assign({}, state, { searchingModule: _module });
+                    return Object.assign({}, state, {
+                        searchingModule: _module,
+                    });
                 } else {
-                    rs = state.mainModules.filter(p => p.idSettingsGUI == _module.idSettingsGUIParent);
+                    rs = state.mainModules.filter(
+                        (p) => p.idSettingsGUI == _module.idSettingsGUIParent
+                    );
                     if (rs.length > 0) {
                         _module.idSettingsGUI = rs[0].idSettingsGUI;
-                        return Object.assign({}, state, { searchingModule: _module });
+                        return Object.assign({}, state, {
+                            searchingModule: _module,
+                        });
                     }
                 }
             }
@@ -153,7 +197,7 @@ export function mainModuleStateReducer(state = initialState, action: CustomActio
 
         case ModuleActions.SET_USING_MODULE: {
             return Object.assign({}, state, {
-                usingModule: action.payload
+                usingModule: action.payload,
             });
         }
 
@@ -164,13 +208,13 @@ export function mainModuleStateReducer(state = initialState, action: CustomActio
         case ModuleActions.REQUEST_CHANGE_MODULE: {
             return Object.assign({}, state, {
                 requestChangeModule: {
-                    requestedModule: action.payload
-                }
+                    requestedModule: action.payload,
+                },
             });
         }
         case ModuleActions.CLEAR_REQUEST_CHANGE_MODULE: {
             return Object.assign({}, state, {
-                requestChangeModule: null
+                requestChangeModule: null,
             });
         }
 
@@ -178,43 +222,55 @@ export function mainModuleStateReducer(state = initialState, action: CustomActio
             return Object.assign({}, state, {
                 requestChangeSubModule: {
                     requestedModuleId: action.payload.requestedModuleId,
-                    requestedSubModuleId: action.payload.requestedSubModuleId
-                }
+                    requestedSubModuleId: action.payload.requestedSubModuleId,
+                },
             });
         }
         case ModuleActions.CLEAR_REQUEST_CHANGE_SUB_MODULE: {
             return Object.assign({}, state, {
-                requestChangeSubModule: null
+                requestChangeSubModule: null,
             });
         }
 
         case ModuleActions.TOGGLE_IS_WORKING_MODULES_DRAGGING: {
             return Object.assign({}, state, {
-                isWorkingModulesDragging: action.payload
+                isWorkingModulesDragging: action.payload,
             });
         }
 
         case ModuleActions.REMOVE_ALL_PARKED_ITEMS_OF_WORKING_MODULE: {
             return Object.assign({}, state, {
-                workingModules: removeAllParkedItems(action.payload, state.workingModules)
+                workingModules: removeAllParkedItems(
+                    action.payload,
+                    state.workingModules
+                ),
             });
         }
 
         case ModuleActions.REMOVE_PARKED_ITEM_OF_WORKING_MODULE: {
             return Object.assign({}, state, {
-                workingModules: removeParkedItem(action.payload, state.workingModules)
+                workingModules: removeParkedItem(
+                    action.payload,
+                    state.workingModules
+                ),
             });
         }
 
         case ModuleActions.ADD_DIRTY_MODULE: {
             return Object.assign({}, state, {
-                dirtyModules: addDirtyModule(action.payload.module, state.dirtyModules)
+                dirtyModules: addDirtyModule(
+                    action.payload.module,
+                    state.dirtyModules
+                ),
             });
         }
 
         case ModuleActions.REMOVE_DIRTY_MODULE: {
             return Object.assign({}, state, {
-                dirtyModules: removeDirtyModule(action.payload.module, state.dirtyModules)
+                dirtyModules: removeDirtyModule(
+                    action.payload.module,
+                    state.dirtyModules
+                ),
             });
         }
 
@@ -222,9 +278,11 @@ export function mainModuleStateReducer(state = initialState, action: CustomActio
             return state;
         }
     }
-};
+}
 
-export function persistMainModuleStateReducer(_reducer: ActionReducer<ModuleState>) {
+export function persistMainModuleStateReducer(
+    _reducer: ActionReducer<ModuleState>
+) {
     return (state: ModuleState | undefined, action: Action) => {
         const nextState = _reducer(state, action);
         switch (action.type) {
@@ -232,45 +290,60 @@ export function persistMainModuleStateReducer(_reducer: ActionReducer<ModuleStat
             case ModuleActions.ACTIVE_SUB_MODULE:
             case ModuleActions.LOAD_MAIN_MODULES_SUCCESS:
             case ModuleActions.GET_SUB_MODULE_SUCCESS:
-                nextState['browserTabId'] = Uti.defineBrowserTabId();
-                localStorage.setItem(LocalStorageKey.buildKey(LocalStorageKey.LocalStorageGSModuleKey, nextState['browserTabId']), JSON.stringify(nextState));
+                nextState["browserTabId"] = Uti.defineBrowserTabId();
+                localStorage.setItem(
+                    LocalStorageKey.buildKey(
+                        LocalStorageKey.LocalStorageGSModuleKey,
+                        nextState["browserTabId"]
+                    ),
+                    JSON.stringify(nextState)
+                );
                 break;
         }
         return nextState;
     };
 }
 
-export function updateMainModuleStateReducer(_reducer: ActionReducer<ModuleState>) {
+export function updateMainModuleStateReducer(
+    _reducer: ActionReducer<ModuleState>
+) {
     return (state: ModuleState | undefined, action: Action) => {
-        if (action.type === ModuleActions.UPDATE_MODULE_STATE_FROM_LOCAL_STORAGE) {
+        if (
+            action.type === ModuleActions.UPDATE_MODULE_STATE_FROM_LOCAL_STORAGE
+        ) {
             return (<any>action).payload;
         }
         return _reducer(state, action);
     };
 }
 
-export function mainModuleReducer(state = initialState, action: CustomAction): ModuleState {
-    return updateMainModuleStateReducer(persistMainModuleStateReducer(mainModuleStateReducer))(state, action);
-};
+export function mainModuleReducer(
+    state = initialState,
+    action: CustomAction
+): ModuleState {
+    return updateMainModuleStateReducer(
+        persistMainModuleStateReducer(mainModuleStateReducer)
+    )(state, action);
+}
 
 function updateSubModuleIfEmpty(activeModule: Module) {
     const subModules = [];
     let entry: any;
     if (activeModule.isCanSearch) {
         entry = {
-            'idSettingsGUI': -1,
-            'moduleName': activeModule.moduleName,
-            'isCanSearch': activeModule.isCanSearch,
-            'idSettingsGUIParent': activeModule.idSettingsGUI
+            idSettingsGUI: -1,
+            moduleName: activeModule.moduleName,
+            isCanSearch: activeModule.isCanSearch,
+            idSettingsGUIParent: activeModule.idSettingsGUI,
         };
         subModules.push(new Module(entry));
     }
     if (activeModule.isCanNew) {
         entry = {
-            'idSettingsGUI': -1,
-            'moduleName': activeModule.moduleName,
-            'isCanNew': activeModule.isCanNew,
-            'idSettingsGUIParent': activeModule.idSettingsGUI
+            idSettingsGUI: -1,
+            moduleName: activeModule.moduleName,
+            isCanNew: activeModule.isCanNew,
+            idSettingsGUIParent: activeModule.idSettingsGUI,
         };
         subModules.push(new Module(entry));
     }
@@ -289,13 +362,24 @@ function updateWorkingModules(payload, currentWorkingModules) {
     }
 
     if (payload.parkedItems && payload.parkedItems.length) {
-        payload.parkedItems = payload.parkedItems.filter(parkedItem => parkedItem.isNew != true);
+        payload.parkedItems = payload.parkedItems.filter(
+            (parkedItem) => parkedItem.isNew != true
+        );
 
-        const selectedParkedItem = payload.parkedItems.find(parkedItem => parkedItem.selected);
-        payload.parkedItems = moveItemToTop(payload.parkedItems, selectedParkedItem);
+        const selectedParkedItem = payload.parkedItems.find(
+            (parkedItem) => parkedItem.selected
+        );
+        payload.parkedItems = moveItemToTop(
+            payload.parkedItems,
+            selectedParkedItem
+        );
     }
 
-    const existingWorkingModule = currentWorkingModules.find(curWorkingModule => curWorkingModule.workingModule.idSettingsGUI == payload.workingModule.idSettingsGUI);
+    const existingWorkingModule = currentWorkingModules.find(
+        (curWorkingModule) =>
+            curWorkingModule.workingModule.idSettingsGUI ==
+            payload.workingModule.idSettingsGUI
+    );
     if (existingWorkingModule) {
         existingWorkingModule.active = !payload.loadFromSetting;
         existingWorkingModule.parkedItems = payload.parkedItems;
@@ -307,7 +391,7 @@ function updateWorkingModules(payload, currentWorkingModules) {
             parkedItems: payload.parkedItems,
             active: !payload.loadFromSetting,
             fieldConfig: payload.fieldConfig,
-            subModules: payload.subModules
+            subModules: payload.subModules,
         });
     }
 
@@ -319,7 +403,11 @@ function removeWorkingModule(payload, currentWorkingModules) {
         return currentWorkingModules;
     }
 
-    let moduleIndex = currentWorkingModules.findIndex(cwm => cwm.workingModule.idSettingsGUI == payload.workingModule.idSettingsGUI);
+    let moduleIndex = currentWorkingModules.findIndex(
+        (cwm) =>
+            cwm.workingModule.idSettingsGUI ==
+            payload.workingModule.idSettingsGUI
+    );
     if (moduleIndex != -1) {
         currentWorkingModules.splice(moduleIndex, 1);
     }
@@ -332,21 +420,35 @@ function moveSelectedParkedItemToTop(payload, currentWorkingModules) {
         return currentWorkingModules;
     }
 
-    const existingWorkingModule = currentWorkingModules.find(curWorkingModule => curWorkingModule.workingModule.idSettingsGUI == payload.workingModule.idSettingsGUI);
+    const existingWorkingModule = currentWorkingModules.find(
+        (curWorkingModule) =>
+            curWorkingModule.workingModule.idSettingsGUI ==
+            payload.workingModule.idSettingsGUI
+    );
     if (existingWorkingModule) {
-        existingWorkingModule.parkedItems = moveItemToTop(existingWorkingModule.parkedItems, payload.selectedParkedItem);
+        existingWorkingModule.parkedItems = moveItemToTop(
+            existingWorkingModule.parkedItems,
+            payload.selectedParkedItem
+        );
     }
 
     return currentWorkingModules;
 }
 
-function resetSelectingWorkingModuleParkedItem(selectingWorkingModule, currentWorkingModules) {
+function resetSelectingWorkingModuleParkedItem(
+    selectingWorkingModule,
+    currentWorkingModules
+) {
     if (!selectingWorkingModule) {
         return currentWorkingModules;
     }
 
     for (const workingModule of currentWorkingModules) {
-        if (workingModule.workingModule.idSettingsGUI != selectingWorkingModule.idSettingsGUI && workingModule.parkedItems) {
+        if (
+            workingModule.workingModule.idSettingsGUI !=
+                selectingWorkingModule.idSettingsGUI &&
+            workingModule.parkedItems
+        ) {
             for (const parkedItem of workingModule.parkedItems) {
                 parkedItem.selected = false;
             }
@@ -361,17 +463,29 @@ function updateModuleStates(payload, currentModuleStates) {
         return currentModuleStates;
     }
 
-    const existingModuleState = currentModuleStates.find(curModuleState => curModuleState.currentModule.idSettingsGUI == payload.currentModule.idSettingsGUI);
+    const existingModuleState = currentModuleStates.find(
+        (curModuleState) =>
+            curModuleState.currentModule.idSettingsGUI ==
+            payload.currentModule.idSettingsGUI
+    );
     if (existingModuleState) {
-        existingModuleState.selectedParkedItem = (payload.selectedParkedItem && payload.selectedParkedItem.isNew != true) ? payload.selectedParkedItem : null;
+        existingModuleState.selectedParkedItem =
+            payload.selectedParkedItem &&
+            payload.selectedParkedItem.isNew != true
+                ? payload.selectedParkedItem
+                : null;
         existingModuleState.selectedTab = payload.selectedTab;
         existingModuleState.selectedAiTab = payload.selectedAiTab;
     } else {
         currentModuleStates.push({
             currentModule: payload.currentModule,
-            selectedParkedItem: (payload.selectedParkedItem && payload.selectedParkedItem.isNew != true) ? payload.selectedParkedItem : null,
+            selectedParkedItem:
+                payload.selectedParkedItem &&
+                payload.selectedParkedItem.isNew != true
+                    ? payload.selectedParkedItem
+                    : null,
             selectedTab: payload.selectedTab,
-            selectedAiTab: payload.selectedAiTab
+            selectedAiTab: payload.selectedAiTab,
         });
     }
 
@@ -383,12 +497,21 @@ function clearModuleState(currentModule, currentModuleStates) {
         return currentModuleStates;
     }
 
-    return currentModuleStates.filter(moduleState => moduleState.currentModule.idSettingsGUI != currentModule.idSettingsGUI);
+    return currentModuleStates.filter(
+        (moduleState) =>
+            moduleState.currentModule.idSettingsGUI !=
+            currentModule.idSettingsGUI
+    );
 }
 
-function moveItemToTop(array: ParkedItemModel[], selectedItem: ParkedItemModel) {
+function moveItemToTop(
+    array: ParkedItemModel[],
+    selectedItem: ParkedItemModel
+) {
     if (!isEmpty(selectedItem)) {
-        const itemIndex = array.findIndex(i => i.id && i.id.value == selectedItem.id.value);
+        const itemIndex = array.findIndex(
+            (i) => i.id && i.id.value == selectedItem.id.value
+        );
 
         if (itemIndex != -1) {
             array = move(array, itemIndex, 0);
@@ -409,7 +532,7 @@ function move(arr, old_index, new_index) {
     }
     if (new_index >= arr.length) {
         let k = new_index - arr.length;
-        while ((k--) + 1) {
+        while (k-- + 1) {
             arr.push(undefined);
         }
     }
@@ -418,7 +541,10 @@ function move(arr, old_index, new_index) {
 }
 
 function removeAllParkedItems(module: Module, currentModuleStates) {
-    let currentModule = currentModuleStates.find(moduleState => moduleState.workingModule.idSettingsGUI == module.idSettingsGUI);
+    let currentModule = currentModuleStates.find(
+        (moduleState) =>
+            moduleState.workingModule.idSettingsGUI == module.idSettingsGUI
+    );
     if (currentModule) {
         currentModule.parkedItems = [];
     }
@@ -427,7 +553,11 @@ function removeAllParkedItems(module: Module, currentModuleStates) {
 }
 
 function removeParkedItem(payload, currentModuleStates) {
-    let currentModule = currentModuleStates.find(moduleState => moduleState.workingModule.idSettingsGUI == payload.module.idSettingsGUI);
+    let currentModule = currentModuleStates.find(
+        (moduleState) =>
+            moduleState.workingModule.idSettingsGUI ==
+            payload.module.idSettingsGUI
+    );
     if (currentModule) {
         const idx = currentModule.parkedItems.indexOf(payload.parkedItem);
 
@@ -440,7 +570,10 @@ function removeParkedItem(payload, currentModuleStates) {
 }
 
 function addDirtyModule(dirtyModule: Module, currentDirtyModules: Module[]) {
-    const found = currentDirtyModules.find(currentDirtyModule => currentDirtyModule.idSettingsGUI == dirtyModule.idSettingsGUI);
+    const found = currentDirtyModules.find(
+        (currentDirtyModule) =>
+            currentDirtyModule.idSettingsGUI == dirtyModule.idSettingsGUI
+    );
     if (!found) {
         currentDirtyModules.push(dirtyModule);
     }
@@ -449,7 +582,10 @@ function addDirtyModule(dirtyModule: Module, currentDirtyModules: Module[]) {
 }
 
 function removeDirtyModule(dirtyModule: Module, currentDirtyModules: Module[]) {
-    const foundIndex = currentDirtyModules.findIndex(currentDirtyModule => currentDirtyModule.idSettingsGUI == dirtyModule.idSettingsGUI);
+    const foundIndex = currentDirtyModules.findIndex(
+        (currentDirtyModule) =>
+            currentDirtyModule.idSettingsGUI == dirtyModule.idSettingsGUI
+    );
     if (foundIndex !== -1) {
         currentDirtyModules.splice(foundIndex, 1);
     }

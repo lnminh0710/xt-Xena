@@ -1,73 +1,72 @@
 // TODO: will remove this file when has service
-import {DropdownListModel, ControlGridModel} from 'app/models';
+import { DropdownListModel, ControlGridModel } from "app/models";
 
 export class WarehuoseMovementEditFormFakeData {
-
     public createArrivedArticleData(): ControlGridModel {
         return new ControlGridModel({
             columns: [
                 {
-                    title: 'IdWarehouseMovementGoodsIssue',
-                    data: 'idWarehouseMovementGoodsIssue',
+                    title: "IdWarehouseMovementGoodsIssue",
+                    data: "idWarehouseMovementGoodsIssue",
                     visible: false,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Article Id',
-                    data: 'articleId',
+                    title: "Article Id",
+                    data: "articleId",
                     visible: false,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Article #',
-                    data: 'articleNumber',
+                    title: "Article #",
+                    data: "articleNumber",
                     visible: true,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    ReadOnly: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    ReadOnly: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Add to Art #',
-                    data: 'addToArticleNumber',
+                    title: "Add to Art #",
+                    data: "addToArticleNumber",
                     visible: true,
                     readOnly: false,
                     setting: {
                         Setting: [
                             {
                                 ControlType: {
-                                    Type: 'Textbox'
+                                    Type: "Textbox",
                                 },
                                 Validation: {
-                                    'CompareWithArray': '1',
-                                    'arrayName': 'ArrayDataToValiation',
-                                    'propertyName': 'ArticleNr'
-                                }
-                            }
+                                    CompareWithArray: "1",
+                                    arrayName: "ArrayDataToValiation",
+                                    propertyName: "ArticleNr",
+                                },
+                            },
                             // {
                             //     ControlType: {
                             //         Type: 'AutoComplete'
@@ -78,125 +77,126 @@ export class WarehuoseMovementEditFormFakeData {
                             //         'IsRequired': '1'
                             //     }
                             // }
-                        ]
-                    }
+                        ],
+                    },
                 },
                 {
-                    title: 'Add to Art Value',
-                    data: 'addToArticleNumberValue',
+                    title: "Add to Art Value",
+                    data: "addToArticleNumberValue",
                     visible: true,
                     readOnly: false,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Article Name',
-                    data: 'articleName',
+                    title: "Article Name",
+                    data: "articleName",
                     visible: true,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    ReadOnly: '1'
-                                }
-                            }
-                        ]
-                    }
+                                    ReadOnly: "1",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Qty',
-                    data: 'quantity',
+                    title: "Qty",
+                    data: "quantity",
                     visible: true,
                     readOnly: false,
                     setting: {
-                        DataLength: '0',
-                        DataType: 'money',
+                        DataLength: "0",
+                        DataType: "money",
                         Setting: [
                             {
                                 ControlType: {
-                                    Type: 'Numeric'
-                                }
+                                    Type: "Numeric",
+                                },
                             },
                             {
-                                'Validation': {
-                                    'Comparison': [
+                                Validation: {
+                                    Comparison: [
                                         {
-                                            'Operator': '<=',
-                                            'With': 'available',
-                                            'ErrorMessage': 'Quantity should be less than or equal Available'
-                                        }
+                                            Operator: "<=",
+                                            With: "available",
+                                            ErrorMessage:
+                                                "Quantity should be less than or equal Available",
+                                        },
                                     ],
                                     // 'IsRequired': '1'
-                                }
-                            }
-                        ]
-                    }
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Available',
-                    data: 'available',
+                    title: "Available",
+                    data: "available",
                     visible: true,
                     readOnly: true,
-                    setting: {}
+                    setting: {},
                 },
                 {
-                    title: 'Fake price',
-                    data: 'fakePrice',
+                    title: "Fake price",
+                    data: "fakePrice",
                     visible: true,
                     readOnly: false,
                     setting: {
-                        DataLength: '0',
-                        DataType: 'money',
+                        DataLength: "0",
+                        DataType: "money",
                         Setting: [
                             {
                                 ControlType: {
-                                    Type: 'Numeric'
-                                }
-                            }
-                        ]
-                    }
+                                    Type: "Numeric",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Purchasing Price',
-                    data: 'purchasingPrice',
+                    title: "Purchasing Price",
+                    data: "purchasingPrice",
                     visible: true,
                     readOnly: false,
                     setting: {
-                        DataLength: '0',
-                        DataType: 'money',
+                        DataLength: "0",
+                        DataType: "money",
                         Setting: [
                             {
                                 ControlType: {
-                                    Type: 'Numeric'
-                                }
-                            }
-                        ]
-                    }
+                                    Type: "Numeric",
+                                },
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'OnStock',
-                    data: 'onStock',
+                    title: "OnStock",
+                    data: "onStock",
                     visible: true,
                     readOnly: true,
                     setting: {
                         Setting: [
                             {
                                 DisplayField: {
-                                    Hidden: '1'
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
+                                    Hidden: "1",
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
         });
     }
 }

@@ -1,1 +1,1 @@
-export * from './select-group.component';
+export * from "./select-group.component";

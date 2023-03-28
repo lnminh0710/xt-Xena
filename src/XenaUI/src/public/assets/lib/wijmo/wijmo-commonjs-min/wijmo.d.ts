@@ -1,4 +1,4 @@
-import * as wjcSelf from 'wijmo/wijmo';
+import * as wjcSelf from "wijmo/wijmo";
 export declare function getVersion(): string;
 export declare enum Key {
     Back = 8,
@@ -55,37 +55,80 @@ export declare function isEmpty(obj: any): boolean;
 export declare function getUniqueId(baseId: string): string;
 export declare function mouseToPage(e: any): Point;
 export declare function getType(value: any): DataType;
-export declare function changeType(value: any, type: DataType, format: string): any;
-export declare function toFixed(value: number, prec: number, truncate: boolean): number;
-export declare function format(format: string, data: any, formatFunction?: Function): string;
+export declare function changeType(
+    value: any,
+    type: DataType,
+    format: string
+): any;
+export declare function toFixed(
+    value: number,
+    prec: number,
+    truncate: boolean
+): number;
+export declare function format(
+    format: string,
+    data: any,
+    formatFunction?: Function
+): string;
 export declare function clamp(value: number, min: number, max: number): number;
 export declare function copy(dst: any, src: any): void;
 export declare function assert(condition: boolean, msg: string): void;
 export declare function _deprecated(oldMember: string, newMember: string): void;
 export declare function asString(value: string, nullOK?: boolean): string;
-export declare function asNumber(value: number, nullOK?: boolean, positive?: boolean): number;
-export declare function asInt(value: number, nullOK?: boolean, positive?: boolean): number;
+export declare function asNumber(
+    value: number,
+    nullOK?: boolean,
+    positive?: boolean
+): number;
+export declare function asInt(
+    value: number,
+    nullOK?: boolean,
+    positive?: boolean
+): number;
 export declare function asBoolean(value: boolean, nullOK?: boolean): boolean;
 export declare function asDate(value: Date, nullOK?: boolean): Date;
 export declare function asFunction(value: any, nullOK?: boolean): Function;
 export declare function asArray(value: any, nullOK?: boolean): any[];
 export declare function asType(value: any, type: any, nullOK?: boolean): any;
-export declare function asEnum(value: number, enumType: any, nullOK?: boolean): number;
-export declare function asCollectionView(value: any, nullOK?: boolean): ICollectionView;
+export declare function asEnum(
+    value: number,
+    enumType: any,
+    nullOK?: boolean
+): number;
+export declare function asCollectionView(
+    value: any,
+    nullOK?: boolean
+): ICollectionView;
 export declare function hasItems(value: ICollectionView): boolean;
 export declare function toHeaderCase(text: string): string;
 export declare function escapeHtml(text: string): string;
 export declare function hasClass(e: Element, className: string): boolean;
 export declare function removeClass(e: Element, className: string): void;
 export declare function addClass(e: Element, className: string): void;
-export declare function toggleClass(e: Element, className: string, addOrRemove?: boolean): void;
-export declare function setAttribute(e: Element, name: string, value?: any, keep?: boolean): void;
-export declare function setSelectionRange(e: HTMLInputElement, start: number, end?: number): void;
+export declare function toggleClass(
+    e: Element,
+    className: string,
+    addOrRemove?: boolean
+): void;
+export declare function setAttribute(
+    e: Element,
+    name: string,
+    value?: any,
+    keep?: boolean
+): void;
+export declare function setSelectionRange(
+    e: HTMLInputElement,
+    start: number,
+    end?: number
+): void;
 export declare function removeChild(e: Node): Node;
 export declare function getActiveElement(): HTMLElement;
 export declare function moveFocus(parent: HTMLElement, offset: number): void;
 export declare function getElement(selector: any): HTMLElement;
-export declare function createElement(html: string, appendTo?: HTMLElement): HTMLElement;
+export declare function createElement(
+    html: string,
+    appendTo?: HTMLElement
+): HTMLElement;
 export declare function setText(e: HTMLElement, text: string): void;
 export declare function contains(parent: any, child: any): boolean;
 export declare function closest(e: any, selector: string): Node;
@@ -93,7 +136,11 @@ export declare function closestClass(e: any, className: string): Node;
 export declare function enable(e: HTMLElement, value: boolean): void;
 export declare function getElementRect(e: Element): Rect;
 export declare function setCss(e: any, css: any): void;
-export declare function animate(apply: Function, duration?: number, step?: number): any;
+export declare function animate(
+    apply: Function,
+    duration?: number,
+    step?: number
+): any;
 export declare class Point {
     x: number;
     y: number;
@@ -137,14 +184,35 @@ export declare class DateTime {
     static fromDateTime(date: Date, time: Date): Date;
     static toFiscal(date: Date, govt: boolean): Date;
     static fromFiscal(date: Date, govt: boolean): Date;
-    static newDate(year?: number, month?: number, day?: number, hour?: number, min?: number, sec?: number, ms?: number): Date;
+    static newDate(
+        year?: number,
+        month?: number,
+        day?: number,
+        hour?: number,
+        min?: number,
+        sec?: number,
+        ms?: number
+    ): Date;
     static clone(date: Date): Date;
 }
-export declare function httpRequest(url: string, settings?: any): XMLHttpRequest;
+export declare function httpRequest(
+    url: string,
+    settings?: any
+): XMLHttpRequest;
 export declare var culture: any;
 export declare class Globalize {
-    static format(value: any, format: string, trim?: boolean, truncate?: boolean): string;
-    static formatNumber(value: number, format: string, trim?: boolean, truncate?: boolean): string;
+    static format(
+        value: any,
+        format: string,
+        trim?: boolean,
+        truncate?: boolean
+    ): string;
+    static formatNumber(
+        value: number,
+        format: string,
+        trim?: boolean,
+        truncate?: boolean
+    ): string;
     static formatDate(value: Date, format: string): string;
     static parseInt(value: string, format?: string): number;
     static parseFloat(value: string, format?: string): number;
@@ -235,7 +303,12 @@ export declare class Control {
     protected _rtlDir: boolean;
     constructor(element: any, options?: any, invalidateOnResize?: boolean);
     getTemplate(): string;
-    applyTemplate(classNames: string, template: string, parts: Object, namePart?: string): HTMLElement;
+    applyTemplate(
+        classNames: string,
+        template: string,
+        parts: Object,
+        namePart?: string
+    ): HTMLElement;
     dispose(): void;
     static getControl(element: any): Control;
     readonly hostElement: HTMLElement;
@@ -254,8 +327,18 @@ export declare class Control {
     readonly isTouching: boolean;
     isDisabled: boolean;
     initialize(options: any): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
-    removeEventListener(target?: EventTarget, type?: string, fn?: any, capture?: boolean): number;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
+    removeEventListener(
+        target?: EventTarget,
+        type?: string,
+        fn?: any,
+        capture?: boolean
+    ): number;
     readonly gotFocus: wjcSelf.Event;
     onGotFocus(e?: EventArgs): void;
     readonly lostFocus: wjcSelf.Event;
@@ -291,7 +374,11 @@ export declare enum Aggregate {
     First = 12,
     Last = 13,
 }
-export declare function getAggregate(aggType: Aggregate, items: any[], binding?: string): any;
+export declare function getAggregate(
+    aggType: Aggregate,
+    items: any[],
+    binding?: string
+): any;
 export interface INotifyCollectionChanged {
     collectionChanged: Event;
 }
@@ -306,7 +393,11 @@ export declare class NotifyCollectionChangedEventArgs extends EventArgs {
     action: NotifyCollectionChangedAction;
     item: any;
     index: number;
-    constructor(action?: wjcSelf.NotifyCollectionChangedAction, item?: any, index?: number);
+    constructor(
+        action?: wjcSelf.NotifyCollectionChangedAction,
+        item?: any,
+        index?: number
+    );
 }
 export interface IPredicate {
     (item: any): boolean;
@@ -321,7 +412,9 @@ export declare class SortDescription {
     readonly property: string;
     readonly ascending: boolean;
 }
-export interface ICollectionView extends INotifyCollectionChanged, IQueryInterface {
+export interface ICollectionView
+    extends INotifyCollectionChanged,
+        IQueryInterface {
     canFilter: boolean;
     canGroup: boolean;
     canSort: boolean;
@@ -399,7 +492,10 @@ export declare class PropertyGroupDescription extends GroupDescription {
 export declare class ArrayBase extends Array {
     constructor();
 }
-export declare class ObservableArray extends ArrayBase implements INotifyCollectionChanged {
+export declare class ObservableArray
+    extends ArrayBase
+    implements INotifyCollectionChanged
+{
     private _updating;
     constructor(data?: any[]);
     push(...item: any[]): number;
@@ -422,7 +518,9 @@ export declare class ObservableArray extends ArrayBase implements INotifyCollect
     onCollectionChanged(e?: wjcSelf.NotifyCollectionChangedEventArgs): void;
     private _raiseCollectionChanged(action?, item?, index?);
 }
-export declare class CollectionView implements IEditableCollectionView, IPagedCollectionView {
+export declare class CollectionView
+    implements IEditableCollectionView, IPagedCollectionView
+{
     _src: any[];
     _ncc: INotifyCollectionChanged;
     _view: any[];
@@ -464,7 +562,11 @@ export declare class CollectionView implements IEditableCollectionView, IPagedCo
     sortConverter: Function;
     sortComparer: Function;
     useStableSort: boolean;
-    getAggregate(aggType: Aggregate, binding: string, currentPage?: boolean): any;
+    getAggregate(
+        aggType: Aggregate,
+        binding: string,
+        currentPage?: boolean
+    ): any;
     trackChanges: boolean;
     readonly itemsAdded: ObservableArray;
     readonly itemsRemoved: ObservableArray;
@@ -474,7 +576,11 @@ export declare class CollectionView implements IEditableCollectionView, IPagedCo
     getError: Function;
     readonly collectionChanged: wjcSelf.Event;
     onCollectionChanged(e?: wjcSelf.NotifyCollectionChangedEventArgs): void;
-    protected _raiseCollectionChanged(action?: wjcSelf.NotifyCollectionChangedAction, item?: any, index?: number): void;
+    protected _raiseCollectionChanged(
+        action?: wjcSelf.NotifyCollectionChangedAction,
+        item?: any,
+        index?: number
+    ): void;
     protected _notifyItemChanged(item: any): void;
     readonly sourceCollectionChanging: wjcSelf.Event;
     onSourceCollectionChanging(e: CancelEventArgs): boolean;
@@ -549,7 +655,11 @@ export declare class CollectionView implements IEditableCollectionView, IPagedCo
     readonly pageChanging: wjcSelf.Event;
     onPageChanging(e: PageChangingEventArgs): boolean;
     _getFullGroup(g: CollectionViewGroup): CollectionViewGroup;
-    _getGroupByPath(groups: CollectionViewGroup[], level: number, path: string): wjcSelf.CollectionViewGroup;
+    _getGroupByPath(
+        groups: CollectionViewGroup[],
+        level: number,
+        path: string
+    ): wjcSelf.CollectionViewGroup;
     _getPageView(): any[];
     _createGroups(items: any[]): CollectionViewGroup[];
     private _getGroupsDigest(groups);
@@ -564,14 +674,23 @@ export declare class CollectionViewGroup {
     _isBottomLevel: boolean;
     _groups: CollectionViewGroup[];
     _items: any[];
-    constructor(groupDescription: GroupDescription, name: string, level: number, isBottomLevel: boolean);
+    constructor(
+        groupDescription: GroupDescription,
+        name: string,
+        level: number,
+        isBottomLevel: boolean
+    );
     readonly name: string;
     readonly level: number;
     readonly isBottomLevel: boolean;
     readonly items: any[];
     readonly groups: CollectionViewGroup[];
     readonly groupDescription: GroupDescription;
-    getAggregate(aggType: Aggregate, binding: string, view?: ICollectionView): any;
+    getAggregate(
+        aggType: Aggregate,
+        binding: string,
+        view?: ICollectionView
+    ): any;
 }
 export declare class Tooltip {
     private static _eTip;
@@ -647,8 +766,18 @@ export declare class Clipboard {
     static paste(callback: Function): void;
     private static _copyPaste(copyText, pasteCallback);
 }
-export declare function showPopup(popup: HTMLElement, ref?: any, above?: boolean, fadeIn?: boolean, copyStyles?: boolean): any;
-export declare function hidePopup(popup: HTMLElement, remove?: any, fadeOut?: boolean): any;
+export declare function showPopup(
+    popup: HTMLElement,
+    ref?: any,
+    above?: boolean,
+    fadeIn?: boolean,
+    copyStyles?: boolean
+): any;
+export declare function hidePopup(
+    popup: HTMLElement,
+    remove?: any,
+    fadeOut?: boolean
+): any;
 export declare class PrintDocument {
     _iframe: HTMLIFrameElement;
     _title: string;
@@ -740,5 +869,11 @@ export declare function isFirefox(): boolean;
 export declare function isSafari(): boolean;
 export declare function isIE(): boolean;
 export declare function isIE9(): boolean;
-export declare function getEventOptions(capture: boolean, passive: boolean): any;
-export declare function _startDrag(dataTransfer: any, effectAllowed: string): void;
+export declare function getEventOptions(
+    capture: boolean,
+    passive: boolean
+): any;
+export declare function _startDrag(
+    dataTransfer: any,
+    effectAllowed: string
+): void;

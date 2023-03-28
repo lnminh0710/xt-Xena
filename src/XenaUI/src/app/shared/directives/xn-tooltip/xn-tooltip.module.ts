@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { XnTooltipDirective } from './xn-tooltip.directive';
+import { NgModule } from "@angular/core";
+import { XnTooltipDirective } from "./xn-tooltip.directive";
 
 @NgModule({
     imports: [],
     declarations: [XnTooltipDirective],
     exports: [XnTooltipDirective],
-    providers: []
+    providers: [],
 })
-export class XnTooltipModule { }
+export class XnTooltipModule {}

@@ -1,4 +1,4 @@
-import * as wjcCore from 'wijmo/wijmo';
+import * as wjcCore from "wijmo/wijmo";
 export declare enum ShowText {
     None = 0,
     Value = 1,
@@ -73,9 +73,20 @@ export declare class Gauge extends wjcCore.Control {
     static _getBBox(e: any): SVGRect;
     protected _getFilterUrl(): string;
     protected _getRangeElement(rng: Range): SVGPathElement;
-    protected _rangeChanged(rng: Range, e: wjcCore.PropertyChangedEventArgs): void;
-    protected _createElement(tag: string, parent: SVGElement, cls?: string): Element;
-    protected _centerText(e: SVGTextElement, value: number, center: wjcCore.Point): void;
+    protected _rangeChanged(
+        rng: Range,
+        e: wjcCore.PropertyChangedEventArgs
+    ): void;
+    protected _createElement(
+        tag: string,
+        parent: SVGElement,
+        cls?: string
+    ): Element;
+    protected _centerText(
+        e: SVGTextElement,
+        value: number,
+        center: wjcCore.Point
+    ): void;
     protected _copy(key: string, value: any): boolean;
     protected _getPercent: (value: any) => number;
     protected _showElement(e: SVGElement, show: boolean): void;
@@ -85,7 +96,11 @@ export declare class Gauge extends wjcCore.Control {
     protected _keydown(e: KeyboardEvent): void;
     protected _getKey(key: number): number;
     protected _applyMouseValue(e: any, instant?: boolean): boolean;
-    protected _updateRangeElement(e: SVGPathElement, rng: Range, value: number): void;
+    protected _updateRangeElement(
+        e: SVGPathElement,
+        rng: Range,
+        value: number
+    ): void;
     protected _updateText(): void;
     protected _updateTicks(): void;
     protected _getValueFromPoint(pt: wjcCore.Point): any;
@@ -106,7 +121,12 @@ export declare class LinearGauge extends Gauge {
     _updateText(): void;
     _updateTicks(): void;
     _updateSegment(path: SVGPathElement, rc: wjcCore.Rect): void;
-    _setText(e: SVGTextElement, value: number, rc: wjcCore.Rect, pos: string): void;
+    _setText(
+        e: SVGTextElement,
+        value: number,
+        rc: wjcCore.Rect,
+        pos: string
+    ): void;
     _getRangeRect(rng: Range, value?: number): wjcCore.Rect;
     _getValueFromPoint(pt: wjcCore.Point): number;
     _getDirection(): GaugeDirection;
@@ -128,7 +148,14 @@ export declare class RadialGauge extends Gauge {
     _updateRangeElement(e: SVGPathElement, rng: Range, value: number): void;
     _updateText(): void;
     _updateTicks(): void;
-    _updateSegment(path: SVGPathElement, ctr: wjcCore.Point, rOut: number, rIn: number, start: number, sweep: number): void;
+    _updateSegment(
+        path: SVGPathElement,
+        ctr: wjcCore.Point,
+        rOut: number,
+        rIn: number,
+        start: number,
+        sweep: number
+    ): void;
     _getPoint(ctr: wjcCore.Point, angle: number, radius: number): wjcCore.Point;
     _getValueFromPoint(pt: wjcCore.Point): number;
 }

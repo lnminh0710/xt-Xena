@@ -1,10 +1,10 @@
-﻿import { BaseFieldModel } from './base-field.model';
+﻿import { BaseFieldModel } from "./base-field.model";
 
 // Ref: https://editor.datatables.net/reference/field/date
 
 export class DateFieldModel extends BaseFieldModel {
-    public type: string = 'date';
-    public def: any = function () { };
+    public type: string = "date";
+    public def: any = function () {};
     public dateFormat: string = null;
     public opts: any = null;
 

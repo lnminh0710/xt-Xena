@@ -1,1 +1,1 @@
-export * from './signalR.service';
+export * from "./signalR.service";

@@ -1,1 +1,1 @@
-export * from './email-setting.component';
+export * from "./email-setting.component";

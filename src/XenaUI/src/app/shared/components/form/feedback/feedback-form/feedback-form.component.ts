@@ -6,70 +6,53 @@ import {
     EventEmitter,
     ViewChild,
     OnDestroy,
-    ChangeDetectorRef
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    Validators,
-    FormGroup,
-    FormBuilder
-} from '@angular/forms';
-import {
-    Uti,
-    CustomValidators
-} from 'app/utilities';
-import {
-    Subscription
-} from 'rxjs/Subscription';
+    ChangeDetectorRef,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Validators, FormGroup, FormBuilder } from "@angular/forms";
+import { Uti, CustomValidators } from "app/utilities";
+import { Subscription } from "rxjs/Subscription";
 import {
     Configuration,
     MessageModal,
-    ComboBoxTypeConstant
-} from 'app/app.constants';
-import {
-    ModalService,
-    AppErrorHandler,
-    CommonService
-} from 'app/services';
-import {
-    MessageModel,
-    ApiResultResponse
-} from 'app/models';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+    ComboBoxTypeConstant,
+} from "app/app.constants";
+import { ModalService, AppErrorHandler, CommonService } from "app/services";
+import { MessageModel, ApiResultResponse } from "app/models";
+import cloneDeep from "lodash-es/cloneDeep";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 
 @Component({
-    selector: 'feedback-form',
-    styleUrls: ['./feedback-form.component.scss'],
-    templateUrl: './feedback-form.component.html'
+    selector: "feedback-form",
+    styleUrls: ["./feedback-form.component.scss"],
+    templateUrl: "./feedback-form.component.html",
 })
-export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDestroy {
+export class FeedbackFormComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     private defaultTypes: Array<any> = [
         {
-            textValue: 'Bug',
-            idValue: 1
+            textValue: "Bug",
+            idValue: 1,
         },
         {
-            textValue: 'Improvement',
-            idValue: 2
-        }
+            textValue: "Improvement",
+            idValue: 2,
+        },
     ];
     private formValuesChangeSubscription: Subscription;
     private _browserInfo: any = {};
     private _keepImageSendToAdmin: any;
-    private _imageFromSendToAdminId: string = 'imageFromSendToAdmin';
+    private _imageFromSendToAdminId: string = "imageFromSendToAdmin";
 
     public feedbackData: any;
     public formGroup: FormGroup;
     public perfectScrollbarConfig: any;
     public types = this.defaultTypes;
 
-    @ViewChild('typeCtrl') typeCtrl: AngularMultiSelect;
+    @ViewChild("typeCtrl") typeCtrl: AngularMultiSelect;
 
     @Input() dataUrl: string;
     @Input() imageTemps: any;
@@ -89,13 +72,15 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
     @Output() callResizePopup: EventEmitter<any> = new EventEmitter();
     @Output() showImageReview: EventEmitter<any> = new EventEmitter();
 
-    constructor(private consts: Configuration,
+    constructor(
+        private consts: Configuration,
         private commonService: CommonService,
         private formBuilder: FormBuilder,
         private ref: ChangeDetectorRef,
         private modalService: ModalService,
         private appErrorHandler: AppErrorHandler,
-        router?: Router) {
+        router?: Router
+    ) {
         super(router);
     }
 
@@ -103,7 +88,7 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
         this.initFormData();
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
 
@@ -111,8 +96,8 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
         const newItem = {
             id: Uti.getTempId2(),
             image: this.dataUrl,
-            text: '',
-            canRemove: true
+            text: "",
+            canRemove: true,
         };
         this.imageTemps.push(newItem);
         this.updateSendToAdminImageToCaptureList();
@@ -125,7 +110,7 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
     }
 
     public submit() {
-        this.formGroup['submitted'] = true;
+        this.formGroup["submitted"] = true;
         this.formGroup.updateValueAndValidity();
         this.setOutputData(true);
     }
@@ -136,19 +121,24 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
     }
 
     public removeCapture(captureItem: any) {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Delete Item',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_This_Items'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                Uti.removeItemInArray(this.imageTemps, captureItem, 'id');
-                this.removeItem.emit(captureItem);
-                this.ref.detectChanges();
-            },
-            isOnTop: true
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Delete Item",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Delete_This_Items" },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    Uti.removeItemInArray(this.imageTemps, captureItem, "id");
+                    this.removeItem.emit(captureItem);
+                    this.ref.detectChanges();
+                },
+                isOnTop: true,
+            })
+        );
     }
 
     public showImageReviewClicked(image: any) {
@@ -156,30 +146,34 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
     }
 
     public makeBlinkCapture(captureItem: any, isFocus?: boolean) {
-        const allCaptureElement = $('.image-captured--child');
+        const allCaptureElement = $(".image-captured--child");
         if (allCaptureElement && allCaptureElement.length) {
             allCaptureElement.each((index, x) => {
-                $(x).removeClass('blinking-new-item');
+                $(x).removeClass("blinking-new-item");
             });
         }
         setTimeout(() => {
-            const captureElement = $('#capture-image-' + captureItem.id);
+            const captureElement = $("#capture-image-" + captureItem.id);
             if (!captureElement || !captureElement.length) return;
-            captureElement.addClass('blinking-new-item');
+            captureElement.addClass("blinking-new-item");
             setTimeout(() => {
-                captureElement.removeClass('blinking-new-item');
+                captureElement.removeClass("blinking-new-item");
             }, 3000);
-            const scrollWrap = document.querySelector('#feed-back-image-capture-wrapper');
+            const scrollWrap = document.querySelector(
+                "#feed-back-image-capture-wrapper"
+            );
             this.setScroll(captureItem, scrollWrap);
             if (!isFocus) return;
             scrollWrap.scrollTop = 0;
-            $('#capture-notes-' + captureItem.id).focus();
+            $("#capture-notes-" + captureItem.id).focus();
         }, 100);
     }
 
     public onChangeType($event: any) {
         if (!this.typeCtrl || !this.typeCtrl.selectedItem) return;
-        this.formGroup.controls['typeText'].setValue(this.typeCtrl.selectedItem.textValue);
+        this.formGroup.controls["typeText"].setValue(
+            this.typeCtrl.selectedItem.textValue
+        );
     }
 
     public updateSendToAdminImageToCaptureList() {
@@ -191,14 +185,15 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
     }
 
     public addImageOfSendToAdmin() {
-        this.pushSendToAdminImageFromCaptureList(this.imageTemps, '');
+        this.pushSendToAdminImageFromCaptureList(this.imageTemps, "");
         this.callResizePopup.emit();
     }
     /*************************************************************************************************/
     /***************************************PRIVATE METHOD********************************************/
     private initDropdownlistData() {
         if (this.feedbackData && this.feedbackData.isSendToAdmin) {
-            this.commonService.getListComboBox(ComboBoxTypeConstant.sendToAdminReason)
+            this.commonService
+                .getListComboBox(ComboBoxTypeConstant.sendToAdminReason)
                 .subscribe((response: ApiResultResponse) => {
                     this.appErrorHandler.executeAction(() => {
                         if (!Uti.isResquestSuccess(response)) {
@@ -214,44 +209,57 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
     private setDataForComment() {
         setTimeout(() => {
             if (!this._browserInfo || !this.feedbackData.isSendToAdmin) return;
-            let comment = '';
-            comment += (this._browserInfo.EntityId) ? 'Entity Id: ' + this._browserInfo.EntityId + '\n' : '';
-            comment += (this._browserInfo.CampaignNumber) ? 'Campaign Number: ' + this._browserInfo.CampaignNumber + '\n' : '';
-            comment += (this._browserInfo.CustomerNumber) ? 'Customer Number: ' + this._browserInfo.CustomerNumber + '\n' : '';
-            comment += (this._browserInfo.Mediacode) ? 'Media Code: ' + this._browserInfo.Mediacode + '\n' : '';
-            comment += (this._browserInfo.IdScansContainerItems) ? 'IdScansContainerItems: ' + this._browserInfo.IdScansContainerItems + '\n' : '';
-            this.formGroup.controls['content'].setValue(comment);
+            let comment = "";
+            comment += this._browserInfo.EntityId
+                ? "Entity Id: " + this._browserInfo.EntityId + "\n"
+                : "";
+            comment += this._browserInfo.CampaignNumber
+                ? "Campaign Number: " + this._browserInfo.CampaignNumber + "\n"
+                : "";
+            comment += this._browserInfo.CustomerNumber
+                ? "Customer Number: " + this._browserInfo.CustomerNumber + "\n"
+                : "";
+            comment += this._browserInfo.Mediacode
+                ? "Media Code: " + this._browserInfo.Mediacode + "\n"
+                : "";
+            comment += this._browserInfo.IdScansContainerItems
+                ? "IdScansContainerItems: " +
+                  this._browserInfo.IdScansContainerItems +
+                  "\n"
+                : "";
+            this.formGroup.controls["content"].setValue(comment);
         }, 500);
     }
     private initFormData() {
         this.formGroup = this.formBuilder.group({
-            priority: 'Normal',
-            type: ['', Validators.required],
-            typeText: '',
-            subject: ['', CustomValidators.required],
-            content: ''
+            priority: "Normal",
+            type: ["", Validators.required],
+            typeText: "",
+            subject: ["", CustomValidators.required],
+            content: "",
         });
         this.subscribleValueChange();
         this.setDataForComment();
     }
     private subscribleValueChange() {
-        if (this.formValuesChangeSubscription) this.formValuesChangeSubscription.unsubscribe();
+        if (this.formValuesChangeSubscription)
+            this.formValuesChangeSubscription.unsubscribe();
         this.formValuesChangeSubscription = this.formGroup.valueChanges
             .debounceTime(this.consts.valueChangeDeboundTimeDefault)
             .subscribe((data) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!this.formGroup.pristine) {
-                    this.setOutputData(false);
-                }
+                this.appErrorHandler.executeAction(() => {
+                    if (!this.formGroup.pristine) {
+                        this.setOutputData(false);
+                    }
+                });
             });
-        });
     }
     private setOutputData(submitResult: boolean) {
         this.outputData.emit({
             submitResult: submitResult,
             formValue: this.formGroup.value,
             isValid: this.formGroup.valid,
-            isDirty: this.formGroup.dirty
+            isDirty: this.formGroup.dirty,
         });
     }
     private setScroll(captureItem: any, scrollWrap: any) {
@@ -269,21 +277,30 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
         }
         if (currentIndex === 1) {
             scrollWrap.scrollTop = 50;
-            return
+            return;
         }
-        scrollWrap.scrollTop = 50 + ((currentIndex - 1) * 100);
+        scrollWrap.scrollTop = 50 + (currentIndex - 1) * 100;
     }
 
     private removeSendToAdminImageFromCaptureList(cloneImageList: any) {
-        this._keepImageSendToAdmin = this.imageTemps.find(x => x.id === this._imageFromSendToAdminId);
-        Uti.removeItemInArray(cloneImageList, {id: this._imageFromSendToAdminId}, 'id');
+        this._keepImageSendToAdmin = this.imageTemps.find(
+            (x) => x.id === this._imageFromSendToAdminId
+        );
+        Uti.removeItemInArray(
+            cloneImageList,
+            { id: this._imageFromSendToAdminId },
+            "id"
+        );
     }
 
     private addSendToAdminImageFromCaptureList(cloneImageList: any) {
         if (!this._keepImageSendToAdmin || !this._keepImageSendToAdmin.id) {
             return;
         }
-        this.pushSendToAdminImageFromCaptureList(cloneImageList, this._keepImageSendToAdmin.text);
+        this.pushSendToAdminImageFromCaptureList(
+            cloneImageList,
+            this._keepImageSendToAdmin.text
+        );
     }
 
     private pushSendToAdminImageFromCaptureList(imageList: any, text: string) {
@@ -291,7 +308,7 @@ export class FeedbackFormComponent extends BaseComponent implements OnInit, OnDe
             id: this._imageFromSendToAdminId,
             image: this._browserInfo.SendToAdminImage,
             text: text,
-            canRemove: false
+            canRemove: false,
         });
     }
 }

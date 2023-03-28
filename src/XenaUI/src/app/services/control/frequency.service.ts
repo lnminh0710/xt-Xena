@@ -1,6 +1,6 @@
-import { Injectable, Injector } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BaseService } from '../base.service';
+import { Injectable, Injector } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import { BaseService } from "../base.service";
 
 @Injectable()
 export class FrequencyService extends BaseService {
@@ -9,18 +9,31 @@ export class FrequencyService extends BaseService {
     }
 
     public rebuildFrequencies(idSelectionProject): Observable<any> {
-        return this.get<any>(this.serUrl.rebuildFrequencies, { idSelectionProject });
+        return this.get<any>(this.serUrl.rebuildFrequencies, {
+            idSelectionProject,
+        });
     }
 
     public getFrequencyBusyIndicator(idSelectionProject): Observable<any> {
-        return this.get<any>(this.serUrl.getFrequencyBusyIndicator, { idSelectionProject });
+        return this.get<any>(this.serUrl.getFrequencyBusyIndicator, {
+            idSelectionProject,
+        });
     }
 
-    public getFrequency(idSelectionProject, idSelectionProjectCountry): Observable<any> {
-        return this.get<any>(this.serUrl.getFrequency, { idSelectionProject, idSelectionProjectCountry });
+    public getFrequency(
+        idSelectionProject,
+        idSelectionProjectCountry
+    ): Observable<any> {
+        return this.get<any>(this.serUrl.getFrequency, {
+            idSelectionProject,
+            idSelectionProjectCountry,
+        });
     }
 
     public saveFrequency(frequency): Observable<any> {
-        return this.post<any>(this.serUrl.saveFrequency, JSON.stringify(frequency));
+        return this.post<any>(
+            this.serUrl.saveFrequency,
+            JSON.stringify(frequency)
+        );
     }
 }

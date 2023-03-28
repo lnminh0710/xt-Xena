@@ -1,1 +1,1 @@
-export { GlobalSearchHistoryComponent } from './gs-history.component';
+export { GlobalSearchHistoryComponent } from "./gs-history.component";

@@ -1,11 +1,17 @@
 <div class="no-padding purchase-form-container">
-	<purchase-form-header #purchaseFormHeaderComponent *ngIf="showForm1"
-		(saveData)="form1aSaveDataChange($event)"
-		(outputData)="form1aDataChange($event)">
-	</purchase-form-header>
-	<purchase-form-article #purchaseFormArticleComponent *ngIf="idSalesCampaignWizard && !showForm1"
-		(saveData)="form1bSaveDataChange($event)"
-		(outputData)="form1bDataChange($event)"
-        (reloadData)="form1bReloadData()">
-	</purchase-form-article>	
+    <purchase-form-header
+        #purchaseFormHeaderComponent
+        *ngIf="showForm1"
+        (saveData)="form1aSaveDataChange($event)"
+        (outputData)="form1aDataChange($event)"
+    >
+    </purchase-form-header>
+    <purchase-form-article
+        #purchaseFormArticleComponent
+        *ngIf="idSalesCampaignWizard && !showForm1"
+        (saveData)="form1bSaveDataChange($event)"
+        (outputData)="form1bDataChange($event)"
+        (reloadData)="form1bReloadData()"
+    >
+    </purchase-form-article>
 </div>

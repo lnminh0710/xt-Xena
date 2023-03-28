@@ -1,8 +1,8 @@
 ﻿/**
  * ApiResultResponse
  */
-export class ApiResultResponse {    
-    statusCode: number; 
+export class ApiResultResponse {
+    statusCode: number;
     resultDescription: string;
     item: any;
 

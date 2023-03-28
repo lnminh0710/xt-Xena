@@ -1,83 +1,109 @@
-<ul class="pagination  pull-left" [ngClass]="classMap">
-    <li class="pagination-first"
-        *ngIf="boundaryLinks">
-        <button class="mat-btn-blue  mat-raised-button--first cursor-pointer"
-                mat-raised-button
-                [disabled]="noPrevious() || disabled"
-                (click)="selectPage(1, $event)">
+<ul class="pagination pull-left" [ngClass]="classMap">
+    <li class="pagination-first" *ngIf="boundaryLinks">
+        <button
+            class="mat-btn-blue mat-raised-button--first cursor-pointer"
+            mat-raised-button
+            [disabled]="noPrevious() || disabled"
+            (click)="selectPage(1, $event)"
+        >
             <i class="fa fa-backward"></i>
         </button>
     </li>
-    <li class="pagination-prev"
-        *ngIf="directionLinks">
-        <button class="mat-btn-blue cursor-pointer"
-                mat-raised-button
-                [disabled]="noPrevious() || disabled"
-                (click)="selectPage(page - 1, $event)">
+    <li class="pagination-prev" *ngIf="directionLinks">
+        <button
+            class="mat-btn-blue cursor-pointer"
+            mat-raised-button
+            [disabled]="noPrevious() || disabled"
+            (click)="selectPage(page - 1, $event)"
+        >
             <i class="fa fa-chevron-left"></i>
         </button>
     </li>
     <li>
         <div class="page-number-input">
-            <input type="text"
-                   XnOnlyNumber="true"
-                   class="height-px-30  input-border"
-                   [value]="page"
-                   [formControl]="pagerControl"
-                   autocomplete="off" />
+            <input
+                type="text"
+                XnOnlyNumber="true"
+                class="height-px-30 input-border"
+                [value]="page"
+                [formControl]="pagerControl"
+                autocomplete="off"
+            />
             <span *ngIf="globalNumberFormat == 'N'">
-                                <label-translation [keyword]="'XnPagination__Of'"></label-translation>
-         {{totalPages | number:0}} <label-translation [keyword]="'XnPagination__Pages'"></label-translation> </span>
+                <label-translation
+                    [keyword]="'XnPagination__Of'"
+                ></label-translation>
+                {{ totalPages | number : 0 }}
+                <label-translation
+                    [keyword]="'XnPagination__Pages'"
+                ></label-translation>
+            </span>
             <span *ngIf="globalNumberFormat != 'N'">
-                 <label-translation [keyword]="'XnPagination__Of'"></label-translation> {{totalPages}}
-                <label-translation [keyword]="'XnPagination__Pages'"></label-translation></span>
+                <label-translation
+                    [keyword]="'XnPagination__Of'"
+                ></label-translation>
+                {{ totalPages }}
+                <label-translation
+                    [keyword]="'XnPagination__Pages'"
+                ></label-translation
+            ></span>
         </div>
     </li>
-    <li class="pagination-next"
-        *ngIf="directionLinks">
-        <button class="mat-btn-blue cursor-pointer"
-                mat-raised-button
-                [disabled]="noNext()"
-                (click)="selectPage(page + 1, $event)">
+    <li class="pagination-next" *ngIf="directionLinks">
+        <button
+            class="mat-btn-blue cursor-pointer"
+            mat-raised-button
+            [disabled]="noNext()"
+            (click)="selectPage(page + 1, $event)"
+        >
             <i class="fa fa-chevron-right"></i>
         </button>
     </li>
-    <li class="pagination-last"
-        *ngIf="boundaryLinks">
-        <button class="mat-btn-blue  mat-raised-button--last cursor-pointer"
-                mat-raised-button
-                [disabled]="noNext()"
-                (click)="selectPage(totalPages, $event)">
+    <li class="pagination-last" *ngIf="boundaryLinks">
+        <button
+            class="mat-btn-blue mat-raised-button--last cursor-pointer"
+            mat-raised-button
+            [disabled]="noNext()"
+            (click)="selectPage(totalPages, $event)"
+        >
             <i class="fa fa-forward"></i>
         </button>
     </li>
 </ul>
 
 <div class="page-size">
-    <span><label-translation [keyword]="'XnPagination__Page_Size'"></label-translation></span>
-    <xn-combo-box #pagingDropdown
-                  wjDropdownHelper
-                  [(ngModel)]="itemsPerPage"
-                  class="custom-wj-input-control xn-select"
-                  [itemsSource]="pagingDropdownData"
-                  [displayMemberPath]="'text'"
-                  [selectedValuePath]="'value'"
-                  [isEditable]="allowEdit"
-                  [isRequired]="true"
-                  [isNumberic]="true"
-                  [numberFormat]="'F'"
-                  (selectedIndexChanged)="pageSizeChange();pageSizeChange()"
-                  (lostFocus)="savePagingData();pageSizeChange()"
-                  (keyup)="pagingDropdownKeyup($event)">
+    <span
+        ><label-translation
+            [keyword]="'XnPagination__Page_Size'"
+        ></label-translation
+    ></span>
+    <xn-combo-box
+        #pagingDropdown
+        wjDropdownHelper
+        [(ngModel)]="itemsPerPage"
+        class="custom-wj-input-control xn-select"
+        [itemsSource]="pagingDropdownData"
+        [displayMemberPath]="'text'"
+        [selectedValuePath]="'value'"
+        [isEditable]="allowEdit"
+        [isRequired]="true"
+        [isNumberic]="true"
+        [numberFormat]="'F'"
+        (selectedIndexChanged)="pageSizeChange(); pageSizeChange()"
+        (lostFocus)="savePagingData(); pageSizeChange()"
+        (keyup)="pagingDropdownKeyup($event)"
+    >
     </xn-combo-box>
-    <button *ngIf="allowEdit"
-            class="mat-btn-red delete cursor-pointer"
-            mat-raised-button
-            xn-tooltip
-            [tooltipText]="'Remove page size item'"
-            [tooltipPlacement]="'top'"
-            [disabled]="isDisableRemoveButton"
-            (click)="removePagesizeItem()">
+    <button
+        *ngIf="allowEdit"
+        class="mat-btn-red delete cursor-pointer"
+        mat-raised-button
+        xn-tooltip
+        [tooltipText]="'Remove page size item'"
+        [tooltipPlacement]="'top'"
+        [disabled]="isDisableRemoveButton"
+        (click)="removePagesizeItem()"
+    >
         <i class="fa fa-trash-o"></i>
     </button>
 </div>

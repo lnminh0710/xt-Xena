@@ -1,5 +1,5 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcSelf from 'wijmo/wijmo.nav';
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcSelf from "wijmo/wijmo.nav";
 export declare class TreeView extends wjcCore.Control {
     static _DATAITEM_KEY: string;
     static _AS_DLY: number;
@@ -141,7 +141,11 @@ export declare class TreeNode {
     next(visible?: boolean, enabled?: boolean): TreeNode;
     previousSibling(): TreeNode;
     nextSibling(): TreeNode;
-    setCollapsed(collapsed: boolean, animate?: boolean, collapseSiblings?: boolean): void;
+    setCollapsed(
+        collapsed: boolean,
+        animate?: boolean,
+        collapseSiblings?: boolean
+    ): void;
     setChecked(checked: boolean, updateParent?: boolean): void;
     remove(): void;
     addChildNode(index: number, dataItem: any): TreeNode;
@@ -155,7 +159,10 @@ export declare class TreeNode {
     _updateState(): void;
     _updateEmptyState(): void;
     _updateCheckedState(): void;
-    static _getChildNodes(treeView: TreeView, nodeList: HTMLElement): TreeNode[];
+    static _getChildNodes(
+        treeView: TreeView,
+        nodeList: HTMLElement
+    ): TreeNode[];
     static _isNode(e: HTMLElement): boolean;
     static _isNodeList(e: HTMLElement): boolean;
     static _isEmpty(node: HTMLElement): boolean;
@@ -181,7 +188,11 @@ export declare class TreeNodeDragDropEventArgs extends wjcCore.CancelEventArgs {
     _src: TreeNode;
     _tgt: TreeNode;
     _pos: DropPosition;
-    constructor(dragSource: TreeNode, dropTarget: TreeNode, position: DropPosition);
+    constructor(
+        dragSource: TreeNode,
+        dropTarget: TreeNode,
+        position: DropPosition
+    );
     readonly dragSource: TreeNode;
     readonly dropTarget: TreeNode;
     position: DropPosition;

@@ -1,1 +1,1 @@
-export * from './global-search.reducer';
+export * from "./global-search.reducer";

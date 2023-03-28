@@ -1,6 +1,5 @@
-﻿
-export class DropdownListModel {
-    public textValue: string = '';
+﻿export class DropdownListModel {
+    public textValue: string = "";
     public idValue: any = null;
 
     public constructor(init?: Partial<DropdownListModel>) {

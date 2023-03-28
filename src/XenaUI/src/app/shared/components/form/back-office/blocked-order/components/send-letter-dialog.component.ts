@@ -5,37 +5,33 @@ import {
     OnDestroy,
     EventEmitter,
     ViewChild,
-    Input} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    ApiResultResponse} from 'app/models';
+    Input,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { ApiResultResponse } from "app/models";
 import {
     AppErrorHandler,
     PropertyPanelService,
     BlockedOrderService,
-    ModalService
-} from 'app/services';
-import {
-    Configuration, SAVIdConnectionName} from 'app/app.constants';
-import {
-    Uti
-} from 'app/utilities/uti';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import {Dialog} from 'primeng/components/dialog/dialog';
-import { SendLetterFormComponent } from '.';
-import isEmpty from 'lodash-es/isEmpty';
+    ModalService,
+} from "app/services";
+import { Configuration, SAVIdConnectionName } from "app/app.constants";
+import { Uti } from "app/utilities/uti";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { Dialog } from "primeng/components/dialog/dialog";
+import { SendLetterFormComponent } from ".";
+import isEmpty from "lodash-es/isEmpty";
 
 @Component({
-    selector: 'send-letter-dialog',
-    styleUrls: ['./send-letter-dialog.component.scss'],
-    templateUrl: './send-letter-dialog.component.html'
+    selector: "send-letter-dialog",
+    styleUrls: ["./send-letter-dialog.component.scss"],
+    templateUrl: "./send-letter-dialog.component.html",
 })
-export class SendLetterDialogComponent extends BaseComponent implements OnInit, OnDestroy {
+export class SendLetterDialogComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     private popupSize = {};
     private popupMinimizeSize = {};
     private hasIdPerson = false;
@@ -53,13 +49,21 @@ export class SendLetterDialogComponent extends BaseComponent implements OnInit, 
     public isDraggable = true;
     public isPreview = false;
     public isSAVWidget = false;
-    public showDialogData: {widgetData: any, data: any} = {widgetData: {}, data: {}};
-    public showPreviewDialogData: {main: any, template: any, reason: Array<any>} = {main: {}, template: {}, reason: []};
+    public showDialogData: { widgetData: any; data: any } = {
+        widgetData: {},
+        data: {},
+    };
+    public showPreviewDialogData: {
+        main: any;
+        template: any;
+        reason: Array<any>;
+    } = { main: {}, template: {}, reason: [] };
     public dialogHeight = 0;
     public dialogBodyHeight: any;
 
-    @ViewChild('pDialogSendLetterSav') pDialogSendLetterSav: Dialog;
-    @ViewChild('sendLetterFormComponent') sendLetterFormComponent: SendLetterFormComponent;
+    @ViewChild("pDialogSendLetterSav") pDialogSendLetterSav: Dialog;
+    @ViewChild("sendLetterFormComponent")
+    sendLetterFormComponent: SendLetterFormComponent;
 
     // @Input() set globalProperties(globalProperties: any[]) {
     //     this.globalDateFormat = this._propertyPanelService.buildGlobalInputDateFormatFromProperties(globalProperties);
@@ -85,9 +89,7 @@ export class SendLetterDialogComponent extends BaseComponent implements OnInit, 
         this.initComponentAction.emit();
     }
 
-    public ngOnDestroy() {
-
-    }
+    public ngOnDestroy() {}
 
     public sendLetterClick() {
         if (this.isPreview) {
@@ -103,29 +105,61 @@ export class SendLetterDialogComponent extends BaseComponent implements OnInit, 
 
     public callShowDialog(data: any) {
         this.dialogHeight = $(document).height();
-        this.dialogBodyHeight = { 'height': (this.dialogHeight - 135) + 'px' };
+        this.dialogBodyHeight = { height: this.dialogHeight - 135 + "px" };
         this.showDialogData = data;
         this.showDialog = true;
-        Uti.executeFunctionWithTimeout(() => {this.sendLetterFormComponent.loadDataForForm();}, () => {return !!this.sendLetterFormComponent});
+        Uti.executeFunctionWithTimeout(
+            () => {
+                this.sendLetterFormComponent.loadDataForForm();
+            },
+            () => {
+                return !!this.sendLetterFormComponent;
+            }
+        );
     }
 
-    public callShowPreviewDialog(data: {main: any, template: any, reason: Array<any>}) {
+    public callShowPreviewDialog(data: {
+        main: any;
+        template: any;
+        reason: Array<any>;
+    }) {
         this.showPreviewDialogData = data;
         this.isPreview = true;
         this.callToShowDialog();
-        Uti.executeFunctionWithTimeout(() => {this.sendLetterFormComponent.loadDataForPreview(this.showPreviewDialogData);}, () => {return !!this.sendLetterFormComponent});
+        Uti.executeFunctionWithTimeout(
+            () => {
+                this.sendLetterFormComponent.loadDataForPreview(
+                    this.showPreviewDialogData
+                );
+            },
+            () => {
+                return !!this.sendLetterFormComponent;
+            }
+        );
     }
 
-    public callShowSAVWidget(data: {widgetData: any, data: any}) {
+    public callShowSAVWidget(data: { widgetData: any; data: any }) {
         this.showDialogData = data;
         this.isSAVWidget = true;
         this.setValueForHasIdPerson();
         this.callToShowDialog();
-        Uti.executeFunctionWithTimeout(() => {this.sendLetterFormComponent.loadDataForForm();}, () => {return !!this.sendLetterFormComponent});
+        Uti.executeFunctionWithTimeout(
+            () => {
+                this.sendLetterFormComponent.loadDataForForm();
+            },
+            () => {
+                return !!this.sendLetterFormComponent;
+            }
+        );
     }
 
     private setValueForHasIdPerson() {
-        if (!this.showDialogData || !this.showDialogData.data || !this.showDialogData.data.key) return;
+        if (
+            !this.showDialogData ||
+            !this.showDialogData.data ||
+            !this.showDialogData.data.key
+        )
+            return;
         switch (this.showDialogData.data.key) {
             case SAVIdConnectionName.IdSalesOrder: {
                 this.hasIdPerson = false;
@@ -151,9 +185,12 @@ export class SendLetterDialogComponent extends BaseComponent implements OnInit, 
         this.isDraggable = false;
         this.isMinimized = false;
         // this.dialogStyleClass = this.fullHeightClassName + '  ' + this._consts.popupFullViewClassName;
-        this.dialogStyleClass = this._consts.popupResizeClassName + '  ' + this._consts.popupFullViewClassName;
+        this.dialogStyleClass =
+            this._consts.popupResizeClassName +
+            "  " +
+            this._consts.popupFullViewClassName;
         Uti.popupMaximize(this.pDialogSendLetterSav, this.popupSize);
-        this.dialogBodyHeight = { 'height': ($(document).height() - 120) + 'px' };
+        this.dialogBodyHeight = { height: $(document).height() - 120 + "px" };
     }
 
     public restore() {
@@ -162,7 +199,7 @@ export class SendLetterDialogComponent extends BaseComponent implements OnInit, 
         this.isDraggable = true;
         this.isMinimized = false;
         // this.dialogStyleClass = this.fullHeightClassName;
-        this.dialogStyleClass = this._consts.popupResizeClassName
+        this.dialogStyleClass = this._consts.popupResizeClassName;
         Uti.popuprestore(this.pDialogSendLetterSav, this.popupSize);
     }
 
@@ -173,7 +210,10 @@ export class SendLetterDialogComponent extends BaseComponent implements OnInit, 
 
     public restoreMinimize() {
         this.isMinimized = false;
-        Uti.popupRestoreMinimize(this.pDialogSendLetterSav, this.popupMinimizeSize);
+        Uti.popupRestoreMinimize(
+            this.pDialogSendLetterSav,
+            this.popupMinimizeSize
+        );
     }
 
     public isDirtyHandler(isDirty: boolean) {
@@ -185,16 +225,20 @@ export class SendLetterDialogComponent extends BaseComponent implements OnInit, 
 
     private callToShowDialog() {
         this.dialogHeight = $(document).height();
-        this.dialogBodyHeight = { 'height': (this.dialogHeight - 135) + 'px' };
+        this.dialogBodyHeight = { height: this.dialogHeight - 135 + "px" };
         this.showDialog = true;
         this.isResizable = true;
     }
 
     private confirmWhenClose() {
         this._modalService.unsavedWarningMessageDefault({
-            headerText: 'Saving Changes',
-            onModalSaveAndExit: () => { this.sendLetterClick(); },
-            onModalExit: () => { this.closeDialog(); }
+            headerText: "Saving Changes",
+            onModalSaveAndExit: () => {
+                this.sendLetterClick();
+            },
+            onModalExit: () => {
+                this.closeDialog();
+            },
         });
     }
 
@@ -222,7 +266,9 @@ export class SendLetterDialogComponent extends BaseComponent implements OnInit, 
 
     private valid(saveData: any) {
         if (!saveData.ReasonData.length) {
-            this._modalService.warningHTMLText([{key: 'Modal_Message__Please_Select_Reason'}]);
+            this._modalService.warningHTMLText([
+                { key: "Modal_Message__Please_Select_Reason" },
+            ]);
             return false;
         }
         return true;
@@ -248,30 +294,54 @@ export class SendLetterDialogComponent extends BaseComponent implements OnInit, 
     // }
 
     private callSaveData(saveData: any, callbackFunc?: Function) {
-        const serviceName = this.hasIdPerson ? 'saveSalesCustomerLetters' : 'saveSalesOrderLetters';
-        this._blockedOrderService[serviceName](saveData)
-        .subscribe((response: ApiResultResponse) => {
-            this._appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    this._toasterService.pop('error', 'Failed', 'Data can\'t be saved');
-                    return;
-                }
-                this._toasterService.pop('success', 'Success', 'Data is saved');
-                if (callbackFunc) {
-                    callbackFunc({
-                        'IdGenerateLetter': response.item.returnID,
-                        'IdBackOfficeLetters': (() => {try{return saveData.BackOfficeLetter.IdBackOfficeLetters;}catch(e){return '';}})()
-                    });
-                }
-                this.closeDialog();
-            });
-        });
+        const serviceName = this.hasIdPerson
+            ? "saveSalesCustomerLetters"
+            : "saveSalesOrderLetters";
+        this._blockedOrderService[serviceName](saveData).subscribe(
+            (response: ApiResultResponse) => {
+                this._appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        this._toasterService.pop(
+                            "error",
+                            "Failed",
+                            "Data can't be saved"
+                        );
+                        return;
+                    }
+                    this._toasterService.pop(
+                        "success",
+                        "Success",
+                        "Data is saved"
+                    );
+                    if (callbackFunc) {
+                        callbackFunc({
+                            IdGenerateLetter: response.item.returnID,
+                            IdBackOfficeLetters: (() => {
+                                try {
+                                    return saveData.BackOfficeLetter
+                                        .IdBackOfficeLetters;
+                                } catch (e) {
+                                    return "";
+                                }
+                            })(),
+                        });
+                    }
+                    this.closeDialog();
+                });
+            }
+        );
     }
 
     private submitDataForPreview() {
         const previewData = this.sendLetterFormComponent.getPreviewData();
-        if (!previewData || !previewData['Values'] || isEmpty(previewData['Values'])) {
-            this._modalService.warningText('Modal_Message__Please_Select_Reason');
+        if (
+            !previewData ||
+            !previewData["Values"] ||
+            isEmpty(previewData["Values"])
+        ) {
+            this._modalService.warningText(
+                "Modal_Message__Please_Select_Reason"
+            );
             return;
         }
         this.startGeneratePdfAction.emit(previewData);

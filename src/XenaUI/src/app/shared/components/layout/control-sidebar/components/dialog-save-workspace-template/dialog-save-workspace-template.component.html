@@ -1,113 +1,167 @@
 <p-dialog
     #pDialogSaveWorkspaceTemplate
     header=""
-          [(visible)]="showDialog"
-          [styleClass]="dialogStyleClass"
-          [resizable]="isResizable"
-          [draggable]="isDraggable"
-          modal="true"
-          width="1024"
-          height="768"
-          responsive="true"
-          appendTo="body">
+    [(visible)]="showDialog"
+    [styleClass]="dialogStyleClass"
+    [resizable]="isResizable"
+    [draggable]="isDraggable"
+    modal="true"
+    width="1024"
+    height="768"
+    responsive="true"
+    appendTo="body"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="font-size-18px"><label-translation [keyword]="'Dialog_save_wt__Save_Workspace_Template'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="cancel()">
+            <span class="font-size-18px"
+                ><label-translation
+                    [keyword]="'Dialog_save_wt__Save_Workspace_Template'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="cancel()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-expand-popup"
-                    *ngIf="!isMaximized"
-                    (click)="maximize()">
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-expand-popup"
+                *ngIf="!isMaximized"
+                (click)="maximize()"
+            >
                 <span class="fa fa-window-maximize"></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-collapse-popup"
-                    *ngIf="isMaximized"
-                    (click)="restore()">
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-collapse-popup"
+                *ngIf="isMaximized"
+                (click)="restore()"
+            >
                 <span class="fa fa-window-restore"></span>
             </button>
         </div>
     </p-header>
     <div class="row h-100 dialog-body">
-        <div class="col-xs-12 h-100"
-             [ngClass]="{'submitted': submitted}">
-            <form class="h-100 d-flex flex-column"
-                  id="formGroup"
-                  [formGroup]="formGroup">
-                <control-focus [formName]="'formGroup'"
-                               [isFocusOnFirstControl]="true"></control-focus>
+        <div class="col-xs-12 h-100" [ngClass]="{ submitted: submitted }">
+            <form
+                class="h-100 d-flex flex-column"
+                id="formGroup"
+                [formGroup]="formGroup"
+            >
+                <control-focus
+                    [formName]="'formGroup'"
+                    [isFocusOnFirstControl]="true"
+                ></control-focus>
                 <div class="form-group">
-                    <label for="workspaceName"><label-translation [keyword]="'Dialog_save_wt__Template_Name'"></label-translation></label>
-                    <input formControlName="workspaceName"
-                           type="text"
-                           class="form-control xn-input"
-                           id="workspaceName"
-                           placeholder="Template Name">
-                    <control-messages [control]="formGroup.controls['workspaceName']"
-                                      [type]="'textbox'"
-                                      [icon]="'file-image-o'"
-                                      [componentControl]="'workspaceName'">
+                    <label for="workspaceName"
+                        ><label-translation
+                            [keyword]="'Dialog_save_wt__Template_Name'"
+                        ></label-translation
+                    ></label>
+                    <input
+                        formControlName="workspaceName"
+                        type="text"
+                        class="form-control xn-input"
+                        id="workspaceName"
+                        placeholder="Template Name"
+                    />
+                    <control-messages
+                        [control]="formGroup.controls['workspaceName']"
+                        [type]="'textbox'"
+                        [icon]="'file-image-o'"
+                        [componentControl]="'workspaceName'"
+                    >
                     </control-messages>
                 </div>
 
                 <div class="form-group mt-3">
-                    <label><label-translation [keyword]="'Dialog_save_wt__Sharing_Mode'"></label-translation></label>
+                    <label
+                        ><label-translation
+                            [keyword]="'Dialog_save_wt__Sharing_Mode'"
+                        ></label-translation
+                    ></label>
                     <div>
-                        <mat-radio-group class="d-flex flex-column my-2"
-                                         [(ngModel)]="sharingMode"
-                                         [ngModelOptions]="{standalone: true}"
-                                         (change)="onSharingModeChanged()">
-                            <mat-radio-button color="primary"
-                                              value="Public">
-                                <label-translation [keyword]="'Dialog_save_wt__Public_all_users_can_see_your_template'"></label-translation>
+                        <mat-radio-group
+                            class="d-flex flex-column my-2"
+                            [(ngModel)]="sharingMode"
+                            [ngModelOptions]="{ standalone: true }"
+                            (change)="onSharingModeChanged()"
+                        >
+                            <mat-radio-button color="primary" value="Public">
+                                <label-translation
+                                    [keyword]="
+                                        'Dialog_save_wt__Public_all_users_can_see_your_template'
+                                    "
+                                ></label-translation>
                             </mat-radio-button>
-                            <mat-radio-button color="primary"
-                                              value="SelectedUser">
-                                <label-translation [keyword]="'Dialog_save_wt__Selected_user_only_selected_users_can_see_your_template'"></label-translation>
+                            <mat-radio-button
+                                color="primary"
+                                value="SelectedUser"
+                            >
+                                <label-translation
+                                    [keyword]="
+                                        'Dialog_save_wt__Selected_user_only_selected_users_can_see_your_template'
+                                    "
+                                ></label-translation>
                             </mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
                 <div class="flex-grow-1">
-                    <xn-ag-grid #userGrid
-                                [id]="'a80da086-0f0d-4a90-9d67-eb0eb9fb4a5a'"
-                                *ngIf="userDatasource && userDatasource.columns && userDatasource.columns.length"
-                                [dataSource]="userDatasource"
-                                [isShowedHeader]="true"
-                                [hasFilterBox]="true"
-                                [readOnly]="isUserGridReadOnly"
-                                [isEditting]="!isUserGridReadOnly"
-                                [disabledAll]="isUserGridDisabled"
-                                [fitWidthColumn]="true"
-                                headerTitle="User List"></xn-ag-grid>
+                    <xn-ag-grid
+                        #userGrid
+                        [id]="'a80da086-0f0d-4a90-9d67-eb0eb9fb4a5a'"
+                        *ngIf="
+                            userDatasource &&
+                            userDatasource.columns &&
+                            userDatasource.columns.length
+                        "
+                        [dataSource]="userDatasource"
+                        [isShowedHeader]="true"
+                        [hasFilterBox]="true"
+                        [readOnly]="isUserGridReadOnly"
+                        [isEditting]="!isUserGridReadOnly"
+                        [disabledAll]="isUserGridDisabled"
+                        [fitWidthColumn]="true"
+                        headerTitle="User List"
+                    ></xn-ag-grid>
                 </div>
             </form>
         </div>
-
     </div>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button type="button"
-                    mat-raised-button
-                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size  mat-btn-white"
-                    (click)="cancel()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Dialog_save_wt__Cancel'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size mat-btn-white"
+                (click)="cancel()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'Dialog_save_wt__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
-                    (click)="save()"
-                    placement="top"
-                    container="body">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Dialog_save_wt__Save'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-blue ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                (click)="save()"
+                placement="top"
+                container="body"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'Dialog_save_wt__Save'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>

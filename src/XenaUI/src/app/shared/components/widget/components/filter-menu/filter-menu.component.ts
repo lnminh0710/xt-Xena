@@ -1,8 +1,20 @@
-import { Component, Input, EventEmitter, Output, OnChanges, SimpleChanges, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import {
-    FilterModeEnum, WidgetFormTypeEnum, OrderDataEntryWidgetLayoutModeEnum,
-    AccessRightWidgetCommandButtonEnum
-} from 'app/app.constants';
+    Component,
+    Input,
+    EventEmitter,
+    Output,
+    OnChanges,
+    SimpleChanges,
+    ElementRef,
+    OnInit,
+    OnDestroy,
+} from "@angular/core";
+import {
+    FilterModeEnum,
+    WidgetFormTypeEnum,
+    OrderDataEntryWidgetLayoutModeEnum,
+    AccessRightWidgetCommandButtonEnum,
+} from "app/app.constants";
 import {
     FilterMode,
     FieldFilter,
@@ -11,23 +23,20 @@ import {
     WidgetFormType,
     Module,
     OrderDataEntryProperties,
-    WidgetType
-} from 'app/models';
-import isNil from 'lodash-es/isNil';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { Uti } from 'app/utilities';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import {
-    AppErrorHandler,
-    PropertyPanelService
-} from 'app/services';
-import { defaultLanguage } from 'app/app.resource';
+    WidgetType,
+} from "app/models";
+import isNil from "lodash-es/isNil";
+import cloneDeep from "lodash-es/cloneDeep";
+import { Uti } from "app/utilities";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { AppErrorHandler, PropertyPanelService } from "app/services";
+import { defaultLanguage } from "app/app.resource";
 
 @Component({
-    selector: 'filter-menu',
-    styleUrls: ['./filter-menu.component.scss'],
-    templateUrl: './filter-menu.component.html'
+    selector: "filter-menu",
+    styleUrls: ["./filter-menu.component.scss"],
+    templateUrl: "./filter-menu.component.html",
 })
 export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     @Input() accessRight: any = {};
@@ -59,7 +68,9 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     @Input() set widgetFormTypes(_widgetFormTypes: WidgetFormType[]) {
         this.filterWidgetFormTypes = _widgetFormTypes;
         if (_widgetFormTypes && _widgetFormTypes.length) {
-            this.selectedWidgetFormType = _widgetFormTypes.find((item) => item.selected).widgetFormType;
+            this.selectedWidgetFormType = _widgetFormTypes.find(
+                (item) => item.selected
+            ).widgetFormType;
         }
     }
 
@@ -113,7 +124,8 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     public isShowAllWithoutFilterMode: boolean = false;
     public filterWidgetFormTypes: WidgetFormType[];
     public copyFieldFilters: FieldFilter[];
-    public menuDataSettingName = 'widget-data-setting-' + Math.round(Math.random() * 1000000000);
+    public menuDataSettingName =
+        "widget-data-setting-" + Math.round(Math.random() * 1000000000);
     public WidgetTypeView = WidgetType;
 
     private parentElement: any;
@@ -121,7 +133,8 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     private isSelectedAllField: boolean = false;
     private _previousODEWidgetLayoutMode: number;
     private _previousODEProperties: OrderDataEntryProperties;
-    private selectedWidgetFormType: WidgetFormTypeEnum = WidgetFormTypeEnum.List;
+    private selectedWidgetFormType: WidgetFormTypeEnum =
+        WidgetFormTypeEnum.List;
     private seletedDisplayMode: FilterMode;
     private _fieldFilters: FieldFilter[];
     constructor(
@@ -130,22 +143,20 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
         private propertyPanelService: PropertyPanelService,
         private dispatcher: ReducerManagerDispatcher,
         private store: Store<AppState>
-    ) {
-    }
+    ) {}
 
     ngOnInit() {
         this.perfectScrollbarConfig = {
             suppressScrollX: true,
-            suppressScrollY: false
-        }
+            suppressScrollY: false,
+        };
         this.initData();
         this.convertTextLengthToPixels();
         this.isMenuChanged = false;
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (!changes['filterModes'])
-            return;
+        if (!changes["filterModes"]) return;
         // this.appendDefaultValueToTranslateResource();
     }
 
@@ -156,25 +167,42 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     // }
 
     private initData() {
-        if (this.filterModes && this.filterModes.length &&
-            this.filterModes.find((item) => item.selected && item.mode === FilterModeEnum.ShowAllWithoutFilter)) {
+        if (
+            this.filterModes &&
+            this.filterModes.length &&
+            this.filterModes.find(
+                (item) =>
+                    item.selected &&
+                    item.mode === FilterModeEnum.ShowAllWithoutFilter
+            )
+        ) {
             this.isShowAllWithoutFilterMode = true;
         }
         this.copyFieldFilters = cloneDeep(this.fieldFilters);
         if (this.copyFieldFilters) {
             if (this.isSubDisplay)
-                this.copyFieldFilters = this.copyFieldFilters.filter((item) => item.isTableField == this.isTableField);
+                this.copyFieldFilters = this.copyFieldFilters.filter(
+                    (item) => item.isTableField == this.isTableField
+                );
             else
-                this.copyFieldFilters = this.copyFieldFilters.filter((item) => isNil(item.isTableField) || !item.isTableField);
-            if (this.fieldFilters && this.fieldFilters.length &&
-                !this.copyFieldFilters.find((item) => !item.selected)) {
+                this.copyFieldFilters = this.copyFieldFilters.filter(
+                    (item) => isNil(item.isTableField) || !item.isTableField
+                );
+            if (
+                this.fieldFilters &&
+                this.fieldFilters.length &&
+                !this.copyFieldFilters.find((item) => !item.selected)
+            ) {
                 this.isSelectedAllField = true;
             }
         }
         if (this.filterModes) {
-            const filteredItem = this.filterModes.find((item) => item.selected && item.mode != FilterModeEnum.ShowAllWithoutFilter);
-            if (filteredItem)
-                this.seletedDisplayMode = filteredItem;
+            const filteredItem = this.filterModes.find(
+                (item) =>
+                    item.selected &&
+                    item.mode != FilterModeEnum.ShowAllWithoutFilter
+            );
+            if (filteredItem) this.seletedDisplayMode = filteredItem;
         }
         this._previousODEWidgetLayoutMode = this.orderDataEntryWidgetLayoutMode;
         this._previousODEProperties = this.orderDataEntryProperties;
@@ -195,35 +223,59 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
             let parentOfCurrentMenuWidth = 0;
             let parentsOfCurrentMenuTotalWidth = 0;
             const calcTotalWidthOfMenuParents = (currentMenuEle) => {
-                const parentOfCurrentMenuEle = $(currentMenuEle).parent().closest('ul.sub-menu');
-                if (parentOfCurrentMenuEle.length && !parentOfCurrentMenuEle.hasClass('filter-menu-top')) {
+                const parentOfCurrentMenuEle = $(currentMenuEle)
+                    .parent()
+                    .closest("ul.sub-menu");
+                if (
+                    parentOfCurrentMenuEle.length &&
+                    !parentOfCurrentMenuEle.hasClass("filter-menu-top")
+                ) {
                     if (parentOfCurrentMenuWidth <= 0) {
-                        parentOfCurrentMenuWidth += parentOfCurrentMenuEle.width();
+                        parentOfCurrentMenuWidth +=
+                            parentOfCurrentMenuEle.width();
                     }
-                    parentsOfCurrentMenuTotalWidth += parentOfCurrentMenuEle.width();
+                    parentsOfCurrentMenuTotalWidth +=
+                        parentOfCurrentMenuEle.width();
                     calcTotalWidthOfMenuParents(parentOfCurrentMenuEle);
                 }
             };
             calcTotalWidthOfMenuParents(currentMenuEle);
-            const currentOpenChildMenu = $('ul.sub-menu', currentMenuEle).first();
+            const currentOpenChildMenu = $(
+                "ul.sub-menu",
+                currentMenuEle
+            ).first();
 
             // parent menu and container
-            const widgetContainerEle = this.parentElement.closest("widget-container");
-            let topParentMenuWidth = $("ul.filter-menu-top", this._eref.nativeElement).width();
+            const widgetContainerEle =
+                this.parentElement.closest("widget-container");
+            let topParentMenuWidth = $(
+                "ul.filter-menu-top",
+                this._eref.nativeElement
+            ).width();
             const menuIconWidth = 25;
             const menuIconHeight = 50;
-            const positionLeftOfMenuIcon = this.parentElement.position().left + $(this.parentElement).width() - menuIconWidth;
-            let positionTopOfMenuIcon = this.parentElement.position().top + menuIconHeight;
+            const positionLeftOfMenuIcon =
+                this.parentElement.position().left +
+                $(this.parentElement).width() -
+                menuIconWidth;
+            let positionTopOfMenuIcon =
+                this.parentElement.position().top + menuIconHeight;
             const pageEle = widgetContainerEle.closest("div");
             const pageWidth = pageEle.get(0).scrollWidth;
             const pageHeight = pageEle.get(0).scrollHeight;
             // check if under combination menu
-            if (this._eref.nativeElement.attributes['name']) {
-                const parentOfTopParentMenu = $(this._eref.nativeElement).closest('ul.widget-toolbar-combination-menu');
+            if (this._eref.nativeElement.attributes["name"]) {
+                const parentOfTopParentMenu = $(
+                    this._eref.nativeElement
+                ).closest("ul.widget-toolbar-combination-menu");
                 const menuItemHeight = 30;
                 if (parentOfTopParentMenu.length) {
                     topParentMenuWidth += parentOfTopParentMenu.width();
-                    if (this._eref.nativeElement.attributes['name'].name.indexOf('second') >= 0) {
+                    if (
+                        this._eref.nativeElement.attributes[
+                            "name"
+                        ].name.indexOf("second") >= 0
+                    ) {
                         positionTopOfMenuIcon += menuItemHeight;
                     }
                 }
@@ -231,17 +283,25 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
 
             // set left position of menu
             const currentOpenChildMenuWidth = currentOpenChildMenu.width();
-            const totalWidthWillDisplayOnLeft = positionLeftOfMenuIcon + topParentMenuWidth + parentsOfCurrentMenuTotalWidth + currentOpenChildMenuWidth;
-            let positionOfOpenChildMenu = 1 + (parentOfCurrentMenuWidth > 0 ? parentOfCurrentMenuWidth : topParentMenuWidth);
+            const totalWidthWillDisplayOnLeft =
+                positionLeftOfMenuIcon +
+                topParentMenuWidth +
+                parentsOfCurrentMenuTotalWidth +
+                currentOpenChildMenuWidth;
+            let positionOfOpenChildMenu =
+                1 +
+                (parentOfCurrentMenuWidth > 0
+                    ? parentOfCurrentMenuWidth
+                    : topParentMenuWidth);
             if (totalWidthWillDisplayOnLeft > pageWidth) {
                 positionOfOpenChildMenu = -currentOpenChildMenuWidth - 3;
             }
-            currentOpenChildMenu.css('left', (positionOfOpenChildMenu) + 'px');
+            currentOpenChildMenu.css("left", positionOfOpenChildMenu + "px");
 
             // set top position of menu (only case missing space at the bottom)
             let parentOfCurrentMenuTop = 0;
-            if ($(currentMenuEle).attr('data-index')) {
-                const index = parseInt($(currentMenuEle).attr('data-index'));
+            if ($(currentMenuEle).attr("data-index")) {
+                const index = parseInt($(currentMenuEle).attr("data-index"));
                 const menuItemHeight = 30;
                 if (index > 1) {
                     parentOfCurrentMenuTop += (index - 1) * menuItemHeight;
@@ -250,26 +310,40 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
                 }
             }
             setTimeout(() => {
-                const currentOpenChildMenuHeight = currentOpenChildMenu.height();
-                const totalHeightWillDisplayOnTop = positionTopOfMenuIcon + parentOfCurrentMenuTop + currentOpenChildMenuHeight;
+                const currentOpenChildMenuHeight =
+                    currentOpenChildMenu.height();
+                const totalHeightWillDisplayOnTop =
+                    positionTopOfMenuIcon +
+                    parentOfCurrentMenuTop +
+                    currentOpenChildMenuHeight;
                 if (totalHeightWillDisplayOnTop > pageHeight) {
-                    const newTopPosition = (pageHeight - totalHeightWillDisplayOnTop);
-                    currentOpenChildMenu.css('top', (newTopPosition) + 'px');
+                    const newTopPosition =
+                        pageHeight - totalHeightWillDisplayOnTop;
+                    currentOpenChildMenu.css("top", newTopPosition + "px");
                 } else {
-                    currentOpenChildMenu.css('top', 0);
+                    currentOpenChildMenu.css("top", 0);
                 }
             }, 300);
-
-        }, 200)
+        }, 200);
     }
 
     changeDisplayMode(evt) {
-        this.isShowAllWithoutFilterMode = evt.source.value == FilterModeEnum.ShowAllWithoutFilter + '';
-        let newFilterMode = new FilterMode({ value: evt.source.value, isSub: this.isSubDisplay })
+        this.isShowAllWithoutFilterMode =
+            evt.source.value == FilterModeEnum.ShowAllWithoutFilter + "";
+        let newFilterMode = new FilterMode({
+            value: evt.source.value,
+            isSub: this.isSubDisplay,
+        });
         this.onChangeDisplayMode.emit(newFilterMode);
-        if (!this.isShowAllWithoutFilterMode && (!this.seletedDisplayMode || this.seletedDisplayMode.mode != evt.source.value)) {
+        if (
+            !this.isShowAllWithoutFilterMode &&
+            (!this.seletedDisplayMode ||
+                this.seletedDisplayMode.mode != evt.source.value)
+        ) {
             this.isMenuChanged = true;
-            this.seletedDisplayMode = this.filterModes.find((item) => item.selected);
+            this.seletedDisplayMode = this.filterModes.find(
+                (item) => item.selected
+            );
         }
         this.refocusOnMenuStatus();
     }
@@ -281,7 +355,8 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
                 columnLayoutsetting: this.columnLayoutsetting,
                 rowSetting: this.rowSetting,
                 widgetFormType: this.selectedWidgetFormType,
-                orderDataEntryWidgetLayoutMode: this.orderDataEntryWidgetLayoutMode,
+                orderDataEntryWidgetLayoutMode:
+                    this.orderDataEntryWidgetLayoutMode,
                 orderDataEntryProperties: this.orderDataEntryProperties,
             });
             setTimeout(() => {
@@ -293,23 +368,23 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
 
     selectAllFields() {
         this.copyFieldFilters.forEach((item) => {
-            if (item.isEditable)
-                item.selected = this.isSelectedAllField;
+            if (item.isEditable) item.selected = this.isSelectedAllField;
         });
         this.isMenuChanged = true;
         this.refocusOnMenuStatus();
     }
 
     selectField(value) {
-        let filterItem = this.copyFieldFilters.find((item) => item.fieldName === value)
+        let filterItem = this.copyFieldFilters.find(
+            (item) => item.fieldName === value
+        );
         // uncheck "all fields" ckb in case one/more other ckbs are selected
         if (filterItem && this.isSelectedAllField)
             this.isSelectedAllField = filterItem.selected;
         else {
-            filterItem = this.copyFieldFilters.find((item) => !item.selected)
+            filterItem = this.copyFieldFilters.find((item) => !item.selected);
             // check "all fields" ckb in case all other ckbs are selected
-            if (!filterItem)
-                this.isSelectedAllField = true;
+            if (!filterItem) this.isSelectedAllField = true;
         }
         this.isMenuChanged = true;
         this.refocusOnMenuStatus();
@@ -318,7 +393,7 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     public selectColumnLayoutsetting() {
         setTimeout(() => {
             this.onChangeColumnLayoutsetting.emit(this.columnLayoutsetting);
-        })
+        });
         this.isMenuChanged = true;
         this.refocusOnMenuStatus();
     }
@@ -326,7 +401,7 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     public selectRowSetting() {
         setTimeout(() => {
             this.onChangeRowSetting.emit(this.rowSetting);
-        })
+        });
         this.isMenuChanged = true;
         this.refocusOnMenuStatus();
     }
@@ -334,19 +409,22 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     public changeODEProperties() {
         setTimeout(() => {
             this.onChangeODEProperties.emit(this.orderDataEntryProperties);
-        })
+        });
         this.isMenuChanged = true;
         this.refocusOnMenuStatus();
     }
 
     public selectWidgetFormType(event) {
-        if (!this.filterWidgetFormTypes)
-            return;
-        let selectedItem = this.filterWidgetFormTypes.find((item) => item.selected);
+        if (!this.filterWidgetFormTypes) return;
+        let selectedItem = this.filterWidgetFormTypes.find(
+            (item) => item.selected
+        );
         if (selectedItem) {
             selectedItem.selected = false;
         }
-        let curSelectedItem = this.filterWidgetFormTypes.find((item) => item.widgetFormType == event);
+        let curSelectedItem = this.filterWidgetFormTypes.find(
+            (item) => item.widgetFormType == event
+        );
         if (curSelectedItem) {
             curSelectedItem.selected = true;
             this.selectedWidgetFormType = curSelectedItem.widgetFormType;
@@ -369,18 +447,19 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private refocusOnMenuStatus(event?) {
-        if (this.menuWidgetStatus)
-            this.menuWidgetStatus.focus();
+        if (this.menuWidgetStatus) this.menuWidgetStatus.focus();
     }
 
     private minWidthDisplayFieldsMenu = 137;
     private convertTextLengthToPixels() {
-        if (!this.copyFieldFilters)
-            return;
+        if (!this.copyFieldFilters) return;
 
         this.copyFieldFilters.forEach((item) => {
             if (!item.isHidden && item.fieldDisplayName)
-                this.minWidthDisplayFieldsMenu = Math.max(this.minWidthDisplayFieldsMenu, item.fieldDisplayName.length * 7 + 27);
+                this.minWidthDisplayFieldsMenu = Math.max(
+                    this.minWidthDisplayFieldsMenu,
+                    item.fieldDisplayName.length * 7 + 27
+                );
         });
     }
 
@@ -397,10 +476,19 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     public onColumnsLayoutSettingsChanged() {
-        const widgetAutoSaveLayout = this.propertyPanelService.getItemRecursive(this.widgetProperties, 'AutoSaveLayout');
-        const globalAutoSaveLayout = this.propertyPanelService.getItemRecursive(this.globalProperties, 'AutoSaveLayout');
+        const widgetAutoSaveLayout = this.propertyPanelService.getItemRecursive(
+            this.widgetProperties,
+            "AutoSaveLayout"
+        );
+        const globalAutoSaveLayout = this.propertyPanelService.getItemRecursive(
+            this.globalProperties,
+            "AutoSaveLayout"
+        );
 
-        if (widgetAutoSaveLayout && typeof widgetAutoSaveLayout.value === 'boolean') {
+        if (
+            widgetAutoSaveLayout &&
+            typeof widgetAutoSaveLayout.value === "boolean"
+        ) {
             if (widgetAutoSaveLayout.value) {
                 this.applyFilter();
                 return;
@@ -408,7 +496,10 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
             this.isMenuChanged = true;
             return;
         }
-        if (globalAutoSaveLayout && typeof globalAutoSaveLayout.value === 'boolean') {
+        if (
+            globalAutoSaveLayout &&
+            typeof globalAutoSaveLayout.value === "boolean"
+        ) {
             if (globalAutoSaveLayout.value) {
                 this.applyFilter();
                 return;
@@ -419,12 +510,16 @@ export class FilterMenuComponent implements OnInit, OnDestroy, OnChanges {
         this.isMenuChanged = true;
     }
     public getAccessRight(buttonName: string) {
-        if (this.accessRight && this.accessRight['orderDataEntry']) return true;
+        if (this.accessRight && this.accessRight["orderDataEntry"]) return true;
 
-        if (!this.accessRight || !this.accessRight[AccessRightWidgetCommandButtonEnum[buttonName]]) return false;
+        if (
+            !this.accessRight ||
+            !this.accessRight[AccessRightWidgetCommandButtonEnum[buttonName]]
+        )
+            return false;
 
-        return this.accessRight[AccessRightWidgetCommandButtonEnum[buttonName]]['read'];
+        return this.accessRight[AccessRightWidgetCommandButtonEnum[buttonName]][
+            "read"
+        ];
     }
 }
-
-

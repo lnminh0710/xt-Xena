@@ -1,31 +1,59 @@
 import {
-    Component, Input, Output, OnInit, OnDestroy, EventEmitter, KeyValueDiffers, DoCheck, ViewChild
-} from '@angular/core';
-import { WidgetTemplateSettingService, AppErrorHandler, DatatableService, CommonService, ModalService } from 'app/services';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import isNil from 'lodash-es/isNil';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { DataEntryActions, BackofficeActions, ModuleActions } from 'app/state-management/store/actions';
-import { WidgetDetail, MessageModel, OrderDataEntryCustomerOrderModel } from 'app/models';
-import { DataEntryFormBase } from 'app/shared/components/form/data-entry/data-entry-form-base';
-import { Router } from '@angular/router';
-import * as dataEntryReducer from 'app/state-management/store/reducer/data-entry';
-import { Uti } from 'app/utilities';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { ModuleList } from '../../../../../pages/private/base';
-import { MenuModuleId, WidgetFormTypeEnum, Configuration } from '../../../../../app.constants';
-import { WidgetUtils } from '../../../widget';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
+    Component,
+    Input,
+    Output,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+    KeyValueDiffers,
+    DoCheck,
+    ViewChild,
+} from "@angular/core";
+import {
+    WidgetTemplateSettingService,
+    AppErrorHandler,
+    DatatableService,
+    CommonService,
+    ModalService,
+} from "app/services";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import isNil from "lodash-es/isNil";
+import cloneDeep from "lodash-es/cloneDeep";
+import {
+    DataEntryActions,
+    BackofficeActions,
+    ModuleActions,
+} from "app/state-management/store/actions";
+import {
+    WidgetDetail,
+    MessageModel,
+    OrderDataEntryCustomerOrderModel,
+} from "app/models";
+import { DataEntryFormBase } from "app/shared/components/form/data-entry/data-entry-form-base";
+import { Router } from "@angular/router";
+import * as dataEntryReducer from "app/state-management/store/reducer/data-entry";
+import { Uti } from "app/utilities";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { ModuleList } from "../../../../../pages/private/base";
+import {
+    MenuModuleId,
+    WidgetFormTypeEnum,
+    Configuration,
+} from "../../../../../app.constants";
+import { WidgetUtils } from "../../../widget";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 @Component({
-    selector: 'customer-order-data-entry',
-    styleUrls: ['./customer-order-data-entry.component.scss'],
-    templateUrl: './customer-order-data-entry.component.html'
+    selector: "customer-order-data-entry",
+    styleUrls: ["./customer-order-data-entry.component.scss"],
+    templateUrl: "./customer-order-data-entry.component.html",
 })
-export class CustomerOrderDataEntryComponent extends DataEntryFormBase implements OnInit, OnDestroy, DoCheck {
-
+export class CustomerOrderDataEntryComponent
+    extends DataEntryFormBase
+    implements OnInit, OnDestroy, DoCheck
+{
     @Input() tabID: string;
     @Input() globalProperties: any;
     @Input() gridId: string;
@@ -43,7 +71,7 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
     public datasource: any;
     public formData: any;
     private differ: any;
-    public displayMode = 'grid';
+    public displayMode = "grid";
     public formDisplayType: WidgetFormTypeEnum = WidgetFormTypeEnum.List;
     public renderGrid = true;
     public currentModule = ModuleList.OrderDataEntry;
@@ -60,14 +88,18 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
         private backofficeActions: BackofficeActions,
         private moduleActions: ModuleActions,
         private differs: KeyValueDiffers,
-        private widgetUtils: WidgetUtils,
+        private widgetUtils: WidgetUtils
     ) {
         super(router, {
-            defaultTranslateText: 'customerOrderData',
-            emptyData: new OrderDataEntryCustomerOrderModel()
+            defaultTranslateText: "customerOrderData",
+            emptyData: new OrderDataEntryCustomerOrderModel(),
         });
 
-        this.selectedOrderSummaryItemState = this.store.select(state => dataEntryReducer.getDataEntryState(state, this.tabID).selectedOrderSummaryItem);
+        this.selectedOrderSummaryItemState = this.store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(state, this.tabID)
+                    .selectedOrderSummaryItem
+        );
         this.differ = this.differs.find({}).create();
     }
 
@@ -83,9 +115,12 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
     public ngDoCheck() {
         const change = this.differ.diff(this);
         if (change) {
-            change.forEachChangedItem(item => {
-                if (item.key == 'transferTranslate') {
-                    Uti.rebuildColumnHeaderForGrid(this.datasource, this.transferTranslate);
+            change.forEachChangedItem((item) => {
+                if (item.key == "transferTranslate") {
+                    Uti.rebuildColumnHeaderForGrid(
+                        this.datasource,
+                        this.transferTranslate
+                    );
                 }
             });
         }
@@ -95,18 +130,28 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
         if (this.selectedOrderSummaryItemStateSubscription)
             this.selectedOrderSummaryItemStateSubscription.unsubscribe();
 
-        this.selectedOrderSummaryItemStateSubscription = this.selectedOrderSummaryItemState.subscribe((selectedOrderSummaryItemState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!selectedOrderSummaryItemState || !selectedOrderSummaryItemState.IdSalesOrder) {
-                    return;
-                }
+        this.selectedOrderSummaryItemStateSubscription =
+            this.selectedOrderSummaryItemState.subscribe(
+                (selectedOrderSummaryItemState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            !selectedOrderSummaryItemState ||
+                            !selectedOrderSummaryItemState.IdSalesOrder
+                        ) {
+                            return;
+                        }
 
-                if (this.idSalesOrder != selectedOrderSummaryItemState.IdSalesOrder) {
-                    this.idSalesOrder = selectedOrderSummaryItemState.IdSalesOrder;
+                        if (
+                            this.idSalesOrder !=
+                            selectedOrderSummaryItemState.IdSalesOrder
+                        ) {
+                            this.idSalesOrder =
+                                selectedOrderSummaryItemState.IdSalesOrder;
+                        }
+                        this.getOrderDetailByIdSalesOrder();
+                    });
                 }
-                this.getOrderDetailByIdSalesOrder();
-            });
-        });
+            );
     }
 
     private getOrderDetailByIdSalesOrder() {
@@ -116,10 +161,10 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
         }
 
         const request = {
-            "Request": {
-                "ModuleName": "GlobalModule",
-                "ServiceName": "GlobalService",
-                "Data": `
+            Request: {
+                ModuleName: "GlobalModule",
+                ServiceName: "GlobalService",
+                Data: `
                         {
                         \"MethodName\" : \"SpAppWg002CustomerOrders\",
                         \"CrudType\"  : null,
@@ -129,35 +174,45 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
                         \"IsDisplayHiddenFieldWithMsg\" : \"1\",
                         <<LoginInformation>>,
                         <<InputParameter>>
-                       }`
-            }
+                       }`,
+            },
         };
 
         let widgetDetail: any = {
             id: Uti.guid(),
             idRepWidgetApp: 125,
             idRepWidgetType: 3,
-            moduleName: 'Order Data Entry',
+            moduleName: "Order Data Entry",
             request: JSON.stringify(request),
-            title: `Order Detail`
+            title: `Order Detail`,
         };
-        this.widgetTemplateSettingServiceSubscription = this.widgetTemplateSettingService.getWidgetDetailByRequestString(widgetDetail, { IdSalesOrder: this.idSalesOrder })
-            .subscribe((response: WidgetDetail) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (!response || !response.contentDetail) return;
+        this.widgetTemplateSettingServiceSubscription =
+            this.widgetTemplateSettingService
+                .getWidgetDetailByRequestString(widgetDetail, {
+                    IdSalesOrder: this.idSalesOrder,
+                })
+                .subscribe((response: WidgetDetail) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (!response || !response.contentDetail) return;
 
-                    this.datasource = this.datatableService.buildDataSource(response.contentDetail);
+                        this.datasource = this.datatableService.buildDataSource(
+                            response.contentDetail
+                        );
 
-                    this.buildFormData(response);
+                        this.buildFormData(response);
 
-                    this.onHeaderColsUpdated.emit(Object['values'](response.contentDetail.columnSettings).map(x => {
-                        return {
-                            fieldName: x.OriginalColumnName,
-                            fieldDisplayName: x.ColumnHeader
-                        };
-                    }));
+                        this.onHeaderColsUpdated.emit(
+                            Object["values"](
+                                response.contentDetail.columnSettings
+                            ).map((x) => {
+                                return {
+                                    fieldName: x.OriginalColumnName,
+                                    fieldDisplayName: x.ColumnHeader,
+                                };
+                            })
+                        );
+                    });
                 });
-            });
     }
 
     public rebuildTranslateText() {
@@ -165,23 +220,40 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
     }
 
     public onPdfColumnClick($event) {
-        let fileName = $event.InvoicePDF || $event.PDF || $event.invoicePDF || $event.invoicePdf || $event.pdf;
-        let pdfUrl = '/api/FileManager/GetScanFile?name=';
+        let fileName =
+            $event.InvoicePDF ||
+            $event.PDF ||
+            $event.invoicePDF ||
+            $event.invoicePdf ||
+            $event.pdf;
+        let pdfUrl = "/api/FileManager/GetScanFile?name=";
         if (fileName && Configuration.PublicSettings.fileShareUrl) {
-            if (fileName.indexOf(Configuration.PublicSettings.fileShareUrl) !== -1) {
+            if (
+                fileName.indexOf(Configuration.PublicSettings.fileShareUrl) !==
+                -1
+            ) {
                 pdfUrl += fileName;
             } else {
-                pdfUrl += (Configuration.PublicSettings.fileShareUrl + fileName);
+                pdfUrl += Configuration.PublicSettings.fileShareUrl + fileName;
             }
 
             var a = document.createElement("a");
-            a.href = pdfUrl
-                + '&returnName='
-                + `[` + $event.PaimentType + `]-`
-                + `[` + $event.MEDIACODE + `]-`
-                + `[` + $event.CampaignNr + `]-`
-                + `[` + $event.InvoiceNr + `]`
-                + `.pdf`;
+            a.href =
+                pdfUrl +
+                "&returnName=" +
+                `[` +
+                $event.PaimentType +
+                `]-` +
+                `[` +
+                $event.MEDIACODE +
+                `]-` +
+                `[` +
+                $event.CampaignNr +
+                `]-` +
+                `[` +
+                $event.InvoiceNr +
+                `]` +
+                `.pdf`;
             document.body.appendChild(a);
             a.click();
 
@@ -192,7 +264,11 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
             return;
         }
 
-        this.toasterService.pop('warning', 'Warning', 'PDF file is not existed');
+        this.toasterService.pop(
+            "warning",
+            "Warning",
+            "PDF file is not existed"
+        );
     }
 
     public onTrackingColumnClick($event) {
@@ -207,7 +283,11 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
         }
 
         if (showError) {
-            this.toasterService.pop('error', 'Failed', 'No tracking information');
+            this.toasterService.pop(
+                "error",
+                "Failed",
+                "No tracking information"
+            );
             return;
         }
 
@@ -216,30 +296,63 @@ export class CustomerOrderDataEntryComponent extends DataEntryFormBase implement
 
     public onReturnRefundColumnClick($event) {
         if (!$event) {
-            this.toasterService.pop('warning', 'Warning', 'Please choose an order to get return and refund information');
+            this.toasterService.pop(
+                "warning",
+                "Warning",
+                "Please choose an order to get return and refund information"
+            );
             return;
         }
 
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Confirmation',
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Go_To_Return_Refund_Page'},
-                {key: '</p>'}],
-            callBack1: () => {
-                this.store.dispatch(this.backofficeActions.storeSelectedEntity(ModuleList.Backoffice, $event));
-                this.store.dispatch(this.moduleActions.requestChangeSubModule(MenuModuleId.backoffice, MenuModuleId.returnRefund));
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Confirmation",
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Go_To_Return_Refund_Page",
+                    },
+                    { key: "</p>" },
+                ],
+                callBack1: () => {
+                    this.store.dispatch(
+                        this.backofficeActions.storeSelectedEntity(
+                            ModuleList.Backoffice,
+                            $event
+                        )
+                    );
+                    this.store.dispatch(
+                        this.moduleActions.requestChangeSubModule(
+                            MenuModuleId.backoffice,
+                            MenuModuleId.returnRefund
+                        )
+                    );
+                },
+            })
+        );
     }
 
     private buildFormData(response) {
         if (!response || !response.contentDetail) return;
 
         setTimeout(() => {
-            if (response.contentDetail && this.xnAgGridComponent && this.xnAgGridComponent.gridOptions.rowData.length <= 1) {
+            if (
+                response.contentDetail &&
+                this.xnAgGridComponent &&
+                this.xnAgGridComponent.gridOptions.rowData.length <= 1
+            ) {
                 this.formData = cloneDeep(response);
                 this.formData.contentDetail = { data: [[[]], []] };
-                this.formData.contentDetail.data[1] = this.widgetUtils.buildReadonlyGridFormColumns(response.contentDetail.columnSettings, this.formData.contentDetail.data[1]);
-                this.formData.contentDetail.data[1] = this.widgetUtils.buildReadonlyGridFormColumnsValue(this.xnAgGridComponent.gridOptions.rowData, this.formData.contentDetail.data[1]);
+                this.formData.contentDetail.data[1] =
+                    this.widgetUtils.buildReadonlyGridFormColumns(
+                        response.contentDetail.columnSettings,
+                        this.formData.contentDetail.data[1]
+                    );
+                this.formData.contentDetail.data[1] =
+                    this.widgetUtils.buildReadonlyGridFormColumnsValue(
+                        this.xnAgGridComponent.gridOptions.rowData,
+                        this.formData.contentDetail.data[1]
+                    );
             }
         }, 500);
     }

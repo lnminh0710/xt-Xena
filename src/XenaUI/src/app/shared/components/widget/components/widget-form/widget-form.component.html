@@ -1,11 +1,19 @@
-<form [formGroup]="form"
-    [ngClass]="{'edit-form-mode' : editFormMode, 'edit-field-mode': editFieldMode, 'edit-language-mode':editLanguageMode}"
+<form
+    [formGroup]="form"
+    [ngClass]="{
+        'edit-form-mode': editFormMode,
+        'edit-field-mode': editFieldMode,
+        'edit-language-mode': editLanguageMode
+    }"
     *ngIf="form"
-    class="w-f  form-horizontal">
-    <div *ngFor="let column of controlColumnList; let i = index;"
+    class="w-f form-horizontal"
+>
+    <div
+        *ngFor="let column of controlColumnList; let i = index"
         class="wf-c"
         [style.width.%]="column.width"
-        attr.elId="{{column.key}}">
+        attr.elId="{{ column.key }}"
+    >
         <wf-column
             [column]="column"
             [dataStyle]="dataStyle"
@@ -28,7 +36,7 @@
             [widgetFormType]="widgetFormType"
             [listVirtualElementNames]="listVirtualElementNames"
             [isEditingLayout]="isEditingLayout"
-            [canDelete]="(controlColumnList.length > 1)"
+            [canDelete]="controlColumnList.length > 1"
             [dragName]="dragName"
             [index]="i"
             [isDisableDragToPanel]="isDisableDragToPanel"
@@ -42,11 +50,12 @@
             [isSettingDialog]="isSettingDialog"
             [isDuplicatedDialogForm]="isDuplicatedDialogForm"
             [isJustDragged]="isJustDragged"
-            [isLastItem]="(i === (controlColumnList.length - 1))"
+            [isLastItem]="i === controlColumnList.length - 1"
             [designColumnsOnWidget]="designColumnsOnWidget"
-
             (onEditFieldAction)="onEditField($event)"
-            (onShowCreditCardSelectionAction)="onShowCreditCardSelection($event)"
+            (onShowCreditCardSelectionAction)="
+                onShowCreditCardSelection($event)
+            "
             (onCancelEditFieldAction)="onCancelEditField($event)"
             (onEnterKeyPressAction)="onEnterKeyPress($event)"
             (onUpdateValueAction)="onUpdateValue($event)"
@@ -69,16 +78,18 @@
             (onSettingDialogAction)="openSettingDialog($event)"
             (onMenuMouseOverAction)="onMenuMouseOverHandler($event)"
             (changeConfigAction)="changeConfigHandler($event)"
-            (onApplyAction)="onApplyControlStyleHandler($event)">
+            (onApplyAction)="onApplyControlStyleHandler($event)"
+        >
         </wf-column>
     </div>
 </form>
-<setting-dialog #settingDialogComponent
-                *ngIf="isSettingDialog && isEditingLayout"
-                [showControlDialog]="isSettingDialog"
-                (showButtonToggle)="closeSettingDialog($event)"
-                (onChangeAction)="onChangedSettingHandler($event)"
-                (onApplyAction)="onApplyHandler($event)"
-                [control]="settingControl"
+<setting-dialog
+    #settingDialogComponent
+    *ngIf="isSettingDialog && isEditingLayout"
+    [showControlDialog]="isSettingDialog"
+    (showButtonToggle)="closeSettingDialog($event)"
+    (onChangeAction)="onChangedSettingHandler($event)"
+    (onApplyAction)="onApplyHandler($event)"
+    [control]="settingControl"
 >
 </setting-dialog>

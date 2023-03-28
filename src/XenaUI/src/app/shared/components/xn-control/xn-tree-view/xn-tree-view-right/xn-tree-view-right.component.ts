@@ -1,11 +1,9 @@
-import {
-    Component, Input, Output, EventEmitter
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 @Component({
-    selector: 'app-xn-tree-view-right',
-    styleUrls: ['./xn-tree-view-right.component.scss'],
-    templateUrl: './xn-tree-view-right.component.html'
+    selector: "app-xn-tree-view-right",
+    styleUrls: ["./xn-tree-view-right.component.scss"],
+    templateUrl: "./xn-tree-view-right.component.html",
 })
 export class XnTreeViewRightComponent {
     public treeViewData: Array<any>;
@@ -18,7 +16,7 @@ export class XnTreeViewRightComponent {
     @Output() dataChange: EventEmitter<any> = new EventEmitter();
     @Output() itemSelect: EventEmitter<any> = new EventEmitter();
 
-    constructor() { }
+    constructor() {}
 
     public percentChange(treeNode: any) {
         this.dataChange.emit(this.treeViewData);

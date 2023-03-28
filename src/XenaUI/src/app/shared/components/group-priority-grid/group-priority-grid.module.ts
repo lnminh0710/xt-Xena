@@ -16,13 +16,9 @@ import { GroupPriorityGridComponent } from "./group-priority-grid.component";
         AngularSplitModule,
         WijmoGridSelectionModule,
         XnAgGridModule,
-        AgGridModule
+        AgGridModule,
     ],
-    declarations: [
-        GroupPriorityGridComponent
-    ],
-    exports: [
-        GroupPriorityGridComponent
-    ]
+    declarations: [GroupPriorityGridComponent],
+    exports: [GroupPriorityGridComponent],
 })
-export class GroupPriorityGridModule { }
+export class GroupPriorityGridModule {}

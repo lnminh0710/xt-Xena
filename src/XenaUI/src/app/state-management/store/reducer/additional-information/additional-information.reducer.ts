@@ -1,7 +1,7 @@
-import { AdditionalInfromationTabModel } from 'app/models/additional-information/ai-tab.model';
-import { CustomAction } from 'app/state-management/store/actions/base';
-import { AdditionalInformationActions } from 'app/state-management/store/actions';
-import * as baseReducer from 'app/state-management/store/reducer/reducer.base';
+import { AdditionalInfromationTabModel } from "app/models/additional-information/ai-tab.model";
+import { CustomAction } from "app/state-management/store/actions/base";
+import { AdditionalInformationActions } from "app/state-management/store/actions";
+import * as baseReducer from "app/state-management/store/reducer/reducer.base";
 
 export interface SubAdditionalInformationState {
     isExpanded: boolean;
@@ -11,29 +11,37 @@ export interface SubAdditionalInformationState {
     requestSelectAiTab: any;
 }
 
-export const initialSubAdditionalInformationState: SubAdditionalInformationState = {
-    isExpanded: false,
-    showAIPane: null,
-    previousState: null,
-    additionalInfromationTabModel: null,
-    requestSelectAiTab: null
-};
+export const initialSubAdditionalInformationState: SubAdditionalInformationState =
+    {
+        isExpanded: false,
+        showAIPane: null,
+        previousState: null,
+        additionalInfromationTabModel: null,
+        requestSelectAiTab: null,
+    };
 
 export interface AdditionalInformationState {
-    features: { [id: string]: SubAdditionalInformationState }
+    features: { [id: string]: SubAdditionalInformationState };
 }
 
 const initialState: AdditionalInformationState = {
-    features: {}
+    features: {},
 };
 
-export function additionalInformationReducer(state = initialState, action: CustomAction): AdditionalInformationState {
-    let feature = baseReducer.getFeature(action, state, initialSubAdditionalInformationState);
+export function additionalInformationReducer(
+    state = initialState,
+    action: CustomAction
+): AdditionalInformationState {
+    let feature = baseReducer.getFeature(
+        action,
+        state,
+        initialSubAdditionalInformationState
+    );
 
     switch (action.type) {
         case AdditionalInformationActions.SET_CURRENT_STATE: {
             state = baseReducer.updateStateData(action, feature, state, {
-                isExpanded: action.payload
+                isExpanded: action.payload,
             });
             return Object.assign({}, state);
         }
@@ -41,14 +49,14 @@ export function additionalInformationReducer(state = initialState, action: Custo
         case AdditionalInformationActions.REQUEST_TOGGLE_PANEL: {
             state = baseReducer.updateStateData(action, feature, state, {
                 previousState: { showPanel: feature.isExpanded },
-                showAIPane: { showPanel: action.payload }
+                showAIPane: { showPanel: action.payload },
             });
             return Object.assign({}, state);
         }
 
         case AdditionalInformationActions.BACK_TO_PREVIOUS_STATE: {
             state = baseReducer.updateStateData(action, feature, state, {
-                showAIPane: feature.previousState
+                showAIPane: feature.previousState,
             });
             return Object.assign({}, state);
         }
@@ -62,7 +70,7 @@ export function additionalInformationReducer(state = initialState, action: Custo
         case AdditionalInformationActions.REQUEST_SELECT_AI_TAB: {
             state = baseReducer.updateStateData(action, feature, state, {
                 requestSelectAiTab: {
-                    aiTabId: action.payload
+                    aiTabId: action.payload,
                 },
             });
             return Object.assign({}, state);

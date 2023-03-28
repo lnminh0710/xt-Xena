@@ -1,10 +1,17 @@
 import {
-    Component, OnInit, Input, Output,
-    EventEmitter, ViewChild, OnDestroy,
-    Injector, AfterViewInit, ElementRef
-} from '@angular/core';
-import { Router } from '@angular/router';
-import { DatePipe } from '@angular/common';
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+    OnDestroy,
+    Injector,
+    AfterViewInit,
+    ElementRef,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { DatePipe } from "@angular/common";
 import {
     PersonService,
     PropertyPanelService,
@@ -12,10 +19,10 @@ import {
     CommonService,
     DatatableService,
     ModalService,
-    SearchService
-} from 'app/services';
-import { Uti } from 'app/utilities';
-import { FormControl, Validators } from '@angular/forms';
+    SearchService,
+} from "app/services";
+import { Uti } from "app/utilities";
+import { FormControl, Validators } from "@angular/forms";
 import {
     Title,
     PersonModel,
@@ -25,48 +32,54 @@ import {
     ApiResultResponse,
     FormModel,
     WidgetPropertyModel,
+    AutoGroupColumnDefModel,
+} from "app/models";
+import { FormGroup } from "@angular/forms";
 
-    AutoGroupColumnDefModel
-} from 'app/models';
-import { FormGroup } from '@angular/forms';
-
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 import {
     XnCommonActions,
     ProcessDataActions,
     CustomAction,
     HotKeySettingActions,
     DataEntryActions,
-    TabButtonActions
-} from 'app/state-management/store/actions';
-import { ComboBoxTypeConstant, Configuration, MenuModuleId } from 'app/app.constants';
-import isEmpty from 'lodash-es/isEmpty';
-import merge from 'lodash-es/merge';
-import { WjComboBox } from 'wijmo/wijmo.angular2.input';
-import { CustomerFormBase } from 'app/shared/components/form/customer/container/customer-form-base';
-import { parse, format } from 'date-fns/esm';
-import * as commonReducer from 'app/state-management/store/reducer/xn-common';
+    TabButtonActions,
+} from "app/state-management/store/actions";
+import {
+    ComboBoxTypeConstant,
+    Configuration,
+    MenuModuleId,
+} from "app/app.constants";
+import isEmpty from "lodash-es/isEmpty";
+import merge from "lodash-es/merge";
+import { WjComboBox } from "wijmo/wijmo.angular2.input";
+import { CustomerFormBase } from "app/shared/components/form/customer/container/customer-form-base";
+import { parse, format } from "date-fns/esm";
+import * as commonReducer from "app/state-management/store/reducer/xn-common";
 
-import { DatePickerComponent } from 'app/shared/components/xn-control';
-import { MatchingCustomerDataDialogComponent } from 'app/shared/components/form';
-import * as dataEntryReducer from 'app/state-management/store/reducer/data-entry';
-import isObject from 'lodash-es/isObject';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { XnFormFgAddressComponent } from 'app/shared/components/form';
-import { ControlFocusComponent } from 'app/shared/components/form';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+import { DatePickerComponent } from "app/shared/components/xn-control";
+import { MatchingCustomerDataDialogComponent } from "app/shared/components/form";
+import * as dataEntryReducer from "app/state-management/store/reducer/data-entry";
+import isObject from "lodash-es/isObject";
+import cloneDeep from "lodash-es/cloneDeep";
+import { XnFormFgAddressComponent } from "app/shared/components/form";
+import { ControlFocusComponent } from "app/shared/components/form";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 import { Subject } from "rxjs/Subject";
 
 @Component({
-    selector: 'customer-form',
-    styleUrls: ['./customer-form.component.scss'],
-    templateUrl: './customer-form.component.html'
+    selector: "customer-form",
+    styleUrls: ["./customer-form.component.scss"],
+    templateUrl: "./customer-form.component.html",
 })
-export class CustomerFormComponent extends CustomerFormBase implements OnInit, OnDestroy, AfterViewInit {
+export class CustomerFormComponent
+    extends CustomerFormBase
+    implements OnInit, OnDestroy, AfterViewInit
+{
     public currentCustomer: PersonModel;
     public customerData: PersonModel;
     public formFields: Array<FieldFilter> = [];
@@ -74,7 +87,7 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     public globalNumberFormat: string = null;
     public dontShowControl: any = {
         idRepIsoCountryCode: true,
-        idRepLanguage: true
+        idRepLanguage: true,
     };
     public showLoading = false;
     public showDialog = false;
@@ -91,7 +104,13 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     private doubletCheckRequestStateSubcription: Subscription;
     private subject: Subject<any> = new Subject();
 
-    private MATCHING_DATA_FIELDS = ['idRepIsoCountryCode', 'firstName', 'lastName', 'street', 'zip'];
+    private MATCHING_DATA_FIELDS = [
+        "idRepIsoCountryCode",
+        "firstName",
+        "lastName",
+        "street",
+        "zip",
+    ];
     private _canSearchMatchingData = false;
     public needToCheckMatchingData = false;
 
@@ -99,15 +118,16 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     private loadedDefaultData: any = {
         getListComboBox: false,
         getMandatoryField: false,
-        getCustomerLabel: false
+        getCustomerLabel: false,
     };
 
     //#region Input, Output
     @Output() outputData: EventEmitter<any> = new EventEmitter();
-    @Output() outputFormFields: EventEmitter<FieldFilter[]> = new EventEmitter();
+    @Output() outputFormFields: EventEmitter<FieldFilter[]> =
+        new EventEmitter();
 
     @Input() searchIndexKey: string;
-    @Input() isVerticalLayout = false;//True: use for ODE
+    @Input() isVerticalLayout = false; //True: use for ODE
     @Input() tabID: string;
 
     @Input() set data(data: any) {
@@ -125,11 +145,14 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     }
     //#endregion
 
-    @ViewChild('idRepIsoCountryCode') idRepIsoCountryCodeCombobox: AngularMultiSelect;
-    @ViewChild('dateOfBirth') dateOfBirth: DatePickerComponent;
-    @ViewChild('matchingCustomerDataDialog') matchingCustomerDataDialog: MatchingCustomerDataDialogComponent;
-    @ViewChild(XnFormFgAddressComponent) xnFormFgAddressComponent: XnFormFgAddressComponent;
-    @ViewChild('focusControl') focusControl: ControlFocusComponent;
+    @ViewChild("idRepIsoCountryCode")
+    idRepIsoCountryCodeCombobox: AngularMultiSelect;
+    @ViewChild("dateOfBirth") dateOfBirth: DatePickerComponent;
+    @ViewChild("matchingCustomerDataDialog")
+    matchingCustomerDataDialog: MatchingCustomerDataDialogComponent;
+    @ViewChild(XnFormFgAddressComponent)
+    xnFormFgAddressComponent: XnFormFgAddressComponent;
+    @ViewChild("focusControl") focusControl: ControlFocusComponent;
 
     constructor(
         public hotKeySettingService: HotKeySettingService,
@@ -156,13 +179,45 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
         this.isAutoBuildMandatoryField = true;
 
-        this.moduleToPersonTypeState = this.store.select(state => commonReducer.getCommonState(state, this.ofModule.moduleNameTrim).moduleToPersonType);
-        this.globalPropertiesState = store.select(state => this.propertyPanelReducer.getPropertyPanelState(state, this.moduleList.Base.moduleNameTrim).globalProperties);
-        this.customerMandatoryFieldState = this.store.select(state => dataEntryReducer.getDataEntryState(state, this.tabID).customerMandatoryField);
-        this.doubletCheckRequestState = this.store.select(state => dataEntryReducer.getDataEntryState(state, this.tabID).doubletCheckRequest);
+        this.moduleToPersonTypeState = this.store.select(
+            (state) =>
+                commonReducer.getCommonState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).moduleToPersonType
+        );
+        this.globalPropertiesState = store.select(
+            (state) =>
+                this.propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    this.moduleList.Base.moduleNameTrim
+                ).globalProperties
+        );
+        this.customerMandatoryFieldState = this.store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(state, this.tabID)
+                    .customerMandatoryField
+        );
+        this.doubletCheckRequestState = this.store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(state, this.tabID)
+                    .doubletCheckRequest
+        );
 
-        this.formEditModeState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditMode);
-        this.formEditDataState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditData);
+        this.formEditModeState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditMode
+        );
+        this.formEditDataState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditData
+        );
     }
 
     public ngOnInit() {
@@ -189,23 +244,35 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     }
 
     public onCallSubmit(event?: any) {
-        this.formGroup['submitted'] = true;
+        this.formGroup["submitted"] = true;
         this.formGroup.updateValueAndValidity();
     }
 
     public onCountryChanged() {
-        if (!this.idRepIsoCountryCodeCombobox || !this.idRepIsoCountryCodeCombobox.selectedItem) return;
+        if (
+            !this.idRepIsoCountryCodeCombobox ||
+            !this.idRepIsoCountryCodeCombobox.selectedItem
+        )
+            return;
 
-        this.countrySelectedItem = this.idRepIsoCountryCodeCombobox.selectedItem;
+        this.countrySelectedItem =
+            this.idRepIsoCountryCodeCombobox.selectedItem;
         this.buildRegexForField(this.countrySelectedItem);
         this.buildHotKey(this.countrySelectedItem.sharingAddressHiddenFields);
         this.buildDateOfBirthFormat();
         this.onCountryChangedHandler(this.countrySelectedItem);
-        if (this.formGroup.controls['isoCode']) {
-            this.formGroup.controls['isoCode'].setValue(this.countrySelectedItem.isoCode);
-            this.formGroup.controls['isoCode'].markAsPristine();
+        if (this.formGroup.controls["isoCode"]) {
+            this.formGroup.controls["isoCode"].setValue(
+                this.countrySelectedItem.isoCode
+            );
+            this.formGroup.controls["isoCode"].markAsPristine();
         }
-        this.store.dispatch(this.comActions.changeCountryCode(this.idRepIsoCountryCodeCombobox.selectedItem, this.ofModule));
+        this.store.dispatch(
+            this.comActions.changeCountryCode(
+                this.idRepIsoCountryCodeCombobox.selectedItem,
+                this.ofModule
+            )
+        );
     }
 
     public getCommOutputData(eventData) {
@@ -220,9 +287,8 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
     public submit(event?: any) {
         this.formGroup.updateValueAndValidity();
-        this.formGroup['submitted'] = true;
-        if (this.isVerticalLayout)
-            return;
+        this.formGroup["submitted"] = true;
+        if (this.isVerticalLayout) return;
         try {
             if (!this.isValid()) {
                 this.setOutputData(false);
@@ -233,32 +299,45 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
                 return;
             }
             this.checkMatchingDataBeforeSaveData();
-        } catch (ex) { }
+        } catch (ex) {}
     }
 
     public callBackAfterEnterWhenLastItemHandler($event) {
         if (this.isMatchingDataDirty()) {
             if (Configuration.PublicSettings.callODEDoublet) {
                 this.callMatchingData();
-            }
-            else {
+            } else {
                 this.focusControl.executeBehaviorInLastCustomerItem();
             }
         }
     }
 
     private callMatchingDataWithWaitForLoaingDataTimeout: any;
-    private callMatchingDataWithWaitForLoaingData(forceSaveODE: boolean, numofCalling?: number) {
-        if (!this.isRenderForm || !this.formGroup || !this.formGroup.value || !this.formGroup.value.idRepIsoCountryCode) {
+    private callMatchingDataWithWaitForLoaingData(
+        forceSaveODE: boolean,
+        numofCalling?: number
+    ) {
+        if (
+            !this.isRenderForm ||
+            !this.formGroup ||
+            !this.formGroup.value ||
+            !this.formGroup.value.idRepIsoCountryCode
+        ) {
             clearTimeout(this.callMatchingDataWithWaitForLoaingDataTimeout);
             this.callMatchingDataWithWaitForLoaingDataTimeout = null;
 
             numofCalling = numofCalling || 1;
             if (numofCalling > 30) return;
 
-            this.callMatchingDataWithWaitForLoaingDataTimeout = setTimeout(() => {
-                this.callMatchingDataWithWaitForLoaingData(forceSaveODE, ++numofCalling);
-            }, 300);
+            this.callMatchingDataWithWaitForLoaingDataTimeout = setTimeout(
+                () => {
+                    this.callMatchingDataWithWaitForLoaingData(
+                        forceSaveODE,
+                        ++numofCalling
+                    );
+                },
+                300
+            );
 
             return;
         }
@@ -268,13 +347,20 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
     private isForceSaveODE: boolean;
     private callMatchingData(forceSaveODE?: boolean) {
-        if (!this.isRenderForm || !this.formGroup || !this.formGroup.value || !this.formGroup.value.idRepIsoCountryCode) return;
+        if (
+            !this.isRenderForm ||
+            !this.formGroup ||
+            !this.formGroup.value ||
+            !this.formGroup.value.idRepIsoCountryCode
+        )
+            return;
 
         this.isForceSaveODE = forceSaveODE;
         this._canSearchMatchingData = false;
         this.showLoading = true;
 
-        this.commonService.matchingCustomerData(this.prepareMatchingData())
+        this.commonService
+            .matchingCustomerData(this.prepareMatchingData())
             .subscribe((response) => {
                 this.appErrorHandler.executeAction(() => {
                     this.showLoading = false;
@@ -283,9 +369,13 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
                         //Customer on ODE
                         if (this.isVerticalLayout) {
                             if (forceSaveODE)
-                                this.store.dispatch(this._dataEntryActions.dataEntryCustomerMatchedDataChanged({ forceSaveODE: true }, this.tabID));
-                        }
-                        else {
+                                this.store.dispatch(
+                                    this._dataEntryActions.dataEntryCustomerMatchedDataChanged(
+                                        { forceSaveODE: true },
+                                        this.tabID
+                                    )
+                                );
+                        } else {
                             this.focusControl.executeBehaviorInLastCustomerItem();
                         }
                         return;
@@ -306,7 +396,8 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
     private searchCustomerDoublet(arrayPersonNr: Array<string>) {
         //arrayPersonNr = ["83471", "7904", '7881', '7882', '113922'];
-        this.searchService.searchCustomerDoublet(arrayPersonNr)
+        this.searchService
+            .searchCustomerDoublet(arrayPersonNr)
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!response.item) return;
@@ -314,7 +405,11 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
                     this.showDialog = true;
                     setTimeout(() => {
                         if (this.matchingCustomerDataDialog) {
-                            const dataResult = this.datatableService.buildDataSourceFromEsSearchResult(response, 1);
+                            const dataResult =
+                                this.datatableService.buildDataSourceFromEsSearchResult(
+                                    response,
+                                    1
+                                );
                             if (dataResult.data && dataResult.data.length) {
                                 const array1 = [];
                                 const array2 = [];
@@ -323,29 +418,36 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
                                     let found = false;
                                     if (item.IdPerson == item.IdPersonMaster) {
                                         found = true;
-                                    }
-                                    else {
+                                    } else {
                                         //Can't find parent
-                                        if (!dataResult.data.find(f => f.IdPerson == item.IdPersonMaster)) {
+                                        if (
+                                            !dataResult.data.find(
+                                                (f) =>
+                                                    f.IdPerson ==
+                                                    item.IdPersonMaster
+                                            )
+                                        ) {
                                             found = true;
                                         }
                                     }
                                     if (found) {
                                         item.IdPersonMaster = null;
                                         array2.push(item);
-                                    }
-                                    else {
+                                    } else {
                                         array1.push(item);
                                     }
                                 });
                                 dataResult.data = array2.concat(array1);
 
-                                dataResult.autoGroupColumnDef = new AutoGroupColumnDefModel({
-                                    headerName: 'Id Person',
-                                    width: 35,
-                                    isFitColumn: true
-                                });
-                                this.matchingCustomerDataDialog.onShowDialog(dataResult);
+                                dataResult.autoGroupColumnDef =
+                                    new AutoGroupColumnDefModel({
+                                        headerName: "Id Person",
+                                        width: 35,
+                                        isFitColumn: true,
+                                    });
+                                this.matchingCustomerDataDialog.onShowDialog(
+                                    dataResult
+                                );
                             }
                         }
                     }, 300);
@@ -357,9 +459,14 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
         try {
             //Customer on ODE
             if (this.isVerticalLayout) {
-                if (!this._canSearchMatchingData || !this.formGroup.value.idRepIsoCountryCode) return false;
+                if (
+                    !this._canSearchMatchingData ||
+                    !this.formGroup.value.idRepIsoCountryCode
+                )
+                    return false;
 
-                const addressControl = (<any>this.formGroup.controls['address']).controls;
+                const addressControl = (<any>this.formGroup.controls["address"])
+                    .controls;
                 let countValue = 0;
 
                 if (!!this.formGroup.value.firstName) countValue++;
@@ -368,22 +475,26 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
                 if (countValue < 2) return false;
 
-                return addressControl.street.dirty || addressControl.zip.dirty
-                    || this.formGroup.controls['idRepIsoCountryCode'].dirty
-                    || this.formGroup.controls['firstName'].dirty
-                    || this.formGroup.controls['lastName'].dirty;
-            }
-            else {
+                return (
+                    addressControl.street.dirty ||
+                    addressControl.zip.dirty ||
+                    this.formGroup.controls["idRepIsoCountryCode"].dirty ||
+                    this.formGroup.controls["firstName"].dirty ||
+                    this.formGroup.controls["lastName"].dirty
+                );
+            } else {
                 //idPerson = null && personNr != null -> person from DB Mailling
-                if (!this.formGroup.value.idPerson && this.formGroup.value.personNr
-                    && !!this.formGroup.value.idRepIsoCountryCode
-                    && !!this.formGroup.value.firstName
-                    && !!this.formGroup.value.lastName
+                if (
+                    !this.formGroup.value.idPerson &&
+                    this.formGroup.value.personNr &&
+                    !!this.formGroup.value.idRepIsoCountryCode &&
+                    !!this.formGroup.value.firstName &&
+                    !!this.formGroup.value.lastName
                 ) {
                     return true;
                 }
             }
-        } catch (ex) { }
+        } catch (ex) {}
 
         return false;
     }
@@ -396,11 +507,22 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
         this.showDialog = false;
         if (this.isVerticalLayout && !isPrevented) {
             if (this.isForceSaveODE)
-                this.store.dispatch(this._dataEntryActions.dataEntryCustomerMatchedDataChanged({ forceSaveODE: true }, this.tabID));
-            else
-                this.focusControl.executeBehaviorInLastCustomerItem();
+                this.store.dispatch(
+                    this._dataEntryActions.dataEntryCustomerMatchedDataChanged(
+                        { forceSaveODE: true },
+                        this.tabID
+                    )
+                );
+            else this.focusControl.executeBehaviorInLastCustomerItem();
         } else {
-            this.store.dispatch(this._tabButtonActions.setCommandDisable(this.ofModule, [{ save: false }, { saveAndNew: false }, { saveAndClose: false }, { saveAndNext: false }]));
+            this.store.dispatch(
+                this._tabButtonActions.setCommandDisable(this.ofModule, [
+                    { save: false },
+                    { saveAndNew: false },
+                    { saveAndClose: false },
+                    { saveAndNext: false },
+                ])
+            );
         }
     }
 
@@ -410,7 +532,7 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
     keypress($event) {
         const valueKeypress = $event && $event.target && $event.target.value;
-        if (valueKeypress === '') {
+        if (valueKeypress === "") {
             this.formGroup.value.dateOfBirth = valueKeypress;
         }
     }
@@ -420,24 +542,37 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
             this.needToCheckMatchingData = false;
             this.showDialog = false;
             this.setOutputData(null);
-            this.store.dispatch(this._dataEntryActions.dataEntryCustomerMatchedDataChanged($event, this.tabID));
+            this.store.dispatch(
+                this._dataEntryActions.dataEntryCustomerMatchedDataChanged(
+                    $event,
+                    this.tabID
+                )
+            );
         } else {
             // Close new form
-            this.store.dispatch(this._tabButtonActions.requestCancel(this.ofModule, true));
+            this.store.dispatch(
+                this._tabButtonActions.requestCancel(this.ofModule, true)
+            );
             // add to parked Item
-            this.store.dispatch(this._processDataActions.requestAddToParkedItems($event, this.ofModule, { thenSelect: true, idName: 'idPerson' }));
+            this.store.dispatch(
+                this._processDataActions.requestAddToParkedItems(
+                    $event,
+                    this.ofModule,
+                    { thenSelect: true, idName: "idPerson" }
+                )
+            );
         }
     }
 
     public dateOfBirthChanged(): void {
-        const dayOfBirth = this.formGroup.controls['dateOfBirth'].value;
+        const dayOfBirth = this.formGroup.controls["dateOfBirth"].value;
         if (dayOfBirth) {
-            const bdDay = this.uti.formatLocale(dayOfBirth, 'dd');
-            const bdMonth = this.uti.formatLocale(dayOfBirth, 'MM');
-            const bdYear = this.uti.formatLocale(dayOfBirth, 'yyyy');
-            this.formGroup.controls['bdDay'].setValue(bdDay);
-            this.formGroup.controls['bdMonth'].setValue(bdMonth);
-            this.formGroup.controls['bdYear'].setValue(bdYear);
+            const bdDay = this.uti.formatLocale(dayOfBirth, "dd");
+            const bdMonth = this.uti.formatLocale(dayOfBirth, "MM");
+            const bdYear = this.uti.formatLocale(dayOfBirth, "yyyy");
+            this.formGroup.controls["bdDay"].setValue(bdDay);
+            this.formGroup.controls["bdMonth"].setValue(bdMonth);
+            this.formGroup.controls["bdYear"].setValue(bdYear);
 
             this.validateBirthDay(bdDay, bdMonth, bdYear);
         }
@@ -446,13 +581,17 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
     //#region Public Methods
     public getFormValue() {
-        return merge(this.formGroup.value, { 'Communications': this.commOutputData });
+        return merge(this.formGroup.value, {
+            Communications: this.commOutputData,
+        });
     }
 
     public getTitle(idRepTitle: any) {
-        let title: any = '';
+        let title: any = "";
         if (this.listComboBox && this.listComboBox.title) {
-            title = this.listComboBox.title.find(x => x.idValue == idRepTitle);
+            title = this.listComboBox.title.find(
+                (x) => x.idValue == idRepTitle
+            );
             if (title) {
                 return title.textValue;
             }
@@ -463,62 +602,80 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
     public prepareSubmitData() {
         const model = this.formGroup.value;
-        if (!model || !model.address || !this.currentCustomer)
-            return null;
+        if (!model || !model.address || !this.currentCustomer) return null;
 
         return {
-            'Person': {
-                'IdPerson': this.getUnEmptyValue(model['idPerson']),
-                'Notes': model.notes,
-                'IsMatch': Uti.toBoolean(model.isMatch),
-                'IsActive': Uti.toBoolean(model.isActive)
+            Person: {
+                IdPerson: this.getUnEmptyValue(model["idPerson"]),
+                Notes: model.notes,
+                IsMatch: Uti.toBoolean(model.isMatch),
+                IsActive: Uti.toBoolean(model.isActive),
             },
-            'PersonTypeGw': {
-                'IdRepPersonType': this.mapMenuIdToPersonTypeId['2'], // Customer
-                'IdPersonTypeGw': this.getUnEmptyValue(model['idPersonTypeGw'])
+            PersonTypeGw: {
+                IdRepPersonType: this.mapMenuIdToPersonTypeId["2"], // Customer
+                IdPersonTypeGw: this.getUnEmptyValue(model["idPersonTypeGw"]),
             },
-            'SharingName': {
-                'IdRepTitleOfCourtesy': null,
-                'IdRepTitle': Uti.isNullUndefinedEmptyObject(model.idRepTitle) ? null : model.idRepTitle,
-                'LastName': model.lastName,
-                'FirstName': model.firstName,
-                'NameAddition': model.nameAddition,
-                'IdSharingName': this.getUnEmptyValue(model['idSharingName'])
+            SharingName: {
+                IdRepTitleOfCourtesy: null,
+                IdRepTitle: Uti.isNullUndefinedEmptyObject(model.idRepTitle)
+                    ? null
+                    : model.idRepTitle,
+                LastName: model.lastName,
+                FirstName: model.firstName,
+                NameAddition: model.nameAddition,
+                IdSharingName: this.getUnEmptyValue(model["idSharingName"]),
             },
-            'SharingAddress': {
-                'IdRepLanguage': model.idRepLanguage,
-                'IdRepIsoCountryCode': model.idRepIsoCountryCode,
-                'Street': model.address.street,
-                'StreetNr': model.address.streetNr,
-                'StreetAddition1': model.address.streetAddition1,
-                'StreetAddition2': model.address.streetAddition2,
-                'IdRepPoBox': model.address.idRepPoBox,
-                'PoboxLabel': model.address.poboxLabel,
-                'Zip': model.address.zip,
-                'Zip2': model.address.zip2,
-                'Place': model.address.place,
-                'Area': model.address.area,
-                'IdSharingAddress': this.getUnEmptyValue(model['idSharingAddress'])
+            SharingAddress: {
+                IdRepLanguage: model.idRepLanguage,
+                IdRepIsoCountryCode: model.idRepIsoCountryCode,
+                Street: model.address.street,
+                StreetNr: model.address.streetNr,
+                StreetAddition1: model.address.streetAddition1,
+                StreetAddition2: model.address.streetAddition2,
+                IdRepPoBox: model.address.idRepPoBox,
+                PoboxLabel: model.address.poboxLabel,
+                Zip: model.address.zip,
+                Zip2: model.address.zip2,
+                Place: model.address.place,
+                Area: model.address.area,
+                IdSharingAddress: this.getUnEmptyValue(
+                    model["idSharingAddress"]
+                ),
             },
-            'PersonInterface': {
-                'IdRepAddressType': '1',
-                'IsMainRecord': true,
-                'IdPersonInterface': this.getUnEmptyValue(model['idPersonInterface'])
+            PersonInterface: {
+                IdRepAddressType: "1",
+                IsMainRecord: true,
+                IdPersonInterface: this.getUnEmptyValue(
+                    model["idPersonInterface"]
+                ),
             },
-            'PersonMasterData': {
-                'DateOfBirth': model.dateOfBirth && this.getUnEmptyStringDoB(model.dateOfBirth) ? this.datePipe.transform(model.dateOfBirth, this.consts.dateFormatInDataBase) : '',
-                'IsActive': true,
-                'IdPersonMasterData': this.getUnEmptyValue(model['idPersonMasterData'])
+            PersonMasterData: {
+                DateOfBirth:
+                    model.dateOfBirth &&
+                    this.getUnEmptyStringDoB(model.dateOfBirth)
+                        ? this.datePipe.transform(
+                              model.dateOfBirth,
+                              this.consts.dateFormatInDataBase
+                          )
+                        : "",
+                IsActive: true,
+                IdPersonMasterData: this.getUnEmptyValue(
+                    model["idPersonMasterData"]
+                ),
             },
-            'PersonStatus': {
-                'IdRepPersonStatus': this.getUnEmptyValue(model.idRepPersonStatus),
-                'IsActive': true,
-                'IdPersonStatus': this.getUnEmptyValue(model['idPersonStatus'])
+            PersonStatus: {
+                IdRepPersonStatus: this.getUnEmptyValue(
+                    model.idRepPersonStatus
+                ),
+                IsActive: true,
+                IdPersonStatus: this.getUnEmptyValue(model["idPersonStatus"]),
             },
-            'PersonAlias': {
-                'PersonAliasNr': 'default'
+            PersonAlias: {
+                PersonAliasNr: "default",
             },
-            'Communications': this.makeCommunicationSavingData(this.getUnEmptyValue(model['idPersonInterface']))
+            Communications: this.makeCommunicationSavingData(
+                this.getUnEmptyValue(model["idPersonInterface"])
+            ),
         };
     }
 
@@ -548,7 +705,7 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
             mappedData: mappedData,
             isValid: isFormValid,
             isDirty: isFormDirty,
-            needToCheckMatchingData: this.needToCheckMatchingData
+            needToCheckMatchingData: this.needToCheckMatchingData,
         });
     }
 
@@ -564,20 +721,22 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
             isValid: true,
             isDirty: false,
             formValue: this.formGroup.value,
-            customData: this.getFormModel()
+            customData: this.getFormModel(),
         });
     }
 
     public callBackWhenInvalidCharacterHandler() {
         if (!this.isVerticalLayout) return;
-        this.modalService.warningMessage([{
-            key: 'Modal_Message__Please_Input_Area_Without_Character',
-            callBack: () => {
-                setTimeout(() => {
-                    $('#area', this.el.nativeElement).focus();
-                }, 300);
-            }
-        }]);
+        this.modalService.warningMessage([
+            {
+                key: "Modal_Message__Please_Input_Area_Without_Character",
+                callBack: () => {
+                    setTimeout(() => {
+                        $("#area", this.el.nativeElement).focus();
+                    }, 300);
+                },
+            },
+        ]);
     }
     //#endregion
 
@@ -586,7 +745,8 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     private setOutputData(submitResult: any, returnID?: any) {
         this.setValueForOutputModel(submitResult, returnID);
         this.outputModel.customData = this.getFormModel();
-        this.outputModel.customData.originalCustomerData = this.addressFGData.updateData;
+        this.outputModel.customData.originalCustomerData =
+            this.addressFGData.updateData;
         this.outputData.emit(this.outputModel);
     }
 
@@ -603,13 +763,20 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     }
 
     private subcribeRequestSaveState() {
-        this.dispatcherSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI && (!action.area || action.area == this.tabID);
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.submit();
+        this.dispatcherSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE &&
+                    action.module.idSettingsGUI ==
+                        this.ofModule.idSettingsGUI &&
+                    (!action.area || action.area == this.tabID)
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.submit();
+                });
             });
-        });
     }
 
     private subscribeCustContactForm() {
@@ -620,7 +787,12 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
             .debounceTime(this.consts.valueChangeDeboundTimeDefault)
             .subscribe((data) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!(this.formGroup.pristine && this.formGroup.untouched) || this.isVerticalLayout) {
+                    if (
+                        !(
+                            this.formGroup.pristine && this.formGroup.untouched
+                        ) ||
+                        this.isVerticalLayout
+                    ) {
                         this.makeValidationForFormControl();
                         this.toggleMatchingSearch();
                         this.setMatchingDataDirty();
@@ -631,23 +803,27 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     }
 
     private subscribeCustomerMandatoryFieldChanged() {
-        this.customerMandatoryFieldStateSubscription = this.customerMandatoryFieldState.subscribe((data: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (data) {
-                    this.rebuildRequireFields(data);
-                }
+        this.customerMandatoryFieldStateSubscription =
+            this.customerMandatoryFieldState.subscribe((data: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (data) {
+                        this.rebuildRequireFields(data);
+                    }
+                });
             });
-        });
     }
 
     private subscribeDoubletCheck() {
-        this.doubletCheckRequestStateSubcription = this.doubletCheckRequestState.subscribe((response) => {
-            this.appErrorHandler.executeAction(() => {
-                if (response && response.isCheck) {
-                    this.callMatchingDataWithWaitForLoaingData(response.forceSaveODE);
-                }
+        this.doubletCheckRequestStateSubcription =
+            this.doubletCheckRequestState.subscribe((response) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (response && response.isCheck) {
+                        this.callMatchingDataWithWaitForLoaingData(
+                            response.forceSaveODE
+                        );
+                    }
+                });
             });
-        });
     }
 
     private setMatchingDataDirty() {
@@ -661,44 +837,46 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     //#region Init Form
     private initFormData() {
         this.initForm({
-            idRepIsoCountryCode: '',
-            countryCode: '',
-            isoCode: '',
-            idRepLanguage: '',
-            idRepTitle: '',
-            title: '',
-            firstName: '',
-            lastName: '',
-            nameAddition: '',
-            idRepPersonStatus: '',
-            dateOfBirth: '',
-            communicationData: '',
+            idRepIsoCountryCode: "",
+            countryCode: "",
+            isoCode: "",
+            idRepLanguage: "",
+            idRepTitle: "",
+            title: "",
+            firstName: "",
+            lastName: "",
+            nameAddition: "",
+            idRepPersonStatus: "",
+            dateOfBirth: "",
+            communicationData: "",
             bdDay: 1,
             bdMonth: 1,
             isActive: true,
-            bdYear: (new Date()).getFullYear() - 18,
-            idPerson: '',
-            idPersonTypeGw: '',
-            idSharingName: '',
-            idSharingAddress: '',
-            idPersonInterface: '',
-            idPersonMasterData: '',
-            idPersonStatus: '',
-            personNr: '',
-            addressFormat: '',
-            notes: ''
+            bdYear: new Date().getFullYear() - 18,
+            idPerson: "",
+            idPersonTypeGw: "",
+            idSharingName: "",
+            idSharingAddress: "",
+            idPersonInterface: "",
+            idPersonMasterData: "",
+            idPersonStatus: "",
+            personNr: "",
+            addressFormat: "",
+            notes: "",
         });
 
         Uti.registerFormControlType(this.formGroup, {
-            dropdown: 'idRepIsoCountryCode;idRepLanguage;idRepTitle;idRepPersonStatus',
-            number: 'bdDay;bdMonth;bdYear',
-            datetime: 'dateOfBirth'
+            dropdown:
+                "idRepIsoCountryCode;idRepLanguage;idRepTitle;idRepPersonStatus",
+            number: "bdDay;bdMonth;bdYear",
+            datetime: "dateOfBirth",
         });
 
         Uti.setIsTextBoxForFormControl(this.formGroup, [
-            'firstName',
-            'lastName',
-            'nameAddition']);
+            "firstName",
+            "lastName",
+            "nameAddition",
+        ]);
 
         this.buildFormFields();
     }
@@ -708,104 +886,104 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
         this.formFields = [
             new FieldFilter({
-                fieldDisplayName: 'Iso Country Code',
-                fieldName: 'idRepIsoCountryCode',
+                fieldDisplayName: "Iso Country Code",
+                fieldName: "idRepIsoCountryCode",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Language',
-                fieldName: 'idRepLanguage',
+                fieldDisplayName: "Language",
+                fieldName: "idRepLanguage",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Gender',
-                fieldName: 'idRepTitle',
+                fieldDisplayName: "Gender",
+                fieldName: "idRepTitle",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'First Name',
-                fieldName: 'firstName',
+                fieldDisplayName: "First Name",
+                fieldName: "firstName",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Last Name',
-                fieldName: 'lastName',
+                fieldDisplayName: "Last Name",
+                fieldName: "lastName",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Name Addition',
-                fieldName: 'nameAddition',
+                fieldDisplayName: "Name Addition",
+                fieldName: "nameAddition",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Birthday',
-                fieldName: 'dateOfBirth',
+                fieldDisplayName: "Birthday",
+                fieldName: "dateOfBirth",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Area',
-                fieldName: 'area',
+                fieldDisplayName: "Area",
+                fieldName: "area",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Street',
-                fieldName: 'street',
+                fieldDisplayName: "Street",
+                fieldName: "street",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Street Number',
-                fieldName: 'streetNr',
+                fieldDisplayName: "Street Number",
+                fieldName: "streetNr",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Street Addition 1',
-                fieldName: 'streetAddition1',
+                fieldDisplayName: "Street Addition 1",
+                fieldName: "streetAddition1",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Street Addition 1',
-                fieldName: 'streetAddition1',
+                fieldDisplayName: "Street Addition 1",
+                fieldName: "streetAddition1",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Street Addition 2',
-                fieldName: 'streetAddition2',
+                fieldDisplayName: "Street Addition 2",
+                fieldName: "streetAddition2",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Zip',
-                fieldName: 'zip',
+                fieldDisplayName: "Zip",
+                fieldName: "zip",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Zip 2',
-                fieldName: 'zip2',
+                fieldDisplayName: "Zip 2",
+                fieldName: "zip2",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Pobox',
-                fieldName: 'idRepPoBox',
+                fieldDisplayName: "Pobox",
+                fieldName: "idRepPoBox",
                 selected: true,
                 isEditable: false,
             }),
             new FieldFilter({
-                fieldDisplayName: 'Place',
-                fieldName: 'place',
+                fieldDisplayName: "Place",
+                fieldName: "place",
                 selected: true,
                 isEditable: false,
             }),
@@ -819,90 +997,142 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
             if (!field.selected) {
                 if (this.formGroup.controls[field.fieldName]) {
                     this.formGroup.removeControl(field.fieldName);
-                    if (field.fieldName == 'dateOfBirth') {
-                        this.formGroup.removeControl('bdDay');
-                        this.formGroup.removeControl('bdMonth');
-                        this.formGroup.removeControl('bdYear');
+                    if (field.fieldName == "dateOfBirth") {
+                        this.formGroup.removeControl("bdDay");
+                        this.formGroup.removeControl("bdMonth");
+                        this.formGroup.removeControl("bdYear");
                     }
-                } else if (this.formGroup.contains('address') && this.formGroup.get('address.' + field.fieldName)) {
-                    (this.formGroup.get('address') as FormGroup).removeControl(field.fieldName);
+                } else if (
+                    this.formGroup.contains("address") &&
+                    this.formGroup.get("address." + field.fieldName)
+                ) {
+                    (this.formGroup.get("address") as FormGroup).removeControl(
+                        field.fieldName
+                    );
                 }
             } else {
                 switch (field.fieldName) {
-                    case 'idRepIsoCountryCode':
-                    case 'idRepLanguage':
-                    case 'idRepTitle':
-                    case 'firstName':
-                    case 'lastName':
-                    case 'nameAddition':
-                        this.formGroup.addControl(field.fieldName, new FormControl());
+                    case "idRepIsoCountryCode":
+                    case "idRepLanguage":
+                    case "idRepTitle":
+                    case "firstName":
+                    case "lastName":
+                    case "nameAddition":
+                        this.formGroup.addControl(
+                            field.fieldName,
+                            new FormControl()
+                        );
                         break;
 
-                    case 'dateOfBirth':
-                        this.formGroup.addControl(field.fieldName, new FormControl(''));
-                        this.formGroup.addControl('bdDay', new FormControl());
-                        this.formGroup.addControl('bdMonth', new FormControl());
-                        this.formGroup.addControl('bdYear', new FormControl());
+                    case "dateOfBirth":
+                        this.formGroup.addControl(
+                            field.fieldName,
+                            new FormControl("")
+                        );
+                        this.formGroup.addControl("bdDay", new FormControl());
+                        this.formGroup.addControl("bdMonth", new FormControl());
+                        this.formGroup.addControl("bdYear", new FormControl());
                         break;
 
                     default:
-                        if (this.formGroup.contains('address')) {
-                            (this.formGroup.get('address') as FormGroup).addControl(field.fieldName, new FormControl());
+                        if (this.formGroup.contains("address")) {
+                            (
+                                this.formGroup.get("address") as FormGroup
+                            ).addControl(field.fieldName, new FormControl());
                         }
                         break;
                 }
             }
-        });//forEach
+        }); //forEach
 
         this.formGroup.updateValueAndValidity();
         this.registerValueChangeForLitleControl();
         this.outputFormFields.emit(this.formFields);
 
-        if (this.focusControl)
-            this.focusControl.initControl(true);
+        if (this.focusControl) this.focusControl.initControl(true);
     }
 
     private registerValueChangeForLitleControl() {
-        if (this.formGroup.controls['idRepIsoCountryCode']) {
-            if (this.idRepIsoCountryCodeValuesChangedSubscription) this.idRepIsoCountryCodeValuesChangedSubscription.unsubscribe();
+        if (this.formGroup.controls["idRepIsoCountryCode"]) {
+            if (this.idRepIsoCountryCodeValuesChangedSubscription)
+                this.idRepIsoCountryCodeValuesChangedSubscription.unsubscribe();
 
-            this.idRepIsoCountryCodeValuesChangedSubscription = this.formGroup.controls['idRepIsoCountryCode'].valueChanges
-                .debounceTime(this.consts.valueChangeDeboundTimeDefault)
-                .subscribe(() => {
-                    this.appErrorHandler.executeAction(() => {
-                        if (!this.formGroup.controls['idRepIsoCountryCode'].dirty) return;
+            this.idRepIsoCountryCodeValuesChangedSubscription =
+                this.formGroup.controls["idRepIsoCountryCode"].valueChanges
+                    .debounceTime(this.consts.valueChangeDeboundTimeDefault)
+                    .subscribe(() => {
+                        this.appErrorHandler.executeAction(() => {
+                            if (
+                                !this.formGroup.controls["idRepIsoCountryCode"]
+                                    .dirty
+                            )
+                                return;
 
-                        setTimeout(() => {
-                            if (!this.formGroup.controls['idRepIsoCountryCode'].value ||
-                                this.formGroup.controls['idRepIsoCountryCode'].value.length <= 0) return;
+                            setTimeout(() => {
+                                if (
+                                    !this.formGroup.controls[
+                                        "idRepIsoCountryCode"
+                                    ].value ||
+                                    this.formGroup.controls[
+                                        "idRepIsoCountryCode"
+                                    ].value.length <= 0
+                                )
+                                    return;
 
-                            const filterCountry = (<Array<Country>>this.listComboBox.countryCode).find((item) => item.idValue === this.formGroup.controls['idRepIsoCountryCode'].value);
-                            this.formGroup.controls['countryCode'].setValue(filterCountry.textValue);
-                            this.formGroup.updateValueAndValidity();
+                                const filterCountry = (<Array<Country>>(
+                                    this.listComboBox.countryCode
+                                )).find(
+                                    (item) =>
+                                        item.idValue ===
+                                        this.formGroup.controls[
+                                            "idRepIsoCountryCode"
+                                        ].value
+                                );
+                                this.formGroup.controls["countryCode"].setValue(
+                                    filterCountry.textValue
+                                );
+                                this.formGroup.updateValueAndValidity();
+                            });
                         });
                     });
-                });
         }
 
-        if (this.formGroup.controls['idRepTitle']) {
-            if (this.customerFormIdRepTitleValuesChangeSubscription) this.customerFormIdRepTitleValuesChangeSubscription.unsubscribe();
+        if (this.formGroup.controls["idRepTitle"]) {
+            if (this.customerFormIdRepTitleValuesChangeSubscription)
+                this.customerFormIdRepTitleValuesChangeSubscription.unsubscribe();
 
-            this.customerFormIdRepTitleValuesChangeSubscription = this.formGroup.controls['idRepTitle'].valueChanges
-                .debounceTime(this.consts.valueChangeDeboundTimeDefault)
-                .subscribe(() => {
-                    this.appErrorHandler.executeAction(() => {
-                        if (!this.formGroup.controls['idRepTitle'].dirty) return;
+            this.customerFormIdRepTitleValuesChangeSubscription =
+                this.formGroup.controls["idRepTitle"].valueChanges
+                    .debounceTime(this.consts.valueChangeDeboundTimeDefault)
+                    .subscribe(() => {
+                        this.appErrorHandler.executeAction(() => {
+                            if (!this.formGroup.controls["idRepTitle"].dirty)
+                                return;
 
-                        setTimeout(() => {
-                            if (!this.formGroup.controls['idRepTitle'].value ||
-                                this.formGroup.controls['idRepTitle'].value.length <= 0) return;
+                            setTimeout(() => {
+                                if (
+                                    !this.formGroup.controls["idRepTitle"]
+                                        .value ||
+                                    this.formGroup.controls["idRepTitle"].value
+                                        .length <= 0
+                                )
+                                    return;
 
-                            const filterTitle = (<Array<Title>>this.listComboBox.title).find((item) => item.idValue === this.formGroup.controls['idRepTitle'].value);
-                            this.formGroup.controls['title'].setValue(filterTitle.textValue);
-                            this.formGroup.updateValueAndValidity();
+                                const filterTitle = (<Array<Title>>(
+                                    this.listComboBox.title
+                                )).find(
+                                    (item) =>
+                                        item.idValue ===
+                                        this.formGroup.controls["idRepTitle"]
+                                            .value
+                                );
+                                this.formGroup.controls["title"].setValue(
+                                    filterTitle.textValue
+                                );
+                                this.formGroup.updateValueAndValidity();
+                            });
                         });
                     });
-                });
         }
     }
     //#endregion
@@ -918,9 +1148,10 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
             ComboBoxTypeConstant.countryCode,
             ComboBoxTypeConstant.pOBox,
             ComboBoxTypeConstant.customerStatus,
-            ComboBoxTypeConstant.communicationTypeType
+            ComboBoxTypeConstant.communicationTypeType,
         ];
-        this.commonService.getListComboBox(comboBoxTypes.join())
+        this.commonService
+            .getListComboBox(comboBoxTypes.join())
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) return;
@@ -933,7 +1164,8 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
             });
 
         //Get Mandatory Fields
-        this._personService.getMandatoryField('Customer')
+        this._personService
+            .getMandatoryField("Customer")
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) return;
@@ -949,7 +1181,8 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
             });
 
         //Get Labels
-        this._personService.getPersonById('')
+        this._personService
+            .getPersonById("")
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) return;
@@ -959,21 +1192,30 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
                     //finished loading the data
                     this.loadedDefaultData.getCustomerLabel = true;
-                    this.regularExpressionData = Uti.getRegularExpressionData(this.currentCustomer);
+                    this.regularExpressionData = Uti.getRegularExpressionData(
+                        this.currentCustomer
+                    );
                     this.proccessForLoadDefaultDataFinished();
                 });
             });
     }
 
     private proccessForLoadDefaultDataFinished() {
-        if (!this.loadedDefaultData.getListComboBox ||
+        if (
+            !this.loadedDefaultData.getListComboBox ||
             !this.loadedDefaultData.getMandatoryField ||
-            !this.loadedDefaultData.getCustomerLabel) return;
+            !this.loadedDefaultData.getCustomerLabel
+        )
+            return;
 
         this.subscribeCustContactForm();
 
         //currentCustomer: customer Labels; customerData: updateData
-        this.initDataForAddressFG(this.currentCustomer, cloneDeep(this.customerData), true);
+        this.initDataForAddressFG(
+            this.currentCustomer,
+            cloneDeep(this.customerData),
+            true
+        );
         this.customerData = null;
 
         this.manageDisplayFormFields();
@@ -994,51 +1236,66 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     //#endregion
 
     private getUnEmptyValue(value) {
-        return value === '' ? null : value;
+        return value === "" ? null : value;
     }
 
     private getUnEmptyStringDoB(value) {
-        return value === '' ? '' : value;
+        return value === "" ? "" : value;
     }
 
     private checkMatchingDataBeforeSaveData() {
-        this.commonService.matchingCustomerData(this.prepareMatchingData())
-            .subscribe((response) => {
-                this.appErrorHandler.executeAction(() => {
-                    this.showLoading = false;
-                    let data: any = this.makeDataSourceData(response);
-                    if (!data || !data.length) {
-                        this.callSaveData();
-                        return;
-                    }
-                    if (this.formEditMode) {
-                        data = data.filter(x => x.IdPerson != this.mainId);
+        this.commonService
+            .matchingCustomerData(this.prepareMatchingData())
+            .subscribe(
+                (response) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.showLoading = false;
+                        let data: any = this.makeDataSourceData(response);
                         if (!data || !data.length) {
                             this.callSaveData();
                             return;
                         }
-                    }
-                    this.showDialog = true;
-                    setTimeout(() => {
-                        if (this.matchingCustomerDataDialog) {
-                            this.matchingCustomerDataDialog.onShowDialog({data}, this.formEditMode && this.ofModule.idSettingsGUI === MenuModuleId.customer);
+                        if (this.formEditMode) {
+                            data = data.filter(
+                                (x) => x.IdPerson != this.mainId
+                            );
+                            if (!data || !data.length) {
+                                this.callSaveData();
+                                return;
+                            }
                         }
-                    }, 300);
-                });
-            }, (err) => { }
+                        this.showDialog = true;
+                        setTimeout(() => {
+                            if (this.matchingCustomerDataDialog) {
+                                this.matchingCustomerDataDialog.onShowDialog(
+                                    { data },
+                                    this.formEditMode &&
+                                        this.ofModule.idSettingsGUI ===
+                                            MenuModuleId.customer
+                                );
+                            }
+                        }, 300);
+                    });
+                },
+                (err) => {}
             );
     }
 
     private callSaveData() {
-        this._personService[this.mainId ? "updatePerson" : "createPerson"](this.prepareSubmitData(), this.searchIndexKey)
-            .subscribe((data) => {
+        this._personService[this.mainId ? "updatePerson" : "createPerson"](
+            this.prepareSubmitData(),
+            this.searchIndexKey
+        ).subscribe(
+            (data) => {
                 this.appErrorHandler.executeAction(() => {
                     this.setOutputData(true, data.idPerson);
                     Uti.resetValueForForm(this.formGroup);
                 });
-            }, (err) => {
+            },
+            (err) => {
                 this.setOutputData(false);
-            });
+            }
+        );
     }
 
     private makeDataSourceData(rawData: any): Array<any> {
@@ -1050,28 +1307,29 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
 
     private makeCommunicationSavingData(idPersonInterface: any) {
         if (this.mainId && this.commOutputData && this.commOutputData.length) {
-            return this.commOutputData.map(x => {
+            return this.commOutputData.map((x) => {
                 return {
-                    'IdPersonInterface': idPersonInterface,
-                    'IdSharingCommunication': x.IdSharingCommunication,
-                    'IdRepCommunicationType': x.CommunicationType,
-                    'CommValue1': x.CommunicationValue,
-                    'Notes': x.CommunicationNote,
-                    'IsDeleted': x.IsDeleted
-                }
+                    IdPersonInterface: idPersonInterface,
+                    IdSharingCommunication: x.IdSharingCommunication,
+                    IdRepCommunicationType: x.CommunicationType,
+                    CommValue1: x.CommunicationValue,
+                    Notes: x.CommunicationNote,
+                    IsDeleted: x.IsDeleted,
+                };
             });
         }
         return this.commOutputData;
     }
 
     private prepareMatchingData(): any {
-        const addressControls = (<any>this.formGroup.controls['address']).controls;
+        const addressControls = (<any>this.formGroup.controls["address"])
+            .controls;
         return {
             firstName: this.formGroup.value.firstName,
             lastName: this.formGroup.value.lastName,
             street: addressControls.street.value,
             idRepIsoCountryCode: this.formGroup.value.idRepIsoCountryCode,
-            zip: addressControls.zip.value
+            zip: addressControls.zip.value,
         };
     }
     private buildRegexForField(selectedItem: any) {
@@ -1085,32 +1343,44 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
                 validationZipMaskFormat,
                 validationZipRegEx,
                 validationZip2MaskFormat,
-                validationZip2RegEx
+                validationZip2RegEx,
             });
         }
     }
     private buildHotKey(sharingAddressHiddenFields: any) {
         if (sharingAddressHiddenFields) {
-            let hiddenFields: Array<string> = sharingAddressHiddenFields.split(';');
+            let hiddenFields: Array<string> =
+                sharingAddressHiddenFields.split(";");
             if (hiddenFields) {
-                hiddenFields.forEach(hiddenField => {
-                    let key = hiddenField.charAt(0).toLowerCase() + hiddenField.slice(1);
-                    this.store.dispatch(this.hotKeySettingActions.addHotKeySetting(key, ''));
+                hiddenFields.forEach((hiddenField) => {
+                    let key =
+                        hiddenField.charAt(0).toLowerCase() +
+                        hiddenField.slice(1);
+                    this.store.dispatch(
+                        this.hotKeySettingActions.addHotKeySetting(key, "")
+                    );
                 });
             }
         }
     }
     private subcribeModuleToPersonTypeState() {
-        this.moduleToPersonTypeStateSubcription = this.moduleToPersonTypeState.subscribe((data: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.mapMenuIdToPersonTypeId = data;
+        this.moduleToPersonTypeStateSubcription =
+            this.moduleToPersonTypeState.subscribe((data: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.mapMenuIdToPersonTypeId = data;
+                });
             });
-        });
     }
 
     private executeGlobalProperties(globalProperties: any[]) {
-        this.globalDateFormat = this.propertyPanelService.buildGlobalInputDateFormatFromProperties(globalProperties);
-        this.globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(globalProperties);
+        this.globalDateFormat =
+            this.propertyPanelService.buildGlobalInputDateFormatFromProperties(
+                globalProperties
+            );
+        this.globalNumberFormat =
+            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                globalProperties
+            );
     }
 
     private executeFormFieldsData(formFields: FieldFilter[]) {
@@ -1121,11 +1391,14 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     }
 
     private execTransferTranslate(transferTranslate: Array<any>) {
-        if (!this.currentCustomer || !this.currentCustomer.idRepIsoCountryCode) return;
+        if (!this.currentCustomer || !this.currentCustomer.idRepIsoCountryCode)
+            return;
 
         for (let item in this.currentCustomer) {
             if (!this.currentCustomer[item]) continue;
-            this.currentCustomer[item]['displayValue'] = Uti.getTranslateTitle(transferTranslate, item) || this.currentCustomer[item]['displayValue'];
+            this.currentCustomer[item]["displayValue"] =
+                Uti.getTranslateTitle(transferTranslate, item) ||
+                this.currentCustomer[item]["displayValue"];
         }
     }
 
@@ -1146,17 +1419,19 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     }
 
     private rebuildRequireFields(data: any) {
-        Object.keys(this.formGroup.controls).forEach(y => {
-            data.forEach(x => {
+        Object.keys(this.formGroup.controls).forEach((y) => {
+            data.forEach((x) => {
                 if (x.Fieldname.toLowerCase() == y.toLowerCase()) {
-                    this.formGroup.controls[y].setValidators(Validators.required);
-                    this.formGroup.controls[y].setErrors({ 'required': true });
+                    this.formGroup.controls[y].setValidators(
+                        Validators.required
+                    );
+                    this.formGroup.controls[y].setErrors({ required: true });
                     this.formGroup.controls[y].updateValueAndValidity();
                     if (this.mandatoryColor)
                         this.mandatoryColor[y] = x.GroupsColor;
                 }
             });
-        })
+        });
     }
     //#endregion
 
@@ -1170,30 +1445,59 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     }
 
     private updateFormData(data: any) {
-        if (!this.isVerticalLayout || !this.formGroup || !data || !isObject(data)) return;
+        if (
+            !this.isVerticalLayout ||
+            !this.formGroup ||
+            !data ||
+            !isObject(data)
+        )
+            return;
         this.continueUpdateFormData(data);
     }
 
     private continueUpdateFormData(data: any) {
         Uti.resetValueForForm(this.formGroup);
         this.setDataForForm(data, [
-            'idRepIsoCountryCode', 'idRepLanguage', 'idRepTitle', 'firstName',
-            'lastName', 'nameAddition', 'idPerson', 'idPersonTypeGw',
-            'idSharingName', 'idSharingAddress', 'idPersonInterface',
-            'idPersonMasterData', 'idPersonStatus', 'isActive', 'personNr', 'addressFormat'
+            "idRepIsoCountryCode",
+            "idRepLanguage",
+            "idRepTitle",
+            "firstName",
+            "lastName",
+            "nameAddition",
+            "idPerson",
+            "idPersonTypeGw",
+            "idSharingName",
+            "idSharingAddress",
+            "idPersonInterface",
+            "idPersonMasterData",
+            "idPersonStatus",
+            "isActive",
+            "personNr",
+            "addressFormat",
         ]);
 
-        const dateOfBirth = data['dateOfBirth'];
-        if (dateOfBirth && dateOfBirth.value && dateOfBirth.value.length && this.formGroup.controls['dateOfBirth'])
-            this.formGroup.controls['dateOfBirth'].setValue(parse(dateOfBirth.value, 'dd.MM.yyyy', new Date()));
+        const dateOfBirth = data["dateOfBirth"];
+        if (
+            dateOfBirth &&
+            dateOfBirth.value &&
+            dateOfBirth.value.length &&
+            this.formGroup.controls["dateOfBirth"]
+        )
+            this.formGroup.controls["dateOfBirth"].setValue(
+                parse(dateOfBirth.value, "dd.MM.yyyy", new Date())
+            );
 
         if (this.isRenderForm) {
             //currentCustomer: customer Labels; data: updateData
             if (!this.currentCustomer) this.currentCustomer = data;
 
-            this.addressFGData = { updateData: data, mode: 1, listComboBox: this.listComboBox, parentFG: this.formGroup };
-        }
-        else {
+            this.addressFGData = {
+                updateData: data,
+                mode: 1,
+                listComboBox: this.listComboBox,
+                parentFG: this.formGroup,
+            };
+        } else {
             //wait for rendering customer form, 'customerData' used to update for AddressComponent
             //After passing to AddressComponent, it will be destroyed
             this.customerData = data;
@@ -1208,7 +1512,11 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     private setDataForForm(data: any, formControlNames: Array<string>) {
         for (let item of formControlNames) {
             if (!this.formGroup.controls[item] || !data[item]) continue;
-            this.formGroup.controls[item].setValue(Uti.isNullUndefinedEmptyObject(data[item].value) ? '' : data[item].value);
+            this.formGroup.controls[item].setValue(
+                Uti.isNullUndefinedEmptyObject(data[item].value)
+                    ? ""
+                    : data[item].value
+            );
             this.formGroup.markAsPristine();
         }
     }
@@ -1217,23 +1525,28 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     //#region Validate
     private validateBirthDay(day?: any, month?: any, year?: any) {
         if (!day) {
-            const dayOfBirth = this.formGroup.controls['dateOfBirth'].value;
+            const dayOfBirth = this.formGroup.controls["dateOfBirth"].value;
             if (dayOfBirth) {
-                day = this.uti.formatLocale(dayOfBirth, 'dd');
-                month = this.uti.formatLocale(dayOfBirth, 'MM');
-                year = this.uti.formatLocale(dayOfBirth, 'yyyy');
+                day = this.uti.formatLocale(dayOfBirth, "dd");
+                month = this.uti.formatLocale(dayOfBirth, "MM");
+                year = this.uti.formatLocale(dayOfBirth, "yyyy");
             }
         }
 
-        if (!(!day && !month && !year) &&
-            (!day || !month || !year || !this.isValidDate(day + '/' + month + '/' + year))) {
+        if (
+            !(!day && !month && !year) &&
+            (!day ||
+                !month ||
+                !year ||
+                !this.isValidDate(day + "/" + month + "/" + year))
+        ) {
             this.isInvalidBDDate = true;
         }
         this.isInvalidBDDate = false;
     }
 
     private isValidDate(s) {
-        const bits = s.split('/');
+        const bits = s.split("/");
         const y = bits[2],
             m = bits[1],
             d = bits[0];
@@ -1245,8 +1558,13 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
         if ((!(parseInt(y) % 4) && parseInt(y) % 100) || !(parseInt(y) % 400)) {
             daysInMonth[1] = 29;
         }
-        return y.length == 4 && parseInt(y) >= (new Date()).getFullYear() - 100 &&
-            !(/\D/.test(String(d))) && parseInt(d) > 0 && parseInt(d) <= daysInMonth[parseInt(m) - 1]
+        return (
+            y.length == 4 &&
+            parseInt(y) >= new Date().getFullYear() - 100 &&
+            !/\D/.test(String(d)) &&
+            parseInt(d) > 0 &&
+            parseInt(d) <= daysInMonth[parseInt(m) - 1]
+        );
     }
 
     //#endregion
@@ -1254,17 +1572,21 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     // #region [Edit Form]
 
     private subscribeFormEditModeState() {
-        this.formEditModeStateSubscription = this.formEditModeState.subscribe((formEditModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.formEditMode = formEditModeState;
-            });
-        });
+        this.formEditModeStateSubscription = this.formEditModeState.subscribe(
+            (formEditModeState: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.formEditMode = formEditModeState;
+                });
+            }
+        );
 
-        this.formEditDataStateSubscription = this.formEditDataState.subscribe((formEditDataState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.formEditData = formEditDataState;
-            });
-        });
+        this.formEditDataStateSubscription = this.formEditDataState.subscribe(
+            (formEditDataState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.formEditData = formEditDataState;
+                });
+            }
+        );
     }
 
     protected getEditData() {
@@ -1273,19 +1595,28 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
                 this.getEditData();
                 return;
             }
-            this._personService.getPersonById(this.mainId)
+            this._personService
+                .getPersonById(this.mainId)
                 .subscribe((response: ApiResultResponse) => {
                     this.appErrorHandler.executeAction(() => {
                         if (!Uti.isResquestSuccess(response)) return;
-                        const editingData = Uti.mapObjectValueToGeneralObject(response.item);
-                        Uti.setValueForFormWithStraightObject(this.formGroup, editingData, {
-                            dateOfBirth: 'datetime',
-                            dateFormatString: 'dd.MM.yyyy'
-                        });
+                        const editingData = Uti.mapObjectValueToGeneralObject(
+                            response.item
+                        );
+                        Uti.setValueForFormWithStraightObject(
+                            this.formGroup,
+                            editingData,
+                            {
+                                dateOfBirth: "datetime",
+                                dateFormatString: "dd.MM.yyyy",
+                            }
+                        );
                         this.formGroup.markAsPristine();
                         this.setOutputData(null);
-                        const noteValue = this.formGroup.get('notes').value;
-                        this.formGroup['leftCharacters'] = this.maxCharactersNotes - (noteValue ? noteValue.length : 0);
+                        const noteValue = this.formGroup.get("notes").value;
+                        this.formGroup["leftCharacters"] =
+                            this.maxCharactersNotes -
+                            (noteValue ? noteValue.length : 0);
                         setTimeout(() => {
                             this.makeValidationForFormControl();
                         });
@@ -1296,12 +1627,17 @@ export class CustomerFormComponent extends CustomerFormBase implements OnInit, O
     }
 
     private loadCommunicationData() {
-        this._personService.loadCommunication(this.mainId).subscribe((response) => {
-            this.appErrorHandler.executeAction(() => {
-                const tempDataSource = this.datatableService.buildEditableDataSource(response.data);
-                this.commInputputData = tempDataSource.data;
+        this._personService
+            .loadCommunication(this.mainId)
+            .subscribe((response) => {
+                this.appErrorHandler.executeAction(() => {
+                    const tempDataSource =
+                        this.datatableService.buildEditableDataSource(
+                            response.data
+                        );
+                    this.commInputputData = tempDataSource.data;
+                });
             });
-        });
     }
     // #endregion
 }

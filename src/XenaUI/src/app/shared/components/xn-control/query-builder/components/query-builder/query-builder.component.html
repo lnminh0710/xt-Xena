@@ -1,23 +1,23 @@
-<div *ngIf="parentData && !isRoot"
-     class="query-builder-condition">
-
+<div *ngIf="parentData && !isRoot" class="query-builder-condition">
     <!--<div>
         <span>{{parentData.condition}}</span>
     </div>-->
 
     <div [ngClass]="getClassName('switchGroup')" *ngIf="data">
-        <xn-combo-box #logicalOperator
-                      wjDropdownHelper
-                      class="custom-wj-input-control xn-select no-padding-left fix-width-control"
-                      [itemsSource]="listComboBox.LogicalOperatores"
-                      [displayMemberPath]="'textValue'"
-                      [selectedValuePath]="'idValue'"
-                      [isEditable]="true"
-                      [isRequired]="false"
-                      [(ngModel)]="data.condition"
-                      (gotFocus)="onLogicalOperatorFocus()"
-                      (selectedIndexChanged)="changeLogicalOperator()"
-                      placeholder="Please select">
+        <xn-combo-box
+            #logicalOperator
+            wjDropdownHelper
+            class="custom-wj-input-control xn-select no-padding-left fix-width-control"
+            [itemsSource]="listComboBox.LogicalOperatores"
+            [displayMemberPath]="'textValue'"
+            [selectedValuePath]="'idValue'"
+            [isEditable]="true"
+            [isRequired]="false"
+            [(ngModel)]="data.condition"
+            (gotFocus)="onLogicalOperatorFocus()"
+            (selectedIndexChanged)="changeLogicalOperator()"
+            placeholder="Please select"
+        >
         </xn-combo-box>
         <!--<div *ngIf="isReadOnly"
              class="padding-left--lg"
@@ -25,58 +25,84 @@
             <span class="font-size-16px">{{data.condition}}</span>
         </div>-->
     </div>
-
 </div>
-<div class="query-builder-container  padding-right--sd"
-     [ngClass]="{ 'read-only': isReadOnly,
-                    'padding-left-120px': !isRoot }">
-    <ng-container *ngIf="getButtonGroupTemplate() as template; else defaultButtonGroup">
+<div
+    class="query-builder-container padding-right--sd"
+    [ngClass]="{ 'read-only': isReadOnly, 'padding-left-120px': !isRoot }"
+>
+    <ng-container
+        *ngIf="getButtonGroupTemplate() as template; else defaultButtonGroup"
+    >
         <div [ngClass]="getClassName('buttonGroup')">
-            <ng-container *ngTemplateOutlet="template; context: getButtonGroupContext()"></ng-container>
+            <ng-container
+                *ngTemplateOutlet="template; context: getButtonGroupContext()"
+            ></ng-container>
         </div>
     </ng-container>
     <ng-template #defaultButtonGroup>
         <div [ngClass]="getClassName('buttonGroup')">
-            <button mat-raised-button color="primary" class="m-button" (click)="addRule()"
-                    *ngIf="!isReadOnly"
-                    data-toggle="tooltip"
-                    data-trigger="manual"
-                    title="Add Rule"
-                    [disabled]="!data">
+            <button
+                mat-raised-button
+                color="primary"
+                class="m-button"
+                (click)="addRule()"
+                *ngIf="!isReadOnly"
+                data-toggle="tooltip"
+                data-trigger="manual"
+                title="Add Rule"
+                [disabled]="!data"
+            >
                 <i class="fa fa-plus"></i>
             </button>
-            <button mat-raised-button color="primary" class="m-button" (click)="addRuleSet()"
-                    *ngIf="allowRuleset && !isReadOnly"
-                    data-toggle="tooltip"
-                    data-trigger="manual"
-                    title="Add Rule Set"
-                    [disabled]="!data">
+            <button
+                mat-raised-button
+                color="primary"
+                class="m-button"
+                (click)="addRuleSet()"
+                *ngIf="allowRuleset && !isReadOnly"
+                data-toggle="tooltip"
+                data-trigger="manual"
+                title="Add Rule Set"
+                [disabled]="!data"
+            >
                 <i class="fa fa-plus-circle"></i>
             </button>
 
-            <button mat-raised-button color="primary"
-                    class="m-button"
-                    (click)="openInfo()"
-                    *ngIf="!parentData"
-                    data-toggle="tooltip"
-                    data-trigger="manual"
-                    title="Information">
+            <button
+                mat-raised-button
+                color="primary"
+                class="m-button"
+                (click)="openInfo()"
+                *ngIf="!parentData"
+                data-toggle="tooltip"
+                data-trigger="manual"
+                title="Information"
+            >
                 <i class="fa fa-info-circle"></i>
             </button>
             <ng-container *ngIf="!!parentData">
-                <button mat-raised-button color="warn" class="m-button" (click)="removeRuleSet()"
-                        *ngIf="!isReadOnly"
-                        data-toggle="tooltip"
-                        data-trigger="manual"
-                        title="Remove Rule Set"
-                        [disabled]="!data || !data.condition">
+                <button
+                    mat-raised-button
+                    color="warn"
+                    class="m-button"
+                    (click)="removeRuleSet()"
+                    *ngIf="!isReadOnly"
+                    data-toggle="tooltip"
+                    data-trigger="manual"
+                    title="Remove Rule Set"
+                    [disabled]="!data || !data.condition"
+                >
                     <i class="fa fa-times"></i>
                 </button>
             </ng-container>
         </div>
     </ng-template>
-    <ng-container *ngIf="getSwitchGroupTemplate() as template; else defaultSwitchGroup">
-        <ng-container *ngTemplateOutlet="template; context: {$implicit: data}"></ng-container>
+    <ng-container
+        *ngIf="getSwitchGroupTemplate() as template; else defaultSwitchGroup"
+    >
+        <ng-container
+            *ngTemplateOutlet="template; context: { $implicit: data }"
+        ></ng-container>
     </ng-container>
     <ng-template #defaultSwitchGroup>
         <div style="height: 50px"></div>
@@ -102,121 +128,205 @@
         </div>-->
     </ng-template>
     <!-- <ul [ngClass]="[getClassName('queryTree'), data.condition]" *ngIf="data && data.rules"> -->
-    <ul [ngClass]="getClassName('queryTree')" *ngIf="data && data.rules"
+    <ul
+        [ngClass]="getClassName('queryTree')"
+        *ngIf="data && data.rules"
         [formFocus]="null"
-        [focusHandleStart]="focusHandleStart">
+        [focusHandleStart]="focusHandleStart"
+    >
         <ng-container *ngFor="let rule of data.rules; let idx = index">
-            <ng-container *ngIf="{ruleset: !!rule.rules, invalid: !config.allowEmptyRulesets && rule.rules && rule.rules.length === 0} as local">
+            <ng-container
+                *ngIf="{
+                    ruleset: !!rule.rules,
+                    invalid:
+                        !config.allowEmptyRulesets &&
+                        rule.rules &&
+                        rule.rules.length === 0
+                } as local"
+            >
                 <li [ngClass]="getQueryItemClassName(local)">
                     <ng-container *ngIf="!local.ruleset">
-                        <ng-container *ngIf="getRemoveButtonTemplate() as template; else defaultRemoveButton">
+                        <ng-container
+                            *ngIf="
+                                getRemoveButtonTemplate() as template;
+                                else defaultRemoveButton
+                            "
+                        >
                             <div [ngClass]="getClassName('buttonGroup')">
-                                <ng-container *ngTemplateOutlet="template; context: getRemoveButtonContext(rule)"></ng-container>
+                                <ng-container
+                                    *ngTemplateOutlet="
+                                        template;
+                                        context: getRemoveButtonContext(rule)
+                                    "
+                                ></ng-container>
                             </div>
                         </ng-container>
                         <ng-template #defaultRemoveButton>
                             <div [ngClass]="getClassName('buttonGroup')">
-                                <button mat-raised-button color="warn" class="remove-rule m-button" (click)="removeRule(rule, data)"
-                                        *ngIf="!isReadOnly"
-                                        data-toggle="tooltip"
-                                        data-trigger="manual"
-                                        title="Remove Rule">
+                                <button
+                                    mat-raised-button
+                                    color="warn"
+                                    class="remove-rule m-button"
+                                    (click)="removeRule(rule, data)"
+                                    *ngIf="!isReadOnly"
+                                    data-toggle="tooltip"
+                                    data-trigger="manual"
+                                    title="Remove Rule"
+                                >
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
                         </ng-template>
 
-                        <ng-container *ngIf="config.fields[rule.field].template else default">
-                            <dynamic-form [dynamicRulesType]="config.fields[rule.field].dynamicRulesType"
-                                          [template]="config.fields[rule.field].template"
-                                          [data]="rule"
-                                          (outputData)="updateValue($event, rule)">
+                        <ng-container
+                            *ngIf="
+                                config.fields[rule.field].template;
+                                else default
+                            "
+                        >
+                            <dynamic-form
+                                [dynamicRulesType]="
+                                    config.fields[rule.field].dynamicRulesType
+                                "
+                                [template]="config.fields[rule.field].template"
+                                [data]="rule"
+                                (outputData)="updateValue($event, rule)"
+                            >
                             </dynamic-form>
                         </ng-container>
                         <ng-template #default>
-                            <ng-container [ngSwitch]="getInputType(rule.field, rule.operator)">
-                                <age-filter *ngSwitchCase="'age-filter'"
-                                            [data]="rule.value"
-                                            [comboData]="listComboBoxRaw"
-                                            [condition]="rule.condition"
-                                            [index]="idx"
-                                            (conditionChanged)="conditionChanged($event, rule)"
-                                            (outputData)="updateValue($event, rule)"
-                                            (dataChange)="ageFilterDataChanged()">
+                            <ng-container
+                                [ngSwitch]="
+                                    getInputType(rule.field, rule.operator)
+                                "
+                            >
+                                <age-filter
+                                    *ngSwitchCase="'age-filter'"
+                                    [data]="rule.value"
+                                    [comboData]="listComboBoxRaw"
+                                    [condition]="rule.condition"
+                                    [index]="idx"
+                                    (conditionChanged)="
+                                        conditionChanged($event, rule)
+                                    "
+                                    (outputData)="updateValue($event, rule)"
+                                    (dataChange)="ageFilterDataChanged()"
+                                >
                                 </age-filter>
-                                <extended-filter *ngSwitchCase="'extended-filter'"
-                                                 [data]="rule.value"
-                                                 [comboData]="listComboBoxRaw"
-                                                 [condition]="rule.condition"
-                                                 [index]="idx"
-                                                 (conditionChanged)="conditionChanged($event, rule)"
-                                                 (outputData)="updateValue($event, rule)">
+                                <extended-filter
+                                    *ngSwitchCase="'extended-filter'"
+                                    [data]="rule.value"
+                                    [comboData]="listComboBoxRaw"
+                                    [condition]="rule.condition"
+                                    [index]="idx"
+                                    (conditionChanged)="
+                                        conditionChanged($event, rule)
+                                    "
+                                    (outputData)="updateValue($event, rule)"
+                                >
                                 </extended-filter>
                             </ng-container>
                         </ng-template>
                     </ng-container>
-                    <query-builder *ngIf="local.ruleset"
-                                   [data]="rule"
-                                   [comboData]="listComboBoxRaw"
-                                   [parentInputTemplates]="parentInputTemplates || inputTemplates"
-                                   [parentOperatorTemplate]="parentOperatorTemplate || operatorTemplate"
-                                   [parentFieldTemplate]="parentFieldTemplate || fieldTemplate"
-                                   [parentSwitchGroupTemplate]="parentSwitchGroupTemplate || switchGroupTemplate"
-                                   [parentButtonGroupTemplate]="parentButtonGroupTemplate || buttonGroupTemplate"
-                                   [parentRemoveButtonTemplate]="parentRemoveButtonTemplate || removeButtonTemplate"
-                                   [parentData]="data"
-                                   [config]="config"
-                                   [allowRuleset]="allowRuleset"
-                                   [operatorMap]="operatorMap"
-                                   [isReadOnly]="isReadOnly"
-                                   [isRoot]="false"
-                                   (onChanged)="onQueryBuilderChanged($event)">
+                    <query-builder
+                        *ngIf="local.ruleset"
+                        [data]="rule"
+                        [comboData]="listComboBoxRaw"
+                        [parentInputTemplates]="
+                            parentInputTemplates || inputTemplates
+                        "
+                        [parentOperatorTemplate]="
+                            parentOperatorTemplate || operatorTemplate
+                        "
+                        [parentFieldTemplate]="
+                            parentFieldTemplate || fieldTemplate
+                        "
+                        [parentSwitchGroupTemplate]="
+                            parentSwitchGroupTemplate || switchGroupTemplate
+                        "
+                        [parentButtonGroupTemplate]="
+                            parentButtonGroupTemplate || buttonGroupTemplate
+                        "
+                        [parentRemoveButtonTemplate]="
+                            parentRemoveButtonTemplate || removeButtonTemplate
+                        "
+                        [parentData]="data"
+                        [config]="config"
+                        [allowRuleset]="allowRuleset"
+                        [operatorMap]="operatorMap"
+                        [isReadOnly]="isReadOnly"
+                        [isRoot]="false"
+                        (onChanged)="onQueryBuilderChanged($event)"
+                    >
                     </query-builder>
-                    <p [ngClass]="getClassName('emptyWarning')" *ngIf="local.invalid">A ruleset cannot be empty. Please add a rule or remove it all together.</p>
+                    <p
+                        [ngClass]="getClassName('emptyWarning')"
+                        *ngIf="local.invalid"
+                    >
+                        A ruleset cannot be empty. Please add a rule or remove
+                        it all together.
+                    </p>
                 </li>
             </ng-container>
         </ng-container>
     </ul>
-
 </div>
 
-<div *ngIf="isReadOnly"
-     class="read-only-overlay">
-</div>
+<div *ngIf="isReadOnly" class="read-only-overlay"></div>
 
-<p-dialog *ngIf="showDialog"
-          [styleClass]="'xn-p-dialog-resizable'"
-          [(visible)]="showDialog"
-          [resizable]="true"
-          [draggable]="true"
-          modal="modal"
-          [width]="800"
-          responsive="true"
-          appendTo="body">
+<p-dialog
+    *ngIf="showDialog"
+    [styleClass]="'xn-p-dialog-resizable'"
+    [(visible)]="showDialog"
+    [resizable]="true"
+    [draggable]="true"
+    modal="modal"
+    [width]="800"
+    responsive="true"
+    appendTo="body"
+>
     <p-header>
         <div class="modal-header--information">
             <span class="fa fa-info-circle header-icon pull-left"></span>
-            <span class="header-text  pull-left"> <label-translation [keyword]="'QueryBuilder__Query_Detail'"></label-translation> </span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    (click)="showDialog = false">
+            <span class="header-text pull-left">
+                <label-translation
+                    [keyword]="'QueryBuilder__Query_Detail'"
+                ></label-translation>
+            </span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                (click)="showDialog = false"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <textarea *ngIf="showDialog"
-              style="width: 100%; min-height: 250px; height: 100%">{{data | json}}</textarea>
+    <textarea
+        *ngIf="showDialog"
+        style="width: 100%; min-height: 250px; height: 100%"
+        >{{ data | json }}</textarea
+    >
     <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix no-border no-padding">
-            <button type="button"
-                    mat-raised-button
-                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                    (click)="showDialog = false">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'QueryBuilder__Close'"></label-translation></span>
+        <div
+            class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix no-border no-padding"
+        >
+            <button
+                type="button"
+                mat-raised-button
+                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                (click)="showDialog = false"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'QueryBuilder__Close'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
-        <div class="widget-info__resize_bottom xn-icon__resize icon-black"></div>
+        <div
+            class="widget-info__resize_bottom xn-icon__resize icon-black"
+        ></div>
     </p-footer>
-
 </p-dialog>

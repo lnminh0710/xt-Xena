@@ -5,7 +5,7 @@ import { MaterialModule } from "../xn-control/light-material-ui/material.module"
 import { XnMenuBarComponent } from "./xn-menu-bar.component";
 import { XnDropdownModule } from "app/shared/directives/xn-dropdown/xn-dropdown.directive.module";
 import { LabelTranslationModule } from "app/shared/components/label-translation/label-translation.module";
-import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-translation';
+import { XnResourceTranslationModule } from "app/shared/directives/xn-resource-translation";
 
 @NgModule({
     imports: [
@@ -14,13 +14,9 @@ import { XnResourceTranslationModule } from 'app/shared/directives/xn-resource-t
         MaterialModule,
         LabelTranslationModule,
         XnResourceTranslationModule,
-        XnDropdownModule
+        XnDropdownModule,
     ],
-    declarations: [
-        XnMenuBarComponent
-    ],
-    exports: [
-        XnMenuBarComponent
-    ]
+    declarations: [XnMenuBarComponent],
+    exports: [XnMenuBarComponent],
 })
-export class XnMenuBarModule { }
+export class XnMenuBarModule {}

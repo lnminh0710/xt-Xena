@@ -1,13 +1,23 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    OnDestroy,
+    ChangeDetectorRef,
+    ElementRef,
+    ViewChild,
+} from "@angular/core";
 import { Uti } from "app/utilities";
-import { SearchService, DatatableService, AppErrorHandler } from 'app/services';
-import { Module } from 'app/models';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
+import { SearchService, DatatableService, AppErrorHandler } from "app/services";
+import { Module } from "app/models";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 
 @Component({
-    selector: 'gs-customer-detail',
-    styleUrls: ['./gs-customer-detail.component.scss'],
-    templateUrl: './gs-customer-detail.component.html'
+    selector: "gs-customer-detail",
+    styleUrls: ["./gs-customer-detail.component.scss"],
+    templateUrl: "./gs-customer-detail.component.html",
 })
 export class GlobalSearchCustomerDetailComponent implements OnInit, OnDestroy {
     public pageIndex: number = 1;
@@ -19,11 +29,10 @@ export class GlobalSearchCustomerDetailComponent implements OnInit, OnDestroy {
         private appErrorHandler: AppErrorHandler,
         private datatableService: DatatableService,
         private _changeDetectorRef: ChangeDetectorRef,
-        private elementRef: ElementRef) {
-    }
+        private elementRef: ElementRef
+    ) {}
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
@@ -51,7 +60,9 @@ export class GlobalSearchCustomerDetailComponent implements OnInit, OnDestroy {
     @Input() set changeColumnLayoutMasterDetail(val) {
         if (val && this.agGridComponent) {
             this.parentColumnSettings = val.columnsLayoutSettings;
-            this.agGridComponent.updateColumnStateForDetailGrid(val.columnsLayoutSettings);
+            this.agGridComponent.updateColumnStateForDetailGrid(
+                val.columnsLayoutSettings
+            );
         }
     }
 
@@ -65,35 +76,58 @@ export class GlobalSearchCustomerDetailComponent implements OnInit, OnDestroy {
             return;
         }
         //const keyword = '*';
-        const fieldName: Array<string> = ['matchingGroup'];
+        const fieldName: Array<string> = ["matchingGroup"];
         const fieldValue: Array<string> = [dataInfo.MatchingGroup];
 
-        const searchIndex = this.searchIndex == 'customer' ? 'customerfoot' : this.searchIndex;
-        this.searchService.search(searchIndex, this.keyword, this.moduleLocal.idSettingsGUI, this.pageIndex, this.pageSize, null, fieldName, fieldValue, true)
+        const searchIndex =
+            this.searchIndex == "customer" ? "customerfoot" : this.searchIndex;
+        this.searchService
+            .search(
+                searchIndex,
+                this.keyword,
+                this.moduleLocal.idSettingsGUI,
+                this.pageIndex,
+                this.pageSize,
+                null,
+                fieldName,
+                fieldValue,
+                true
+            )
             .finally(() => {
                 this.changeDetectorRef();
                 if (this.parentColumnSettings) {
                     setTimeout(() => {
-                        this.agGridComponent.updateColumnStateForDetailGrid(this.parentColumnSettings);
+                        this.agGridComponent.updateColumnStateForDetailGrid(
+                            this.parentColumnSettings
+                        );
                     }, 500);
                 }
             })
-            .subscribe((response: any) => {
-                this.appErrorHandler.executeAction(() => {
-                    response = response.item;
-                    this.dataResult = this.datatableService.buildDataSourceFromEsSearchResult(response, 1);
+            .subscribe(
+                (response: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        response = response.item;
+                        this.dataResult =
+                            this.datatableService.buildDataSourceFromEsSearchResult(
+                                response,
+                                1
+                            );
 
-                    if (this.dataResult.data) {
-                        this.dataResult.data = this.dataResult.data.filter(n => n.IdPerson != dataInfo.IdPerson);
-                    }
+                        if (this.dataResult.data) {
+                            this.dataResult.data = this.dataResult.data.filter(
+                                (n) => n.IdPerson != dataInfo.IdPerson
+                            );
+                        }
 
-                    this.calculateGridHeight();                             
-                });
-            }, (err) => {
-                this.resetGrid();
-                //show error
-                console.log(err);
-            });
+                        this.calculateGridHeight();
+                    });
+                },
+                (err) => {
+                    this.resetGrid();
+                    //show error
+                    console.log(err);
+                }
+            );
     }
 
     private changeDetectorRef() {
@@ -106,9 +140,12 @@ export class GlobalSearchCustomerDetailComponent implements OnInit, OnDestroy {
     private resetGrid() {
         //reset data on grid
         this.dataResult = {
-            'data': [],
-            'columns': this.dataResult && this.dataResult.columns ? this.dataResult.columns : [],
-            'totalResults': 0
+            data: [],
+            columns:
+                this.dataResult && this.dataResult.columns
+                    ? this.dataResult.columns
+                    : [],
+            totalResults: 0,
         };
     }
 
@@ -117,11 +154,18 @@ export class GlobalSearchCustomerDetailComponent implements OnInit, OnDestroy {
 
         setTimeout(() => {
             let height = 1;
-            if (this.dataResult && this.dataResult.data && this.dataResult.data.length) {
-                height = this.dataResult.data.length * 28 + 3;//total item * height of one row
+            if (
+                this.dataResult &&
+                this.dataResult.data &&
+                this.dataResult.data.length
+            ) {
+                height = this.dataResult.data.length * 28 + 3; //total item * height of one row
             }
 
-            $(this.elementRef.nativeElement).parent().parent().css('height', height + 'px');
+            $(this.elementRef.nativeElement)
+                .parent()
+                .parent()
+                .css("height", height + "px");
 
             this.renderCallback();
         });

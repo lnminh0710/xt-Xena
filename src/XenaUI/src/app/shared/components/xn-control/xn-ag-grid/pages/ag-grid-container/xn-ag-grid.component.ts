@@ -4,7 +4,8 @@ import {
     ChangeDetectorRef,
     Component,
     ElementRef,
-    EventEmitter, Inject,
+    EventEmitter,
+    Inject,
     Input,
     OnDestroy,
     OnInit,
@@ -12,10 +13,16 @@ import {
     Renderer,
     TemplateRef,
     ViewChild,
-    ViewContainerRef
-} from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ControlGridModel, GlobalSettingModel, Module, RowSetting, AutoGroupColumnDefModel } from 'app/models';
+    ViewContainerRef,
+} from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import {
+    ControlGridModel,
+    GlobalSettingModel,
+    Module,
+    RowSetting,
+    AutoGroupColumnDefModel,
+} from "app/models";
 import {
     ColDef,
     Column,
@@ -24,84 +31,85 @@ import {
     GridCell,
     GridOptions,
     NavigateToNextCellParams,
-    RowNode
-} from 'ag-grid-community';
-import { AgGridService, IAgGridData } from '../../shared/ag-grid.service';
+    RowNode,
+} from "ag-grid-community";
+import { AgGridService, IAgGridData } from "../../shared/ag-grid.service";
 import {
     AccessRightsService,
     AppErrorHandler,
     DatatableService,
     GlobalSettingService,
     PropertyPanelService,
-    ResourceTranslationService
-} from 'app/services';
-import isEqual from 'lodash-es/isEqual';
-import isNil from 'lodash-es/isNil';
-import isString from 'lodash-es/isString';
-import isBoolean from 'lodash-es/isBoolean';
-import isObject from 'lodash-es/isObject';
-import mapKeys from 'lodash-es/mapKeys';
-import cloneDeep from 'lodash-es/cloneDeep';
-import camelCase from 'lodash-es/camelCase';
-import isEmpty from 'lodash-es/isEmpty';
-import toSafeInteger from 'lodash-es/toSafeInteger';
-import max from 'lodash-es/max';
-import { ColHeaderKey } from '../../shared/ag-grid-constant';
-import 'ag-grid-enterprise';
+    ResourceTranslationService,
+} from "app/services";
+import isEqual from "lodash-es/isEqual";
+import isNil from "lodash-es/isNil";
+import isString from "lodash-es/isString";
+import isBoolean from "lodash-es/isBoolean";
+import isObject from "lodash-es/isObject";
+import mapKeys from "lodash-es/mapKeys";
+import cloneDeep from "lodash-es/cloneDeep";
+import camelCase from "lodash-es/camelCase";
+import isEmpty from "lodash-es/isEmpty";
+import toSafeInteger from "lodash-es/toSafeInteger";
+import max from "lodash-es/max";
+import { ColHeaderKey } from "../../shared/ag-grid-constant";
+import "ag-grid-enterprise";
 import {
-    ControlCheckboxCellRenderer, CountryFlagCellRenderer,
+    ControlCheckboxCellRenderer,
+    CountryFlagCellRenderer,
     DetailCellRenderer,
     TemplateButtonCellRenderer,
-    TranslationToolPanelRenderer
-} from '../../components';
-import { Uti } from 'app/utilities/uti';
-import { IPageChangedEvent } from 'app/shared/components/xn-pager/xn-pagination.component';
+    TranslationToolPanelRenderer,
+} from "../../components";
+import { Uti } from "app/utilities/uti";
+import { IPageChangedEvent } from "app/shared/components/xn-pager/xn-pagination.component";
 import {
     AccessRightTypeEnum,
     ColumnVirtualisation,
     DefaultRowHeight,
     CustomCellRender,
-    WidgetTableName, ArticlesInvoiceQuantity
-} from 'app/app.constants';
-import { XnAgGridHeaderComponent } from 'app/shared/components/xn-control/xn-ag-grid/components/xn-ag-grid-header/xn-ag-grid-header.component';
-import { AppState } from 'app/state-management/store';
-import { Store } from '@ngrx/store';
-import { ProcessDataActions } from 'app/state-management/store/actions';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import sortBy from 'lodash-es/sortBy';
-import { isNumber } from 'wijmo/wijmo';
-import 'jspdf';
-import 'jspdf-autotable';
-import { ICellRendererComp } from 'ag-grid-community/src/ts/rendering/cellRenderers/iCellRenderer';
-import { Subject, Subscription } from 'rxjs';
-import { DOCUMENT } from '@angular/common';
-import { GuidHelper } from 'app/utilities/guild.helper';
-import { AgGridFakeServer } from 'app/shared/components/xn-control/xn-ag-grid/shared/ag-grid-fakeServer';
+    WidgetTableName,
+    ArticlesInvoiceQuantity,
+} from "app/app.constants";
+import { XnAgGridHeaderComponent } from "app/shared/components/xn-control/xn-ag-grid/components/xn-ag-grid-header/xn-ag-grid-header.component";
+import { AppState } from "app/state-management/store";
+import { Store } from "@ngrx/store";
+import { ProcessDataActions } from "app/state-management/store/actions";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import sortBy from "lodash-es/sortBy";
+import { isNumber } from "wijmo/wijmo";
+import "jspdf";
+import "jspdf-autotable";
+import { ICellRendererComp } from "ag-grid-community/src/ts/rendering/cellRenderers/iCellRenderer";
+import { Subject, Subscription } from "rxjs";
+import { DOCUMENT } from "@angular/common";
+import { GuidHelper } from "app/utilities/guild.helper";
+import { AgGridFakeServer } from "app/shared/components/xn-control/xn-ag-grid/shared/ag-grid-fakeServer";
 
 declare let jsPDF;
 
 declare const alasql: any;
 
 const BUTTON_COLUMNS = {
-    rowColCheckAll: 'rowColCheckAll'
-}
+    rowColCheckAll: "rowColCheckAll",
+};
 
 const CONTROL_COLUMNS = {
-    Priority: 'Priority'
-}
+    Priority: "Priority",
+};
 
 let currentRowHeight = DefaultRowHeight.RowHeight;
 
 @Component({
-    selector: 'xn-ag-grid',
-    templateUrl: './xn-ag-grid.component.html',
-    styleUrls: ['./xn-ag-grid.component.scss'],
+    selector: "xn-ag-grid",
+    templateUrl: "./xn-ag-grid.component.html",
+    styleUrls: ["./xn-ag-grid.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [AgGridService, AgGridFakeServer],
-    host: { '(contextmenu)': 'rightClicked($event)' }
+    host: { "(contextmenu)": "rightClicked($event)" },
 })
 export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
-
     // Core API of Ag Grid
     public api: GridApi;
     public columnApi: ColumnApi;
@@ -131,7 +139,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private _contextMenuItems: any;
     private isDragging = false;
-    private _selectingCell: { rowIndex: number, colDef: ColDef } = { rowIndex: -1, colDef: null };
+    private _selectingCell: { rowIndex: number; colDef: ColDef } = {
+        rowIndex: -1,
+        colDef: null,
+    };
     private currentColumnLayoutData: GlobalSettingModel;
     private settingIsAutoSaveLayout: any = {};
     private isStartEditing = false;
@@ -171,7 +182,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() currentModule: Module;
     @Input() readOnly = true;
     @Input() forceReadOnly = false;
-    @Input() hightlightKeywords = '';
+    @Input() hightlightKeywords = "";
     @Input() enableQtyWithColor = false;
     @Input() parentInstance: any = null;
     @Input() allowSetColumnState = true;
@@ -197,8 +208,8 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() customTooltip: any;
     @Input() autoSelectFirstRow = false;
     @Input() preventAutoSelectFirstRow = false;
-    @Input() rowSelection = 'single';
-    @Input() sheetName = 'Data Export';
+    @Input() rowSelection = "single";
+    @Input() sheetName = "Data Export";
     @Input() redRowOnDelete = false;
     @Input() hasGoToNextColRow = false;
     @Input() selectRowOnRightClick = false;
@@ -231,7 +242,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() canExport = true;
     @Input() hasPriorityColumn = false;
     @Input() headerHeight: number;
-    @Input() searchText = '*';
+    @Input() searchText = "*";
     /*Grid Header*/
 
     /* Allow Drag */
@@ -255,7 +266,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!isNil(fitWidth)) {
             this.fitWidth = fitWidth;
 
-            this.colResizeDefault = this.fitWidth ? 'shift' : null;
+            this.colResizeDefault = this.fitWidth ? "shift" : null;
 
             if (this.columnApi) {
                 if (this.fitWidth) {
@@ -263,7 +274,6 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 } else {
                     this.loadColumnLayout();
                 }
-
             }
         }
     }
@@ -277,7 +287,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.showToolPanel(status);
                 return;
             } else {
-                this.sideBar = this.agGridService.createToolPanelSidebar(false, this);
+                this.sideBar = this.agGridService.createToolPanelSidebar(
+                    false,
+                    this
+                );
             }
         }
         this.showToolPanel(status);
@@ -342,18 +355,18 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @Input() showMenuRowGrouping: boolean;
 
-    public rowGroupPanelShow = 'never';
+    public rowGroupPanelShow = "never";
     private _rowGrouping = false;
     @Input() set rowGrouping(rowGrouping: boolean) {
         this._rowGrouping = rowGrouping;
-        this.rowGroupPanelShow = 'never';
+        this.rowGroupPanelShow = "never";
         if (rowGrouping) {
-            this.rowGroupPanelShow = 'always';
+            this.rowGroupPanelShow = "always";
         } else {
             if (this.columnApi) {
                 const rowGroupCols = this.columnApi.getRowGroupColumns();
                 if (rowGroupCols && rowGroupCols.length) {
-                    const colIds = rowGroupCols.map(p => p.getColId());
+                    const colIds = rowGroupCols.map((p) => p.getColId());
                     for (let i = 0; i < colIds.length; i++) {
                         this.columnApi.removeRowGroupColumn(colIds[i]);
                     }
@@ -363,7 +376,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         setTimeout(() => {
             this.toggleRowGroupHeader();
-        })
+        });
     }
 
     get rowGrouping() {
@@ -374,14 +387,19 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() set pivoting(pivoting: boolean) {
         this._pivoting = pivoting;
         if (pivoting) {
-            this.sideBar = this.agGridService.createToolPanelSidebar(true, this);
+            this.sideBar = this.agGridService.createToolPanelSidebar(
+                true,
+                this
+            );
             if (this.columnsLayoutSettings) {
                 this.columnsLayoutSettings.isShowToolPanels = true;
             }
             //this.isShowToolPanels = true;
-        }
-        else {
-            this.sideBar = this.agGridService.createToolPanelSidebar(false, this);
+        } else {
+            this.sideBar = this.agGridService.createToolPanelSidebar(
+                false,
+                this
+            );
             if (this.columnsLayoutSettings) {
                 this.columnsLayoutSettings.isShowToolPanels = false;
             }
@@ -419,7 +437,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             readOnly: this.readOnly,
             hasRowColCheckAll: this.hasRowColCheckAll,
             masterDetail: this.masterDetail,
-            allowTranslation: this.allowTranslation
+            allowTranslation: this.allowTranslation,
         };
         this.agGridDataSource = this.agGridService.mapDataSource(data, config);
 
@@ -427,7 +445,13 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             this.totalResults = data.totalResults;
         }
 
-        const isColumnsChanged = !this.gridOptions || this._isColumnsChanged(this.gridOptions.columnDefs, this.agGridDataSource.columnDefs, 'field');
+        const isColumnsChanged =
+            !this.gridOptions ||
+            this._isColumnsChanged(
+                this.gridOptions.columnDefs,
+                this.agGridDataSource.columnDefs,
+                "field"
+            );
         if (isColumnsChanged) {
             this.initGrid();
             this.gridOptions.columnDefs = this.agGridDataSource.columnDefs;
@@ -440,32 +464,67 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         // this.gridOptions.overlayNoRowsTemplate = this.getDataNoEntryTemplate();
         this.gridOptions.frameworkComponents = {
             translationToolPanelRenderer: TranslationToolPanelRenderer,
-            templateDetailCellRenderer: DetailCellRenderer
+            templateDetailCellRenderer: DetailCellRenderer,
         };
 
-        this.gridOptions.navigateToNextCell = this.navigateToNextCellFunc.bind(this);
-        this.gridOptions.processCellForClipboard = this.processCellForClipboard.bind(this);
+        this.gridOptions.navigateToNextCell =
+            this.navigateToNextCellFunc.bind(this);
+        this.gridOptions.processCellForClipboard =
+            this.processCellForClipboard.bind(this);
 
         this.gridOptions.rowClassRules = {
-            'deleted-row-text': function (params) {
-                return params.node.data && params.node.data[ColHeaderKey.IsDeleted] == true
+            "deleted-row-text": function (params) {
+                return (
+                    params.node.data &&
+                    params.node.data[ColHeaderKey.IsDeleted] == true
+                );
             },
-            'in-active-cell': function (params) {
-                const inactiveRowWithIsActive = params.node.data && (params.node.data[ColHeaderKey.IsActive] === false || params.node.data[ColHeaderKey.IsActive] === null || params.node.data[ColHeaderKey.IsActive] === 0 || params.node.data[ColHeaderKey.IsActiveDisableRow] == false || params.node.data[ColHeaderKey.IsActiveDisableRow] == 0);
-                const inactiveRowWithSelectAll = params.node.data && params.isDisableRowWithSelectAll && (params.node.data[ColHeaderKey.SelectAll] == false || params.node.data[ColHeaderKey.SelectAll] == 0);
-                const setting = params.context.componentParent.agGridService.inactiveRowByColValueSetting(params);
-                return (inactiveRowWithIsActive || inactiveRowWithSelectAll || setting.inactiveRowByValueSetting);
+            "in-active-cell": function (params) {
+                const inactiveRowWithIsActive =
+                    params.node.data &&
+                    (params.node.data[ColHeaderKey.IsActive] === false ||
+                        params.node.data[ColHeaderKey.IsActive] === null ||
+                        params.node.data[ColHeaderKey.IsActive] === 0 ||
+                        params.node.data[ColHeaderKey.IsActiveDisableRow] ==
+                            false ||
+                        params.node.data[ColHeaderKey.IsActiveDisableRow] == 0);
+                const inactiveRowWithSelectAll =
+                    params.node.data &&
+                    params.isDisableRowWithSelectAll &&
+                    (params.node.data[ColHeaderKey.SelectAll] == false ||
+                        params.node.data[ColHeaderKey.SelectAll] == 0);
+                const setting =
+                    params.context.componentParent.agGridService.inactiveRowByColValueSetting(
+                        params
+                    );
+                return (
+                    inactiveRowWithIsActive ||
+                    inactiveRowWithSelectAll ||
+                    setting.inactiveRowByValueSetting
+                );
             },
-            'background-status-red': function (params) {
-                return params.node.data && params.node.data[ColHeaderKey.BorderStatus] == true;
+            "background-status-red": function (params) {
+                return (
+                    params.node.data &&
+                    params.node.data[ColHeaderKey.BorderStatus] == true
+                );
             },
-            'master-background': function (params) {
-                return params.node.data && params.node.data[ColHeaderKey.MasterCheckbox] == true;
+            "master-background": function (params) {
+                return (
+                    params.node.data &&
+                    params.node.data[ColHeaderKey.MasterCheckbox] == true
+                );
             },
-            'master-detail-hide': function (params) {
-                return params.node.data && params.node.data.hasOwnProperty(ColHeaderKey.MatchingText)
-                    && (params.node.data[ColHeaderKey.MatchingText] != 'Master' || !params.node.data[ColHeaderKey.MatchingGroup]);
-            }
+            "master-detail-hide": function (params) {
+                return (
+                    params.node.data &&
+                    params.node.data.hasOwnProperty(
+                        ColHeaderKey.MatchingText
+                    ) &&
+                    (params.node.data[ColHeaderKey.MatchingText] != "Master" ||
+                        !params.node.data[ColHeaderKey.MatchingGroup])
+                );
+            },
         };
 
         // When chaging new datasource, we need to remove all data rows of previous datasource.
@@ -490,9 +549,12 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.setGridOption();
 
-            if (!this.gridOptions.rowData.length &&
-                !!this.parentInstance) {
-                this.rowClick.emit(this.agGridService.createEmptyRowClickData(this.gridOptions.columnDefs));
+            if (!this.gridOptions.rowData.length && !!this.parentInstance) {
+                this.rowClick.emit(
+                    this.agGridService.createEmptyRowClickData(
+                        this.gridOptions.columnDefs
+                    )
+                );
             }
 
             if (this.fitWidth) {
@@ -521,11 +583,27 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @Input() set globalProperties(globalProperties: any[]) {
         this.globalProps = globalProperties;
-        const globalDateFormat = this.propertyPanelService.buildGlobalDateFormatFromProperties(globalProperties);
-        const globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(globalProperties);
-        this.settingIsAutoSaveLayout = this.propertyPanelService.getItemRecursive(globalProperties, 'AutoSaveLayout') || {};
-        this.dontShowCalendarWhenFocus = this.propertyPanelService.getValueDropdownFromGlobalProperties(globalProperties);
-        if (this.globalDateFormat != globalDateFormat || this.globalNumberFormat != globalNumberFormat) {
+        const globalDateFormat =
+            this.propertyPanelService.buildGlobalDateFormatFromProperties(
+                globalProperties
+            );
+        const globalNumberFormat =
+            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                globalProperties
+            );
+        this.settingIsAutoSaveLayout =
+            this.propertyPanelService.getItemRecursive(
+                globalProperties,
+                "AutoSaveLayout"
+            ) || {};
+        this.dontShowCalendarWhenFocus =
+            this.propertyPanelService.getValueDropdownFromGlobalProperties(
+                globalProperties
+            );
+        if (
+            this.globalDateFormat != globalDateFormat ||
+            this.globalNumberFormat != globalNumberFormat
+        ) {
             this.globalDateFormat = globalDateFormat;
             this.globalNumberFormat = globalNumberFormat;
             this.refresh();
@@ -543,7 +621,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
             this.ref.reattach();
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
@@ -564,7 +642,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     private _borderRow: any;
     @Input() set borderRow(data: any) {
         this._borderRow = data;
-    };
+    }
 
     private _rowBackground: boolean;
     @Input() set rowBackground(value: boolean) {
@@ -580,8 +658,8 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private _backgroundColor: string;
     @Input() set background(backgroundColor: string) {
-        backgroundColor = backgroundColor || '';
-        this.setBackgroundForElement('.ag-body-viewport', backgroundColor);
+        backgroundColor = backgroundColor || "";
+        this.setBackgroundForElement(".ag-body-viewport", backgroundColor);
         // $('.ag-header', this._eref.nativeElement).css('background-color', backgroundColor);
         // $('.ag-body-viewport', this._eref.nativeElement).css('background-color', backgroundColor);
         // $('.ag-row', this._eref.nativeElement).css('background-color', backgroundColor);
@@ -591,7 +669,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     private _backgroundImage: string;
     @Input() set backgroundImage(backgroundImage: any) {
         if (!backgroundImage) return;
-        this.setBackgroundImageForElement('.ag-body-viewport', backgroundImage);
+        this.setBackgroundImageForElement(".ag-body-viewport", backgroundImage);
         this._backgroundImage = backgroundImage;
     }
 
@@ -606,8 +684,9 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    @ViewChild('agGrid', { read: ViewContainerRef }) public agGridViewContainerRef;
-    @ViewChild('xnAgGridHeader') xnAgGridHeader: XnAgGridHeaderComponent;
+    @ViewChild("agGrid", { read: ViewContainerRef })
+    public agGridViewContainerRef;
+    @ViewChild("xnAgGridHeader") xnAgGridHeader: XnAgGridHeaderComponent;
 
     @Output() rowRightClicked = new EventEmitter<any>();
     @Output() rowDoubleClicked = new EventEmitter<any>();
@@ -674,7 +753,8 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     private bodyScrollChangedSubscription: Subscription;
     private successSavedSubscription: Subscription;
 
-    constructor(private _eref: ElementRef,
+    constructor(
+        private _eref: ElementRef,
         private agGridService: AgGridService,
         private ref: ChangeDetectorRef,
         private datatableService: DatatableService,
@@ -692,13 +772,12 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         @Inject(DOCUMENT) private document: Document,
         private uti: Uti
     ) {
-        this.detailCellRenderer = 'templateDetailCellRenderer';
+        this.detailCellRenderer = "templateDetailCellRenderer";
         this.rowBuffer = 0;
 
         this.getRowHeight = () => {
             return currentRowHeight;
         };
-
     }
 
     /**
@@ -706,7 +785,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      */
     public ngOnInit() {
         this.buildContextMenuItems = this.buildContextMenuItems.bind(this);
-        this.popupParent = document.querySelector('body');
+        this.popupParent = document.querySelector("body");
 
         this.bodyScrollChangedSubscription = this.bodyScrollChanged
             .debounceTime(250)
@@ -714,10 +793,13 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.ref.detectChanges();
             });
 
-        this.successSavedSubscription = this.resourceTranslationService.successSaved$.subscribe(status => {
-            this.initLocalText();
-            this.ref.detectChanges();
-        })
+        this.successSavedSubscription =
+            this.resourceTranslationService.successSaved$.subscribe(
+                (status) => {
+                    this.initLocalText();
+                    this.ref.detectChanges();
+                }
+            );
     }
 
     /**
@@ -733,7 +815,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             this.api.destroy();
         }
 
-        $('.ag-body-viewport', this._eref.nativeElement).unbind('scroll');
+        $(".ag-body-viewport", this._eref.nativeElement).unbind("scroll");
         Uti.unsubscribe(this);
     }
 
@@ -749,8 +831,14 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      */
     public ngAfterViewInit() {
         setTimeout(() => {
-            if (this.agGridViewContainerRef && this.agGridViewContainerRef.element.nativeElement) {
-                this.agGridViewContainerRef.element.nativeElement.addEventListener('keydown', this.onGridKeydown.bind(this));
+            if (
+                this.agGridViewContainerRef &&
+                this.agGridViewContainerRef.element.nativeElement
+            ) {
+                this.agGridViewContainerRef.element.nativeElement.addEventListener(
+                    "keydown",
+                    this.onGridKeydown.bind(this)
+                );
             }
         });
         this.initLocalText();
@@ -778,9 +866,16 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         this.xnAgGridHeader.doSearch(text);
     }
 
-    public setFocusedCell(rowNumber: number, columnName: string, isStartEdit?: boolean) {
+    public setFocusedCell(
+        rowNumber: number,
+        columnName: string,
+        isStartEdit?: boolean
+    ) {
         if (isStartEdit && !this.disabledAll) {
-            this.api.startEditingCell({ rowIndex: rowNumber, colKey: columnName });
+            this.api.startEditingCell({
+                rowIndex: rowNumber,
+                colKey: columnName,
+            });
             return;
         }
         this.api.setFocusedCell(rowNumber, columnName);
@@ -791,7 +886,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * @param evt
      */
     private onGridKeydown(evt) {
-        if (evt.key === 'Enter') {
+        if (evt.key === "Enter") {
             if (!this._enterMovesDown) {
                 this.api.stopEditing();
 
@@ -801,27 +896,44 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                     // Logic focused cell in Articles Invoice
                     const currentFocusedCellArticle = this.api.getFocusedCell();
                     const selectedNodesArticle = this.api.getSelectedNodes();
-                    if (this.articleInvoice && currentFocusedCellArticle &&
-                        selectedNodesArticle && selectedNodesArticle.length
-                        && selectedNodesArticle[0].rowIndex != currentFocusedCellArticle.rowIndex) {
-                        const currentNode = this.api.getDisplayedRowAtIndex(currentFocusedCellArticle.rowIndex);
+                    if (
+                        this.articleInvoice &&
+                        currentFocusedCellArticle &&
+                        selectedNodesArticle &&
+                        selectedNodesArticle.length &&
+                        selectedNodesArticle[0].rowIndex !=
+                            currentFocusedCellArticle.rowIndex
+                    ) {
+                        const currentNode = this.api.getDisplayedRowAtIndex(
+                            currentFocusedCellArticle.rowIndex
+                        );
                         if (currentNode && !currentNode.data.IsActive) {
-                            this.api.setFocusedCell(currentFocusedCellArticle.rowIndex + 1, ArticlesInvoiceQuantity.QtyKeep);
+                            this.api.setFocusedCell(
+                                currentFocusedCellArticle.rowIndex + 1,
+                                ArticlesInvoiceQuantity.QtyKeep
+                            );
                             return;
                         }
-                        this.api.setFocusedCell(currentFocusedCellArticle.rowIndex, ArticlesInvoiceQuantity.QtyKeep);
+                        this.api.setFocusedCell(
+                            currentFocusedCellArticle.rowIndex,
+                            ArticlesInvoiceQuantity.QtyKeep
+                        );
                     }
                 } else {
-                    const nextEditableCell = this.getNextEditableCell(this.api.getFocusedCell());
+                    const nextEditableCell = this.getNextEditableCell(
+                        this.api.getFocusedCell()
+                    );
                     if (nextEditableCell) {
                         this.api.clearFocusedCell();
-                        this.api.setFocusedCell(nextEditableCell.row, nextEditableCell.col.getColId());
+                        this.api.setFocusedCell(
+                            nextEditableCell.row,
+                            nextEditableCell.col.getColId()
+                        );
                     } else {
                         this.api.tabToNextCell();
                     }
                 }
-            }
-            else {
+            } else {
                 const currentCell = this.api.getFocusedCell();
                 const finalRowIndex = this.api.paginationGetRowCount() - 1;
                 if (currentCell) {
@@ -832,22 +944,38 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.api.stopEditing();
                     this.api.clearFocusedCell();
 
-                    this.api.setFocusedCell(currentCell.rowIndex + 1, currentCell.column.getColId());
+                    this.api.setFocusedCell(
+                        currentCell.rowIndex + 1,
+                        currentCell.column.getColId()
+                    );
                 }
             }
             const currentFocusedCell = this.api.getFocusedCell();
             const selectedNodes = this.api.getSelectedNodes();
 
             // Logic focused cell in Articles Invoice
-            if (this._enterMovesDown && this.articleInvoice && currentFocusedCell &&
-                selectedNodes && selectedNodes.length
-                && selectedNodes[0].rowIndex != currentFocusedCell.rowIndex) {
-                const currentNode = this.api.getDisplayedRowAtIndex(currentFocusedCell.rowIndex);
+            if (
+                this._enterMovesDown &&
+                this.articleInvoice &&
+                currentFocusedCell &&
+                selectedNodes &&
+                selectedNodes.length &&
+                selectedNodes[0].rowIndex != currentFocusedCell.rowIndex
+            ) {
+                const currentNode = this.api.getDisplayedRowAtIndex(
+                    currentFocusedCell.rowIndex
+                );
                 if (currentNode && !currentNode.data.IsActive) {
-                    this.api.setFocusedCell(currentFocusedCell.rowIndex + 1, currentFocusedCell.column.getColId());
+                    this.api.setFocusedCell(
+                        currentFocusedCell.rowIndex + 1,
+                        currentFocusedCell.column.getColId()
+                    );
                     return;
                 }
-                return this.api.setFocusedCell(currentFocusedCell.rowIndex, currentFocusedCell.column.getColId());
+                return this.api.setFocusedCell(
+                    currentFocusedCell.rowIndex,
+                    currentFocusedCell.column.getColId()
+                );
             }
 
             if (currentFocusedCell && selectedNodes && selectedNodes.length) {
@@ -857,25 +985,43 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         }
 
-        if (evt.code === 'Space') {
+        if (evt.code === "Space") {
             const currentCell = this.api.getFocusedCell();
             const colDef = currentCell.column.getColDef();
 
-            if ((colDef.cellRendererFramework && colDef.cellRendererFramework.name === 'ControlCheckboxCellRenderer')
-                || (colDef.refData && colDef.refData.controlType === 'Checkbox')) {
-                const matCheckboxElm = evt.target.querySelector('mat-checkbox');
-                if (matCheckboxElm
-                    && !matCheckboxElm.classList.contains('mat-checkbox-disabled')
-                    && (colDef.field == ColHeaderKey.Delete || colDef.field == ColHeaderKey.SelectAll || (colDef.refData && colDef.refData.controlType == 'Checkbox'))) {
-                    const rowNode = this.api.getDisplayedRowAtIndex(currentCell.rowIndex);
+            if (
+                (colDef.cellRendererFramework &&
+                    colDef.cellRendererFramework.name ===
+                        "ControlCheckboxCellRenderer") ||
+                (colDef.refData && colDef.refData.controlType === "Checkbox")
+            ) {
+                const matCheckboxElm = evt.target.querySelector("mat-checkbox");
+                if (
+                    matCheckboxElm &&
+                    !matCheckboxElm.classList.contains(
+                        "mat-checkbox-disabled"
+                    ) &&
+                    (colDef.field == ColHeaderKey.Delete ||
+                        colDef.field == ColHeaderKey.SelectAll ||
+                        (colDef.refData &&
+                            colDef.refData.controlType == "Checkbox"))
+                ) {
+                    const rowNode = this.api.getDisplayedRowAtIndex(
+                        currentCell.rowIndex
+                    );
 
                     rowNode.data[colDef.field] = !rowNode.data[colDef.field];
                     this.api.updateRowData({ update: [rowNode.data] });
 
                     evt.stopPropagation();
                 }
-            } else if (colDef.cellRendererFramework && colDef.cellRendererFramework.name === 'TemplateButtonCellRenderer' || (colDef.refData && colDef.refData.controlType === 'Button')) {
-                const buttonElm = evt.target.querySelector('button');
+            } else if (
+                (colDef.cellRendererFramework &&
+                    colDef.cellRendererFramework.name ===
+                        "TemplateButtonCellRenderer") ||
+                (colDef.refData && colDef.refData.controlType === "Button")
+            ) {
+                const buttonElm = evt.target.querySelector("button");
                 if (buttonElm) {
                     buttonElm.click();
                     evt.stopPropagation();
@@ -888,21 +1034,29 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private outputWhenDataChange(keycode: any) {
-        if (!this.isStartEditing ||
-            !((keycode > 47 && keycode < 58) || // number keys
-                keycode == 32 || keycode == 46 || keycode == 8 || // spacebar & return key(s) (if you want to allow carriage returns)
-                (keycode > 64 && keycode < 91) || // letter keys
-                (keycode > 95 && keycode < 112) || // numpad keys
-                (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
-                (keycode > 218 && keycode < 223)   // [\]' (in order)
-            )) return;
+        if (
+            !this.isStartEditing ||
+            !(
+                (
+                    (keycode > 47 && keycode < 58) || // number keys
+                    keycode == 32 ||
+                    keycode == 46 ||
+                    keycode == 8 || // spacebar & return key(s) (if you want to allow carriage returns)
+                    (keycode > 64 && keycode < 91) || // letter keys
+                    (keycode > 95 && keycode < 112) || // numpad keys
+                    (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+                    (keycode > 218 && keycode < 223)
+                ) // [\]' (in order)
+            )
+        )
+            return;
         this.cellEditting.emit();
     }
 
     private getNextEditableCell(currentCell: GridCell) {
         const allCols = this.columnApi.getAllGridColumns();
 
-        if (!allCols.filter(x => x.getColDef().editable === true).length) {
+        if (!allCols.filter((x) => x.getColDef().editable === true).length) {
             return null;
         }
 
@@ -910,33 +1064,50 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             return {
                 col,
                 editable: col.getColDef().editable,
-                index
+                index,
             };
         });
 
         const returnNextRow = () => {
-            if (currentCell.rowIndex + 1 === this.gridOptions.rowData.length || !allColsWithIndex.find(x => x.editable === true && x.col.getColDef().hide === false)) {
+            if (
+                currentCell.rowIndex + 1 === this.gridOptions.rowData.length ||
+                !allColsWithIndex.find(
+                    (x) =>
+                        x.editable === true && x.col.getColDef().hide === false
+                )
+            ) {
                 return null;
             } else {
                 return {
                     row: currentCell.rowIndex + 1,
-                    col: allColsWithIndex.find(x => x.editable === true && x.col.getColDef().hide === false).col
-                }
+                    col: allColsWithIndex.find(
+                        (x) =>
+                            x.editable === true &&
+                            x.col.getColDef().hide === false
+                    ).col,
+                };
             }
-        }
+        };
 
         if (currentCell && currentCell.column) {
-            const currentCellColIndex = allCols.findIndex(x => x.getColId() === currentCell.column.getColId());
+            const currentCellColIndex = allCols.findIndex(
+                (x) => x.getColId() === currentCell.column.getColId()
+            );
 
             if (currentCellColIndex === allColsWithIndex.length - 1) {
                 returnNextRow();
             } else {
-                const nextCol = allColsWithIndex.find(x => x.index > currentCellColIndex && x.editable === true && x.col.getColDef().hide === false);
+                const nextCol = allColsWithIndex.find(
+                    (x) =>
+                        x.index > currentCellColIndex &&
+                        x.editable === true &&
+                        x.col.getColDef().hide === false
+                );
                 if (nextCol) {
                     return {
                         row: currentCell.rowIndex,
-                        col: nextCol.col
-                    }
+                        col: nextCol.col,
+                    };
                 } else {
                     returnNextRow();
                 }
@@ -958,8 +1129,8 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.updateHeaderCellEditable(this.isEditting);
                 },
                 context: {
-                    componentParent: this
-                }
+                    componentParent: this,
+                },
             };
         }
 
@@ -973,123 +1144,168 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * @param params
      */
     private getRowStyle(params?: any) {
-        const backgroundTotalRow = this.showTotalRow && this.showTotalRow.backgroundTotalRow;
-        const textColor = this.showTotalRow && this.showTotalRow.colorTextTotalRow;
+        const backgroundTotalRow =
+            this.showTotalRow && this.showTotalRow.backgroundTotalRow;
+        const textColor =
+            this.showTotalRow && this.showTotalRow.colorTextTotalRow;
         let rowPinnedStyle = {};
         let cellStyle = {};
         if (params.node.rowPinned) {
             rowPinnedStyle = {
-                'background-color': backgroundTotalRow ? backgroundTotalRow : '',
-                'color': `${textColor} !important` ? `${textColor} !important` : '',
-                'border-top': 'solid #d6d6d6 1px',
-                'border-bottom': 'solid #d6d6d6 1px',
-                'font-weight': 'bold'
+                "background-color": backgroundTotalRow
+                    ? backgroundTotalRow
+                    : "",
+                color: `${textColor} !important`
+                    ? `${textColor} !important`
+                    : "",
+                "border-top": "solid #d6d6d6 1px",
+                "border-bottom": "solid #d6d6d6 1px",
+                "font-weight": "bold",
             };
         }
         const gridStyle = this.gridStyle;
-        const gradient = this._backgroundColor && this._backgroundColor.includes('rgb');
+        const gradient =
+            this._backgroundColor && this._backgroundColor.includes("rgb");
         let backgroundTable: string;
         if (gridStyle && gridStyle.rowStyle && !isEmpty(gridStyle.rowStyle)) {
-            const isRowBorderGroundWidget = this._rowBackground && this._borderRow ? this._borderRow : '';
+            const isRowBorderGroundWidget =
+                this._rowBackground && this._borderRow ? this._borderRow : "";
             // Have backgroundColor and is Gradient Color or background Image
-            if (this._backgroundColor && gradient || this._backgroundImage) {
-                backgroundTable = 'transparent';
+            if ((this._backgroundColor && gradient) || this._backgroundImage) {
+                backgroundTable = "transparent";
             }
             if (this._backgroundColor && !gradient) {
                 backgroundTable = this._backgroundColor;
             }
 
-            if (!this._backgroundColor && !gridStyle.rowStyle && !this._backgroundImage) {
-                backgroundTable = '#f7f8f9';
+            if (
+                !this._backgroundColor &&
+                !gridStyle.rowStyle &&
+                !this._backgroundImage
+            ) {
+                backgroundTable = "#f7f8f9";
             }
             // Have odd or even Color
-            if (gridStyle && gridStyle.rowStyle['oddRow'] && this._rowBackground) {
-                backgroundTable = gridStyle.rowStyle['oddRow'];
+            if (
+                gridStyle &&
+                gridStyle.rowStyle["oddRow"] &&
+                this._rowBackground
+            ) {
+                backgroundTable = gridStyle.rowStyle["oddRow"];
             }
 
-            if (this._rowBackgroundGlobal && this._rowBackgroundGlobal['oddRow'] && !this._rowBackground) {
-                backgroundTable = this._rowBackgroundGlobal['oddRow'];
+            if (
+                this._rowBackgroundGlobal &&
+                this._rowBackgroundGlobal["oddRow"] &&
+                !this._rowBackground
+            ) {
+                backgroundTable = this._rowBackgroundGlobal["oddRow"];
             }
-            const rowBorderGlobal = this._rowBackgroundGlobal && this._rowBackgroundGlobal['borderRow'] ? this._rowBackgroundGlobal['borderRow'] : '';
+            const rowBorderGlobal =
+                this._rowBackgroundGlobal &&
+                this._rowBackgroundGlobal["borderRow"]
+                    ? this._rowBackgroundGlobal["borderRow"]
+                    : "";
             if (this.articleInvoice) {
                 const data = params.node && params.node.data;
                 if (data.IsMainArticle === 1 && !data.IsSetArticle) {
                     cellStyle = {
-                        'background': '#a4d8ab8a !important',
-                        'color': gridStyle.rowStyle['color'],
-                        'fontFamily': gridStyle.rowStyle['font-family'] || 'Tahoma',
-                        'fontSize': gridStyle.rowStyle['font-size'],
-                        'fontWeight': gridStyle.rowStyle['font-weight'],
-                        'fontStyle': gridStyle.rowStyle['font-style'],
-                        'textDecoration': gridStyle.rowStyle['text-decoration']
+                        background: "#a4d8ab8a !important",
+                        color: gridStyle.rowStyle["color"],
+                        fontFamily:
+                            gridStyle.rowStyle["font-family"] || "Tahoma",
+                        fontSize: gridStyle.rowStyle["font-size"],
+                        fontWeight: gridStyle.rowStyle["font-weight"],
+                        fontStyle: gridStyle.rowStyle["font-style"],
+                        textDecoration: gridStyle.rowStyle["text-decoration"],
                     };
                 }
                 if (data.IsMainArticle === 0 && !data.IsSetArticle) {
                     cellStyle = {
-                        'background': '#f7f8f9 !important',
-                        'color': gridStyle.rowStyle['color'],
-                        'fontFamily': gridStyle.rowStyle['font-family'] || 'Tahoma',
-                        'fontSize': gridStyle.rowStyle['font-size'],
-                        'fontWeight': gridStyle.rowStyle['font-weight'],
-                        'fontStyle': gridStyle.rowStyle['font-style'],
-                        'textDecoration': gridStyle.rowStyle['text-decoration']
+                        background: "#f7f8f9 !important",
+                        color: gridStyle.rowStyle["color"],
+                        fontFamily:
+                            gridStyle.rowStyle["font-family"] || "Tahoma",
+                        fontSize: gridStyle.rowStyle["font-size"],
+                        fontWeight: gridStyle.rowStyle["font-weight"],
+                        fontStyle: gridStyle.rowStyle["font-style"],
+                        textDecoration: gridStyle.rowStyle["text-decoration"],
                     };
                 }
                 if (data.ParentIdSalesOrderArticles) {
                     cellStyle = {
-                        'background': '#f7d28038 !important',
-                        'color': gridStyle.rowStyle['color'],
-                        'fontFamily': gridStyle.rowStyle['font-family'] || 'Tahoma',
-                        'fontSize': gridStyle.rowStyle['font-size'],
-                        'fontWeight': gridStyle.rowStyle['font-weight'],
-                        'fontStyle': gridStyle.rowStyle['font-style'],
-                        'textDecoration': gridStyle.rowStyle['text-decoration']
+                        background: "#f7d28038 !important",
+                        color: gridStyle.rowStyle["color"],
+                        fontFamily:
+                            gridStyle.rowStyle["font-family"] || "Tahoma",
+                        fontSize: gridStyle.rowStyle["font-size"],
+                        fontWeight: gridStyle.rowStyle["font-weight"],
+                        fontStyle: gridStyle.rowStyle["font-style"],
+                        textDecoration: gridStyle.rowStyle["text-decoration"],
                     };
                 }
                 if (data.IsSetArticle) {
                     cellStyle = {
-                        'background': '#f7d28063 !important',
-                        'color': gridStyle.rowStyle['color'],
-                        'fontFamily': gridStyle.rowStyle['font-family'] || 'Tahoma',
-                        'fontSize': gridStyle.rowStyle['font-size'],
-                        'fontWeight': gridStyle.rowStyle['font-weight'],
-                        'fontStyle': gridStyle.rowStyle['font-style'],
-                        'textDecoration': gridStyle.rowStyle['text-decoration']
+                        background: "#f7d28063 !important",
+                        color: gridStyle.rowStyle["color"],
+                        fontFamily:
+                            gridStyle.rowStyle["font-family"] || "Tahoma",
+                        fontSize: gridStyle.rowStyle["font-size"],
+                        fontWeight: gridStyle.rowStyle["font-weight"],
+                        fontStyle: gridStyle.rowStyle["font-style"],
+                        textDecoration: gridStyle.rowStyle["text-decoration"],
                     };
                 }
-
             }
-            if (!this.articleInvoice && Uti.getNumberOdd(params.node.rowIndex)) {
+            if (
+                !this.articleInvoice &&
+                Uti.getNumberOdd(params.node.rowIndex)
+            ) {
                 cellStyle = {
-                    'background': backgroundTable,
-                    'border-color': this._rowBackground ? isRowBorderGroundWidget : rowBorderGlobal,
-                    'color': gridStyle.rowStyle['color'],
-                    'fontFamily': gridStyle.rowStyle['font-family'] || 'Tahoma',
-                    'fontSize': gridStyle.rowStyle['font-size'],
-                    'fontWeight': gridStyle.rowStyle['font-weight'],
-                    'fontStyle': gridStyle.rowStyle['font-style'],
-                    'textDecoration': gridStyle.rowStyle['text-decoration']
+                    background: backgroundTable,
+                    "border-color": this._rowBackground
+                        ? isRowBorderGroundWidget
+                        : rowBorderGlobal,
+                    color: gridStyle.rowStyle["color"],
+                    fontFamily: gridStyle.rowStyle["font-family"] || "Tahoma",
+                    fontSize: gridStyle.rowStyle["font-size"],
+                    fontWeight: gridStyle.rowStyle["font-weight"],
+                    fontStyle: gridStyle.rowStyle["font-style"],
+                    textDecoration: gridStyle.rowStyle["text-decoration"],
                 };
             }
-            if (!this.articleInvoice && !Uti.getNumberOdd(params.node.rowIndex)) {
+            if (
+                !this.articleInvoice &&
+                !Uti.getNumberOdd(params.node.rowIndex)
+            ) {
                 let evenRowColor: string;
                 // Have odd or even Color and Row BackGround turn on in Widget properties
-                if (gridStyle.rowStyle && gridStyle.rowStyle['evenRow'] && this._rowBackground) {
-                    evenRowColor = gridStyle.rowStyle['evenRow'];
+                if (
+                    gridStyle.rowStyle &&
+                    gridStyle.rowStyle["evenRow"] &&
+                    this._rowBackground
+                ) {
+                    evenRowColor = gridStyle.rowStyle["evenRow"];
                 }
 
-                if (this._rowBackgroundGlobal && this._rowBackgroundGlobal['evenRow'] && !this._rowBackground) {
-                    evenRowColor = this._rowBackgroundGlobal['evenRow'];
+                if (
+                    this._rowBackgroundGlobal &&
+                    this._rowBackgroundGlobal["evenRow"] &&
+                    !this._rowBackground
+                ) {
+                    evenRowColor = this._rowBackgroundGlobal["evenRow"];
                 }
                 cellStyle = {
-                    'background': evenRowColor ? evenRowColor : 'transparent',
-                    'border-color': this._rowBackground ? isRowBorderGroundWidget : rowBorderGlobal,
-                    'color': gridStyle.rowStyle['color'],
-                    'fontFamily': gridStyle.rowStyle['font-family'] || 'Tahoma',
-                    'fontSize': gridStyle.rowStyle['font-size'],
-                    'fontWeight': gridStyle.rowStyle['font-weight'],
-                    'fontStyle': gridStyle.rowStyle['font-style'],
-                    'textDecoration': gridStyle.rowStyle['text-decoration']
+                    background: evenRowColor ? evenRowColor : "transparent",
+                    "border-color": this._rowBackground
+                        ? isRowBorderGroundWidget
+                        : rowBorderGlobal,
+                    color: gridStyle.rowStyle["color"],
+                    fontFamily: gridStyle.rowStyle["font-family"] || "Tahoma",
+                    fontSize: gridStyle.rowStyle["font-size"],
+                    fontWeight: gridStyle.rowStyle["font-weight"],
+                    fontStyle: gridStyle.rowStyle["font-style"],
+                    textDecoration: gridStyle.rowStyle["text-decoration"],
                 };
             }
         }
@@ -1102,34 +1318,68 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     private updateHeaderStyle() {
         const gridStyle = this.gridStyle;
         if (gridStyle && gridStyle.headerStyle) {
-            if (this.agGridViewContainerRef &&
+            if (
+                this.agGridViewContainerRef &&
                 this.agGridViewContainerRef.element &&
-                this.agGridViewContainerRef.element.nativeElement) {
-                const headerRow = this.agGridViewContainerRef.element.nativeElement.querySelector('.ag-header-container .ag-header-row');
-                const headerPinnedLeft = this.agGridViewContainerRef.element.nativeElement.querySelector('.ag-pinned-left-header .ag-header-row');
-                const headerPinnedRight = this.agGridViewContainerRef.element.nativeElement.querySelector('.ag-pinned-right-header .ag-header-row');
+                this.agGridViewContainerRef.element.nativeElement
+            ) {
+                const headerRow =
+                    this.agGridViewContainerRef.element.nativeElement.querySelector(
+                        ".ag-header-container .ag-header-row"
+                    );
+                const headerPinnedLeft =
+                    this.agGridViewContainerRef.element.nativeElement.querySelector(
+                        ".ag-pinned-left-header .ag-header-row"
+                    );
+                const headerPinnedRight =
+                    this.agGridViewContainerRef.element.nativeElement.querySelector(
+                        ".ag-pinned-right-header .ag-header-row"
+                    );
 
                 if (headerRow || headerPinnedLeft || headerPinnedRight) {
                     this.setElementStyleForHeader(headerRow, gridStyle);
                     this.setElementStyleForHeader(headerPinnedLeft, gridStyle);
                     this.setElementStyleForHeader(headerPinnedRight, gridStyle);
-                    const headerCellTextElms = headerRow.querySelectorAll('.ag-header-cell-text');
-                    const headerCellTextLeftElms = headerPinnedLeft.querySelectorAll('.ag-header-cell-text');
-                    const headerCellTextRightElms = headerPinnedRight.querySelectorAll('.ag-header-cell-text');
+                    const headerCellTextElms = headerRow.querySelectorAll(
+                        ".ag-header-cell-text"
+                    );
+                    const headerCellTextLeftElms =
+                        headerPinnedLeft.querySelectorAll(
+                            ".ag-header-cell-text"
+                        );
+                    const headerCellTextRightElms =
+                        headerPinnedRight.querySelectorAll(
+                            ".ag-header-cell-text"
+                        );
                     if (headerCellTextElms.length) {
-                        headerCellTextElms.forEach(elm => {
-                            this.renderer.setElementStyle(elm, 'textDecoration', gridStyle.headerStyle['text-decoration']);
+                        headerCellTextElms.forEach((elm) => {
+                            this.renderer.setElementStyle(
+                                elm,
+                                "textDecoration",
+                                gridStyle.headerStyle["text-decoration"]
+                            );
                         });
                     }
                     if (headerCellTextLeftElms.length) {
-                        headerCellTextLeftElms.forEach(elm => {
-                            this.renderer.setElementStyle(elm, 'textDecoration', gridStyle.headerStyle['text-decoration']);
+                        headerCellTextLeftElms.forEach((elm) => {
+                            this.renderer.setElementStyle(
+                                elm,
+                                "textDecoration",
+                                gridStyle.headerStyle["text-decoration"]
+                            );
                         });
                     }
                     if (headerCellTextRightElms.length) {
-                        $('.ag-body-viewport-wrapper .ag-body-viewport.ag-layout-normal', this._eref.nativeElement).css({ 'margin-right': '-17px' });
-                        headerCellTextRightElms.forEach(elm => {
-                            this.renderer.setElementStyle(elm, 'textDecoration', gridStyle.headerStyle['text-decoration']);
+                        $(
+                            ".ag-body-viewport-wrapper .ag-body-viewport.ag-layout-normal",
+                            this._eref.nativeElement
+                        ).css({ "margin-right": "-17px" });
+                        headerCellTextRightElms.forEach((elm) => {
+                            this.renderer.setElementStyle(
+                                elm,
+                                "textDecoration",
+                                gridStyle.headerStyle["text-decoration"]
+                            );
                         });
                     }
                 }
@@ -1138,12 +1388,36 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private setElementStyleForHeader(headerName, gridStyle) {
-        this.renderer.setElementStyle(headerName, 'color', gridStyle.headerStyle['color']);
-        this.renderer.setElementStyle(headerName, 'fontFamily', gridStyle.headerStyle['font-family']);
-        this.renderer.setElementStyle(headerName, 'fontSize', gridStyle.headerStyle['font-size']);
-        this.renderer.setElementStyle(headerName, 'fontWeight', gridStyle.headerStyle['font-weight']);
-        this.renderer.setElementStyle(headerName, 'fontStyle', gridStyle.headerStyle['font-style']);
-        this.renderer.setElementStyle(headerName, 'textDecoration', gridStyle.headerStyle['text-decoration']);
+        this.renderer.setElementStyle(
+            headerName,
+            "color",
+            gridStyle.headerStyle["color"]
+        );
+        this.renderer.setElementStyle(
+            headerName,
+            "fontFamily",
+            gridStyle.headerStyle["font-family"]
+        );
+        this.renderer.setElementStyle(
+            headerName,
+            "fontSize",
+            gridStyle.headerStyle["font-size"]
+        );
+        this.renderer.setElementStyle(
+            headerName,
+            "fontWeight",
+            gridStyle.headerStyle["font-weight"]
+        );
+        this.renderer.setElementStyle(
+            headerName,
+            "fontStyle",
+            gridStyle.headerStyle["font-style"]
+        );
+        this.renderer.setElementStyle(
+            headerName,
+            "textDecoration",
+            gridStyle.headerStyle["text-decoration"]
+        );
     }
 
     /**
@@ -1153,13 +1427,22 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.allowTranslation) {
             return;
         }
-        if (this.agGridViewContainerRef &&
+        if (
+            this.agGridViewContainerRef &&
             this.agGridViewContainerRef.element &&
-            this.agGridViewContainerRef.element.nativeElement) {
-            const headerCells: Array<any> = this.agGridViewContainerRef.element.nativeElement.querySelectorAll('.ag-header-container .ag-header-row .ag-header-cell');
+            this.agGridViewContainerRef.element.nativeElement
+        ) {
+            const headerCells: Array<any> =
+                this.agGridViewContainerRef.element.nativeElement.querySelectorAll(
+                    ".ag-header-container .ag-header-row .ag-header-cell"
+                );
             if (headerCells) {
-                headerCells.forEach(headerCell => {
-                    this.renderer.setElementClass(headerCell, 'editing', isEditing);
+                headerCells.forEach((headerCell) => {
+                    this.renderer.setElementClass(
+                        headerCell,
+                        "editing",
+                        isEditing
+                    );
                 });
             }
         }
@@ -1187,22 +1470,30 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         // Assumption after 2 second the grid is rendered.
         setTimeout(() => {
             this.autoSelectRow();
-            this.agGridService['isGridRendered'] = true;
+            this.agGridService["isGridRendered"] = true;
         }, 2000);
     }
 
     private scrollDetailGridFollowMasterGrid() {
         if (this.masterDetail) {
-            $('.ag-pinned-left-cols-viewport', this._eref.nativeElement).css({ 'overflow-y': 'hidden' });
-            $('.ag-body-viewport', this._eref.nativeElement).bind('scroll', function (e) {
-                $(this).closest('.ag-root').find('.grid-master-detail .ag-body-viewport').scrollLeft(e.currentTarget.scrollLeft);
+            $(".ag-pinned-left-cols-viewport", this._eref.nativeElement).css({
+                "overflow-y": "hidden",
             });
+            $(".ag-body-viewport", this._eref.nativeElement).bind(
+                "scroll",
+                function (e) {
+                    $(this)
+                        .closest(".ag-root")
+                        .find(".grid-master-detail .ag-body-viewport")
+                        .scrollLeft(e.currentTarget.scrollLeft);
+                }
+            );
         }
     }
 
     public resetScrollMasterGrid() {
         if (this.masterDetail) {
-            const $viewport = $('.ag-body-viewport', this._eref.nativeElement);
+            const $viewport = $(".ag-body-viewport", this._eref.nativeElement);
             let scrollLeft = $viewport.scrollLeft();
             scrollLeft = scrollLeft > 0 ? scrollLeft - 1 : 0;
             $viewport.scrollLeft(scrollLeft);
@@ -1261,23 +1552,31 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.isStartEditing = true;
 
-        const inactiveRowWithIsActive = params.node.data &&
+        const inactiveRowWithIsActive =
+            params.node.data &&
             (params.node.data[ColHeaderKey.IsActive] === false ||
                 params.node.data[ColHeaderKey.IsActive] === null ||
                 params.node.data[ColHeaderKey.IsActive] === 0 ||
                 params.node.data[ColHeaderKey.IsActiveDisableRow] == false ||
                 params.node.data[ColHeaderKey.IsActiveDisableRow] == 0);
 
-        const inactiveRowWithSelectAll = params.node.data &&
+        const inactiveRowWithSelectAll =
+            params.node.data &&
             params.isDisableRowWithSelectAll &&
             (params.node.data[ColHeaderKey.SelectAll] == false ||
                 params.node.data[ColHeaderKey.SelectAll] == 0);
         const setting = this.agGridService.inactiveRowByColValueSetting(params);
-        if ((inactiveRowWithIsActive || inactiveRowWithSelectAll || setting.inactiveRowByValueSetting)) {
+        if (
+            inactiveRowWithIsActive ||
+            inactiveRowWithSelectAll ||
+            setting.inactiveRowByValueSetting
+        ) {
             let ignoreCol;
             if (setting.ignoreCols && setting.ignoreCols.length) {
                 if (Array.isArray(setting.ignoreCols)) {
-                    ignoreCol = setting.ignoreCols.find(p => p == params.colDef.field);
+                    ignoreCol = setting.ignoreCols.find(
+                        (p) => p == params.colDef.field
+                    );
                 }
             }
             if (!ignoreCol) {
@@ -1287,7 +1586,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         this.cellEditingStarted.emit(params.data);
-        if (params.data.hasOwnProperty(ColHeaderKey.IsActive) && !params.data[ColHeaderKey.IsActive]) {
+        if (
+            params.data.hasOwnProperty(ColHeaderKey.IsActive) &&
+            !params.data[ColHeaderKey.IsActive]
+        ) {
             params.data[ColHeaderKey.IsActive] = true;
         }
     }
@@ -1298,10 +1600,13 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      */
     public onCellEditingStopped(params) {
         const data: any = {
-            cellType: (params.colDef && params.colDef.refData) ? params.colDef.refData.controlType : '',
+            cellType:
+                params.colDef && params.colDef.refData
+                    ? params.colDef.refData.controlType
+                    : "",
             data: params.data,
             col: params.column,
-            value: params.value
+            value: params.value,
         };
         this.isStartEditing = false;
         this.cellEditingStopped.emit(data);
@@ -1317,19 +1622,18 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (!params.newValue && !params.oldValue) {
                     return;
                 }
-                const itemAdded = this.itemsAdded.find(p => p == params.data);
+                const itemAdded = this.itemsAdded.find((p) => p == params.data);
                 if (itemAdded) {
                     this.cellValueChanged.emit(params.data);
                     return;
                 }
-                const item = this.itemsEdited.find(p => p == params.data);
+                const item = this.itemsEdited.find((p) => p == params.data);
                 if (!item) {
                     this.itemsEdited.push(params.data);
                 }
                 this.cellValueChanged.emit(params.data);
             }
-        }
-        finally {
+        } finally {
             this.hasValidationError.emit(this.hasError());
         }
     }
@@ -1341,12 +1645,14 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 500);
     }
 
-
     /**
      * hasError
      * */
     public hasError() {
-        const invalidCells = this.agGridViewContainerRef.element.nativeElement.querySelectorAll('.invalid-cell');
+        const invalidCells =
+            this.agGridViewContainerRef.element.nativeElement.querySelectorAll(
+                ".invalid-cell"
+            );
         this.hasValidationErrorLocal = !!invalidCells.length;
         return invalidCells.length;
     }
@@ -1356,15 +1662,17 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * */
     public hasUnsavedRows() {
         if (this.itemsAdded && this.itemsAdded.length) {
-            const deletedNewItems = this.itemsAdded.filter(p => p.IsDeleted);
+            const deletedNewItems = this.itemsAdded.filter((p) => p.IsDeleted);
             if (deletedNewItems && deletedNewItems.length) {
                 this.api.updateRowData({ remove: deletedNewItems });
             }
-            this.itemsAdded = this.itemsAdded.filter(p => !p.IsDeleted);
+            this.itemsAdded = this.itemsAdded.filter((p) => !p.IsDeleted);
         }
-        return this.itemsEdited.length > 0
-            || this.itemsAdded.length > 0
-            || this.itemsRemoved.length > 0;
+        return (
+            this.itemsEdited.length > 0 ||
+            this.itemsAdded.length > 0 ||
+            this.itemsRemoved.length > 0
+        );
     }
 
     /**
@@ -1374,24 +1682,23 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         return {
             itemsAdded: this.itemsAdded,
             itemsEdited: this.itemsEdited,
-            itemsRemoved: this.itemsRemoved
-        }
+            itemsRemoved: this.itemsRemoved,
+        };
     }
 
     /**
-         * removeAllRowNodes
-         **/
+     * removeAllRowNodes
+     **/
     public removeAllRowNodes() {
         if (this.api) {
             if (this.agGridDataSource.enabledServerSideDatasource) {
                 this.api.setRowData([]);
                 this.api.deselectAll();
-            }
-            else {
+            } else {
                 const nodeItems = this.getCurrentNodeItems();
                 if (nodeItems && nodeItems.length) {
                     this.api.updateRowData({
-                        remove: nodeItems
+                        remove: nodeItems,
                     });
                 }
             }
@@ -1403,17 +1710,24 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      **/
     public addNewRow(data?, addIndex = 0) {
         let newItem = {};
-        const gridColumns = this.gridOptions.columnDefs.map((colDef: ColDef) => {
-            return {
-                data: colDef.field,
-                setting: colDef.refData ? colDef.refData.setting : null
-            };
-        });
+        const gridColumns = this.gridOptions.columnDefs.map(
+            (colDef: ColDef) => {
+                return {
+                    data: colDef.field,
+                    setting: colDef.refData ? colDef.refData.setting : null,
+                };
+            }
+        );
 
         const currentRowCount = this.api.getDisplayedRowCount();
         for (const col of gridColumns) {
             const config = null;
-            newItem = this.datatableService.createEmptyRowData(newItem, col, config, currentRowCount);
+            newItem = this.datatableService.createEmptyRowData(
+                newItem,
+                col,
+                config,
+                currentRowCount
+            );
         }
 
         // Set default value for new row that will be enable that row to edit.
@@ -1429,10 +1743,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
         const res = this.api.updateRowData({
             add: [newItem],
-            addIndex: addIndex
+            addIndex: addIndex,
         });
 
-        const item = this.itemsAdded.find(p => p == newItem);
+        const item = this.itemsAdded.find((p) => p == newItem);
         if (!item) {
             this.itemsAdded.push(newItem);
         }
@@ -1451,7 +1765,6 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * deleteRows
      **/
     public deleteRows() {
-
         if (!this.allowDelete && !this.redRowOnDelete) {
             return;
         }
@@ -1459,27 +1772,35 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         const updateArray = [];
         for (let i = 0; i < this.api.getDisplayedRowCount(); i++) {
             const rowNode = this.api.getDisplayedRowAtIndex(i);
-            if (rowNode.data[ColHeaderKey.Delete] && (!rowNode.data['DT_RowId'] || rowNode.data['DT_RowId'].indexOf('newrow') < 0)) {
+            if (
+                rowNode.data[ColHeaderKey.Delete] &&
+                (!rowNode.data["DT_RowId"] ||
+                    rowNode.data["DT_RowId"].indexOf("newrow") < 0)
+            ) {
                 rowNode.data[ColHeaderKey.IsDeleted] = true;
                 // this.api.redrawRows({ rowNodes: [rowNode] });
-                const item = this.itemsRemoved.find(p => p == rowNode.data);
+                const item = this.itemsRemoved.find((p) => p == rowNode.data);
                 if (!item) {
                     this.itemsRemoved.push(rowNode.data);
                 }
             } else {
                 delete rowNode.data[ColHeaderKey.IsDeleted];
-                this.itemsRemoved = this.itemsRemoved.filter(p => p != rowNode.data);
+                this.itemsRemoved = this.itemsRemoved.filter(
+                    (p) => p != rowNode.data
+                );
             }
-            if (rowNode.data[ColHeaderKey.Delete] && rowNode.data['DT_RowId'] && rowNode.data['DT_RowId'].indexOf('newrow') > -1) {
+            if (
+                rowNode.data[ColHeaderKey.Delete] &&
+                rowNode.data["DT_RowId"] &&
+                rowNode.data["DT_RowId"].indexOf("newrow") > -1
+            ) {
                 removeArray.push(rowNode.data);
             } else {
                 updateArray.push(rowNode.data);
             }
         }
-        if (removeArray.length)
-            this.api.updateRowData({ remove: removeArray });
-        if (updateArray.length)
-            this.api.updateRowData({ update: updateArray });
+        if (removeArray.length) this.api.updateRowData({ remove: removeArray });
+        if (updateArray.length) this.api.updateRowData({ update: updateArray });
         this.onDeletedRows.emit(true);
         this.hasValidationErrorLocal = false;
         // Update value for check-all of delete column
@@ -1506,24 +1827,35 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         for (let i = 0; i < this.api.getDisplayedRowCount(); i++) {
             const rowNode = this.api.getDisplayedRowAtIndex(i);
             if (!rowNode.data) continue;
-            if (rowNode.data[ColHeaderKey.Delete] && (!rowNode.data['DT_RowId'] || rowNode.data['DT_RowId'].indexOf('newrow') < 0)) {
+            if (
+                rowNode.data[ColHeaderKey.Delete] &&
+                (!rowNode.data["DT_RowId"] ||
+                    rowNode.data["DT_RowId"].indexOf("newrow") < 0)
+            ) {
                 rowNode.data[ColHeaderKey.IsDeleted] = true;
-                const item = this.itemsRemoved.find(p => p == rowNode.data);
+                const item = this.itemsRemoved.find((p) => p == rowNode.data);
                 if (!item) {
                     this.itemsRemoved.push(rowNode.data);
                 }
             } else {
                 delete rowNode.data[ColHeaderKey.IsDeleted];
-                this.itemsRemoved = this.itemsRemoved.filter(p => p != rowNode.data);
+                this.itemsRemoved = this.itemsRemoved.filter(
+                    (p) => p != rowNode.data
+                );
             }
-            if (rowNode.data[ColHeaderKey.Delete] && rowNode.data['DT_RowId'] && rowNode.data['DT_RowId'].indexOf('newrow') > -1) {
+            if (
+                rowNode.data[ColHeaderKey.Delete] &&
+                rowNode.data["DT_RowId"] &&
+                rowNode.data["DT_RowId"].indexOf("newrow") > -1
+            ) {
                 rowNode.data[ColHeaderKey.IsDeleted] = true;
                 removeArray.push(rowNode.data);
             } else {
                 updateArray.push(rowNode.data);
             }
-            this.onDeleteChecked.emit({ colDef: { field: ColHeaderKey.Delete } });
-
+            this.onDeleteChecked.emit({
+                colDef: { field: ColHeaderKey.Delete },
+            });
         }
     }
 
@@ -1542,7 +1874,11 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         const data: any = params.node.data;
         if (!data) return;
         data.colDef = params.colDef;
-        data[params.column.colDef.field] = this.datatableService.updateValueForButtonAndCheckboxColumn(data[params.column.colDef.field], status);
+        data[params.column.colDef.field] =
+            this.datatableService.updateValueForButtonAndCheckboxColumn(
+                data[params.column.colDef.field],
+                status
+            );
         this.api.updateRowData({ update: [data] });
         this.buttonAndCheckboxValueChanged.emit(data);
     }
@@ -1571,13 +1907,26 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.onSelectedAllChecked.emit(data);
 
                     if (!status) {
-                        this.onMarkedAsSelectedAll.emit(this.gridOptions.rowData.filter((item) => item[ColHeaderKey.SelectAll] === true));
+                        this.onMarkedAsSelectedAll.emit(
+                            this.gridOptions.rowData.filter(
+                                (item) => item[ColHeaderKey.SelectAll] === true
+                            )
+                        );
                     } else {
-                        const unselectedItems = this.gridOptions.rowData.filter((item) => item[ColHeaderKey.SelectAll] !== true);
+                        const unselectedItems = this.gridOptions.rowData.filter(
+                            (item) => item[ColHeaderKey.SelectAll] !== true
+                        );
                         if (!unselectedItems || !unselectedItems.length) {
-                            this.onMarkedAsSelectedAll.emit(this.gridOptions.rowData);
+                            this.onMarkedAsSelectedAll.emit(
+                                this.gridOptions.rowData
+                            );
                         } else {
-                            this.onMarkedAsSelectedAll.emit(this.gridOptions.rowData.filter((item) => item[ColHeaderKey.SelectAll] === true));
+                            this.onMarkedAsSelectedAll.emit(
+                                this.gridOptions.rowData.filter(
+                                    (item) =>
+                                        item[ColHeaderKey.SelectAll] === true
+                                )
+                            );
                         }
                     }
                     break;
@@ -1595,11 +1944,19 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                     if (status) {
                         data[ColHeaderKey.UnMergeCheckbox] = false;
                         this.api.updateRowData({ update: [data] });
-                        this.api.forEachNode((rowNode: RowNode, idx: number) => {
-                            if (rowNode != params.node && rowNode.data[ColHeaderKey.MasterCheckbox]) {
-                                rowNode.setDataValue(ColHeaderKey.MasterCheckbox, false);
+                        this.api.forEachNode(
+                            (rowNode: RowNode, idx: number) => {
+                                if (
+                                    rowNode != params.node &&
+                                    rowNode.data[ColHeaderKey.MasterCheckbox]
+                                ) {
+                                    rowNode.setDataValue(
+                                        ColHeaderKey.MasterCheckbox,
+                                        false
+                                    );
+                                }
                             }
-                        });
+                        );
                     } else {
                         data[ColHeaderKey.MasterCheckbox] = true;
                         this.api.updateRowData({ update: [data] });
@@ -1627,8 +1984,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         }
 
-        if (this.itemsEdited.indexOf(data) >= 0
-            || params.column.colDef.field == ColHeaderKey.Delete) {
+        if (
+            this.itemsEdited.indexOf(data) >= 0 ||
+            params.column.colDef.field == ColHeaderKey.Delete
+        ) {
             return;
         }
         this.itemsEdited.push(data);
@@ -1641,7 +2000,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         data[ColHeaderKey.Delete] = !!status;
         if (!status) {
             delete data[ColHeaderKey.IsDeleted];
-            this.itemsRemoved = this.itemsRemoved.filter(p => p != data);
+            this.itemsRemoved = this.itemsRemoved.filter((p) => p != data);
         }
 
         if (callback) {
@@ -1661,11 +2020,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 disabledDeleteButton: false,
             });
             this.isMarkedAsDelete = true;
-        }
-        else {
+        } else {
             this.onRowMarkedAsDelete.emit({
                 showCommandButtons: false,
-                disabledDeleteButton: true
+                disabledDeleteButton: true,
             });
             this.isMarkedAsDelete = false;
         }
@@ -1678,10 +2036,8 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * @param callback
      */
     public checkAndEmitSelectAllStatus(status) {
-        if (status)
-            this.onMarkedAsSelectedAll.emit(this.gridOptions.rowData);
-        else
-            this.onMarkedAsSelectedAll.emit([]);
+        if (status) this.onMarkedAsSelectedAll.emit(this.gridOptions.rowData);
+        else this.onMarkedAsSelectedAll.emit([]);
     }
 
     /**
@@ -1711,16 +2067,34 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * Auto select row if there's only 01 row OR there's previous selected row
      * */
     public autoSelectRow() {
-        if (this.api && this.gridOptions && this.gridOptions.rowData && this.gridOptions.rowData.length) {
+        if (
+            this.api &&
+            this.gridOptions &&
+            this.gridOptions.rowData &&
+            this.gridOptions.rowData.length
+        ) {
             // Auto select row if there's only 01 row
-            if (!this.preventAutoSelectFirstRow && ((this.gridOptions.rowData.length === 1 && !this.api.getSelectedNodes().length) || this.autoSelectFirstRow)) {
+            if (
+                !this.preventAutoSelectFirstRow &&
+                ((this.gridOptions.rowData.length === 1 &&
+                    !this.api.getSelectedNodes().length) ||
+                    this.autoSelectFirstRow)
+            ) {
                 this.selectRowIndex(0);
             } else {
                 if (this.autoSelectCurrentRowAfterChangingData) {
-                    if (this.selectedNode && this.selectedNode.rowIndex <= this.gridOptions.rowData.length - 1) {
+                    if (
+                        this.selectedNode &&
+                        this.selectedNode.rowIndex <=
+                            this.gridOptions.rowData.length - 1
+                    ) {
                         this.selectRowIndex(this.selectedNode.rowIndex);
                     } else {
-                        this.rowClick.emit(this.agGridService.createEmptyRowClickData(this.gridOptions.columnDefs));
+                        this.rowClick.emit(
+                            this.agGridService.createEmptyRowClickData(
+                                this.gridOptions.columnDefs
+                            )
+                        );
                     }
                 }
             }
@@ -1731,11 +2105,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * changeToSingleRowMode
      */
     public changeToSingleRowMode(valueSwitchToDetail?: any) {
-
         // mode to know when table change in setActiveRowByCondition function
         if (valueSwitchToDetail) {
             this.modeMultiRow = false;
-            return this.modeSingleRow = false;
+            return (this.modeSingleRow = false);
         } else {
             this.modeSingleRow = true;
         }
@@ -1753,11 +2126,11 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         //    this.api.onFilterChanged();
         //}
         if (this.selectedNode) {
-            Object.keys(this.selectedNode.data).forEach(key => {
+            Object.keys(this.selectedNode.data).forEach((key) => {
                 hardcodedFilter[key] = {
-                    type: 'contains',
-                    filter: this.selectedNode.data[key]
-                }
+                    type: "contains",
+                    filter: this.selectedNode.data[key],
+                };
             });
             this.api.setFilterModel(hardcodedFilter);
             this.api.onFilterChanged();
@@ -1793,7 +2166,11 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * selectRowIndex
      * @param index
      */
-    public selectRowIndex(index: number, thenScrollToIndex: boolean = true, thenEditRow?: boolean) {
+    public selectRowIndex(
+        index: number,
+        thenScrollToIndex: boolean = true,
+        thenEditRow?: boolean
+    ) {
         if (index === -1) {
             this.api.forEachNode((rowNode: RowNode, rowIndex: number) => {
                 rowNode.setSelected(false);
@@ -1815,7 +2192,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             if (firstCol) {
                 this.api.startEditingCell({
                     rowIndex: 0,
-                    colKey: firstCol.colId || firstCol.field
+                    colKey: firstCol.colId || firstCol.field,
                 });
             }
         }
@@ -1839,8 +2216,8 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             if (colDef.refData && colDef.refData.controlType) {
                 let total = 0;
                 switch (colDef.refData.controlType.toLowerCase()) {
-                    case 'numeric':
-                        this.gridOptions.rowData.forEach(item => {
+                    case "numeric":
+                        this.gridOptions.rowData.forEach((item) => {
                             if (item[colDef.field]) {
                                 total += item[colDef.field];
                             }
@@ -1852,15 +2229,15 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         });
         rows.push(data);
         switch (showTotalRow.positionTotalRow) {
-            case 'Top':
+            case "Top":
                 this.pinnedTopRowData = rows;
                 this.pinnedBottomRowData = [];
                 break;
-            case 'Bottom':
+            case "Bottom":
                 this.pinnedBottomRowData = rows;
                 this.pinnedTopRowData = [];
                 break;
-            case 'Both':
+            case "Both":
                 this.pinnedBottomRowData = rows;
                 this.pinnedTopRowData = rows;
                 break;
@@ -1884,7 +2261,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        if (this.hasPriorityColumn && $event.column.colDef.field === CONTROL_COLUMNS.Priority) {
+        if (
+            this.hasPriorityColumn &&
+            $event.column.colDef.field === CONTROL_COLUMNS.Priority
+        ) {
             return;
         }
 
@@ -1899,32 +2279,55 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         */
 
-        const isNotEditableCheckboxAndButton = !!$event.column.colDef.cellRendererFramework
-            && $event.column.colDef.cellRendererFramework.name !== 'CheckboxEditableCellRenderer'
-            && $event.column.colDef.cellRendererFramework.name !== 'TemplateButtonCellRenderer';
-        if (!$event.column.colDef.editable && (!$event.column.colDef.cellRendererFramework || isNotEditableCheckboxAndButton)) {
+        const isNotEditableCheckboxAndButton =
+            !!$event.column.colDef.cellRendererFramework &&
+            $event.column.colDef.cellRendererFramework.name !==
+                "CheckboxEditableCellRenderer" &&
+            $event.column.colDef.cellRendererFramework.name !==
+                "TemplateButtonCellRenderer";
+        if (
+            !$event.column.colDef.editable &&
+            (!$event.column.colDef.cellRendererFramework ||
+                isNotEditableCheckboxAndButton)
+        ) {
             return;
         }
 
-        if (this._selectingCell && (this._selectingCell.rowIndex === $event.rowIndex && this._selectingCell.colDef.field === $event.column.colDef.field)) {
+        if (
+            this._selectingCell &&
+            this._selectingCell.rowIndex === $event.rowIndex &&
+            this._selectingCell.colDef.field === $event.column.colDef.field
+        ) {
             return;
         }
 
         this._selectingCell.rowIndex = $event.rowIndex;
         this._selectingCell.colDef = $event.column.colDef;
 
-        const cellData = $event.api.getValue($event.column.colDef.field, $event.api.getDisplayedRowAtIndex($event.rowIndex));
+        const cellData = $event.api.getValue(
+            $event.column.colDef.field,
+            $event.api.getDisplayedRowAtIndex($event.rowIndex)
+        );
 
-        const isBooleanCol = $event.column.colDef.refData && $event.column.colDef.refData.controlType === 'Checkbox' && (isBoolean(cellData) || cellData == 1 || cellData == 0 || isNil(cellData));
-        if (isBooleanCol
-            || isNil(cellData)
-            || isNumber(cellData)
-            || (isString(cellData) && (!cellData || !cellData.trim()))
-            || (isObject(cellData) && !cellData.key)) {
+        const isBooleanCol =
+            $event.column.colDef.refData &&
+            $event.column.colDef.refData.controlType === "Checkbox" &&
+            (isBoolean(cellData) ||
+                cellData == 1 ||
+                cellData == 0 ||
+                isNil(cellData));
+        if (
+            isBooleanCol ||
+            isNil(cellData) ||
+            isNumber(cellData) ||
+            (isString(cellData) && (!cellData || !cellData.trim())) ||
+            (isObject(cellData) && !cellData.key)
+        ) {
             //this.api.stopEditing();
             $event.api.startEditingCell({
                 rowIndex: $event.rowIndex,
-                colKey: $event.column.colDef.colId || $event.column.colDef.field
+                colKey:
+                    $event.column.colDef.colId || $event.column.colDef.field,
             });
         }
     }
@@ -1935,9 +2338,9 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      */
     public onColumnResized($event) {
         if ($event) {
-            if ($event.source === 'uiColumnDragged' && $event.finished) {
+            if ($event.source === "uiColumnDragged" && $event.finished) {
                 this.updateColumnState($event);
-            } else if ($event.source === 'autosizeColumns' && $event.finished) {
+            } else if ($event.source === "autosizeColumns" && $event.finished) {
                 this.updateColumnState($event);
             }
         }
@@ -1960,14 +2363,17 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         const settings = this.getColumnLayout();
         const sortState = this.api ? this.api.getSortModel() : null;
         if (this.columnsLayoutSettings) {
-            this.columnsLayoutSettings.settings = settings && settings.length ? settings : this.columnsLayoutSettings.settings;
+            this.columnsLayoutSettings.settings =
+                settings && settings.length
+                    ? settings
+                    : this.columnsLayoutSettings.settings;
             this.columnsLayoutSettings.sortState = sortState;
         }
         const outputData = {
             columnState: this.getColumnLayout(),
             sortState: sortState,
             source: $event ? $event.source : null,
-            type: $event ? $event.type : null
+            type: $event ? $event.type : null,
         };
         this.changeColumnLayout.emit(outputData);
         this.isColumnsLayoutChanged = true;
@@ -1977,12 +2383,20 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public changeColumnLayoutMasterDetail() {
-        if (!this.masterDetail || !this.columnsLayoutSettings || !this.api || !this.columnApi) return;
+        if (
+            !this.masterDetail ||
+            !this.columnsLayoutSettings ||
+            !this.api ||
+            !this.columnApi
+        )
+            return;
 
         this.columnsLayoutSettings.settings = this.getColumnLayout();
         this.columnsLayoutSettings.sortState = this.api.getSortModel();
 
-        this.onChangeColumnLayoutMasterDetail.emit({ columnsLayoutSettings: this.columnsLayoutSettings });
+        this.onChangeColumnLayoutMasterDetail.emit({
+            columnsLayoutSettings: this.columnsLayoutSettings,
+        });
     }
     public updateColumnStateForDetailGrid(settings?) {
         if (!this.columnsLayoutSettings || !this.api || !this.columnApi) return;
@@ -2000,16 +2414,24 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     private isDirtyFromUserAction() {
         const columnsLayout = this.getColumnLayout() || [];
         // const rowGroupPanel = this.getRowGroupPanel() || [];
-        const sortModel = this.api ? (this.api.getSortModel() || []) : [];
-        const setting = (this.columnsLayoutSettings && this.columnsLayoutSettings.settings) ? this.columnsLayoutSettings.settings : [];
+        const sortModel = this.api ? this.api.getSortModel() || [] : [];
+        const setting =
+            this.columnsLayoutSettings && this.columnsLayoutSettings.settings
+                ? this.columnsLayoutSettings.settings
+                : [];
         // const rowGroup = (this.columnsLayoutSettings && this.columnsLayoutSettings.rowGroup) ? this.columnsLayoutSettings.rowGroup : [];
-        const sortState = (this.columnsLayoutSettings && this.columnsLayoutSettings.sortState) ? this.columnsLayoutSettings.sortState : [];
+        const sortState =
+            this.columnsLayoutSettings && this.columnsLayoutSettings.sortState
+                ? this.columnsLayoutSettings.sortState
+                : [];
 
-        return ((columnsLayout.length != setting.length) ||
+        return (
+            columnsLayout.length != setting.length ||
             (this.rowGroupPanel && this.isGlobalSearch) ||
-            (sortModel.length != sortState.length) ||
-            (JSON.stringify(setting) !== JSON.stringify(columnsLayout)) ||
-            (JSON.stringify(sortState) !== JSON.stringify(sortModel)));
+            sortModel.length != sortState.length ||
+            JSON.stringify(setting) !== JSON.stringify(columnsLayout) ||
+            JSON.stringify(sortState) !== JSON.stringify(sortModel)
+        );
     }
 
     /**
@@ -2022,59 +2444,100 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (this.allowSetColumnState) {
             if (this.columnApi && this.columnsLayoutSettings) {
-                if (this.columnsLayoutSettings.settings && typeof this.columnsLayoutSettings.settings === 'object') {
+                if (
+                    this.columnsLayoutSettings.settings &&
+                    typeof this.columnsLayoutSettings.settings === "object"
+                ) {
                     //Check to update column state in case of length of state is not equal to current columns length
-                    if (this._isColumnsChanged(this.gridOptions.columnDefs, this.columnsLayoutSettings.settings, 'colId')
-                        || this.gridOptions.columnDefs.length !== this.columnsLayoutSettings.settings.length) {
+                    if (
+                        this._isColumnsChanged(
+                            this.gridOptions.columnDefs,
+                            this.columnsLayoutSettings.settings,
+                            "colId"
+                        ) ||
+                        this.gridOptions.columnDefs.length !==
+                            this.columnsLayoutSettings.settings.length
+                    ) {
                         const missingColDefs: ColDef[] = [];
-                        for (let i = 0; i < this.gridOptions.columnDefs.length; i++) {
-                            if (!this.columnsLayoutSettings.settings.find(x => x['colId'] == this.gridOptions.columnDefs[i]['field'])) {
-                                missingColDefs.push(this.gridOptions.columnDefs[i]);
+                        for (
+                            let i = 0;
+                            i < this.gridOptions.columnDefs.length;
+                            i++
+                        ) {
+                            if (
+                                !this.columnsLayoutSettings.settings.find(
+                                    (x) =>
+                                        x["colId"] ==
+                                        this.gridOptions.columnDefs[i]["field"]
+                                )
+                            ) {
+                                missingColDefs.push(
+                                    this.gridOptions.columnDefs[i]
+                                );
                             }
                         }
 
                         let masterDetailColumn: any;
                         for (let i = 0; i < missingColDefs.length; i++) {
-                            if (missingColDefs[i].field === BUTTON_COLUMNS.rowColCheckAll) {
-                                this.columnsLayoutSettings.settings.splice(1, 0, {
-                                    aggFunc: null,
-                                    colId: missingColDefs[i].field,
-                                    hide: true,
-                                    pinned: null,
-                                    pivotIndex: null,
-                                    rowGroupIndex: null,
-                                    width: 100
-                                });
+                            if (
+                                missingColDefs[i].field ===
+                                BUTTON_COLUMNS.rowColCheckAll
+                            ) {
+                                this.columnsLayoutSettings.settings.splice(
+                                    1,
+                                    0,
+                                    {
+                                        aggFunc: null,
+                                        colId: missingColDefs[i].field,
+                                        hide: true,
+                                        pinned: null,
+                                        pivotIndex: null,
+                                        rowGroupIndex: null,
+                                        width: 100,
+                                    }
+                                );
                             } else {
                                 const missingColDef = {
                                     aggFunc: null,
                                     colId: missingColDefs[i].field || null,
                                     hide: missingColDefs[i].hide || false,
                                     pinned: missingColDefs[i].pinned || null,
-                                    pivotIndex: missingColDefs[i].pivotIndex || null,
-                                    rowGroupIndex: missingColDefs[i].rowGroupIndex || null,
-                                    width: missingColDefs[i].width || 100
+                                    pivotIndex:
+                                        missingColDefs[i].pivotIndex || null,
+                                    rowGroupIndex:
+                                        missingColDefs[i].rowGroupIndex || null,
+                                    width: missingColDefs[i].width || 100,
                                 };
 
-                                if (missingColDefs[i].field == 'MasterDetailColumn')
+                                if (
+                                    missingColDefs[i].field ==
+                                    "MasterDetailColumn"
+                                )
                                     masterDetailColumn = missingColDef;
                                 else
-                                    this.columnsLayoutSettings.settings.push(missingColDef);
+                                    this.columnsLayoutSettings.settings.push(
+                                        missingColDef
+                                    );
                             }
-                        }//for
+                        } //for
 
                         if (masterDetailColumn)
-                            this.columnsLayoutSettings.settings.unshift(masterDetailColumn);
+                            this.columnsLayoutSettings.settings.unshift(
+                                masterDetailColumn
+                            );
                     }
 
-                    this.columnsLayoutSettings.settings = this.columnsLayoutSettings.settings.map((setting) => {
-                        return {
-                            ...setting,
-                            hide: this.hideColumnFromAccessRight(setting)
-                        }
-                    });
+                    this.columnsLayoutSettings.settings =
+                        this.columnsLayoutSettings.settings.map((setting) => {
+                            return {
+                                ...setting,
+                                hide: this.hideColumnFromAccessRight(setting),
+                            };
+                        });
 
-                    this.columnApi.setColumnState(this.columnsLayoutSettings.settings);
+                    this.columnApi.setColumnState(
+                        this.columnsLayoutSettings.settings
+                    );
                 }
                 if (this.columnsLayoutSettings.sortState) {
                     this.api.setSortModel(this.columnsLayoutSettings.sortState);
@@ -2102,23 +2565,39 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         const groupColumns: any[] = [];
 
         for (let i = 0; i < columnDefs.length; i++) {
-            if (this.datatableService.hasDisplayField(columnDefs[i].refData, 'GroupDisplayColumn')) {
-                const colName = this._getColumnName(columnDefs, this.datatableService.getDisplayFieldValue(columnDefs[i].refData, 'GroupDisplayColumn'));
+            if (
+                this.datatableService.hasDisplayField(
+                    columnDefs[i].refData,
+                    "GroupDisplayColumn"
+                )
+            ) {
+                const colName = this._getColumnName(
+                    columnDefs,
+                    this.datatableService.getDisplayFieldValue(
+                        columnDefs[i].refData,
+                        "GroupDisplayColumn"
+                    )
+                );
                 if (colName) {
                     groupColumns.push(colName);
                 }
             }
 
-            if (this.datatableService.hasDisplayField(columnDefs[i].refData, 'AutoGroupColumnDef')) {
+            if (
+                this.datatableService.hasDisplayField(
+                    columnDefs[i].refData,
+                    "AutoGroupColumnDef"
+                )
+            ) {
                 this.gridOptions.autoGroupColumnDef = {
                     headerName: columnDefs[i].headerName,
-                    field: columnDefs[i].field
+                    field: columnDefs[i].field,
                 };
             }
         }
 
         groupColumns.forEach((groupCol: string) => {
-            const col: ColDef = columnDefs.find(c => c.field == groupCol);
+            const col: ColDef = columnDefs.find((c) => c.field == groupCol);
             if (col) {
                 col.rowGroup = true;
             }
@@ -2126,7 +2605,11 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private _getColumnName(columnDefs: any[], originalColumnName: string) {
-        const col = columnDefs.find(c => c.refData && c.refData.setting.OriginalColumnName == originalColumnName);
+        const col = columnDefs.find(
+            (c) =>
+                c.refData &&
+                c.refData.setting.OriginalColumnName == originalColumnName
+        );
         if (col) {
             return col.field;
         }
@@ -2143,37 +2626,42 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         //    const deleteCol: ColDef = this.gridOptions.columnDefs.find((p: ColDef) => {
         //        return p.field == ColHeaderKey.Delete;
         //    });
-
         //    if (deleteCol) {
         //        const isVisible = this.columnApi.getColumn(ColHeaderKey.Delete).isVisible();
         //        this.columnApi.setColumnVisible(ColHeaderKey.Delete, isShow);
-
         //        if (!isVisible && isShow) {
         //            if (callback) {
         //                callback();
         //            }
         //        }
-
         //    }
         //}
     }
 
-    private _isColumnsChanged(oldColumns: any[], newColumns: any[], compareFieldName: string) {
+    private _isColumnsChanged(
+        oldColumns: any[],
+        newColumns: any[],
+        compareFieldName: string
+    ) {
         if (!oldColumns || !newColumns) {
             return true;
         }
 
         if (oldColumns.length !== newColumns.length) {
-            return true
+            return true;
         }
 
         for (let i = 0; i < oldColumns.length; i++) {
-            const item = newColumns.find(x => x[compareFieldName] == oldColumns[i][compareFieldName]);
+            const item = newColumns.find(
+                (x) => x[compareFieldName] == oldColumns[i][compareFieldName]
+            );
             if (!item) {
                 return true;
-            }
-            else {
-                if (oldColumns[i][compareFieldName] && (item.hide != oldColumns[i].hide)) {
+            } else {
+                if (
+                    oldColumns[i][compareFieldName] &&
+                    item.hide != oldColumns[i].hide
+                ) {
                     return true;
                 }
             }
@@ -2192,7 +2680,9 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             if (this.api.getSelectedNodes()[0]) {
                 if (this.translateData) {
                     // service for translate grid data
-                    this.translateData.gridSelectedRow = [this.api.getSelectedNodes()[0].data];
+                    this.translateData.gridSelectedRow = [
+                        this.api.getSelectedNodes()[0].data,
+                    ];
                 }
             }
         }
@@ -2204,7 +2694,6 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     public stopEditing() {
         this.api.stopEditing();
     }
-
 
     /**
      * Apply Filter
@@ -2221,12 +2710,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         // if (!this.gridOptions || !this.gridOptions.rowData)
         //     return;
         setTimeout(() => {
-            if (!this.gridOptions || !this.gridOptions.rowData)
-                return;
+            if (!this.gridOptions || !this.gridOptions.rowData) return;
 
             if (keyColumnNames) {
-
-                const keys = keyColumnNames.split(',');
+                const keys = keyColumnNames.split(",");
                 const compareObj1 = {};
                 for (let j = 0; j < keys.length; j++) {
                     const key = keys[j];
@@ -2240,7 +2727,9 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                         const key = keys[j];
                         compareObj2[key] = item[key];
                     }
-                    const isEqual: boolean = JSON.stringify(compareObj1).toLowerCase() === JSON.stringify(compareObj2).toLowerCase()
+                    const isEqual: boolean =
+                        JSON.stringify(compareObj1).toLowerCase() ===
+                        JSON.stringify(compareObj2).toLowerCase();
                     if (isEqual) {
                         this.selectRowIndex(i);
                         break;
@@ -2251,10 +2740,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
             for (let i = 0; i < this.gridOptions.rowData.length; i++) {
                 const item = cloneDeep(this.gridOptions.rowData[i]);
-                delete item['DT_RowId'];
-                delete item['isReadOnlyColumn'];
-                delete selectedRow['DT_RowId'];
-                delete selectedRow['isReadOnlyColumn'];
+                delete item["DT_RowId"];
+                delete item["isReadOnlyColumn"];
+                delete selectedRow["DT_RowId"];
+                delete selectedRow["isReadOnlyColumn"];
                 if (JSON.stringify(selectedRow) === JSON.stringify(item)) {
                     this.selectRowIndex(i);
                     break;
@@ -2267,24 +2756,19 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * scrollToPosition
      * @param mode
      */
-    public scrollToPosition(mode) {
-
-    }
+    public scrollToPosition(mode) {}
 
     /**
      * scrollHover
      * @param mode
      */
-    public scrollHover(mode) {
-
-    }
+    public scrollHover(mode) {}
 
     /**
      * scrollUnHover
      * @param mode
      */
-    public scrollUnHover(mode) {
-    }
+    public scrollUnHover(mode) {}
 
     /**
      * collapseGroupsToLevel
@@ -2295,7 +2779,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         // If you have many nodes you want to expand, then it is best to set node.expanded = true directly,
         // and then call api.onGroupExpandedOrCollapsed() when finished to get the grid to
         // redraw the grid again just once
-        this.api.forEachNode(node => {
+        this.api.forEachNode((node) => {
             node.expanded = mode == 1 ? true : false;
         });
         // this.api.onGroupExpandedOrCollapsed();
@@ -2320,13 +2804,22 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             const removeData: Array<any> = [];
             this.api.forEachNode((rowNode: RowNode) => {
                 if (rowNode.allLeafChildren) {
-                    for (let i = 0, dataRow = rowNode.allLeafChildren.length; i < dataRow; i++) {
+                    for (
+                        let i = 0, dataRow = rowNode.allLeafChildren.length;
+                        i < dataRow;
+                        i++
+                    ) {
                         if (rowNode.allLeafChildren[i].data === rowId) {
-                            return removeData.push(rowNode.allLeafChildren[i].data);
+                            return removeData.push(
+                                rowNode.allLeafChildren[i].data
+                            );
                         }
                     }
                 } else {
-                    if (rowNode.data && rowNode.data[ColHeaderKey.Id] == rowId) {
+                    if (
+                        rowNode.data &&
+                        rowNode.data[ColHeaderKey.Id] == rowId
+                    ) {
                         return removeData.push(rowNode.data);
                     }
                 }
@@ -2343,20 +2836,32 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             const filter = {};
             this.api.forEachNode((rowNode: RowNode) => {
                 if (!rowNode || !rowNode.data) return;
-                Object.keys(rowNode.data).forEach(key => {
-                    if (key === 'IdPersonInterface' || key === 'IdPersonInterfaceContactAddressGW') {
-                        if (keyObj['IdPersonInterfaceContactAddressGW'] && keyObj['IdPersonInterfaceContactAddressGW'] === rowNode.data['IdPersonInterfaceContactAddressGW']) {
+                Object.keys(rowNode.data).forEach((key) => {
+                    if (
+                        key === "IdPersonInterface" ||
+                        key === "IdPersonInterfaceContactAddressGW"
+                    ) {
+                        if (
+                            keyObj["IdPersonInterfaceContactAddressGW"] &&
+                            keyObj["IdPersonInterfaceContactAddressGW"] ===
+                                rowNode.data[
+                                    "IdPersonInterfaceContactAddressGW"
+                                ]
+                        ) {
                             if (this.modeSingleRow) {
                                 this.api.setFilterModel(null);
                                 filter[key] = {
-                                    type: 'contains',
-                                    filter: rowNode.data[key]
+                                    type: "contains",
+                                    filter: rowNode.data[key],
                                 };
                                 this.api.setFilterModel(filter);
                                 this.api.onFilterChanged();
                             }
                             if (this.modeMultiRow) {
-                                const selectedRow = this.api.getDisplayedRowAtIndex(rowNode.rowIndex);
+                                const selectedRow =
+                                    this.api.getDisplayedRowAtIndex(
+                                        rowNode.rowIndex
+                                    );
                                 return selectedRow.setSelected(true);
                             }
                         }
@@ -2365,14 +2870,17 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                             if (this.modeSingleRow) {
                                 this.api.setFilterModel(null);
                                 filter[key] = {
-                                    type: 'contains',
-                                    filter: rowNode.data[key]
+                                    type: "contains",
+                                    filter: rowNode.data[key],
                                 };
                                 this.api.setFilterModel(filter);
                                 this.api.onFilterChanged();
                             }
                             if (this.modeMultiRow) {
-                                const selectedRow = this.api.getDisplayedRowAtIndex(rowNode.rowIndex);
+                                const selectedRow =
+                                    this.api.getDisplayedRowAtIndex(
+                                        rowNode.rowIndex
+                                    );
                                 return selectedRow.setSelected(true);
                             }
                         }
@@ -2388,32 +2896,48 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         if (this.hasPriorityColumn) {
-            if (!isNil($event.data['IsActive']) || $event.data['IsActive'] === null) {
-                if ($event.colDef.field !== 'IsActive' && ($event.data['IsActive'] === false || $event.data['IsActive'] === null)) {
+            if (
+                !isNil($event.data["IsActive"]) ||
+                $event.data["IsActive"] === null
+            ) {
+                if (
+                    $event.colDef.field !== "IsActive" &&
+                    ($event.data["IsActive"] === false ||
+                        $event.data["IsActive"] === null)
+                ) {
                     return;
                 }
             }
 
-            if (!this.readOnly && $event.colDef.field == CONTROL_COLUMNS.Priority) {
+            if (
+                !this.readOnly &&
+                $event.colDef.field == CONTROL_COLUMNS.Priority
+            ) {
                 this.updateCellPriority($event.data);
             }
         } else if (this._isEditting) {
             this.api.startEditingCell({
                 rowIndex: $event.rowIndex,
-                colKey: $event.colDef.colId || $event.colDef.field
+                colKey: $event.colDef.colId || $event.colDef.field,
             });
         }
     }
 
     public onCellContextMenu($event) {
         if (this.hasPriorityColumn) {
-            if (!isNil($event.data['IsActive'])) {
-                if ($event.colDef.field !== 'IsActive' && $event.data['IsActive'] === false) {
+            if (!isNil($event.data["IsActive"])) {
+                if (
+                    $event.colDef.field !== "IsActive" &&
+                    $event.data["IsActive"] === false
+                ) {
                     return;
                 }
             }
 
-            if (!this.readOnly && $event.colDef.field == CONTROL_COLUMNS.Priority) {
+            if (
+                !this.readOnly &&
+                $event.colDef.field == CONTROL_COLUMNS.Priority
+            ) {
                 this.api.hidePopupMenu();
                 this.deletePriorityForCurrentItem($event.data);
             }
@@ -2429,11 +2953,12 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * getHTMLTable
      **/
     public getHTMLTable(): string {
-        let tblString = '';
+        let tblString = "";
         if (this.api && this.columnApi) {
             //this.columnApi.autoSizeAllColumns();
-            this.api.setDomLayout('print');
-            tblString = this.agGridViewContainerRef.element.nativeElement.outerHTML;
+            this.api.setDomLayout("print");
+            tblString =
+                this.agGridViewContainerRef.element.nativeElement.outerHTML;
 
             setTimeout(() => {
                 this.loadColumnLayout();
@@ -2469,31 +2994,37 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * @param colHeaders
      */
     private renderRowHeader(colHeaders: Array<Column>) {
-        let tr = '';
-        tr += '<tr>';
+        let tr = "";
+        tr += "<tr>";
         for (let c = 0; c < colHeaders.length; c++) {
             const col: Column = colHeaders[c];
             if (col.getColDef().field == ColHeaderKey.Delete) {
                 break;
             }
             if (col.getActualWidth() > 0) {
-
                 // get cell style, content
-                const style = 'width:' + col.getActualWidth() + 'px;text-align: left',
+                const style =
+                        "width:" + col.getActualWidth() + "px;text-align: left",
                     content = col.getColDef().headerName,
-                    cellElement = ''
+                    cellElement = "";
 
-                const className = '';
+                const className = "";
 
                 //if (cellElement) {
                 //    className = cellElement.className;
                 //}
 
-                tr += '<th style="' + style + '" class="' + className + '" > ' + content + ' </th>';
-
+                tr +=
+                    '<th style="' +
+                    style +
+                    '" class="' +
+                    className +
+                    '" > ' +
+                    content +
+                    " </th>";
             }
         }
-        tr += '</tr>';
+        tr += "</tr>";
         return tr;
     }
 
@@ -2515,30 +3046,35 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public rightClicked($event) {
-        this.store.dispatch(this.processDataActions.dontWantToShowContextMenu());
+        this.store.dispatch(
+            this.processDataActions.dontWantToShowContextMenu()
+        );
         this.rowRightClicked.emit();
     }
 
     public buildContextMenuItems(params) {
         if (this.parentInstance && this.parentInstance.makeContextMenu) {
-            this._contextMenuItems = this.parentInstance.makeContextMenu(this.getRowDataByCellFocus());
-        }
-        else {
+            this._contextMenuItems = this.parentInstance.makeContextMenu(
+                this.getRowDataByCellFocus()
+            );
+        } else {
             this._contextMenuItems = [];
         }
-        this._contextMenuItems = this.appendDefaultContextMenu(this._contextMenuItems || []);
-        this.agGridService.buildContextMenuForTranslation(this._contextMenuItems);
+        this._contextMenuItems = this.appendDefaultContextMenu(
+            this._contextMenuItems || []
+        );
+        this.agGridService.buildContextMenuForTranslation(
+            this._contextMenuItems
+        );
         return this._contextMenuItems;
     }
 
     private getRowDataByCellFocus() {
         if (this.api) {
             const cell = this.api.getFocusedCell();
-            if (!cell)
-                return null;
+            if (!cell) return null;
             const row = this.api.getDisplayedRowAtIndex(cell.rowIndex);
-            if (!row || !row.data)
-                return null;
+            if (!row || !row.data) return null;
             return Uti.mapObjectToCamel(row.data);
         }
         return null;
@@ -2554,7 +3090,9 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         if (data && data.length) {
-            if (!this.itemsEdited.find(x => x.DT_RowId === data[0].DT_RowId)) {
+            if (
+                !this.itemsEdited.find((x) => x.DT_RowId === data[0].DT_RowId)
+            ) {
                 this.itemsEdited.push(data[0]);
             }
         }
@@ -2562,7 +3100,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private isColumnMoved = false;
     public onColumnMoved($event) {
-        if ($event && $event.source === 'uiColumnDragged') {
+        if ($event && $event.source === "uiColumnDragged") {
             this.isColumnMoved = true;
         }
     }
@@ -2589,22 +3127,37 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!apiColumnsChanged) {
             return;
         }
-        const params = { columns: ['Country'] };
+        const params = { columns: ["Country"] };
         const instances = apiColumnsChanged.getCellRendererInstances(params);
         const instance = instances[0] as any;
-        const controlTypeCountry = instance && instance._params && instance._params.colDef.refData.controlType;
-        if (controlTypeCountry && controlTypeCountry.toLowerCase() === CustomCellRender.CountryFlagCellRenderer && instances.length > 0) {
-            if (!(instance.getFrameworkComponentInstance() instanceof CountryFlagCellRenderer)) {
+        const controlTypeCountry =
+            instance &&
+            instance._params &&
+            instance._params.colDef.refData.controlType;
+        if (
+            controlTypeCountry &&
+            controlTypeCountry.toLowerCase() ===
+                CustomCellRender.CountryFlagCellRenderer &&
+            instances.length > 0
+        ) {
+            if (
+                !(
+                    instance.getFrameworkComponentInstance() instanceof
+                    CountryFlagCellRenderer
+                )
+            ) {
                 return;
             }
             const dataCountryFlag = instance.getFrameworkComponentInstance();
-            const headerCountry = dataCountryFlag && dataCountryFlag.colDef.headerName;
-            apiColumnsChanged.forEachNode(row => {
+            const headerCountry =
+                dataCountryFlag && dataCountryFlag.colDef.headerName;
+            apiColumnsChanged.forEachNode((row) => {
                 const country = row.data[headerCountry];
                 let lengthCountry = 0;
-                if (country && country.includes(';')) {
-                    const arrayCountries = country && country.split(';');
-                    lengthCountry = arrayCountries && (arrayCountries.length - 1) * 26;
+                if (country && country.includes(";")) {
+                    const arrayCountries = country && country.split(";");
+                    lengthCountry =
+                        arrayCountries && (arrayCountries.length - 1) * 26;
                 } else {
                     lengthCountry = DefaultRowHeight.RowHeight;
                 }
@@ -2646,7 +3199,9 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         const selectedNodes = this.api.getSelectedNodes();
         if (selectedNodes.length) {
             this.selectedNode = selectedNodes[0];
-            const rowData = this.agGridService.buildRowClickData(selectedNodes[0].data);
+            const rowData = this.agGridService.buildRowClickData(
+                selectedNodes[0].data
+            );
             return rowData;
         }
         return null;
@@ -2672,53 +3227,76 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      * initDragDropHandler
      **/
     private initDragDropHandler() {
-
         const createDragContent = function (x, y, offsetX, offsetY, content) {
-            const dragImage = document.createElement('div');
+            const dragImage = document.createElement("div");
             dragImage.innerHTML = content;
-            dragImage.style.position = 'absolute';
-            dragImage.style.pointerEvents = 'none';
-            dragImage.style.top = '0px'; // Math.max(0, y - offsetY) + 'px';
-            dragImage.style.left = '0px'; // Math.max(0, x) + 'px';
-            dragImage.style.zIndex = '1000';
-            dragImage.classList.add('xn-grid-drag');
+            dragImage.style.position = "absolute";
+            dragImage.style.pointerEvents = "none";
+            dragImage.style.top = "0px"; // Math.max(0, y - offsetY) + 'px';
+            dragImage.style.left = "0px"; // Math.max(0, x) + 'px';
+            dragImage.style.zIndex = "1000";
+            dragImage.classList.add("xn-grid-drag");
 
             document.body.appendChild(dragImage);
 
             setTimeout(function () {
-                dragImage.style.visibility = 'hidden';
+                dragImage.style.visibility = "hidden";
             }, 100);
 
             return dragImage;
-        }
+        };
 
         const self = this;
         let node;
-        const bodyContainer = this.agGridViewContainerRef.element.nativeElement.querySelector('.ag-body-container');
+        const bodyContainer =
+            this.agGridViewContainerRef.element.nativeElement.querySelector(
+                ".ag-body-container"
+            );
         bodyContainer.draggable = true;
-        bodyContainer.addEventListener('dragstart', function (e) {
-            const focusedCell = self.api.getFocusedCell();
-            if (focusedCell) {
-                const row = self.api.getDisplayedRowAtIndex(focusedCell.rowIndex);
-                let item = row.data;
-                item = mapKeys(item, function (v, k) { return camelCase(k.toString()); });
-                if (self.customDragContent && self.customDragContent.data) {
-                    item['refData'] = self.customDragContent.data;
+        bodyContainer.addEventListener(
+            "dragstart",
+            function (e) {
+                const focusedCell = self.api.getFocusedCell();
+                if (focusedCell) {
+                    const row = self.api.getDisplayedRowAtIndex(
+                        focusedCell.rowIndex
+                    );
+                    let item = row.data;
+                    item = mapKeys(item, function (v, k) {
+                        return camelCase(k.toString());
+                    });
+                    if (self.customDragContent && self.customDragContent.data) {
+                        item["refData"] = self.customDragContent.data;
+                    }
+                    e.dataTransfer.setData("text", JSON.stringify(item));
+                    if (
+                        self.customDragContent &&
+                        self.customDragContent.dragIcon
+                    ) {
+                        node = createDragContent(
+                            e.pageX,
+                            e.pageY,
+                            e.offsetX,
+                            e.offsetY,
+                            self.customDragContent.dragIcon
+                        );
+                        const dataTransfer: any = e.dataTransfer;
+                        dataTransfer.setDragImage(node, 5, 5);
+                    }
+                    self.isDragging = true;
                 }
-                e.dataTransfer.setData('text', JSON.stringify(item));
-                if (self.customDragContent && self.customDragContent.dragIcon) {
-                    node = createDragContent(e.pageX, e.pageY, e.offsetX, e.offsetY, self.customDragContent.dragIcon);
-                    const dataTransfer: any = e.dataTransfer;
-                    dataTransfer.setDragImage(node, 5, 5);
-                }
-                self.isDragging = true;
-            }
-        }, true);
+            },
+            true
+        );
 
-        bodyContainer.addEventListener('dragend', function (e) {
-            $('.xn-grid-drag').remove();
-            self.isDragging = false;
-        }, true);
+        bodyContainer.addEventListener(
+            "dragend",
+            function (e) {
+                $(".xn-grid-drag").remove();
+                self.isDragging = false;
+            },
+            true
+        );
     }
 
     /**
@@ -2728,7 +3306,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         const focusedCell = this.api.getFocusedCell();
         if (focusedCell) {
             const row = this.api.getDisplayedRowAtIndex(focusedCell.rowIndex);
-            const cellValue = this.api.getValue(focusedCell.column.getColId(), row);
+            const cellValue = this.api.getValue(
+                focusedCell.column.getColId(),
+                row
+            );
             return cellValue;
         }
         return null;
@@ -2772,13 +3353,18 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private hideColumnFromAccessRight(col) {
         switch (col.colId) {
-            case 'Return':
-                const gridCol: ColDef = this.gridOptions.columnDefs.find((c: ColDef) => c.field === col.colId);
-                if (gridCol && gridCol.refData.controlType === 'Button') {
-                    const accessRight = this.accessRightService.getAccessRight(AccessRightTypeEnum.SubModule, {
-                        idSettingsGUIParent: 5,
-                        idSettingsGUI: 29
-                    });
+            case "Return":
+                const gridCol: ColDef = this.gridOptions.columnDefs.find(
+                    (c: ColDef) => c.field === col.colId
+                );
+                if (gridCol && gridCol.refData.controlType === "Button") {
+                    const accessRight = this.accessRightService.getAccessRight(
+                        AccessRightTypeEnum.SubModule,
+                        {
+                            idSettingsGUIParent: 5,
+                            idSettingsGUI: 29,
+                        }
+                    );
 
                     if (accessRight) {
                         if (!col.hide) {
@@ -2795,7 +3381,9 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public getSelectedNode(): RowNode {
-        return this.api && this.api.getSelectedNodes().length ? this.api.getSelectedNodes()[0] : null;
+        return this.api && this.api.getSelectedNodes().length
+            ? this.api.getSelectedNodes()[0]
+            : null;
     }
 
     public getSelectedNodes(): RowNode[] {
@@ -2827,154 +3415,207 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private appendDefaultContextMenu(contextMenuItems: Array<any>) {
-        if (!Uti.existItemInArray(contextMenuItems, { name: 'Translate' }, 'name')) {
-            contextMenuItems.push(
-                {
-                    name: 'Translate',
-                    action: (event) => {
-                        this.onActionTranslateDialog.emit(true);
-                    },
-                    cssClasses: [''],
-                    icon: `<i class="fa  fa-language blue-color ag-context-icon"/>`
-                });
+        if (
+            !Uti.existItemInArray(
+                contextMenuItems,
+                { name: "Translate" },
+                "name"
+            )
+        ) {
+            contextMenuItems.push({
+                name: "Translate",
+                action: (event) => {
+                    this.onActionTranslateDialog.emit(true);
+                },
+                cssClasses: [""],
+                icon: `<i class="fa  fa-language blue-color ag-context-icon"/>`,
+            });
         }
-        const copy = 'copy';
+        const copy = "copy";
         if (contextMenuItems.indexOf(copy) < 0) {
             contextMenuItems.push(copy);
         }
-        const copyWithHeaders = 'copyWithHeaders';
+        const copyWithHeaders = "copyWithHeaders";
         if (contextMenuItems.indexOf(copyWithHeaders) < 0) {
             contextMenuItems.push(copyWithHeaders);
         }
-        if (!Uti.existItemInArray(contextMenuItems, { name: 'Copy row' }, 'name')) {
-            contextMenuItems.push(
-                {
-                    name: 'Copy row',
-                    action: (event) => { this.api.copySelectedRowsToClipboard(false); },
-                    cssClasses: [''],
-                    icon: `<i class="fa  fa-clipboard  blue-color  ag-context-icon"/>`
-                });
+        if (
+            !Uti.existItemInArray(
+                contextMenuItems,
+                { name: "Copy row" },
+                "name"
+            )
+        ) {
+            contextMenuItems.push({
+                name: "Copy row",
+                action: (event) => {
+                    this.api.copySelectedRowsToClipboard(false);
+                },
+                cssClasses: [""],
+                icon: `<i class="fa  fa-clipboard  blue-color  ag-context-icon"/>`,
+            });
         }
-        if (!Uti.existItemInArray(contextMenuItems, { name: 'Copy row with Headers' }, 'name')) {
-            contextMenuItems.push(
-                {
-                    name: 'Copy row with Headers',
-                    action: (event) => { this.api.copySelectedRowsToClipboard(true); },
-                    cssClasses: [''],
-                    icon: `<i class="fa  fa-clipboard  blue-color  ag-context-icon"/>`
-                });
+        if (
+            !Uti.existItemInArray(
+                contextMenuItems,
+                { name: "Copy row with Headers" },
+                "name"
+            )
+        ) {
+            contextMenuItems.push({
+                name: "Copy row with Headers",
+                action: (event) => {
+                    this.api.copySelectedRowsToClipboard(true);
+                },
+                cssClasses: [""],
+                icon: `<i class="fa  fa-clipboard  blue-color  ag-context-icon"/>`,
+            });
         }
-        const paste = 'paste';
+        const paste = "paste";
         if (contextMenuItems.indexOf(paste) < 0) {
             contextMenuItems.push(paste);
         }
 
-        if (!Uti.existItemInArray(contextMenuItems, { name: 'Show Hide group panel' }, 'name') && !this.showMenuRowGrouping) {
-            contextMenuItems.push(
-                {
-                    name: 'Show Hide group panel',
-                    action: (event) => {
-                        this.onRowGroupPanel.emit(!this._rowGrouping);
-                        this.rowGroupPanel = true;
-                        setTimeout(() => {
-                            this.updateColumnState();
-                        }, 500);
-                    },
-                    cssClasses: [''],
-                    icon: `<i class="fa  fa-object-group  ag-context-icon"/>`
-                });
+        if (
+            !Uti.existItemInArray(
+                contextMenuItems,
+                { name: "Show Hide group panel" },
+                "name"
+            ) &&
+            !this.showMenuRowGrouping
+        ) {
+            contextMenuItems.push({
+                name: "Show Hide group panel",
+                action: (event) => {
+                    this.onRowGroupPanel.emit(!this._rowGrouping);
+                    this.rowGroupPanel = true;
+                    setTimeout(() => {
+                        this.updateColumnState();
+                    }, 500);
+                },
+                cssClasses: [""],
+                icon: `<i class="fa  fa-object-group  ag-context-icon"/>`,
+            });
         }
 
-        if (this.canExport && !Uti.existItemInArray(contextMenuItems, { name: 'Export' }, 'name')) {
-            contextMenuItems.push('separator');
-            contextMenuItems.push(
-                {
-                    name: 'Export',
-                    icon: `<i class="fa fa-file-excel-o  blue-color ag-context-icon"/>`,
-                    subMenu: [
-                        {
-                            name: 'CSV_Export_Csv',
-                            action: (event) => {
-                                this.api.exportDataAsCsv();
-                            },
+        if (
+            this.canExport &&
+            !Uti.existItemInArray(contextMenuItems, { name: "Export" }, "name")
+        ) {
+            contextMenuItems.push("separator");
+            contextMenuItems.push({
+                name: "Export",
+                icon: `<i class="fa fa-file-excel-o  blue-color ag-context-icon"/>`,
+                subMenu: [
+                    {
+                        name: "CSV_Export_Csv",
+                        action: (event) => {
+                            this.api.exportDataAsCsv();
                         },
-                        {
-                            name: 'Excel_Export_Xlsx',
-                            action: (event) => {
-                                this.api.exportDataAsExcel({
-                                    exportMode: 'xlsx',
-                                    processCellCallback: (params) => {
-                                        return this.exportProcessCellCallback(params);
-                                    },
-                                    sheetName: this.sheetName
-                                });
-                            },
-                        },
-                        {
-                            name: 'Excel_Export_XML',
-                            action: (event) => {
-                                this.api.exportDataAsExcel({
-                                    exportMode: 'xml',
-                                    processCellCallback: (params) => {
-                                        return this.exportProcessCellCallback(params);
-                                    }
-                                });
-                            },
-                        },
-                        {
-                            name: 'PDF_Export_Pdf',
-                            action: (event) => {
-                                this.downloadPdf();
-                            },
-                        }
-                    ]
-                });
-        }
-        if (!Uti.existItemInArray(contextMenuItems, { name: 'Fit width columns' }, 'name')) {
-            contextMenuItems.push(
-                {
-                    name: 'Fit width columns',
-                    action: (event) => {
-                        this.sizeColumnsToFit();
-                        setTimeout(() => {
-                            this.updateColumnState();
-                        }, 500);
                     },
-                    cssClasses: [''],
-                    icon: `<i class="fa  fa-arrows  ag-context-icon"/>`
-                });
+                    {
+                        name: "Excel_Export_Xlsx",
+                        action: (event) => {
+                            this.api.exportDataAsExcel({
+                                exportMode: "xlsx",
+                                processCellCallback: (params) => {
+                                    return this.exportProcessCellCallback(
+                                        params
+                                    );
+                                },
+                                sheetName: this.sheetName,
+                            });
+                        },
+                    },
+                    {
+                        name: "Excel_Export_XML",
+                        action: (event) => {
+                            this.api.exportDataAsExcel({
+                                exportMode: "xml",
+                                processCellCallback: (params) => {
+                                    return this.exportProcessCellCallback(
+                                        params
+                                    );
+                                },
+                            });
+                        },
+                    },
+                    {
+                        name: "PDF_Export_Pdf",
+                        action: (event) => {
+                            this.downloadPdf();
+                        },
+                    },
+                ],
+            });
         }
-        if (this.isColumnsLayoutChanged && !Uti.existItemInArray(contextMenuItems, { name: 'Save table setting' }, 'name') && !this.settingIsAutoSaveLayout.value) {
-            contextMenuItems.push(
-                {
-                    name: 'Save table setting',
-                    action: (event) => { this.saveColumnsLayout(); },
-                    cssClasses: [''],
-                    icon: `<i class="fa  fa-save-config-in-context  orange-color  ag-context-icon"/>`
-                });
+        if (
+            !Uti.existItemInArray(
+                contextMenuItems,
+                { name: "Fit width columns" },
+                "name"
+            )
+        ) {
+            contextMenuItems.push({
+                name: "Fit width columns",
+                action: (event) => {
+                    this.sizeColumnsToFit();
+                    setTimeout(() => {
+                        this.updateColumnState();
+                    }, 500);
+                },
+                cssClasses: [""],
+                icon: `<i class="fa  fa-arrows  ag-context-icon"/>`,
+            });
+        }
+        if (
+            this.isColumnsLayoutChanged &&
+            !Uti.existItemInArray(
+                contextMenuItems,
+                { name: "Save table setting" },
+                "name"
+            ) &&
+            !this.settingIsAutoSaveLayout.value
+        ) {
+            contextMenuItems.push({
+                name: "Save table setting",
+                action: (event) => {
+                    this.saveColumnsLayout();
+                },
+                cssClasses: [""],
+                icon: `<i class="fa  fa-save-config-in-context  orange-color  ag-context-icon"/>`,
+            });
         }
         if (!this.isColumnsLayoutChanged) {
-            Uti.removeItemInArray(contextMenuItems, { name: 'Save table setting' }, 'name');
+            Uti.removeItemInArray(
+                contextMenuItems,
+                { name: "Save table setting" },
+                "name"
+            );
         }
         return this.reIndexContextMenu(contextMenuItems);
     }
 
     downloadPdf() {
-        const pdf = new jsPDF('l', 'px', 'a4');
+        const pdf = new jsPDF("l", "px", "a4");
         const columnState = this.columnApi.getColumnState();
         const rowRaw = this.gridOptions.rowData;
         const columns = [];
         for (const key of columnState) {
-            if (!key['hide'] && key.colId) {
-                columns.push({ header: key.colId, field: key.colId })
+            if (!key["hide"] && key.colId) {
+                columns.push({ header: key.colId, field: key.colId });
             }
         }
-        const rows = rowRaw.map(item => {
+        const rows = rowRaw.map((item) => {
             const result = [];
-            columns.forEach(value => {
-                return (item[value.field] || item[value.field] === 0) ?
-                    (item[value.field].key ? result.push(item[value.field].value) :
-                        item[value.field] instanceof Date ? result.push(formatDate(item[value.field])) : result.push(item[value.field])) : result.push('');
+            columns.forEach((value) => {
+                return item[value.field] || item[value.field] === 0
+                    ? item[value.field].key
+                        ? result.push(item[value.field].value)
+                        : item[value.field] instanceof Date
+                        ? result.push(formatDate(item[value.field]))
+                        : result.push(item[value.field])
+                    : result.push("");
             });
             return result;
         });
@@ -2985,11 +3626,11 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         function formatDate(date) {
             const d = new Date(date),
                 year = d.getFullYear();
-            let month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate();
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-            return [year, month, day].join('-');
+            let month = "" + (d.getMonth() + 1),
+                day = "" + d.getDate();
+            if (month.length < 2) month = "0" + month;
+            if (day.length < 2) day = "0" + day;
+            return [year, month, day].join("-");
         }
     }
 
@@ -3001,20 +3642,26 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         for (const item of bottomContext) {
-            Uti.removeItemInArray(contextMenuItems, { name: item.name }, 'name');
+            Uti.removeItemInArray(
+                contextMenuItems,
+                { name: item.name },
+                "name"
+            );
         }
-        contextMenuItems = [...contextMenuItems, ...sortBy(bottomContext, ['index'])];
+        contextMenuItems = [
+            ...contextMenuItems,
+            ...sortBy(bottomContext, ["index"]),
+        ];
         return contextMenuItems;
     }
 
-
     public exportExcel() {
         this.api.exportDataAsExcel({
-            exportMode: 'xlsx',
+            exportMode: "xlsx",
             processCellCallback: (params) => {
                 return this.exportProcessCellCallback(params);
             },
-            sheetName: this.sheetName
+            sheetName: this.sheetName,
         });
     }
 
@@ -3026,16 +3673,20 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         if (isObject(data)) {
             data = data.value;
         }
-        if (params
-            && params.column
-            && params.column.getColDef().refData
-            && params.column.getColDef().refData.controlType) {
-            switch (params.column.getColDef().refData.controlType.toLowerCase()) {
-                case 'date':
-                case 'datetimepicker':
+        if (
+            params &&
+            params.column &&
+            params.column.getColDef().refData &&
+            params.column.getColDef().refData.controlType
+        ) {
+            switch (
+                params.column.getColDef().refData.controlType.toLowerCase()
+            ) {
+                case "date":
+                case "datetimepicker":
                     data = this.agGridService.dateFormatter(params);
                     break;
-                case 'checkbox':
+                case "checkbox":
                     data = this.agGridService.boolFormatter(params);
             }
         }
@@ -3049,7 +3700,10 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             if (this.hasRowColCheckAll) {
-                this.columnApi.setColumnsVisible([BUTTON_COLUMNS.rowColCheckAll], this.isEditting);
+                this.columnApi.setColumnsVisible(
+                    [BUTTON_COLUMNS.rowColCheckAll],
+                    this.isEditting
+                );
                 this.sizeColumnsToFit();
             }
         }, 200);
@@ -3098,25 +3752,44 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private updateStyleForRowGrouping() {
-        const groups = $('.ag-column-drop.ag-font-style', this._eref.nativeElement);
+        const groups = $(
+            ".ag-column-drop.ag-font-style",
+            this._eref.nativeElement
+        );
         if (!groups || !groups.length) return;
         if (this.rowGrouping) {
-            $(groups[0]).removeClass('ag-hidden');
-        } else if (!$(groups[0]).hasClass('ag-hidden')) {
-            $(groups[0]).addClass('ag-hidden');
+            $(groups[0]).removeClass("ag-hidden");
+        } else if (!$(groups[0]).hasClass("ag-hidden")) {
+            $(groups[0]).addClass("ag-hidden");
         }
     }
 
     public updatePriority(fromItem: any, changedPriorityOption: any) {
-        const data = this.getCurrentNodeItems().filter(p => p[CONTROL_COLUMNS.Priority]);
-        const destItem = data.find(p => p[CONTROL_COLUMNS.Priority] == (changedPriorityOption.key || changedPriorityOption.value));
+        const data = this.getCurrentNodeItems().filter(
+            (p) => p[CONTROL_COLUMNS.Priority]
+        );
+        const destItem = data.find(
+            (p) =>
+                p[CONTROL_COLUMNS.Priority] ==
+                (changedPriorityOption.key || changedPriorityOption.value)
+        );
         if (fromItem && destItem) {
-            const idField = Object.keys(fromItem).find(k => k == 'id') ? 'id' : 'DT_RowId';
-            const fromIndex = data.findIndex(p => p[idField] == fromItem[idField]);
-            const destIndex = data.findIndex(p => p[idField] == destItem[idField]);
+            const idField = Object.keys(fromItem).find((k) => k == "id")
+                ? "id"
+                : "DT_RowId";
+            const fromIndex = data.findIndex(
+                (p) => p[idField] == fromItem[idField]
+            );
+            const destIndex = data.findIndex(
+                (p) => p[idField] == destItem[idField]
+            );
             if (fromIndex < destIndex) {
-                const arr = data.map(p => p[CONTROL_COLUMNS.Priority]);
-                arr.splice(fromIndex, 0, (changedPriorityOption.key || changedPriorityOption.value));
+                const arr = data.map((p) => p[CONTROL_COLUMNS.Priority]);
+                arr.splice(
+                    fromIndex,
+                    0,
+                    changedPriorityOption.key || changedPriorityOption.value
+                );
                 arr.splice(destIndex + 1, 1);
                 data.forEach((db, index, dataArr) => {
                     db[CONTROL_COLUMNS.Priority] = arr[index];
@@ -3124,8 +3797,12 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 });
             }
             if (fromIndex > destIndex) {
-                const arr = data.map(p => p[CONTROL_COLUMNS.Priority]);
-                arr.splice(fromIndex + 1, 0, (changedPriorityOption.key || changedPriorityOption.value));
+                const arr = data.map((p) => p[CONTROL_COLUMNS.Priority]);
+                arr.splice(
+                    fromIndex + 1,
+                    0,
+                    changedPriorityOption.key || changedPriorityOption.value
+                );
                 arr.splice(destIndex, 1);
                 data.forEach((db, index, dataArr) => {
                     db[CONTROL_COLUMNS.Priority] = arr[index];
@@ -3142,13 +3819,15 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
      */
     private initPriorityList() {
         this.priorities = [];
-        const priorityList = this.gridOptions.rowData.map(o => o[CONTROL_COLUMNS.Priority]);
+        const priorityList = this.gridOptions.rowData.map(
+            (o) => o[CONTROL_COLUMNS.Priority]
+        );
         if (priorityList && priorityList.length) {
             const maxValue = Math.max.apply(Math, priorityList);
             for (let i = 0; i < maxValue; i++) {
                 this.priorities.push({
                     label: i + 1,
-                    value: i + 1
+                    value: i + 1,
                 });
             }
         }
@@ -3160,18 +3839,21 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             if (!priority) {
                 const data = this.getCurrentNodeItems();
                 const maxLength = data.length;
-                const arr = data.map(p => toSafeInteger(p[CONTROL_COLUMNS.Priority]));
+                const arr = data.map((p) =>
+                    toSafeInteger(p[CONTROL_COLUMNS.Priority])
+                );
                 const maxValue = max(arr);
                 if (maxValue < maxLength) {
                     item[CONTROL_COLUMNS.Priority] = maxValue + 1;
                     this.updateRowData([item]);
-                }
-                else {
+                } else {
                     let validPriority = maxValue;
                     let rs;
                     do {
                         validPriority -= 1;
-                        rs = data.find(p => p[CONTROL_COLUMNS.Priority] == validPriority);
+                        rs = data.find(
+                            (p) => p[CONTROL_COLUMNS.Priority] == validPriority
+                        );
                     } while (rs);
                     item[CONTROL_COLUMNS.Priority] = validPriority;
                     this.updateRowData([item]);
@@ -3189,14 +3871,17 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         const priorityDeleted = item[CONTROL_COLUMNS.Priority];
         if (priorityDeleted) {
             const data = this.getCurrentNodeItems();
-            data.forEach(item => {
-                if (item[CONTROL_COLUMNS.Priority] > priorityDeleted && item[CONTROL_COLUMNS.Priority] > 1) {
+            data.forEach((item) => {
+                if (
+                    item[CONTROL_COLUMNS.Priority] > priorityDeleted &&
+                    item[CONTROL_COLUMNS.Priority] > 1
+                ) {
                     item[CONTROL_COLUMNS.Priority] -= 1;
                     this.updateRowData([item]);
                 }
             });
         }
-        item[CONTROL_COLUMNS.Priority] = '';
+        item[CONTROL_COLUMNS.Priority] = "";
         this.updateRowData([item]);
         this.onPriorityEditEnded.emit();
         this.initPriorityList();
@@ -3234,17 +3919,24 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             case KEY_RIGHT:
                 return suggestedNextCell;
             default:
-                throw new Error('this will never happen, navigation is always one of the 4 keys above');
+                throw new Error(
+                    "this will never happen, navigation is always one of the 4 keys above"
+                );
         }
     }
 
     public processCellForClipboard(params) {
-        if (params.value
-            && params.column
-            && params.column.colDef
-            && params.column.colDef.refData
-            && params.column.colDef.refData.controlType === 'datetimepicker') {
-            return this.uti.formatLocale(new Date(params.value), params.column.colDef.refData.format);
+        if (
+            params.value &&
+            params.column &&
+            params.column.colDef &&
+            params.column.colDef.refData &&
+            params.column.colDef.refData.controlType === "datetimepicker"
+        ) {
+            return this.uti.formatLocale(
+                new Date(params.value),
+                params.column.colDef.refData.format
+            );
         }
 
         return params.value;
@@ -3260,47 +3952,69 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private reloadAndSaveItSelfColumnsLayout() {
-        this._globalSettingService.getAllGlobalSettings('-1').subscribe((data: any) => {
-            this._appErrorHandler.executeAction(() => {
-                this.saveItSelfColumnsLayout(data);
+        this._globalSettingService
+            .getAllGlobalSettings("-1")
+            .subscribe((data: any) => {
+                this._appErrorHandler.executeAction(() => {
+                    this.saveItSelfColumnsLayout(data);
+                });
             });
-        });
     }
 
     private saveItSelfColumnsLayout(data: Array<GlobalSettingModel>) {
-        if (!this.currentColumnLayoutData || !this.currentColumnLayoutData.idSettingsGlobal) {
+        if (
+            !this.currentColumnLayoutData ||
+            !this.currentColumnLayoutData.idSettingsGlobal
+        ) {
             this.currentColumnLayoutData = new GlobalSettingModel({
-                description: 'Grid Columns Layout',
+                description: "Grid Columns Layout",
                 globalName: this.id,
-                globalType: 'GridColLayout',
-                idSettingsGUI: '-1',
-                objectNr: '-1',
+                globalType: "GridColLayout",
+                idSettingsGUI: "-1",
+                objectNr: "-1",
                 isActive: true,
-                jsonSettings: JSON.stringify(this.prepairColumnsLayout())
+                jsonSettings: JSON.stringify(this.prepairColumnsLayout()),
             });
         } else {
-            this.currentColumnLayoutData.jsonSettings = JSON.stringify(this.prepairColumnsLayout());
-            this.currentColumnLayoutData.idSettingsGUI = this.currentColumnLayoutData.idSettingsGUI ? this.currentColumnLayoutData.idSettingsGUI : this.currentColumnLayoutData.objectNr;
+            this.currentColumnLayoutData.jsonSettings = JSON.stringify(
+                this.prepairColumnsLayout()
+            );
+            this.currentColumnLayoutData.idSettingsGUI = this
+                .currentColumnLayoutData.idSettingsGUI
+                ? this.currentColumnLayoutData.idSettingsGUI
+                : this.currentColumnLayoutData.objectNr;
         }
-        if (!this.currentColumnLayoutData.objectNr) this.currentColumnLayoutData.objectNr = '-1';
-        this._globalSettingService.saveGlobalSetting(this.currentColumnLayoutData).subscribe(
-            data => this.saveColumnsLayoutSuccess(data),
-            error => this.serviceError(error));
+        if (!this.currentColumnLayoutData.objectNr)
+            this.currentColumnLayoutData.objectNr = "-1";
+        this._globalSettingService
+            .saveGlobalSetting(this.currentColumnLayoutData)
+            .subscribe(
+                (data) => this.saveColumnsLayoutSuccess(data),
+                (error) => this.serviceError(error)
+            );
     }
 
     private prepairColumnsLayout() {
         return {
             rowGroup: this._rowGrouping,
             settings: this.getColumnLayout(),
-            sortState: this.api ? this.api.getSortModel() : null
-        }
+            sortState: this.api ? this.api.getSortModel() : null,
+        };
     }
 
     private saveColumnsLayoutSuccess(data: any) {
         if (Uti.isResquestSuccess(data)) return;
-        this._toasterService.pop('success', 'Success', 'Columns layout is saved successful');
+        this._toasterService.pop(
+            "success",
+            "Success",
+            "Columns layout is saved successful"
+        );
         this.currentColumnLayoutData.idSettingsGlobal = data.returnValue;
-        this._globalSettingService.saveUpdateCache('-1', this.currentColumnLayoutData, data);
+        this._globalSettingService.saveUpdateCache(
+            "-1",
+            this.currentColumnLayoutData,
+            data
+        );
     }
 
     private loadDataForColumnsLayout() {
@@ -3314,17 +4028,26 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private loadColumnsLayoutByItSelf() {
         this._globalSettingService.getAllGlobalSettings(-1).subscribe(
-            data => this.getAllGlobalSettingSuccess(data),
-            error => this.serviceError(error)
+            (data) => this.getAllGlobalSettingSuccess(data),
+            (error) => this.serviceError(error)
         );
     }
 
     private getAllGlobalSettingSuccess(data: Array<GlobalSettingModel>) {
         if (!data || !data.length) return;
-        this.currentColumnLayoutData = data.find(x => x.globalName == this.id);
-        if (!this.currentColumnLayoutData || !this.currentColumnLayoutData.jsonSettings) return;
-        this.columnsLayoutSettings = Uti.tryParseJson(this.currentColumnLayoutData.jsonSettings);
-        this.rowGrouping = this.columnsLayoutSettings && this.columnsLayoutSettings.rowGroup;
+        this.currentColumnLayoutData = data.find(
+            (x) => x.globalName == this.id
+        );
+        if (
+            !this.currentColumnLayoutData ||
+            !this.currentColumnLayoutData.jsonSettings
+        )
+            return;
+        this.columnsLayoutSettings = Uti.tryParseJson(
+            this.currentColumnLayoutData.jsonSettings
+        );
+        this.rowGrouping =
+            this.columnsLayoutSettings && this.columnsLayoutSettings.rowGroup;
         this.loadColumnLayout();
     }
 
@@ -3350,7 +4073,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public showNoRowsOverlay() {
-        this.api.showNoRowsOverlay()
+        this.api.showNoRowsOverlay();
     }
 
     public hideOverlay() {
@@ -3362,7 +4085,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         if ($event && $event.node.expanded) {
             if (this.autoCollapse) {
                 const currentId = $event.node.id;
-                this.api.forEachNode(node => {
+                this.api.forEachNode((node) => {
                     if (node.id != currentId) {
                         // node.expanded = false;
                         node.setExpanded(false);
@@ -3372,14 +4095,17 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             setTimeout(() => {
                 // this.api.onGroupExpandedOrCollapsed();
                 if ($event.node.expanded && $event.node.master) {
-                    this.api.ensureIndexVisible($event.node.rowIndex, 'top');
+                    this.api.ensureIndexVisible($event.node.rowIndex, "top");
                 }
             });
         }
     }
 
     private recursiveCountForSetBackgroundElement = 0;
-    private setBackgroundForElement(className: string, backgroundColor: string) {
+    private setBackgroundForElement(
+        className: string,
+        backgroundColor: string
+    ) {
         setTimeout(() => {
             const el = $(className, this._eref.nativeElement);
             if (!el.length) {
@@ -3391,12 +4117,15 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.recursiveCountForSetBackgroundElement = 0;
                 return;
             }
-            el.css('background', backgroundColor);
+            el.css("background", backgroundColor);
             this.recursiveCountForSetBackgroundElement = 0;
         }, 200);
     }
 
-    private setBackgroundImageForElement(className: string, backgroundImage?: string) {
+    private setBackgroundImageForElement(
+        className: string,
+        backgroundImage?: string
+    ) {
         setTimeout(() => {
             const el = $(className, this._eref.nativeElement);
             if (!el.length) {
@@ -3409,9 +4138,9 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 return;
             }
 
-            el.css('background-image', backgroundImage['image']);
-            el.css('background-size', backgroundImage['size']);
-            el.css('background-position', backgroundImage['position']);
+            el.css("background-image", backgroundImage["image"]);
+            el.css("background-size", backgroundImage["size"]);
+            el.css("background-position", backgroundImage["position"]);
             this.recursiveCountForSetBackgroundElement = 0;
         }, 200);
     }
@@ -3452,16 +4181,18 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
         this.gridOptions.treeData = true;
         this.gridOptions.animateRows = true;
         this.gridOptions.autoGroupColumnDef = {
-            headerName: 'Tree View',
+            headerName: "Tree View",
             cellRendererParams: {
-                suppressCount: true
-            }
+                suppressCount: true,
+            },
         };
 
         if (this.agGridDataSource.enabledServerSideDatasource) {
-            this.agGridService.buildAutoGroupColumnDefForModules(model, this.gridOptions);
-        }
-        else {
+            this.agGridService.buildAutoGroupColumnDefForModules(
+                model,
+                this.gridOptions
+            );
+        } else {
             this.gridOptions.getDataPath = function (data) {
                 return data[ColHeaderKey.TreeViewPath];
             };
@@ -3475,7 +4206,8 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
             if (model.autoGroupColumnDef.width)
                 autoGroupColumnDef.width = model.autoGroupColumnDef.width;
             if (model.autoGroupColumnDef.headerName)
-                autoGroupColumnDef.headerName = model.autoGroupColumnDef.headerName;
+                autoGroupColumnDef.headerName =
+                    model.autoGroupColumnDef.headerName;
 
             if (model.autoGroupColumnDef.isFitColumn) {
                 autoGroupColumnDef.lockPosition = true;
@@ -3488,9 +4220,9 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 autoGroupColumnDef.suppressAutoSize = true;
 
                 autoGroupColumnDef.pinnedRowCellRenderer = function (params) {
-                    return '';
+                    return "";
                 };
-                autoGroupColumnDef.pinned = 'left';
+                autoGroupColumnDef.pinned = "left";
             }
         }
     }
@@ -3502,10 +4234,17 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private initServerSideDatasource() {
-        if (!this.api || !this.agGridDataSource.enabledServerSideDatasource) return;
+        if (!this.api || !this.agGridDataSource.enabledServerSideDatasource)
+            return;
 
-        const fakeServer = this.agGridFakeServer.FakeServer(this.agGridDataSource.rowData);
-        const datasource = this.serverSideDatasource(fakeServer, this.agGridDataSource.funcGetData, this.serverSideDatasourceCallback.bind(this));
+        const fakeServer = this.agGridFakeServer.FakeServer(
+            this.agGridDataSource.rowData
+        );
+        const datasource = this.serverSideDatasource(
+            fakeServer,
+            this.agGridDataSource.funcGetData,
+            this.serverSideDatasourceCallback.bind(this)
+        );
         this.api.setServerSideDatasource(datasource);
     }
 
@@ -3529,8 +4268,7 @@ export class XnAgGridComponent implements OnInit, OnDestroy, AfterViewInit {
                     } else {
                         params.failCallback();
                     }
-                }
-                else {
+                } else {
                     const response = server.getData(params.request);
                     if (response.success) {
                         params.successCallback(response.rows, response.lastRow);

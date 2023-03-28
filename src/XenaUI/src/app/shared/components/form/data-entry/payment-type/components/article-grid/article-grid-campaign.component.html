@@ -1,67 +1,118 @@
 <div class="data-entry__article-grid">
     <div class="article-grid">
-        <xn-ag-grid #articleUsedInCampaign
-                    [id]="articleUsedInCampaignId"
-                    *ngIf="dataResult2 && dataResult2.columns && dataResult2.columns.length"
-                    [isShowedHeader]="true"
-                    [fitWidthColumn]="true"
-                    [showMenuRowGrouping]="true"
-                    [globalProperties]="globalPropertiesLocal"
-                    [headerTitle]="'Articles used in this campaign'"
-                    [dataSource]="dataResult2"
-                    [hasFilterBox]="true"
-                    [sheetName]="'Articles used in this campaign'"
-                    (rowDoubleClicked)="buildSelectedItem($event)"
-                    (keyDown)="onResult2GridKeyDown($event)">
+        <xn-ag-grid
+            #articleUsedInCampaign
+            [id]="articleUsedInCampaignId"
+            *ngIf="
+                dataResult2 && dataResult2.columns && dataResult2.columns.length
+            "
+            [isShowedHeader]="true"
+            [fitWidthColumn]="true"
+            [showMenuRowGrouping]="true"
+            [globalProperties]="globalPropertiesLocal"
+            [headerTitle]="'Articles used in this campaign'"
+            [dataSource]="dataResult2"
+            [hasFilterBox]="true"
+            [sheetName]="'Articles used in this campaign'"
+            (rowDoubleClicked)="buildSelectedItem($event)"
+            (keyDown)="onResult2GridKeyDown($event)"
+        >
         </xn-ag-grid>
     </div>
 </div>
-<p-dialog appendTo="body"
-          [resizable]="false"
-          [draggable]="false"
-          header=""
-          [(visible)]="showDialog"
-          modal="modal"
-          width="500"
-          responsive="true"
-          (onShow)="onShowDialog()"
-          (onHide)="cancelSetQuantity()">
+<p-dialog
+    appendTo="body"
+    [resizable]="false"
+    [draggable]="false"
+    header=""
+    [(visible)]="showDialog"
+    modal="modal"
+    width="500"
+    responsive="true"
+    (onShow)="onShowDialog()"
+    (onHide)="cancelSetQuantity()"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="fa  fa-warning  header-icon  pull-left"></span>
-            <span class="header-text  pull-left"><label-translation [keyword]="'Article_Grid_Campaign__Warning'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="cancelSetQuantity()">
+            <span class="fa fa-warning header-icon pull-left"></span>
+            <span class="header-text pull-left"
+                ><label-translation
+                    [keyword]="'Article_Grid_Campaign__Warning'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="cancelSetQuantity()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
     <div class="composition__modal-message">
-        <p><label-translation [keyword]="'Article_Grid_Campaign__To_add_an_Article_to_the_set'"></label-translation> </p>
-        <p><label-translation [keyword]="'Article_Grid_Campaign__You_can_add_quantity_below'"></label-translation></p>
+        <p>
+            <label-translation
+                [keyword]="
+                    'Article_Grid_Campaign__To_add_an_Article_to_the_set'
+                "
+            ></label-translation>
+        </p>
+        <p>
+            <label-translation
+                [keyword]="'Article_Grid_Campaign__You_can_add_quantity_below'"
+            ></label-translation>
+        </p>
     </div>
-    <div class="composition__quantity  form-horizontal">
+    <div class="composition__quantity form-horizontal">
         <div class="col-xs-12">
             <div class="form-group">
-                <label for="txt-composition-quantity" class="control-label  col-sm-4  required"><label-translation [keyword]="'Article_Grid_Campaign__Quantity'"></label-translation>: </label>
+                <label
+                    for="txt-composition-quantity"
+                    class="control-label col-sm-4 required"
+                    ><label-translation
+                        [keyword]="'Article_Grid_Campaign__Quantity'"
+                    ></label-translation
+                    >:
+                </label>
                 <div class="col-sm-8">
-                    <input #wijQuantNum [(ngModel)]="selectedArticleItemQuantity"
-                           id="txt-composition-quantity"
-                           name="txt-composition-quantity"
-                           type="text"
-                           xn-numeric
-                           [min]="0"
-                           [max]="9999999"
-                           [format]="globalNumberFormat"
-                           class="custom-wj-input-control xn-input">
-                    <control-messages [type]="'textbox'"
-                                      [icon]="'sum'"></control-messages>
-                    <clear-text [enableClearText]="true" [controlName]="'txt-composition-quantity'"></clear-text>
-                    <div [hidden]="!(!selectedArticleItemQuantity && selectedArticleItemQuantity !== 0 && isContinueClicked)" class="alert alert-danger">
-                        <label-translation [keyword]="'Article_Grid_Campaign__You_must_input_quantity_to_continue'"></label-translation>.
+                    <input
+                        #wijQuantNum
+                        [(ngModel)]="selectedArticleItemQuantity"
+                        id="txt-composition-quantity"
+                        name="txt-composition-quantity"
+                        type="text"
+                        xn-numeric
+                        [min]="0"
+                        [max]="9999999"
+                        [format]="globalNumberFormat"
+                        class="custom-wj-input-control xn-input"
+                    />
+                    <control-messages
+                        [type]="'textbox'"
+                        [icon]="'sum'"
+                    ></control-messages>
+                    <clear-text
+                        [enableClearText]="true"
+                        [controlName]="'txt-composition-quantity'"
+                    ></clear-text>
+                    <div
+                        [hidden]="
+                            !(
+                                !selectedArticleItemQuantity &&
+                                selectedArticleItemQuantity !== 0 &&
+                                isContinueClicked
+                            )
+                        "
+                        class="alert alert-danger"
+                    >
+                        <label-translation
+                            [keyword]="
+                                'Article_Grid_Campaign__You_must_input_quantity_to_continue'
+                            "
+                        ></label-translation
+                        >.
                     </div>
                 </div>
             </div>
@@ -69,18 +120,30 @@
     </div>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button type="button"
-                    mat-raised-button
-                    class="pull-right  margin-left--sd xn-margin"
-                    (click)="cancelSetQuantity()">
-                <span class="bt-t"><label-translation [keyword]="'Article_Grid_Campaign__Cancel'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="pull-right margin-left--sd xn-margin"
+                (click)="cancelSetQuantity()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Article_Grid_Campaign__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-blue  pull-right xn-margin"
-                    id="btn-continue-set-quantity"
-                    (click)="continueSetQuantity()">
-                <span class="bt-t"><label-translation [keyword]="'Article_Grid_Campaign__Continue'"></label-translation></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-blue pull-right xn-margin"
+                id="btn-continue-set-quantity"
+                (click)="continueSetQuantity()"
+            >
+                <span class="bt-t"
+                    ><label-translation
+                        [keyword]="'Article_Grid_Campaign__Continue'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>

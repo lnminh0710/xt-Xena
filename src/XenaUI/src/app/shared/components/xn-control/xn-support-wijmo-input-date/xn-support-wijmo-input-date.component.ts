@@ -1,18 +1,18 @@
-import { Component, Input, ElementRef, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import { WjInputDate } from 'wijmo/wijmo.angular2.input';
+import { Component, Input, ElementRef, OnInit } from "@angular/core";
+import { FormGroup, FormControl } from "@angular/forms";
+import { WjInputDate } from "wijmo/wijmo.angular2.input";
 
 @Component({
-    selector: 'support-wijmo-input-date',
-    template: `<ng-template></ng-template>`
+    selector: "support-wijmo-input-date",
+    template: `<ng-template></ng-template>`,
 })
 export class SupportWijmoInputDateComponent implements OnInit {
     @Input() control: FormControl;
     @Input() wjControl: WjInputDate;
-    @Input() controlType = 'DOB';
+    @Input() controlType = "DOB";
 
     private MAX_TIMES = 5;
-    private currentText = '';
+    private currentText = "";
 
     constructor(private eRef: ElementRef) {}
     public ngOnInit() {
@@ -25,11 +25,14 @@ export class SupportWijmoInputDateComponent implements OnInit {
             if (this.control && this.wjControl) {
                 this.wjControl.valueChanged.addHandler(this.onChange, this);
                 this.wjControl.gotFocus.addHandler(this.gotFocus, this);
-                this.wjControl.isDroppedDownChanged.addHandler(this.onDDLChanged, this);
+                this.wjControl.isDroppedDownChanged.addHandler(
+                    this.onDDLChanged,
+                    this
+                );
                 $(this.wjControl.calendar.hostElement).click((event) => {
                     this.clickOnDate(event);
-                })
-            }else {
+                });
+            } else {
                 if (currentLoopTimes < this.MAX_TIMES)
                     this.bindEventToControl(currentLoopTimes);
             }
@@ -41,8 +44,7 @@ export class SupportWijmoInputDateComponent implements OnInit {
         this.control.parent.markAsTouched();
         setTimeout(() => {
             this.currentText = this.wjControl.inputElement.value;
-            if (!this.control.value)
-                this.wjControl.inputElement.value = '';
+            if (!this.control.value) this.wjControl.inputElement.value = "";
         });
     }
 
@@ -59,13 +61,12 @@ export class SupportWijmoInputDateComponent implements OnInit {
 
     private onDDLChanged(event) {
         setTimeout(() => {
-            if (!this.control.value)
-                this.wjControl.inputElement.value = '';
+            if (!this.control.value) this.wjControl.inputElement.value = "";
         });
     }
 
     private clickOnDate(event) {
-        if (event && event.target && $(event.target).hasClass('wj-day-today')) {
+        if (event && event.target && $(event.target).hasClass("wj-day-today")) {
             this.onChange(null);
             this.wjControl.inputElement.value = this.currentText;
             this.wjControl.isDroppedDown = false;

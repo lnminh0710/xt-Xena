@@ -3,14 +3,8 @@ import { CommonModule } from "@angular/common";
 import { CircleProgressComponent } from "./xn-circle-progress.component";
 
 @NgModule({
-    imports: [
-        CommonModule,
-    ],
-    declarations: [
-        CircleProgressComponent
-    ],
-    exports: [
-        CircleProgressComponent
-    ]
+    imports: [CommonModule],
+    declarations: [CircleProgressComponent],
+    exports: [CircleProgressComponent],
 })
-export class CircleProgressModule { }
+export class CircleProgressModule {}

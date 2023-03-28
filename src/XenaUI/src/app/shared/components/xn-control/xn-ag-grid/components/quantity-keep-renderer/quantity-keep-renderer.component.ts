@@ -2,21 +2,23 @@ import {
     AfterViewInit,
     Component,
     ViewChild,
-    ViewContainerRef
-} from '@angular/core';
-import {ICellRendererAngularComp} from 'ag-grid-angular';
-import {BaseAgGridCellComponent} from '../../shared/base-ag-grid-cell-component';
-import {ArticlesInvoiceQuantity} from 'app/app.constants';
-import {WidgetFieldService} from 'app/services';
+    ViewContainerRef,
+} from "@angular/core";
+import { ICellRendererAngularComp } from "ag-grid-angular";
+import { BaseAgGridCellComponent } from "../../shared/base-ag-grid-cell-component";
+import { ArticlesInvoiceQuantity } from "app/app.constants";
+import { WidgetFieldService } from "app/services";
 
 @Component({
-    selector: 'quantity-keep-renderer',
-    templateUrl: './quantity-keep-renderer.html',
-    styleUrls: ['./quantity-keep-renderer.scss']
+    selector: "quantity-keep-renderer",
+    templateUrl: "./quantity-keep-renderer.html",
+    styleUrls: ["./quantity-keep-renderer.scss"],
 })
-export class QuantityKeepRendererComponent extends BaseAgGridCellComponent<string> implements ICellRendererAngularComp, AfterViewInit {
-
-    @ViewChild('input', {read: ViewContainerRef}) public input;
+export class QuantityKeepRendererComponent
+    extends BaseAgGridCellComponent<string>
+    implements ICellRendererAngularComp, AfterViewInit
+{
+    @ViewChild("input", { read: ViewContainerRef }) public input;
 
     public isActive = true;
 
@@ -31,19 +33,27 @@ export class QuantityKeepRendererComponent extends BaseAgGridCellComponent<strin
      */
     protected getCustomParam(params: any) {
         this.isActive = this.getIsActiveValue(params);
-        this.params.api.removeEventListener('cellFocused', this.onCellFocused.bind(this));
-        this.params.api.addEventListener('cellFocused', this.onCellFocused.bind(this));
+        this.params.api.removeEventListener(
+            "cellFocused",
+            this.onCellFocused.bind(this)
+        );
+        this.params.api.addEventListener(
+            "cellFocused",
+            this.onCellFocused.bind(this)
+        );
     }
 
     private subscribe() {
-        this._widgetFieldService.changeQuantityActicleInvoiceAction.subscribe(() => {
-            this.isActive = this.getIsActiveValue(this.params);
-        });
+        this._widgetFieldService.changeQuantityActicleInvoiceAction.subscribe(
+            () => {
+                this.isActive = this.getIsActiveValue(this.params);
+            }
+        );
     }
 
     private getIsActiveValue(params) {
         try {
-            return params.node.data['IsActive'];
+            return params.node.data["IsActive"];
         } catch (e) {
             return true;
         }
@@ -56,10 +66,7 @@ export class QuantityKeepRendererComponent extends BaseAgGridCellComponent<strin
         return this.value;
     }
 
-    ngAfterViewInit(): void {
-
-    }
-
+    ngAfterViewInit(): void {}
 
     /**
      * onCellFocused
@@ -72,15 +79,17 @@ export class QuantityKeepRendererComponent extends BaseAgGridCellComponent<strin
 
         const colDef = params.column.colDef;
         if (this.componentParent) {
-            if (params.rowIndex === this.params.node.rowIndex && colDef.colId === ArticlesInvoiceQuantity.QtyKeep) {
+            if (
+                params.rowIndex === this.params.node.rowIndex &&
+                colDef.colId === ArticlesInvoiceQuantity.QtyKeep
+            ) {
                 if (this.input && this.input.element) {
                     setTimeout(() => {
                         if (!this.isActive) return;
                         this.input.element.nativeElement.focus();
-                    }, 200)
+                    }, 200);
                 }
             }
-
         }
     }
 
@@ -88,10 +97,12 @@ export class QuantityKeepRendererComponent extends BaseAgGridCellComponent<strin
         return false;
     }
 
-
     handleQuantityKeep() {
         if (this.params && this.params.node) {
-            this.componentParent.quantityArticleInvoiceChange(this.params.node.data, ArticlesInvoiceQuantity.QtyKeep);
+            this.componentParent.quantityArticleInvoiceChange(
+                this.params.node.data,
+                ArticlesInvoiceQuantity.QtyKeep
+            );
         }
     }
 

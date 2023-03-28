@@ -1,3 +1,3 @@
-export * from './article-form';
-export * from './article-set-composition-form';
-export * from './article-purchasing-form';
+export * from "./article-form";
+export * from "./article-set-composition-form";
+export * from "./article-purchasing-form";

@@ -1,1 +1,1 @@
-export * from './ILocalStorage';
+export * from "./ILocalStorage";

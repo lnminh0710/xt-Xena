@@ -7,138 +7,144 @@ import {
     ViewChild,
     HostListener,
     ContentChild,
-    TemplateRef
-} from '@angular/core';
+    TemplateRef,
+} from "@angular/core";
 
-import {curveLinear} from 'd3-shape';
-import {scaleBand, scaleLinear, scalePoint, scaleTime} from 'd3-scale';
+import { curveLinear } from "d3-shape";
+import { scaleBand, scaleLinear, scalePoint, scaleTime } from "d3-scale";
 import {
     BaseChartComponent,
     calculateViewDimensions,
     ColorHelper,
     LineSeriesComponent,
-    ViewDimensions
-} from '@swimlane/ngx-charts';
+    ViewDimensions,
+} from "@swimlane/ngx-charts";
 
 @Component({
-    selector: 'xena-combo-chart',
+    selector: "xena-combo-chart",
     template: `
         <ngx-charts-chart
-            [view]='[width + legendSpacing, height]'
-            [showLegend]='legend'
-            [legendOptions]='legendOptions'
-            [activeEntries]='activeEntries'
-            [animations]='animations'
-            (legendLabelClick)='onClick($event)'
-            (legendLabelActivate)='onActivate($event)'
-            (legendLabelDeactivate)='onDeactivate($event)'>
-
-            <svg:g [attr.transform]='transform' class='bar-chart chart'>
-                <svg:g ngx-charts-x-axis
-                       *ngIf='xAxis'
-                       [xScale]='xScale'
-                       [dims]='dims'
-                       [showLabel]='showXAxisLabel'
-                       [labelText]='xAxisLabel'
-                       [tickFormatting]='xAxisTickFormatting'
-                       (dimensionsChanged)='updateXAxisHeight($event)'>
-                </svg:g>
-                <svg:g ngx-charts-y-axis
-                       *ngIf='yAxis'
-                       [yScale]='yScale'
-                       [dims]='dims'
-                       [yOrient]='yOrientLeft'
-                       [showGridLines]='showGridLines'
-                       [showLabel]='showYAxisLabel'
-                       [labelText]='yAxisLabel'
-                       [tickFormatting]='yAxisTickFormatting'
-                       (dimensionsChanged)='updateYAxisWidth($event)'>
-                </svg:g>
-                <svg:g ngx-charts-y-axis
-                       *ngIf='yAxis'
-                       [yScale]='yScaleLine'
-                       [dims]='dims'
-                       [yOrient]='yOrientRight'
-                       [showGridLines]='showGridLines'
-                       [showLabel]='showRightYAxisLabel'
-                       [labelText]='yAxisLabelRight'
-                       [tickFormatting]='yRightAxisTickFormatting'
-                       (dimensionsChanged)='updateYAxisWidth($event)'>
-                </svg:g>
-                <svg:g ngx-combo-charts-series-vertical
-                       [xScale]='xScale'
-                       [yScale]='yScale'
-                       [colors]='colors'
-                       [series]='results'
-                       [seriesLine]='lineChart'
-                       [dims]='dims'
-                       [gradient]='gradient'
-                       tooltipDisabled='true'
-                       [activeEntries]='activeEntries'
-                       [animations]='animations'
-                       (activate)='onActivate($event)'
-                       (deactivate)='onDeactivate($event)'
-                       (bandwidth)='updateLineWidth($event)'
-                       (select)='onClick($event)'>
-                </svg:g>
+            [view]="[width + legendSpacing, height]"
+            [showLegend]="legend"
+            [legendOptions]="legendOptions"
+            [activeEntries]="activeEntries"
+            [animations]="animations"
+            (legendLabelClick)="onClick($event)"
+            (legendLabelActivate)="onActivate($event)"
+            (legendLabelDeactivate)="onDeactivate($event)"
+        >
+            <svg:g [attr.transform]="transform" class="bar-chart chart">
+                <svg:g
+                    ngx-charts-x-axis
+                    *ngIf="xAxis"
+                    [xScale]="xScale"
+                    [dims]="dims"
+                    [showLabel]="showXAxisLabel"
+                    [labelText]="xAxisLabel"
+                    [tickFormatting]="xAxisTickFormatting"
+                    (dimensionsChanged)="updateXAxisHeight($event)"
+                ></svg:g>
+                <svg:g
+                    ngx-charts-y-axis
+                    *ngIf="yAxis"
+                    [yScale]="yScale"
+                    [dims]="dims"
+                    [yOrient]="yOrientLeft"
+                    [showGridLines]="showGridLines"
+                    [showLabel]="showYAxisLabel"
+                    [labelText]="yAxisLabel"
+                    [tickFormatting]="yAxisTickFormatting"
+                    (dimensionsChanged)="updateYAxisWidth($event)"
+                ></svg:g>
+                <svg:g
+                    ngx-charts-y-axis
+                    *ngIf="yAxis"
+                    [yScale]="yScaleLine"
+                    [dims]="dims"
+                    [yOrient]="yOrientRight"
+                    [showGridLines]="showGridLines"
+                    [showLabel]="showRightYAxisLabel"
+                    [labelText]="yAxisLabelRight"
+                    [tickFormatting]="yRightAxisTickFormatting"
+                    (dimensionsChanged)="updateYAxisWidth($event)"
+                ></svg:g>
+                <svg:g
+                    ngx-combo-charts-series-vertical
+                    [xScale]="xScale"
+                    [yScale]="yScale"
+                    [colors]="colors"
+                    [series]="results"
+                    [seriesLine]="lineChart"
+                    [dims]="dims"
+                    [gradient]="gradient"
+                    tooltipDisabled="true"
+                    [activeEntries]="activeEntries"
+                    [animations]="animations"
+                    (activate)="onActivate($event)"
+                    (deactivate)="onDeactivate($event)"
+                    (bandwidth)="updateLineWidth($event)"
+                    (select)="onClick($event)"
+                ></svg:g>
             </svg:g>
-            <svg:g [attr.transform]='transform' class='line-chart chart'>
-                <svg:g >
-                    <svg:g *ngFor='let series of lineChart; trackBy:trackBy'>
-                        <svg:g ngx-charts-line-series
-                               [xScale]='xScaleLine'
-                               [yScale]='yScaleLine'
-                               [colors]='colorsLine'
-                               [data]='series'
-                               [activeEntries]='activeEntries'
-                               [scaleType]='scaleType'
-                               [curve]='curve'
-                               [rangeFillOpacity]='rangeFillOpacity'
-                               [animations]='animations'
+            <svg:g [attr.transform]="transform" class="line-chart chart">
+                <svg:g>
+                    <svg:g *ngFor="let series of lineChart; trackBy: trackBy">
+                        <svg:g
+                            ngx-charts-line-series
+                            [xScale]="xScaleLine"
+                            [yScale]="yScaleLine"
+                            [colors]="colorsLine"
+                            [data]="series"
+                            [activeEntries]="activeEntries"
+                            [scaleType]="scaleType"
+                            [curve]="curve"
+                            [rangeFillOpacity]="rangeFillOpacity"
+                            [animations]="animations"
                         />
                     </svg:g>
 
-                    <svg:g ngx-charts-tooltip-area
-                           *ngIf='!tooltipDisabled'
-                           [dims]='dims'
-                           [xSet]='xSet'
-                           [xScale]='xScaleLine'
-                           [yScale]='yScaleLine'
-                           [results]='combinedSeries'
-                           [colors]='colorsLine'
-                           [tooltipDisabled]='tooltipDisabled'
-                           (hover)='updateHoveredVertical($event)'
+                    <svg:g
+                        ngx-charts-tooltip-area
+                        *ngIf="!tooltipDisabled"
+                        [dims]="dims"
+                        [xSet]="xSet"
+                        [xScale]="xScaleLine"
+                        [yScale]="yScaleLine"
+                        [results]="combinedSeries"
+                        [colors]="colorsLine"
+                        [tooltipDisabled]="tooltipDisabled"
+                        (hover)="updateHoveredVertical($event)"
                     />
 
-                    <svg:g *ngFor='let series of lineChart'>
-                        <svg:g ngx-charts-circle-series
-                               [xScale]='xScaleLine'
-                               [yScale]='yScaleLine'
-                               [colors]='colorsLine'
-                               [data]='series'
-                               [scaleType]='scaleType'
-                               [visibleValue]='hoveredVertical'
-                               [activeEntries]='activeEntries'
-                               [tooltipDisabled]='tooltipDisabled'
-                               (select)='onClick($event, series)'
-                               (activate)='onActivate($event)'
-                               (deactivate)='onDeactivate($event)'
+                    <svg:g *ngFor="let series of lineChart">
+                        <svg:g
+                            ngx-charts-circle-series
+                            [xScale]="xScaleLine"
+                            [yScale]="yScaleLine"
+                            [colors]="colorsLine"
+                            [data]="series"
+                            [scaleType]="scaleType"
+                            [visibleValue]="hoveredVertical"
+                            [activeEntries]="activeEntries"
+                            [tooltipDisabled]="tooltipDisabled"
+                            (select)="onClick($event, series)"
+                            (activate)="onActivate($event)"
+                            (deactivate)="onDeactivate($event)"
                         />
                     </svg:g>
                 </svg:g>
             </svg:g>
         </ngx-charts-chart>
     `,
-    styleUrls: ['./combo-chart.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ["./combo-chart.component.scss"],
+    encapsulation: ViewEncapsulation.None,
 })
 export class ComboChartComponent extends BaseChartComponent {
-
     @ViewChild(LineSeriesComponent) lineSeriesComponent: LineSeriesComponent;
 
     @Input() curve: any = curveLinear;
     @Input() legend = false;
-    @Input() legendTitle = 'Legend';
+    @Input() legendTitle = "Legend";
     @Input() xAxis;
     @Input() yAxis;
     @Input() showXAxisLabel;
@@ -167,8 +173,9 @@ export class ComboChartComponent extends BaseChartComponent {
     @Output() activate: EventEmitter<any> = new EventEmitter();
     @Output() deactivate: EventEmitter<any> = new EventEmitter();
 
-    @ContentChild('tooltipTemplate') tooltipTemplate: TemplateRef<any>;
-    @ContentChild('seriesTooltipTemplate') seriesTooltipTemplate: TemplateRef<any>;
+    @ContentChild("tooltipTemplate") tooltipTemplate: TemplateRef<any>;
+    @ContentChild("seriesTooltipTemplate")
+    seriesTooltipTemplate: TemplateRef<any>;
 
     dims: ViewDimensions;
     xScale: any;
@@ -182,7 +189,7 @@ export class ComboChartComponent extends BaseChartComponent {
     xAxisHeight = 0;
     yAxisWidth = 0;
     legendOptions: any;
-    scaleType = 'linear';
+    scaleType = "linear";
     xScaleLine;
     yScaleLine;
     xDomainLine;
@@ -192,8 +199,8 @@ export class ComboChartComponent extends BaseChartComponent {
     xSet;
     filteredDomain;
     hoveredVertical;
-    yOrientLeft = 'left';
-    yOrientRight = 'right';
+    yOrientLeft = "left";
+    yOrientRight = "right";
     legendSpacing = 0;
     bandwidth;
     barPadding = 8;
@@ -215,7 +222,7 @@ export class ComboChartComponent extends BaseChartComponent {
             showXLabel: this.showXAxisLabel,
             showYLabel: this.showYAxisLabel,
             showLegend: this.legend,
-            legendType: this.schemeType
+            legendType: this.schemeType,
         });
 
         if (!this.yAxis) {
@@ -238,7 +245,10 @@ export class ComboChartComponent extends BaseChartComponent {
         this.seriesDomain = this.getSeriesDomain();
 
         this.xScaleLine = this.getXScaleLine(this.xDomainLine, this.dims.width);
-        this.yScaleLine = this.getYScaleLine(this.yDomainLine, this.dims.height);
+        this.yScaleLine = this.getYScaleLine(
+            this.yDomainLine,
+            this.dims.height
+        );
 
         this.setColors();
         this.legendOptions = this.getLegendOptions();
@@ -249,12 +259,12 @@ export class ComboChartComponent extends BaseChartComponent {
     deactivateAll() {
         this.activeEntries = [...this.activeEntries];
         for (const entry of this.activeEntries) {
-            this.deactivate.emit({value: entry, entries: []});
+            this.deactivate.emit({ value: entry, entries: [] });
         }
         this.activeEntries = [];
     }
 
-    @HostListener('mouseleave')
+    @HostListener("mouseleave")
     hideCircles(): void {
         this.hoveredVertical = null;
         this.deactivateAll();
@@ -275,9 +285,9 @@ export class ComboChartComponent extends BaseChartComponent {
         this.combinedSeries = this.lineChart.slice(0);
         this.combinedSeries.push({
             name: this.yAxisLabel,
-            series: this.results
+            series: this.results,
         });
-        return this.combinedSeries.map(d => d.name);
+        return this.combinedSeries.map((d) => d.name);
     }
 
     isDate(value): boolean {
@@ -297,14 +307,14 @@ export class ComboChartComponent extends BaseChartComponent {
                 date = false;
             }
 
-            if (typeof value !== 'number') {
+            if (typeof value !== "number") {
                 num = false;
             }
         }
 
-        if (date) return 'time';
-        if (num) return 'linear';
-        return 'ordinal';
+        if (date) return "time";
+        if (num) return "linear";
+        return "ordinal";
     }
 
     getXDomainLine(): any[] {
@@ -321,12 +331,12 @@ export class ComboChartComponent extends BaseChartComponent {
         this.scaleType = this.getScaleType(values);
         let domain = [];
 
-        if (this.scaleType === 'time') {
+        if (this.scaleType === "time") {
             const min = Math.min(...values);
             const max = Math.max(...values);
             domain = [min, max];
-        } else if (this.scaleType === 'linear') {
-            values = values.map(v => Number(v));
+        } else if (this.scaleType === "linear") {
+            values = values.map((v) => Number(v));
             const min = Math.min(...values);
             const max = Math.max(...values);
             domain = [min, max];
@@ -373,22 +383,18 @@ export class ComboChartComponent extends BaseChartComponent {
     getXScaleLine(domain, width): any {
         let scale;
         if (this.bandwidth === undefined) {
-            this.bandwidth = (this.dims.width - this.barPadding);
+            this.bandwidth = this.dims.width - this.barPadding;
         }
 
-        if (this.scaleType === 'time') {
-            scale = scaleTime()
-                .range([0, width])
-                .domain(domain);
-        } else if (this.scaleType === 'linear') {
-            scale = scaleLinear()
-                .range([0, width])
-                .domain(domain);
+        if (this.scaleType === "time") {
+            scale = scaleTime().range([0, width]).domain(domain);
+        } else if (this.scaleType === "linear") {
+            scale = scaleLinear().range([0, width]).domain(domain);
 
             if (this.roundDomains) {
                 scale = scale.nice();
             }
-        } else if (this.scaleType === 'ordinal') {
+        } else if (this.scaleType === "ordinal") {
             scale = scalePoint()
                 .range([this.bandwidth / 2, width - this.bandwidth / 2])
                 .domain(domain);
@@ -398,16 +404,15 @@ export class ComboChartComponent extends BaseChartComponent {
     }
 
     getYScaleLine(domain, height): any {
-        const scale = scaleLinear()
-            .range([height, 0])
-            .domain(domain);
+        const scale = scaleLinear().range([height, 0]).domain(domain);
 
         return this.roundDomains ? scale.nice() : scale;
     }
 
     getXScale(): any {
         this.xDomain = this.getXDomain();
-        const spacing = this.xDomain.length / (this.dims.width / this.barPadding + 1);
+        const spacing =
+            this.xDomain.length / (this.dims.width / this.barPadding + 1);
         return scaleBand()
             .rangeRound([0, this.dims.width])
             .paddingInner(spacing)
@@ -423,11 +428,11 @@ export class ComboChartComponent extends BaseChartComponent {
     }
 
     getXDomain(): any[] {
-        return this.results.map(d => d.name);
+        return this.results.map((d) => d.name);
     }
 
     getYDomain() {
-        const values = this.results.map(d => d.value);
+        const values = this.results.map((d) => d.value);
         const min = Math.min(0, ...values);
         const max = Math.max(...values);
         if (this.yLeftAxisScaleFactor) {
@@ -444,13 +449,23 @@ export class ComboChartComponent extends BaseChartComponent {
 
     setColors(): void {
         let domain;
-        if (this.schemeType === 'ordinal') {
+        if (this.schemeType === "ordinal") {
             domain = this.xDomain;
         } else {
             domain = this.yDomain;
         }
-        this.colors = new ColorHelper(this.scheme, this.schemeType, domain, this.customColors);
-        this.colorsLine = new ColorHelper(this.colorSchemeLine, this.schemeType, domain, this.customColors);
+        this.colors = new ColorHelper(
+            this.scheme,
+            this.schemeType,
+            domain,
+            this.customColors
+        );
+        this.colorsLine = new ColorHelper(
+            this.colorSchemeLine,
+            this.schemeType,
+            domain,
+            this.customColors
+        );
     }
 
     getLegendOptions() {
@@ -458,9 +473,9 @@ export class ComboChartComponent extends BaseChartComponent {
             scaleType: this.schemeType,
             colors: undefined,
             domain: [],
-            title: undefined
+            title: undefined,
         };
-        if (opts.scaleType === 'ordinal') {
+        if (opts.scaleType === "ordinal") {
             opts.domain = this.seriesDomain;
             opts.colors = this.colorsLine;
             opts.title = this.legendTitle;
@@ -475,36 +490,44 @@ export class ComboChartComponent extends BaseChartComponent {
         this.bandwidth = width;
     }
 
-    updateYAxisWidth({width}): void {
+    updateYAxisWidth({ width }): void {
         this.yAxisWidth = width + 20;
         this.update();
     }
 
-    updateXAxisHeight({height}): void {
+    updateXAxisHeight({ height }): void {
         this.xAxisHeight = height;
         this.update();
     }
 
     onActivate(item) {
-        const idx = this.activeEntries.findIndex(d => {
-            return d.name === item.name && d.value === item.value && d.series === item.series;
+        const idx = this.activeEntries.findIndex((d) => {
+            return (
+                d.name === item.name &&
+                d.value === item.value &&
+                d.series === item.series
+            );
         });
         if (idx > -1) {
             return;
         }
 
         this.activeEntries = [item, ...this.activeEntries];
-        this.activate.emit({value: item, entries: this.activeEntries});
+        this.activate.emit({ value: item, entries: this.activeEntries });
     }
 
     onDeactivate(item) {
-        const idx = this.activeEntries.findIndex(d => {
-            return d.name === item.name && d.value === item.value && d.series === item.series;
+        const idx = this.activeEntries.findIndex((d) => {
+            return (
+                d.name === item.name &&
+                d.value === item.value &&
+                d.series === item.series
+            );
         });
 
         this.activeEntries.splice(idx, 1);
         this.activeEntries = [...this.activeEntries];
 
-        this.deactivate.emit({value: item, entries: this.activeEntries});
+        this.deactivate.emit({ value: item, entries: this.activeEntries });
     }
 }

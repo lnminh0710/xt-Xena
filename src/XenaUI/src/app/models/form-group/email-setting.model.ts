@@ -1,4 +1,3 @@
-
 export class EmailTemplateModel {
     public id: any = null;
     public name: string = null;

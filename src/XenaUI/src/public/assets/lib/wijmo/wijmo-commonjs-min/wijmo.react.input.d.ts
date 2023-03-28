@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import * as wjcReactBase from 'wijmo/wijmo.react.base';
-import * as React from 'react';
+import * as wjcReactBase from "wijmo/wijmo.react.base";
+import * as React from "react";
 export declare class ComboBox extends wjcReactBase.ComponentBase {
     constructor(props: any);
 }

@@ -1,25 +1,41 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter, Input, ChangeDetectorRef } from '@angular/core';
-import { GlobalSearchModuleModel } from 'app/models/global-seach-module.model';
-import { Configuration, GlobalSearchConstant, MenuModuleId } from 'app/app.constants';
-import { Uti } from 'app/utilities/uti';
-import { TabModel } from 'app/models/tab.model';
-import { Module } from 'app/models/module';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { AppState } from 'app/state-management/store';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    Output,
+    EventEmitter,
+    Input,
+    ChangeDetectorRef,
+} from "@angular/core";
+import { GlobalSearchModuleModel } from "app/models/global-seach-module.model";
+import {
+    Configuration,
+    GlobalSearchConstant,
+    MenuModuleId,
+} from "app/app.constants";
+import { Uti } from "app/utilities/uti";
+import { TabModel } from "app/models/tab.model";
+import { Module } from "app/models/module";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { AppState } from "app/state-management/store";
 import {
     TabSummaryActions,
     ModuleActions,
     GlobalSearchActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import { GlobalSearchService, ModuleService, AppErrorHandler } from 'app/services';
-import { UUID } from 'angular2-uuid';
+    CustomAction,
+} from "app/state-management/store/actions";
+import {
+    GlobalSearchService,
+    ModuleService,
+    AppErrorHandler,
+} from "app/services";
+import { UUID } from "angular2-uuid";
 
 @Component({
-    selector: 'gs-module-item-list',
-    templateUrl: './gs-module-item-list.component.html'
+    selector: "gs-module-item-list",
+    templateUrl: "./gs-module-item-list.component.html",
 })
 export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
     items: Array<string> = [];
@@ -45,7 +61,9 @@ export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
     @Input() set towWayConfig(towWayConfig: Array<GlobalSearchModuleModel>) {
         this.globalSearchConfig = towWayConfig;
     }
-    @Input() set globalSearchItemClicked(towWayConfig: Array<GlobalSearchModuleModel>) {
+    @Input() set globalSearchItemClicked(
+        towWayConfig: Array<GlobalSearchModuleModel>
+    ) {
         this.globalSearchConfig = towWayConfig;
     }
 
@@ -55,7 +73,8 @@ export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
     @Input() activeSubModule: Module = null;
 
     @Output() onGlobalSearchItemClicked: EventEmitter<any> = new EventEmitter();
-    @Output() onGlobalSearchItemDoubleClicked: EventEmitter<any> = new EventEmitter();
+    @Output() onGlobalSearchItemDoubleClicked: EventEmitter<any> =
+        new EventEmitter();
 
     constructor(
         private globalSearchConsts: GlobalSearchConstant,
@@ -69,7 +88,9 @@ export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private appErrorHandler: AppErrorHandler
     ) {
-        this.searchingModuleState = store.select(state => state.mainModule.searchingModule);
+        this.searchingModuleState = store.select(
+            (state) => state.mainModule.searchingModule
+        );
     }
 
     public ngOnInit() {
@@ -78,19 +99,27 @@ export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
     }
 
     public subscribeData() {
-        this.searchingModuleStateSubcription = this.searchingModuleState.subscribe((searchModule: Module) => {
-            this.appErrorHandler.executeAction(() => {
-                if (searchModule && searchModule.searchKeyword) {
-                    setTimeout(() => {
-                        const rs = this.globalSearchModuleModels.filter(p => p.idSettingsGUI === searchModule.idSettingsGUI);
-                        if (rs.length) {
-                            const globalItem = rs[0];
-                            this._globalItemDoubleClicked(globalItem, searchModule.searchKeyword);
-                        }
-                    });
-                }
+        this.searchingModuleStateSubcription =
+            this.searchingModuleState.subscribe((searchModule: Module) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (searchModule && searchModule.searchKeyword) {
+                        setTimeout(() => {
+                            const rs = this.globalSearchModuleModels.filter(
+                                (p) =>
+                                    p.idSettingsGUI ===
+                                    searchModule.idSettingsGUI
+                            );
+                            if (rs.length) {
+                                const globalItem = rs[0];
+                                this._globalItemDoubleClicked(
+                                    globalItem,
+                                    searchModule.searchKeyword
+                                );
+                            }
+                        });
+                    }
+                });
             });
-        });
     }
 
     /**
@@ -108,7 +137,6 @@ export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
     //    });
     //}
 
-
     public ngOnDestroy() {
         Uti.unsubscribe(this);
     }
@@ -121,7 +149,9 @@ export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
             }
         }
 
-        this.globalSearchConfig.isAdministrationClicked = (globalItem.moduleName === this.globalSearchConsts.searchAdministration);
+        this.globalSearchConfig.isAdministrationClicked =
+            globalItem.moduleName ===
+            this.globalSearchConsts.searchAdministration;
 
         // Used for Selection Modules
         switch (globalItem.idSettingsGUI) {
@@ -134,15 +164,28 @@ export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
         this.onGlobalSearchItemClicked.emit(globalItem);
     }
 
-    public globalItemDoubleClicked(globalItem: GlobalSearchModuleModel, fromLocalStorage?) {
+    public globalItemDoubleClicked(
+        globalItem: GlobalSearchModuleModel,
+        fromLocalStorage?
+    ) {
         this._globalItemDoubleClicked(globalItem, null);
-        if (Configuration.PublicSettings.enableGSNewWindow && !fromLocalStorage) {
-            this.store.dispatch(this.globalSearchActions.changeModuleTab(globalItem));
-            this.store.dispatch(this.globalSearchActions.updateTab(this.tabList));
+        if (
+            Configuration.PublicSettings.enableGSNewWindow &&
+            !fromLocalStorage
+        ) {
+            this.store.dispatch(
+                this.globalSearchActions.changeModuleTab(globalItem)
+            );
+            this.store.dispatch(
+                this.globalSearchActions.updateTab(this.tabList)
+            );
         }
     }
 
-    private _globalItemDoubleClicked(globalItem: GlobalSearchModuleModel, searchKeyword) {
+    private _globalItemDoubleClicked(
+        globalItem: GlobalSearchModuleModel,
+        searchKeyword
+    ) {
         this.globalSearchService.setAllTabActive(false, this.tabList);
         //
         let title = globalItem.moduleName;
@@ -160,17 +203,24 @@ export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
                 title: title,
                 active: true,
                 removable: true,
-                textSearch: searchKeyword ? searchKeyword : this.tabList[0].textSearch,
+                textSearch: searchKeyword
+                    ? searchKeyword
+                    : this.tabList[0].textSearch,
                 module: new Module(Object.assign({}, globalItem)),
                 searchIndex: this.makeSearchIndexKey(globalItem),
                 isWithStar: this.isWithStar,
-                histories: []
+                histories: [],
             });
         } else {
             if (!searchKeyword) {
                 searchKeyword = this.tabList[0].textSearch;
             }
-            this.globalSearchService.setTabActive(title, true, this.tabList, searchKeyword);
+            this.globalSearchService.setTabActive(
+                title,
+                true,
+                this.tabList,
+                searchKeyword
+            );
         }
 
         setTimeout(() => {
@@ -185,22 +235,33 @@ export class GlobalSeachModuleItemListComponent implements OnInit, OnDestroy {
         if (!globalItem.children || !globalItem.children.length) {
             return globalItem.searchIndexKey;
         }
-        return globalItem.children.map(p => p.searchIndexKey).join(',');
+        return globalItem.children.map((p) => p.searchIndexKey).join(",");
     }
 
     private getChildrenTabName(currentGlobalItem: any): string {
         if (this.mainModules) {
-            const currentMainModule = this.mainModules.find(x => x.idSettingsGUI === currentGlobalItem.idSettingsGUIParent);
+            const currentMainModule = this.mainModules.find(
+                (x) => x.idSettingsGUI === currentGlobalItem.idSettingsGUIParent
+            );
             if (currentMainModule) {
-                return currentMainModule.moduleName + ' - ' + currentGlobalItem.moduleName;
+                return (
+                    currentMainModule.moduleName +
+                    " - " +
+                    currentGlobalItem.moduleName
+                );
             }
         }
-        return '';
+        return "";
     }
 
     private updateModuleToStore(globalItem) {
         const selectedModule = new Module(globalItem);
-        this.moduleService.loadContentDetailBySelectedModule(selectedModule, this.activeModule, this.activeSubModule, this.mainModules);
+        this.moduleService.loadContentDetailBySelectedModule(
+            selectedModule,
+            this.activeModule,
+            this.activeSubModule,
+            this.mainModules
+        );
     }
 
     public itemsTrackBy(index, item) {

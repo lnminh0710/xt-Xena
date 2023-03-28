@@ -1,1 +1,1 @@
-export * from './layout-setting.action';
+export * from "./layout-setting.action";

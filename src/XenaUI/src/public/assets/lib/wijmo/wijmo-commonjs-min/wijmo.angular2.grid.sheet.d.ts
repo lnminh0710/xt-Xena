@@ -1,10 +1,16 @@
-import * as wjcGridSheet from 'wijmo/wijmo.grid.sheet';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector } from '@angular/core';
-import { OnInit, OnDestroy, SimpleChange } from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcGridSheet from "wijmo/wijmo.grid.sheet";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import { ElementRef, Injector } from "@angular/core";
+import { OnInit, OnDestroy, SimpleChange } from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjFlexSheetMeta: IWjComponentMeta;
-export declare class WjFlexSheet extends wjcGridSheet.FlexSheet implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjFlexSheet
+    extends wjcGridSheet.FlexSheet
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -71,10 +77,18 @@ export declare class WjFlexSheet extends wjcGridSheet.FlexSheet implements OnIni
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjSheetMeta: IWjComponentMeta;
-export declare class WjSheet extends wjcGridSheet.Sheet implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjSheet
+    extends wjcGridSheet.Sheet
+    implements OnInit, OnDestroy, AfterViewInit
+{
     boundRowCount: number;
     boundColumnCount: number;
     private _flexSheet;
@@ -89,9 +103,6 @@ export declare class WjSheet extends wjcGridSheet.Sheet implements OnInit, OnDes
     ngOnInit(): wjcGridSheet.Sheet;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    ngOnChanges(changes: {
-        [key: string]: SimpleChange;
-    }): any;
+    ngOnChanges(changes: { [key: string]: SimpleChange }): any;
 }
-export declare class WjGridSheetModule {
-}
+export declare class WjGridSheetModule {}

@@ -1,32 +1,35 @@
-import { Component, OnInit, OnDestroy, Input, ElementRef, AfterViewInit } from '@angular/core';
 import {
-    Store,
-    ReducerManagerDispatcher
-} from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { AppErrorHandler } from 'app/services';
+    Component,
+    OnInit,
+    OnDestroy,
+    Input,
+    ElementRef,
+    AfterViewInit,
+} from "@angular/core";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { AppErrorHandler } from "app/services";
 import {
     DataEntryActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import { DataEntryService, DataEntryProcess } from 'app/services';
-import * as uti from 'app/utilities';
-import * as dataEntryReducer from 'app/state-management/store/reducer/data-entry';
+    CustomAction,
+} from "app/state-management/store/actions";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import { DataEntryService, DataEntryProcess } from "app/services";
+import * as uti from "app/utilities";
+import * as dataEntryReducer from "app/state-management/store/reducer/data-entry";
 
 @Component({
-    selector: 'image-zoomer',
-    styleUrls: ['./image-zoomer.component.scss'],
-    templateUrl: './image-zoomer.component.html'
+    selector: "image-zoomer",
+    styleUrls: ["./image-zoomer.component.scss"],
+    templateUrl: "./image-zoomer.component.html",
 })
 export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
-
-    public serverApiUrl = '/api/FileManager/GetScanFile?name=';
+    public serverApiUrl = "/api/FileManager/GetScanFile?name=";
     private lockedCursorShade: any = null;
-    public imageUrl = '';
+    public imageUrl = "";
     public imageUrls: any[] = [];
     private preloadImagesList: any[] = [];
     public totalImages = 0;
@@ -45,17 +48,17 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
     private showSmallImageStateSubscription: Subscription;
 
     rotateCount = 0;
-    rotateType = 'vertical';
+    rotateType = "vertical";
     isManual = false;
     isLocked = false;
     loaded: any = {};
     smallImageCollapsed = false;
 
     @Input() zoomRange: number[] = [10, 30];
-    @Input() magnifierSize: string[] = ['100%', '100%'];
-    @Input() cursorShadeColor = '#fff';
+    @Input() magnifierSize: string[] = ["100%", "100%"];
+    @Input() cursorShadeColor = "#fff";
     @Input() cursorShadeOpacity = 0.3;
-    @Input() cursorShadeBorder = '2px solid red';
+    @Input() cursorShadeBorder = "2px solid red";
     @Input() disableWheel = false;
     @Input() tabID: string;
 
@@ -68,10 +71,26 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
         private dispatcher: ReducerManagerDispatcher,
         private dataEntryProcess: DataEntryProcess
     ) {
-        this.lockedCursorShadeState = store.select(state => dataEntryReducer.getDataEntryState(state, this.tabID).lockedCursorShade);
-        this.scanningStatusDataState = store.select(state => dataEntryReducer.getDataEntryState(state, this.tabID).scanningStatusData);
-        this.scanningStatusDataCallSkipState = store.select(state => dataEntryReducer.getDataEntryState(state, this.tabID).scanningStatusCallSkip);
-        this.showSmallImageState = store.select(state => dataEntryReducer.getDataEntryState(state, this.tabID).showSmallImage);
+        this.lockedCursorShadeState = store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(state, this.tabID)
+                    .lockedCursorShade
+        );
+        this.scanningStatusDataState = store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(state, this.tabID)
+                    .scanningStatusData
+        );
+        this.scanningStatusDataCallSkipState = store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(state, this.tabID)
+                    .scanningStatusCallSkip
+        );
+        this.showSmallImageState = store.select(
+            (state) =>
+                dataEntryReducer.getDataEntryState(state, this.tabID)
+                    .showSmallImage
+        );
     }
 
     ngOnInit() {
@@ -88,8 +107,7 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
         uti.Uti.unsubscribe(this);
     }
 
-    ngAfterViewInit() {
-    }
+    ngAfterViewInit() {}
 
     public resizeImageZoomer() {
         this.initImageZoomer(0);
@@ -100,25 +118,34 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
         //    this.toggleSmallImage();
         //}
 
-        setTimeout(() => {
-            this.destroy();
+        setTimeout(
+            () => {
+                this.destroy();
 
-            const $smallImage = $('#small-image', this.elmRef.nativeElement);
-            if ($smallImage && $smallImage.length) {
-                $smallImage.css({ 'transform': 'rotate(0deg)' });
-                const $container = $('#image-zoomer-display', this.elmRef.nativeElement);
-                this.createZoomRange($smallImage, $container);
+                const $smallImage = $(
+                    "#small-image",
+                    this.elmRef.nativeElement
+                );
+                if ($smallImage && $smallImage.length) {
+                    $smallImage.css({ transform: "rotate(0deg)" });
+                    const $container = $(
+                        "#image-zoomer-display",
+                        this.elmRef.nativeElement
+                    );
+                    this.createZoomRange($smallImage, $container);
 
-                this.init($smallImage);
-                this.firstClickImage(timeoutValue);
-            }
-        }, !isNil(timeoutValue) ? timeoutValue : 1000);
+                    this.init($smallImage);
+                    this.firstClickImage(timeoutValue);
+                }
+            },
+            !isNil(timeoutValue) ? timeoutValue : 1000
+        );
     }
 
     private destroy() {
-        $('div#zoomtracker', this.elmRef.nativeElement).remove();
-        $('div#magnifyarea', this.elmRef.nativeElement).remove();
-        $('div#cursorshade', this.elmRef.nativeElement).remove();
+        $("div#zoomtracker", this.elmRef.nativeElement).remove();
+        $("div#magnifyarea", this.elmRef.nativeElement).remove();
+        $("div#cursorshade", this.elmRef.nativeElement).remove();
     }
 
     private createZoomRange($smallImage, $container) {
@@ -136,136 +163,222 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private dispatchLock() {
         if (this.isLocked) {
-            const $cursorshade = $('div#cursorshade', this.elmRef.nativeElement);
-            const $zoomtracker = $('div#zoomtracker', this.elmRef.nativeElement);
-            this.store.dispatch(this.dataEntryActions.lockCursorShade({
-                left: $cursorshade.offset().left,
-                top: $cursorshade.offset().top,
-                power: $zoomtracker.data('specs').curpower
-            }, this.tabID));
+            const $cursorshade = $(
+                "div#cursorshade",
+                this.elmRef.nativeElement
+            );
+            const $zoomtracker = $(
+                "div#zoomtracker",
+                this.elmRef.nativeElement
+            );
+            this.store.dispatch(
+                this.dataEntryActions.lockCursorShade(
+                    {
+                        left: $cursorshade.offset().left,
+                        top: $cursorshade.offset().top,
+                        power: $zoomtracker.data("specs").curpower,
+                    },
+                    this.tabID
+                )
+            );
         } else {
-            this.store.dispatch(this.dataEntryActions.unlockCursorShade(this.tabID));
+            this.store.dispatch(
+                this.dataEntryActions.unlockCursorShade(this.tabID)
+            );
         }
     }
 
     private firstClickImage(timeoutValue?) {
-        const $tracker = $('div#zoomtracker', this.elmRef.nativeElement);
-        const $magnifier = $('div#magnifyarea', this.elmRef.nativeElement);
-        const $maginner = $magnifier.find('div:eq(0)');
-        const $cursorshade = $('div#cursorshade', this.elmRef.nativeElement);
+        const $tracker = $("div#zoomtracker", this.elmRef.nativeElement);
+        const $magnifier = $("div#magnifyarea", this.elmRef.nativeElement);
+        const $maginner = $magnifier.find("div:eq(0)");
+        const $cursorshade = $("div#cursorshade", this.elmRef.nativeElement);
         let e: any = {};
 
         if ($tracker && !this.isManual) {
-            $tracker.trigger('mousedown');
+            $tracker.trigger("mousedown");
         }
 
         if (this.lockedCursorShade) {
-            if ($tracker && $tracker.data('specs')) {
-                $tracker.data('specs').curpower = this.lockedCursorShade.power;
+            if ($tracker && $tracker.data("specs")) {
+                $tracker.data("specs").curpower = this.lockedCursorShade.power;
             }
 
             this.keepImageZooming();
 
             e = {
-                pageX: this.lockedCursorShade.left + $cursorshade.width() / 2 + 2,
-                pageY: this.lockedCursorShade.top + $cursorshade.height() / 2 + 2
-            }
-        } else if ($cursorshade && $cursorshade.offset() &&
-            $tracker && $tracker.offset()) {
+                pageX:
+                    this.lockedCursorShade.left + $cursorshade.width() / 2 + 2,
+                pageY:
+                    this.lockedCursorShade.top + $cursorshade.height() / 2 + 2,
+            };
+        } else if (
+            $cursorshade &&
+            $cursorshade.offset() &&
+            $tracker &&
+            $tracker.offset()
+        ) {
             e = {
-                pageX: this.isManual ? $cursorshade.offset().left + $cursorshade.width() / 2 + 2 : $tracker.offset().left,
-                pageY: this.isManual ? $cursorshade.offset().top + $cursorshade.height() / 2 + 2 : $tracker.offset().top
+                pageX: this.isManual
+                    ? $cursorshade.offset().left + $cursorshade.width() / 2 + 2
+                    : $tracker.offset().left,
+                pageY: this.isManual
+                    ? $cursorshade.offset().top + $cursorshade.height() / 2 + 2
+                    : $tracker.offset().top,
             };
         }
 
         if (this.isManual) {
-            this.manualFirstClickImage($tracker, $magnifier, $maginner, $cursorshade, e);
+            this.manualFirstClickImage(
+                $tracker,
+                $magnifier,
+                $maginner,
+                $cursorshade,
+                e
+            );
         } else {
-            setTimeout(() => {
-                this.manualFirstClickImage($tracker, $magnifier, $maginner, $cursorshade, e);
-            }, !isNil(timeoutValue) ? timeoutValue : 1000);
+            setTimeout(
+                () => {
+                    this.manualFirstClickImage(
+                        $tracker,
+                        $magnifier,
+                        $maginner,
+                        $cursorshade,
+                        e
+                    );
+                },
+                !isNil(timeoutValue) ? timeoutValue : 1000
+            );
         }
     }
 
-    private manualFirstClickImage($tracker, $magnifier, $maginner, $cursorshade, e) {
-        if (!$tracker || !$tracker.data('specs')) {
+    private manualFirstClickImage(
+        $tracker,
+        $magnifier,
+        $maginner,
+        $cursorshade,
+        e
+    ) {
+        if (!$tracker || !$tracker.data("specs")) {
             return;
         }
-        $tracker.data('specs').coords = { left: $tracker.offset().left, top: $tracker.offset().top };
+        $tracker.data("specs").coords = {
+            left: $tracker.offset().left,
+            top: $tracker.offset().top,
+        };
         this.moveImage($tracker, $maginner, $cursorshade, e, null);
     }
 
     private subscribeLockedCursorShadeState() {
-        this.lockedCursorShadeStateSubscription = this.lockedCursorShadeState.subscribe((lockedCursorShadeState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.lockedCursorShade = lockedCursorShadeState;
+        this.lockedCursorShadeStateSubscription =
+            this.lockedCursorShadeState.subscribe(
+                (lockedCursorShadeState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.lockedCursorShade = lockedCursorShadeState;
 
-                this.isLocked = !isEmpty(lockedCursorShadeState);
-            });
-        });
+                        this.isLocked = !isEmpty(lockedCursorShadeState);
+                    });
+                }
+            );
     }
 
     private subscribeScanningStatusDataState() {
-        this.scanningStatusDataStateSubscription = this.scanningStatusDataState.subscribe((scanningStatusDataState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (scanningStatusDataState) {
+        this.scanningStatusDataStateSubscription =
+            this.scanningStatusDataState.subscribe(
+                (scanningStatusDataState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (scanningStatusDataState) {
+                            if (
+                                this.dataEntryProcess
+                                    .ignoreProcessForSubcribeScanningStatusData
+                            ) {
+                                console.log("ignore load Images");
+                                return;
+                            }
 
-                    if (this.dataEntryProcess.ignoreProcessForSubcribeScanningStatusData) {
-                        console.log('ignore load Images');
-                        return;
-                    }
+                            this.imageUrl =
+                                this.dataEntryService.buildImageFullPath(
+                                    scanningStatusDataState
+                                );
+                            this.imageUrls =
+                                this.dataEntryService.buildListImages(
+                                    scanningStatusDataState
+                                );
+                            if (this.imageUrls.length) {
+                                this.currentImageIndex =
+                                    this.imageUrls[0].index;
+                                this.totalImages = this.imageUrls.length;
 
-                    this.imageUrl = this.dataEntryService.buildImageFullPath(scanningStatusDataState);
-                    this.imageUrls = this.dataEntryService.buildListImages(scanningStatusDataState);
-                    if (this.imageUrls.length) {
-                        this.currentImageIndex = this.imageUrls[0].index;
-                        this.totalImages = this.imageUrls.length;
+                                this.preloadImages(
+                                    this.imageUrls.map((imageUrl) => {
+                                        return imageUrl.url;
+                                    })
+                                );
+                            }
 
-                        this.preloadImages(this.imageUrls.map((imageUrl) => {
-                            return imageUrl.url;
-                        }));
-                    }
+                            if (scanningStatusDataState.length > 1) {
+                                this.preloadImages(
+                                    this.dataEntryService.buildPreloadImagesPath(
+                                        scanningStatusDataState.slice(1)
+                                    )
+                                );
+                            }
 
-                    if (scanningStatusDataState.length > 1) {
-                        this.preloadImages(this.dataEntryService.buildPreloadImagesPath(scanningStatusDataState.slice(1)));
-                    }
-
-                    if (!scanningStatusDataState.length) {
-                        this.destroy();
-                    }
+                            if (!scanningStatusDataState.length) {
+                                this.destroy();
+                            }
+                        }
+                    });
                 }
-            });
-        });
+            );
     }
 
     private subscribeScanningStatusDataCallSkipState() {
-        this.scanningStatusDataCallSkipStateSubscription = this.scanningStatusDataCallSkipState.subscribe((scanningStatusDataCallSkipState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (scanningStatusDataCallSkipState && scanningStatusDataCallSkipState.skip) {
-                    this.destroy();
+        this.scanningStatusDataCallSkipStateSubscription =
+            this.scanningStatusDataCallSkipState.subscribe(
+                (scanningStatusDataCallSkipState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            scanningStatusDataCallSkipState &&
+                            scanningStatusDataCallSkipState.skip
+                        ) {
+                            this.destroy();
+                        }
+                    });
                 }
-            });
-        });
+            );
     }
 
     private subscribeShowSmallImageState() {
-        this.requestDownloadSubscription = this.showSmallImageState.subscribe((showSmallImageState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (showSmallImageState && this.smallImageCollapsed != showSmallImageState.isCollapsed) {
-                    this.toggleSmallImage();
-                }
-            });
-        });
+        this.requestDownloadSubscription = this.showSmallImageState.subscribe(
+            (showSmallImageState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        showSmallImageState &&
+                        this.smallImageCollapsed !=
+                            showSmallImageState.isCollapsed
+                    ) {
+                        this.toggleSmallImage();
+                    }
+                });
+            }
+        );
     }
 
     private subscribeRequestDownloadState() {
-        this.requestDownloadSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === DataEntryActions.DATA_ENTRY_REQUEST_DOWNLOAD_SCANNING_IMAGE && action.area == this.tabID;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.downloadImage();
+        this.requestDownloadSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        DataEntryActions.DATA_ENTRY_REQUEST_DOWNLOAD_SCANNING_IMAGE &&
+                    action.area == this.tabID
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.downloadImage();
+                });
             });
-        });
     }
 
     private preloadImages(array) {
@@ -276,7 +389,7 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
         for (var i = 0; i < array.length; i++) {
             var img = new Image();
             list.push(img);
-            img.src = '/api/FileManager/GetScanFile?name=' + array[i];
+            img.src = "/api/FileManager/GetScanFile?name=" + array[i];
         }
     }
 
@@ -284,7 +397,12 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
         clearTimeout(this.changeImageInterval);
         this.changeImageInterval = setTimeout(() => {
             let value = parseInt($event.target.value);
-            if (!isNil(value) && !isNaN(value) && value > 0 && value <= this.totalImages) {
+            if (
+                !isNil(value) &&
+                !isNaN(value) &&
+                value > 0 &&
+                value <= this.totalImages
+            ) {
                 this.currentImageIndex = value;
 
                 this.loadImageUrl(this.currentImageIndex);
@@ -305,17 +423,18 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private loadImageUrl(index) {
-        let img = this.imageUrls.find(x => x.index == index);
+        let img = this.imageUrls.find((x) => x.index == index);
         if (img) {
             this.imageUrl = img.url;
         }
     }
 
     private highestZindex($img) {
-        let z = 0, elz;
+        let z = 0,
+            elz;
         const $els = $img.parents().add($img);
         $els.each(function () {
-            elz = $(this).css('zIndex');
+            elz = $(this).css("zIndex");
             elz = isNaN(elz) ? 0 : +elz;
             z = Math.max(z, elz);
         });
@@ -325,25 +444,25 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
     public rotateImage(rotateType) {
         this.isManual = true;
 
-        const $smallImage = $('#small-image', this.elmRef.nativeElement),
+        const $smallImage = $("#small-image", this.elmRef.nativeElement),
             $smallImageParent = $smallImage.parent(),
-            $bigImage = $('#big-image', this.elmRef.nativeElement),
-            $tracker = $('#zoomtracker', this.elmRef.nativeElement),
-            $magnifier = $('div#magnifyarea', this.elmRef.nativeElement),
-            $maginner = $magnifier.find('div:eq(0)'),
-            specs = $tracker.data('specs');
+            $bigImage = $("#big-image", this.elmRef.nativeElement),
+            $tracker = $("#zoomtracker", this.elmRef.nativeElement),
+            $magnifier = $("div#magnifyarea", this.elmRef.nativeElement),
+            $maginner = $magnifier.find("div:eq(0)"),
+            specs = $tracker.data("specs");
         let newSmallImageHeight = 0,
-            rotateString = '',
+            rotateString = "",
             newSmallImageWidth = 0,
             marginValue = 0,
             maginnerWidth = 0,
             maginnerHeight = 0;
 
         switch (rotateType) {
-            case 'right':
+            case "right":
                 this.rotateCount += 1;
                 break;
-            case 'left':
+            case "left":
                 this.rotateCount -= 1;
                 break;
         }
@@ -353,75 +472,84 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         switch (this.rotateCount) {
             case 0:
-                rotateString = 'rotate(0deg)';
+                rotateString = "rotate(0deg)";
                 break;
             case 1:
-                rotateString = 'rotate(90deg)';
+                rotateString = "rotate(90deg)";
                 break;
             case 2:
-                rotateString = 'rotate(180deg)';
+                rotateString = "rotate(180deg)";
                 break;
             case 3:
-                rotateString = 'rotate(270deg)';
+                rotateString = "rotate(270deg)";
                 break;
             case -1:
-                rotateString = 'rotate(-90deg)';
+                rotateString = "rotate(-90deg)";
                 break;
             case -2:
-                rotateString = 'rotate(-180deg)';
+                rotateString = "rotate(-180deg)";
                 break;
             case -3:
-                rotateString = 'rotate(-270deg)';
+                rotateString = "rotate(-270deg)";
                 break;
         }
 
-        this.rotateType = (this.rotateCount === 0 || this.rotateCount === 2 || this.rotateCount === -2) ? 'vetical' : 'horizontal';
+        this.rotateType =
+            this.rotateCount === 0 ||
+            this.rotateCount === 2 ||
+            this.rotateCount === -2
+                ? "vetical"
+                : "horizontal";
 
         switch (this.rotateType) {
-            case 'vetical':
+            case "vetical":
                 newSmallImageHeight = $smallImage.height();
                 newSmallImageWidth = $smallImage.width();
                 maginnerWidth = $bigImage.width();
                 maginnerHeight = $bigImage.height();
                 break;
-            case 'horizontal':
+            case "horizontal":
                 newSmallImageHeight = $smallImage.width();
                 newSmallImageWidth = $smallImage.height();
                 maginnerWidth = $bigImage.height();
                 maginnerHeight = $bigImage.width();
 
-                marginValue = $bigImage.height() > $bigImage.width() ? ($bigImage.height() - $bigImage.width()) / 2 : ($bigImage.width() - $bigImage.height()) / 2;
+                marginValue =
+                    $bigImage.height() > $bigImage.width()
+                        ? ($bigImage.height() - $bigImage.width()) / 2
+                        : ($bigImage.width() - $bigImage.height()) / 2;
                 break;
         }
 
-        $smallImage.css({ 'transform': rotateString });
+        $smallImage.css({ transform: rotateString });
 
         $maginner.css({
-            'width': maginnerWidth,
-            'height': maginnerHeight
+            width: maginnerWidth,
+            height: maginnerHeight,
         });
 
         $bigImage.css({
-            'transform': rotateString
+            transform: rotateString,
         });
 
-        if (this.rotateType === 'horizontal') {
+        if (this.rotateType === "horizontal") {
             $bigImage.css({
-                'margin-left': marginValue + 'px',
-                'margin-top': -marginValue + 'px'
+                "margin-left": marginValue + "px",
+                "margin-top": -marginValue + "px",
             });
         } else {
             $bigImage.css({
-                'margin-left': 'auto',
-                'margin-top': 'auto'
+                "margin-left": "auto",
+                "margin-top": "auto",
             });
         }
 
         $tracker.css({
             top: $smallImageParent.position().top + $smallImage.position().top,
-            left: $smallImageParent.position().left + $smallImage.position().left,
+            left:
+                $smallImageParent.position().left + $smallImage.position().left,
             width: newSmallImageWidth,
-            height: newSmallImageHeight
+            height: newSmallImageHeight,
         });
         specs.imagesize.h = newSmallImageHeight;
         specs.imagesize.w = newSmallImageWidth;
@@ -430,28 +558,28 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private getBoundary(b, val, specs) {
-        if (b === 'left') {
-            const rb = -specs.imagesize.w * specs.curpower + specs.magsize.w
-            return (val > 0) ? 0 : (val < rb) ? rb : val
+        if (b === "left") {
+            const rb = -specs.imagesize.w * specs.curpower + specs.magsize.w;
+            return val > 0 ? 0 : val < rb ? rb : val;
         } else {
-            const tb = -specs.imagesize.h * specs.curpower + specs.magsize.h
-            return (val > 0) ? 0 : (val < tb) ? tb : val
+            const tb = -specs.imagesize.h * specs.curpower + specs.magsize.h;
+            return val > 0 ? 0 : val < tb ? tb : val;
         }
     }
 
     public manualMoveImage(moveType) {
         this.isManual = true;
 
-        const $tracker = $('div#zoomtracker', this.elmRef.nativeElement);
-        const $magnifier = $('div#magnifyarea', this.elmRef.nativeElement);
-        const $maginner = $magnifier.find('div:eq(0)');
-        const $cursorshade = $('div#cursorshade', this.elmRef.nativeElement);
+        const $tracker = $("div#zoomtracker", this.elmRef.nativeElement);
+        const $magnifier = $("div#magnifyarea", this.elmRef.nativeElement);
+        const $maginner = $magnifier.find("div:eq(0)");
+        const $cursorshade = $("div#cursorshade", this.elmRef.nativeElement);
 
         this.moveImage($tracker, $maginner, $cursorshade, {}, moveType);
     }
 
     private moveImage($tracker, $maginner, $cursorshade, e, moveType?) {
-        const specs = $tracker.data('specs');
+        const specs = $tracker.data("specs");
         if (!specs) {
             return;
         }
@@ -462,17 +590,17 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
             newLeft = 0;
         if (moveType) {
             switch (moveType) {
-                case 'up':
+                case "up":
                     newTop = -(csh / 2);
                     break;
-                case 'down':
-                    newTop = (csh / 2);
+                case "down":
+                    newTop = csh / 2;
                     break;
-                case 'left':
+                case "left":
                     newLeft = -(csw / 2);
                     break;
-                case 'right':
-                    newLeft = (csw / 2);
+                case "right":
+                    newLeft = csw / 2;
                     break;
                 default:
                     break;
@@ -481,41 +609,69 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
 
         const fiz = this,
             trackercoords = specs.coords,
-            $container = $('#image-zoomer-container', this.elmRef.nativeElement),
+            $container = $(
+                "#image-zoomer-container",
+                this.elmRef.nativeElement
+            ),
             pagex = moveType
-                ? ((specs.lastpagex + (specs.lastpagex === trackercoords.left ? 2 : 1) * newLeft) > trackercoords.left + specs.imagesize.w)
+                ? specs.lastpagex +
+                      (specs.lastpagex === trackercoords.left ? 2 : 1) *
+                          newLeft >
+                  trackercoords.left + specs.imagesize.w
                     ? specs.lastpagex
-                    : Math.max(specs.lastpagex + (specs.lastpagex === trackercoords.left ? 2 : 1) * newLeft, trackercoords.left)
-                : (e.pageX || specs.lastpagex),
+                    : Math.max(
+                          specs.lastpagex +
+                              (specs.lastpagex === trackercoords.left ? 2 : 1) *
+                                  newLeft,
+                          trackercoords.left
+                      )
+                : e.pageX || specs.lastpagex,
             pagey = moveType
-                ? ((specs.lastpagey + (specs.lastpagey === trackercoords.top ? 2 : 1) * newTop) > trackercoords.top + specs.imagesize.h)
+                ? specs.lastpagey +
+                      (specs.lastpagey === trackercoords.top ? 2 : 1) * newTop >
+                  trackercoords.top + specs.imagesize.h
                     ? specs.lastpagey
-                    : Math.max(specs.lastpagey + (specs.lastpagey === trackercoords.top ? 2 : 1) * newTop, trackercoords.top)
-                : (e.pageY || specs.lastpagey),
-            x = pagex - (trackercoords.left),
-            y = pagey - (trackercoords.top),
+                    : Math.max(
+                          specs.lastpagey +
+                              (specs.lastpagey === trackercoords.top ? 2 : 1) *
+                                  newTop,
+                          trackercoords.top
+                      )
+                : e.pageY || specs.lastpagey,
+            x = pagex - trackercoords.left,
+            y = pagey - trackercoords.top,
             paddingTop = $container.offset().top,
             paddingLeft = $container.offset().left;
 
         $cursorshade.css({
             width: csw,
-            height: csh
+            height: csh,
         });
 
         if (!this.smallImageCollapsed) {
             $cursorshade.css({
-                visibility: (e && e.pageX !== 0 && e.pageY !== 0) ? 'visible' : 'hidden',
+                visibility:
+                    e && e.pageX !== 0 && e.pageY !== 0 ? "visible" : "hidden",
             });
         }
 
         $cursorshade.css({
-            top: Math.min(specs.imagesize.h - csh, Math.max(0, y - csh / 2)) + trackercoords.top - paddingTop,
-            left: Math.min(specs.imagesize.w - csw, Math.max(0, x - csw / 2)) + trackercoords.left - paddingLeft
+            top:
+                Math.min(specs.imagesize.h - csh, Math.max(0, y - csh / 2)) +
+                trackercoords.top -
+                paddingTop,
+            left:
+                Math.min(specs.imagesize.w - csw, Math.max(0, x - csw / 2)) +
+                trackercoords.left -
+                paddingLeft,
         });
 
         const newx = -x * specs.curpower + specs.magsize.w / 2;
         const newy = -y * specs.curpower + specs.magsize.h / 2;
-        $maginner.css({ left: fiz.getBoundary('left', newx, specs), top: fiz.getBoundary('top', newy, specs) });
+        $maginner.css({
+            left: fiz.getBoundary("left", newx, specs),
+            top: fiz.getBoundary("top", newy, specs),
+        });
 
         specs.lastpagex = pagex;
         specs.lastpagey = pagey;
@@ -529,45 +685,53 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private magnifyImage($tracker, e, zoomRange) {
         if (!this.isManual) {
-            if (!e.detail && !e.wheelDelta) { e = e.originalEvent; }
+            if (!e.detail && !e.wheelDelta) {
+                e = e.originalEvent;
+            }
         }
 
-        const delta = e.detail ? e.detail * (-120) : e.wheelDelta;
-        const zoomdir = (delta <= -120) ? 'out' : 'in';
-        const specs = $tracker.data('specs');
+        const delta = e.detail ? e.detail * -120 : e.wheelDelta;
+        const zoomdir = delta <= -120 ? "out" : "in";
+        const specs = $tracker.data("specs");
         if (!specs) {
             return;
         }
-        const magnifier = specs.magnifier, od = specs.imagesize, power = specs.curpower;
-        const newpower = (zoomdir === 'in') ? Math.min(power + 1, zoomRange[1]) : Math.max(power - 1, zoomRange[0]);
+        const magnifier = specs.magnifier,
+            od = specs.imagesize,
+            power = specs.curpower;
+        const newpower =
+            zoomdir === "in"
+                ? Math.min(power + 1, zoomRange[1])
+                : Math.max(power - 1, zoomRange[0]);
         let nd = [od.w * newpower, od.h * newpower];
-        if (this.rotateType === 'horizontal') {
+        if (this.rotateType === "horizontal") {
             nd = [od.h * newpower, od.w * newpower];
         }
         magnifier.$image.css({ width: nd[0], height: nd[1] });
 
-        if (this.rotateType === 'horizontal') {
-            const marginValue = nd[1] > nd[0] ? ((nd[1] - nd[0]) / 2) : ((nd[0] - nd[1]) / 2);
+        if (this.rotateType === "horizontal") {
+            const marginValue =
+                nd[1] > nd[0] ? (nd[1] - nd[0]) / 2 : (nd[0] - nd[1]) / 2;
             magnifier.$image.css({
-                'margin-left': marginValue + 'px',
-                'margin-top': -marginValue + 'px'
+                "margin-left": marginValue + "px",
+                "margin-top": -marginValue + "px",
             });
         } else {
             magnifier.$image.css({
-                'margin-left': 'auto',
-                'margin-top': 'auto'
+                "margin-left": "auto",
+                "margin-top": "auto",
             });
         }
 
         specs.curpower = newpower;
         if ($tracker) {
-            $tracker.trigger('mousedown');
+            $tracker.trigger("mousedown");
         }
 
         this.isManual = true;
         if ($tracker) {
-            $tracker.trigger('mousemove');
-            $tracker.trigger('mouseup');
+            $tracker.trigger("mousemove");
+            $tracker.trigger("mouseup");
         }
     }
 
@@ -585,19 +749,19 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
     public zoomImage(zoomIn: boolean) {
         this.isManual = true;
 
-        const $tracker = $('div#zoomtracker', this.elmRef.nativeElement);
+        const $tracker = $("div#zoomtracker", this.elmRef.nativeElement);
         const eventObj = {
             detail: 0,
-            wheelDelta: zoomIn ? 120 : -120
-        }
+            wheelDelta: zoomIn ? 120 : -120,
+        };
         this.magnifyImage($tracker, eventObj, this.zoomRange);
     }
 
     private keepImageZooming() {
         this.isManual = true;
-        const $tracker = $('div#zoomtracker', this.elmRef.nativeElement);
+        const $tracker = $("div#zoomtracker", this.elmRef.nativeElement);
 
-        const specs = $tracker.data('specs');
+        const specs = $tracker.data("specs");
         if (!specs) {
             return;
         }
@@ -606,54 +770,63 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
             power = specs.curpower;
         const newpower = Math.min(power, this.zoomRange[1]);
         let nd = [od.w * newpower, od.h * newpower];
-        if (this.rotateType === 'horizontal') {
+        if (this.rotateType === "horizontal") {
             nd = [od.h * newpower, od.w * newpower];
         }
         magnifier.$image.css({ width: nd[0], height: nd[1] });
 
-        if (this.rotateType === 'horizontal') {
-            const marginValue = nd[1] > nd[0] ? ((nd[1] - nd[0]) / 2) : ((nd[0] - nd[1]) / 2);
+        if (this.rotateType === "horizontal") {
+            const marginValue =
+                nd[1] > nd[0] ? (nd[1] - nd[0]) / 2 : (nd[0] - nd[1]) / 2;
             magnifier.$image.css({
-                'margin-left': marginValue + 'px',
-                'margin-top': -marginValue + 'px'
+                "margin-left": marginValue + "px",
+                "margin-top": -marginValue + "px",
             });
         } else {
             magnifier.$image.css({
-                'margin-left': 'auto',
-                'margin-top': 'auto'
+                "margin-left": "auto",
+                "margin-top": "auto",
             });
         }
 
         specs.curpower = newpower;
         if ($tracker) {
-            $tracker.trigger('mousedown');
+            $tracker.trigger("mousedown");
         }
 
         this.isManual = true;
         if ($tracker) {
-            $tracker.trigger('mousemove');
-            $tracker.trigger('mouseup');
+            $tracker.trigger("mousemove");
+            $tracker.trigger("mouseup");
         }
     }
 
     public toggleSmallImage() {
         this.smallImageCollapsed = !this.smallImageCollapsed;
 
-        const $tracker = $('div#zoomtracker', this.elmRef.nativeElement),
-            $cursorshade = $('div#cursorshade', this.elmRef.nativeElement),
-            $smallImage = $('div#small-image-container', this.elmRef.nativeElement);
+        const $tracker = $("div#zoomtracker", this.elmRef.nativeElement),
+            $cursorshade = $("div#cursorshade", this.elmRef.nativeElement),
+            $smallImage = $(
+                "div#small-image-container",
+                this.elmRef.nativeElement
+            );
 
         if (this.smallImageCollapsed) {
-            $tracker.css('visibility', 'hidden');
-            $cursorshade.css('visibility', 'hidden');
-            $smallImage.css('visibility', 'hidden');
+            $tracker.css("visibility", "hidden");
+            $cursorshade.css("visibility", "hidden");
+            $smallImage.css("visibility", "hidden");
         } else {
-            $tracker.css('visibility', 'visible');
-            $cursorshade.css('visibility', 'visible');
-            $smallImage.css('visibility', 'visible');
+            $tracker.css("visibility", "visible");
+            $cursorshade.css("visibility", "visible");
+            $smallImage.css("visibility", "visible");
         }
 
-        this.store.dispatch(this.dataEntryActions.toggleSmallImage(this.smallImageCollapsed, this.tabID));
+        this.store.dispatch(
+            this.dataEntryActions.toggleSmallImage(
+                this.smallImageCollapsed,
+                this.tabID
+            )
+        );
     }
 
     private init($img) {
@@ -668,28 +841,60 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
             ipos = $img.position(),
             trackerLeft = ippos.left + ipos.left,
             trackerTop = ippos.top + ipos.top,
-            fiz = this, lastpage = { pageX: 0, pageY: 0 },
+            fiz = this,
+            lastpage = { pageX: 0, pageY: 0 },
             basezindex = this.highestZindex($img);
-        let $tracker, $cursorshade, $magnifier,
-            windowResizeInterval;
+        let $tracker, $cursorshade, $magnifier, windowResizeInterval;
 
-        $img.css({ visibility: 'visible' });
+        $img.css({ visibility: "visible" });
         this.imageUrl = this.imageUrl || $img.get(0).src;
-        $magnifier = $('<div id="magnifyarea" style="cursor:move;position:absolute;z-index:' + (basezindex - 1) + ';width:' + this.magnifierSize[0] + ';height:' + this.magnifierSize[1] + ';left:0;top:0;display:block;visibility:visible;overflow:hidden;" />')
-            .append('<div style="position:absolute;left:0;top:0;z-index:' + (basezindex - 1) + ';" />')
-            .appendTo($('div#image-zoomer-display')[0]);
+        $magnifier = $(
+            '<div id="magnifyarea" style="cursor:move;position:absolute;z-index:' +
+                (basezindex - 1) +
+                ";width:" +
+                this.magnifierSize[0] +
+                ";height:" +
+                this.magnifierSize[1] +
+                ';left:0;top:0;display:block;visibility:visible;overflow:hidden;" />'
+        )
+            .append(
+                '<div style="position:absolute;left:0;top:0;z-index:' +
+                    (basezindex - 1) +
+                    ';" />'
+            )
+            .appendTo($("div#image-zoomer-display")[0]);
 
-        $cursorshade = $('<div id="cursorshade" style="visibility:hidden;position:absolute;left:0;top:0;z-index:' + basezindex + ';" />')
-            .css({ border: this.cursorShadeBorder, opacity: this.cursorShadeOpacity, backgroundColor: this.cursorShadeColor })
-            .appendTo($('div#image-zoomer-display')[0]);
-
-        $tracker = $('<div id="zoomtracker" style="cursor:progress;position:absolute;z-index:' + basezindex + ';left:' + trackerLeft + 'px;top:' + trackerTop + 'px;height:' + h + 'px;width:' + w + 'px;" />')
+        $cursorshade = $(
+            '<div id="cursorshade" style="visibility:hidden;position:absolute;left:0;top:0;z-index:' +
+                basezindex +
+                ';" />'
+        )
             .css({
-                backgroundImage: 'none'
+                border: this.cursorShadeBorder,
+                opacity: this.cursorShadeOpacity,
+                backgroundColor: this.cursorShadeColor,
             })
-            .appendTo($('div#image-zoomer-display')[0]);
+            .appendTo($("div#image-zoomer-display")[0]);
 
-        $(window).bind('load resize', () => {
+        $tracker = $(
+            '<div id="zoomtracker" style="cursor:progress;position:absolute;z-index:' +
+                basezindex +
+                ";left:" +
+                trackerLeft +
+                "px;top:" +
+                trackerTop +
+                "px;height:" +
+                h +
+                "px;width:" +
+                w +
+                'px;" />'
+        )
+            .css({
+                backgroundImage: "none",
+            })
+            .appendTo($("div#image-zoomer-display")[0]);
+
+        $(window).bind("load resize", () => {
             clearTimeout(windowResizeInterval);
             windowResizeInterval = setTimeout(() => {
                 this.resizeImageZoomer();
@@ -697,18 +902,24 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         function getspecs($maginner, $bigimage) {
-            const magsize = { w: $magnifier.width(), h: $magnifier.height() }
-            const imagesize = { w: w, h: h }
-            const power = (fiz.zoomRange) ? fiz.zoomRange[0] : ($bigimage.width() / w).toFixed(5)
-            $tracker.data('specs', {
+            const magsize = { w: $magnifier.width(), h: $magnifier.height() };
+            const imagesize = { w: w, h: h };
+            const power = fiz.zoomRange
+                ? fiz.zoomRange[0]
+                : ($bigimage.width() / w).toFixed(5);
+            $tracker.data("specs", {
                 statustimer: null,
-                magnifier: { $outer: $magnifier, $inner: $maginner, $image: $bigimage },
+                magnifier: {
+                    $outer: $magnifier,
+                    $inner: $maginner,
+                    $image: $bigimage,
+                },
                 magsize: magsize,
                 imagesize: imagesize,
                 curpower: power,
                 coords: getcoords(),
-                csborder: $cursorshade.outerWidth()
-            })
+                csborder: $cursorshade.outerWidth(),
+            });
         }
 
         function getcoords() {
@@ -716,44 +927,64 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
             return { left: offset.left, top: offset.top };
         }
 
-        $tracker.one('mousedown', (e) => {
-            const $maginner = $magnifier.find('div:eq(0)')
-            const $bigimage = $('<img id="big-image" src="/api/FileManager/GetScanFile?name=' + this.imageUrl + '"/>').appendTo($maginner)
-            const largeloaded = this.loaded[(<HTMLLinkElement>($('<a href="/api/FileManager/GetScanFile?name=' + this.imageUrl + '"></a>').get(0))).href];
+        $tracker.one("mousedown", (e) => {
+            const $maginner = $magnifier.find("div:eq(0)");
+            const $bigimage = $(
+                '<img id="big-image" src="/api/FileManager/GetScanFile?name=' +
+                    this.imageUrl +
+                    '"/>'
+            ).appendTo($maginner);
+            const largeloaded =
+                this.loaded[
+                    (<HTMLLinkElement>(
+                        $(
+                            '<a href="/api/FileManager/GetScanFile?name=' +
+                                this.imageUrl +
+                                '"></a>'
+                        ).get(0)
+                    )).href
+                ];
             if (!largeloaded) {
                 $img.stop(true, true).css({ opacity: 0.1 });
             }
 
-            $bigimage.on('loadevt', (event, _e) => {
-                if (_e.type === 'error') {
-                    const cssDataAdded = $img.css({ opacity: 1 }).data('added');
-                    if (cssDataAdded)
-                        cssDataAdded.remove();
-                    const src = (<HTMLLinkElement>($('<a href="' + $bigimage.attr('src') + '"></a>').get(0))).href;
+            $bigimage.on("loadevt", (event, _e) => {
+                if (_e.type === "error") {
+                    const cssDataAdded = $img.css({ opacity: 1 }).data("added");
+                    if (cssDataAdded) cssDataAdded.remove();
+                    const src = (<HTMLLinkElement>(
+                        $('<a href="' + $bigimage.attr("src") + '"></a>').get(0)
+                    )).href;
                     if (window.console && console.error) {
-                        console.error('Cannot find Featured Image Zoomer larger image: ' + src);
+                        console.error(
+                            "Cannot find Featured Image Zoomer larger image: " +
+                                src
+                        );
                     } else {
-                        alert('Cannot find Featured Image Zoomer larger image:\n\n' + src);
+                        alert(
+                            "Cannot find Featured Image Zoomer larger image:\n\n" +
+                                src
+                        );
                     }
                     return;
                 }
 
-                this.loaded[$bigimage.attr('src')] = true;
+                this.loaded[$bigimage.attr("src")] = true;
 
                 $img.css({ opacity: 1 });
 
                 if (this.zoomRange) {
                     const nd = [w * this.zoomRange[0], h * this.zoomRange[0]];
-                    $bigimage.css({ width: nd[0], height: nd[1] })
+                    $bigimage.css({ width: nd[0], height: nd[1] });
                 }
 
                 getspecs($maginner, $bigimage);
 
-                $magnifier.css({ display: 'block', visibility: 'visible' });
+                $magnifier.css({ display: "block", visibility: "visible" });
 
                 let isMousedown = false;
                 $tracker.mousedown((__e) => {
-                    $tracker.data('specs').coords = getcoords();
+                    $tracker.data("specs").coords = getcoords();
                     fiz.moveImage($tracker, $maginner, $cursorshade, __e);
 
                     isMousedown = true;
@@ -769,83 +1000,132 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
                     isMousedown = false;
                 });
 
-                $tracker.mouseout((__e) => {
-                    isMousedown = false;
-                }).css({ cursor: 'move' });
-
+                $tracker
+                    .mouseout((__e) => {
+                        isMousedown = false;
+                    })
+                    .css({ cursor: "move" });
 
                 let _DRAGGGING_STARTED = 0;
                 let _LAST_MOUSE_POSITION = { x: null, y: null };
                 let _DIV_OFFSET = $magnifier.offset();
 
-                $magnifier.on('mousedown', (event) => {
+                $magnifier.on("mousedown", (event) => {
                     _DRAGGGING_STARTED = 1;
 
-                    $tracker.data('specs').coords = getcoords();
+                    $tracker.data("specs").coords = getcoords();
 
-                    $bigimage.closest('div').css({
+                    $bigimage.closest("div").css({
                         "pointer-events": "none",
-                        "-moz-user-select": "none"
+                        "-moz-user-select": "none",
                     });
 
-                    _LAST_MOUSE_POSITION = { x: event.pageX - _DIV_OFFSET.left, y: event.pageY - _DIV_OFFSET.top };
+                    _LAST_MOUSE_POSITION = {
+                        x: event.pageX - _DIV_OFFSET.left,
+                        y: event.pageY - _DIV_OFFSET.top,
+                    };
                 });
 
-                $magnifier.on('mouseup', (event) => {
+                $magnifier.on("mouseup", (event) => {
                     _DRAGGGING_STARTED = 0;
 
-                    $bigimage.closest('div').css({
+                    $bigimage.closest("div").css({
                         "pointer-events": "",
-                        "-moz-user-select": ""
+                        "-moz-user-select": "",
                     });
                 });
 
-                $magnifier.on('mousemove', (event) => {
+                $magnifier.on("mousemove", (event) => {
                     if (_DRAGGGING_STARTED == 1) {
-                        let current_mouse_position = { x: event.pageX - _DIV_OFFSET.left, y: event.pageY - _DIV_OFFSET.top };
-                        let change_x = current_mouse_position.x - _LAST_MOUSE_POSITION.x;
-                        let change_y = current_mouse_position.y - _LAST_MOUSE_POSITION.y;
+                        let current_mouse_position = {
+                            x: event.pageX - _DIV_OFFSET.left,
+                            y: event.pageY - _DIV_OFFSET.top,
+                        };
+                        let change_x =
+                            current_mouse_position.x - _LAST_MOUSE_POSITION.x;
+                        let change_y =
+                            current_mouse_position.y - _LAST_MOUSE_POSITION.y;
 
                         _LAST_MOUSE_POSITION = current_mouse_position;
 
-                        let img_top = parseInt($bigimage.closest('div').css('top'), 10);
-                        let img_left = parseInt($bigimage.closest('div').css('left'), 10);
+                        let img_top = parseInt(
+                            $bigimage.closest("div").css("top"),
+                            10
+                        );
+                        let img_left = parseInt(
+                            $bigimage.closest("div").css("left"),
+                            10
+                        );
 
                         let img_top_new = img_top + change_y;
                         let img_left_new = img_left + change_x;
 
                         if (img_top_new > $magnifier.position().top) {
                             img_top_new = $magnifier.position().top;
-                        } else if (img_top_new < $magnifier.position().top + $magnifier.height() - $bigimage.closest('div').height()) {
-                            img_top_new = $magnifier.position().top + $magnifier.height() - $bigimage.closest('div').height();
+                        } else if (
+                            img_top_new <
+                            $magnifier.position().top +
+                                $magnifier.height() -
+                                $bigimage.closest("div").height()
+                        ) {
+                            img_top_new =
+                                $magnifier.position().top +
+                                $magnifier.height() -
+                                $bigimage.closest("div").height();
                         }
 
                         if (img_left_new > $magnifier.position().left) {
                             img_left_new = $magnifier.position().left;
-                        } else if (img_left_new < $magnifier.position().left + $magnifier.width() - $bigimage.closest('div').width()) {
-                            img_left_new = $magnifier.position().left + $magnifier.width() - $bigimage.closest('div').width();
+                        } else if (
+                            img_left_new <
+                            $magnifier.position().left +
+                                $magnifier.width() -
+                                $bigimage.closest("div").width()
+                        ) {
+                            img_left_new =
+                                $magnifier.position().left +
+                                $magnifier.width() -
+                                $bigimage.closest("div").width();
                         }
 
-                        $bigimage.closest('div').css({ top: img_top_new + 'px', left: img_left_new + 'px' });
+                        $bigimage
+                            .closest("div")
+                            .css({
+                                top: img_top_new + "px",
+                                left: img_left_new + "px",
+                            });
 
                         let csPosition = $cursorshade.position(),
                             csOffset = $tracker.offset(),
-                            specs = $tracker.data('specs'),
+                            specs = $tracker.data("specs"),
                             csw = Math.round(specs.magsize.w / specs.curpower),
                             csh = Math.round(specs.magsize.h / specs.curpower);
 
-                        let newLeft = csPosition.left - (change_x / specs.curpower);
+                        let newLeft =
+                            csPosition.left - change_x / specs.curpower;
                         if (newLeft < $tracker.position().left) {
                             newLeft = $tracker.position().left;
-                        } else if (newLeft > $tracker.position().left + specs.imagesize.w - csw) {
-                            newLeft = $tracker.position().left + specs.imagesize.w - csw;
+                        } else if (
+                            newLeft >
+                            $tracker.position().left + specs.imagesize.w - csw
+                        ) {
+                            newLeft =
+                                $tracker.position().left +
+                                specs.imagesize.w -
+                                csw;
                         }
 
-                        let newTop = csPosition.top - (change_y / specs.curpower);
+                        let newTop = csPosition.top - change_y / specs.curpower;
                         if (newTop < $tracker.position().top) {
                             newTop = $tracker.position().top;
-                        } else if (newTop > $tracker.position().top + specs.imagesize.h - csh) {
-                            newTop = $tracker.position().top + specs.imagesize.h - csh;
+                        } else if (
+                            newTop >
+                            $tracker.position().top + specs.imagesize.h - csh
+                        ) {
+                            newTop =
+                                $tracker.position().top +
+                                specs.imagesize.h -
+                                csh;
                         }
 
                         $cursorshade.css({
@@ -853,34 +1133,45 @@ export class ImageZoomerComponent implements OnInit, OnDestroy, AfterViewInit {
                             top: newTop,
                         });
 
-                        specs.lastpagex = $cursorshade.offset().left + $cursorshade.width() / 2;
-                        specs.lastpagey = $cursorshade.offset().top + $cursorshade.height() / 2;
+                        specs.lastpagex =
+                            $cursorshade.offset().left +
+                            $cursorshade.width() / 2;
+                        specs.lastpagey =
+                            $cursorshade.offset().top +
+                            $cursorshade.height() / 2;
                     }
                 });
 
                 if (this.zoomRange && this.zoomRange[1] > this.zoomRange[0]) {
-                    $tracker.bind('DOMMouseScroll mousewheel', (__e) => {
+                    $tracker.bind("DOMMouseScroll mousewheel", (__e) => {
                         fiz.magnifyImage($tracker, __e, this.zoomRange);
                         __e.preventDefault();
                         __e.stopPropagation();
                     });
 
-                    $bigimage.bind('DOMMouseScroll mousewheel', (__e) => {
+                    $bigimage.bind("DOMMouseScroll mousewheel", (__e) => {
                         fiz.magnifyImage($tracker, __e, this.zoomRange);
                         __e.preventDefault();
                         __e.stopPropagation();
                     });
                 } else if (this.disableWheel) {
-                    $tracker.bind('DOMMouseScroll mousewheel', (__e) => { __e.preventDefault(); __e.stopPropagation(); });
-                    $bigimage.bind('DOMMouseScroll mousewheel', (__e) => { __e.preventDefault(); __e.stopPropagation(); });
+                    $tracker.bind("DOMMouseScroll mousewheel", (__e) => {
+                        __e.preventDefault();
+                        __e.stopPropagation();
+                    });
+                    $bigimage.bind("DOMMouseScroll mousewheel", (__e) => {
+                        __e.preventDefault();
+                        __e.stopPropagation();
+                    });
                 }
             });
-            if ($bigimage && (<HTMLImageElement>($bigimage.get(0))).complete) {
-                $bigimage.trigger('loadevt', { type: 'load' })
+            if ($bigimage && (<HTMLImageElement>$bigimage.get(0)).complete) {
+                $bigimage.trigger("loadevt", { type: "load" });
             } else {
-                $bigimage.bind('load error', (__e) => { $bigimage.trigger('loadevt', __e) })
+                $bigimage.bind("load error", (__e) => {
+                    $bigimage.trigger("loadevt", __e);
+                });
             }
-        })
+        });
     }
-
 }

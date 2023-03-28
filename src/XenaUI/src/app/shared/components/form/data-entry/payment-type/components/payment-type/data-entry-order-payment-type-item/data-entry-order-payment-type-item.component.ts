@@ -10,88 +10,117 @@ import {
     QueryList,
     ChangeDetectorRef,
     AfterViewInit,
-    ElementRef
-} from '@angular/core';
+    ElementRef,
+} from "@angular/core";
 import {
     AppErrorHandler,
     PropertyPanelService,
     ValidationService,
     ModalService,
     HotKeySettingService,
-    DataEntryProcess
-} from 'app/services';
-import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
-import cloneDeep from 'lodash-es/cloneDeep';
-import pullAllBy from 'lodash-es/pullAllBy';
-import filter from 'lodash-es/filter';
-import { Uti, LocalStorageHelper, LocalStorageProvider } from 'app/utilities';
+    DataEntryProcess,
+} from "app/services";
 import {
-    Configuration, MessageModal, LocalStorageKey,
-    PaymentTypeGroupEnum, PaymentTypeIdEnum,
-    BadChequeEnum
-} from 'app/app.constants';
-import { WjInputMask } from 'wijmo/wijmo.angular2.input';
-import { ControlFocusComponent } from 'app/shared/components/form';
+    FormGroup,
+    FormBuilder,
+    Validators,
+    FormControl,
+    FormArray,
+} from "@angular/forms";
+import cloneDeep from "lodash-es/cloneDeep";
+import pullAllBy from "lodash-es/pullAllBy";
+import filter from "lodash-es/filter";
+import { Uti, LocalStorageHelper, LocalStorageProvider } from "app/utilities";
 import {
-    FormGroupChild, MessageModel,
+    Configuration,
+    MessageModal,
+    LocalStorageKey,
+    PaymentTypeGroupEnum,
+    PaymentTypeIdEnum,
+    BadChequeEnum,
+} from "app/app.constants";
+import { WjInputMask } from "wijmo/wijmo.angular2.input";
+import { ControlFocusComponent } from "app/shared/components/form";
+import {
+    FormGroupChild,
+    MessageModel,
     MessageModalModel,
     MessageModalHeaderModel,
     MessageModalBodyModel,
     MessageModalFooterModel,
-    ButtonList
-} from 'app/models';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
-import { AppState } from 'app/state-management/store';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import { BaseComponent, ModuleList } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
+    ButtonList,
+} from "app/models";
+import { Subscription } from "rxjs/Subscription";
+import { Observable } from "rxjs/Observable";
+import { AppState } from "app/state-management/store";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import { BaseComponent, ModuleList } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
 import {
     CustomAction,
-    ProcessDataActions
-} from 'app/state-management/store/actions';
-import { DatePickerComponent } from 'app/shared/components/xn-control';
-import { parse, addMonths, differenceInMonths } from 'date-fns/esm';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+    ProcessDataActions,
+} from "app/state-management/store/actions";
+import { DatePickerComponent } from "app/shared/components/xn-control";
+import { parse, addMonths, differenceInMonths } from "date-fns/esm";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 
 @Component({
-    selector: 'data-entry-order-payment-type-item',
-    templateUrl: './data-entry-order-payment-type-item.component.html',
-    styleUrls: ['./data-entry-order-payment-type-item.component.scss'],
+    selector: "data-entry-order-payment-type-item",
+    templateUrl: "./data-entry-order-payment-type-item.component.html",
+    styleUrls: ["./data-entry-order-payment-type-item.component.scss"],
 })
-export class DataEntryPaymentTypeItemComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DataEntryPaymentTypeItemComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     public PaymentTypeGroupEnum = PaymentTypeGroupEnum;
     public PaymentTypeIdEnum = PaymentTypeIdEnum;
     public listComboBox: any;
     public dataEntryPaymentTypeItemForm: FormGroup;
     public globalDateFormat: string = null;
-    public validThruMaskString = '00/00';
-    public cvcMaskString = '000';
-    public creditCardMaskString = '0000 0000 0000 0000';
+    public validThruMaskString = "00/00";
+    public cvcMaskString = "000";
+    public creditCardMaskString = "0000 0000 0000 0000";
     private displayConfig = {
-        1: ['amount', 'currency', 'paymentDate'],//group Cash
-        2: ['currency', 'codeline', 'amounts', 'paymentDate'],//group Cheque
-        3: ['creditCardAmount', 'currency', 'issuer', 'creditCardNr', 'validThru', 'cvc', 'creditCardAmounts', 'paymentDate'],//Group Credit Card
-        4: ['currency', 'amount', 'postBankName', 'paymentDate'],//group PostBank
-        '': []
+        1: ["amount", "currency", "paymentDate"], //group Cash
+        2: ["currency", "codeline", "amounts", "paymentDate"], //group Cheque
+        3: [
+            "creditCardAmount",
+            "currency",
+            "issuer",
+            "creditCardNr",
+            "validThru",
+            "cvc",
+            "creditCardAmounts",
+            "paymentDate",
+        ], //Group Credit Card
+        4: ["currency", "amount", "postBankName", "paymentDate"], //group PostBank
+        "": [],
     };
 
-    @ViewChild('payementTypeCtl') payementTypeCtl: AngularMultiSelect;
-    @ViewChild('issuerCtl') issuerCtl: AngularMultiSelect;
-    @ViewChild('currencyCtl') currencyCtl: AngularMultiSelect;
-    @ViewChild('focusControl') focusControl: ControlFocusComponent;
-    @ViewChild('creditCardNr') creditCardNrCtrl: WjInputMask;
-    @ViewChild('validThru') validThru: WjInputMask;
-    @ViewChild('cvcCtrl') cvcCtrl: WjInputMask;
-    @ViewChild('codelineCtrl') codelineCtrl: ElementRef;
-    @ViewChildren('chequeDate') chequesDate: QueryList<DatePickerComponent>;
-    @ViewChildren('amount') amountCtrls: QueryList<ElementRef>;//used to set focus for Cash, Cheque, CreditCard
-    @ViewChild('creditCardCustomMonthCtrl') creditCardCustomMonthCtrl: ElementRef;
-    @ViewChild('postBankNameCtl') postBankNameCtl: AngularMultiSelect;
+    @ViewChild("payementTypeCtl") payementTypeCtl: AngularMultiSelect;
+    @ViewChild("issuerCtl") issuerCtl: AngularMultiSelect;
+    @ViewChild("currencyCtl") currencyCtl: AngularMultiSelect;
+    @ViewChild("focusControl") focusControl: ControlFocusComponent;
+    @ViewChild("creditCardNr") creditCardNrCtrl: WjInputMask;
+    @ViewChild("validThru") validThru: WjInputMask;
+    @ViewChild("cvcCtrl") cvcCtrl: WjInputMask;
+    @ViewChild("codelineCtrl") codelineCtrl: ElementRef;
+    @ViewChildren("chequeDate") chequesDate: QueryList<DatePickerComponent>;
+    @ViewChildren("amount") amountCtrls: QueryList<ElementRef>; //used to set focus for Cash, Cheque, CreditCard
+    @ViewChild("creditCardCustomMonthCtrl")
+    creditCardCustomMonthCtrl: ElementRef;
+    @ViewChild("postBankNameCtl") postBankNameCtl: AngularMultiSelect;
 
-    private outputModel: { submitResult?: boolean, formValue: any, isValid?: boolean, isDirty?: boolean, returnID?: string };
+    private outputModel: {
+        submitResult?: boolean;
+        formValue: any;
+        isValid?: boolean;
+        isDirty?: boolean;
+        returnID?: string;
+    };
     public perfectScrollbarConfig: any;
     private dataEntryPaymentTypeItemFormValueChangesSubscription: Subscription;
     private chequesDateChangesSubscription: Subscription;
@@ -162,12 +191,18 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         private modalService: ModalService,
         public hotKeySettingService: HotKeySettingService,
         private toasterService: ToasterService,
-        private dataEntryProcess: DataEntryProcess,
+        private dataEntryProcess: DataEntryProcess
     ) {
         super(router);
 
         this.Math = Math;
-        this.globalPropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, ModuleList.Base.moduleNameTrim).globalProperties);
+        this.globalPropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    ModuleList.Base.moduleNameTrim
+                ).globalProperties
+        );
     }
 
     /**
@@ -217,18 +252,18 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
         this.currentPaymentTypeId = null;
         this.currentPaymentTypeGroup = null;
-        this.data.headerText = 'Payment';
-        this.data.mainCurrencyCode = '';
-        this.data.idMainCurrencyCode = '';
+        this.data.headerText = "Payment";
+        this.data.mainCurrencyCode = "";
+        this.data.idMainCurrencyCode = "";
         this.data.currencyId = null;
-        this.data.currencyText = '';
+        this.data.currencyText = "";
         this.data.currency = null;
         this.data.paymentTypeGroup = null;
         this.data.paymentTypeId = null;
-        this.data.paymentTypeText = '';
+        this.data.paymentTypeText = "";
 
         if (this.payementTypeCtl) {
-            this.payementTypeCtl.text = '';
+            this.payementTypeCtl.text = "";
             this.payementTypeCtl.selectedValue = null;
             this.payementTypeCtl.refresh();
             setTimeout(() => {
@@ -238,22 +273,33 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     }
 
     private subscription() {
-        this.dispatcherSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI && action.area == this.tabID;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.dataEntryPaymentTypeItemForm['submitted'] = true;
-                this.dataEntryPaymentTypeItemForm.updateValueAndValidity();
+        this.dispatcherSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE &&
+                    action.module.idSettingsGUI ==
+                        this.ofModule.idSettingsGUI &&
+                    action.area == this.tabID
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.dataEntryPaymentTypeItemForm["submitted"] = true;
+                    this.dataEntryPaymentTypeItemForm.updateValueAndValidity();
+                });
             });
-        });
 
-        this.globalPropertiesStateSubscription = this.globalPropertiesState.subscribe((globalProperties: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (globalProperties && globalProperties.length) {
-                    this.globalDateFormat = this.propertyPanelService.buildGlobalInputDateFormatFromProperties(globalProperties);
-                }
+        this.globalPropertiesStateSubscription =
+            this.globalPropertiesState.subscribe((globalProperties: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (globalProperties && globalProperties.length) {
+                        this.globalDateFormat =
+                            this.propertyPanelService.buildGlobalInputDateFormatFromProperties(
+                                globalProperties
+                            );
+                    }
+                });
             });
-        });
     }
 
     private initForm() {
@@ -265,14 +311,31 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                 return;
             }
 
-            if (this._information && this._information.data && this._information.listComboBox && this._information.parentFormGroup
-                && this._information.formConfig) {
-                if (!this._information.parentFormGroup.contains('paymentTypeForm'))
-                    this._information.parentFormGroup.addControl('paymentTypeForm', this.dataEntryPaymentTypeItemForm);
+            if (
+                this._information &&
+                this._information.data &&
+                this._information.listComboBox &&
+                this._information.parentFormGroup &&
+                this._information.formConfig
+            ) {
+                if (
+                    !this._information.parentFormGroup.contains(
+                        "paymentTypeForm"
+                    )
+                )
+                    this._information.parentFormGroup.addControl(
+                        "paymentTypeForm",
+                        this.dataEntryPaymentTypeItemForm
+                    );
                 else
-                    this._information.parentFormGroup.controls['paymentTypeForm'] = this.dataEntryPaymentTypeItemForm;
+                    this._information.parentFormGroup.controls[
+                        "paymentTypeForm"
+                    ] = this.dataEntryPaymentTypeItemForm;
 
-                this.initFormGroup.emit({ form: this.dataEntryPaymentTypeItemForm, name: 'paymentTypeForm' });
+                this.initFormGroup.emit({
+                    form: this.dataEntryPaymentTypeItemForm,
+                    name: "paymentTypeForm",
+                });
             }
         }, 200);
     }
@@ -280,54 +343,72 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     private initPerfectScroll() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
 
     private initData() {
         this.dataEntryPaymentTypeItemForm = this.formBuilder.group({
-            paymentTypeId: ['', Validators.required],
+            paymentTypeId: ["", Validators.required],
             paymentTypeText: null,
-            paymentTypeGroup: null,//1: Cash, 2: Cheque, 3: CreditCard, 4: PostBank
-            currency: [this.data && this.data.idMainCurrencyCode ? this.data.idMainCurrencyCode : '', Validators.required],
+            paymentTypeGroup: null, //1: Cash, 2: Cheque, 3: CreditCard, 4: PostBank
+            currency: [
+                this.data && this.data.idMainCurrencyCode
+                    ? this.data.idMainCurrencyCode
+                    : "",
+                Validators.required,
+            ],
 
             //Cash
-            amount: ['', Validators.required],
+            amount: ["", Validators.required],
 
             //Cheque
-            codeline: ['', Validators.required],
+            codeline: ["", Validators.required],
             amounts: this.formBuilder.array([this.initAmountCheque()]),
 
             //CreditCard
-            issuer: ['', Validators.required],
-            creditCardNr: ['', Validators.required, ValidationService.creditCardValidator],
-            validThru: ['', Validators.required, ValidationService.validThruValidator],
-            cvc: [''],
-            creditCardOption: ['', Validators.required],
+            issuer: ["", Validators.required],
+            creditCardNr: [
+                "",
+                Validators.required,
+                ValidationService.creditCardValidator,
+            ],
+            validThru: [
+                "",
+                Validators.required,
+                ValidationService.validThruValidator,
+            ],
+            cvc: [""],
+            creditCardOption: ["", Validators.required],
             creditCardCustomMonth: null,
-            creditCardAmounts: this.formBuilder.array([this.initAmountCreditCard()]),
-            creditCardAmount: ['', Validators.required],
+            creditCardAmounts: this.formBuilder.array([
+                this.initAmountCreditCard(),
+            ]),
+            creditCardAmount: ["", Validators.required],
 
             //PostBank
-            postBankName: ['', Validators.required],
+            postBankName: ["", Validators.required],
 
             // For All
-            paymentDate: ['', this.isNotOrderDataEntryModule() ? Validators.required : null]
+            paymentDate: [
+                "",
+                this.isNotOrderDataEntryModule() ? Validators.required : null,
+            ],
         });
 
-        this.dataEntryPaymentTypeItemForm['submitted'] = false;
+        this.dataEntryPaymentTypeItemForm["submitted"] = false;
 
         this.listComboBox = {
-            issuers: [...this.createFakeIssuerData()]
+            issuers: [...this.createFakeIssuerData()],
         };
 
         if (!this.data.creditCardOptionsConfig) {
             this.data.creditCardOptionsConfig = {
                 //'1': { disabled: false },//Default
-                '3': { disabled: false },//3 Months
-                '6': { disabled: false },//6 Months
-                '12': { disabled: false },//12 Months
-                '0': { disabled: false }//Custom
+                "3": { disabled: false }, //3 Months
+                "6": { disabled: false }, //6 Months
+                "12": { disabled: false }, //12 Months
+                "0": { disabled: false }, //Custom
             };
         }
 
@@ -338,13 +419,13 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         let group = {};
         if (isRequireDate) {
             group = {
-                amount: ['', Validators.required],
-                chequeDate: [new Date(), Validators.required]
+                amount: ["", Validators.required],
+                chequeDate: [new Date(), Validators.required],
             };
         } else {
             group = {
-                amount: ['', Validators.required],
-                chequeDate: [new Date()]
+                amount: ["", Validators.required],
+                chequeDate: [new Date()],
             };
         }
         return this.formBuilder.group(group);
@@ -352,18 +433,18 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
     private initAmountCreditCard(): FormGroup {
         const group = {
-            amount: ['', Validators.required],
-            creditDate: [new Date(), Validators.required]
+            amount: ["", Validators.required],
+            creditDate: [new Date(), Validators.required],
         };
         return this.formBuilder.group(group);
     }
 
     private createFakeIssuerData(): Array<any> {
         return [
-            { textValue: 'Visa', idValue: 1 },
-            { textValue: 'MasterCard', idValue: 2 },
-            { textValue: 'Maestro', idValue: 3 },
-            { textValue: 'JCB', idValue: 4 }
+            { textValue: "Visa", idValue: 1 },
+            { textValue: "MasterCard", idValue: 2 },
+            { textValue: "Maestro", idValue: 3 },
+            { textValue: "JCB", idValue: 4 },
         ];
     }
     //#endregion
@@ -389,50 +470,81 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         const formValue = Object.assign({}, this.previoursFormValue);
 
         for (let controlName in formValue) {
-            let control = this.dataEntryPaymentTypeItemForm.controls[controlName];
+            let control =
+                this.dataEntryPaymentTypeItemForm.controls[controlName];
             if (!control) continue;
 
             switch (formValue.paymentTypeGroup) {
                 case PaymentTypeGroupEnum.Cash:
                     break;
                 case PaymentTypeGroupEnum.Cheque:
-                    if (controlName === 'amounts') {
-                        let formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['amounts'];
+                    if (controlName === "amounts") {
+                        let formArray = <FormArray>(
+                            this.dataEntryPaymentTypeItemForm.controls[
+                                "amounts"
+                            ]
+                        );
 
-                        for (let index in formValue['amounts']) {
-                            if (index == '0') {
+                        for (let index in formValue["amounts"]) {
+                            if (index == "0") {
                                 if (formArray.controls.length) {
-                                    formArray.controls[0]['controls']['amount'].setValue(formValue['amounts'][index]['amount']);
-                                    formArray.controls[0]['controls']['chequeDate'].setValue(formValue['amounts'][index]['chequeDate']);
+                                    formArray.controls[0]["controls"][
+                                        "amount"
+                                    ].setValue(
+                                        formValue["amounts"][index]["amount"]
+                                    );
+                                    formArray.controls[0]["controls"][
+                                        "chequeDate"
+                                    ].setValue(
+                                        formValue["amounts"][index][
+                                            "chequeDate"
+                                        ]
+                                    );
                                 }
                             } else {
                                 const formGroup = this.initAmountCheque(true);
-                                formGroup.controls['amount'].setValue(formValue['amounts'][index]['amount']);
-                                formGroup.controls['chequeDate'].setValue(formValue['amounts'][index]['chequeDate']);
+                                formGroup.controls["amount"].setValue(
+                                    formValue["amounts"][index]["amount"]
+                                );
+                                formGroup.controls["chequeDate"].setValue(
+                                    formValue["amounts"][index]["chequeDate"]
+                                );
                                 formArray.push(formGroup);
                             }
-                        }//for
+                        } //for
                     }
                     break;
                 case PaymentTypeGroupEnum.CreditCard:
-                    if (controlName === 'creditCardAmounts') {
-                        let formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['creditCardAmounts'];
+                    if (controlName === "creditCardAmounts") {
+                        let formArray = <FormArray>(
+                            this.dataEntryPaymentTypeItemForm.controls[
+                                "creditCardAmounts"
+                            ]
+                        );
 
-                        for (let index in formValue['creditCardAmounts']) {
+                        for (let index in formValue["creditCardAmounts"]) {
                             const formGroup = this.initAmountCreditCard();
-                            formGroup.controls['amount'].setValue(formValue['creditCardAmounts'][index]['amount']);
-                            formGroup.controls['creditDate'].setValue(formValue['creditCardAmounts'][index]['creditDate']);
+                            formGroup.controls["amount"].setValue(
+                                formValue["creditCardAmounts"][index]["amount"]
+                            );
+                            formGroup.controls["creditDate"].setValue(
+                                formValue["creditCardAmounts"][index][
+                                    "creditDate"
+                                ]
+                            );
                             formArray.push(formGroup);
-                        }//for
+                        } //for
                     }
                     break;
-            }//switch
+            } //switch
 
-            if (controlName !== 'amounts' && controlName !== 'creditCardAmounts') {
+            if (
+                controlName !== "amounts" &&
+                controlName !== "creditCardAmounts"
+            ) {
                 control.setValue(formValue[controlName]);
             }
-
-        }//for
+        } //for
 
         this.ref.detectChanges();
         this.previoursFormValue = null;
@@ -454,15 +566,19 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                 });
             });
 
-        this.dataEntryPaymentTypeItemFormValueChangesSubscription = this.dataEntryPaymentTypeItemForm.valueChanges
-            .debounceTime(300)
-            .subscribe((data) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (data.paymentTypeText != null && !this.preventCallEventUpdateData) {
-                        this.reUpdateData();
-                    }
+        this.dataEntryPaymentTypeItemFormValueChangesSubscription =
+            this.dataEntryPaymentTypeItemForm.valueChanges
+                .debounceTime(300)
+                .subscribe((data) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            data.paymentTypeText != null &&
+                            !this.preventCallEventUpdateData
+                        ) {
+                            this.reUpdateData();
+                        }
+                    });
                 });
-            });
     }
 
     private reUpdateData() {
@@ -488,92 +604,117 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                     let chequeTotal = 0,
                         chequeAmount = 0;
                     if (formValue.amounts && formValue.amounts.length) {
-
                         const chequeAmountsLength = formValue.amounts.length;
                         for (let i = chequeAmountsLength - 1; i >= 0; i--) {
                             if (formValue.amounts[i].amount) {
-                                chequeAmount = Number(parseFloat(formValue.amounts[i].amount).toFixed(2));
+                                chequeAmount = Number(
+                                    parseFloat(
+                                        formValue.amounts[i].amount
+                                    ).toFixed(2)
+                                );
                                 chequeTotal += chequeAmount;
 
                                 if (chequeAmountsLength == 1) {
                                     this.data.amounts.push({
                                         index: i,
                                         amount: chequeAmount,
-                                        chequeDate: formValue.amounts[i].chequeDate
+                                        chequeDate:
+                                            formValue.amounts[i].chequeDate,
                                     });
                                 } else if (formValue.amounts[i].chequeDate) {
                                     this.data.amounts.push({
                                         index: i,
                                         amount: chequeAmount,
-                                        chequeDate: formValue.amounts[i].chequeDate
+                                        chequeDate:
+                                            formValue.amounts[i].chequeDate,
                                     });
                                 }
                             }
-                        }//for
+                        } //for
                     }
 
-                    if (!this.data.amounts.length)
-                        valid = false;
+                    if (!this.data.amounts.length) valid = false;
 
                     this.data.amount = chequeTotal;
                     break;
                 case PaymentTypeGroupEnum.CreditCard: // Credit Card
                     this.data.validThru = formValue.validThru;
                     this.data.issuer = formValue.issuer;
-                    this.data.creditCardNr = formValue.creditCardNr ? formValue.creditCardNr.replace(/ /g, '') : null;
+                    this.data.creditCardNr = formValue.creditCardNr
+                        ? formValue.creditCardNr.replace(/ /g, "")
+                        : null;
                     this.data.chequeDate = formValue.chequeDate;
                     this.data.cvc = formValue.cvc;
 
-                    if (formValue.validThru && formValue.validThru.length == 5) {
-                        let validThruArray = formValue.validThru.split('/');
+                    if (
+                        formValue.validThru &&
+                        formValue.validThru.length == 5
+                    ) {
+                        let validThruArray = formValue.validThru.split("/");
                         this.data.validThruMonth = validThruArray[0];
                         this.data.validThruYear = validThruArray[1];
                     }
 
                     this.data.creditCardOption = formValue.creditCardOption;
-                    this.data.creditCardCustomMonth = formValue.creditCardCustomMonth;
+                    this.data.creditCardCustomMonth =
+                        formValue.creditCardCustomMonth;
                     this.data.amounts = [];
 
                     let creditCardTotal = 0;
 
-                    if (formValue.creditCardOption == 1)//default
-                    {
+                    if (formValue.creditCardOption == 1) {
+                        //default
                         creditCardTotal = formValue.creditCardAmount;
                         this.data.amounts.push({
-                            amount: creditCardTotal
+                            amount: creditCardTotal,
                         });
                     } else {
-
                         let creditCardAmount = 0;
                         if (formValue.creditCardAmounts) {
-                            for (let i = formValue.creditCardAmounts.length - 1; i >= 0; i--) {
+                            for (
+                                let i = formValue.creditCardAmounts.length - 1;
+                                i >= 0;
+                                i--
+                            ) {
                                 if (formValue.creditCardAmounts[i].amount) {
-                                    creditCardAmount = Number(parseFloat(formValue.creditCardAmounts[i].amount).toFixed(2));
+                                    creditCardAmount = Number(
+                                        parseFloat(
+                                            formValue.creditCardAmounts[i]
+                                                .amount
+                                        ).toFixed(2)
+                                    );
                                     creditCardTotal += creditCardAmount;
 
-                                    if (formValue.creditCardAmounts[i].creditDate) {
+                                    if (
+                                        formValue.creditCardAmounts[i]
+                                            .creditDate
+                                    ) {
                                         this.data.amounts.push({
                                             index: i,
                                             amount: creditCardAmount,
-                                            creditDate: formValue.creditCardAmounts[i].creditDate
+                                            creditDate:
+                                                formValue.creditCardAmounts[i]
+                                                    .creditDate,
                                         });
                                     }
                                 }
-                            }//for
+                            } //for
                         }
                     }
 
-                    if (!this.data.amounts.length)
-                        valid = false;
+                    if (!this.data.amounts.length) valid = false;
 
                     this.data.amount = creditCardTotal;
                     break;
                 case PaymentTypeGroupEnum.PostBank: // PostBank
                     this.data.amount = formValue.amount;
-                    this.data.postBankNameText = this.postBankNameCtl.selectedItem ? this.postBankNameCtl.selectedItem.textValue : '';
+                    this.data.postBankNameText = this.postBankNameCtl
+                        .selectedItem
+                        ? this.postBankNameCtl.selectedItem.textValue
+                        : "";
                     this.data.postBankNameId = formValue.postBankName;
                     break;
-            }//switch
+            } //switch
         }
 
         this.data.formValue = formValue;
@@ -582,8 +723,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     }
 
     private validatePaymentForm(): boolean {
-        if (this.paymentTypeIsRejected())
-            return false;
+        if (this.paymentTypeIsRejected()) return false;
 
         const formValue = this.dataEntryPaymentTypeItemForm.value;
         let valid = true;
@@ -599,18 +739,21 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
                 // CVC: no mandatory field, only check when it has value
                 if (valid && this.cvcCtrl) {
-                    if (this.cvcCtrl.rawValue && this.cvcCtrl.rawValue.length != 3)
+                    if (
+                        this.cvcCtrl.rawValue &&
+                        this.cvcCtrl.rawValue.length != 3
+                    )
                         valid = false;
                 }
 
                 //option != default
                 if (valid && formValue.creditCardOption != 1) {
-                    valid = formValue.creditCardAmounts.length ? true : false
+                    valid = formValue.creditCardAmounts.length ? true : false;
                 }
                 break;
             case PaymentTypeGroupEnum.PostBank:
                 break;
-        }//switch
+        } //switch
 
         if (!valid) return valid;
 
@@ -618,35 +761,53 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         let controls = this.displayConfig[this.data.paymentTypeGroup];
         for (let i = controls.length - 1; i >= 0; i--) {
             const property = controls[i];
-            if (property == 'cvc' || property == 'validThru' || property == 'creditCardAmount') continue;
-            if ((this.isOrderDataEntryModule() || this.isReturnRefundModule()) && property == 'paymentDate') continue;
+            if (
+                property == "cvc" ||
+                property == "validThru" ||
+                property == "creditCardAmount"
+            )
+                continue;
+            if (
+                (this.isOrderDataEntryModule() ||
+                    this.isReturnRefundModule()) &&
+                property == "paymentDate"
+            )
+                continue;
 
-            const control = this.dataEntryPaymentTypeItemForm.controls[property];
-            if (!control || !control.value || control.invalid || (control.errors && control.errors.length)) {
+            const control =
+                this.dataEntryPaymentTypeItemForm.controls[property];
+            if (
+                !control ||
+                !control.value ||
+                control.invalid ||
+                (control.errors && control.errors.length)
+            ) {
                 valid = false;
                 break;
             }
-        }//for
+        } //for
 
         return valid;
     }
 
     public onSubmit() {
-        this.dataEntryPaymentTypeItemForm['submitted'] = true;
+        this.dataEntryPaymentTypeItemForm["submitted"] = true;
         this.dataEntryPaymentTypeItemForm.updateValueAndValidity();
         if (!this.dataEntryPaymentTypeItemForm.valid) {
             this.data.valid = false;
             return;
         }
-        this.dataEntryPaymentTypeItemForm['submitted'] = false;
+        this.dataEntryPaymentTypeItemForm["submitted"] = false;
         this.data.valid = true;
         this.callToOutputData(null);
     }
 
     private callToOutputData(submitResult: any) {
         this.outputModel = {
-            submitResult: submitResult, formValue: this.dataEntryPaymentTypeItemForm.value,
-            isDirty: this.dataEntryPaymentTypeItemForm.dirty, isValid: this.dataEntryPaymentTypeItemForm.valid
+            submitResult: submitResult,
+            formValue: this.dataEntryPaymentTypeItemForm.value,
+            isDirty: this.dataEntryPaymentTypeItemForm.dirty,
+            isValid: this.dataEntryPaymentTypeItemForm.valid,
         };
         this.outputData.emit(this.outputModel);
     }
@@ -660,7 +821,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
     private clearFormArray(formArray: FormArray): void {
         while (formArray.length !== 0) {
-            formArray.removeAt(0)
+            formArray.removeAt(0);
         }
     }
 
@@ -668,7 +829,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
     //#region PaymentType
     private currentPaymentTypeId: number;
-    public currentPaymentTypeGroup: number;//1: Cash, 2: Cheque, 3: CreditCard
+    public currentPaymentTypeGroup: number; //1: Cash, 2: Cheque, 3: CreditCard
 
     private setPaymentTypeText(paymentTypeId?: any) {
         if (!paymentTypeId && this.payementTypeCtl)
@@ -676,21 +837,31 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
         if (!paymentTypeId) return;
 
-        const paymentType = this.data.paymentTypes.find(x => {
+        const paymentType = this.data.paymentTypes.find((x) => {
             return x.paymentTypeId === paymentTypeId;
         });
-        if (!paymentType || !paymentType.paymentTypeId || !paymentType.paymentTypeText) {
-            console.log('setPaymentTypeText - not found PaymentType with paymentTypeId: ' + paymentTypeId, paymentType);
+        if (
+            !paymentType ||
+            !paymentType.paymentTypeId ||
+            !paymentType.paymentTypeText
+        ) {
+            console.log(
+                "setPaymentTypeText - not found PaymentType with paymentTypeId: " +
+                    paymentTypeId,
+                paymentType
+            );
             return;
         }
 
         this.data.paymentTypeText = paymentType.paymentTypeText;
-        this.dataEntryPaymentTypeItemForm.controls['paymentTypeText'].setValue(paymentType.paymentTypeText);
-        this.data.headerText = this.index + ' - ' + paymentType.paymentTypeText;
+        this.dataEntryPaymentTypeItemForm.controls["paymentTypeText"].setValue(
+            paymentType.paymentTypeText
+        );
+        this.data.headerText = this.index + " - " + paymentType.paymentTypeText;
     }
 
     private getPaymentTypeGroup(paymentTypeId: any): number {
-        const paymentType = this.data.paymentTypes.find(x => {
+        const paymentType = this.data.paymentTypes.find((x) => {
             return x.paymentTypeId === paymentTypeId;
         });
         if (paymentType && paymentType.paymentTypeGroup) {
@@ -710,39 +881,63 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     }
 
     private initFormWhenChangePaymentType() {
-        const paymentTypeId: number = this.dataEntryPaymentTypeItemForm.controls['paymentTypeId'].value;
+        const paymentTypeId: number =
+            this.dataEntryPaymentTypeItemForm.controls["paymentTypeId"].value;
         if (!paymentTypeId) return;
 
         switch (this.data.paymentTypeGroup) {
             case PaymentTypeGroupEnum.Cash:
-                this.dataEntryPaymentTypeItemForm.controls['amount'].setValue('');
+                this.dataEntryPaymentTypeItemForm.controls["amount"].setValue(
+                    ""
+                );
                 break;
 
             case PaymentTypeGroupEnum.Cheque:
-                const formArrayChequeAmounts = <FormArray>this.dataEntryPaymentTypeItemForm.controls['amounts'];
+                const formArrayChequeAmounts = <FormArray>(
+                    this.dataEntryPaymentTypeItemForm.controls["amounts"]
+                );
                 if (formArrayChequeAmounts && formArrayChequeAmounts.length) {
                     this.clearFormArray(formArrayChequeAmounts);
                     const formGroup = this.initAmountCheque();
                     const orderDate = this.getOrderDate();
-                    formGroup.controls['chequeDate'].setValue(orderDate ? orderDate : '');
+                    formGroup.controls["chequeDate"].setValue(
+                        orderDate ? orderDate : ""
+                    );
                     formArrayChequeAmounts.push(formGroup);
                 }
                 break;
 
             case PaymentTypeGroupEnum.CreditCard:
-                this.dataEntryPaymentTypeItemForm.controls['creditCardAmount'].setValue('');
+                this.dataEntryPaymentTypeItemForm.controls[
+                    "creditCardAmount"
+                ].setValue("");
 
-                this.dataEntryPaymentTypeItemForm.controls['creditCardOption'].setValue(1);
-                this.dataEntryPaymentTypeItemForm.controls['creditCardCustomMonth'].setValue('');
+                this.dataEntryPaymentTypeItemForm.controls[
+                    "creditCardOption"
+                ].setValue(1);
+                this.dataEntryPaymentTypeItemForm.controls[
+                    "creditCardCustomMonth"
+                ].setValue("");
 
-                const formArrayCreditCardAmounts = <FormArray>this.dataEntryPaymentTypeItemForm.controls['creditCardAmounts'];
-                if (formArrayCreditCardAmounts && formArrayCreditCardAmounts.length)
+                const formArrayCreditCardAmounts = <FormArray>(
+                    this.dataEntryPaymentTypeItemForm.controls[
+                        "creditCardAmounts"
+                    ]
+                );
+                if (
+                    formArrayCreditCardAmounts &&
+                    formArrayCreditCardAmounts.length
+                )
                     this.clearFormArray(formArrayCreditCardAmounts);
                 break;
 
             case PaymentTypeGroupEnum.PostBank:
-                this.dataEntryPaymentTypeItemForm.controls['amount'].setValue('');
-                this.dataEntryPaymentTypeItemForm.controls['postBankName'].setValue('');
+                this.dataEntryPaymentTypeItemForm.controls["amount"].setValue(
+                    ""
+                );
+                this.dataEntryPaymentTypeItemForm.controls[
+                    "postBankName"
+                ].setValue("");
                 break;
             default:
                 break;
@@ -751,7 +946,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         this.setPaymentTypeText(paymentTypeId);
 
         this.initForm();
-        this.dataEntryPaymentTypeItemForm['submitted'] = false;
+        this.dataEntryPaymentTypeItemForm["submitted"] = false;
         this.dataEntryPaymentTypeItemForm.updateValueAndValidity();
         this.preventFocus = Promise.resolve(true);
 
@@ -759,19 +954,21 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             this.restorePreviousFormValue();
 
             if (this.dataEntryPaymentTypeItemForm) {
-                this.data.currencyId = this.dataEntryPaymentTypeItemForm.controls['currency'].value;
+                this.data.currencyId =
+                    this.dataEntryPaymentTypeItemForm.controls[
+                        "currency"
+                    ].value;
                 this.setCurrencyText(this.data.currencyId);
             }
 
             this.changePaymentType.emit({
                 paymentId: this.data.paymentId,
                 paymentTypeId: this.data.paymentTypeId,
-                paymentTypeGroup: this.data.paymentTypeGroup
+                paymentTypeGroup: this.data.paymentTypeGroup,
             });
 
             this.focusOnControls();
             this.preventFocus = undefined;
-
         }, 200);
     }
 
@@ -781,15 +978,24 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             this.cashFocusOnAmount();
         }
         // Group Cheque
-        if (this.data.paymentTypeGroup === PaymentTypeGroupEnum.Cheque && this.codelineCtrl) {
+        if (
+            this.data.paymentTypeGroup === PaymentTypeGroupEnum.Cheque &&
+            this.codelineCtrl
+        ) {
             this.codelineCtrl.nativeElement.focus();
         }
         // Group Credit Card
-        if (this.data.paymentTypeGroup === PaymentTypeGroupEnum.CreditCard && this.issuerCtl) {
+        if (
+            this.data.paymentTypeGroup === PaymentTypeGroupEnum.CreditCard &&
+            this.issuerCtl
+        ) {
             this.issuerCtl.focus();
         }
         // Group PostBank
-        if (this.data.paymentTypeGroup === PaymentTypeGroupEnum.PostBank && this.postBankNameCtl) {
+        if (
+            this.data.paymentTypeGroup === PaymentTypeGroupEnum.PostBank &&
+            this.postBankNameCtl
+        ) {
             this.postBankNameCtl.focus();
         }
     }
@@ -797,8 +1003,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     public focusPaymentType() {
         if (!this.payementTypeCtl || this.payementTypeCtl.isDisabled) return;
 
-        if (this.data.paymentTypeId)
-            this.focusOnControls();
+        if (this.data.paymentTypeId) this.focusOnControls();
         else {
             this.payementTypeCtl.focus();
             this.paymentTypeIdGotFocus();
@@ -806,11 +1011,19 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     }
 
     private initPaymentType() {
-        this.data.paymentTypeGroup = this.getPaymentTypeGroup(this.data.paymentTypeId);
+        this.data.paymentTypeGroup = this.getPaymentTypeGroup(
+            this.data.paymentTypeId
+        );
         //keep paymentTypeGroup into form to restore data: change setting tab Inline/InTba, order failed
-        this.dataEntryPaymentTypeItemForm.controls['paymentTypeGroup'].setValue(this.data.paymentTypeGroup);
+        this.dataEntryPaymentTypeItemForm.controls["paymentTypeGroup"].setValue(
+            this.data.paymentTypeGroup
+        );
 
-        if (this.data.paymentTypeId && this.currentPaymentTypeId === this.data.paymentTypeId) return;
+        if (
+            this.data.paymentTypeId &&
+            this.currentPaymentTypeId === this.data.paymentTypeId
+        )
+            return;
 
         this.currentPaymentTypeId = this.data.paymentTypeId;
         this.currentPaymentTypeGroup = this.data.paymentTypeGroup;
@@ -838,7 +1051,10 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     public paymentTypeIdChanged($event) {
         if (!this.payementTypeCtl || this.isPaymentTypeTyping) return;
 
-        if (this.payementTypeCtl.selectedValue && (!this.payementTypeCtl.isDroppedDown || !this.currentPaymentTypeId)) {
+        if (
+            this.payementTypeCtl.selectedValue &&
+            (!this.payementTypeCtl.isDroppedDown || !this.currentPaymentTypeId)
+        ) {
             if (!this.currentPaymentTypeId) {
                 this.payementTypeCtl.isDroppedDown = false;
             }
@@ -862,8 +1078,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             this.payementTypeCtl.text = this.data.paymentTypeText;
             this.payementTypeCtl.selectedValue = this.data.paymentTypeId;
             this.payementTypeCtl.refresh();
-        }
-        else {
+        } else {
             setTimeout(() => {
                 this.setPayementTypeCtl(++count);
             }, 300);
@@ -871,50 +1086,78 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     }
 
     public paymentTypeIsRejected(resetDataBeforeShowDialog?: boolean) {
-        if (this.ofModule.idSettingsGUI !== ModuleList.OrderDataEntry.idSettingsGUI) return;
+        if (
+            this.ofModule.idSettingsGUI !==
+            ModuleList.OrderDataEntry.idSettingsGUI
+        )
+            return;
         if (!this.parentComponent) return;
-        if (!this.dataEntryProcess.notApprovedPaymentsMethods ||
+        if (
+            !this.dataEntryProcess.notApprovedPaymentsMethods ||
             !this.dataEntryProcess.notApprovedPaymentsMethods.length ||
-            (this.parentComponent['isCancelThreatSAV'] && this.parentComponent['isCancelBadChequeSAV'])) return false;
+            (this.parentComponent["isCancelThreatSAV"] &&
+                this.parentComponent["isCancelBadChequeSAV"])
+        )
+            return false;
         const threatSAV = this.getThreatSAV();
         const badCheque = this.getBadCheque();
-        if (!this.parentComponent['isCancelThreatSAV'] && threatSAV) {
-            this.createSAVWarningMessage(false, () => {
-                this.parentComponent['isCancelThreatSAV'] = true;
-            }, null);
+        if (!this.parentComponent["isCancelThreatSAV"] && threatSAV) {
+            this.createSAVWarningMessage(
+                false,
+                () => {
+                    this.parentComponent["isCancelThreatSAV"] = true;
+                },
+                null
+            );
 
             return true;
-        } else if (!this.parentComponent['isCancelBadChequeSAV'] && badCheque) {
-            switch (badCheque['MessageType']) {
+        } else if (!this.parentComponent["isCancelBadChequeSAV"] && badCheque) {
+            switch (badCheque["MessageType"]) {
                 case BadChequeEnum.BadCheckSAV:
-                    return this.badCheque(badCheque, true, resetDataBeforeShowDialog);
+                    return this.badCheque(
+                        badCheque,
+                        true,
+                        resetDataBeforeShowDialog
+                    );
                 case BadChequeEnum.BadCheck:
-                    return this.badCheque(badCheque, false, resetDataBeforeShowDialog);
-                default: return false;
+                    return this.badCheque(
+                        badCheque,
+                        false,
+                        resetDataBeforeShowDialog
+                    );
+                default:
+                    return false;
             }
         }
     }
 
     private getThreatSAV(): any {
         for (let item of this.dataEntryProcess.notApprovedPaymentsMethods) {
-            if (item['MessageType'] === BadChequeEnum.ThreatSAV) return item;
+            if (item["MessageType"] === BadChequeEnum.ThreatSAV) return item;
         }
         return null;
     }
 
     private getBadCheque(): any {
         for (let item of this.dataEntryProcess.notApprovedPaymentsMethods) {
-            if (item['MessageType'] === BadChequeEnum.BadCheck ||
-                item['MessageType'] === BadChequeEnum.BadCheckSAV) return item;
+            if (
+                item["MessageType"] === BadChequeEnum.BadCheck ||
+                item["MessageType"] === BadChequeEnum.BadCheckSAV
+            )
+                return item;
         }
         return null;
     }
 
-
-
-    private badCheque(badCheque: any, isSAV: boolean, resetDataBeforeShowDialog?: boolean): boolean {
-        if (this.currentPaymentTypeGroup &&
-            badCheque['IdRepPaymentsMethods'] == this.currentPaymentTypeGroup) {
+    private badCheque(
+        badCheque: any,
+        isSAV: boolean,
+        resetDataBeforeShowDialog?: boolean
+    ): boolean {
+        if (
+            this.currentPaymentTypeGroup &&
+            badCheque["IdRepPaymentsMethods"] == this.currentPaymentTypeGroup
+        ) {
             this.data.paymentTypeIsRejected = true;
 
             if (resetDataBeforeShowDialog) {
@@ -922,7 +1165,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             }
             if (isSAV) {
                 this.createSAVWarningMessage(true, () => {
-                    this.parentComponent['isCancelBadChequeSAV'] = false;
+                    this.parentComponent["isCancelBadChequeSAV"] = false;
                     this.resetData();
                 });
             } else {
@@ -938,61 +1181,75 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     private createBadChequeMessage() {
         this.modalService.warningMessageWithOption({
             showCloseButton: false,
-            text: 'Rejected Payment',
-            message: [{ key: 'Modal_Message__This_Payment_Type_Is_Not_Accepted_For_This_Customer' }],
-            closeText: 'OK',
+            text: "Rejected Payment",
+            message: [
+                {
+                    key: "Modal_Message__This_Payment_Type_Is_Not_Accepted_For_This_Customer",
+                },
+            ],
+            closeText: "OK",
             callBack: () => {
                 this.resetData();
-            }
+            },
         });
     }
 
-    private createSAVWarningMessage(hasContinue: boolean, cancelFunc?: Function, continueFunc?: Function) {
+    private createSAVWarningMessage(
+        hasContinue: boolean,
+        cancelFunc?: Function,
+        continueFunc?: Function
+    ) {
         let buttonList = [
             new ButtonList({
                 buttonType: MessageModal.ButtonType.default,
-                text: 'Cancel',
-                customClass: '',
+                text: "Cancel",
+                customClass: "",
                 callBackFunc: () => {
                     if (cancelFunc) {
                         cancelFunc();
                     }
                     this.modalService.hideModal();
-                }
-            })];
+                },
+            }),
+        ];
         if (hasContinue) {
-            buttonList.unshift(new ButtonList({
-                buttonType: MessageModal.ButtonType.danger,
-                text: 'Continue',
-                customClass: '',
-                callBackFunc: () => {
-                    if (continueFunc) {
-                        continueFunc();
-                    }
-                    this.parentComponent['isCancelThreatSAV'] = this.parentComponent['isCancelBadChequeSAV'] = true;
-                    this.modalService.hideModal();
-                }
-            }));
+            buttonList.unshift(
+                new ButtonList({
+                    buttonType: MessageModal.ButtonType.danger,
+                    text: "Continue",
+                    customClass: "",
+                    callBackFunc: () => {
+                        if (continueFunc) {
+                            continueFunc();
+                        }
+                        this.parentComponent["isCancelThreatSAV"] =
+                            this.parentComponent["isCancelBadChequeSAV"] = true;
+                        this.modalService.hideModal();
+                    },
+                })
+            );
         }
         const messageOption = new MessageModalModel({
-            customClass: 'message-modal--sav',
+            customClass: "message-modal--sav",
             messageType: MessageModal.MessageType.warning,
             modalSize: MessageModal.ModalSize.small,
             showCloseButton: false,
             header: new MessageModalHeaderModel({
-                text: 'Warning'
+                text: "Warning",
             }),
             body: new MessageModalBodyModel({
                 isHtmlContent: true,
                 content: [
-                    { key: '<p style="text-align: center; color: #a94442; font-weight: 900; font-size: 30px;">' },
-                    { key: 'Modal_Message__SAV' },
-                    { key: '</p>' }
-                ]
+                    {
+                        key: '<p style="text-align: center; color: #a94442; font-weight: 900; font-size: 30px;">',
+                    },
+                    { key: "Modal_Message__SAV" },
+                    { key: "</p>" },
+                ],
             }),
             footer: new MessageModalFooterModel({
-                buttonList: buttonList
-            })
+                buttonList: buttonList,
+            }),
         });
         this.modalService.createModal(messageOption);
         this.modalService.showModal();
@@ -1049,7 +1306,12 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     }
 
     public currencyLostFocus($event?: any): void {
-        if (!this.currencyCtl || !this.currencyTyping || !this.currencyCtl.selectedItem) return;
+        if (
+            !this.currencyCtl ||
+            !this.currencyTyping ||
+            !this.currencyCtl.selectedItem
+        )
+            return;
 
         const isChange = this.data.currencyId != this.currencyCtl.selectedValue;
 
@@ -1063,7 +1325,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
         if (isChange && this.data.currencyId) {
             this.onCurrencyChanged.emit({
-                currencyId: this.data.currencyId
+                currencyId: this.data.currencyId,
             });
         }
     }
@@ -1072,23 +1334,33 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         const hasCurrency = currency ? true : false;
         currency = currency || {};
         if (!currency.idValue && this.data.currencyList.length) {
-            const mainCurrencyId = this.data.mainCurrency ? this.data.mainCurrency.idRepCurrencyCode : null;
-            const mainCurrency = this.data.currencyList.find((item) => { return item.idValue == mainCurrencyId; });
+            const mainCurrencyId = this.data.mainCurrency
+                ? this.data.mainCurrency.idRepCurrencyCode
+                : null;
+            const mainCurrency = this.data.currencyList.find((item) => {
+                return item.idValue == mainCurrencyId;
+            });
             if (mainCurrency) {
                 currency.idValue = this.data.mainCurrency.idRepCurrencyCode;
                 currency.textValue = this.data.mainCurrency.currencyCode;
-            }
-            else {
-                currency.idValue = this.data.currencyList[0]['idValue'];
-                currency.textValue = this.data.currencyList[0]['textValue'];
+            } else {
+                currency.idValue = this.data.currencyList[0]["idValue"];
+                currency.textValue = this.data.currencyList[0]["textValue"];
             }
         }
 
-        if (this.currencyCtl && currency.idValue && this.currencyCtl.selectedValue != currency.idValue) {
+        if (
+            this.currencyCtl &&
+            currency.idValue &&
+            this.currencyCtl.selectedValue != currency.idValue
+        ) {
             this.currencyCtl.selectedValue = currency.idValue;
             this.currencyCtl.text = currency.textValue;
             this.currencyCtl.refresh();
-            if (!hasCurrency && this.data.currencyId != this.currencyCtl.selectedValue) {
+            if (
+                !hasCurrency &&
+                this.data.currencyId != this.currencyCtl.selectedValue
+            ) {
                 this.currencyTyping = true;
                 this.currencyLostFocus();
             }
@@ -1111,8 +1383,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                 this.currencyCtl.text = this.data.currencyText;
                 this.currencyCtl.refresh();
             }
-        }
-        else {
+        } else {
             setTimeout(() => {
                 this.setCurrencyCtl(newCurrency, ++count);
             }, 200);
@@ -1122,11 +1393,12 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     private setCurrencyText(currencyId) {
         if (!currencyId) return;
 
-        const item = this.data.currencyList.find(n => n.idValue == currencyId);
+        const item = this.data.currencyList.find(
+            (n) => n.idValue == currencyId
+        );
         if (item) {
-            this.data.currencyText = item['textValue'];
-        }
-        else if (this.data.idMainCurrencyCode == currencyId) {
+            this.data.currencyText = item["textValue"];
+        } else if (this.data.idMainCurrencyCode == currencyId) {
             this.data.currencyText = this.data.mainCurrencyCode;
         }
     }
@@ -1156,11 +1428,15 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         if ($event.keyCode === 13) {
             if (index !== this.chequesDate.length - 1) return;
 
-            const formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['amounts'];
+            const formArray = <FormArray>(
+                this.dataEntryPaymentTypeItemForm.controls["amounts"]
+            );
             if (!formArray || !formArray.length || formArray.length < 2) return;
 
             const dateControl = this.chequesDate.find((item, i) => i == index);
-            const amountControl = this.amountCtrls.find((item, i) => i == index);
+            const amountControl = this.amountCtrls.find(
+                (item, i) => i == index
+            );
 
             //Both of current amount and date controls are empty
             if (!dateControl.value && !amountControl.nativeElement.value) {
@@ -1181,7 +1457,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         if ($event.keyCode === 13) {
             this.amountTyping = false;
             this.chequeProcessDateWhenEnterOrLostFocusAmount(index);
-        }//if
+        } //if
     }
 
     public chequeAmountLostFocus($event: any, index: number): void {
@@ -1196,14 +1472,15 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
         if (!index) return;
 
-        const formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['amounts'];
+        const formArray = <FormArray>(
+            this.dataEntryPaymentTypeItemForm.controls["amounts"]
+        );
         if (!formArray || !formArray.length || formArray.length < 2) return;
 
         const dateControl = this.chequesDate.find((item, i) => i == index);
         const amountControl = this.amountCtrls.find((item, i) => i == index);
 
         const removeRow = () => {
-
             //when using the hotkey
             if ($event === true) {
                 setTimeout(() => {
@@ -1216,24 +1493,31 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
             this.chequeDateAmountSetValidators();
             this.chequeFocusOnLastAmount();
-        }
+        };
 
         if (dateControl.value || amountControl.nativeElement.value) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                headerText: 'Confirmation',
-                messageType: MessageModal.MessageType.error,
-                modalSize: MessageModal.ModalSize.small,
-                message: [{ key: '<p>' }, { key: 'Modal_Message__Do_You_Want_To_Delete_The_Selected_Items' },
-                { key: '</p>' }],
-                okText: 'Yes',
-                cancelText: 'No',
-                callBack1: () => {
-                    removeRow();
-                },
-                callBack2: () => {
-                    this.chequeFocusOnLastAmount();
-                }
-            }));
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    headerText: "Confirmation",
+                    messageType: MessageModal.MessageType.error,
+                    modalSize: MessageModal.ModalSize.small,
+                    message: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Delete_The_Selected_Items",
+                        },
+                        { key: "</p>" },
+                    ],
+                    okText: "Yes",
+                    cancelText: "No",
+                    callBack1: () => {
+                        removeRow();
+                    },
+                    callBack2: () => {
+                        this.chequeFocusOnLastAmount();
+                    },
+                })
+            );
         } else {
             removeRow();
         }
@@ -1243,15 +1527,21 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         this.allowShowConfirmTotalAmount = false;
         this.preventFocus = undefined;
 
-        const formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['amounts'];
+        const formArray = <FormArray>(
+            this.dataEntryPaymentTypeItemForm.controls["amounts"]
+        );
         const dateControl = this.chequesDate.find((item, i) => i == index);
         const amountControl = this.amountCtrls.find((item, i) => i == index);
-        if (dateControl && dateControl.value && amountControl && amountControl.nativeElement.value) {
-
+        if (
+            dateControl &&
+            dateControl.value &&
+            amountControl &&
+            amountControl.nativeElement.value
+        ) {
             this.preventFocus = Promise.resolve(true);
 
             const formGroup = this.initAmountCheque(true);
-            formGroup.controls['chequeDate'].setValue('');
+            formGroup.controls["chequeDate"].setValue("");
 
             //when using the hotkey
             if ($event === true) {
@@ -1273,7 +1563,9 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
         if (index !== this.chequesDate.length - 1) return;
 
-        const formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['amounts'];
+        const formArray = <FormArray>(
+            this.dataEntryPaymentTypeItemForm.controls["amounts"]
+        );
         if (!formArray || !formArray.length || formArray.length < 2) return;
 
         //Process for last item
@@ -1287,10 +1579,15 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             this.chequeDateAmountSetValidators();
             this.chequeFocusOnLastAmount();
         } else if (!dateControl.value && amountControl.nativeElement.value) {
-            const prevDateControl = this.dataEntryPaymentTypeItemForm.controls['amounts']['controls'][index - 1]['controls']['chequeDate'];
-            const date = addMonths(prevDateControl.value, 1);//add 1 month
+            const prevDateControl =
+                this.dataEntryPaymentTypeItemForm.controls["amounts"][
+                    "controls"
+                ][index - 1]["controls"]["chequeDate"];
+            const date = addMonths(prevDateControl.value, 1); //add 1 month
 
-            this.dataEntryPaymentTypeItemForm.controls['amounts']['controls'][index]['controls']['chequeDate'].setValue(date);
+            this.dataEntryPaymentTypeItemForm.controls["amounts"]["controls"][
+                index
+            ]["controls"]["chequeDate"].setValue(date);
         }
     }
 
@@ -1308,28 +1605,38 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
     private chequeDateAmountSetValidators() {
         setTimeout(() => {
-            let formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['amounts'];
+            let formArray = <FormArray>(
+                this.dataEntryPaymentTypeItemForm.controls["amounts"]
+            );
             if (!formArray || !formArray.length) return;
 
             const length = formArray.length;
             //remove validator
             formArray.controls.forEach((item, i) => {
-                const dateControl = item['controls']['chequeDate'];
+                const dateControl = item["controls"]["chequeDate"];
                 if (length == 1) {
                     dateControl.setErrors(null);
                     dateControl.clearValidators();
                 } else {
-                    dateControl.setValidators([Validators.required])
+                    dateControl.setValidators([Validators.required]);
                 }
-            });//forEach
+            }); //forEach
 
             formArray.updateValueAndValidity();
         });
     }
 
     private getOrderDate(): Date {
-        const formControlValueState = LocalStorageHelper.toInstance(LocalStorageProvider).getItem(LocalStorageKey.buildKey(LocalStorageKey.OrderDataEntry_FormControlValue, this.tabID), {});
-        const date = formControlValueState['orderDate'];
+        const formControlValueState = LocalStorageHelper.toInstance(
+            LocalStorageProvider
+        ).getItem(
+            LocalStorageKey.buildKey(
+                LocalStorageKey.OrderDataEntry_FormControlValue,
+                this.tabID
+            ),
+            {}
+        );
+        const date = formControlValueState["orderDate"];
         if (date) {
             return new Date(date);
         }
@@ -1342,14 +1649,17 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     public creditCardOptionDisabled: boolean = false;
     private creditCardCustomMonthIsProcessing: boolean = false;
     private creditCardCustomMonthIsValueChanged: boolean = false;
-    private creditCardMaximumMonthBaseonValidThru: number = undefined;//month base on valid thru
-    private creditCardOldValidThru: any = undefined;//keep to revert
+    private creditCardMaximumMonthBaseonValidThru: number = undefined; //month base on valid thru
+    private creditCardOldValidThru: any = undefined; //keep to revert
 
     public creditCardOptionChanged(numofMonth?: number): void {
         this.allowShowConfirmTotalAmount = false;
 
-        const creditCardCustomMonthControl = this.dataEntryPaymentTypeItemForm.controls['creditCardCustomMonth'];
-        let option = this.dataEntryPaymentTypeItemForm.controls['creditCardOption'].value;
+        const creditCardCustomMonthControl =
+            this.dataEntryPaymentTypeItemForm.controls["creditCardCustomMonth"];
+        let option =
+            this.dataEntryPaymentTypeItemForm.controls["creditCardOption"]
+                .value;
 
         //Custom Option
         if (option == 0) {
@@ -1366,16 +1676,20 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             creditCardCustomMonthControl.clearValidators();
             creditCardCustomMonthControl.updateValueAndValidity();
 
-            this.creditCardRenderAmounts(option);// option is numofMonth
+            this.creditCardRenderAmounts(option); // option is numofMonth
         }
     }
 
     public creditCardOptionChoose(option: number, numofMonth?: number) {
         //If 1 month -> set option Default
-        if (numofMonth && numofMonth == 1) option = 1;//Default: 1M
+        if (numofMonth && numofMonth == 1) option = 1; //Default: 1M
 
-        this.dataEntryPaymentTypeItemForm.controls['creditCardOption'].setValue(option);
-        this.dataEntryPaymentTypeItemForm.controls['creditCardOption'].updateValueAndValidity();
+        this.dataEntryPaymentTypeItemForm.controls["creditCardOption"].setValue(
+            option
+        );
+        this.dataEntryPaymentTypeItemForm.controls[
+            "creditCardOption"
+        ].updateValueAndValidity();
         this.ref.detectChanges();
 
         this.creditCardOptionChanged(numofMonth);
@@ -1422,10 +1736,15 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     private creditCardRenderAmounts(numofMonths?: number) {
         if (this.creditCardCustomMonthIsProcessing) return;
 
-        const creditCardOption = this.dataEntryPaymentTypeItemForm.controls['creditCardOption'].value;
-        const creditCardCustomMonthControl = this.dataEntryPaymentTypeItemForm.controls['creditCardCustomMonth'];
+        const creditCardOption =
+            this.dataEntryPaymentTypeItemForm.controls["creditCardOption"]
+                .value;
+        const creditCardCustomMonthControl =
+            this.dataEntryPaymentTypeItemForm.controls["creditCardCustomMonth"];
         const creditCardCustomMonth = creditCardCustomMonthControl.value;
-        let formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['creditCardAmounts'];
+        let formArray = <FormArray>(
+            this.dataEntryPaymentTypeItemForm.controls["creditCardAmounts"]
+        );
 
         try {
             this.creditCardCustomMonthIsProcessing = true;
@@ -1434,24 +1753,25 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                 this.clearCreditCardAmounts(formArray);
             } else {
                 numofMonths = numofMonths || creditCardCustomMonth;
-                numofMonths = numofMonths < 2 ? 2 : numofMonths;//minimum is 2
-                numofMonths = numofMonths > 120 ? 120 : numofMonths;//maximum 120 months
+                numofMonths = numofMonths < 2 ? 2 : numofMonths; //minimum is 2
+                numofMonths = numofMonths > 120 ? 120 : numofMonths; //maximum 120 months
 
                 //= 0: Custom Option
                 if (creditCardOption == 0) {
-                    if (numofMonths > this.creditCardMaximumMonthBaseonValidThru)
-                        numofMonths = this.creditCardMaximumMonthBaseonValidThru;
+                    if (
+                        numofMonths > this.creditCardMaximumMonthBaseonValidThru
+                    )
+                        numofMonths =
+                            this.creditCardMaximumMonthBaseonValidThru;
 
-                    numofMonths = numofMonths < 2 ? 2 : numofMonths;//minimum is 2
+                    numofMonths = numofMonths < 2 ? 2 : numofMonths; //minimum is 2
                     if (creditCardCustomMonthControl.value != numofMonths)
                         creditCardCustomMonthControl.setValue(numofMonths);
                 } else {
-
-                    creditCardCustomMonthControl.setValue('');
+                    creditCardCustomMonthControl.setValue("");
 
                     //= 1: Default Option
-                    if (creditCardOption == 1)
-                        numofMonths = 1;
+                    if (creditCardOption == 1) numofMonths = 1;
                 }
 
                 this.clearCreditCardAmounts(formArray);
@@ -1465,20 +1785,27 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                 let firstAmount: number = 0;
                 let secondAmount: number = 0;
                 let averageAmount: number = 0;
-                this.data.creditCardTotalAmount = this.data.creditCardTotalAmount || 0;
+                this.data.creditCardTotalAmount =
+                    this.data.creditCardTotalAmount || 0;
                 const total = this.data.creditCardTotalAmount;
                 if (numofMonths > 1 && total) {
-                    const percentOfFirstMonth = 0.5;//50%
+                    const percentOfFirstMonth = 0.5; //50%
                     let fractional = Number((total % 1).toPrecision(2));
                     let totalWithoutFractional = total - fractional;
 
-                    firstAmount = (totalWithoutFractional * percentOfFirstMonth) + fractional;
+                    firstAmount =
+                        totalWithoutFractional * percentOfFirstMonth +
+                        fractional;
 
                     if (numofMonths > 2) {
                         const remainNumofMonths = numofMonths - 1;
                         const remainOfTotal = total - firstAmount;
-                        averageAmount = Math.floor(remainOfTotal / remainNumofMonths);
-                        secondAmount = remainOfTotal - (averageAmount * (remainNumofMonths - 1));
+                        averageAmount = Math.floor(
+                            remainOfTotal / remainNumofMonths
+                        );
+                        secondAmount =
+                            remainOfTotal -
+                            averageAmount * (remainNumofMonths - 1);
                     } else {
                         secondAmount = total - firstAmount;
                     }
@@ -1489,8 +1816,12 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
                 for (let i = 0; i < numofMonths; i++) {
                     const groupAmount = this.formBuilder.group({
-                        amount: ['', Validators.required],
-                        creditDate: [new Date(), Validators.required, this.incorrectValidator]
+                        amount: ["", Validators.required],
+                        creditDate: [
+                            new Date(),
+                            Validators.required,
+                            this.incorrectValidator,
+                        ],
                     });
 
                     let amountValue = averageAmount;
@@ -1502,10 +1833,10 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                             amountValue = secondAmount;
                             break;
                     }
-                    groupAmount.controls['amount'].setValue(amountValue);
+                    groupAmount.controls["amount"].setValue(amountValue);
 
                     formArray.push(groupAmount);
-                }//for
+                } //for
             }
         } finally {
             this.creditCardCustomMonthIsProcessing = false;
@@ -1514,26 +1845,33 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             setTimeout(() => {
                 this.creditCardCustomMonthIsValueChanged = false;
 
-                let formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['creditCardAmounts'];
+                let formArray = <FormArray>(
+                    this.dataEntryPaymentTypeItemForm.controls[
+                        "creditCardAmounts"
+                    ]
+                );
                 if (formArray && formArray.length) {
-
-                    let date = formArray.controls[0]['controls']['creditDate'].value;
+                    let date =
+                        formArray.controls[0]["controls"]["creditDate"].value;
 
                     formArray.controls.forEach((item, i) => {
                         if (i > 0) {
                             date = addMonths(date, 1);
                         }
-                        item['controls']['creditDate'].setValue(date);
-                    });//forEach
+                        item["controls"]["creditDate"].setValue(date);
+                    }); //forEach
                 }
             });
         }
     }
 
     private clearCreditCardAmounts(formArray?: FormArray) {
-        formArray = formArray || (<FormArray>this.dataEntryPaymentTypeItemForm.controls['creditCardAmounts']);
-        if (formArray.length)
-            this.clearFormArray(formArray);
+        formArray =
+            formArray ||
+            <FormArray>(
+                this.dataEntryPaymentTypeItemForm.controls["creditCardAmounts"]
+            );
+        if (formArray.length) this.clearFormArray(formArray);
     }
 
     public creditCardItemsTrackBy(index, item) {
@@ -1603,15 +1941,19 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         if (!validThru.isValid) return;
 
         if (this.data.creditCardTotalAmount == undefined)
-            this.toasterService.pop('warning', 'Total Amount', 'The Order Total Summary widget is required for calculating total amount!');
+            this.toasterService.pop(
+                "warning",
+                "Total Amount",
+                "The Order Total Summary widget is required for calculating total amount!"
+            );
 
         this.validThruOldRawValue = this.validThru.rawValue;
 
         //set true all options
-        this.data.creditCardOptionsConfig['3'].disabled = true;
-        this.data.creditCardOptionsConfig['6'].disabled = true;
-        this.data.creditCardOptionsConfig['12'].disabled = true;
-        this.data.creditCardOptionsConfig['0'].disabled = true;
+        this.data.creditCardOptionsConfig["3"].disabled = true;
+        this.data.creditCardOptionsConfig["6"].disabled = true;
+        this.data.creditCardOptionsConfig["12"].disabled = true;
+        this.data.creditCardOptionsConfig["0"].disabled = true;
 
         //let numofMonth = differenceInMonths(validThru.date, new Date());
         let numofMonth: number = this.getValidThruInMonths(validThru.date);
@@ -1619,20 +1961,26 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         //#region Enable CreditCardOptions
         if (numofMonth) {
             //Custom
-            if (numofMonth > 1) this.data.creditCardOptionsConfig['0'].disabled = false;
+            if (numofMonth > 1)
+                this.data.creditCardOptionsConfig["0"].disabled = false;
             //3M
-            if (numofMonth > 2) this.data.creditCardOptionsConfig['3'].disabled = false;
+            if (numofMonth > 2)
+                this.data.creditCardOptionsConfig["3"].disabled = false;
             //6M
-            if (numofMonth > 5) this.data.creditCardOptionsConfig['6'].disabled = false;
+            if (numofMonth > 5)
+                this.data.creditCardOptionsConfig["6"].disabled = false;
             //12M
-            if (numofMonth > 11) this.data.creditCardOptionsConfig['12'].disabled = false;
+            if (numofMonth > 11)
+                this.data.creditCardOptionsConfig["12"].disabled = false;
 
             this.creditCardMaximumMonthBaseonValidThru = Math.ceil(numofMonth);
-        }//if
+        } //if
         //#endregion
 
         //#region Reset Option
-        let formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['creditCardAmounts'];
+        let formArray = <FormArray>(
+            this.dataEntryPaymentTypeItemForm.controls["creditCardAmounts"]
+        );
 
         if (formArray && formArray.length) {
             //Default: 1M
@@ -1648,59 +1996,79 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                 //6M
                 else if (numofMonth >= 6 && numofMonth < 7) resetToOption = 6;
                 //12M
-                else if (numofMonth >= 12 && numofMonth < 13) resetToOption = 12;
+                else if (numofMonth >= 12 && numofMonth < 13)
+                    resetToOption = 12;
                 //Custom
                 else resetToOption = 0;
-            }//if
+            } //if
 
-            const isResetOption: boolean = this.dataEntryPaymentTypeItemForm.controls['creditCardOption'].value != resetToOption;
+            const isResetOption: boolean =
+                this.dataEntryPaymentTypeItemForm.controls["creditCardOption"]
+                    .value != resetToOption;
 
             const lastDateCtrl = formArray.controls[formArray.length - 1];
-            const lastDate = lastDateCtrl['controls']['creditDate'].value;
+            const lastDate = lastDateCtrl["controls"]["creditDate"].value;
             if (validThru.date < lastDate) {
                 //set invalid for last Date control
                 this.setValidCreditCardAmountDate(lastDateCtrl, false);
 
                 if (isResetOption) {
+                    this.modalService.confirmMessageHtmlContent(
+                        new MessageModel({
+                            headerText: "Confirmation",
+                            messageType: MessageModal.MessageType.confirm,
+                            modalSize: MessageModal.ModalSize.small,
+                            message: [
+                                { key: "<p>" },
+                                {
+                                    key: "Modal_Message__The_Installment_Date_Should_Not_Larger_Than_Credit_Card_Valid_Thru",
+                                },
+                                { key: "<br/>" },
+                                {
+                                    key: "Modal_Message__System_Will_Be_Update_The_Number_Of_Month_For_Suitable_Do_You_Want_To_Continue",
+                                },
+                                { key: "</p>" },
+                            ],
+                            okText: "Yes",
+                            cancelText: "No",
+                            callBack1: () => {
+                                this.creditCardOldValidThru =
+                                    this.validThru.value; //keep current value
+                                let resetNumofMonth: number =
+                                    resetToOption == 0
+                                        ? Math.ceil(numofMonth)
+                                        : undefined;
 
-                    this.modalService.confirmMessageHtmlContent(new MessageModel({
-                        headerText: 'Confirmation',
-                        messageType: MessageModal.MessageType.confirm,
-                        modalSize: MessageModal.ModalSize.small,
-                        message: [{ key: '<p>' },
-                        { key: 'Modal_Message__The_Installment_Date_Should_Not_Larger_Than_Credit_Card_Valid_Thru' },
-                        { key: '<br/>' },
-                        { key: 'Modal_Message__System_Will_Be_Update_The_Number_Of_Month_For_Suitable_Do_You_Want_To_Continue' },
-                        { key: '</p>' }],
-                        okText: 'Yes',
-                        cancelText: 'No',
-                        callBack1: () => {
-                            this.creditCardOldValidThru = this.validThru.value;//keep current value
-                            let resetNumofMonth: number = resetToOption == 0 ? Math.ceil(numofMonth) : undefined;
-
-                            //Yes: will automatically choose the appropriate option
-                            this.creditCardOptionChoose(resetToOption, resetNumofMonth);
-                        },
-                        callBack2: () => {
-                            //No: will revert the previous value if have
-                            this.dataEntryPaymentTypeItemForm.controls['validThru'].setValue(this.creditCardOldValidThru || '');
-                        }
-                    }));
+                                //Yes: will automatically choose the appropriate option
+                                this.creditCardOptionChoose(
+                                    resetToOption,
+                                    resetNumofMonth
+                                );
+                            },
+                            callBack2: () => {
+                                //No: will revert the previous value if have
+                                this.dataEntryPaymentTypeItemForm.controls[
+                                    "validThru"
+                                ].setValue(this.creditCardOldValidThru || "");
+                            },
+                        })
+                    );
 
                     //Must return here, because we don't need to do anything if invalid
                     return;
                 }
-            }//if
+            } //if
             else if (isResetOption) {
-                let resetNumofMonth: number = resetToOption == 0 ? Math.ceil(numofMonth) : undefined;
+                let resetNumofMonth: number =
+                    resetToOption == 0 ? Math.ceil(numofMonth) : undefined;
 
                 //will automatically choose the appropriate option
                 this.creditCardOptionChoose(resetToOption, resetNumofMonth);
             }
-        }//formArray
+        } //formArray
         //#endregion
 
-        this.creditCardOldValidThru = this.validThru.value;//keep current value
+        this.creditCardOldValidThru = this.validThru.value; //keep current value
         this.validateCreditCardAmountDates();
     }
 
@@ -1709,29 +2077,31 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             isValid: false,
             month: 0,
             year: 0,
-            date: undefined
+            date: undefined,
         };
 
         if (this.validThru && this.validThru.rawValue.length == 4) {
             let valid = true;
 
-            const validThruArray = this.validThru.value.split('/');
+            const validThruArray = this.validThru.value.split("/");
             const validThruMonth = parseInt(validThruArray[0]);
             let validThruYear = 0;
 
             if (validThruMonth > 0 && validThruMonth <= 12) {
-                validThruYear = parse(validThruArray[1], 'yy', new Date()).getFullYear();
-                const currentYear = (new Date()).getFullYear();
+                validThruYear = parse(
+                    validThruArray[1],
+                    "yy",
+                    new Date()
+                ).getFullYear();
+                const currentYear = new Date().getFullYear();
 
                 if (validThruYear < currentYear) {
                     valid = false;
                 } else if (validThruYear == currentYear) {
-                    const currentMonth = (new Date()).getMonth() + 1;
-                    if (validThruMonth < currentMonth)
-                        valid = false;
+                    const currentMonth = new Date().getMonth() + 1;
+                    if (validThruMonth < currentMonth) valid = false;
                 }
-            }
-            else {
+            } else {
                 valid = false;
             }
 
@@ -1744,9 +2114,13 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                     y = date.getFullYear(),
                     m = date.getMonth(),
                     lastDate = new Date(y, m + 1, 0),
-                    lastDay = lastDate.getDate();//get the last day of month
+                    lastDay = lastDate.getDate(); //get the last day of month
 
-                validThru.date = new Date(validThruYear, validThruMonth - 1, lastDay);
+                validThru.date = new Date(
+                    validThruYear,
+                    validThruMonth - 1,
+                    lastDay
+                );
             }
         }
 
@@ -1756,7 +2130,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     //Get num of months of 'valid thru'
     private getValidThruInMonths(validThruDate) {
         const dateNow = new Date();
-        let numofMonth = differenceInMonths(validThruDate, dateNow);//always be integer
+        let numofMonth = differenceInMonths(validThruDate, dateNow); //always be integer
         //add more 1 month
         if (numofMonth && validThruDate.getDate() > dateNow.getDate()) {
             numofMonth += 1;
@@ -1767,7 +2141,9 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
     private validateCreditCardAmountDates() {
         setTimeout(() => {
-            let formArray = <FormArray>this.dataEntryPaymentTypeItemForm.controls['creditCardAmounts'];
+            let formArray = <FormArray>(
+                this.dataEntryPaymentTypeItemForm.controls["creditCardAmounts"]
+            );
             if (!formArray || !formArray.length) return;
 
             const validThru = this.getValidThru();
@@ -1780,47 +2156,46 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                     return;
                 }
 
-                const previousDate = previousItem['controls']['creditDate'].value;
-                const currentDate = item['controls']['creditDate'].value;
+                const previousDate =
+                    previousItem["controls"]["creditDate"].value;
+                const currentDate = item["controls"]["creditDate"].value;
 
                 if (previousDate >= currentDate) {
-                    this.setValidCreditCardAmountDate(item, false);//error
+                    this.setValidCreditCardAmountDate(item, false); //error
                 } else {
-                    this.setValidCreditCardAmountDate(item, true);//valid
+                    this.setValidCreditCardAmountDate(item, true); //valid
                 }
                 previousItem = item;
-            });//forEach
+            }); //forEach
 
             //validate last date control
             if (validThru.isValid) {
                 const lastDateCtrl = formArray.controls[length - 1];
-                const lastDate = lastDateCtrl['controls']['creditDate'].value;
+                const lastDate = lastDateCtrl["controls"]["creditDate"].value;
                 if (validThru.date < lastDate) {
-                    this.setValidCreditCardAmountDate(lastDateCtrl, false);//error
+                    this.setValidCreditCardAmountDate(lastDateCtrl, false); //error
                 }
             }
         });
     }
 
     private setValidCreditCardAmountDate(item, isValid?: boolean) {
-        const dateCtrl = item['controls']['creditDate'];
-        dateCtrl['valueIncorrect'] = !isValid;
+        const dateCtrl = item["controls"]["creditDate"];
+        dateCtrl["valueIncorrect"] = !isValid;
         dateCtrl.markAsDirty();
 
-        if (isValid)
-            dateCtrl.setErrors(null);
-        else
-            dateCtrl.setErrors({ 'incorrect': true });
+        if (isValid) dateCtrl.setErrors(null);
+        else dateCtrl.setErrors({ incorrect: true });
 
         dateCtrl.updateValueAndValidity();
     }
 
     private incorrectValidator(control: FormControl): Observable<any> {
         return new Observable<any>((obser) => {
-            if (!control['valueIncorrect']) {
-                obser.next(null);//ok
+            if (!control["valueIncorrect"]) {
+                obser.next(null); //ok
             } else {
-                const validator = { 'incorrect': true };
+                const validator = { incorrect: true };
                 obser.next(validator);
             }
             obser.complete();
@@ -1857,10 +2232,16 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     }
 
     public postBankNameLostFocus($event?: any): void {
-        if (!this.postBankNameCtl || !this.postBankNameTyping || !this.postBankNameCtl.selectedItem) return;
+        if (
+            !this.postBankNameCtl ||
+            !this.postBankNameTyping ||
+            !this.postBankNameCtl.selectedItem
+        )
+            return;
 
         this.data.postBankNameId = this.postBankNameCtl.selectedValue;
-        this.data.postBankNameText = this.postBankNameCtl.selectedItem.textValue;
+        this.data.postBankNameText =
+            this.postBankNameCtl.selectedItem.textValue;
 
         this.postBankNameTyping = false;
         this.allowShowConfirmTotalAmount = true;
@@ -1870,8 +2251,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     //#endregion
 
     //#region Public
-    public resetForm() {
-    }
+    public resetForm() {}
 
     public setPaymentTypeSource(source: Array<any>) {
         if (!this.payementTypeCtl) return;
@@ -1889,7 +2269,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             //remove all except current payment
             pullAllBy(this.data.paymentTypes, removedList);
             //add allowed items
-            Array.prototype.push.apply(this.data.paymentTypes, addedList);//Merge the second array into the first one
+            Array.prototype.push.apply(this.data.paymentTypes, addedList); //Merge the second array into the first one
         } else {
             //clear all
             this.data.paymentTypes.length = 0;
@@ -1899,7 +2279,7 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
 
         //sort paymentTypeId by asc
         this.data.paymentTypes.sort((a, b) => {
-            return Uti.sortBy(a, b, 'paymentTypeId');
+            return Uti.sortBy(a, b, "paymentTypeId");
         });
     }
 
@@ -1913,38 +2293,50 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         if (this.currencyCtl.selectedItem) {
             oldCurrency = {
                 idValue: this.currencyCtl.selectedItem.idValue,
-                textValue: this.currencyCtl.selectedItem.textValue
+                textValue: this.currencyCtl.selectedItem.textValue,
             };
         }
 
         //The Cash must exclude the chosen currencies
-        if (this.data.paymentTypeGroup == PaymentTypeGroupEnum.Cash && this.data.paymentTypeId !== PaymentTypeIdEnum.OpenInvoice) {
+        if (
+            this.data.paymentTypeGroup == PaymentTypeGroupEnum.Cash &&
+            this.data.paymentTypeId !== PaymentTypeIdEnum.OpenInvoice
+        ) {
             const currencyId = this.data.currencyId;
             if (currencyId) {
-                const currentCurrency = this.data.currencyList.find(n => n.idValue == currencyId);
+                const currentCurrency = this.data.currencyList.find(
+                    (n) => n.idValue == currencyId
+                );
                 if (currentCurrency) {
                     //Because 'tempData' only contains currencies and excludes the chosen currencies, so we must add the currency that chosen before
                     //Add new items to the beginning of an array
-                    const findCurrency = tempData.find(n => n.idValue == currencyId);
+                    const findCurrency = tempData.find(
+                        (n) => n.idValue == currencyId
+                    );
                     //CurrentCurrency don't have in Temp
-                    if (!findCurrency)
-                        tempData.unshift(currentCurrency);
+                    if (!findCurrency) tempData.unshift(currentCurrency);
 
                     oldCurrency = {
                         idValue: currentCurrency.idValue,
-                        textValue: currentCurrency.textValue
+                        textValue: currentCurrency.textValue,
                     };
                 }
             }
-        }
-        else {
+        } else {
             //This code helps to display MainCurrency
-            if (this.data.mainCurrency && this.data.mainCurrency.idRepCurrencyCode) {
+            if (
+                this.data.mainCurrency &&
+                this.data.mainCurrency.idRepCurrencyCode
+            ) {
                 const mainCurrencyId = this.data.mainCurrency.idRepCurrencyCode;
                 //remove mainCurrency from 'tempData' and add it to the beginning of an array
-                const mainCurrency = tempData.find(n => n.idValue == mainCurrencyId);
+                const mainCurrency = tempData.find(
+                    (n) => n.idValue == mainCurrencyId
+                );
                 if (mainCurrency) {
-                    tempData = tempData.filter(p => p.idValue != mainCurrencyId);
+                    tempData = tempData.filter(
+                        (p) => p.idValue != mainCurrencyId
+                    );
                     tempData.unshift(mainCurrency);
                 }
             }
@@ -1958,13 +2350,13 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     }
 
     public setValueForCreditCardAmount(creditCardAmount) {
-        let isSetCreditCardAmount = false;//It is used to check if there is actually a change in the amount, to avoid calling loop code. Amount change -> will call the ValueChanges
+        let isSetCreditCardAmount = false; //It is used to check if there is actually a change in the amount, to avoid calling loop code. Amount change -> will call the ValueChanges
 
         // option month is default
         if (this.data.creditCardOption == 1) {
             creditCardAmount = Number(parseFloat(creditCardAmount).toFixed(2));
 
-            if (this.data.amount === '' && creditCardAmount == 0) {
+            if (this.data.amount === "" && creditCardAmount == 0) {
                 isSetCreditCardAmount = true;
             } else {
                 this.data.amount = !this.data.amount ? 0 : this.data.amount;
@@ -1975,7 +2367,9 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
                 setTimeout(() => {
                     if (this.data) {
                         this.data.amount = creditCardAmount;
-                        this.dataEntryPaymentTypeItemForm.controls['creditCardAmount'].setValue(creditCardAmount);
+                        this.dataEntryPaymentTypeItemForm.controls[
+                            "creditCardAmount"
+                        ].setValue(creditCardAmount);
                     }
                 });
             }
@@ -1984,11 +2378,11 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
     }
 
     public setValueForOpenInvoicedAmount(openInvoiceAmount) {
-        let isSetAmount = false;//It is used to check if there is actually a change in the amount, to avoid calling loop code. Amount change -> will call the ValueChanges
+        let isSetAmount = false; //It is used to check if there is actually a change in the amount, to avoid calling loop code. Amount change -> will call the ValueChanges
 
         openInvoiceAmount = Number(parseFloat(openInvoiceAmount).toFixed(2));
 
-        if (this.data.amount === '' && openInvoiceAmount == 0) {
+        if (this.data.amount === "" && openInvoiceAmount == 0) {
             isSetAmount = true;
         } else {
             this.data.amount = !this.data.amount ? 0 : this.data.amount;
@@ -1999,7 +2393,9 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
             setTimeout(() => {
                 if (this.data) {
                     this.data.amount = openInvoiceAmount;
-                    this.dataEntryPaymentTypeItemForm.controls['amount'].setValue(openInvoiceAmount);
+                    this.dataEntryPaymentTypeItemForm.controls[
+                        "amount"
+                    ].setValue(openInvoiceAmount);
                 }
             });
         }
@@ -2010,50 +2406,82 @@ export class DataEntryPaymentTypeItemComponent extends BaseComponent implements 
         setTimeout(() => {
             switch (this.data.paymentTypeGroup) {
                 case PaymentTypeGroupEnum.Cash:
-                    this.dataEntryPaymentTypeItemForm.controls['amount'].setValue('');
+                    this.dataEntryPaymentTypeItemForm.controls[
+                        "amount"
+                    ].setValue("");
                     this.cashFocusOnAmount();
                     break;
                 case PaymentTypeGroupEnum.Cheque:
-                    const chequeFormArrayControl = <FormGroup>this.dataEntryPaymentTypeItemForm.controls['amounts']['controls'][this.currentAmountIndex];
+                    const chequeFormArrayControl = <FormGroup>(
+                        this.dataEntryPaymentTypeItemForm.controls["amounts"][
+                            "controls"
+                        ][this.currentAmountIndex]
+                    );
                     if (chequeFormArrayControl) {
-                        chequeFormArrayControl.controls['amount'].setValue('');
+                        chequeFormArrayControl.controls["amount"].setValue("");
 
-                        const amountControl = this.amountCtrls.find((item, i) => i == this.currentAmountIndex);
+                        const amountControl = this.amountCtrls.find(
+                            (item, i) => i == this.currentAmountIndex
+                        );
                         amountControl.nativeElement.focus();
                     }
                     break;
                 case PaymentTypeGroupEnum.CreditCard:
-                    const creditCardFormArrayControl = <FormGroup>this.dataEntryPaymentTypeItemForm.controls['creditCardAmounts']['controls'][this.currentAmountIndex];
+                    const creditCardFormArrayControl = <FormGroup>(
+                        this.dataEntryPaymentTypeItemForm.controls[
+                            "creditCardAmounts"
+                        ]["controls"][this.currentAmountIndex]
+                    );
                     if (creditCardFormArrayControl) {
-                        creditCardFormArrayControl.controls['amount'].setValue('');
+                        creditCardFormArrayControl.controls["amount"].setValue(
+                            ""
+                        );
 
-                        const amountControl = this.amountCtrls.find((item, i) => i == this.currentAmountIndex);
+                        const amountControl = this.amountCtrls.find(
+                            (item, i) => i == this.currentAmountIndex
+                        );
                         amountControl.nativeElement.focus();
                     }
                     break;
                 case PaymentTypeGroupEnum.PostBank:
-                    this.dataEntryPaymentTypeItemForm.controls['amount'].setValue('');
+                    this.dataEntryPaymentTypeItemForm.controls[
+                        "amount"
+                    ].setValue("");
                     this.cashFocusOnAmount();
                     break;
-            }//switch
+            } //switch
         });
     }
 
     //#endregion
 
     public isBackofficeOrders() {
-        return this.tabID == 'BackofficeOrders' || this.isNotOrderDataEntryModule();
+        return (
+            this.tabID == "BackofficeOrders" || this.isNotOrderDataEntryModule()
+        );
     }
 
     private isNotOrderDataEntryModule() {
-        return this.ofModule && this.ofModule.idSettingsGUI !== ModuleList.OrderDataEntry.idSettingsGUI;
+        return (
+            this.ofModule &&
+            this.ofModule.idSettingsGUI !==
+                ModuleList.OrderDataEntry.idSettingsGUI
+        );
     }
 
     private isOrderDataEntryModule() {
-        return this.ofModule && this.ofModule.idSettingsGUI === ModuleList.OrderDataEntry.idSettingsGUI;
+        return (
+            this.ofModule &&
+            this.ofModule.idSettingsGUI ===
+                ModuleList.OrderDataEntry.idSettingsGUI
+        );
     }
 
     private isReturnRefundModule() {
-        return this.ofModule && this.ofModule.idSettingsGUI === ModuleList.ReturnRefund.idSettingsGUI;
+        return (
+            this.ofModule &&
+            this.ofModule.idSettingsGUI ===
+                ModuleList.ReturnRefund.idSettingsGUI
+        );
     }
 }

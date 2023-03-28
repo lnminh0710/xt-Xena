@@ -1,6 +1,6 @@
-import { Injectable, Injector } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BaseService } from '../base.service';
+import { Injectable, Injector } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import { BaseService } from "../base.service";
 
 @Injectable()
 export class DatabaseService extends BaseService {
@@ -9,14 +9,25 @@ export class DatabaseService extends BaseService {
     }
 
     public getListOfDatabaseNames(idSelectionProject): Observable<any> {
-        return this.get<any>(this.serUrl.getListOfDatabaseNames, { idSelectionProject: idSelectionProject });
+        return this.get<any>(this.serUrl.getListOfDatabaseNames, {
+            idSelectionProject: idSelectionProject,
+        });
     }
 
-    public getListOfDatabaseCountry(idSelectionProject, idSelectionDatabaseName): Observable<any> {
-        return this.get<any>(this.serUrl.getListOfDatabaseCountry, { IdSelectionProject: idSelectionProject, IdSelectionDatabaseName: idSelectionDatabaseName });
+    public getListOfDatabaseCountry(
+        idSelectionProject,
+        idSelectionDatabaseName
+    ): Observable<any> {
+        return this.get<any>(this.serUrl.getListOfDatabaseCountry, {
+            IdSelectionProject: idSelectionProject,
+            IdSelectionDatabaseName: idSelectionDatabaseName,
+        });
     }
 
     public saveProjectDatabase(database): Observable<any> {
-        return this.post<any>(this.serUrl.saveProjectDatabase, JSON.stringify(database));
+        return this.post<any>(
+            this.serUrl.saveProjectDatabase,
+            JSON.stringify(database)
+        );
     }
 }

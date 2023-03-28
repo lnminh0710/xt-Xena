@@ -1,9 +1,7 @@
-import {
-    ScheduleEvent
-} from 'app/models';
+import { ScheduleEvent } from "app/models";
 
 export class TimeSchedule {
-    public name: string = '';
+    public name: string = "";
     public select: boolean = false;
 
     public constructor(init?: Partial<TimeSchedule>) {
@@ -12,7 +10,7 @@ export class TimeSchedule {
 }
 
 export class ScheduleEventConfig {
-    public name: string = '';
+    public name: string = "";
     public isChange: boolean = false;
     // public isPrimary: boolean = false;
     public data: Array<ScheduleEvent> = [];
@@ -23,7 +21,7 @@ export class ScheduleEventConfig {
 }
 
 export class ScheduleSettingData {
-    public scheduleType: string = '';
+    public scheduleType: string = "";
     public scheduleEvents: Array<ScheduleEvent> = null;
 
     public constructor(init?: Partial<ScheduleSettingData>) {

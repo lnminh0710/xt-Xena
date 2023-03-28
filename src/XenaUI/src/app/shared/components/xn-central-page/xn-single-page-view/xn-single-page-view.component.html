@@ -1,19 +1,26 @@
-<div *ngIf="page && page.PageId && ofModuleLocal"
-     id="{{page.PageId || ''}}"
-     [perfect-scrollbar]="perfectScrollbarConfig"
-     class="single-page-view" [ngSwitch]="ofModuleLocal.idSettingsGUI">
+<div
+    *ngIf="page && page.PageId && ofModuleLocal"
+    id="{{ page.PageId || '' }}"
+    [perfect-scrollbar]="perfectScrollbarConfig"
+    class="single-page-view"
+    [ngSwitch]="ofModuleLocal.idSettingsGUI"
+>
     <!--Tool Management-->
     <div *ngSwitchCase="'36'" class="height-100-pc">
-        <app-tool-container [isActivated]="isActivated"
-                            [pageId]="page.PageId"
-                            [tabID]="tabID"
-                            (onWidgetDeleted)="refreshPerfectScrollbar($event)"></app-tool-container>
+        <app-tool-container
+            [isActivated]="isActivated"
+            [pageId]="page.PageId"
+            [tabID]="tabID"
+            (onWidgetDeleted)="refreshPerfectScrollbar($event)"
+        ></app-tool-container>
     </div>
     <!-- Widget Default-->
-    <widget-container *ngSwitchDefault
-                      [isActivated]="isActivated"
-                      [pageId]="page.PageId"
-                      [tabID]="tabID"
-                      (onWidgetDeleted)="refreshPerfectScrollbar($event)">
+    <widget-container
+        *ngSwitchDefault
+        [isActivated]="isActivated"
+        [pageId]="page.PageId"
+        [tabID]="tabID"
+        (onWidgetDeleted)="refreshPerfectScrollbar($event)"
+    >
     </widget-container>
 </div>

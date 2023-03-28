@@ -1,36 +1,43 @@
-<split class="min-width-1000 height-pc-100"
-       direction="vertical"
-       *ngIf="isEdit"
-       [gutterSize]="5"
-       [perfect-scrollbar]="perfectScrollbarConfig">
+<split
+    class="min-width-1000 height-pc-100"
+    direction="vertical"
+    *ngIf="isEdit"
+    [gutterSize]="5"
+    [perfect-scrollbar]="perfectScrollbarConfig"
+>
     <split-area [size]="50">
-        <div class="col-xs-12  no-padding  height-pc-100">
-            <sel-country-selection-header #countrySelectionHeader
-                                          [mode]="mode"
-                                          [countryCheckListData]="countryCheckListData"
-                                          [selectedEntity]="selectedEntity"
-                                          [widgetListenKey]="widgetListenKey"
-                                          (selectedCountriesOutput)="countryDataOutput($event)"
-                                          (formChange)="onFormChange($event)">
+        <div class="col-xs-12 no-padding height-pc-100">
+            <sel-country-selection-header
+                #countrySelectionHeader
+                [mode]="mode"
+                [countryCheckListData]="countryCheckListData"
+                [selectedEntity]="selectedEntity"
+                [widgetListenKey]="widgetListenKey"
+                (selectedCountriesOutput)="countryDataOutput($event)"
+                (formChange)="onFormChange($event)"
+            >
             </sel-country-selection-header>
         </div>
     </split-area>
     <split-area [size]="50">
-        <div class="col-xs-12  no-padding  padding-top--sd  height-pc-100">
-            <sel-country-selection-footer [isEdit]="true"
-                                          [globalProperties]="globalProperties"
-                                          [selectedCountryData]="selectedCountryData"
-                                          (onItemEdited)="onFooterItemEdited($event)">
+        <div class="col-xs-12 no-padding padding-top--sd height-pc-100">
+            <sel-country-selection-footer
+                [isEdit]="true"
+                [globalProperties]="globalProperties"
+                [selectedCountryData]="selectedCountryData"
+                (onItemEdited)="onFooterItemEdited($event)"
+            >
             </sel-country-selection-footer>
         </div>
     </split-area>
 </split>
 
-<div *ngIf="!isEdit"
-     class="col-xs-12  no-padding  height-pc-100">
-    <sel-country-selection-footer [isEdit]="false"
-                                  [globalProperties]="globalProperties"
-                                  [selectedCountryData]="selectedCountryData"
-                                  (onItemEdited)="onFooterItemEdited($event)">
+<div *ngIf="!isEdit" class="col-xs-12 no-padding height-pc-100">
+    <sel-country-selection-footer
+        [isEdit]="false"
+        [globalProperties]="globalProperties"
+        [selectedCountryData]="selectedCountryData"
+        (onItemEdited)="onFooterItemEdited($event)"
+    >
     </sel-country-selection-footer>
 </div>

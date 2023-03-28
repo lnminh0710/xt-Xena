@@ -1,25 +1,29 @@
 import {
-    Component, Input, Output, EventEmitter,
-    OnInit, OnDestroy, Injector
-} from '@angular/core';
-import { Validators } from '@angular/forms';
-import { UpdatePasswordResultMessageEnum
-} from 'app/app.constants';
-import { Uti } from 'app/utilities';
-import { UserManagementFormBase } from '../um-form-base';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { Router } from '@angular/router';
-import {
-    AuthenticationService,
-    ValidationService
-} from 'app/services';
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    Injector,
+} from "@angular/core";
+import { Validators } from "@angular/forms";
+import { UpdatePasswordResultMessageEnum } from "app/app.constants";
+import { Uti } from "app/utilities";
+import { UserManagementFormBase } from "../um-form-base";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { Router } from "@angular/router";
+import { AuthenticationService, ValidationService } from "app/services";
 
 @Component({
-    selector: 'um-change-password-form',
-    styleUrls: ['./change-password-form.component.scss'],
-    templateUrl: './change-password-form.component.html'
+    selector: "um-change-password-form",
+    styleUrls: ["./change-password-form.component.scss"],
+    templateUrl: "./change-password-form.component.html",
 })
-export class ChangePasswordFormComponent extends UserManagementFormBase implements OnInit, OnDestroy {
+export class ChangePasswordFormComponent
+    extends UserManagementFormBase
+    implements OnInit, OnDestroy
+{
     public passwordIsMatched = true;
     public oldPasswordIsWrong = false;
 
@@ -48,7 +52,7 @@ export class ChangePasswordFormComponent extends UserManagementFormBase implemen
     }
 
     public submit() {
-        this.formGroup['submitted'] = true;
+        this.formGroup["submitted"] = true;
         try {
             if (!this.isValid()) {
                 this.setFormOutputData(false);
@@ -56,7 +60,6 @@ export class ChangePasswordFormComponent extends UserManagementFormBase implemen
             }
 
             this.updatePasswrod();
-
         } catch (ex) {
             this.setFormOutputData(true);
         }
@@ -65,10 +68,8 @@ export class ChangePasswordFormComponent extends UserManagementFormBase implemen
     public prepareSubmitData() {
         this.formGroup.updateValueAndValidity();
         const model = this.formGroup.value;
-        return {
-        };
+        return {};
     }
-
 
     public passwordKeyPess() {
         // let path = this.consts.passwordPath;
@@ -76,9 +77,8 @@ export class ChangePasswordFormComponent extends UserManagementFormBase implemen
         let formValue = this.formGroup.value;
         if (!formValue.password || !formValue.rePassword) {
             this.passwordIsMatched = true;
-        }
-        else {
-            this.passwordIsMatched = (formValue.password == formValue.rePassword);
+        } else {
+            this.passwordIsMatched = formValue.password == formValue.rePassword;
         }
     }
 
@@ -87,39 +87,64 @@ export class ChangePasswordFormComponent extends UserManagementFormBase implemen
      */
 
     private createForm() {
-        this.initForm({
-            currentPassword: ['', Validators.required],
-            password: ['', Validators.required, ValidationService.passwordValidator],
-            rePassword: ['', Validators.required, ValidationService.passwordValidator],
-        }, true);
+        this.initForm(
+            {
+                currentPassword: ["", Validators.required],
+                password: [
+                    "",
+                    Validators.required,
+                    ValidationService.passwordValidator,
+                ],
+                rePassword: [
+                    "",
+                    Validators.required,
+                    ValidationService.passwordValidator,
+                ],
+            },
+            true
+        );
     }
 
     private updatePasswrod() {
         this.formGroup.updateValueAndValidity();
-        this.authenticationService.changePassword(this.formGroup.value.currentPassword, this.formGroup.value.password)
+        this.authenticationService
+            .changePassword(
+                this.formGroup.value.currentPassword,
+                this.formGroup.value.password
+            )
             .subscribe(
-            data => this.changePasswordSuccess(data.item),
-            error => this.serviceError(error));
+                (data) => this.changePasswordSuccess(data.item),
+                (error) => this.serviceError(error)
+            );
     }
 
     private changePasswordSuccess(response: any) {
         this.appErrorHandler.executeAction(() => {
-            switch(response.result) {
-                case UpdatePasswordResultMessageEnum.INVALID : {
+            switch (response.result) {
+                case UpdatePasswordResultMessageEnum.INVALID: {
                     this.oldPasswordIsWrong = true;
                     break;
                 }
-                case UpdatePasswordResultMessageEnum.FAILED : {
-                    this.toasterService.pop('error', 'Message', 'Password is not updated');
+                case UpdatePasswordResultMessageEnum.FAILED: {
+                    this.toasterService.pop(
+                        "error",
+                        "Message",
+                        "Password is not updated"
+                    );
                     break;
                 }
-                case UpdatePasswordResultMessageEnum.SUCCESS : {
-                    this.toasterService.pop('success', 'Success', 'Password is updated');
+                case UpdatePasswordResultMessageEnum.SUCCESS: {
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "Password is updated"
+                    );
                     this.resetForm();
                     break;
                 }
-                default: break;
-            }            
+                default:
+                    break;
+            }
         });
     }
 

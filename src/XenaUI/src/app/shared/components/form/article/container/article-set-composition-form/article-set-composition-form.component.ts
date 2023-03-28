@@ -1,48 +1,61 @@
 import {
-    Component, Input, Output, EventEmitter,
-    OnInit, OnDestroy, ChangeDetectorRef,
-    ViewChild
-} from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    ChangeDetectorRef,
+    ViewChild,
+} from "@angular/core";
+import { FormGroup, FormBuilder } from "@angular/forms";
 import {
     ArticleService,
-    AppErrorHandler, SearchService,
+    AppErrorHandler,
+    SearchService,
     DatatableService,
     PropertyPanelService,
-    ModalService
-} from 'app/services';
-import { ControlGridModel, EsSearchResult,
-    ApiResultResponse, MessageModel } from 'app/models';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { ArticleSetCompositionFakeData } from './article-set-composition-form.fakedata';
-import reject from 'lodash-es/reject';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Uti } from 'app/utilities';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import { BaseComponent } from 'app/pages/private/base';
-import { Router } from '@angular/router';
+    ModalService,
+} from "app/services";
+import {
+    ControlGridModel,
+    EsSearchResult,
+    ApiResultResponse,
+    MessageModel,
+} from "app/models";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { ArticleSetCompositionFakeData } from "./article-set-composition-form.fakedata";
+import reject from "lodash-es/reject";
+import cloneDeep from "lodash-es/cloneDeep";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Uti } from "app/utilities";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
 import {
     ProcessDataActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { Configuration } from 'app/app.constants';
-import { IPageChangedEvent } from 'app/shared/components/xn-pager/xn-pagination.component';
+    CustomAction,
+} from "app/state-management/store/actions";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import { Configuration } from "app/app.constants";
+import { IPageChangedEvent } from "app/shared/components/xn-pager/xn-pagination.component";
 
 @Component({
-    selector: 'app-article-set-composition-form',
-    styleUrls: ['./article-set-composition-form.component.scss'],
-    templateUrl: './article-set-composition-form.component.html',
+    selector: "app-article-set-composition-form",
+    styleUrls: ["./article-set-composition-form.component.scss"],
+    templateUrl: "./article-set-composition-form.component.html",
 })
-export class ArticleSetCompositionFormComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ArticleSetCompositionFormComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public isRenderForm = false;
-    public globalNumberFormat: string = '';
+    public globalNumberFormat: string = "";
     public showDialog = false;
-    public compositionModel: any = { quantity: '' };
+    public compositionModel: any = { quantity: "" };
     public isContinueClicked = false;
     public quantityValid = true;
     public pageSize: number = Configuration.pageSize;
@@ -59,7 +72,8 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     private isLeftSelect = false;
     private isRightSelect = false;
     private selectItems: any = [];
-    private fakeData: ArticleSetCompositionFakeData = new ArticleSetCompositionFakeData();
+    private fakeData: ArticleSetCompositionFakeData =
+        new ArticleSetCompositionFakeData();
     private articleId: any;
     private currentArticleNumber: any;
     private addMultiItem = false;
@@ -67,18 +81,28 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     private cachedRemoveItemsFromRight: any[] = [];
     private cachedHasNumberImtesOfLeft: any = {};
     private pageIndex: number = Configuration.pageIndex;
-    private keyword: string = '*';
+    private keyword: string = "*";
     private selectedEntityState: Observable<any>;
     private selectedEntityStateSubscription: Subscription;
     private articleServiceSubscription: Subscription;
     private searchServiceSubscription: Subscription;
     private dispatcherSubscription: Subscription;
-    private outputModel: { submitResult?: any, formValue: any, isValid?: boolean, isDirty?: boolean, returnID?: string };
+    private outputModel: {
+        submitResult?: any;
+        formValue: any;
+        isValid?: boolean;
+        isDirty?: boolean;
+        returnID?: string;
+    };
 
-    @ViewChild('compositionGridLeft') private compositionGridLeft: XnAgGridComponent;
-    @ViewChild('compositionGridRight') private compositionGridRight: XnAgGridComponent;
+    @ViewChild("compositionGridLeft")
+    private compositionGridLeft: XnAgGridComponent;
+    @ViewChild("compositionGridRight")
+    private compositionGridRight: XnAgGridComponent;
 
-    @Input() set globalProperties(data: any[]) { this.execGlobalProperties(data); }
+    @Input() set globalProperties(data: any[]) {
+        this.execGlobalProperties(data);
+    }
     @Input() compositionGridLeftId: string;
     @Input() compositionGridRightId: string;
     @Output() outputData: EventEmitter<any> = new EventEmitter();
@@ -99,7 +123,13 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     ) {
         super(router);
 
-        this.selectedEntityState = this.store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).selectedEntity);
+        this.selectedEntityState = this.store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedEntity
+        );
         this.onSearchComplete = this.onSearchComplete.bind(this);
     }
 
@@ -120,30 +150,46 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     public compositionDataLeftRowClick($event: any) {
-        this.selectLeftItem = this.setItemSelectedWhenClick(this.compositionDataLeft, $event);
+        this.selectLeftItem = this.setItemSelectedWhenClick(
+            this.compositionDataLeft,
+            $event
+        );
         this.setIsSelectGrid();
     }
     public compositionDataRightRowClick($event: any) {
-        this.selectRightItem = this.setItemSelectedWhenClick(this.compositionDataRight, $event);
+        this.selectRightItem = this.setItemSelectedWhenClick(
+            this.compositionDataRight,
+            $event
+        );
         this.setIsSelectGrid();
     }
     public compositionDataLeftRowDoubleClick($event: any) {
-        this.selectLeftItem = this.setItemSelectedWhenDoubleClick(this.compositionDataLeft, $event);
+        this.selectLeftItem = this.setItemSelectedWhenDoubleClick(
+            this.compositionDataLeft,
+            $event
+        );
         this.removeItemFromCachedRemoveItemsFromRight();
         this.setIsSelectGrid();
         this.addComposition();
     }
     public compositionDataRightRowDoubleClick($event: any) {
-        this.selectRightItem = this.setItemSelectedWhenDoubleClick(this.compositionDataRight, $event);
+        this.selectRightItem = this.setItemSelectedWhenDoubleClick(
+            this.compositionDataRight,
+            $event
+        );
         // this.addToCachedRemoveItemsFromRight(this.selectRightItem);
         this.setIsSelectGrid();
         this.removeComposition($event);
     }
 
     public addComposition(event?: any) {
-        if (!this.isLeftSelect) { return; }
+        if (!this.isLeftSelect) {
+            return;
+        }
         this.compositionGridLeft.stopEditing();
-        this.showDialogConfimation(this.addCompositionAfterConfirmation.bind(this));
+        this.showDialogConfimation(
+            this.addCompositionAfterConfirmation.bind(this)
+        );
     }
 
     // public addAllComposition(event?: any) {
@@ -168,11 +214,20 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     // }
 
     public addCompositionAfterConfirmation() {
-        if (!this.isLeftSelect) { return; }
+        if (!this.isLeftSelect) {
+            return;
+        }
         let currentSeletedItemLeft = this.selectLeftItem;
         currentSeletedItemLeft = this.getRightItem(currentSeletedItemLeft);
-        this.compositionDataRight = this.addItemComposition(this.compositionDataRight, currentSeletedItemLeft);
-        this.compositionDataLeft = this.removeItemComposition(this.compositionDataLeft, this.selectLeftItem, this.compositionGridLeft);
+        this.compositionDataRight = this.addItemComposition(
+            this.compositionDataRight,
+            currentSeletedItemLeft
+        );
+        this.compositionDataLeft = this.removeItemComposition(
+            this.compositionDataLeft,
+            this.selectLeftItem,
+            this.compositionGridLeft
+        );
         this.isLeftSelect = false;
         this.removeItemFromCachedRemoveItemsFromRight();
         this.selectLeftItem = null;
@@ -182,11 +237,17 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     public removeComposition($event: any) {
-        if (!this.isRightSelect) { return; }
+        if (!this.isRightSelect) {
+            return;
+        }
         this.compositionGridRight.stopEditing();
         // this.compositionDataLeft = this.addItemComposition(this.compositionDataLeft, this.selectRightItem);
         this.addToCachedRemoveItemsFromRight(this.selectRightItem);
-        this.compositionDataRight = this.removeItemComposition(this.compositionDataRight, this.selectRightItem, this.compositionGridRight);
+        this.compositionDataRight = this.removeItemComposition(
+            this.compositionDataRight,
+            this.selectRightItem,
+            this.compositionGridRight
+        );
         this.isRightSelect = false;
         this.selectRightItem = null;
         this.resetRowIdForGrid();
@@ -197,11 +258,20 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     public removeAllComposition($event: any) {
         if (!this.compositionDataRight.data.length) return;
         this.compositionGridRight.stopEditing();
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            message: [{key: '<p>'}, {key: 'Modal_Message__Are_You_Sure_You_Want_To_Remove_All_Article'},
-                {key: '</p>'}],
-            callBack1: () => { this.removeAllArticleAfterConfirm(); }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Are_You_Sure_You_Want_To_Remove_All_Article",
+                    },
+                    { key: "</p>" },
+                ],
+                callBack1: () => {
+                    this.removeAllArticleAfterConfirm();
+                },
+            })
+        );
     }
 
     public onPageChanged(event: IPageChangedEvent) {
@@ -214,7 +284,6 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
         this.pageSize = pageNumber;
     }
 
-
     public onLeftTableSearch(keyword) {
         this.pageIndex = 1;
         this.keyword = keyword;
@@ -223,7 +292,7 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
 
     public quantityChange($event: any) {
         setTimeout(() => {
-            this.quantityValid = (this.compositionModel.quantity <= 9999999);
+            this.quantityValid = this.compositionModel.quantity <= 9999999;
         });
     }
 
@@ -253,7 +322,7 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     public cancelSetQuantity() {
-        this.compositionModel.quantity = '';
+        this.compositionModel.quantity = "";
         this.showDialog = false;
         this.isContinueClicked = false;
         this.quantityValid = true;
@@ -261,30 +330,44 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     public onSubmit(event?: any) {
-        this.articleSetCompositionForm['submitted'] = true;
+        this.articleSetCompositionForm["submitted"] = true;
         try {
             if (!this.formValid) {
                 this.outputModel = {
-                    submitResult: false, formValue: {
+                    submitResult: false,
+                    formValue: {
                         left: this.compositionDataLeft,
-                        right: this.compositionDataRight
-                    }, isValid: true, isDirty: false
+                        right: this.compositionDataRight,
+                    },
+                    isValid: true,
+                    isDirty: false,
                 };
                 this.outputData.emit(this.outputModel);
                 //this.toasterService.pop('warning', 'Validation Fail', 'There are some fields do not pass validation.');
                 return false;
             }
-            const updateData = [...this.makeInsertData(), ...this.makeUpdateData(), ...this.makeDeleteData()];
+            const updateData = [
+                ...this.makeInsertData(),
+                ...this.makeUpdateData(),
+                ...this.makeDeleteData(),
+            ];
             if (!updateData || !updateData.length) {
                 this.formValid = false;
                 this.outputModel = {
-                    submitResult: null, formValue: {
+                    submitResult: null,
+                    formValue: {
                         left: this.compositionDataLeft,
-                        right: this.compositionDataRight
-                    }, isValid: false, isDirty: false
+                        right: this.compositionDataRight,
+                    },
+                    isValid: false,
+                    isDirty: false,
                 };
                 this.outputData.emit(this.outputModel);
-                this.toasterService.pop('warning', 'Validation Fail', 'No entry data for saving!');
+                this.toasterService.pop(
+                    "warning",
+                    "Validation Fail",
+                    "No entry data for saving!"
+                );
                 return false;
             }
             this.udpateArticleSetComposition(updateData);
@@ -302,7 +385,8 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
         this.cachedHasNumberImtesOfLeft = {};
         for (let item of this.compositionDataLeft.data) {
             if (!item.quantityItems) continue;
-            this.cachedHasNumberImtesOfLeft[item.idArticleItems.toString()] = item.quantityItems;
+            this.cachedHasNumberImtesOfLeft[item.idArticleItems.toString()] =
+                item.quantityItems;
         }
     }
 
@@ -329,13 +413,30 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     private removeItemFromCachedRemoveItemsFromRight() {
-        Uti.removeItemInArray(this.cachedRemoveItemsFromRight, this.selectLeftItem, 'idArticleItems');
+        Uti.removeItemInArray(
+            this.cachedRemoveItemsFromRight,
+            this.selectLeftItem,
+            "idArticleItems"
+        );
     }
 
     private search() {
-        if (this.modalService.isStopSearchWhenEmptySize(this.pageSize, this.pageIndex)) return;
+        if (
+            this.modalService.isStopSearchWhenEmptySize(
+                this.pageSize,
+                this.pageIndex
+            )
+        )
+            return;
         this.compositionGridLeft.isSearching = true;
-        this.searchServiceSubscription = this.searchService.search('article', this.keyword, null, this.pageIndex, this.pageSize)
+        this.searchServiceSubscription = this.searchService
+            .search(
+                "article",
+                this.keyword,
+                null,
+                this.pageIndex,
+                this.pageSize
+            )
             .finally(() => {
                 this.ref.detectChanges();
             })
@@ -346,7 +447,9 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
         // if (!this.isRightSelect) { return; }
         // this.compositionDataLeft = this.addAllItemComposition(this.compositionDataRight, this.compositionDataLeft);
         this.addMultilItemToCache();
-        this.compositionDataRight = this.removeAllItemComposition(this.compositionDataRight);
+        this.compositionDataRight = this.removeAllItemComposition(
+            this.compositionDataRight
+        );
         this.isRightSelect = false;
         this.selectRightItem = null;
         this.resetRowIdForGrid();
@@ -354,38 +457,68 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
         this.search();
     }
 
-    private setItemSelectedWhenClick(controlGridModel: ControlGridModel, event: any) {
-        return controlGridModel.data.find(x => x.DT_RowId === Uti.getValueFromArrayByKey(event, 'DT_RowId'));
+    private setItemSelectedWhenClick(
+        controlGridModel: ControlGridModel,
+        event: any
+    ) {
+        return controlGridModel.data.find(
+            (x) => x.DT_RowId === Uti.getValueFromArrayByKey(event, "DT_RowId")
+        );
     }
 
-    private setItemSelectedWhenDoubleClick(controlGridModel: ControlGridModel, event: any) {
-        return controlGridModel.data.find(x => x.DT_RowId === Uti.getValueFromArrayByKey(event, 'DT_RowId'));
+    private setItemSelectedWhenDoubleClick(
+        controlGridModel: ControlGridModel,
+        event: any
+    ) {
+        return controlGridModel.data.find(
+            (x) => x.DT_RowId === Uti.getValueFromArrayByKey(event, "DT_RowId")
+        );
     }
 
     private resetRowIdForGrid() {
-        this.compositionDataLeft = this.datatableService.appendRowId(this.compositionDataLeft);
-        this.compositionDataRight = this.datatableService.appendRowId(this.compositionDataRight);
+        this.compositionDataLeft = this.datatableService.appendRowId(
+            this.compositionDataLeft
+        );
+        this.compositionDataRight = this.datatableService.appendRowId(
+            this.compositionDataRight
+        );
         this.ref.detectChanges();
     }
 
-    private addItemComposition(controlGridModel: ControlGridModel, selectedItem: any): ControlGridModel {
+    private addItemComposition(
+        controlGridModel: ControlGridModel,
+        selectedItem: any
+    ): ControlGridModel {
         controlGridModel.data.push(cloneDeep(selectedItem));
         return Uti.cloneDataForGridItems(controlGridModel);
     }
 
-    private addAllItemComposition(source: ControlGridModel, dest: ControlGridModel): ControlGridModel {
+    private addAllItemComposition(
+        source: ControlGridModel,
+        dest: ControlGridModel
+    ): ControlGridModel {
         dest.data = dest.data.concat(cloneDeep(source.data));
         return Uti.cloneDataForGridItems(dest);
     }
 
-    private removeItemComposition(controlGridModel: ControlGridModel, selectedItem: any, gridComponent: XnAgGridComponent): ControlGridModel {
-        Uti.removeItemInArray(controlGridModel.data, selectedItem, 'idArticleItems');
+    private removeItemComposition(
+        controlGridModel: ControlGridModel,
+        selectedItem: any,
+        gridComponent: XnAgGridComponent
+    ): ControlGridModel {
+        Uti.removeItemInArray(
+            controlGridModel.data,
+            selectedItem,
+            "idArticleItems"
+        );
         this.resetSelectedItem();
         // gridComponent.selectCell(-1, -1);
         return Uti.cloneDataForGridItems(controlGridModel);
     }
 
-    private removeAllItemComposition(controlGridModel: ControlGridModel): ControlGridModel {
+    private removeAllItemComposition(
+        controlGridModel: ControlGridModel
+    ): ControlGridModel {
         controlGridModel.data = [];
         this.resetSelectedItem();
         return Uti.cloneDataForGridItems(controlGridModel);
@@ -399,25 +532,36 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     private setFormDirty() {
         this.formValid = true;
         this.setOutputData(null, {
-            submitResult: null, formValue: {
+            submitResult: null,
+            formValue: {
                 left: this.compositionDataLeft,
-                right: this.compositionDataRight
-            }, isValid: true, isDirty: true, returnID: null
+                right: this.compositionDataRight,
+            },
+            isValid: true,
+            isDirty: true,
+            returnID: null,
         });
     }
 
     private udpateArticleSetComposition(updateData: any) {
-        this.articleServiceSubscription = this.articleService.updateArticleSetComposition(updateData)
+        this.articleServiceSubscription = this.articleService
+            .updateArticleSetComposition(updateData)
             .subscribe(
                 (data) => {
                     this.appErrorHandler.executeAction(() => {
                         this.setOutputData(false, {
-                            submitResult: true, formValue: {
+                            submitResult: true,
+                            formValue: {
                                 left: this.compositionDataLeft,
-                                right: this.compositionDataRight
-                            }, isValid: true, isDirty: false, returnID: data.item.returnID
+                                right: this.compositionDataRight,
+                            },
+                            isValid: true,
+                            isDirty: false,
+                            returnID: data.item.returnID,
                         });
-                        this.currentCompositionDataRight = cloneDeep(this.compositionDataRight);
+                        this.currentCompositionDataRight = cloneDeep(
+                            this.compositionDataRight
+                        );
                         Uti.resetValueForForm(this.articleSetCompositionForm);
                     });
                 },
@@ -425,43 +569,58 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
                     this.appErrorHandler.executeAction(() => {
                         this.setOutputData(false);
                     });
-                });
+                }
+            );
     }
 
     private execGlobalProperties(data: any[]) {
         this.globalProps = data;
-        this.globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(data);
+        this.globalNumberFormat =
+            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                data
+            );
     }
 
     private initData() {
         this.createForm();
         this.compositionDataLeft = {
             data: [],
-            columns: []
+            columns: [],
         };
         this.getArticleSetComposition();
-        this.articleSetCompositionForm['submitted'] = false;
+        this.articleSetCompositionForm["submitted"] = false;
         this.registerPressEnterForQuantityTextBox();
     }
 
     private subcribtion() {
-        this.selectedEntityStateSubscription = this.selectedEntityState.subscribe((selectedEntityState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (selectedEntityState && selectedEntityState.id) {
-                    this.articleId = selectedEntityState.id;
-                    if (!selectedEntityState.selectedParkedItem || !selectedEntityState.selectedParkedItem.articleNr) return;
-                    this.currentArticleNumber = selectedEntityState.selectedParkedItem.articleNr.value;
-                }
+        this.selectedEntityStateSubscription =
+            this.selectedEntityState.subscribe((selectedEntityState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (selectedEntityState && selectedEntityState.id) {
+                        this.articleId = selectedEntityState.id;
+                        if (
+                            !selectedEntityState.selectedParkedItem ||
+                            !selectedEntityState.selectedParkedItem.articleNr
+                        )
+                            return;
+                        this.currentArticleNumber =
+                            selectedEntityState.selectedParkedItem.articleNr.value;
+                    }
+                });
             });
-        });
 
-        this.dispatcherSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.onSubmit();
+        this.dispatcherSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.onSubmit();
+                });
             });
-        });
     }
 
     private createForm() {
@@ -469,52 +628,69 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     private getArticleSetComposition() {
-        this.articleServiceSubscription = this.articleService.getArticleSetComposition(this.articleId)
-            .subscribe(
-                (data) => {
-                    this.appErrorHandler.executeAction(() => {
-                        this.isRenderForm = true;
-                        this.compositionDataRight = {
-                            data: this.checkEmptyCompositionData(data.item) ? [] : this.mapGridData(data.item),
-                            columns: this.mapGridColumns(data.item)
-                        };
-                        this.compositionDataLeft.columns = cloneDeep(this.compositionDataRight.columns);
-                        this.currentCompositionDataRight = cloneDeep(this.compositionDataRight);
-                        this.resetRowIdForGrid();
-                        this.resetColumnsHeader(this.compositionGridLeft);
-                        this.resetColumnsHeader(this.compositionGridRight);
-                    });
+        this.articleServiceSubscription = this.articleService
+            .getArticleSetComposition(this.articleId)
+            .subscribe((data) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.isRenderForm = true;
+                    this.compositionDataRight = {
+                        data: this.checkEmptyCompositionData(data.item)
+                            ? []
+                            : this.mapGridData(data.item),
+                        columns: this.mapGridColumns(data.item),
+                    };
+                    this.compositionDataLeft.columns = cloneDeep(
+                        this.compositionDataRight.columns
+                    );
+                    this.currentCompositionDataRight = cloneDeep(
+                        this.compositionDataRight
+                    );
+                    this.resetRowIdForGrid();
+                    this.resetColumnsHeader(this.compositionGridLeft);
+                    this.resetColumnsHeader(this.compositionGridRight);
                 });
+            });
     }
 
     private checkEmptyCompositionData(data: any) {
-        return (!data || !data.collectionData || !data.collectionData.length || !data.collectionData[0].idArticleItems.value);
+        return (
+            !data ||
+            !data.collectionData ||
+            !data.collectionData.length ||
+            !data.collectionData[0].idArticleItems.value
+        );
     }
 
     private mapGridData(data: any) {
-        return data.collectionData.map(x => {
+        return data.collectionData.map((x) => {
             return {
                 idArticleItems: x.idArticleItems.value,
                 articleNr: x.articleNr.value,
                 articleNameShort: x.articleNameShort.value,
                 isWarehouseControl: !!x.isWarehouseControl.value,
                 quantityItems: x.quantityItems.value,
-                idArticleSet: x.idArticleSet.value
+                idArticleSet: x.idArticleSet.value,
             };
         });
     }
 
     private mapGridColumns(data: any) {
-        if (!data || !data.columnSettings || !data.columnSettings.idArticleItems) {
+        if (
+            !data ||
+            !data.columnSettings ||
+            !data.columnSettings.idArticleItems
+        ) {
             return this.fakeData.createGridColumns();
         }
         return [
-            Uti.makeGridColumn(data, 'idArticleItems', false),
-            Uti.makeGridColumn(data, 'articleNr', true),
-            Uti.makeGridColumn(data, 'articleNameShort', true),
-            Uti.makeGridColumn(data, 'isWarehouseControl', true, false, {type: 'Checkbox'}),
-            Uti.makeGridColumn(data, 'quantityItems', true, true),
-            Uti.makeGridColumn(data, 'idArticleSet', false)
+            Uti.makeGridColumn(data, "idArticleItems", false),
+            Uti.makeGridColumn(data, "articleNr", true),
+            Uti.makeGridColumn(data, "articleNameShort", true),
+            Uti.makeGridColumn(data, "isWarehouseControl", true, false, {
+                type: "Checkbox",
+            }),
+            Uti.makeGridColumn(data, "quantityItems", true, true),
+            Uti.makeGridColumn(data, "idArticleSet", false),
         ];
     }
 
@@ -524,7 +700,9 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     private getRightItem(leftSelectItem: any): any {
-        let cachedItem = this.currentCompositionDataRight.data.find(x => x.CampaignNr == leftSelectItem.CampaignNr);
+        let cachedItem = this.currentCompositionDataRight.data.find(
+            (x) => x.CampaignNr == leftSelectItem.CampaignNr
+        );
         if (cachedItem && cachedItem.CampaignNr) {
             return cachedItem;
         }
@@ -539,21 +717,29 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     private setOutputData(submitResult: any, data?: any) {
-        if ((typeof data) !== 'undefined') {
+        if (typeof data !== "undefined") {
             this.outputModel = data;
         } else {
             this.outputModel = {
-                submitResult: submitResult, formValue: this.articleSetCompositionForm.value,
-                isValid: this.articleSetCompositionForm.valid, isDirty: this.articleSetCompositionForm.dirty
+                submitResult: submitResult,
+                formValue: this.articleSetCompositionForm.value,
+                isValid: this.articleSetCompositionForm.valid,
+                isDirty: this.articleSetCompositionForm.dirty,
             };
         }
         this.outputData.emit(this.outputModel);
     }
 
     private makeInsertData(): Array<any> {
-        const insertData = this.compositionDataRight.data.filter(x =>
-            !this.currentCompositionDataRight.data.find(y => y.idArticleItems === x.idArticleItems));
-        if (!insertData || !insertData.length) { return []; }
+        const insertData = this.compositionDataRight.data.filter(
+            (x) =>
+                !this.currentCompositionDataRight.data.find(
+                    (y) => y.idArticleItems === x.idArticleItems
+                )
+        );
+        if (!insertData || !insertData.length) {
+            return [];
+        }
         return this.mapUpdateData(insertData, 0);
     }
 
@@ -561,7 +747,9 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
         let updateData: any[] = [];
         let currentItem: any;
         for (let item of this.compositionDataRight.data) {
-            currentItem = this.currentCompositionDataRight.data.find(x => x.idArticleItems === item.idArticleItems);
+            currentItem = this.currentCompositionDataRight.data.find(
+                (x) => x.idArticleItems === item.idArticleItems
+            );
             if (!currentItem || !currentItem.idArticleItems) continue;
             if (currentItem.quantityItems !== item.quantityItems) {
                 updateData.push(item);
@@ -571,12 +759,17 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     private makeDeleteData(): Array<any> {
-        const deleteData = this.currentCompositionDataRight.data.filter(x =>
-            !this.compositionDataRight.data.find(y => y.idArticleItems === x.idArticleItems));
-        if (!deleteData || !deleteData.length) { return []; }
+        const deleteData = this.currentCompositionDataRight.data.filter(
+            (x) =>
+                !this.compositionDataRight.data.find(
+                    (y) => y.idArticleItems === x.idArticleItems
+                )
+        );
+        if (!deleteData || !deleteData.length) {
+            return [];
+        }
         return this.mapUpdateData(deleteData, 2);
     }
-
 
     // mode: is a number that will be set for data save mode
     //      0: insert
@@ -585,18 +778,20 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     private mapUpdateData(mapData: Array<any>, mode: number): Array<any> {
         let updateItem: any;
         const result: Array<any> = [];
-        if (!mapData || !mapData.length) { return result; }
+        if (!mapData || !mapData.length) {
+            return result;
+        }
         for (const item of mapData) {
             updateItem = {
                 IdArticleMaster: this.articleId,
                 IdArticleItems: item.idArticleItems,
-                QuantityItems: item.quantityItems
+                QuantityItems: item.quantityItems,
             };
             if (mode !== 0) {
                 updateItem.IdArticleSet = item.idArticleSet;
             }
             if (mode === 2) {
-                updateItem.IsDeleted = '1';
+                updateItem.IsDeleted = "1";
             }
             result.push(updateItem);
         }
@@ -618,7 +813,7 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
             this.compositionDataLeft = {
                 columns: this.compositionDataLeft.columns,
                 data: [],
-                totalResults: 0
+                totalResults: 0,
             };
             this.compositionGridLeft.isSearching = false;
             return;
@@ -629,7 +824,7 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
         let leftData = {
             data: newData,
             columns: this.compositionDataLeft.columns,
-            totalResults: response.item.total
+            totalResults: response.item.total,
         };
         leftData = this.datatableService.appendRowId(leftData);
         // this.compositionGridLeft.selectCell(-1, -1);
@@ -648,24 +843,28 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
         }, 200);
     }
 
-    private makeNewRowItems (results: any[]): any[] {
+    private makeNewRowItems(results: any[]): any[] {
         const newData: Array<any> = [];
         for (const res of results) {
             const dataObj: any = {};
-            if (res.articleNr && res.articleNr.toLowerCase() == ((this.currentArticleNumber || '').toLowerCase())
-                || this.checkExistArticleItem(res['idArticle'])
-                || this.checkExistCachedRemoveItemsFromRight(res['idArticle'])) {
+            if (
+                (res.articleNr &&
+                    res.articleNr.toLowerCase() ==
+                        (this.currentArticleNumber || "").toLowerCase()) ||
+                this.checkExistArticleItem(res["idArticle"]) ||
+                this.checkExistCachedRemoveItemsFromRight(res["idArticle"])
+            ) {
                 continue;
             }
             for (const col of this.compositionDataLeft.columns) {
                 if (this.isPropExist(col.data, res)) {
                     dataObj[col.data] = res[col.data];
-                } else if (col.data.toString() === 'idArticleItems') {
-                    dataObj[col.data] = res['idArticle'];
-                } else if (col.data.toString() === 'idArticleSet') {
-                    dataObj[col.data] = res['idArticle'];
-                } else if (col.data.toString() === 'quantityItems') {
-                    dataObj[col.data] = '';
+                } else if (col.data.toString() === "idArticleItems") {
+                    dataObj[col.data] = res["idArticle"];
+                } else if (col.data.toString() === "idArticleSet") {
+                    dataObj[col.data] = res["idArticle"];
+                } else if (col.data.toString() === "quantityItems") {
+                    dataObj[col.data] = "";
                 }
             }
             newData.push(dataObj);
@@ -675,27 +874,34 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
 
     private keepEnterNumberInLeftGrid(data: any[]) {
         for (let item of data) {
-            item.quantityItems = this.cachedHasNumberImtesOfLeft[item.idArticleItems.toString()] || item.quantityItems;
+            item.quantityItems =
+                this.cachedHasNumberImtesOfLeft[
+                    item.idArticleItems.toString()
+                ] || item.quantityItems;
         }
     }
 
     private checkExistArticleItem(idArticle: any): boolean {
         if (!this.compositionDataRight.data.length) return false;
-        const articleItem = this.compositionDataRight.data.find(x => x.idArticleItems == idArticle);
-        return (articleItem && articleItem.idArticleItems);
+        const articleItem = this.compositionDataRight.data.find(
+            (x) => x.idArticleItems == idArticle
+        );
+        return articleItem && articleItem.idArticleItems;
     }
 
     private checkExistCachedRemoveItemsFromRight(idArticle: any): boolean {
         if (!this.cachedRemoveItemsFromRight.length) return false;
-        const articleItem = this.cachedRemoveItemsFromRight.find(x => x.idArticleItems == idArticle);
-        return (articleItem && articleItem.idArticleItems);
+        const articleItem = this.cachedRemoveItemsFromRight.find(
+            (x) => x.idArticleItems == idArticle
+        );
+        return articleItem && articleItem.idArticleItems;
     }
 
     private showDialogConfimation(func: any) {
         if (!this.selectLeftItem.quantityItems) {
             this.showDialog = true;
             this.focusQuantityTextbox();
-            this.compositionModel.quantity = '';
+            this.compositionModel.quantity = "";
             this.ref.detectChanges();
             return;
         }
@@ -703,11 +909,13 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
     }
 
     private registerPressEnterForQuantityTextBox() {
-        $('#txt-composition-quantity:input').keydown(($event) => {
+        $("#txt-composition-quantity:input").keydown(($event) => {
             if (!this.quantityValid) return;
-            if (!($event.which === 13 || $event.keyCode === 13)) { return; }
+            if (!($event.which === 13 || $event.keyCode === 13)) {
+                return;
+            }
             setTimeout(() => {
-                $('#btn-continue-set-quantity').focus();
+                $("#btn-continue-set-quantity").focus();
                 setTimeout(() => {
                     this.continueSetQuantity();
                 }, 200);
@@ -717,7 +925,7 @@ export class ArticleSetCompositionFormComponent extends BaseComponent implements
 
     private focusQuantityTextbox() {
         setTimeout(() => {
-            $('#txt-composition-quantity:input').focus();
+            $("#txt-composition-quantity:input").focus();
         }, 100);
     }
 }

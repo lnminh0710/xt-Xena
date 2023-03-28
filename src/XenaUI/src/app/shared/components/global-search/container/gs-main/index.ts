@@ -1,1 +1,1 @@
-﻿export { GlobalSearchMainComponent } from './gs-main.component';
+﻿export { GlobalSearchMainComponent } from "./gs-main.component";

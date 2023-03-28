@@ -1,1 +1,1 @@
-export * from './global-search.action';
+export * from "./global-search.action";

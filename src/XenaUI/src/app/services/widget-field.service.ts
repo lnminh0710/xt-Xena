@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable()
 export class WidgetFieldService {
-    private messageSource = new BehaviorSubject('');
+    private messageSource = new BehaviorSubject("");
     currentMessage = this.messageSource.asObservable();
 
     private duplicatedDialogFields = new BehaviorSubject(false);
@@ -15,23 +15,23 @@ export class WidgetFieldService {
     private multipleFields = new BehaviorSubject(false);
     currentMultipleFields = this.multipleFields.asObservable();
 
-    private showFieldDialog = new BehaviorSubject('');
+    private showFieldDialog = new BehaviorSubject("");
     currentFieldDialog = this.showFieldDialog.asObservable();
 
-    private changePanelHeight = new BehaviorSubject('');
+    private changePanelHeight = new BehaviorSubject("");
     panelHeight = this.changePanelHeight.asObservable();
 
-    private changeColumnWidth = new BehaviorSubject('');
+    private changeColumnWidth = new BehaviorSubject("");
     columnWidth = this.changeColumnWidth.asObservable();
 
-    private changeGeneralFieldHeight = new BehaviorSubject('');
+    private changeGeneralFieldHeight = new BehaviorSubject("");
     generalFieldHeight = this.changeGeneralFieldHeight.asObservable();
 
-    private changeQuantityActicleInvoice = new BehaviorSubject('');
-    changeQuantityActicleInvoiceAction = this.changeQuantityActicleInvoice.asObservable();
+    private changeQuantityActicleInvoice = new BehaviorSubject("");
+    changeQuantityActicleInvoiceAction =
+        this.changeQuantityActicleInvoice.asObservable();
 
-    constructor() {
-    }
+    constructor() {}
 
     changeMessage(message: any) {
         if (message && message.length > 0) {
@@ -40,9 +40,8 @@ export class WidgetFieldService {
     }
 
     clearMessages() {
-        this.messageSource.next('');
+        this.messageSource.next("");
     }
-
 
     changeHeightForPanel(height: any) {
         this.changePanelHeight.next(height);
@@ -69,7 +68,7 @@ export class WidgetFieldService {
     }
 
     clearFieldDialog() {
-        this.showFieldDialog.next('');
+        this.showFieldDialog.next("");
     }
 
     changeDuplicatedFieldDialog(value: any) {

@@ -29,12 +29,16 @@ form-quill-editor-toolbar .ql-font span[data-label="Helvetica"]::before {
     content: "Helvetica";
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Lucida Sans Unicode"]::before {
+form-quill-editor-toolbar
+    .ql-font
+    span[data-label="Lucida Sans Unicode"]::before {
     font-family: "Lucida Sans Unicode";
     content: "Lucida Sans Unicode";
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Portable User Interface"]::before {
+form-quill-editor-toolbar
+    .ql-font
+    span[data-label="Portable User Interface"]::before {
     font-family: "Portable User Interface";
     content: "Portable User Interface";
 }

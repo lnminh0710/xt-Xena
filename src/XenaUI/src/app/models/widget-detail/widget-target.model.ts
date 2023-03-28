@@ -1,8 +1,8 @@
-﻿import { WidgetKeyType } from './widget-constant';
+﻿import { WidgetKeyType } from "./widget-constant";
 
 /**
-* IWidgetTargetRender
-*/
+ * IWidgetTargetRender
+ */
 export interface IWidgetTargetRender {
     key: string;
     widgetKeyType: WidgetKeyType;
@@ -11,17 +11,17 @@ export interface IWidgetTargetRender {
 }
 
 /**
-* IWidgetRenderDataType
-* Listen key handler
-*/
+ * IWidgetRenderDataType
+ * Listen key handler
+ */
 export interface IWidgetRenderDataType {
-    [key: string]: { [key: string]: any };  // { 'IdPersonInterface' : { 'Main' : 1, 'Sub'  : [{},{}] } };
+    [key: string]: { [key: string]: any }; // { 'IdPersonInterface' : { 'Main' : 1, 'Sub'  : [{},{}] } };
     renderFor?: Array<IWidgetTargetRender>;
 }
 
 /**
-* IWidgetRenderDataType
-*/
+ * IWidgetRenderDataType
+ */
 export interface IWidgetDataTypeValues {
     [key: string]: IWidgetRenderDataType;
 }

@@ -1,133 +1,184 @@
-<div *ngIf="isRenderForm" [formGroup]="adChequesPRNFormGroup" class="ad__cheques-prn">
+<div
+    *ngIf="isRenderForm"
+    [formGroup]="adChequesPRNFormGroup"
+    class="ad__cheques-prn"
+>
     <div *ngIf="commonConfig['headerText']" class="xn__form-header">
-        <span>{{commonConfig['headerText']}}</span>
+        <span>{{ commonConfig["headerText"] }}</span>
     </div>
     <div class="form-group">
-        <label for="isActive" class="control-label  col-sm-3">
-          <label-translation [keyword]="'Ad_Cheuqes__Is_Active'" User_profile_F></label-translation>
+        <label for="isActive" class="control-label col-sm-3">
+            <label-translation
+                [keyword]="'Ad_Cheuqes__Is_Active'"
+                User_profile_F
+            ></label-translation>
         </label>
         <div class="col-sm-9">
-            <mat-checkbox color="primary"
-                          formControlName="isActive">
+            <mat-checkbox color="primary" formControlName="isActive">
             </mat-checkbox>
         </div>
     </div>
     <div class="form-group">
-        <label for="paymentMethod" class="control-label  col-sm-3">{{cashProviderLabel}}</label>
+        <label for="paymentMethod" class="control-label col-sm-3">{{
+            cashProviderLabel
+        }}</label>
         <div class="col-sm-9">
             <div class="full-width">
-                <xn-combo-box #paymentMethod
-                              wjDropdownHelper
-                              [form]="adChequesPRNFormGroup"
-                              formControlName="paymentMethod"
-                              class="custom-wj-input-control xn-select"
-                              [itemsSource]="paymentTypeList"
-                              [displayMemberPath]="'textValue'"
-                              [selectedValuePath]="'idValue'"
-                              [isEditable]="true"
-                              [isRequired]="false"
-                              placeholder="Please select"
-                              (selectedIndexChanged)="onChangePaymentMethod($event)">
+                <xn-combo-box
+                    #paymentMethod
+                    wjDropdownHelper
+                    [form]="adChequesPRNFormGroup"
+                    formControlName="paymentMethod"
+                    class="custom-wj-input-control xn-select"
+                    [itemsSource]="paymentTypeList"
+                    [displayMemberPath]="'textValue'"
+                    [selectedValuePath]="'idValue'"
+                    [isEditable]="true"
+                    [isRequired]="false"
+                    placeholder="Please select"
+                    (selectedIndexChanged)="onChangePaymentMethod($event)"
+                >
                 </xn-combo-box>
-                <control-messages [xn-trigger-click-inside-cbo]="paymentMethod" [control]="adChequesPRNFormGroup.controls['paymentMethod']"
-                                  icon="money">
+                <control-messages
+                    [xn-trigger-click-inside-cbo]="paymentMethod"
+                    [control]="adChequesPRNFormGroup.controls['paymentMethod']"
+                    icon="money"
+                >
                 </control-messages>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label for="principal" class="control-label  col-sm-3">{{principalLabel}}</label>
+        <label for="principal" class="control-label col-sm-3">{{
+            principalLabel
+        }}</label>
         <div class="col-sm-9">
             <div class="full-width">
-                <xn-combo-box #principal
-                              wjDropdownHelper
-                              [form]="adChequesPRNFormGroup"
-                              formControlName="principal"
-                              class="custom-wj-input-control xn-select"
-                              [itemsSource]="listComboBox.principal"
-                              [displayMemberPath]="'textValue'"
-                              [selectedValuePath]="'idValue'"
-                              [isEditable]="true"
-                              [isRequired]="false"
-                              placeholder="Please select"
-                              (selectedIndexChanged)="onChangePrincipal()">
+                <xn-combo-box
+                    #principal
+                    wjDropdownHelper
+                    [form]="adChequesPRNFormGroup"
+                    formControlName="principal"
+                    class="custom-wj-input-control xn-select"
+                    [itemsSource]="listComboBox.principal"
+                    [displayMemberPath]="'textValue'"
+                    [selectedValuePath]="'idValue'"
+                    [isEditable]="true"
+                    [isRequired]="false"
+                    placeholder="Please select"
+                    (selectedIndexChanged)="onChangePrincipal()"
+                >
                 </xn-combo-box>
-                <control-messages [xn-trigger-click-inside-cbo]="principal" [control]="adChequesPRNFormGroup.controls['principal']"
-                                  icon="user">
+                <control-messages
+                    [xn-trigger-click-inside-cbo]="principal"
+                    [control]="adChequesPRNFormGroup.controls['principal']"
+                    icon="user"
+                >
                 </control-messages>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label for="mandant" class="control-label  col-sm-3">{{mandantLabel}}</label>
+        <label for="mandant" class="control-label col-sm-3">{{
+            mandantLabel
+        }}</label>
         <div class="col-sm-9">
             <div class="full-width">
-                <xn-combo-box #mandant
-                              wjDropdownHelper
-                              [form]="adChequesPRNFormGroup"
-                              formControlName="mandant"
-                              class="custom-wj-input-control xn-select"
-                              [itemsSource]="listComboBox.mandant"
-                              [displayMemberPath]="'textValue'"
-                              [selectedValuePath]="'idValue'"
-                              [isEditable]="true"
-                              [isRequired]="false"
-                              placeholder="Please select">
+                <xn-combo-box
+                    #mandant
+                    wjDropdownHelper
+                    [form]="adChequesPRNFormGroup"
+                    formControlName="mandant"
+                    class="custom-wj-input-control xn-select"
+                    [itemsSource]="listComboBox.mandant"
+                    [displayMemberPath]="'textValue'"
+                    [selectedValuePath]="'idValue'"
+                    [isEditable]="true"
+                    [isRequired]="false"
+                    placeholder="Please select"
+                >
                 </xn-combo-box>
-                <control-messages [xn-trigger-click-inside-cbo]="mandant" [control]="adChequesPRNFormGroup.controls.mandant" [icon]="'user'"></control-messages>
+                <control-messages
+                    [xn-trigger-click-inside-cbo]="mandant"
+                    [control]="adChequesPRNFormGroup.controls.mandant"
+                    [icon]="'user'"
+                ></control-messages>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label for="country" class="control-label  col-sm-3">{{countryLabel}}</label>
+        <label for="country" class="control-label col-sm-3">{{
+            countryLabel
+        }}</label>
         <div class="col-sm-9">
             <div class="full-width">
-                <xn-combo-box #country
-                              wjDropdownHelper
-                              [form]="adChequesPRNFormGroup"
-                              formControlName="country"
-                              class="custom-wj-input-control xn-select"
-                              [itemsSource]="listComboBox.countryCode"
-                              [displayMemberPath]="'textValue'"
-                              [selectedValuePath]="'idValue'"
-                              [isEditable]="true"
-                              [isRequired]="false"
-                              placeholder="Please select">
+                <xn-combo-box
+                    #country
+                    wjDropdownHelper
+                    [form]="adChequesPRNFormGroup"
+                    formControlName="country"
+                    class="custom-wj-input-control xn-select"
+                    [itemsSource]="listComboBox.countryCode"
+                    [displayMemberPath]="'textValue'"
+                    [selectedValuePath]="'idValue'"
+                    [isEditable]="true"
+                    [isRequired]="false"
+                    placeholder="Please select"
+                >
                 </xn-combo-box>
-                <control-messages [xn-trigger-click-inside-cbo]="country" [control]="adChequesPRNFormGroup.controls['country']"
-                                  icon="globe">
+                <control-messages
+                    [xn-trigger-click-inside-cbo]="country"
+                    [control]="adChequesPRNFormGroup.controls['country']"
+                    icon="globe"
+                >
                 </control-messages>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label for="currency" class="control-label  col-sm-3">{{currencyLabel}}</label>
+        <label for="currency" class="control-label col-sm-3">{{
+            currencyLabel
+        }}</label>
         <div class="col-sm-9">
             <div class="full-width">
-                <xn-combo-box #currency
-                              wjDropdownHelper
-                              [form]="adChequesPRNFormGroup"
-                              formControlName="currency"
-                              class="custom-wj-input-control xn-select"
-                              [itemsSource]="listComboBox.currency"
-                              [displayMemberPath]="'textValue'"
-                              [selectedValuePath]="'idValue'"
-                              [isEditable]="true"
-                              [isRequired]="false"
-                              placeholder="Please select">
+                <xn-combo-box
+                    #currency
+                    wjDropdownHelper
+                    [form]="adChequesPRNFormGroup"
+                    formControlName="currency"
+                    class="custom-wj-input-control xn-select"
+                    [itemsSource]="listComboBox.currency"
+                    [displayMemberPath]="'textValue'"
+                    [selectedValuePath]="'idValue'"
+                    [isEditable]="true"
+                    [isRequired]="false"
+                    placeholder="Please select"
+                >
                 </xn-combo-box>
-                <control-messages [xn-trigger-click-inside-cbo]="currency" [control]="adChequesPRNFormGroup.controls['currency']"
-                                  icon="money">
+                <control-messages
+                    [xn-trigger-click-inside-cbo]="currency"
+                    [control]="adChequesPRNFormGroup.controls['currency']"
+                    icon="money"
+                >
                 </control-messages>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label for="prn" class="control-label  col-sm-3">{{prnLabel}}</label>
+        <label for="prn" class="control-label col-sm-3">{{ prnLabel }}</label>
         <div class="col-sm-9">
-            <input type="text" class="form-control  xn-input" name="prn" formControlName="prn" autocomplete="off"/>
-            <control-messages [type]="'textbox'"
-                              [control]="adChequesPRNFormGroup.controls.prn" [icon]="'bars'"></control-messages>
+            <input
+                type="text"
+                class="form-control xn-input"
+                name="prn"
+                formControlName="prn"
+                autocomplete="off"
+            />
+            <control-messages
+                [type]="'textbox'"
+                [control]="adChequesPRNFormGroup.controls.prn"
+                [icon]="'bars'"
+            ></control-messages>
         </div>
     </div>
 </div>

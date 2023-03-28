@@ -1,1 +1,1 @@
-export * from './smart-wizard.component';
+export * from "./smart-wizard.component";

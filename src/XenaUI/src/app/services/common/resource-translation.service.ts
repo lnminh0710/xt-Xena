@@ -1,6 +1,6 @@
-import { Injectable} from '@angular/core';
-import { Configuration } from 'app/app.constants';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { Configuration } from "app/app.constants";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable()
 export class ResourceTranslationService {
@@ -18,9 +18,7 @@ export class ResourceTranslationService {
     private successSavedSource = new BehaviorSubject(false);
     public successSaved$ = this.successSavedSource.asObservable();
 
-    constructor() {
-
-    }
+    constructor() {}
 
     public rebindEvent() {
         this.bindEventSource.next(true);
@@ -34,5 +32,4 @@ export class ResourceTranslationService {
     public saveSuccess() {
         this.successSavedSource.next(true);
     }
-
 }

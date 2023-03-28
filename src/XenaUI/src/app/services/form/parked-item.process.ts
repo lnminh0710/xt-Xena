@@ -1,5 +1,5 @@
-import { Injectable, Injector } from '@angular/core';
-import { Uti } from 'app/utilities';
+import { Injectable, Injector } from "@angular/core";
+import { Uti } from "app/utilities";
 
 @Injectable()
 export class ParkedItemProcess {

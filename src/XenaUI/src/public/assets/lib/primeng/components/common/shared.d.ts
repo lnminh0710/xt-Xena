@@ -1,8 +1,17 @@
-import { EventEmitter, ViewContainerRef, TemplateRef, OnInit, OnChanges, OnDestroy, AfterContentInit, QueryList, SimpleChanges, EmbeddedViewRef } from '@angular/core';
-export declare class Header {
-}
-export declare class Footer {
-}
+import {
+    EventEmitter,
+    ViewContainerRef,
+    TemplateRef,
+    OnInit,
+    OnChanges,
+    OnDestroy,
+    AfterContentInit,
+    QueryList,
+    SimpleChanges,
+    EmbeddedViewRef,
+} from "@angular/core";
+export declare class Header {}
+export declare class Footer {}
 export declare class PrimeTemplate {
     template: TemplateRef<any>;
     type: string;
@@ -60,7 +69,9 @@ export declare class HeaderColumnGroup {
 export declare class FooterColumnGroup {
     rows: QueryList<any>;
 }
-export declare class ColumnBodyTemplateLoader implements OnInit, OnChanges, OnDestroy {
+export declare class ColumnBodyTemplateLoader
+    implements OnInit, OnChanges, OnDestroy
+{
     viewContainer: ViewContainerRef;
     column: any;
     rowData: any;
@@ -114,5 +125,4 @@ export declare class TemplateLoader implements OnInit, OnDestroy {
     ngOnInit(): void;
     ngOnDestroy(): void;
 }
-export declare class SharedModule {
-}
+export declare class SharedModule {}

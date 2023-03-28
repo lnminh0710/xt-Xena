@@ -1,47 +1,54 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcInput from 'wijmo/wijmo.input';
-import * as wjcSelf from 'wijmo/wijmo.viewer';
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcInput from "wijmo/wijmo.input";
+import * as wjcSelf from "wijmo/wijmo.viewer";
 export declare function isIOS(): boolean;
 export declare var icons: {
-    paginated: string;
-    print: string;
-    exports: string;
-    portrait: string;
-    landscape: string;
-    pageSetup: string;
-    previousPage: string;
-    nextPage: string;
-    firstPage: string;
-    lastPage: string;
-    backwardHistory: string;
-    forwardHistory: string;
-    selectTool: string;
-    moveTool: string;
-    continuousView: string;
-    singleView: string;
-    fitWholePage: string;
-    fitPageWidth: string;
-    zoomOut: string;
-    zoomIn: string;
-    fullScreen: string;
-    exitFullScreen: string;
-    thumbnails: string;
-    outlines: string;
-    search: string;
-    searchNext: string;
-    searchPrevious: string;
-    hamburgerMenu: string;
-    viewMenu: string;
-    searchOptions: string;
-    searchLeft: string;
-    searchRight: string;
-    showZoomBar: string;
-    rubberbandTool: string;
-    magnifierTool: string;
-    rotateDocument: string;
-    rotatePage: string;
-}, _hiddenCss: string, _commandTagAttr: string;
-export declare function _pointMove(positive: boolean, pos: wjcCore.Point, detalPosOrX: wjcCore.Point | number, y?: number): wjcCore.Point;
+        paginated: string;
+        print: string;
+        exports: string;
+        portrait: string;
+        landscape: string;
+        pageSetup: string;
+        previousPage: string;
+        nextPage: string;
+        firstPage: string;
+        lastPage: string;
+        backwardHistory: string;
+        forwardHistory: string;
+        selectTool: string;
+        moveTool: string;
+        continuousView: string;
+        singleView: string;
+        fitWholePage: string;
+        fitPageWidth: string;
+        zoomOut: string;
+        zoomIn: string;
+        fullScreen: string;
+        exitFullScreen: string;
+        thumbnails: string;
+        outlines: string;
+        search: string;
+        searchNext: string;
+        searchPrevious: string;
+        hamburgerMenu: string;
+        viewMenu: string;
+        searchOptions: string;
+        searchLeft: string;
+        searchRight: string;
+        showZoomBar: string;
+        rubberbandTool: string;
+        magnifierTool: string;
+        rotateDocument: string;
+        rotatePage: string;
+    },
+    _hiddenCss: string,
+    _commandTagAttr: string;
+export declare function _pointMove(
+    positive: boolean,
+    pos: wjcCore.Point,
+    detalPosOrX: wjcCore.Point | number,
+    y?: number
+): wjcCore.Point;
 export declare class _ActionQueue {
     private _actions;
     private _isStarted;
@@ -52,30 +59,81 @@ export declare class _ActionQueue {
     readonly isStarted: boolean;
 }
 export declare function _createSvgBtn(svgContent: string): HTMLElement;
-export declare function _setLandscape(pageSettings: _IPageSettings, landscape: boolean): void;
+export declare function _setLandscape(
+    pageSettings: _IPageSettings,
+    landscape: boolean
+): void;
 export declare function _clonePageSettings(src: _IPageSettings): _IPageSettings;
 export declare function _enumToArray(enumType: any): _IEnumItem[];
-export declare function _removeChildren(node: HTMLElement, condition?: (ele: Element) => boolean): void;
+export declare function _removeChildren(
+    node: HTMLElement,
+    condition?: (ele: Element) => boolean
+): void;
 export declare function _toDOMs(html: string): DocumentFragment;
 export declare function _toDOM(html: string): HTMLElement;
-export declare function _addEvent(elm: any, evType: string, fn: Function, useCapture?: boolean): void;
-export declare function _removeEvent(elm: any, evType: string, fn: Function): void;
-export declare function _checkImageButton(button: HTMLElement, checked: boolean): void;
-export declare function _disableImageButton(button: HTMLElement, disabled: boolean): void;
-export declare function _showImageButton(button: HTMLElement, visible: boolean): void;
+export declare function _addEvent(
+    elm: any,
+    evType: string,
+    fn: Function,
+    useCapture?: boolean
+): void;
+export declare function _removeEvent(
+    elm: any,
+    evType: string,
+    fn: Function
+): void;
+export declare function _checkImageButton(
+    button: HTMLElement,
+    checked: boolean
+): void;
+export declare function _disableImageButton(
+    button: HTMLElement,
+    disabled: boolean
+): void;
+export declare function _showImageButton(
+    button: HTMLElement,
+    visible: boolean
+): void;
 export declare function _isDisabledImageButton(button: HTMLElement): boolean;
 export declare function _isCheckedImageButton(button: HTMLElement): boolean;
-export declare function _addWjHandler(key: string, event: wjcCore.Event, func: wjcCore.IEventHandler, self?: any): void;
-export declare function _removeAllWjHandlers(key: string, event: wjcCore.Event): void;
+export declare function _addWjHandler(
+    key: string,
+    event: wjcCore.Event,
+    func: wjcCore.IEventHandler,
+    self?: any
+): void;
+export declare function _removeAllWjHandlers(
+    key: string,
+    event: wjcCore.Event
+): void;
 export declare function _getErrorMessage(reason: any): string;
 export declare function _checkSeparatorShown(container: HTMLElement): void;
 export declare function _twipToPixel(value: number): number;
 export declare function _pixelToTwip(value: number): number;
-export declare function _hasScrollbar(element: Element, isHorizontal?: boolean): boolean;
-export declare function _transformSvg(svg: SVGElement, width: number, height: number, zoomFactor?: number, rotateAngle?: _RotateAngle): SVGElement;
-export declare function _getTransformedPosition(bound: _IRect, size: _ISize, rotateAngle: _RotateAngle, zoomFactor: number): wjcCore.Point;
-export declare function _getRotatedSize(size: _ISize, rotateAngle: _RotateAngle): _ISize;
-export declare function _getPositionByHitTestInfo(hitTestInfo: _IHitTestInfo): _IDocumentPosition;
+export declare function _hasScrollbar(
+    element: Element,
+    isHorizontal?: boolean
+): boolean;
+export declare function _transformSvg(
+    svg: SVGElement,
+    width: number,
+    height: number,
+    zoomFactor?: number,
+    rotateAngle?: _RotateAngle
+): SVGElement;
+export declare function _getTransformedPosition(
+    bound: _IRect,
+    size: _ISize,
+    rotateAngle: _RotateAngle,
+    zoomFactor: number
+): wjcCore.Point;
+export declare function _getRotatedSize(
+    size: _ISize,
+    rotateAngle: _RotateAngle
+): _ISize;
+export declare function _getPositionByHitTestInfo(
+    hitTestInfo: _IHitTestInfo
+): _IDocumentPosition;
 export declare class _DocumentSource {
     static _abstractMethodException: string;
     private _features;
@@ -250,11 +308,17 @@ export declare class _DocumentService implements _IDocumentService {
 }
 export declare function _pageSettingsJsonReviver(k: string, v: any): any;
 export declare function _strEndsWith(text: string, suffix: string): boolean;
-export declare function _appendQueryString(url: string, queries: Object): string;
+export declare function _appendQueryString(
+    url: string,
+    queries: Object
+): string;
 export declare function _joinUrl(...data: (string | string[])[]): string;
 export declare function _joinStringUrl(data: string[]): string[];
 export declare function _prepareStringUrl(data: string): string[];
-export declare function _httpRequest(url: string, settings?: _IHttpRequest): XMLHttpRequest;
+export declare function _httpRequest(
+    url: string,
+    settings?: _IHttpRequest
+): XMLHttpRequest;
 export declare function _objToParams(obj: Object): string;
 export interface _IHttpRequest {
     method?: string;
@@ -306,12 +370,18 @@ export declare class _Unit {
     static convertValue(value: number, from: _UnitType, to: _UnitType): number;
 }
 export interface IPromise {
-    then(onFulfilled?: (value?: any) => any, onRejected?: (reason?: any) => any): IPromise;
+    then(
+        onFulfilled?: (value?: any) => any,
+        onRejected?: (reason?: any) => any
+    ): IPromise;
     catch(onRejected: (reason?: any) => any): IPromise;
 }
 export declare class _Promise implements IPromise {
     private _callbacks;
-    then(onFulfilled?: (value?: any) => any, onRejected?: (reason?: any) => any): IPromise;
+    then(
+        onFulfilled?: (value?: any) => any,
+        onRejected?: (reason?: any) => any
+    ): IPromise;
     catch(onRejected: (reason?: any) => any): IPromise;
     resolve(value?: any): void;
     reject(reason?: any): void;
@@ -482,9 +552,11 @@ export declare class _Report extends _DocumentSource {
 export interface _IReportService extends _IDocumentService {
     reportName: string;
 }
-export interface _IReportOptions extends _IDocumentOptions, _IReportService {
-}
-export declare class _ReportService extends _DocumentService implements _IReportService {
+export interface _IReportOptions extends _IDocumentOptions, _IReportService {}
+export declare class _ReportService
+    extends _DocumentService
+    implements _IReportService
+{
     private _reportName;
     private _instanceId;
     private _status;
@@ -537,7 +609,9 @@ export declare class _ReportService extends _DocumentService implements _IReport
     getSupportedExportDescriptions(): IPromise;
     getFeatures(): IPromise;
 }
-export declare function _parseReportExecutionInfo(json: string): _IReportExecutionInfo;
+export declare function _parseReportExecutionInfo(
+    json: string
+): _IReportExecutionInfo;
 export interface _IReportStatus extends _IDocumentStatus {
     initialPosition: _IDocumentPosition;
 }
@@ -659,8 +733,14 @@ export declare enum _TouchDirection {
 }
 export declare class _TouchInfo {
     static getCenter(start: wjcCore.Point, end: wjcCore.Point): wjcCore.Point;
-    static getCenterClient(startInfo: _TouchInfo, endInfo: _TouchInfo): wjcCore.Point;
-    static getCenterScreen(startInfo: _TouchInfo, endInfo: _TouchInfo): wjcCore.Point;
+    static getCenterClient(
+        startInfo: _TouchInfo,
+        endInfo: _TouchInfo
+    ): wjcCore.Point;
+    static getCenterScreen(
+        startInfo: _TouchInfo,
+        endInfo: _TouchInfo
+    ): wjcCore.Point;
     static getDistance(startInfo: _TouchInfo, endInfo: _TouchInfo): number;
     static _getDirection(start: _TouchInfo, end: _TouchInfo): _TouchDirection;
     private _id;
@@ -686,7 +766,11 @@ export declare class _SpeedReducer {
     timeInterval: number;
     speedInterval: number;
     stop(): void;
-    start(speedX: number, speedY: number, intervalAction: (x: number, y: number) => void): void;
+    start(
+        speedX: number,
+        speedY: number,
+        intervalAction: (x: number, y: number) => void
+    ): void;
 }
 export declare enum _TouchEventType {
     Start = 0,
@@ -737,7 +821,11 @@ export declare class _PanEventArgs extends _TouchEventArgs {
     private _screen;
     private _clientDelta;
     private _screenDelta;
-    constructor(args: _TouchEventArgs, pre?: _PanEventArgs, type?: _TouchEventType);
+    constructor(
+        args: _TouchEventArgs,
+        pre?: _PanEventArgs,
+        type?: _TouchEventType
+    );
     readonly type: wjcSelf._TouchEventType;
     readonly clientDelta: wjcCore.Point;
     readonly screenDelta: wjcCore.Point;
@@ -778,7 +866,12 @@ export declare class _SwipeEventArgs extends _PanEventArgs {
     private _endTouchInfo;
     private _speed;
     private _direction;
-    constructor(startInfo: _TouchInfo, endInfo: _TouchInfo, panEventArgs: _PanEventArgs, duration: number);
+    constructor(
+        startInfo: _TouchInfo,
+        endInfo: _TouchInfo,
+        panEventArgs: _PanEventArgs,
+        duration: number
+    );
     readonly duration: number;
     readonly startTouchInfo: _TouchInfo;
     readonly endTouchInfo: _TouchInfo;
@@ -811,7 +904,11 @@ export declare class _PinchEventArgs extends _TouchEventArgs {
     private _centerScreenDelta;
     private _pre;
     private _zoom;
-    constructor(touchEventArgs: _TouchEventArgs, pinchType: _TouchEventType, pre?: _PinchEventArgs);
+    constructor(
+        touchEventArgs: _TouchEventArgs,
+        pinchType: _TouchEventType,
+        pre?: _PinchEventArgs
+    );
     readonly zoom: number;
     readonly pointersCount: number;
     readonly prePinchDistance: number;
@@ -959,7 +1056,12 @@ export declare class _Toolbar extends wjcCore.Control {
     svgButtonClicked: wjcCore.Event;
     onSvgButtonClicked(e: _ToolbarSvgButtonClickedEventArgs): void;
     addCustomItem(element: any, commandTag?: any): void;
-    addSvgButton(title: string, svgContent: string, commandTag: any, isToggle?: boolean): HTMLElement;
+    addSvgButton(
+        title: string,
+        svgContent: string,
+        commandTag: any,
+        isToggle?: boolean
+    ): HTMLElement;
     refresh(fullUpdate?: boolean): void;
 }
 export interface _ToolbarSvgButtonClickedEventArgs {
@@ -971,8 +1073,14 @@ export declare class _ViewerToolbarBase extends _Toolbar {
     _initToolbarItems(): void;
     onSvgButtonClicked(e: _ToolbarSvgButtonClickedEventArgs): void;
     readonly viewer: ViewerBase;
-    static _initToolbarZoomValue(hostToolbar: HTMLElement, viewer: ViewerBase): void;
-    static _initToolbarPageNumberInput(hostToolbar: HTMLElement, viewer: ViewerBase): void;
+    static _initToolbarZoomValue(
+        hostToolbar: HTMLElement,
+        viewer: ViewerBase
+    ): void;
+    static _initToolbarPageNumberInput(
+        hostToolbar: HTMLElement,
+        viewer: ViewerBase
+    ): void;
 }
 export declare class _ViewerToolbar extends _ViewerToolbarBase {
     private _gPaginated;
@@ -1118,7 +1226,10 @@ export declare class _Page {
     private _replaceActionLinks(svg);
     private _addGlobalUniqueId(svgHtml);
 }
-export declare class _CompositePageView extends wjcCore.Control implements _IPageView {
+export declare class _CompositePageView
+    extends wjcCore.Control
+    implements _IPageView
+{
     private _activePageView;
     private _singlePageView;
     private _continuousPageView;
@@ -1158,7 +1269,10 @@ export declare class _CompositePageView extends wjcCore.Control implements _IPag
     refresh(fullUpdate?: boolean): void;
     isPageContentLoaded(pageIndex: number): boolean;
 }
-export declare class _PageViewBase extends wjcCore.Control implements _IPageView {
+export declare class _PageViewBase
+    extends wjcCore.Control
+    implements _IPageView
+{
     private _autoHeightCalculated;
     private _startX;
     private _startY;
@@ -1227,7 +1341,11 @@ export declare class _PageViewBase extends wjcCore.Control implements _IPageView
     private _calcZoomModeZoom(zoomMode?);
     _zoomToView(): void;
     _zoomToViewWidth(): void;
-    _getTransformedPoint(pageIndex: number, top: number, left: number): wjcCore.Point;
+    _getTransformedPoint(
+        pageIndex: number,
+        top: number,
+        left: number
+    ): wjcCore.Point;
     _hitTestPagePosition(pnt: _IPageHitTestInfo): _IHitTestInfo;
     rotatePageTo(pageIndex: number, rotateAngle: _RotateAngle): void;
     hitTest(clientX: number, clientY: number): _IHitTestInfo;
@@ -1235,8 +1353,14 @@ export declare class _PageViewBase extends wjcCore.Control implements _IPageView
     refresh(fullUpdate?: boolean): void;
     isPageContentLoaded(pageIndex: number): boolean;
     protected _hitTestPageIndex(top: number): number;
-    protected _pointInViewPanelClientArea(clientX: number, clientY: number): boolean;
-    protected _panelViewPntToPageView(clientX: number, clientY: number): _IPageHitTestInfo;
+    protected _pointInViewPanelClientArea(
+        clientX: number,
+        clientY: number
+    ): boolean;
+    protected _panelViewPntToPageView(
+        clientX: number,
+        clientY: number
+    ): _IPageHitTestInfo;
 }
 export declare class _Scroller extends wjcCore.Control {
     private static _scrollbarWidth;
@@ -1296,8 +1420,14 @@ export declare class _SinglePageView extends _PageViewBase {
     moveToPosition(position: _IDocumentPosition): IPromise;
     _moveToPagePosition(position: _IDocumentPosition): void;
     protected _hitTestPageIndex(top: number): number;
-    protected _pointInViewPanelClientArea(clientX: number, clientY: number): boolean;
-    protected _panelViewPntToPageView(clientX: number, clientY: number): _IPageHitTestInfo;
+    protected _pointInViewPanelClientArea(
+        clientX: number,
+        clientY: number
+    ): boolean;
+    protected _panelViewPntToPageView(
+        clientX: number,
+        clientY: number
+    ): _IPageHitTestInfo;
     _render(pageIndex: number): IPromise;
     _guessPageIndex(): number;
     _reserveViewPage(): void;
@@ -1324,8 +1454,14 @@ export declare class _ContinuousPageView extends _PageViewBase {
     _guessPageIndex(): number;
     _render(pageIndex: number): IPromise;
     _moveToPagePosition(position: _IDocumentPosition): void;
-    protected _pointInViewPanelClientArea(clientX: number, clientY: number): boolean;
-    protected _panelViewPntToPageView(clientX: number, clientY: number): _IPageHitTestInfo;
+    protected _pointInViewPanelClientArea(
+        clientX: number,
+        clientY: number
+    ): boolean;
+    protected _panelViewPntToPageView(
+        clientX: number,
+        clientY: number
+    ): _IPageHitTestInfo;
     _reserveViewPage(): void;
     _updatePageViewTransform(): void;
     _zoomToViewWidth(): void;
@@ -1403,7 +1539,10 @@ export declare class _ViewerMenuBase extends wjcInput.Menu {
     _internalFormatItem(item: _ViewerMenuItem, itemElement: HTMLElement): void;
     private _formatItem(sender, e);
     private _onItemClicked(menu);
-    _updateActionStatus(actionElement: HTMLElement, actionType: _ViewerActionType): void;
+    _updateActionStatus(
+        actionElement: HTMLElement,
+        actionType: _ViewerActionType
+    ): void;
     private _updateActionStatusCore(actionElement, action);
     _updateItemsStatus(): void;
     refresh(fullUpdate?: boolean): void;
@@ -1421,7 +1560,10 @@ export declare class _SearchOptionsMenu extends _ViewerMenuBase {
     constructor(viewer: ViewerBase, owner: HTMLElement, options?: any);
     _initItems(): any[];
     _internalFormatItem(item: _ViewerMenuItem, itemElement: HTMLElement): void;
-    _updateActionStatus(actionElement: HTMLElement, actionType: _ViewerActionType): void;
+    _updateActionStatus(
+        actionElement: HTMLElement,
+        actionType: _ViewerActionType
+    ): void;
 }
 export declare enum MouseMode {
     SelectTool = 0,
@@ -1768,7 +1910,15 @@ export declare class _MouseTool extends wjcCore.Control {
     private _css;
     private _activeCss;
     private _visibleCss;
-    constructor(element: any, viewPanelContainer: HTMLElement, pageView: _IPageView, stopOnClientOut: boolean, css: string, activeCss: string, visibleCss: string);
+    constructor(
+        element: any,
+        viewPanelContainer: HTMLElement,
+        pageView: _IPageView,
+        stopOnClientOut: boolean,
+        css: string,
+        activeCss: string,
+        visibleCss: string
+    );
     activate(): void;
     deactivate(): void;
     reset(): void;
@@ -1796,7 +1946,11 @@ export declare class _RubberbandOnAppliedEventArgs extends wjcCore.EventArgs {
 }
 export declare class _Rubberband extends _MouseTool {
     applied: wjcCore.Event;
-    constructor(element: any, viewPanelContainer: HTMLElement, pageView: _IPageView);
+    constructor(
+        element: any,
+        viewPanelContainer: HTMLElement,
+        pageView: _IPageView
+    );
     protected _start(ht: _IHitTestInfo): void;
     protected _move(pnt: wjcCore.Point, ht: _IHitTestInfo): void;
     protected _stop(pnt?: wjcCore.Point): void;
@@ -1807,7 +1961,11 @@ export declare class _Magnifier extends _MouseTool {
     private readonly _Magnification;
     private _viewPageDiv;
     private _currentPageIndex;
-    constructor(element: any, viewPanelContainer: HTMLElement, pageView: _IPageView);
+    constructor(
+        element: any,
+        viewPanelContainer: HTMLElement,
+        pageView: _IPageView
+    );
     deactivate(): void;
     reset(): void;
     protected _getTemplateParts(): {
@@ -1868,7 +2026,11 @@ export declare class _ParametersEditor extends wjcCore.Control {
     _updateErrorsVisible(): void;
     onCommit(): void;
     onValidate(): void;
-    _deferValidate(paramName: string, beforeValidate?: Function, afterValidate?: Function): void;
+    _deferValidate(
+        paramName: string,
+        beforeValidate?: Function,
+        afterValidate?: Function
+    ): void;
     private _updateErrorDiv();
     _render(): void;
     refresh(fullUpdate?: boolean): void;

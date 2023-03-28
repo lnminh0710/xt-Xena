@@ -1,29 +1,39 @@
-<span dropdown
-      [isOpen]="status.isOpen"
-      (onShown)="toggled(true)"
-      (onHidden)="toggled(false)">
-    <a aria-hidden="true"
-       xn-tooltip
-       [tooltipText]="'Add more Order Data Entry tab'"
-       [tooltipPlacement]="'top'"
-       container="body"
-       class="dropdown-toggle cursor-pointer"
-       id="tab-header-menu"
-       dropdownToggle>
+<span
+    dropdown
+    [isOpen]="status.isOpen"
+    (onShown)="toggled(true)"
+    (onHidden)="toggled(false)"
+>
+    <a
+        aria-hidden="true"
+        xn-tooltip
+        [tooltipText]="'Add more Order Data Entry tab'"
+        [tooltipPlacement]="'top'"
+        container="body"
+        class="dropdown-toggle cursor-pointer"
+        id="tab-header-menu"
+        dropdownToggle
+    >
         <span class="fa fa-plus-circle"></span>
     </a>
-    <div class="xn__menu  xn__dropdown__menu  dropdown-menu"
-         *dropdownMenu
-         aria-labelledby="ai-tab-header-menu"
-         id="dropdown-menu">
+    <div
+        class="xn__menu xn__dropdown__menu dropdown-menu"
+        *dropdownMenu
+        aria-labelledby="ai-tab-header-menu"
+        id="dropdown-menu"
+    >
         <ul>
-            <div class="xn__menu__scroll"
-                 [perfect-scrollbar]="perfectScrollbarConfig">
+            <div
+                class="xn__menu__scroll"
+                [perfect-scrollbar]="perfectScrollbarConfig"
+            >
                 <ng-template ngFor let-tab [ngForOf]="tabs">
-                    <li *ngIf="!tab.visible"
+                    <li
+                        *ngIf="!tab.visible"
                         class="menu-list"
-                        (click)="menuItemClickHanlder(tab)">
-                        <a class="cursor-pointer">{{tab.TabName}}</a>
+                        (click)="menuItemClickHanlder(tab)"
+                    >
+                        <a class="cursor-pointer">{{ tab.TabName }}</a>
                     </li>
                 </ng-template>
             </div>

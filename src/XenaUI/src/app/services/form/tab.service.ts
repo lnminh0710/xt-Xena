@@ -1,37 +1,45 @@
-import { Injectable, Injector, Inject, forwardRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BaseService } from '../base.service';
-import { AccessRightsService } from 'app/services';
+import { Injectable, Injector, Inject, forwardRef } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import { BaseService } from "../base.service";
+import { AccessRightsService } from "app/services";
 import {
     TabSummaryModel,
     Module,
     SimpleTabModel,
-    ApiResultResponse
-} from 'app/models';
+    ApiResultResponse,
+} from "app/models";
 
-import toSafeInteger from 'lodash-es/toSafeInteger';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import { AccessRightTypeEnum } from 'app/app.constants';
+import toSafeInteger from "lodash-es/toSafeInteger";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import { AccessRightTypeEnum } from "app/app.constants";
 
 @Injectable()
 export class TabService extends BaseService {
-
-    constructor(injector: Injector,
-        @Inject(forwardRef(() => AccessRightsService)) private accessRightsService: AccessRightsService) {
+    constructor(
+        injector: Injector,
+        @Inject(forwardRef(() => AccessRightsService))
+        private accessRightsService: AccessRightsService
+    ) {
         super(injector);
-
     }
 
     public getTabSummaryInfor(param: any): Observable<ApiResultResponse> {
         let getParam = {
             moduleName: param.module.idSettingsGUI,
-            idObject: param.idObject
+            idObject: param.idObject,
         };
-        return this.get<ApiResultResponse>(this.serUrl.getTabSummaryInfor, getParam, null, null).map((result: any) => {
-
+        return this.get<ApiResultResponse>(
+            this.serUrl.getTabSummaryInfor,
+            getParam,
+            null,
+            null
+        ).map((result: any) => {
             //Set accessRight for tab summary
-            this.accessRightsService.SetAccessRightsForTabSummary(param.module, result.item);
+            this.accessRightsService.SetAccessRightsForTabSummary(
+                param.module,
+                result.item
+            );
 
             return result;
         });
@@ -45,11 +53,10 @@ export class TabService extends BaseService {
      * @param tabs
      */
     getMainTabHeader(tabs: TabSummaryModel[]) {
-        let mainTab = tabs.find(t => t.tabSummaryInfor.isMainTab);
+        let mainTab = tabs.find((t) => t.tabSummaryInfor.isMainTab);
         if (mainTab) {
             mainTab.visible = true;
-        }
-        else {
+        } else {
             mainTab = new TabSummaryModel({ visible: false });
         }
         return mainTab;
@@ -60,7 +67,7 @@ export class TabService extends BaseService {
      * @param tabs
      */
     getOtherTabsHeader(tabs: TabSummaryModel[]) {
-        return tabs.filter(t => !t.tabSummaryInfor.isMainTab) || [];
+        return tabs.filter((t) => !t.tabSummaryInfor.isMainTab) || [];
     }
 
     /**
@@ -70,17 +77,23 @@ export class TabService extends BaseService {
      */
     getMainTabContent(tabs: Array<any>, tabSummaries: TabSummaryModel[]) {
         let mainTabContent: any = { visible: false };
-        const mainTabHeader = tabSummaries.filter(t => t.tabSummaryInfor.isMainTab);
+        const mainTabHeader = tabSummaries.filter(
+            (t) => t.tabSummaryInfor.isMainTab
+        );
         if (mainTabHeader.length) {
-            tabs.forEach(tab => {
-                const rs = mainTabHeader.find(p => p.tabSummaryInfor.tabID == tab.TabID);
+            tabs.forEach((tab) => {
+                const rs = mainTabHeader.find(
+                    (p) => p.tabSummaryInfor.tabID == tab.TabID
+                );
                 if (rs) {
                     mainTabContent = tab;
                     mainTabContent.visible = true;
                     mainTabContent.accessRight = rs.accessRight;
-                    mainTabContent.keepContentState = !!toSafeInteger(tab.KeepContentState);
+                    mainTabContent.keepContentState = !!toSafeInteger(
+                        tab.KeepContentState
+                    );
                 }
-            })
+            });
         }
         return mainTabContent;
     }
@@ -92,14 +105,20 @@ export class TabService extends BaseService {
      */
     getOtherTabsContent(tabs: Array<any>, tabSummaries: TabSummaryModel[]) {
         let otherTabsContent: Array<any> = [];
-        const othersTabHeader = tabSummaries.filter(t => !t.tabSummaryInfor.isMainTab);
+        const othersTabHeader = tabSummaries.filter(
+            (t) => !t.tabSummaryInfor.isMainTab
+        );
         if (othersTabHeader.length) {
-            tabs.forEach(tab => {
-                const rs = othersTabHeader.find(p => p.tabSummaryInfor.tabID == tab.TabID);
+            tabs.forEach((tab) => {
+                const rs = othersTabHeader.find(
+                    (p) => p.tabSummaryInfor.tabID == tab.TabID
+                );
                 if (rs) {
-                    otherTabsContent.push(Object.assign({}, tab, { accessRight: rs.accessRight }));
+                    otherTabsContent.push(
+                        Object.assign({}, tab, { accessRight: rs.accessRight })
+                    );
                 }
-            })
+            });
         }
         return otherTabsContent;
     }
@@ -154,11 +173,18 @@ export class TabService extends BaseService {
 
         for (let i = 0; i < tabData.length; i++) {
             for (let j = 0; j < otherTabs.length; j++) {
-                if (tabData[i].tabSummaryInfor.tabID === otherTabs[j].tabSummaryInfor.tabID) {
+                if (
+                    tabData[i].tabSummaryInfor.tabID ===
+                    otherTabs[j].tabSummaryInfor.tabID
+                ) {
                     otherTabs[j].tabSummaryInfor = tabData[i].tabSummaryInfor;
                     otherTabs[j].tabSummaryData = tabData[i].tabSummaryData;
-                    otherTabs[j].disabled = isNil(tabData[i].disabled) ? false : tabData[i].disabled;
-                    otherTabs[j].visible = isNil(tabData[i].visible) ? true : tabData[i].visible;
+                    otherTabs[j].disabled = isNil(tabData[i].disabled)
+                        ? false
+                        : tabData[i].disabled;
+                    otherTabs[j].visible = isNil(tabData[i].visible)
+                        ? true
+                        : tabData[i].visible;
                 }
             }
         }
@@ -173,7 +199,7 @@ export class TabService extends BaseService {
     }
 
     isTabStructureChanged(mainTab, otherTabs, data) {
-        return isEmpty(mainTab) || (otherTabs.length !== data.length - 1);
+        return isEmpty(mainTab) || otherTabs.length !== data.length - 1;
     }
 
     isMainTabSelected(selectedTab: TabSummaryModel) {
@@ -186,7 +212,9 @@ export class TabService extends BaseService {
 
     disabledTab(tabs: TabSummaryModel[], selectedTab: TabSummaryModel) {
         for (const tab of tabs) {
-            if (tab.tabSummaryInfor.tabID === selectedTab.tabSummaryInfor.tabID) {
+            if (
+                tab.tabSummaryInfor.tabID === selectedTab.tabSummaryInfor.tabID
+            ) {
                 tab.disabled = false;
             } else {
                 tab.disabled = true;
@@ -196,21 +224,44 @@ export class TabService extends BaseService {
         return tabs;
     }
 
-    createNewTabConfig(isMainTab: boolean, activeModule: Module, selectedTab: TabSummaryModel, selectedSimpleTab?: SimpleTabModel, tabSetting?: any, contentDisplayMode?: string) {
+    createNewTabConfig(
+        isMainTab: boolean,
+        activeModule: Module,
+        selectedTab: TabSummaryModel,
+        selectedSimpleTab?: SimpleTabModel,
+        tabSetting?: any,
+        contentDisplayMode?: string
+    ) {
         let simpleTabSetting: any;
         if (selectedSimpleTab) {
-            simpleTabSetting = tabSetting.Content.CustomTabs.find(ct => ct.TabID == selectedTab.tabSummaryInfor.tabID);
+            simpleTabSetting = tabSetting.Content.CustomTabs.find(
+                (ct) => ct.TabID == selectedTab.tabSummaryInfor.tabID
+            );
             if (simpleTabSetting) {
                 let simpleTabs: SimpleTabModel[] = [];
-                if (simpleTabSetting.TabContent[contentDisplayMode].Split && simpleTabSetting.TabContent[contentDisplayMode].Split.Items) {
-                    for (const item of simpleTabSetting.TabContent[contentDisplayMode].Split.Items) {
-                        if (!isNil(item.TabContent[contentDisplayMode].SimpleTabs)) {
-                            simpleTabs = item.TabContent[contentDisplayMode].SimpleTabs;
+                if (
+                    simpleTabSetting.TabContent[contentDisplayMode].Split &&
+                    simpleTabSetting.TabContent[contentDisplayMode].Split.Items
+                ) {
+                    for (const item of simpleTabSetting.TabContent[
+                        contentDisplayMode
+                    ].Split.Items) {
+                        if (
+                            !isNil(
+                                item.TabContent[contentDisplayMode].SimpleTabs
+                            )
+                        ) {
+                            simpleTabs =
+                                item.TabContent[contentDisplayMode].SimpleTabs;
                             break;
                         }
                     }
-                } else if (simpleTabSetting.TabContent[contentDisplayMode].SimpleTabs) {
-                    simpleTabs = simpleTabSetting.TabContent[contentDisplayMode].SimpleTabs;
+                } else if (
+                    simpleTabSetting.TabContent[contentDisplayMode].SimpleTabs
+                ) {
+                    simpleTabs =
+                        simpleTabSetting.TabContent[contentDisplayMode]
+                            .SimpleTabs;
                 }
 
                 for (const simpleTab of simpleTabs) {
@@ -218,26 +269,39 @@ export class TabService extends BaseService {
                         // TODO: will fix for business later
                         // Fix javascript error
                         // [selectedSimpleTab.TabID]: activeModule.idSettingsGUI + '-' + selectedSimpleTab.TabID
-                        [selectedSimpleTab.TabID]: (activeModule.idSettingsGUI || '') + '-' + selectedSimpleTab.TabID
-                    }
+                        [selectedSimpleTab.TabID]:
+                            (activeModule.idSettingsGUI || "") +
+                            "-" +
+                            selectedSimpleTab.TabID,
+                    };
                 }
-
             }
         }
 
         return {
-            normalTab: selectedSimpleTab ? null : {
-                isMainTab: isMainTab,
-                activeModuleId: activeModule.idSettingsGUI,
-                tabID: isMainTab ? this.uti.getDefaultMainTabId(activeModule) : selectedTab.tabSummaryInfor.tabID,
-                moduleTabCombineName: activeModule.idSettingsGUI + '-' + (isMainTab ? this.uti.getDefaultMainTabId(activeModule) : selectedTab.tabSummaryInfor.tabID)
-            },
-            simpleTab: !selectedSimpleTab ? null : {
-                activeModuleId: activeModule.idSettingsGUI,
-                tabID: selectedSimpleTab.TabID,
-                moduleTabCombineName: simpleTabSetting
-            }
-        }
+            normalTab: selectedSimpleTab
+                ? null
+                : {
+                      isMainTab: isMainTab,
+                      activeModuleId: activeModule.idSettingsGUI,
+                      tabID: isMainTab
+                          ? this.uti.getDefaultMainTabId(activeModule)
+                          : selectedTab.tabSummaryInfor.tabID,
+                      moduleTabCombineName:
+                          activeModule.idSettingsGUI +
+                          "-" +
+                          (isMainTab
+                              ? this.uti.getDefaultMainTabId(activeModule)
+                              : selectedTab.tabSummaryInfor.tabID),
+                  },
+            simpleTab: !selectedSimpleTab
+                ? null
+                : {
+                      activeModuleId: activeModule.idSettingsGUI,
+                      tabID: selectedSimpleTab.TabID,
+                      moduleTabCombineName: simpleTabSetting,
+                  },
+        };
     }
 
     buildEditingData(editingTabData, moduleName) {
@@ -246,16 +310,15 @@ export class TabService extends BaseService {
         }
 
         switch (moduleName) {
-            case 'Customer':
+            case "Customer":
                 return this.buildCustomerHeader(editingTabData);
-            case 'Administration':
+            case "Administration":
                 return this.buildAdministrationHeader(editingTabData);
-            case 'Warehouse Movement':
+            case "Warehouse Movement":
                 return this.buildSortingGoodsHeader(editingTabData);
 
-
             default:
-                return '';
+                return "";
         }
     }
 
@@ -267,37 +330,49 @@ export class TabService extends BaseService {
     }
 
     buildCustomerHeader(editingTabData) {
-        let result = (editingTabData.title || '')
-            + ' ' + (editingTabData.lastName || '')
-            + ' ' + (editingTabData.firstName || '');
+        let result =
+            (editingTabData.title || "") +
+            " " +
+            (editingTabData.lastName || "") +
+            " " +
+            (editingTabData.firstName || "");
 
         if (editingTabData.address) {
-            result += (editingTabData.address.street || '')
-                + ' ' + (editingTabData.address.streetNr || '')
-                + ' ' + (editingTabData.address.place || '');
+            result +=
+                (editingTabData.address.street || "") +
+                " " +
+                (editingTabData.address.streetNr || "") +
+                " " +
+                (editingTabData.address.place || "");
         }
 
-        result += ' ' + (editingTabData.countryCode || '');
+        result += " " + (editingTabData.countryCode || "");
 
         return result;
     }
 
     buildAdministrationHeader(editingTabData) {
-        let result = '';
+        let result = "";
 
         if (editingTabData.adMainFieldForm) {
-            result = (editingTabData.adMainFieldForm.title || '')
-                + ' ' + (editingTabData.adMainFieldForm.lastName || '')
-                + ' ' + (editingTabData.adMainFieldForm.firstName || '');
+            result =
+                (editingTabData.adMainFieldForm.title || "") +
+                " " +
+                (editingTabData.adMainFieldForm.lastName || "") +
+                " " +
+                (editingTabData.adMainFieldForm.firstName || "");
         }
 
         if (editingTabData.address) {
-            result += (editingTabData.address.street || '')
-                + ' ' + (editingTabData.address.streetNr || '')
-                + ' ' + (editingTabData.address.place || '');
+            result +=
+                (editingTabData.address.street || "") +
+                " " +
+                (editingTabData.address.streetNr || "") +
+                " " +
+                (editingTabData.address.place || "");
         }
 
-        result += ' ' + (editingTabData.countryCode || '');
+        result += " " + (editingTabData.countryCode || "");
 
         return result;
     }
@@ -305,8 +380,8 @@ export class TabService extends BaseService {
     buildColumnFilter(httpLink) {
         const result = {};
 
-        const keyName = httpLink.substr(0, httpLink.indexOf('='));
-        const value = httpLink.substr(httpLink.indexOf('=') + 1);
+        const keyName = httpLink.substr(0, httpLink.indexOf("="));
+        const value = httpLink.substr(httpLink.indexOf("=") + 1);
 
         result[keyName] = [value];
 
@@ -329,9 +404,13 @@ export class TabService extends BaseService {
         for (const item of menuItems) {
             const filterItem = this.buildColumnFilter(item.httpLink);
             if (this.checkKeyNameExist(result, filterItem)) {
-                result[Object.keys(filterItem)[0]].push(filterItem[Object.keys(filterItem)[0]][0]);
+                result[Object.keys(filterItem)[0]].push(
+                    filterItem[Object.keys(filterItem)[0]][0]
+                );
             } else {
-                result[Object.keys(filterItem)[0]] = [filterItem[Object.keys(filterItem)[0]][0]];
+                result[Object.keys(filterItem)[0]] = [
+                    filterItem[Object.keys(filterItem)[0]][0],
+                ];
             }
         }
 

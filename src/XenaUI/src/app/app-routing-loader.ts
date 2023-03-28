@@ -1,5 +1,5 @@
-import { PreloadingStrategy, Route } from '@angular/router';
-import { Observable } from 'rxjs';
+import { PreloadingStrategy, Route } from "@angular/router";
+import { Observable } from "rxjs";
 
 export class AppCustomPreloader implements PreloadingStrategy {
     preload(route: Route, load: Function): Observable<any> {
@@ -8,7 +8,10 @@ export class AppCustomPreloader implements PreloadingStrategy {
         if (route.data && route.data.preload) {
             //Page Advancesearch and Search don't load private module
             // || location.pathname == '/widget'
-            if (location.pathname == '/advancesearch' || location.pathname == '/search') {
+            if (
+                location.pathname == "/advancesearch" ||
+                location.pathname == "/search"
+            ) {
                 return Observable.of(null);
             }
 

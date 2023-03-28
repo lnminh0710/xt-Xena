@@ -1,1 +1,1 @@
-﻿export * from './dynamic-rules-type.model';
+﻿export * from "./dynamic-rules-type.model";

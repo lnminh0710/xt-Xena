@@ -1,5 +1,5 @@
-import * as wjcGrid from 'wijmo/wijmo.grid';
-import * as wjcCore from 'wijmo/wijmo';
+import * as wjcGrid from "wijmo/wijmo.grid";
+import * as wjcCore from "wijmo/wijmo";
 export declare class _MultiRow extends wjcGrid.Row {
     _idxData: number;
     _idxRecord: number;
@@ -26,12 +26,25 @@ export declare class _CellGroup extends _Cell {
     readonly cells: _Cell[];
     closeGroup(rowsPerItem: number): void;
     getColumnWidth(c: number): any;
-    getMergedRange(p: wjcGrid.GridPanel, r: number, c: number): wjcGrid.CellRange;
-    getBindingColumn(p: wjcGrid.GridPanel, r: number, c: number): wjcGrid.Column;
+    getMergedRange(
+        p: wjcGrid.GridPanel,
+        r: number,
+        c: number
+    ): wjcGrid.CellRange;
+    getBindingColumn(
+        p: wjcGrid.GridPanel,
+        r: number,
+        c: number
+    ): wjcGrid.Column;
     getColumn(name: string): wjcGrid.Column;
 }
 export declare class _MergeManager extends wjcGrid.MergeManager {
-    getMergedRange(p: wjcGrid.GridPanel, r: number, c: number, clip?: boolean): wjcGrid.CellRange;
+    getMergedRange(
+        p: wjcGrid.GridPanel,
+        r: number,
+        c: number,
+        clip?: boolean
+    ): wjcGrid.CellRange;
 }
 export declare class _AddNewHandler extends wjcGrid._AddNewHandler {
     constructor(grid: wjcGrid.FlexGrid);
@@ -49,7 +62,11 @@ export declare class MultiRow extends wjcGrid.FlexGrid {
     constructor(element: any, options?: any);
     layoutDefinition: any[];
     readonly rowsPerItem: number;
-    getBindingColumn(p: wjcGrid.GridPanel, r: number, c: number): wjcGrid.Column;
+    getBindingColumn(
+        p: wjcGrid.GridPanel,
+        r: number,
+        c: number
+    ): wjcGrid.Column;
     getColumn(name: string): wjcGrid.Column;
     centerHeadersVertically: boolean;
     collapsedHeaders: boolean;
@@ -63,8 +80,15 @@ export declare class MultiRow extends wjcGrid.FlexGrid {
     _bindColumns(): void;
     _updateCollapsedHeaders(): void;
     _updateColumnTypes(): void;
-    _getBindingColumn(p: wjcGrid.GridPanel, r: number, c: wjcGrid.Column): wjcGrid.Column;
-    _cvCollectionChanged(sender: any, e: wjcCore.NotifyCollectionChangedEventArgs): void;
+    _getBindingColumn(
+        p: wjcGrid.GridPanel,
+        r: number,
+        c: wjcGrid.Column
+    ): wjcGrid.Column;
+    _cvCollectionChanged(
+        sender: any,
+        e: wjcCore.NotifyCollectionChangedEventArgs
+    ): void;
     _parseCellGroups(groups: any[]): _CellGroup[];
     _formatItem(s: MultiRow, e: wjcGrid.FormatItemEventArgs): void;
     _updateButtonGlyph(): void;

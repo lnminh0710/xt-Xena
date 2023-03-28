@@ -1,32 +1,36 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter,
+} from "@angular/core";
 
 @Component({
-    selector: 'smart-wizzard',
-    styleUrls: ['./smart-wizard.component.scss'],
-    templateUrl: './smart-wizard.component.html'
+    selector: "smart-wizzard",
+    styleUrls: ["./smart-wizard.component.scss"],
+    templateUrl: "./smart-wizard.component.html",
 })
 export class SmartWizzardComponent implements OnInit, OnDestroy {
-
     @Input() data: Array<any>;
     @Output() wizzardClick: EventEmitter<any> = new EventEmitter();
 
-    constructor() { }
+    constructor() {}
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     public itemClick(itemId: any) {
-        const clickItem = this.data.find(x => x.id === itemId);
+        const clickItem = this.data.find((x) => x.id === itemId);
         if (!clickItem || !clickItem.id || !clickItem.isCanSelect) return;
         this.setActive(clickItem);
     }
 
     private setActive(item: any) {
-        this.data.forEach(x => {
-            x.isActive = (x.id === item.id);
+        this.data.forEach((x) => {
+            x.isActive = x.id === item.id;
         });
         this.wizzardClick.emit(item);
     }

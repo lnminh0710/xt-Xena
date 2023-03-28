@@ -1,1 +1,1 @@
-export * from './xn-widget-menu-status.component';
+export * from "./xn-widget-menu-status.component";

@@ -1,18 +1,15 @@
-import { Directive, ElementRef, Input, Renderer } from '@angular/core';
+import { Directive, ElementRef, Input, Renderer } from "@angular/core";
 
 @Directive({
-    selector: '[xnAppendStyle]'
+    selector: "[xnAppendStyle]",
 })
 export class XnAppendStyleDirective {
-
-    constructor(private element: ElementRef) {
-
-    }
+    constructor(private element: ElementRef) {}
 
     @Input()
     set xnAppendStyle(data: any) {
         if (!data || !this.element.nativeElement) return;
 
-        $(this.element.nativeElement).find('input').css(data);
+        $(this.element.nativeElement).find("input").css(data);
     }
 }

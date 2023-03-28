@@ -1,1 +1,1 @@
-﻿export * from './hot-key-setting.reducer';
+﻿export * from "./hot-key-setting.reducer";

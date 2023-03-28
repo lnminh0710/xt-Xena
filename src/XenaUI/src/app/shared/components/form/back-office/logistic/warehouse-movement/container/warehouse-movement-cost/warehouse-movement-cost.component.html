@@ -1,76 +1,105 @@
-<div *ngIf="isRenderForm"
-     class="form-container height-pc-100"
-     [ngClass]="{'submitted': costForm['submitted']}">
-    <form [formGroup]="costForm"
-          id="costForm"
-          novalidate>
-        <control-focus #focusControl
-                       formName="costForm"
-                       controlWaitingMore="description"
-                       focusControl="description">
+<div
+    *ngIf="isRenderForm"
+    class="form-container height-pc-100"
+    [ngClass]="{ submitted: costForm['submitted'] }"
+>
+    <form [formGroup]="costForm" id="costForm" novalidate>
+        <control-focus
+            #focusControl
+            formName="costForm"
+            controlWaitingMore="description"
+            focusControl="description"
+        >
         </control-focus>
         <div class="form-group col-xs-2">
-            <label class="control-label required"><label-translation [keyword]="'Warehouse_Movement__Description'"></label-translation></label>
-            <xn-combo-box #description
-                          wjDropdownHelper
-                          [form]="costForm"
-                          formControlName="description"
-                          class="custom-wj-input-control xn-select xn-input"
-                          [itemsSource]="descriptionList"
-                          [displayMemberPath]="'textValue'"
-                          [selectedValuePath]="'idValue'"
-                          [isEditable]="true"
-                          [isRequired]="false"
-                          placeholder="Please select">
+            <label class="control-label required"
+                ><label-translation
+                    [keyword]="'Warehouse_Movement__Description'"
+                ></label-translation
+            ></label>
+            <xn-combo-box
+                #description
+                wjDropdownHelper
+                [form]="costForm"
+                formControlName="description"
+                class="custom-wj-input-control xn-select xn-input"
+                [itemsSource]="descriptionList"
+                [displayMemberPath]="'textValue'"
+                [selectedValuePath]="'idValue'"
+                [isEditable]="true"
+                [isRequired]="false"
+                placeholder="Please select"
+            >
             </xn-combo-box>
-            <control-messages [xn-trigger-click-inside-cbo]="description" [control]="costForm.controls['description']"
-                              icon="bars"></control-messages>
+            <control-messages
+                [xn-trigger-click-inside-cbo]="description"
+                [control]="costForm.controls['description']"
+                icon="bars"
+            ></control-messages>
         </div>
         <div class="form-group col-xs-2 no-padding-left">
-            <label class="control-label required"><label-translation [keyword]="'Warehouse_Movement__Cost_amount'"></label-translation></label>
-            <input formControlName="cost"
-                           id="cost" 
-                           name="cost"
-                           type="text" 
-                           xn-numeric 
-                           [min]="0"
-                           [format]="globalNumberFormat"
-                           class="custom-wj-input-control  xn-input">
-            <clear-text [enableClearText]="true"
-                        [controlType]="'number'"
-                        [inputControl]="amount"
-                        [controlName]="'amount'"></clear-text>
-            <control-messages [control]="costForm.controls['cost']" icon="star"></control-messages>
+            <label class="control-label required"
+                ><label-translation
+                    [keyword]="'Warehouse_Movement__Cost_amount'"
+                ></label-translation
+            ></label>
+            <input
+                formControlName="cost"
+                id="cost"
+                name="cost"
+                type="text"
+                xn-numeric
+                [min]="0"
+                [format]="globalNumberFormat"
+                class="custom-wj-input-control xn-input"
+            />
+            <clear-text
+                [enableClearText]="true"
+                [controlType]="'number'"
+                [inputControl]="amount"
+                [controlName]="'amount'"
+            ></clear-text>
+            <control-messages
+                [control]="costForm.controls['cost']"
+                icon="star"
+            ></control-messages>
         </div>
         <div class="form-group col-xs-2 no-padding-left">
-            <label class="control-label required"><label-translation [keyword]="'Warehouse_Movement__Currency'"></label-translation></label>
-            <xn-combo-box #currency
-                          wjDropdownHelper
-                          [form]="costForm"
-                          formControlName="currency"
-                          class="custom-wj-input-control xn-select xn-input"
-                          [itemsSource]="currencyList"
-                          [displayMemberPath]="'textValue'"
-                          [selectedValuePath]="'idValue'"
-                          [isEditable]="true"
-                          [isRequired]="false"
-                          placeholder="Please select">
+            <label class="control-label required"
+                ><label-translation
+                    [keyword]="'Warehouse_Movement__Currency'"
+                ></label-translation
+            ></label>
+            <xn-combo-box
+                #currency
+                wjDropdownHelper
+                [form]="costForm"
+                formControlName="currency"
+                class="custom-wj-input-control xn-select xn-input"
+                [itemsSource]="currencyList"
+                [displayMemberPath]="'textValue'"
+                [selectedValuePath]="'idValue'"
+                [isEditable]="true"
+                [isRequired]="false"
+                placeholder="Please select"
+            >
             </xn-combo-box>
-            <control-messages [xn-trigger-click-inside-cbo]="currency" [control]="costForm.controls['description']"
-                              icon="money"></control-messages>
+            <control-messages
+                [xn-trigger-click-inside-cbo]="currency"
+                [control]="costForm.controls['description']"
+                icon="money"
+            ></control-messages>
         </div>
         <div class="form-group col-xs-1 no-padding-left">
             <label></label>
             <div class="form-control-static">
-                <a class="mat-btn-blue"
-                   mat-raised-button
-                   (click)="add()">
+                <a class="mat-btn-blue" mat-raised-button (click)="add()">
                     <i class="fa fa-plus"></i>
                 </a>
             </div>
         </div>
     </form>
-    <div class=" col-xs-12 height-pc-100">
+    <div class="col-xs-12 height-pc-100">
         <xn-ag-grid
             [id]="'964e66ab-00a8-6e4d-97cb-fee8e8de3903'"
             [dataSource]="costGrid"

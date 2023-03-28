@@ -1,43 +1,64 @@
-<div *ngIf="isRenderForm"
-     class="form-container no-padding col-xs-12 no-padding-left no-margin full-height"
-     [perfect-scrollbar]="perfectScrollbarConfig"
-     [ngClass]="{'submitted': returnPaymentForm.submitted}">
-    <form [formGroup]="returnPaymentForm"
-          class="form-horizontal full-height"
-          id="returnPaymentForm"
-          novalidate>
-        <control-focus #controlFocusComponent
-                       formName="returnPaymentForm"></control-focus>
+<div
+    *ngIf="isRenderForm"
+    class="form-container no-padding col-xs-12 no-padding-left no-margin full-height"
+    [perfect-scrollbar]="perfectScrollbarConfig"
+    [ngClass]="{ submitted: returnPaymentForm.submitted }"
+>
+    <form
+        [formGroup]="returnPaymentForm"
+        class="form-horizontal full-height"
+        id="returnPaymentForm"
+        novalidate
+    >
+        <control-focus
+            #controlFocusComponent
+            formName="returnPaymentForm"
+        ></control-focus>
         <div class="col-xs-12 no-padding form-container full-height">
             <div class="form-group no-padding col-xs-12">
-                <label for="returnReason"
-                       class="control-label"><label-translation [keyword]="'Return_Payment__Return_reason'"></label-translation></label>
+                <label for="returnReason" class="control-label"
+                    ><label-translation
+                        [keyword]="'Return_Payment__Return_reason'"
+                    ></label-translation
+                ></label>
                 <div class="control-input">
-                    <xn-combo-box #returnReason
-                                  wjDropdownHelper
-                                  [form]="returnPaymentForm"
-                                  formControlName="returnReason"
-                                  class="custom-wj-input-control xn-select"
-                                  [itemsSource]="listComboBox.ReturnReason"
-                                  [displayMemberPath]="'textValue'"
-                                  [selectedValuePath]="'idValue'"
-                                  [isEditable]="true"
-                                  [isRequired]="false"
-                                  placeholder="Please select">
+                    <xn-combo-box
+                        #returnReason
+                        wjDropdownHelper
+                        [form]="returnPaymentForm"
+                        formControlName="returnReason"
+                        class="custom-wj-input-control xn-select"
+                        [itemsSource]="listComboBox.ReturnReason"
+                        [displayMemberPath]="'textValue'"
+                        [selectedValuePath]="'idValue'"
+                        [isEditable]="true"
+                        [isRequired]="false"
+                        placeholder="Please select"
+                    >
                     </xn-combo-box>
-                    <control-messages [xn-trigger-click-inside-cbo]="returnReason" [type]="'textbox'"
-                                      [icon]="'comment'"
-                                      [control]="returnPaymentForm.controls['returnReason']"></control-messages>
+                    <control-messages
+                        [xn-trigger-click-inside-cbo]="returnReason"
+                        [type]="'textbox'"
+                        [icon]="'comment'"
+                        [control]="returnPaymentForm.controls['returnReason']"
+                    ></control-messages>
                 </div>
             </div>
-            <div class="form-group note-form-group-container no-padding col-xs-12">
-                <label class="control-label"
-                       for="returnNotes"><label-translation [keyword]="'Return_Payment__Return_Notes'"></label-translation></label>
-                <div class="control-input  full-height">
-                    <textarea class="form-control full-height"
-                              id="returnNotes"
-                              formControlName="returnNotes"
-                              rows="3"></textarea>
+            <div
+                class="form-group note-form-group-container no-padding col-xs-12"
+            >
+                <label class="control-label" for="returnNotes"
+                    ><label-translation
+                        [keyword]="'Return_Payment__Return_Notes'"
+                    ></label-translation
+                ></label>
+                <div class="control-input full-height">
+                    <textarea
+                        class="form-control full-height"
+                        id="returnNotes"
+                        formControlName="returnNotes"
+                        rows="3"
+                    ></textarea>
                 </div>
             </div>
         </div>

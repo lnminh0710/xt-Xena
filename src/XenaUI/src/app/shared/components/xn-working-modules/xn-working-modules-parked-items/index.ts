@@ -1,1 +1,1 @@
-﻿export { XnWorkingModulesParkedItemsComponent } from './xn-working-modules-parked-items.component';
+﻿export { XnWorkingModulesParkedItemsComponent } from "./xn-working-modules-parked-items.component";

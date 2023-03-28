@@ -4,7 +4,8 @@
     margin-top: 0;
 }
 
-.pagination > li > a, .pagination > li > span {
+.pagination > li > a,
+.pagination > li > span {
     padding: 2px 9px;
 }
 
@@ -31,7 +32,7 @@ li {
     padding: 0 11px;
 
     &.delete {
-        color: #C62828 !important;
+        color: #c62828 !important;
         background: none !important;
         padding: 0 !important;
         box-shadow: none !important;
@@ -42,7 +43,7 @@ li {
         }
 
         &:not([disabled]) {
-            color: #C62828 !important;
+            color: #c62828 !important;
         }
     }
 }

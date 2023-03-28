@@ -1,15 +1,21 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcGrid from 'wijmo/wijmo.grid';
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcGrid from "wijmo/wijmo.grid";
 
-import { Pipe, NgModule, PipeTransform, Inject, LOCALE_ID  } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
+import {
+    Pipe,
+    NgModule,
+    PipeTransform,
+    Inject,
+    LOCALE_ID,
+} from "@angular/core";
+import { CommonModule, DecimalPipe } from "@angular/common";
+import { DomSanitizer } from "@angular/platform-browser";
 
 // Globalize pipe
 @Pipe({
-    name: 'glbz',
+    name: "glbz",
     // stateful pipe
-    pure: false
+    pure: false,
 })
 export class GlbzPipe {
     transform(value: any, args: string[]): any {
@@ -19,13 +25,13 @@ export class GlbzPipe {
 
 // ToDate pipe - converts date/time string to a Date object
 @Pipe({
-    name: 'toDate'
+    name: "toDate",
 })
 export class ToDatePipe {
     transform(value: any, args: string[]): any {
         if (value && wjcCore.isString(value)) {
             // parse date/time using RFC 3339 pattern
-            var dt = wjcCore.changeType(value, wjcCore.DataType.Date, 'r');
+            var dt = wjcCore.changeType(value, wjcCore.DataType.Date, "r");
             if (wjcCore.isDate(dt)) {
                 return dt;
             }
@@ -36,71 +42,71 @@ export class ToDatePipe {
 
 // CellRange pipe
 @Pipe({
-    name: 'cellRange'
+    name: "cellRange",
 })
 export class CellRangePipe {
     transform(value: any, args: string[]): any {
-        var rng = '';
+        var rng = "";
         if (value instanceof wjcGrid.CellRange) {
-            rng = '(' + value.row + ';' + value.col + ')';
+            rng = "(" + value.row + ";" + value.col + ")";
             if (!value.isSingleCell) {
-                rng += '-(' + value.row2 + ';' + value.col2 + ')';
+                rng += "-(" + value.row2 + ";" + value.col2 + ")";
             }
         }
         return rng;
     }
 }
 
-
-@Pipe({ name: 'safe' })
+@Pipe({ name: "safe" })
 export class SafePipe implements PipeTransform {
-    constructor(private sanitizer: DomSanitizer) { }
+    constructor(private sanitizer: DomSanitizer) {}
     transform(url) {
         return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
 }
 
-
 @Pipe({
-    name: 'toString'
+    name: "toString",
 })
 export class ToStringPipe {
     transform(value: any, args: string[]): any {
         if (value && wjcCore.isString(value)) {
             return value;
         }
-        return '';
+        return "";
     }
 }
 
 @Pipe({
-    name: 'formatImage'
+    name: "formatImage",
 })
 export class ToPathImage {
     transform(value: any): any {
         if (value) {
-            const formatPathImage = value.split('=')[1].replace(/&mode/g, '');
+            const formatPathImage = value.split("=")[1].replace(/&mode/g, "");
             return formatPathImage;
         }
-        return '';
+        return "";
     }
 }
 
-
 @Pipe({
-    name: 'toType'
+    name: "toType",
 })
 export class ToTypePipe {
     transform(value: any): any {
-        if (value && value === 'combo-box' || value.toLowerCase() === 'combobox') {
-            return 'ComboBox';
+        if (
+            (value && value === "combo-box") ||
+            value.toLowerCase() === "combobox"
+        ) {
+            return "ComboBox";
         }
-        return 'DatePicker';
+        return "DatePicker";
     }
 }
 
 @Pipe({
-    name: 'displaySeparator'
+    name: "displaySeparator",
 })
 export class DisplaySeparator implements PipeTransform {
     private numberPipe: DecimalPipe;
@@ -108,7 +114,7 @@ export class DisplaySeparator implements PipeTransform {
         this.numberPipe = new DecimalPipe(this.locale);
     }
     transform(value: any, format: string): any {
-        if(value && format == 'N') {
+        if (value && format == "N") {
             value = this.numberPipe.transform(value);
         }
         return value;
@@ -116,7 +122,7 @@ export class DisplaySeparator implements PipeTransform {
 }
 
 @Pipe({
-    name: 'toNumber'
+    name: "toNumber",
 })
 export class ToNumberPipe implements PipeTransform {
     transform(value: string): any {
@@ -126,7 +132,7 @@ export class ToNumberPipe implements PipeTransform {
 }
 
 @Pipe({
-    name: 'orderBy'
+    name: "orderBy",
 })
 export class ToOrderBy implements PipeTransform {
     transform(items: any[], criteria: SortCriteria): any {
@@ -136,11 +142,17 @@ export class ToOrderBy implements PipeTransform {
                 let value: number;
                 if (a.value[p] === undefined) value = -1;
                 else if (b.value[p] === undefined) value = 1;
-                else value = a.value[p] > b.value[p] ? 1 : (b.value[p] > a.value[p] ? -1 : 0);
-                return criteria.descending ? (value * -1) : value;
+                else
+                    value =
+                        a.value[p] > b.value[p]
+                            ? 1
+                            : b.value[p] > a.value[p]
+                            ? -1
+                            : 0;
+                return criteria.descending ? value * -1 : value;
             };
             items.sort(sortFn);
-            return items
+            return items;
         }
     }
 }
@@ -150,35 +162,34 @@ export interface SortCriteria {
 }
 
 @Pipe({
-    name: 'callback',
-    pure: false
+    name: "callback",
+    pure: false,
 })
 export class CallbackPipe implements PipeTransform {
     transform(items: any[], callback: (item: any) => boolean): any {
         if (!items || !callback) {
             return items;
         }
-        return items.filter(item => callback(item));
+        return items.filter((item) => callback(item));
     }
 }
 
-@Pipe({name: 'safeHtml'})
+@Pipe({ name: "safeHtml" })
 export class SafeHtml implements PipeTransform {
-  constructor(private sanitizer:DomSanitizer){}
+    constructor(private sanitizer: DomSanitizer) {}
 
-  transform(html) {
-    return this.sanitizer.bypassSecurityTrustStyle(html);
-    // return this.sanitizer.bypassSecurityTrustHtml(html);
-    // return this.sanitizer.bypassSecurityTrustScript(html);
-    // return this.sanitizer.bypassSecurityTrustUrl(html);
-    // return this.sanitizer.bypassSecurityTrustResourceUrl(html);
-  }
+    transform(html) {
+        return this.sanitizer.bypassSecurityTrustStyle(html);
+        // return this.sanitizer.bypassSecurityTrustHtml(html);
+        // return this.sanitizer.bypassSecurityTrustScript(html);
+        // return this.sanitizer.bypassSecurityTrustUrl(html);
+        // return this.sanitizer.bypassSecurityTrustResourceUrl(html);
+    }
 }
 
-@Pipe({ name: 'keepHtml', pure: true })
+@Pipe({ name: "keepHtml", pure: true })
 export class EscapeHtmlPipe implements PipeTransform {
-    constructor(private sanitizer: DomSanitizer) {
-    }
+    constructor(private sanitizer: DomSanitizer) {}
 
     transform(content) {
         return this.sanitizer.bypassSecurityTrustHtml(content);

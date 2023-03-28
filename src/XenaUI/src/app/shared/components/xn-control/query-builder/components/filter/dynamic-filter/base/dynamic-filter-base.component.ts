@@ -1,18 +1,25 @@
-﻿import { ControlBase, TextboxControl, DropdownControl, RangeControl } from 'app/models';
+﻿import {
+    ControlBase,
+    TextboxControl,
+    DropdownControl,
+    RangeControl,
+} from "app/models";
 
 /**
  * DynamicFilterBase
  */
 export class DynamicFilterBase {
+    constructor() {}
 
-    constructor() {
-    }
-     
     /**
      * findDropdownControlByCondition
      * @param key
      */
-    protected findDropdownControlByCondition(value, controlList: Array<ControlBase<any>>, condition: string): DropdownControl {
+    protected findDropdownControlByCondition(
+        value,
+        controlList: Array<ControlBase<any>>,
+        condition: string
+    ): DropdownControl {
         let targetControl: any = null;
         for (let i = 0; i < controlList.length; i++) {
             let control = controlList[i];
@@ -21,7 +28,11 @@ export class DynamicFilterBase {
                 break;
             }
             if (control.children && control.children.length) {
-                targetControl = this.findDropdownControlByCondition(value, control.children, condition);
+                targetControl = this.findDropdownControlByCondition(
+                    value,
+                    control.children,
+                    condition
+                );
                 if (targetControl) {
                     break;
                 }
@@ -33,14 +44,25 @@ export class DynamicFilterBase {
     /**
      * getIdentificationKeyList
      */
-    protected getIdentificationKeyList(identificationKeyList: Array<string>, controlList: Array<ControlBase<any>>) {
+    protected getIdentificationKeyList(
+        identificationKeyList: Array<string>,
+        controlList: Array<ControlBase<any>>
+    ) {
         for (let i = 0; i < controlList.length; i++) {
             let control = controlList[i];
-            if (control.controlType === 'dropdown' && (control as DropdownControl).identificationKey) {
-                identificationKeyList.push((control as DropdownControl).identificationKey);
+            if (
+                control.controlType === "dropdown" &&
+                (control as DropdownControl).identificationKey
+            ) {
+                identificationKeyList.push(
+                    (control as DropdownControl).identificationKey
+                );
             }
             if (control.children && control.children.length) {
-                this.getIdentificationKeyList(identificationKeyList, control.children);
+                this.getIdentificationKeyList(
+                    identificationKeyList,
+                    control.children
+                );
             }
         }
     }

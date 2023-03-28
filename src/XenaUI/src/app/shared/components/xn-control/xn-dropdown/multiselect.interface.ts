@@ -1,7 +1,7 @@
-export interface DropdownSettings{
+export interface DropdownSettings {
     singleSelection: boolean;
     text: string;
-    enableCheckAll : boolean;
+    enableCheckAll: boolean;
     selectAllText: string;
     unSelectAllText: string;
     filterSelectAllText: string;
@@ -22,11 +22,11 @@ export interface DropdownSettings{
     lazyLoading?: boolean;
     labelKey?: string;
     primaryKey: string;
-    position:string;
+    position: string;
     loading?: boolean;
     selectGroup?: boolean;
     addNewItemOnFilter?: boolean;
     addNewButtonText?: string;
     escapeToClose?: boolean;
     autoPosition?: boolean;
-} 
+}

@@ -1,5 +1,5 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcChart from 'wijmo/wijmo.chart';
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcChart from "wijmo/wijmo.chart";
 export declare class Fibonacci extends wjcChart.SeriesBase {
     private _high;
     private _low;
@@ -78,7 +78,14 @@ export declare class OverlayIndicatorBase extends wjcChart.SeriesBase {
     readonly _hitTester: wjcChart._HitTester;
     _getChartType(): wjcChart.ChartType;
     _getXValues(): number[];
-    _getDataPoint(dataX: number, dataY: number, seriesIndex: number, pointIndex: number, ax: wjcChart.Axis, ay: wjcChart.Axis): wjcChart._DataPoint;
+    _getDataPoint(
+        dataX: number,
+        dataY: number,
+        seriesIndex: number,
+        pointIndex: number,
+        ax: wjcChart.Axis,
+        ay: wjcChart.Axis
+    ): wjcChart._DataPoint;
     _shouldCalculate(): boolean;
     _init(): void;
     _calculate(): void;
@@ -86,8 +93,15 @@ export declare class OverlayIndicatorBase extends wjcChart.SeriesBase {
     _getName(dim: number): string;
     _getStyles(dim: number): any;
     legendItemLength(): number;
-    measureLegendItem(engine: wjcChart.IRenderEngine, index: number): wjcCore.Size;
-    drawLegendItem(engine: wjcChart.IRenderEngine, rect: wjcCore.Rect, index: number): void;
+    measureLegendItem(
+        engine: wjcChart.IRenderEngine,
+        index: number
+    ): wjcCore.Size;
+    drawLegendItem(
+        engine: wjcChart.IRenderEngine,
+        rect: wjcCore.Rect,
+        index: number
+    ): void;
 }
 export declare class SingleOverlayIndicatorBase extends OverlayIndicatorBase {
     private _period;
@@ -96,7 +110,10 @@ export declare class SingleOverlayIndicatorBase extends OverlayIndicatorBase {
     constructor(options?: any);
     period: any;
     getValues(dim: number): number[];
-    getDataRect(currentRect?: wjcCore.Rect, calculatedRect?: wjcCore.Rect): wjcCore.Rect;
+    getDataRect(
+        currentRect?: wjcCore.Rect,
+        calculatedRect?: wjcCore.Rect
+    ): wjcCore.Rect;
     _clearValues(): void;
     _shouldCalculate(): boolean;
     _init(): void;
@@ -112,12 +129,23 @@ export declare class CCI extends SingleOverlayIndicatorBase {
     constant: number;
     _calculate(): void;
 }
-export declare function _cci(highs: number[], lows: number[], closes: number[], period: number, constant: number): number[];
+export declare function _cci(
+    highs: number[],
+    lows: number[],
+    closes: number[],
+    period: number,
+    constant: number
+): number[];
 export declare class WilliamsR extends SingleOverlayIndicatorBase {
     constructor(options?: any);
     _calculate(): void;
 }
-export declare function _williamsR(highs: number[], lows: number[], closes: number[], period: number): number[];
+export declare function _williamsR(
+    highs: number[],
+    lows: number[],
+    closes: number[],
+    period: number
+): number[];
 export declare enum MovingAverageType {
     Simple = 0,
     Exponential = 1,
@@ -133,7 +161,10 @@ export declare class Envelopes extends OverlayIndicatorBase {
     period: any;
     type: MovingAverageType;
     size: number;
-    getDataRect(currentRect?: wjcCore.Rect, calculatedRect?: wjcCore.Rect): wjcCore.Rect;
+    getDataRect(
+        currentRect?: wjcCore.Rect,
+        calculatedRect?: wjcCore.Rect
+    ): wjcCore.Rect;
     _clearValues(): void;
     _init(): void;
     _shouldCalculate(): boolean;
@@ -151,7 +182,10 @@ export declare class BollingerBands extends OverlayIndicatorBase {
     constructor(options?: any);
     period: any;
     multiplier: number;
-    getDataRect(currentRect?: wjcCore.Rect, calculatedRect?: wjcCore.Rect): wjcCore.Rect;
+    getDataRect(
+        currentRect?: wjcCore.Rect,
+        calculatedRect?: wjcCore.Rect
+    ): wjcCore.Rect;
     _clearValues(): void;
     _shouldCalculate(): boolean;
     _init(): void;
@@ -159,7 +193,11 @@ export declare class BollingerBands extends OverlayIndicatorBase {
     private _rendering(sender, args);
     getCalculatedValues(key: string): any[];
 }
-export declare function _bollingerBands(ys: number[], period: number, multiplier: number): any;
+export declare function _bollingerBands(
+    ys: number[],
+    period: number,
+    multiplier: number
+): any;
 export declare class RSI extends SingleOverlayIndicatorBase {
     constructor(options?: any);
     _calculate(): void;
@@ -187,18 +225,29 @@ export declare class MacdBase extends OverlayIndicatorBase {
 export declare class Macd extends MacdBase {
     constructor(options?: any);
     styles: any;
-    getDataRect(currentRect?: wjcCore.Rect, calculatedRect?: wjcCore.Rect): wjcCore.Rect;
+    getDataRect(
+        currentRect?: wjcCore.Rect,
+        calculatedRect?: wjcCore.Rect
+    ): wjcCore.Rect;
     private _rendering(sender, args);
     getCalculatedValues(key: string): any[];
 }
 export declare class MacdHistogram extends MacdBase {
     constructor(options?: any);
     getValues(dim: number): number[];
-    getDataRect(currentRect?: wjcCore.Rect, calculatedRect?: wjcCore.Rect): wjcCore.Rect;
+    getDataRect(
+        currentRect?: wjcCore.Rect,
+        calculatedRect?: wjcCore.Rect
+    ): wjcCore.Rect;
     _getChartType(): wjcChart.ChartType;
     _getItem(pointIndex: number): any;
 }
-export declare function _macd(ys: number[], fastPeriod: number, slowPeriod: number, smoothingPeriod: number): any;
+export declare function _macd(
+    ys: number[],
+    fastPeriod: number,
+    slowPeriod: number,
+    smoothingPeriod: number
+): any;
 export declare class Stochastic extends OverlayIndicatorBase {
     private _kVals;
     private _kXVals;
@@ -212,7 +261,10 @@ export declare class Stochastic extends OverlayIndicatorBase {
     dPeriod: number;
     smoothingPeriod: number;
     styles: any;
-    getDataRect(currentRect?: wjcCore.Rect, calculatedRect?: wjcCore.Rect): wjcCore.Rect;
+    getDataRect(
+        currentRect?: wjcCore.Rect,
+        calculatedRect?: wjcCore.Rect
+    ): wjcCore.Rect;
     _clearValues(): void;
     _shouldCalculate(): boolean;
     _init(): void;
@@ -220,4 +272,11 @@ export declare class Stochastic extends OverlayIndicatorBase {
     private _rendering(sender, args);
     getCalculatedValues(key: string): any[];
 }
-export declare function _stochastic(highs: number[], lows: number[], closes: number[], kPeriod: number, dPeriod: number, smoothingPeriod: number): any;
+export declare function _stochastic(
+    highs: number[],
+    lows: number[],
+    closes: number[],
+    kPeriod: number,
+    dPeriod: number,
+    smoothingPeriod: number
+): any;

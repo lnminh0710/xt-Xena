@@ -1,7 +1,7 @@
-import { Action } from '@ngrx/store';
-import { BackofficeActions } from 'app/state-management/store/actions';
-import { CustomAction } from 'app/state-management/store/actions/base';
-import * as baseReducer from 'app/state-management/store/reducer/reducer.base';
+import { Action } from "@ngrx/store";
+import { BackofficeActions } from "app/state-management/store/actions";
+import { CustomAction } from "app/state-management/store/actions/base";
+import * as baseReducer from "app/state-management/store/reducer/reducer.base";
 
 export interface SubBackofficeState {
     requestDownloadPdf: any;
@@ -14,26 +14,33 @@ export const initialSubBackofficeState: SubBackofficeState = {
     requestDownloadPdf: null,
     requestGoToTrackingPage: null,
     requestOpenReturnRefundModule: null,
-    selectedEntity: null
+    selectedEntity: null,
 };
 
 export interface BackofficeState {
-    features: { [id: string]: SubBackofficeState }
+    features: { [id: string]: SubBackofficeState };
 }
 
 const initialState: BackofficeState = {
-    features: {}
+    features: {},
 };
 
-export function backofficeReducer(state = initialState, action: CustomAction): BackofficeState {
-    let feature = baseReducer.getFeature(action, state, initialSubBackofficeState);
+export function backofficeReducer(
+    state = initialState,
+    action: CustomAction
+): BackofficeState {
+    let feature = baseReducer.getFeature(
+        action,
+        state,
+        initialSubBackofficeState
+    );
 
     switch (action.type) {
         case BackofficeActions.REQUEST_DOWNLOAD_PDF: {
             state = baseReducer.updateStateData(action, feature, state, {
                 requestDownloadPdf: {
-                    selectedEntity: action.payload
-                }
+                    selectedEntity: action.payload,
+                },
             });
             return Object.assign({}, state);
         }
@@ -41,8 +48,8 @@ export function backofficeReducer(state = initialState, action: CustomAction): B
         case BackofficeActions.REQUEST_GO_TO_TRACKING_PAGE: {
             state = baseReducer.updateStateData(action, feature, state, {
                 requestGoToTrackingPage: {
-                    selectedEntity: action.payload
-                }
+                    selectedEntity: action.payload,
+                },
             });
             return Object.assign({}, state);
         }
@@ -50,15 +57,15 @@ export function backofficeReducer(state = initialState, action: CustomAction): B
         case BackofficeActions.REQUEST_OPEN_RETURN_REFUND_MODULE: {
             state = baseReducer.updateStateData(action, feature, state, {
                 requestOpenReturnRefundModule: {
-                    selectedEntity: action.payload
-                }
+                    selectedEntity: action.payload,
+                },
             });
             return Object.assign({}, state);
         }
 
         case BackofficeActions.STORE_SELECTED_ENTITY: {
             state = baseReducer.updateStateData(action, feature, state, {
-                selectedEntity: action.payload
+                selectedEntity: action.payload,
             });
             return Object.assign({}, state);
         }
@@ -67,4 +74,4 @@ export function backofficeReducer(state = initialState, action: CustomAction): B
             return state;
         }
     }
-};
+}

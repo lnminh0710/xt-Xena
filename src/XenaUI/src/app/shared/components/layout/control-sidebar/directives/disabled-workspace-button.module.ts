@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { DisabledWorkspaceButtonDirective } from './disabled-workspace-button.directive';
+import { NgModule } from "@angular/core";
+import { DisabledWorkspaceButtonDirective } from "./disabled-workspace-button.directive";
 
 @NgModule({
     imports: [],
     declarations: [DisabledWorkspaceButtonDirective],
     exports: [DisabledWorkspaceButtonDirective],
-    providers: []
+    providers: [],
 })
-export class DisabledWorkspaceButtonDirectiveModule { }
+export class DisabledWorkspaceButtonDirectiveModule {}

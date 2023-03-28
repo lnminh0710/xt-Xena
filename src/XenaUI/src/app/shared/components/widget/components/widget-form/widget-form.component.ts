@@ -1,25 +1,44 @@
 import {
-    Component, OnInit, OnDestroy, Input, Output, OnChanges,
-    SimpleChanges, EventEmitter, ViewChildren, QueryList, ElementRef,
-    ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit,
-    HostListener, ViewChild,
-    forwardRef
-} from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+    Component,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    OnChanges,
+    SimpleChanges,
+    EventEmitter,
+    ViewChildren,
+    QueryList,
+    ElementRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    AfterViewInit,
+    HostListener,
+    ViewChild,
+    forwardRef,
+} from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import {
     ControlType,
     Configuration,
     SignalRActionEnum,
     SignalRJobEnum,
     DefaultWidgetItemConfiguration,
-    TypeForm
-} from 'app/app.constants';
-import { Uti } from 'app/utilities/uti';
+    TypeForm,
+} from "app/app.constants";
+import { Uti } from "app/utilities/uti";
 import {
-    ControlBase, TextboxControl, DropdownControl,
-    CheckboxControl, DateControl, WidgetDetail,
-    ButtonControl, NumberBoxControl, TextboxMaskControl, SignalRNotifyModel
-} from 'app/models';
+    ControlBase,
+    TextboxControl,
+    DropdownControl,
+    CheckboxControl,
+    DateControl,
+    WidgetDetail,
+    ButtonControl,
+    NumberBoxControl,
+    TextboxMaskControl,
+    SignalRNotifyModel,
+} from "app/models";
 import {
     CommonService,
     ObservableShareService,
@@ -27,36 +46,45 @@ import {
     AppErrorHandler,
     SignalRService,
     WidgetFieldService,
-    ModalService
-} from 'app/services';
-import { InlineEditComponent } from '../inline-edit';
-import { Subscription } from 'rxjs/Subscription';
-import { ComboBoxTypeConstant, FilterModeEnum, SignalRTypenEnum, WidgetFormTypeEnum } from 'app/app.constants';
-import { Observable } from 'rxjs/Observable';
+    ModalService,
+} from "app/services";
+import { InlineEditComponent } from "../inline-edit";
+import { Subscription } from "rxjs/Subscription";
 import {
-    FieldFilter,
-    ApiResultResponse, User
-} from 'app/models';
-import { parse } from 'date-fns/esm';
-import { DatePipe } from '@angular/common';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import { BaseWidget } from 'app/pages/private/base';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { WfColumnComponent } from 'app/shared/components/widget/components/widget-form';
-import { DragulaService } from 'ng2-dragula';
-import { SettingDialogComponent, WfPanelComponent, WfFieldComponent } from 'app/shared/components/widget/components/widget-form';
+    ComboBoxTypeConstant,
+    FilterModeEnum,
+    SignalRTypenEnum,
+    WidgetFormTypeEnum,
+} from "app/app.constants";
+import { Observable } from "rxjs/Observable";
+import { FieldFilter, ApiResultResponse, User } from "app/models";
+import { parse } from "date-fns/esm";
+import { DatePipe } from "@angular/common";
+import isNil from "lodash-es/isNil";
+import isEmpty from "lodash-es/isEmpty";
+import { BaseWidget } from "app/pages/private/base";
+import cloneDeep from "lodash-es/cloneDeep";
+import { WfColumnComponent } from "app/shared/components/widget/components/widget-form";
+import { DragulaService } from "ng2-dragula";
+import {
+    SettingDialogComponent,
+    WfPanelComponent,
+    WfFieldComponent,
+} from "app/shared/components/widget/components/widget-form";
 
 @Component({
-    selector: 'widget-form',
-    styleUrls: ['./widget-form.component.scss'],
-    templateUrl: './widget-form.component.html',
+    selector: "widget-form",
+    styleUrls: ["./widget-form.component.scss"],
+    templateUrl: "./widget-form.component.html",
     host: {
-        '(window:resize)': 'resizeEventHandler()'
+        "(window:resize)": "resizeEventHandler()",
     },
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class WidgetFormComponent
+    extends BaseWidget
+    implements OnInit, OnChanges, OnDestroy, AfterViewInit
+{
     @Input()
     dataSource: WidgetDetail;
     @Input() isSAVLetter: boolean;
@@ -67,11 +95,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         this._isActivated = status;
         if (!status) {
             this.ref.detach();
-        }
-        else {
+        } else {
             this.ref.reattach();
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
@@ -79,8 +106,8 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     @Input()
     filterMode: FilterModeEnum;
-    @Input() backgroundColor: any = '';
-    @Input() backgroundImage: any = '';
+    @Input() backgroundColor: any = "";
+    @Input() backgroundImage: any = "";
 
     @Input()
     fieldFilters: Array<FieldFilter>;
@@ -106,7 +133,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     @Input() formStyle: any = {
         labelStyle: {},
-        dataStyle: {}
+        dataStyle: {},
     };
 
     @Input() designColumnsOnWidget: boolean;
@@ -116,28 +143,29 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     @Input() importantFormStyle: any = {
         labelStyle: {},
         dataStyle: {},
-        fields: {}
+        fields: {},
     };
 
     @Input() set resized(input: string) {
-        if (!this.resizedNumber && input)
-            this.resizedNumber = input;
+        if (!this.resizedNumber && input) this.resizedNumber = input;
         setTimeout(() => this.activateVirtualContainer(input));
     }
 
-    @Input() set controlUpdated(data: SignalRNotifyModel) { this.executeControlUpdated(data); }
+    @Input() set controlUpdated(data: SignalRNotifyModel) {
+        this.executeControlUpdated(data);
+    }
 
     @Input() fieldStyle: {
         [key: string]: {
-            labelStyle: {}
-        }
-    };  // { 'IdPersonInterface' : { 'labelStyle' : {} };
+            labelStyle: {};
+        };
+    }; // { 'IdPersonInterface' : { 'labelStyle' : {} };
 
     @Input() dataStyle: {
         [key: string]: {
-            dataStyle: {}
-        }
-    };  // { 'IdPersonInterface' : { 'dataStyle' : {} };
+            dataStyle: {};
+        };
+    }; // { 'IdPersonInterface' : { 'dataStyle' : {} };
 
     @Input() isDesignWidgetMode = false;
     @Input() isForceReset = false;
@@ -186,30 +214,33 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     @ViewChildren(forwardRef(() => WfColumnComponent))
     private wfColumnComponents: QueryList<WfColumnComponent>;
-    @ViewChild('settingDialogComponent') settingDialogComponent: SettingDialogComponent;
+    @ViewChild("settingDialogComponent")
+    settingDialogComponent: SettingDialogComponent;
 
     private resizedNumber: string = null;
     private groupContentListOld: Array<ControlBase<any>> = [];
     private groupContentList: Array<ControlBase<any>> = [];
     private listEditingFields: Array<string> = [];
     private ratioConvertFontSizeToPixcel = 7;
-    public labelTextAlign = '';
-    public dataTextAlign = '';
+    public labelTextAlign = "";
+    public dataTextAlign = "";
     private commonServiceSubscription: Subscription;
     private globalDateFormat: string;
     private consts: Configuration;
 
     /* DB const: Specific case for changing country*/
-    private SharingAddressIdRepIsoCountryCodeField = 'B00SharingAddress_IdRepIsoCountryCode';
-    private CountryCodeSharingAddressHiddenField = 'B00RepIsoCountryCode_SharingAddressHiddenFields';
-    private B00SharingAddressZipField = 'B00SharingAddress_Zip';
-    private B00SharingAddressZip2Field = 'B00SharingAddress_Zip2';
-    private B00PersonMasterData_DateOfBirth = 'B00PersonMasterData_DateOfBirth';
-    private SharingAddressHiddenFields = 'sharingAddressHiddenFields';
-    private ValidationZip2MaskFormatField = 'validationZip2MaskFormat';
-    private ValidationZip2RegExField = 'validationZip2RegEx';
-    private ValidationZipMaskFormatField = 'validationZipMaskFormat';
-    private ValidationZipRegExField = 'validationZipRegEx';
+    private SharingAddressIdRepIsoCountryCodeField =
+        "B00SharingAddress_IdRepIsoCountryCode";
+    private CountryCodeSharingAddressHiddenField =
+        "B00RepIsoCountryCode_SharingAddressHiddenFields";
+    private B00SharingAddressZipField = "B00SharingAddress_Zip";
+    private B00SharingAddressZip2Field = "B00SharingAddress_Zip2";
+    private B00PersonMasterData_DateOfBirth = "B00PersonMasterData_DateOfBirth";
+    private SharingAddressHiddenFields = "sharingAddressHiddenFields";
+    private ValidationZip2MaskFormatField = "validationZip2MaskFormat";
+    private ValidationZip2RegExField = "validationZip2RegEx";
+    private ValidationZipMaskFormatField = "validationZipMaskFormat";
+    private ValidationZipRegExField = "validationZipRegEx";
 
     // Form group data
     form: FormGroup;
@@ -226,7 +257,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             }, 500);
         }
         this.ref.markForCheck();
-    };
+    }
 
     get editFormMode() {
         return this._editFormMode;
@@ -236,7 +267,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     set editFieldMode(val: boolean) {
         this._editFieldMode = val;
         this.ref.markForCheck();
-    };
+    }
 
     get editFieldMode() {
         return this._editFieldMode;
@@ -281,17 +312,18 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         private signalRService: SignalRService,
         private dragulaService: DragulaService,
         private widgetFieldService: WidgetFieldService,
-	    private _modalService: ModalService,
+        private _modalService: ModalService,
         private uti: Uti
     ) {
         super();
         this.consts = new Configuration();
         this.registerDragDropItem();
-        this.widgetFieldService.currentDuplicatedFieldsDialogs.subscribe(value => this.isDuplicatedDialogForm = value);
+        this.widgetFieldService.currentDuplicatedFieldsDialogs.subscribe(
+            (value) => (this.isDuplicatedDialogForm = value)
+        );
     }
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     ngOnDestroy() {
         Uti.unsubscribe(this);
@@ -299,25 +331,32 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (!changes['importantFormStyle'] &&
-            !changes['dataSource'] &&
-            !changes['filterMode'] &&
-            !changes['fieldFilters'] &&
-            !changes['editFormMode'] &&
-            !changes['isEditingLayout'])
+        if (
+            !changes["importantFormStyle"] &&
+            !changes["dataSource"] &&
+            !changes["filterMode"] &&
+            !changes["fieldFilters"] &&
+            !changes["editFormMode"] &&
+            !changes["isEditingLayout"]
+        )
             return;
 
-        const hasChanges = this.hasChanges(changes['dataSource'])
-            || this.hasChanges(changes['filterMode'])
-            || this.hasChanges(changes['fieldFilters']);
+        const hasChanges =
+            this.hasChanges(changes["dataSource"]) ||
+            this.hasChanges(changes["filterMode"]) ||
+            this.hasChanges(changes["fieldFilters"]);
 
         if (hasChanges && this.dataSource) {
             // Only redraw data if Form has not updated yet.
-            if (!this.isFormChanged && !this.editFieldMode && !this.editFormMode || this.isForceReset) {
+            if (
+                (!this.isFormChanged &&
+                    !this.editFieldMode &&
+                    !this.editFormMode) ||
+                this.isForceReset
+            ) {
                 this.processData();
                 this.resetToViewMode();
-                if (this.isDialogMode)
-                    this.editFormMode = true;
+                if (this.isDialogMode) this.editFormMode = true;
                 this.ref.markForCheck();
             }
             if (this.isForceReset) {
@@ -325,7 +364,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             }
         }
 
-        if (this.hasChanges(changes['importantFormStyle'])) {
+        if (this.hasChanges(changes["importantFormStyle"])) {
             this.calculateMinLabelWidth();
             setTimeout(() => {
                 this.activateVirtualContainer(this.resizedNumber, true);
@@ -334,8 +373,11 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         }
         this.setTextAlign();
 
-        if (this.hasChanges(changes['globalProperties'])) {
-            this.globalDateFormat = this.propertyPanelService.buildGlobalDateFormatFromProperties(changes['globalProperties'].currentValue);
+        if (this.hasChanges(changes["globalProperties"])) {
+            this.globalDateFormat =
+                this.propertyPanelService.buildGlobalDateFormatFromProperties(
+                    changes["globalProperties"].currentValue
+                );
         }
 
         this.changeIsEditingLayout(changes);
@@ -352,27 +394,29 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      */
     private setTextAlign() {
         // Set Global align
-        this.labelTextAlign = this.formStyle.labelStyle['text-align'] || '';
-        this.dataTextAlign = this.formStyle.dataStyle['text-align'] || '';
+        this.labelTextAlign = this.formStyle.labelStyle["text-align"] || "";
+        this.dataTextAlign = this.formStyle.dataStyle["text-align"] || "";
 
         // Set each field label align
         if (this.fieldStyle && this.groupContentList.length) {
-            Object.keys(this.fieldStyle).forEach(key => {
-                const rs = this.groupContentList.filter(p => p.key == key);
+            Object.keys(this.fieldStyle).forEach((key) => {
+                const rs = this.groupContentList.filter((p) => p.key == key);
                 if (rs.length) {
-                    rs[0].labelAlign = this.fieldStyle[key].labelStyle['text-align'] || '';
+                    rs[0].labelAlign =
+                        this.fieldStyle[key].labelStyle["text-align"] || "";
                 }
-            })
+            });
         }
 
         // Set each field data align
         if (this.dataStyle && this.groupContentList.length) {
-            Object.keys(this.dataStyle).forEach(key => {
-                const rs = this.groupContentList.filter(p => p.key == key);
+            Object.keys(this.dataStyle).forEach((key) => {
+                const rs = this.groupContentList.filter((p) => p.key == key);
                 if (rs.length) {
-                    rs[0].align = this.dataStyle[key].dataStyle['text-align'] || '';
+                    rs[0].align =
+                        this.dataStyle[key].dataStyle["text-align"] || "";
                 }
-            })
+            });
         }
     }
 
@@ -383,7 +427,8 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     resetValue(isResetEditing?: boolean): void {
-        if (this.formChangeSubscribeSubcription) this.formChangeSubscribeSubcription.unsubscribe();
+        if (this.formChangeSubscribeSubcription)
+            this.formChangeSubscribeSubcription.unsubscribe();
         this.queryWfFieldComponentsComponent();
         this.wfFieldComponents.forEach((wfFieldComponent) => {
             wfFieldComponent.reset(isResetEditing);
@@ -402,13 +447,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         this.ref.markForCheck();
     }
 
-    private onEditInlinePrevalue(event) {
+    private onEditInlinePrevalue(event) {}
 
-    }
-
-    private onSavePrevalue(event) {
-
-    }
+    private onSavePrevalue(event) {}
 
     private processData(): void {
         if (!this.dataSource) {
@@ -417,7 +458,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         this.form = null;
 
         if (this.dataSource && this.dataSource.contentDetail) {
-            if (this.dataSource.contentDetail.data && this.dataSource.contentDetail.data.length > 0) {
+            if (
+                this.dataSource.contentDetail.data &&
+                this.dataSource.contentDetail.data.length > 0
+            ) {
                 const widgetInfo = this.dataSource.contentDetail.data;
                 const contentList: Array<any> = widgetInfo[1];
                 if (!contentList) {
@@ -452,9 +496,13 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      */
     private setHiddenFieldsByDefaultCountryCode() {
         if (this.groupContentList && this.groupContentList.length) {
-            const hiddenControl = this.groupContentList.find(p => p.key == this.CountryCodeSharingAddressHiddenField);
+            const hiddenControl = this.groupContentList.find(
+                (p) => p.key == this.CountryCodeSharingAddressHiddenField
+            );
             if (hiddenControl && hiddenControl.value) {
-                const hiddenValues: Array<string> = (hiddenControl.value as string).split(';');
+                const hiddenValues: Array<string> = (
+                    hiddenControl.value as string
+                ).split(";");
                 this.setHiddenFields(hiddenValues);
             }
         }
@@ -470,8 +518,8 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         }
         hiddenFieldValues.forEach((value: string) => {
             if (value) {
-                const targetHiddenControl = this.groupContentList.find(p => {
-                    const arr: Array<any> = p.key.split('_');
+                const targetHiddenControl = this.groupContentList.find((p) => {
+                    const arr: Array<any> = p.key.split("_");
                     let hiddenField = arr[0];
                     if (arr.length > 1) {
                         hiddenField = arr[1];
@@ -491,16 +539,20 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 const widgetInfo = this.dataSource.contentDetail.data;
                 const contentList: Array<any> = widgetInfo[1];
                 const controls: ControlBase<any>[] = this.groupContentList;
-                contentList.forEach(content => {
-                    const rs = controls.filter(c => c.key === content.OriginalColumnName);
+                contentList.forEach((content) => {
+                    const rs = controls.filter(
+                        (c) => c.key === content.OriginalColumnName
+                    );
                     if (rs.length > 0) {
                         const control: ControlBase<any> = rs[0];
                         content.Value = control.value;
-                        if (control.controlType === 'dropdown') {
-                            content.Value = (control as DropdownControl).displayValue;
+                        if (control.controlType === "dropdown") {
+                            content.Value = (
+                                control as DropdownControl
+                            ).displayValue;
                         }
                     }
-                })
+                });
             }
         }
     }
@@ -508,17 +560,19 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private formChangeSubscribeSubcription: Subscription;
     private createFormGroup() {
         const controls: ControlBase<any>[] = this.groupContentList;
-        this.toFormGroup(controls).finally(() => {
-            this.emitCompletedRenderEvent();
-        }).subscribe(form => {
-            this.appErrorHandler.executeAction(() => {
-                this.form = form;
-                this.originalFormValues = Object.assign({}, form.value);
-                this.updateDateOfBirthFormatByCountryCode();
-                this.ref.markForCheck();
-                this.signalRIsThereAnyoneEditing();
+        this.toFormGroup(controls)
+            .finally(() => {
+                this.emitCompletedRenderEvent();
+            })
+            .subscribe((form) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.form = form;
+                    this.originalFormValues = Object.assign({}, form.value);
+                    this.updateDateOfBirthFormatByCountryCode();
+                    this.ref.markForCheck();
+                    this.signalRIsThereAnyoneEditing();
+                });
             });
-        });
     }
 
     private subscribeFormChangeTimeout: any;
@@ -527,7 +581,8 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         clearTimeout(this.subscribeFormChangeTimeout);
         this.subscribeFormChangeTimeout = null;
         this.subscribeFormChangeTimeout = setTimeout(() => {
-            if (this.formChangeSubscribeSubcription) this.formChangeSubscribeSubcription.unsubscribe();
+            if (this.formChangeSubscribeSubcription)
+                this.formChangeSubscribeSubcription.unsubscribe();
 
             if (!this.form) return;
 
@@ -536,7 +591,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 .subscribe((data) => {
                     this.appErrorHandler.executeAction(() => {
                         if (this.editFieldMode || this.editFormMode) {
-                            if (JSON.stringify(this.originalFormValues) !== JSON.stringify(this.form.value)) {
+                            if (
+                                JSON.stringify(this.originalFormValues) !==
+                                JSON.stringify(this.form.value)
+                            ) {
                                 this.onFormChanged.emit(true);
                                 this.isFormChanged = true;
                             } else {
@@ -550,7 +608,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 });
 
             if (this.editFieldMode || this.editFormMode) {
-                if (JSON.stringify(this.originalFormValues) !== JSON.stringify(this.form.value)) {
+                if (
+                    JSON.stringify(this.originalFormValues) !==
+                    JSON.stringify(this.form.value)
+                ) {
                     this.onFormChanged.emit(true);
                     this.isFormChanged = true;
                 } else {
@@ -569,8 +630,11 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private broastCastSignalRMessage() {
-        if (!Configuration.PublicSettings.enableSignalR ||
-            !Configuration.PublicSettings.enableSignalRForWidgetDetail) return;
+        if (
+            !Configuration.PublicSettings.enableSignalR ||
+            !Configuration.PublicSettings.enableSignalRForWidgetDetail
+        )
+            return;
 
         if (!this.form.dirty) return;
         const fieldsChanged = this.filterValidFormField();
@@ -580,7 +644,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             if (this.undisplayFieldList.indexOf(controlName) > -1) continue;
             this.notifyFields.push({
                 fieldName: controlName,
-                fieldValue: fieldsChanged[controlName]
+                fieldValue: fieldsChanged[controlName],
             });
         }
         this.mapValueToTextForFiedl();
@@ -594,9 +658,11 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private mapValueToTextForFiedl() {
         if (!this.notifyFields || !this.notifyFields.length) return;
         for (const item of this.notifyFields) {
-            const control = this.groupContentList.find(x => x.key === item.fieldName);
+            const control = this.groupContentList.find(
+                (x) => x.key === item.fieldName
+            );
             if (!(control instanceof DropdownControl)) continue;
-            for (const opt of control['options']) {
+            for (const opt of control["options"]) {
                 if (opt.key != item.fieldValue) continue;
                 item.fieldValue = opt.value;
                 break;
@@ -605,7 +671,11 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private hasChanges(changes) {
-        return changes && changes.hasOwnProperty('currentValue') && changes.hasOwnProperty('previousValue');
+        return (
+            changes &&
+            changes.hasOwnProperty("currentValue") &&
+            changes.hasOwnProperty("previousValue")
+        );
     }
 
     private getValidCombobox(listComboBox: any, identificationKey: any) {
@@ -633,94 +703,131 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         const group: any = {};
 
         // Find all drop-down control
-        let comboBoxes: DropdownControl[] = controls.filter(p => p.controlType === 'dropdown') as DropdownControl[];
+        let comboBoxes: DropdownControl[] = controls.filter(
+            (p) => p.controlType === "dropdown"
+        ) as DropdownControl[];
 
         if (comboBoxes.length > 0) {
+            const filterByComboboxes = comboBoxes.filter((p) => p.filterBy);
+            comboBoxes = comboBoxes.filter((p) => !p.filterBy);
 
-            const filterByComboboxes = comboBoxes.filter(p => p.filterBy);
-            comboBoxes = comboBoxes.filter(p => !p.filterBy);
-
-            const key = comboBoxes.map(p => p.identificationKey).join(',');
+            const key = comboBoxes.map((p) => p.identificationKey).join(",");
             const observable = this.commonService.getListComboBox(key);
             this.obserableShareService.setObservable(key, observable);
 
             const observable$ = this.obserableShareService.getObservable(key);
 
-            return observable$
-                .map((response: ApiResultResponse) => {
-                    if (!Uti.isResquestSuccess(response)) {
-                        return;
-                    }
-                    for (let k = 0; k < comboBoxes.length; k++) {
-                        const comboOptions = this.getValidCombobox(response.item, comboBoxes[k].identificationKey);
-                        if (comboOptions) {
-                            const options: Array<any> = [];
-                            let idValue: number = null;
-                            for (let i = 0; i < comboOptions.length; i++) {
-                                if (comboBoxes[k].key === this.SharingAddressIdRepIsoCountryCodeField) {
-                                    options.push({
-                                        key: comboOptions[i].idValue,
-                                        value: comboOptions[i].textValue,
-                                        isoCode: comboOptions[i].isoCode,
-                                        sharingAddressHiddenFields: comboOptions[i][this.SharingAddressHiddenFields],
-                                        validationZip2MaskFormat: comboOptions[i][this.ValidationZip2MaskFormatField],
-                                        validationZip2RegEx: comboOptions[i][this.ValidationZip2RegExField],
-                                        validationZipMaskFormat: comboOptions[i][this.ValidationZipMaskFormatField],
-                                        validationZipRegEx: comboOptions[i][this.ValidationZipRegExField]
-                                    });
-                                }
-                                else {
-                                    options.push({
-                                        key: comboOptions[i].idValue,
-                                        value: comboOptions[i].textValue
-                                    });
-                                }
-                                if (comboOptions[i].textValue === comboBoxes[k].displayValue) {
-                                    idValue = comboOptions[i].idValue;
-                                }
+            return observable$.map((response: ApiResultResponse) => {
+                if (!Uti.isResquestSuccess(response)) {
+                    return;
+                }
+                for (let k = 0; k < comboBoxes.length; k++) {
+                    const comboOptions = this.getValidCombobox(
+                        response.item,
+                        comboBoxes[k].identificationKey
+                    );
+                    if (comboOptions) {
+                        const options: Array<any> = [];
+                        let idValue: number = null;
+                        for (let i = 0; i < comboOptions.length; i++) {
+                            if (
+                                comboBoxes[k].key ===
+                                this.SharingAddressIdRepIsoCountryCodeField
+                            ) {
+                                options.push({
+                                    key: comboOptions[i].idValue,
+                                    value: comboOptions[i].textValue,
+                                    isoCode: comboOptions[i].isoCode,
+                                    sharingAddressHiddenFields:
+                                        comboOptions[i][
+                                            this.SharingAddressHiddenFields
+                                        ],
+                                    validationZip2MaskFormat:
+                                        comboOptions[i][
+                                            this.ValidationZip2MaskFormatField
+                                        ],
+                                    validationZip2RegEx:
+                                        comboOptions[i][
+                                            this.ValidationZip2RegExField
+                                        ],
+                                    validationZipMaskFormat:
+                                        comboOptions[i][
+                                            this.ValidationZipMaskFormatField
+                                        ],
+                                    validationZipRegEx:
+                                        comboOptions[i][
+                                            this.ValidationZipRegExField
+                                        ],
+                                });
+                            } else {
+                                options.push({
+                                    key: comboOptions[i].idValue,
+                                    value: comboOptions[i].textValue,
+                                });
                             }
-                            comboBoxes[k].options = options;
-                            if (idValue) {
-                                comboBoxes[k].value = '' + idValue;
+                            if (
+                                comboOptions[i].textValue ===
+                                comboBoxes[k].displayValue
+                            ) {
+                                idValue = comboOptions[i].idValue;
                             }
-                            this.updateDatasourceForCombobox(comboBoxes[k]);
                         }
-                    }
-                    if (filterByComboboxes.length > 0) {
-                        filterByComboboxes.forEach(filterByCombobo => {
-                            this.loadDataForDependDropdown(filterByCombobo, controls);
-                        });
-                    }
-                    controls.forEach(control => {
-                        group[control.key] = new FormControl(isNil(control.value) ? '' : control.value);
-                        const arr = [];
-                        if (control.required) {
-                            arr.push(Validators.required);
+                        comboBoxes[k].options = options;
+                        if (idValue) {
+                            comboBoxes[k].value = "" + idValue;
                         }
-                        if (control.pattern && control.pattern.length)
-                            arr.push(Validators.pattern(new RegExp(control.pattern)));
-                        (<FormControl>group[control.key]).validator = Validators.compose(arr);
-                        (<FormControl>group[control.key]).updateValueAndValidity();
+                        this.updateDatasourceForCombobox(comboBoxes[k]);
+                    }
+                }
+                if (filterByComboboxes.length > 0) {
+                    filterByComboboxes.forEach((filterByCombobo) => {
+                        this.loadDataForDependDropdown(
+                            filterByCombobo,
+                            controls
+                        );
                     });
-                    return new FormGroup(group);
+                }
+                controls.forEach((control) => {
+                    group[control.key] = new FormControl(
+                        isNil(control.value) ? "" : control.value
+                    );
+                    const arr = [];
+                    if (control.required) {
+                        arr.push(Validators.required);
+                    }
+                    if (control.pattern && control.pattern.length)
+                        arr.push(
+                            Validators.pattern(new RegExp(control.pattern))
+                        );
+                    (<FormControl>group[control.key]).validator =
+                        Validators.compose(arr);
+                    (<FormControl>group[control.key]).updateValueAndValidity();
                 });
+                return new FormGroup(group);
+            });
         }
-        controls.forEach(control => {
-            group[control.key] = new FormControl(control.value || '');
+        controls.forEach((control) => {
+            group[control.key] = new FormControl(control.value || "");
             const arr = [];
             if (control.required) {
                 arr.push(Validators.required);
             }
             if (control.pattern && control.pattern.length)
                 arr.push(Validators.pattern(new RegExp(control.pattern)));
-            (<FormControl>group[control.key]).validator = Validators.compose(arr);
+            (<FormControl>group[control.key]).validator =
+                Validators.compose(arr);
             (<FormControl>group[control.key]).updateValueAndValidity();
         });
         return Observable.of(new FormGroup(group));
     }
 
-    private isHiddenFieldByService(fieldName: string, checkList: Array<string>) {
-        const rs: Array<string> = checkList.filter(s => fieldName.indexOf(s) >= 0);
+    private isHiddenFieldByService(
+        fieldName: string,
+        checkList: Array<string>
+    ) {
+        const rs: Array<string> = checkList.filter(
+            (s) => fieldName.indexOf(s) >= 0
+        );
         return rs.length > 0;
     }
 
@@ -747,8 +854,12 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private isHiddenFieldByFieldFilter(content) {
         let isHidden = false;
-        const displayFields: Array<FieldFilter> = this.fieldFilters.filter(p => p.selected === true);
-        const displayContent = displayFields.filter(p => p.fieldName === content.OriginalColumnName);
+        const displayFields: Array<FieldFilter> = this.fieldFilters.filter(
+            (p) => p.selected === true
+        );
+        const displayContent = displayFields.filter(
+            (p) => p.fieldName === content.OriginalColumnName
+        );
         if (displayContent.length === 0) {
             isHidden = true;
         }
@@ -772,35 +883,66 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             let groupName: string;
             let isReadOnly = false;
             let isRequired = false;
-            let _pattern = '';
-            let mesReg = '';
+            let _pattern = "";
+            let mesReg = "";
             let _isNeedForUpdate = false;
             let isHiddenFromSetting = false;
             let setting: any = {};
             if (itemContent.Setting && itemContent.Setting.length) {
                 const settingArray = JSON.parse(itemContent.Setting);
                 setting = Uti.getCloumnSettings(settingArray);
-                _isHidden = setting.DisplayField && setting.DisplayField.Hidden && parseInt(setting.DisplayField.Hidden) > 0;
+                _isHidden =
+                    setting.DisplayField &&
+                    setting.DisplayField.Hidden &&
+                    parseInt(setting.DisplayField.Hidden) > 0;
                 isHiddenFromSetting = _isHidden;
                 if (_isHidden)
-                    _isNeedForUpdate = setting.DisplayField && setting.DisplayField.NeedForUpdate && parseInt(setting.DisplayField.NeedForUpdate) > 0;
+                    _isNeedForUpdate =
+                        setting.DisplayField &&
+                        setting.DisplayField.NeedForUpdate &&
+                        parseInt(setting.DisplayField.NeedForUpdate) > 0;
                 if (_isNeedForUpdate && itemContent && itemContent.Value)
-                    this.undisplayFieldList.push(itemContent.OriginalColumnName);
+                    this.undisplayFieldList.push(
+                        itemContent.OriginalColumnName
+                    );
                 else
-                    isReadOnly = (this.readonly === true) || (this.readonly === false && setting.DisplayField && setting.DisplayField.ReadOnly && parseInt(setting.DisplayField.ReadOnly) > 0);
-                if (setting.ControlType && /ComboBox/i.test(setting.ControlType.Type) && setting.ControlType.Value) {
+                    isReadOnly =
+                        this.readonly === true ||
+                        (this.readonly === false &&
+                            setting.DisplayField &&
+                            setting.DisplayField.ReadOnly &&
+                            parseInt(setting.DisplayField.ReadOnly) > 0);
+                if (
+                    setting.ControlType &&
+                    /ComboBox/i.test(setting.ControlType.Type) &&
+                    setting.ControlType.Value
+                ) {
                     // identificationKey = parseInt(setting.ControlType.Value);
                     identificationKey = setting.ControlType.Value;
                     filterBy = setting.ControlType.FilterBy;
                 }
-                if (setting.ControlType && /Checkbox/i.test(setting.ControlType.Type)) {
+                if (
+                    setting.ControlType &&
+                    /Checkbox/i.test(setting.ControlType.Type)
+                ) {
                     groupName = setting.ControlType.GroupName;
                 }
-                isRequired = setting.Validation && setting.Validation.IsRequired && parseInt(setting.Validation.IsRequired) > 0;
-                _pattern = setting.Validation && setting.Validation.RegularExpression && setting.Validation.RegularExpression.Reg ?
-                    setting.Validation.RegularExpression.Reg : '';
-                mesReg = setting.Validation && setting.Validation.RegularExpression && setting.Validation.RegularExpression.Message ?
-                    setting.Validation.RegularExpression.Message : '';
+                isRequired =
+                    setting.Validation &&
+                    setting.Validation.IsRequired &&
+                    parseInt(setting.Validation.IsRequired) > 0;
+                _pattern =
+                    setting.Validation &&
+                    setting.Validation.RegularExpression &&
+                    setting.Validation.RegularExpression.Reg
+                        ? setting.Validation.RegularExpression.Reg
+                        : "";
+                mesReg =
+                    setting.Validation &&
+                    setting.Validation.RegularExpression &&
+                    setting.Validation.RegularExpression.Message
+                        ? setting.Validation.RegularExpression.Message
+                        : "";
             }
             if (!_isHidden) {
                 if (this.fieldFilters && this.fieldFilters.length > 0) {
@@ -812,7 +954,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 }
             }
             if (identificationKey) {
-                contentList[i].DataType = 'combo-box';
+                contentList[i].DataType = "combo-box";
             }
 
             const defaultConfig: any = {
@@ -824,14 +966,18 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 required: isRequired,
                 pattern: _pattern,
                 messageReg: mesReg,
-                maxLength: contentList[i].DataLength
-            }
+                maxLength: contentList[i].DataLength,
+            };
             this.numberOfVisibleControls += _isHidden ? 0 : 1;
 
             let control: ControlBase<any>;
-            let controlType = setting.ControlType && setting.ControlType.Type ? setting.ControlType.Type : '';
+            let controlType =
+                setting.ControlType && setting.ControlType.Type
+                    ? setting.ControlType.Type
+                    : "";
             if (!controlType) {
-                controlType = this.getControlTypeNameFromColumnDefine(itemContent);
+                controlType =
+                    this.getControlTypeNameFromColumnDefine(itemContent);
             }
             if (!controlType) {
                 controlType = ControlType.Textbox;
@@ -840,8 +986,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             controlType = controlType.toLowerCase();
             switch (controlType) {
                 case ControlType.Numeric:
-                    defaultConfig.type = 'number';
-                    defaultConfig.value = defaultConfig.value ? parseFloat(defaultConfig.value) : null;
+                    defaultConfig.type = "number";
+                    defaultConfig.value = defaultConfig.value
+                        ? parseFloat(defaultConfig.value)
+                        : null;
                     control = new NumberBoxControl(defaultConfig);
                     break;
 
@@ -853,19 +1001,28 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                     defaultConfig.groupName = groupName;
                     control = new CheckboxControl(defaultConfig);
                     control.value = true;
-                    if (typeof defaultConfig.value === 'boolean') {
-                        control.value = defaultConfig.value
-                    } else if (isNil(defaultConfig.value) || defaultConfig.value.toLowerCase() !== 'true')
+                    if (typeof defaultConfig.value === "boolean") {
+                        control.value = defaultConfig.value;
+                    } else if (
+                        isNil(defaultConfig.value) ||
+                        defaultConfig.value.toLowerCase() !== "true"
+                    )
                         control.value = false;
                     break;
 
                 case ControlType.DateTimePicker:
                     if (!isEmpty(defaultConfig.value)) {
-                        if (typeof defaultConfig.value === 'object' || defaultConfig.value.indexOf('.') !== -1) {
-                            defaultConfig.value = parse(defaultConfig.value, 'dd.MM.yyyy', new Date());
+                        if (
+                            typeof defaultConfig.value === "object" ||
+                            defaultConfig.value.indexOf(".") !== -1
+                        ) {
+                            defaultConfig.value = parse(
+                                defaultConfig.value,
+                                "dd.MM.yyyy",
+                                new Date()
+                            );
                         }
-                    } else
-                        defaultConfig.value = null;
+                    } else defaultConfig.value = null;
                     control = new DateControl(defaultConfig);
                     break;
 
@@ -877,7 +1034,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                     break;
 
                 case ControlType.Button:
-                    defaultConfig.clickFunc = this.buildButtonControlClickFunc(itemContent, contentList);
+                    defaultConfig.clickFunc = this.buildButtonControlClickFunc(
+                        itemContent,
+                        contentList
+                    );
                     control = new ButtonControl(defaultConfig);
                     break;
 
@@ -885,7 +1045,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                     control = new TextboxControl(defaultConfig);
                     break;
             }
-            control.order = (i + 1);
+            control.order = i + 1;
             this.buildHasJustUpdatedForOldControl(control);
             this.groupContentList.push(control);
             this.resetControlUpdated();
@@ -894,9 +1054,12 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private buildHasJustUpdatedForOldControl(control: ControlBase<any>) {
-        if (!this.groupContentListOld || !this.groupContentListOld.length) return;
+        if (!this.groupContentListOld || !this.groupContentListOld.length)
+            return;
         for (const ctr of this.groupContentListOld) {
-            if (ctr.key !== control.key) { continue; }
+            if (ctr.key !== control.key) {
+                continue;
+            }
             control.hasJustUpdated = ctr.hasJustUpdated;
             break;
         }
@@ -905,14 +1068,14 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private getControlTypeNameFromColumnDefine(itemContent) {
         if (itemContent.DataType) {
             switch (itemContent.DataType) {
-                case 'datetime':
-                    return 'DatetimePicker';
+                case "datetime":
+                    return "DatetimePicker";
                 default:
-                    return '';
+                    return "";
             }
         }
 
-        return '';
+        return "";
     }
 
     private buildButtonControlClickFunc(itemContent, contentList) {
@@ -922,28 +1085,28 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
         const clickData = this.buildButtonControlClickData(contentList);
         switch (itemContent.ColumnName.toLowerCase()) {
-            case 'tracking':
+            case "tracking":
                 return () => {
                     this.onTrackingFieldClick.emit(clickData);
                 };
-            case 'invoicepdf':
-            case 'preview':
-            case 'pdf':
+            case "invoicepdf":
+            case "preview":
+            case "pdf":
                 return () => {
                     this.onPdfFieldClick.emit(clickData);
                 };
-            case 'return':
+            case "return":
                 return () => {
                     this.onReturnRefundFieldClick.emit(clickData);
                 };
-            case 'download':
+            case "download":
                 return () => {
                     this.downloadClick.emit(clickData);
                 };
-            case 'delete':
+            case "delete":
                 return () => {
                     this.deleteClick.emit(clickData);
-                }
+                };
         }
     }
 
@@ -954,26 +1117,27 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
         const result: any = {};
         for (let i = 0; i < contentList.length; i++) {
-            result[contentList[i]['ColumnName']] = contentList[i]['Value'];
+            result[contentList[i]["ColumnName"]] = contentList[i]["Value"];
         }
 
         return result;
     }
 
     getContainerHeight() {
-        this.containerHeight = $('form', $(this._eref.nativeElement)).height();
+        this.containerHeight = $("form", $(this._eref.nativeElement)).height();
     }
 
     onEditField(event): void {
-        if (isNil(event) || (isNil(event.isEditing) && isNil(event.id)))
-            return;
+        if (isNil(event) || (isNil(event.isEditing) && isNil(event.id))) return;
         // only emit that not in edit Field mode if no editing fields
         if (!event.isEditing && !this.listEditingFields.length) {
             this.editFieldMode = false;
             this.onEditFormField.emit(this.editFieldMode);
             this.subscribeFormChange();
         } else {
-            const index = this.listEditingFields.findIndex((item) => event.id == item);
+            const index = this.listEditingFields.findIndex(
+                (item) => event.id == item
+            );
             if (event.isEditing && (isNil(index) || index < 0)) {
                 this.listEditingFields.push(event.id);
             } else if (!event.isEditing && index >= 0)
@@ -1013,7 +1177,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         if (this.wfFieldComponents && this.wfFieldComponents.length) {
             this.wfFieldComponents.forEach((wfFieldComponent) => {
                 wfFieldComponent.reset();
-            })
+            });
         }
         // Translate Mode
         this.editLanguageMode = false;
@@ -1036,7 +1200,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     onEnterKeyPress(control: ControlBase<any>) {
         // let wfFieldComponents: Array<InlineEditComponent> = this.wfFieldComponents.toArray();
         let wfFieldComponents: Array<WfFieldComponent> = this.wfFieldComponents;
-        wfFieldComponents = wfFieldComponents.filter(p => p.control.isHidden === false && !p.control.readOnly);
+        wfFieldComponents = wfFieldComponents.filter(
+            (p) => p.control.isHidden === false && !p.control.readOnly
+        );
 
         if (wfFieldComponents && wfFieldComponents.length) {
             let wfFieldComponent: WfFieldComponent;
@@ -1058,8 +1224,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     focusOnFirstFieldError() {
         for (const item of this.wfFieldComponents) {
-            if (this.form.controls[item.control.key].valid)
-                continue;
+            if (this.form.controls[item.control.key].valid) continue;
             this.errorShow = true;
             item.focus();
             this.ref.detectChanges();
@@ -1074,29 +1239,40 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
         const formValueKeys = Object.keys(formValues);
         const ignoreFields: Array<string> = [];
-        formValueKeys.forEach(formField => {
+        formValueKeys.forEach((formField) => {
             let rs: Array<string> = [];
             if (this.undisplayFieldList) {
-                rs = this.undisplayFieldList.filter(p => formField.indexOf(p) >= 0);
+                rs = this.undisplayFieldList.filter(
+                    (p) => formField.indexOf(p) >= 0
+                );
             }
             if (rs.length === 0) {
                 if (formValues[formField] === originalFormValues[formField]) {
                     ignoreFields.push(formField);
-                } else if (formValues[formField] && formValues[formField]['key'] && formValues[formField]['value']) {
-                    if (formValues[formField]['key'] === originalFormValues[formField])
+                } else if (
+                    formValues[formField] &&
+                    formValues[formField]["key"] &&
+                    formValues[formField]["value"]
+                ) {
+                    if (
+                        formValues[formField]["key"] ===
+                        originalFormValues[formField]
+                    )
                         ignoreFields.push(formField);
-                    else
-                        formValues[formField] = formValues[formField]['key'];
+                    else formValues[formField] = formValues[formField]["key"];
                 }
             }
             if (formValues[formField] instanceof Date) {
                 // Fix format follow store procedure convert formater
-                formValues[formField] = this.datePipe.transform(formValues[formField], this.consts.dateFormatInDataBase);
+                formValues[formField] = this.datePipe.transform(
+                    formValues[formField],
+                    this.consts.dateFormatInDataBase
+                );
             }
         });
 
         if (ignoreFields.length > 0) {
-            ignoreFields.forEach(ignoreField => {
+            ignoreFields.forEach((ignoreField) => {
                 delete formValues[ignoreField];
             });
         }
@@ -1106,16 +1282,29 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     /**
      * Load data for drop-down that depend on other drop-down
      */
-    private loadDataForDependDropdown(dropdownControl: DropdownControl, controls: ControlBase<any>[]) {
+    private loadDataForDependDropdown(
+        dropdownControl: DropdownControl,
+        controls: ControlBase<any>[]
+    ) {
         if (dropdownControl.filterBy) {
-            const dependDropdowns = controls.filter(p => p.key === dropdownControl.filterBy);
+            const dependDropdowns = controls.filter(
+                (p) => p.key === dropdownControl.filterBy
+            );
             if (dependDropdowns.length > 0) {
-                this.commonServiceSubscription = this.commonService.getComboBoxDataByFilter(dropdownControl.identificationKey, dependDropdowns[0].value).subscribe((response: ApiResultResponse) => {
-                    this.appErrorHandler.executeAction(() => {
-                        this.onSuccessGetDropdownData(response.item, dropdownControl);
-                        this.ref.markForCheck();
+                this.commonServiceSubscription = this.commonService
+                    .getComboBoxDataByFilter(
+                        dropdownControl.identificationKey,
+                        dependDropdowns[0].value
+                    )
+                    .subscribe((response: ApiResultResponse) => {
+                        this.appErrorHandler.executeAction(() => {
+                            this.onSuccessGetDropdownData(
+                                response.item,
+                                dropdownControl
+                            );
+                            this.ref.markForCheck();
+                        });
                     });
-                });
             }
         }
     }
@@ -1126,26 +1315,28 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      * @param dropdownControl
      */
     private onSuccessGetDropdownData(result, dropdownControl: DropdownControl) {
-        if (!result)
-            return;
+        if (!result) return;
         const keys = Object.keys(result);
         const formatKey = {};
         for (let j = 0; j < keys.length; j++) {
-            const key = keys[j].replace(/[0-9_]/gi, '');
+            const key = keys[j].replace(/[0-9_]/gi, "");
             formatKey[key] = result[keys[j]];
         }
-        const comboOptions: Array<any> = this.getValidCombobox(formatKey, dropdownControl.identificationKey);
+        const comboOptions: Array<any> = this.getValidCombobox(
+            formatKey,
+            dropdownControl.identificationKey
+        );
         if (comboOptions) {
             let options: Array<any>;
             let idValue: string;
-            options = comboOptions.map(option => {
+            options = comboOptions.map((option) => {
                 if (option.textValue === dropdownControl.displayValue) {
                     idValue = option.idValue;
                 }
                 return {
                     key: option.idValue,
-                    value: option.textValue
-                }
+                    value: option.textValue,
+                };
             });
             if (idValue) {
                 dropdownControl.value = idValue;
@@ -1163,8 +1354,12 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      */
     private resetHiddenField() {
         let contentList: any;
-        if (this.dataSource && this.dataSource.contentDetail &&
-            this.dataSource.contentDetail.data && this.dataSource.contentDetail.data.length > 0) {
+        if (
+            this.dataSource &&
+            this.dataSource.contentDetail &&
+            this.dataSource.contentDetail.data &&
+            this.dataSource.contentDetail.data.length > 0
+        ) {
             const widgetInfo = this.dataSource.contentDetail.data;
             contentList = widgetInfo[1];
         }
@@ -1177,7 +1372,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             if (itemContent.Setting && itemContent.Setting.length) {
                 const settingArray = JSON.parse(itemContent.Setting);
                 const setting = Uti.getCloumnSettings(settingArray);
-                isHidden = setting.DisplayField && setting.DisplayField.Hidden && parseInt(setting.DisplayField.Hidden) > 0;
+                isHidden =
+                    setting.DisplayField &&
+                    setting.DisplayField.Hidden &&
+                    parseInt(setting.DisplayField.Hidden) > 0;
             }
             if (!isHidden) {
                 if (this.fieldFilters && this.fieldFilters.length > 0) {
@@ -1188,7 +1386,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                     isHidden = this.isHiddenFieldByFilterMode(contentList[i]);
                 }
             }
-            const control = this.groupContentList.find(p => p.key == contentList[i].OriginalColumnName);
+            const control = this.groupContentList.find(
+                (p) => p.key == contentList[i].OriginalColumnName
+            );
             if (control) {
                 control.isHidden = isHidden;
             }
@@ -1200,7 +1400,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      * @param dropdownControl
      */
     private setDateFormatByCountryCode(dropdownControl: DropdownControl) {
-        if (dropdownControl.key == this.SharingAddressIdRepIsoCountryCodeField) {
+        if (
+            dropdownControl.key == this.SharingAddressIdRepIsoCountryCodeField
+        ) {
             this.updateDateOfBirthFormatByCountryCode();
         }
     }
@@ -1209,18 +1411,39 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      * setMaskAndValidationForZipCodeByCountryCode
      * @param dropdownControl
      */
-    private setMaskAndValidationForZipCodeByCountryCode(dropdownControl: DropdownControl) {
-        if (dropdownControl.key == this.SharingAddressIdRepIsoCountryCodeField) {
-            const option = dropdownControl.options.find(p => p.key == dropdownControl.value);
+    private setMaskAndValidationForZipCodeByCountryCode(
+        dropdownControl: DropdownControl
+    ) {
+        if (
+            dropdownControl.key == this.SharingAddressIdRepIsoCountryCodeField
+        ) {
+            const option = dropdownControl.options.find(
+                (p) => p.key == dropdownControl.value
+            );
             if (option && option[this.ValidationZipMaskFormatField]) {
-                const validationZipMaskFormatField = (option[this.ValidationZipMaskFormatField] as string);
-                const validationZipRegExField = (option[this.ValidationZipRegExField] as string);
-                this.updateMaskForZipControl(this.B00SharingAddressZipField, validationZipMaskFormatField, validationZipRegExField);
+                const validationZipMaskFormatField = option[
+                    this.ValidationZipMaskFormatField
+                ] as string;
+                const validationZipRegExField = option[
+                    this.ValidationZipRegExField
+                ] as string;
+                this.updateMaskForZipControl(
+                    this.B00SharingAddressZipField,
+                    validationZipMaskFormatField,
+                    validationZipRegExField
+                );
 
-                const validationZip2MaskFormatField = (option[this.ValidationZip2MaskFormatField] as string);
-                const validationZip2RegExField = (option[this.ValidationZip2RegExField] as string);
-                this.updateMaskForZipControl(this.B00SharingAddressZip2Field, validationZip2MaskFormatField, validationZip2RegExField);
-
+                const validationZip2MaskFormatField = option[
+                    this.ValidationZip2MaskFormatField
+                ] as string;
+                const validationZip2RegExField = option[
+                    this.ValidationZip2RegExField
+                ] as string;
+                this.updateMaskForZipControl(
+                    this.B00SharingAddressZip2Field,
+                    validationZip2MaskFormatField,
+                    validationZip2RegExField
+                );
             }
         }
     }
@@ -1231,18 +1454,24 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      * @param validationZipMaskFormatField
      * @param validationZipRegExField
      */
-    private updateMaskForZipControl(zipControlKey, validationZipMaskFormatField, validationZipRegExField) {
-        let zipTxtControl = this.groupContentList.find(p => p.key == zipControlKey);
+    private updateMaskForZipControl(
+        zipControlKey,
+        validationZipMaskFormatField,
+        validationZipRegExField
+    ) {
+        let zipTxtControl = this.groupContentList.find(
+            (p) => p.key == zipControlKey
+        );
         if (zipTxtControl) {
             const textMaskControl = new TextboxMaskControl(zipTxtControl);
             textMaskControl.controlType = ControlType.TextboxMask;
             textMaskControl.pattern = validationZipRegExField;
             if (validationZipMaskFormatField) {
-                validationZipMaskFormatField = validationZipMaskFormatField.replace(/§/g, 'A');
+                validationZipMaskFormatField =
+                    validationZipMaskFormatField.replace(/§/g, "A");
                 textMaskControl.mask = validationZipMaskFormatField;
             }
             zipTxtControl = Object.assign(zipTxtControl, textMaskControl);
-
 
             /* TODO: reopen after updating format in DB
             let arr = [];
@@ -1263,11 +1492,17 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      * @param dropdownControl
      */
     private setHiddenFieldsByCountryCode(dropdownControl: DropdownControl) {
-        if (dropdownControl.key == this.SharingAddressIdRepIsoCountryCodeField) {
-            const option = dropdownControl.options.find(p => p.key == dropdownControl.value);
+        if (
+            dropdownControl.key == this.SharingAddressIdRepIsoCountryCodeField
+        ) {
+            const option = dropdownControl.options.find(
+                (p) => p.key == dropdownControl.value
+            );
             if (option && option[this.SharingAddressHiddenFields]) {
                 this.resetHiddenField();
-                const hiddenFields = (option[this.SharingAddressHiddenFields] as string).split(';');
+                const hiddenFields = (
+                    option[this.SharingAddressHiddenFields] as string
+                ).split(";");
                 this.setHiddenFields(hiddenFields);
             }
         }
@@ -1279,21 +1514,25 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      */
     onUpdateValue(control: ControlBase<any>) {
         switch (control.controlType) {
-            case 'dropdown':
-                const dropdownControl = (control as DropdownControl);
+            case "dropdown":
+                const dropdownControl = control as DropdownControl;
                 this.changeItemOnDropdown(dropdownControl);
                 this.setHiddenFieldsByCountryCode(dropdownControl);
-                this.setMaskAndValidationForZipCodeByCountryCode(dropdownControl);
+                this.setMaskAndValidationForZipCodeByCountryCode(
+                    dropdownControl
+                );
                 this.setDateFormatByCountryCode(dropdownControl);
                 break;
-            case 'checkbox':
-                const checkboxControl = (control as CheckboxControl);
+            case "checkbox":
+                const checkboxControl = control as CheckboxControl;
                 this.changeStatusCheckBox(checkboxControl);
                 break;
-            case 'date':
-                const dateControl = (control as DateControl);
+            case "date":
+                const dateControl = control as DateControl;
                 if (this.form && this.form.controls[dateControl.key]) {
-                    this.form.controls[dateControl.key].setValue(dateControl.value);
+                    this.form.controls[dateControl.key].setValue(
+                        dateControl.value
+                    );
                     this.form.updateValueAndValidity();
                 }
                 break;
@@ -1308,15 +1547,19 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         if (checkboxControl.value && checkboxControl.groupName) {
             const controls: ControlBase<any>[] = this.groupContentList;
             // Find all other checkbox with the same group.
-            const checkBoxGroup = controls.filter(p => (p.key !== checkboxControl.key && p.controlType === 'checkbox'));
+            const checkBoxGroup = controls.filter(
+                (p) =>
+                    p.key !== checkboxControl.key &&
+                    p.controlType === "checkbox"
+            );
             if (checkBoxGroup.length) {
-                const checkboxControls = (checkBoxGroup as CheckboxControl[]);
-                checkboxControls.forEach(checkbox => {
+                const checkboxControls = checkBoxGroup as CheckboxControl[];
+                checkboxControls.forEach((checkbox) => {
                     if (checkbox.groupName === checkboxControl.groupName) {
                         checkbox.value = false;
                         this.form.controls[checkbox.key].setValue(false);
                     }
-                })
+                });
             }
         }
         this.ref.markForCheck();
@@ -1326,19 +1569,35 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      * updateDateOfBirthFormatByCountryCode
      **/
     private updateDateOfBirthFormatByCountryCode() {
-        const countryCtr = Uti.getItemRecursive(this.controlColumnList, this.SharingAddressIdRepIsoCountryCodeField, 'key');
-        if (!countryCtr || !countryCtr.options || !countryCtr.options.length || !countryCtr.value) return;
+        const countryCtr = Uti.getItemRecursive(
+            this.controlColumnList,
+            this.SharingAddressIdRepIsoCountryCodeField,
+            "key"
+        );
+        if (
+            !countryCtr ||
+            !countryCtr.options ||
+            !countryCtr.options.length ||
+            !countryCtr.value
+        )
+            return;
 
-        const option = countryCtr.options.find(p => (p.key == countryCtr.value || p.value == countryCtr.value));
+        const option = countryCtr.options.find(
+            (p) => p.key == countryCtr.value || p.value == countryCtr.value
+        );
         if (!option) return;
 
-        const dobCtr = Uti.getItemRecursive(this.controlColumnList, this.B00PersonMasterData_DateOfBirth, 'key');
+        const dobCtr = Uti.getItemRecursive(
+            this.controlColumnList,
+            this.B00PersonMasterData_DateOfBirth,
+            "key"
+        );
         if (!dobCtr) return;
 
         dobCtr.format = null;
         if (!this.supportDOBCountryFormat) return;
 
-        dobCtr.format = Uti.getDateFormatFromIsoCode(option['isoCode']);
+        dobCtr.format = Uti.getDateFormatFromIsoCode(option["isoCode"]);
 
         // if (controls && controls.length) {
         //     const countryCodeControl = controls.find(p => p.key == this.SharingAddressIdRepIsoCountryCodeField);
@@ -1370,14 +1629,21 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         const key = dropdownControl.key;
         const controls: ControlBase<any>[] = this.groupContentList;
         // Find all dependency drop-downs.
-        const filterByDropdowns = controls.filter(p => p.controlType === 'dropdown' && p.filterBy === key);
+        const filterByDropdowns = controls.filter(
+            (p) => p.controlType === "dropdown" && p.filterBy === key
+        );
         if (filterByDropdowns.length > 0) {
             const observables = new Array<Observable<any>>();
-            filterByDropdowns.forEach(filterByDropdown => {
-                const control = (filterByDropdown as DropdownControl);
+            filterByDropdowns.forEach((filterByDropdown) => {
+                const control = filterByDropdown as DropdownControl;
                 control.options = [];
                 this.updateDatasourceForCombobox(control);
-                observables.push(this.commonService.getComboBoxDataByFilter(control.identificationKey, id));
+                observables.push(
+                    this.commonService.getComboBoxDataByFilter(
+                        control.identificationKey,
+                        id
+                    )
+                );
             });
 
             // Excute request
@@ -1385,10 +1651,11 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 observables[i].subscribe((response: ApiResultResponse) => {
                     this.appErrorHandler.executeAction(() => {
                         const rs = response.item;
-                        if (!rs)
-                            return;
+                        if (!rs) return;
                         for (let j = 0; j < filterByDropdowns.length; j++) {
-                            const control = (filterByDropdowns[j] as DropdownControl);
+                            const control = filterByDropdowns[
+                                j
+                            ] as DropdownControl;
                             this.onSuccessGetDropdownData(rs, control);
                             this.ref.markForCheck();
                         }
@@ -1402,17 +1669,35 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      * calculateMinLabelWidth
      */
     private calculateMinLabelWidth() {
-        this.groupContentList.forEach(control => {
+        this.groupContentList.forEach((control) => {
             if (control.label && !control.isHidden) {
-                if (this.importantFormStyle.labelStyle && this.importantFormStyle.labelStyle['font-size']
-                    && this.importantFormStyle.fields && this.importantFormStyle.fields[control.key]) {
-                    const ratioConvert = parseInt(this.importantFormStyle.labelStyle['font-size'].replace('px').trim(), null) / 12 * 7;
-                    this.changeMinLabelWidth(control.label.length, ratioConvert);
+                if (
+                    this.importantFormStyle.labelStyle &&
+                    this.importantFormStyle.labelStyle["font-size"] &&
+                    this.importantFormStyle.fields &&
+                    this.importantFormStyle.fields[control.key]
+                ) {
+                    const ratioConvert =
+                        (parseInt(
+                            this.importantFormStyle.labelStyle["font-size"]
+                                .replace("px")
+                                .trim(),
+                            null
+                        ) /
+                            12) *
+                        7;
+                    this.changeMinLabelWidth(
+                        control.label.length,
+                        ratioConvert
+                    );
                 } else {
-                    this.changeMinLabelWidth(control.label.length, this.ratioConvertFontSizeToPixcel);
+                    this.changeMinLabelWidth(
+                        control.label.length,
+                        this.ratioConvertFontSizeToPixcel
+                    );
                 }
             }
-        })
+        });
         this.ref.markForCheck();
     }
 
@@ -1421,10 +1706,12 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
      * @param event
      */
     private changeMinLabelWidth(lbLength, ratioConvert) {
-        if (isNil(lbLength))
-            return;
+        if (isNil(lbLength)) return;
 
-        this.minLabelWidth = Math.max(this.minLabelWidth, lbLength * ratioConvert + 10);
+        this.minLabelWidth = Math.max(
+            this.minLabelWidth,
+            lbLength * ratioConvert + 10
+        );
         // comment code to fix bug 6292
         // const containerWidth = $('form', $(this._eref.nativeElement)).width();
         // if (containerWidth > 0 && this.minLabelWidth > containerWidth / 5 * 2)
@@ -1436,14 +1723,18 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private activateVirtualContainer(input: string, isChangeData?: boolean) {
         if (this.org_numberOfVisibleControls !== this.numberOfVisibleControls)
             this.org_numberOfVisibleControls = this.numberOfVisibleControls;
-        else if (isChangeData && this.listVirtualElementNames.length)
-            return;
+        else if (isChangeData && this.listVirtualElementNames.length) return;
 
-        const vContainers = $('.virtual-container', $(this._eref.nativeElement));
-        if (!vContainers.length)
-            return;
+        const vContainers = $(
+            ".virtual-container",
+            $(this._eref.nativeElement)
+        );
+        if (!vContainers.length) return;
 
-        if (this.numberOfVisibleControls > 20 || this.widgetFormType === WidgetFormTypeEnum.List) {
+        if (
+            this.numberOfVisibleControls > 20 ||
+            this.widgetFormType === WidgetFormTypeEnum.List
+        ) {
             vContainers.hide();
             this.listVirtualElementNames = [];
             return;
@@ -1452,30 +1743,39 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         if (input && this.dataSource) {
             const id = this.dataSource.id;
             // do nothing for invalid Widget Id or not to be resized by spliter
-            if (input.indexOf('-' + id + '-') < 0 && input.indexOf('spliter-') < 0)
+            if (
+                input.indexOf("-" + id + "-") < 0 &&
+                input.indexOf("spliter-") < 0
+            )
                 return;
 
             // start resizing, hide all virtual element
-            if (input.indexOf('start-') >= 0) {
+            if (input.indexOf("start-") >= 0) {
                 vContainers.hide();
                 return;
             }
         }
         // find the start point to activate virtual elements
-        const containerW = $('form', $(this._eref.nativeElement)).width();
+        const containerW = $("form", $(this._eref.nativeElement)).width();
         const cols = Math.min(6, Math.floor(containerW / 265));
         const rows = vContainers.length;
         const numberItemsRemain = rows % cols;
         const rowsFullOfItems = (rows - numberItemsRemain) / cols;
         const numberItemsWillAdd = cols - numberItemsRemain;
-        const startPoint = numberItemsRemain <= 0 ? rowsFullOfItems - 1 :
-            (rowsFullOfItems + 1) * numberItemsRemain + rowsFullOfItems - 1;
+        const startPoint =
+            numberItemsRemain <= 0
+                ? rowsFullOfItems - 1
+                : (rowsFullOfItems + 1) * numberItemsRemain +
+                  rowsFullOfItems -
+                  1;
         vContainers.hide();
         this.listVirtualElementNames = [];
         for (let i = 0; i < numberItemsWillAdd; i++) {
-            const element = $(vContainers.get(startPoint + i * rowsFullOfItems));
+            const element = $(
+                vContainers.get(startPoint + i * rowsFullOfItems)
+            );
             element.show();
-            this.listVirtualElementNames.push(element.attr('data-id'));
+            this.listVirtualElementNames.push(element.attr("data-id"));
         }
     }
 
@@ -1494,14 +1794,16 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private signalRAskEditingTimeout: any = null;
 
     public signalRIsThereAnyoneEditing() {
-        if (!Configuration.PublicSettings.enableSignalR ||
-            !Configuration.PublicSettings.enableSignalRForWidgetDetail) return;
+        if (
+            !Configuration.PublicSettings.enableSignalR ||
+            !Configuration.PublicSettings.enableSignalRForWidgetDetail
+        )
+            return;
 
         clearTimeout(this.signalRAskEditingTimeout);
         this.signalRAskEditingTimeout = null;
 
         this.signalRAskEditingTimeout = setTimeout(() => {
-
             this.notifyObjectId = this.signalRGetObjectId();
             if (!this.notifyObjectId) return;
 
@@ -1516,22 +1818,44 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private signalRGetObjectId() {
-        if (!this.dataSource || !this.dataSource.widgetDataType || !this.dataSource.widgetDataType.listenKey || !this.dataSource.widgetDataType.listenKey.key) return null;
+        if (
+            !this.dataSource ||
+            !this.dataSource.widgetDataType ||
+            !this.dataSource.widgetDataType.listenKey ||
+            !this.dataSource.widgetDataType.listenKey.key
+        )
+            return null;
 
         const key: string = this.dataSource.widgetDataType.listenKey.key;
-        const keyValue: string = this.dataSource.widgetDataType.listenKeyRequest(this.dataSource.moduleName)[key];
+        const keyValue: string =
+            this.dataSource.widgetDataType.listenKeyRequest(
+                this.dataSource.moduleName
+            )[key];
 
         if (!keyValue) return null;
 
         //ModuleName + IdRepWidgetApp + WidgetId + ListenKey + ID
-        return this.dataSource.moduleName + this.dataSource.idRepWidgetApp + '_' + key + keyValue;
+        return (
+            this.dataSource.moduleName +
+            this.dataSource.idRepWidgetApp +
+            "_" +
+            key +
+            keyValue
+        );
     }
 
     private signalRConnectEditing(action?: SignalRActionEnum) {
-        if (!Configuration.PublicSettings.enableSignalR ||
-            !Configuration.PublicSettings.enableSignalRForWidgetDetail) return;
+        if (
+            !Configuration.PublicSettings.enableSignalR ||
+            !Configuration.PublicSettings.enableSignalRForWidgetDetail
+        )
+            return;
 
-        if (!this.notifyObjectId || !this.notifyFields || !this.notifyFields.length) {
+        if (
+            !this.notifyObjectId ||
+            !this.notifyFields ||
+            !this.notifyFields.length
+        ) {
             if (action === SignalRActionEnum.StopEditing) {
                 this.broastCastMessage(action);
             }
@@ -1572,7 +1896,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private executeControlUpdated(data: SignalRNotifyModel) {
         if (!data || !data.Data || !data.Data.length) return;
         for (const item of data.Data) {
-            const updateItem = this.groupContentList.find(x => x.key === item.fieldName);
+            const updateItem = this.groupContentList.find(
+                (x) => x.key === item.fieldName
+            );
             if (!updateItem || !updateItem.key) continue;
             updateItem.hasJustUpdated = true;
         }
@@ -1593,10 +1919,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private timeoutOfControlKeyPress: any;
 
-    @HostListener('document:keydown.out-zone', ['$event'])
+    @HostListener("document:keydown.out-zone", ["$event"])
     onKeydown($event) {
         if (this.isSettingDialog) return;
-        this.isControlPressing = ($event.key === 'Control');
+        this.isControlPressing = $event.key === "Control";
         if (this.timeoutOfControlKeyPress) {
             clearTimeout(this.timeoutOfControlKeyPress);
             this.timeoutOfControlKeyPress = null;
@@ -1606,7 +1932,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         }, 1000);
     }
 
-    @HostListener('document:keyup.out-zone', ['$event'])
+    @HostListener("document:keyup.out-zone", ["$event"])
     onKeyup($event) {
         if (this.isSettingDialog) return;
         this.checkedItems.length = 0;
@@ -1616,7 +1942,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         this.widgetFieldService.changeMessage(itemChecked);
         // this.isControlPressing = !($event.key === 'Control');
         this.isControlPressing = false;
-        if ($event.key === 'Escape') {
+        if ($event.key === "Escape") {
             this.isCancelDragging = true;
             const drake = this.dragulaService.find(this.dragName).drake;
             drake.cancel(this.checkedItems);
@@ -1625,9 +1951,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private timeoutOfMenuClicking: any;
 
-    @HostListener('mousedown.out-zone', ['$event'])
+    @HostListener("mousedown.out-zone", ["$event"])
     onMousedown($event) {
-     if ($event.button === 2) {
+        if ($event.button === 2) {
             this.resetCurrentItemSelection();
             return;
         }
@@ -1644,17 +1970,23 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 return;
             }
 
-            if (this.isControlPressing || this.isDragging || this.isCheckedItemClicked) {
+            if (
+                this.isControlPressing ||
+                this.isDragging ||
+                this.isCheckedItemClicked
+            ) {
                 this.isCheckedItemClicked = false;
                 this.isItemClicked = false;
                 return;
             }
-            this.unCheckAllControlOfOtherColumn({}, 'checked');
+            this.unCheckAllControlOfOtherColumn({}, "checked");
             if (this.isItemClicked) {
                 this.isItemClicked = false;
-                if (this.currentItemControl &&
-                    (this.currentItemControl.layoutType === 'control' ||
-                        this.currentItemControl.layoutType === 'lineBreak')) {
+                if (
+                    this.currentItemControl &&
+                    (this.currentItemControl.layoutType === "control" ||
+                        this.currentItemControl.layoutType === "lineBreak")
+                ) {
                     this.currentItemControl.checked = true;
                 }
             }
@@ -1670,7 +2002,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     // public columnWidth: any;
     public dragName: string = Uti.guid();
     public isDisableDragToPanel = false;
-    public layoutTypeDragging = '';
+    public layoutTypeDragging = "";
     public isIncludeLinebreak = false;
     public isControlPressing = false;
     public isCancelDragging = false;
@@ -1679,10 +2011,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     public isJustDragged = false;
     public settingControl: any;
 
-
     public onDeleteColumnHandler(column: any) {
         this.moveAllItemToBesideColumn(column);
-        Uti.removeItemInArray(this.controlColumnList, column, 'key');
+        Uti.removeItemInArray(this.controlColumnList, column, "key");
         this.buildColumnsWidthWhenRemove(column);
         this.setDirtyForChangeColumnLayout();
         this.setThreeDotsForValue();
@@ -1693,7 +2024,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     public openSettingDialog(data) {
-        const isCheckMultiField = this.checkedItems.some(x => x.key === data.key);
+        const isCheckMultiField = this.checkedItems.some(
+            (x) => x.key === data.key
+        );
         if (!isCheckMultiField) {
             this.widgetFieldService.clearMessages();
         }
@@ -1704,8 +2037,14 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private updateWhenOpenConfigDialog() {
-        for (const wfColumnComponent of (<any>this.wfColumnComponents)._results) {
-            if (wfColumnComponent.updateWhenOpenConfigDialog(this.currentItemControl)) return;
+        for (const wfColumnComponent of (<any>this.wfColumnComponents)
+            ._results) {
+            if (
+                wfColumnComponent.updateWhenOpenConfigDialog(
+                    this.currentItemControl
+                )
+            )
+                return;
         }
     }
 
@@ -1717,7 +2056,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     public openSettingPanelDialog() {
         if (!this.currentPanel) {
-            this._modalService.warningText('Modal_Message__Select_Country_Process');
+            this._modalService.warningText(
+                "Modal_Message__Select_Country_Process"
+            );
             return;
         }
         this.settingControl = this.currentPanel;
@@ -1727,7 +2068,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     public openSettingFieldDialog() {
         if (!this.currentControl) {
-            this._modalService.warningText('Modal_Message__Right_Click_InSide_Field');
+            this._modalService.warningText(
+                "Modal_Message__Right_Click_InSide_Field"
+            );
             return;
         }
         this.settingControl = this.currentControl;
@@ -1746,12 +2089,13 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     public closeSettingDialog($event) {
         this.isSettingDialog = $event.isSettingDialog;
-        this.resetDataInPanel($event.control)
+        this.resetDataInPanel($event.control);
     }
 
     private resetDataInPanel(data) {
-        if (!data || data.layoutType !== 'panel') return;
-        for (const wfColumnComponent of (<any>this.wfColumnComponents)._results) {
+        if (!data || data.layoutType !== "panel") return;
+        for (const wfColumnComponent of (<any>this.wfColumnComponents)
+            ._results) {
             if (!wfColumnComponent.resetDataInPanel(data)) continue;
             break;
         }
@@ -1767,15 +2111,18 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         }, 400);
     }
 
-
     public onDeletePanelHandler(data: any) {
         const keepPanelChildren = cloneDeep(data.panel.children);
         for (let i = 0; i < data.column.children.length; i++) {
             if (data.column.children[i].key !== data.panel.key) continue;
-            data.column.children = Uti.insertArrayAt(data.column.children, i, keepPanelChildren);
+            data.column.children = Uti.insertArrayAt(
+                data.column.children,
+                i,
+                keepPanelChildren
+            );
             break;
         }
-        Uti.removeItemInArray(data.column.children, data.panel, 'key');
+        Uti.removeItemInArray(data.column.children, data.panel, "key");
         this.reSetOrderNumber(data.column.children);
         // data.column.children = [...data.column.children, ...keepPanelChildren];
         this.setDirtyForChangeColumnLayout();
@@ -1793,7 +2140,8 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             this.controlColumnList.push(newColumn);
         } else {
             for (let i = 0; i < this.controlColumnList.length; i++) {
-                if (this.controlColumnList[i].key !== this.currentColumn.key) continue;
+                if (this.controlColumnList[i].key !== this.currentColumn.key)
+                    continue;
                 this.controlColumnList.splice(i + 1, 0, newColumn);
                 break;
             }
@@ -1806,12 +2154,24 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     public addPanel(isRow?: boolean) {
-        if (!this.currentColumn && !this.currentPanel && !this.currentControl && !this.currentLineBreak) {
-            this._modalService.warningText('Modal_Message__Right_Click_InSide_Column');
+        if (
+            !this.currentColumn &&
+            !this.currentPanel &&
+            !this.currentControl &&
+            !this.currentLineBreak
+        ) {
+            this._modalService.warningText(
+                "Modal_Message__Right_Click_InSide_Column"
+            );
             return;
         }
-        if (!this.currentColumn.children.length || (!this.currentPanel && !this.currentControl && !this.currentLineBreak)) {
-            this.addControlForColumn('panel', 'New Panel');
+        if (
+            !this.currentColumn.children.length ||
+            (!this.currentPanel &&
+                !this.currentControl &&
+                !this.currentLineBreak)
+        ) {
+            this.addControlForColumn("panel", "New Panel");
             // this.addControlForColumn('panel', (!isRow ? 'New Panel' : 'New Row Panel'), isRow);
             return;
         }
@@ -1819,18 +2179,17 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         control = control || this.currentLineBreak;
         for (let i = 0; i < this.currentColumn.children.length; i++) {
             if (this.currentColumn.children[i].key !== control.key) continue;
-            this.currentColumn.children.splice(i, 0,
-                {
-                    'layoutType': 'panel',
-                    'title': 'New Panel',
-                    // 'title': (!isRow ? 'New Panel' : 'New Row Panel'),
-                    'key': Uti.guid(),
-                    'checked': false,
-                    'order': 0,
-                    'isRow': isRow,
-                    'children': [],
-                    'config': DefaultWidgetItemConfiguration.Panel
-                });
+            this.currentColumn.children.splice(i, 0, {
+                layoutType: "panel",
+                title: "New Panel",
+                // 'title': (!isRow ? 'New Panel' : 'New Row Panel'),
+                key: Uti.guid(),
+                checked: false,
+                order: 0,
+                isRow: isRow,
+                children: [],
+                config: DefaultWidgetItemConfiguration.Panel,
+            });
             break;
         }
         this.reSetOrderNumber(this.currentColumn.children);
@@ -1839,15 +2198,27 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     public addLineBreak() {
-        if (!this.currentColumn && !this.currentPanel && !this.currentControl && !this.currentLineBreak) {
-            this._modalService.warningText('Modal_Message__Right_Click_InSide_Column');
+        if (
+            !this.currentColumn &&
+            !this.currentPanel &&
+            !this.currentControl &&
+            !this.currentLineBreak
+        ) {
+            this._modalService.warningText(
+                "Modal_Message__Right_Click_InSide_Column"
+            );
             return;
         }
-        if (!this.currentColumn.children.length || (!this.currentPanel && !this.currentControl && !this.currentLineBreak)) {
-            this.addControlForColumn('lineBreak');
+        if (
+            !this.currentColumn.children.length ||
+            (!this.currentPanel &&
+                !this.currentControl &&
+                !this.currentLineBreak)
+        ) {
+            this.addControlForColumn("lineBreak");
             return;
         }
-        const {isAdded, control} = this.addLinebreakToPanel();
+        const { isAdded, control } = this.addLinebreakToPanel();
         if (!isAdded) {
             this.addLinebreakToColumn(control);
         }
@@ -1857,7 +2228,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     public onDeleteLineBreakHandler(data: any) {
-        Uti.removeItemInArray(data.parent.children, data.lineBreak, 'key');
+        Uti.removeItemInArray(data.parent.children, data.lineBreak, "key");
         this.reSetOrderNumber(data.parent.children);
         this.setDirtyForChangeColumnLayout();
     }
@@ -1869,8 +2240,13 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     public makeTemporariesColumnLayoutData() {
         const tempProperties = cloneDeep(this.widgetProperties);
-        const controlColumnPanel = Uti.getItemRecursive(tempProperties, 'ControlColumnPanel');
-        controlColumnPanel.value = JSON.stringify(this.makeSavingDataForColumnLayout(this.controlColumnList));
+        const controlColumnPanel = Uti.getItemRecursive(
+            tempProperties,
+            "ControlColumnPanel"
+        );
+        controlColumnPanel.value = JSON.stringify(
+            this.makeSavingDataForColumnLayout(this.controlColumnList)
+        );
         this.makeTempPropertiesAction.emit(tempProperties);
     }
 
@@ -1888,15 +2264,15 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     public onRightClickControlHandler(control: any) {
         switch (control.layoutType) {
-            case 'control':
+            case "control":
                 this.currentControl = control;
                 this.onHiddenSettingForm.emit(this.currentControl);
                 break;
-            case 'panel':
+            case "panel":
                 this.currentPanel = control;
                 this.onHiddenSettingForm.emit(this.currentPanel);
                 break;
-            case 'lineBreak':
+            case "lineBreak":
                 this.currentLineBreak = control;
         }
     }
@@ -1918,21 +2294,28 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         if (!data) return;
         switch (data.layoutType) {
             case TypeForm.Column:
-                for (const wfColumnComponent of (<any>this.wfColumnComponents)._results) {
+                for (const wfColumnComponent of (<any>this.wfColumnComponents)
+                    ._results) {
                     if (data.key !== wfColumnComponent.column.key) continue;
-                    wfColumnComponent.changePropertiesForColumnStyle(data.config);
+                    wfColumnComponent.changePropertiesForColumnStyle(
+                        data.config
+                    );
                     break;
                 }
                 break;
             case TypeForm.Panel:
-                for (const wfColumnComponent of (<any>this.wfColumnComponents)._results) {
-                    if (!wfColumnComponent.changePropertiesForPanelStyle(data)) continue;
+                for (const wfColumnComponent of (<any>this.wfColumnComponents)
+                    ._results) {
+                    if (!wfColumnComponent.changePropertiesForPanelStyle(data))
+                        continue;
                     break;
                 }
                 break;
             case TypeForm.Control:
-                for (const wfColumnComponent of (<any>this.wfColumnComponents)._results) {
-                    if (!wfColumnComponent.changePropertiesForFieldStyle(data)) continue;
+                for (const wfColumnComponent of (<any>this.wfColumnComponents)
+                    ._results) {
+                    if (!wfColumnComponent.changePropertiesForFieldStyle(data))
+                        continue;
                     break;
                 }
                 break;
@@ -1985,7 +2368,9 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             // If right column is found, will set width for left, right column and break
             if (isFound) {
                 // calculate for the new right column width
-                newNextColumnWidth = column.width + (remainWidth * (newWidth > data.column.width ? -1 : 1));
+                newNextColumnWidth =
+                    column.width +
+                    remainWidth * (newWidth > data.column.width ? -1 : 1);
                 // keep current total of left and right size, that will use calculate remain width
                 totalWidth = data.column.width + column.width;
 
@@ -1994,8 +2379,12 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 // If left column width is less than or equal 30px
                 // Then set left column width is 30px (will parse to percent)
                 // And set right column width is remain size
-                if (((newWidth * parentWidth) / 100) <= this.defaultMinColumnWidthPixel) {
-                    newWidth = ((this.defaultMinColumnWidthPixel * 100) / parentWidth);
+                if (
+                    (newWidth * parentWidth) / 100 <=
+                    this.defaultMinColumnWidthPixel
+                ) {
+                    newWidth =
+                        (this.defaultMinColumnWidthPixel * 100) / parentWidth;
                     data.column.width = newWidth;
                     column.width = totalWidth - newWidth;
                     break;
@@ -2005,8 +2394,12 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 // If right column width is less than or equal 30px
                 // Then set right column width is 30px (will parse to percent)
                 // And set left column width is remain size
-                if (((newNextColumnWidth * parentWidth) / 100) <= this.defaultMinColumnWidthPixel) {
-                    newNextColumnWidth = ((this.defaultMinColumnWidthPixel * 100) / parentWidth);
+                if (
+                    (newNextColumnWidth * parentWidth) / 100 <=
+                    this.defaultMinColumnWidthPixel
+                ) {
+                    newNextColumnWidth =
+                        (this.defaultMinColumnWidthPixel * 100) / parentWidth;
                     column.width = newNextColumnWidth;
                     data.column.width = totalWidth - newNextColumnWidth;
                     break;
@@ -2044,28 +2437,47 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     public applySettingForm(data: any) {
         if (data && data.layoutType === TypeForm.Column) {
-            this.controlColumnList = cloneDeep(this.controlColumnList.filter(x => x.key === data.key ? x.config = data.config : x));
+            this.controlColumnList = cloneDeep(
+                this.controlColumnList.filter((x) =>
+                    x.key === data.key ? (x.config = data.config) : x
+                )
+            );
         } else {
-            this.controlColumnList = cloneDeep(this.controlColumnList.filter(x => !!x.children.map(v => {
-                if (v.layoutType === TypeForm.Panel) {
-                    return v.key === data.key ? v.config = data.config : v;
-                }
-            })))
+            this.controlColumnList = cloneDeep(
+                this.controlColumnList.filter(
+                    (x) =>
+                        !!x.children.map((v) => {
+                            if (v.layoutType === TypeForm.Panel) {
+                                return v.key === data.key
+                                    ? (v.config = data.config)
+                                    : v;
+                            }
+                        })
+                )
+            );
         }
     }
 
     public applySettingFields(data: any) {
-        this.controlColumnList.filter(x => !!x.children.map(v => {
-            if (v.layoutType === TypeForm.Panel) {
-                v.children.map(p => p.key === data.key ? p.config = data.config : p);
-            }
-            return v.key === data.key ? v.config = data.config : v;
-        }))
+        this.controlColumnList.filter(
+            (x) =>
+                !!x.children.map((v) => {
+                    if (v.layoutType === TypeForm.Panel) {
+                        v.children.map((p) =>
+                            p.key === data.key ? (p.config = data.config) : p
+                        );
+                    }
+                    return v.key === data.key ? (v.config = data.config) : v;
+                })
+        );
     }
 
     public onApplyHandler(data: any) {
         this.onApplyAction.emit(data);
-        if (data && data.layoutType === TypeForm.Column || data.layoutType === TypeForm.Panel) {
+        if (
+            (data && data.layoutType === TypeForm.Column) ||
+            data.layoutType === TypeForm.Panel
+        ) {
             this.applySettingForm(data);
             return;
         }
@@ -2122,28 +2534,38 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 // console.log(element.className);
                 // console.log('dragulaService');
                 // this.setIsJustDragged();
-                if (element.className.includes('ignore-drag') ||
-                    !element.className.includes('xn-allow-drag') ||
+                if (
+                    element.className.includes("ignore-drag") ||
+                    !element.className.includes("xn-allow-drag") ||
                     this.isSettingDialog ||
-                    this.onMenuMouseOver) {
+                    this.onMenuMouseOver
+                ) {
                     return false;
                 }
                 return true;
             },
             accepts: (element, source, handle, sibling) => {
-                if (source.className.includes('dont-accept')) {
+                if (source.className.includes("dont-accept")) {
                     return false;
                 }
                 return true;
-            }
+            },
         });
     }
 
     private initDragulaEvents() {
-        this.onDraggingSubscription = this.dragulaService.drag.subscribe(this.onDragging.bind(this));
-        this.onClonedSubscription = this.dragulaService.cloned.subscribe(this.onCloned.bind(this));
-        this.onDragendSubscription = this.dragulaService.dragend.subscribe(this.onDragend.bind(this));
-        this.onOverSubscription = this.dragulaService.over.subscribe(this.onOver.bind(this));
+        this.onDraggingSubscription = this.dragulaService.drag.subscribe(
+            this.onDragging.bind(this)
+        );
+        this.onClonedSubscription = this.dragulaService.cloned.subscribe(
+            this.onCloned.bind(this)
+        );
+        this.onDragendSubscription = this.dragulaService.dragend.subscribe(
+            this.onDragend.bind(this)
+        );
+        this.onOverSubscription = this.dragulaService.over.subscribe(
+            this.onOver.bind(this)
+        );
         // this.onOutSubscription = this.dragulaService.out.subscribe(this.onOut.bind(this));
         //this.dragulaService.cancel.subscribe(this.oncancel.bind(this));
         //this.dragulaService.remove.subscribe(this.onremove.bind(this));
@@ -2174,38 +2596,54 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private onCloned(args: any) {
         // console.log('onCloned');
-        if (this.dragName !== args[0] ||
+        if (
+            this.dragName !== args[0] ||
             this.isCancelDrag ||
             this.isSettingDialog ||
             args.length < 3 ||
-            !args[1].attributes['layout-type'] ||
-            !args[1].attributes['layout-type'].value) {
+            !args[1].attributes["layout-type"] ||
+            !args[1].attributes["layout-type"].value
+        ) {
             const drake = this.dragulaService.find(this.dragName).drake;
             drake.cancel();
             this.isCancelDrag = true;
             return;
         }
-        $('#xn-dragging-item').remove();
-        $('body').append($(`
-            <div id="xn-dragging-item">Dragging ` + ((this.checkedItems.length <= 1) ? '1' : this.checkedItems.length) +
-            ` item` + ((this.checkedItems.length <= 1) ? '' : 's') + `</div>`));
+        $("#xn-dragging-item").remove();
+        $("body").append(
+            $(
+                `
+            <div id="xn-dragging-item">Dragging ` +
+                    (this.checkedItems.length <= 1
+                        ? "1"
+                        : this.checkedItems.length) +
+                    ` item` +
+                    (this.checkedItems.length <= 1 ? "" : "s") +
+                    `</div>`
+            )
+        );
         this.registerMouseMove();
     }
 
     private registerMouseMove() {
-        $(this._eref.nativeElement).off('mousemove');
+        $(this._eref.nativeElement).off("mousemove");
         $(this._eref.nativeElement).mousemove((e) => {
-            $('#xn-dragging-item').css({'top': (e.clientY - 20), 'left': (e.clientX - 100)});
+            $("#xn-dragging-item").css({
+                top: e.clientY - 20,
+                left: e.clientX - 100,
+            });
         });
     }
 
     private onDragging(args: any) {
         // console.log('onDragging');
-        if (args.length < 3 ||
+        if (
+            args.length < 3 ||
             this.isCancelDrag ||
             this.isSettingDialog ||
-            !args[1].attributes['layout-type'] ||
-            !args[1].attributes['layout-type'].value) {
+            !args[1].attributes["layout-type"] ||
+            !args[1].attributes["layout-type"].value
+        ) {
             const drake = this.dragulaService.find(this.dragName).drake;
             drake.cancel();
             this.isCancelDrag = true;
@@ -2236,25 +2674,27 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         this.setIsJustDragged();
         this.setIsResizing();
         if (this.dragName !== args[0]) return;
-        if (this.isCancelDragging ||
+        if (
+            this.isCancelDragging ||
             args.length < 2 ||
             this.isSettingDialog ||
             this.isCancelDrag ||
-            !args[1].attributes['layout-type'] ||
-            !args[1].attributes['layout-type'].value) {
+            !args[1].attributes["layout-type"] ||
+            !args[1].attributes["layout-type"].value
+        ) {
             this.isCancelDragging = false;
             this.isDragging = false;
             this.isControlPressing = false;
-            $(this._eref.nativeElement).off('mousemove');
-            $('#xn-dragging-item').remove();
+            $(this._eref.nativeElement).off("mousemove");
+            $("#xn-dragging-item").remove();
             this.isCancelDrag = false;
             return;
         }
         // const [name, el, bagTarget, bagSource] = args;
         this.setDataAfterDrag();
         this.fieldDragEndAction.emit();
-        $(this._eref.nativeElement).off('mousemove');
-        $('#xn-dragging-item').remove();
+        $(this._eref.nativeElement).off("mousemove");
+        $("#xn-dragging-item").remove();
     }
 
     private setIsJustDragged() {
@@ -2265,8 +2705,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private setIsResizing() {
-        if (this.currentItemControl)
-            this.currentItemControl.isResizing = false;
+        if (this.currentItemControl) this.currentItemControl.isResizing = false;
         this.ref.markForCheck();
     }
 
@@ -2291,13 +2730,13 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private createColumn(id: string, newWidth: any) {
         return {
-            'layoutType': 'column',
-            'key': id,
-            'checked': false,
-            'order': 0,
-            'children': [],
-            'config': DefaultWidgetItemConfiguration.Column,
-            'width': newWidth
+            layoutType: "column",
+            key: id,
+            checked: false,
+            order: 0,
+            children: [],
+            config: DefaultWidgetItemConfiguration.Column,
+            width: newWidth,
         };
     }
 
@@ -2318,9 +2757,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     //     }
     // }
     private buildColumnsWidthWhenRemove(deleteColumn: any) {
-        const scaleWithForEachColumn = deleteColumn.width / (this.controlColumnList.length);
+        const scaleWithForEachColumn =
+            deleteColumn.width / this.controlColumnList.length;
         for (const column of this.controlColumnList) {
-            column.width = (column.width + scaleWithForEachColumn);
+            column.width = column.width + scaleWithForEachColumn;
         }
     }
     // private buildColumnsWidth(newColumnId: string) {
@@ -2344,13 +2784,14 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private makeDataWhenDragging(args) {
         const [name, el, bagTarget, bagSource] = args;
-        if (!el.attributes['layout-type']) return;
-        this.isDisableDragToPanel = (el.attributes['layout-type'].value == 'panel');
-        this.layoutTypeDragging = el.attributes['layout-type'].value;
+        if (!el.attributes["layout-type"]) return;
+        this.isDisableDragToPanel =
+            el.attributes["layout-type"].value == "panel";
+        this.layoutTypeDragging = el.attributes["layout-type"].value;
         this.isIncludeLinebreak = this.hasDraggingLinebreak();
         if (this.isDisableDragToPanel) {
             this.currentItemControl = null;
-            this.unCheckAllControlOfOtherColumn({}, 'checked');
+            this.unCheckAllControlOfOtherColumn({}, "checked");
         } else {
             this.draggingItem = el;
         }
@@ -2360,13 +2801,15 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private setDataAfterDrag() {
-        this.wfColumnComponents.forEach((wfColumnComponent: WfColumnComponent) => {
-            wfColumnComponent.updateColumnChildren();
-        });
+        this.wfColumnComponents.forEach(
+            (wfColumnComponent: WfColumnComponent) => {
+                wfColumnComponent.updateColumnChildren();
+            }
+        );
         setTimeout(() => {
             this.onChangedHandler();
             this.callRenderScrollHandler();
-            this.unCheckAllControlOfOtherColumn({}, 'checked');
+            this.unCheckAllControlOfOtherColumn({}, "checked");
             this.addMultipleItemAfterDrag();
             this.isCancelDrag = this.isDragging = false;
             this.ref.markForCheck();
@@ -2376,10 +2819,10 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private hasDraggingLinebreak() {
         if (!this.checkedItems || !this.checkedItems.length) {
-            return this.layoutTypeDragging === 'lineBreak';
+            return this.layoutTypeDragging === "lineBreak";
         }
         for (const item of this.checkedItems) {
-            if (item.layoutType !== 'lineBreak') continue;
+            if (item.layoutType !== "lineBreak") continue;
             return true;
         }
         return false;
@@ -2392,13 +2835,18 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             if (this.currentControl || this.currentLineBreak) {
                 control = this.currentControl || this.currentLineBreak;
                 for (let i = 0; i < this.currentPanel.children.length; i++) {
-                    if (this.currentPanel.children[i].key !== control.key) continue;
-                    this.currentPanel.children.splice(i, 0, this.createLinebreak());
+                    if (this.currentPanel.children[i].key !== control.key)
+                        continue;
+                    this.currentPanel.children.splice(
+                        i,
+                        0,
+                        this.createLinebreak()
+                    );
                     this.reSetOrderNumber(this.currentPanel.children);
                     return {
                         isAdded: true,
-                        control: control
-                    }
+                        control: control,
+                    };
                 }
             }
         } else if (this.currentControl || this.currentLineBreak) {
@@ -2406,15 +2854,20 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         }
         return {
             isAdded: false,
-            control: control
+            control: control,
         };
     }
 
     private addLinebreakToColumn(control: any) {
         if (control) {
             for (let i = 0; i < this.currentColumn.children.length; i++) {
-                if (this.currentColumn.children[i].key !== control.key) continue;
-                this.currentColumn.children.splice(i, 0, this.createLinebreak());
+                if (this.currentColumn.children[i].key !== control.key)
+                    continue;
+                this.currentColumn.children.splice(
+                    i,
+                    0,
+                    this.createLinebreak()
+                );
                 break;
             }
         }
@@ -2422,14 +2875,14 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private createLinebreak() {
         return {
-            'layoutType': 'lineBreak',
-            'title': '',
-            'key': Uti.guid(),
-            'checked': false,
-            'order': 0,
-            'children': [],
-            'config': '[]'
-        }
+            layoutType: "lineBreak",
+            title: "",
+            key: Uti.guid(),
+            checked: false,
+            order: 0,
+            children: [],
+            config: "[]",
+        };
     }
 
     private addMultipleItemAfterDrag() {
@@ -2447,40 +2900,57 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private updateRenderData() {
-        this.wfColumnComponents.forEach((wfColumnComponent: WfColumnComponent) => {
-            wfColumnComponent.updateRenderData();
-        });
+        this.wfColumnComponents.forEach(
+            (wfColumnComponent: WfColumnComponent) => {
+                wfColumnComponent.updateRenderData();
+            }
+        );
     }
 
     private removeMultipleItemsAfterDrag() {
         // const isDraggingOnSelfColumn = this.isDraggingOnSelfColumn();
         for (const item of this.checkedItems) {
-            if (item.key === this.draggingItem.id
+            if (
+                item.key === this.draggingItem.id
                 //&& isDraggingOnSelfColumn
-                ) continue;
+            )
+                continue;
             // Uti.removeItemInTreeArray(this.controlColumnList, item, 'key', 'children',
             //     (col) => {
             //         return col.key === this.currentColumn.key;
             //     });
-            Uti.removeItemInTreeArray(this.controlColumnList, item, 'key', 'children');
+            Uti.removeItemInTreeArray(
+                this.controlColumnList,
+                item,
+                "key",
+                "children"
+            );
         }
     }
 
     private isDraggingOnSelfColumn() {
         const sourceColumn = this.getColumnByElement(this.bagSource);
         const targetColumn = this.getColumnByElement(this.bagTarget);
-        return (sourceColumn.key === targetColumn.key);
+        return sourceColumn.key === targetColumn.key;
     }
 
     private getColumnByElement(el: any) {
-        if (!el || !el.attributes || !el.attributes['layout-type'] || !el.attributes['layout-type'].value) return null;
-        if (el.attributes['layout-type'].value === 'column') {
-            return this.controlColumnList.find(x => x.key === el.attributes['elid'].value);
+        if (
+            !el ||
+            !el.attributes ||
+            !el.attributes["layout-type"] ||
+            !el.attributes["layout-type"].value
+        )
+            return null;
+        if (el.attributes["layout-type"].value === "column") {
+            return this.controlColumnList.find(
+                (x) => x.key === el.attributes["elid"].value
+            );
         }
         for (const col of this.controlColumnList) {
             for (const p of col.children) {
-                if (p.layoutType !== 'panel') continue;
-                if (p.key === el.attributes['elid'].value) {
+                if (p.layoutType !== "panel") continue;
+                if (p.key === el.attributes["elid"].value) {
                     return col;
                 }
             }
@@ -2494,7 +2964,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
             if (!arr) continue;
             this.addMultipleItemsToChildren(arr[i].children);
             if (arr[i].key !== this.draggingItem.id) continue;
-            Uti.removeItemInArray(arr, arr[i], 'key');
+            Uti.removeItemInArray(arr, arr[i], "key");
             arr = Uti.insertArrayAt(arr, i, this.checkedItems);
             this.reSetOrderNumber(arr);
             this.isFoundDragItem = true;
@@ -2505,7 +2975,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private getCheckedItems(arr: Array<any>) {
         if (!arr || !arr.length) return;
         for (const item of arr) {
-            if (item.checked && item.layoutType === 'control') {
+            if (item.checked && item.layoutType === "control") {
                 this.checkedItems.push(item);
             }
             this.getCheckedItems(item.children);
@@ -2515,7 +2985,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private getAllFields(arr: Array<any>) {
         if (!arr || !arr.length) return;
         for (const item of arr) {
-            if (item.layoutType === 'control') {
+            if (item.layoutType === "control") {
                 item.checked = true;
                 this.allFields.push(item);
             }
@@ -2531,7 +3001,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private changeIsEditingLayout(changes: SimpleChanges) {
-        if (!this.hasChanges(changes['isEditingLayout'])) return;
+        if (!this.hasChanges(changes["isEditingLayout"])) return;
         if (this.isEditingLayout) {
             this.initDragulaEvents();
             return;
@@ -2550,14 +3020,16 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private buildDataForControlColumnList() {
         // this.controlColumnList = cloneDeep(this.controlConfig);
         this.controlColumnList = this.getControlConfigFromProperties();
-        this.controlColumnList = this.setConfigForColumnLayout(this.controlColumnList);
+        this.controlColumnList = this.setConfigForColumnLayout(
+            this.controlColumnList
+        );
         this.setValueDataForControl();
         // this.buildColumnsWidth();
         this.sortByAll();
     }
 
     private setConfigForColumnLayout(layoutColumn: Array<any>) {
-        return layoutColumn.map(x => {
+        return layoutColumn.map((x) => {
             const item = JSON.parse(x.config);
             return {
                 layoutType: x.layoutType,
@@ -2565,19 +3037,22 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
                 order: x.order,
                 width: x.width,
                 children: x.children,
-                config : item.length > 0 ? this.filterValueForColumnConfig(item) : DefaultWidgetItemConfiguration.Column
-            }
-        })
+                config:
+                    item.length > 0
+                        ? this.filterValueForColumnConfig(item)
+                        : DefaultWidgetItemConfiguration.Column,
+            };
+        });
     }
 
     private setValueDataForControl() {
         for (const column of this.controlColumnList) {
             for (const control of column.children) {
                 switch (control.layoutType) {
-                    case 'control':
+                    case "control":
                         this.setDataForOriginalControl(control);
                         break;
-                    case 'panel':
+                    case "panel":
                         this.buildDataForChildOfPanelList(control);
                 }
             }
@@ -2585,28 +3060,37 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private getControlConfigFromProperties() {
-        const controlColumnPanel = Uti.getItemRecursive(this.widgetProperties, 'ControlColumnPanel');
+        const controlColumnPanel = Uti.getItemRecursive(
+            this.widgetProperties,
+            "ControlColumnPanel"
+        );
         let columnLayout: Array<any> = [];
         if (controlColumnPanel) {
             columnLayout = JSON.parse(controlColumnPanel.value) || [];
         }
         if (columnLayout && columnLayout.length) {
-             return this.moveUnExpectedFieldToFirstColumn(columnLayout);
+            return this.moveUnExpectedFieldToFirstColumn(columnLayout);
         }
-        return [{
-            'layoutType': 'column',
-            'key': Uti.guid(),
-            'order': 1,
-            'checked': false,
-            'children': this.makeOrderFields(cloneDeep(this.groupContentList)),
-            'config': DefaultWidgetItemConfiguration.Column,
-            // 'width': this._eref.nativeElement.parentElement.clientWidth
-            'width': 100
-            // 'width': this.getColumnsWidth(true)
-        }];
+        return [
+            {
+                layoutType: "column",
+                key: Uti.guid(),
+                order: 1,
+                checked: false,
+                children: this.makeOrderFields(
+                    cloneDeep(this.groupContentList)
+                ),
+                config: DefaultWidgetItemConfiguration.Column,
+                // 'width': this._eref.nativeElement.parentElement.clientWidth
+                width: 100,
+                // 'width': this.getColumnsWidth(true)
+            },
+        ];
     }
 
-    private moveUnExpectedFieldToFirstColumn(columnLayout: Array<any>): Array<any> {
+    private moveUnExpectedFieldToFirstColumn(
+        columnLayout: Array<any>
+    ): Array<any> {
         for (const column of columnLayout) {
             this.removeUnExpectedFieldInChildren(column.children);
         }
@@ -2616,22 +3100,27 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private removeUnExpectedFieldInChildren(arr: Array<any>) {
         if (!arr && !arr.length) return;
         for (const item of arr) {
-            if (item.layoutType !== 'control' || this.isExistedInGroupContentList(item.key)) {
+            if (
+                item.layoutType !== "control" ||
+                this.isExistedInGroupContentList(item.key)
+            ) {
                 this.removeUnExpectedFieldInChildren(item.children);
                 continue;
             }
-            Uti.removeItemInArray(arr, item, 'key');
+            Uti.removeItemInArray(arr, item, "key");
         }
     }
 
-    private addUnExpectedFieldToFirstColumn(columnLayout: Array<any>): Array<any> {
+    private addUnExpectedFieldToFirstColumn(
+        columnLayout: Array<any>
+    ): Array<any> {
         for (const item of this.groupContentList) {
             if (this.isExistedInControlLayout(columnLayout, item.key)) continue;
             columnLayout[0].children.push({
-                'layoutType': 'control',
-                'key': item.key,
-                'order': columnLayout[0].children.length + 1,
-                'config': this.getFieldStyleConfig(item)
+                layoutType: "control",
+                key: item.key,
+                order: columnLayout[0].children.length + 1,
+                config: this.getFieldStyleConfig(item),
             });
         }
         return columnLayout;
@@ -2641,8 +3130,14 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         if (!item || !item.length) return;
         const totalColumn = [];
         const defaultConfig = JSON.parse(DefaultWidgetItemConfiguration.Column);
-        const columnSetting = Uti.getItemRecursive(defaultConfig, 'ColumnStyle');
-        columnSetting.children = Uti.adjustPropertyForPanelSetting(columnSetting, item);
+        const columnSetting = Uti.getItemRecursive(
+            defaultConfig,
+            "ColumnStyle"
+        );
+        columnSetting.children = Uti.adjustPropertyForPanelSetting(
+            columnSetting,
+            item
+        );
         totalColumn.push(columnSetting);
         return JSON.stringify(totalColumn);
     }
@@ -2651,17 +3146,32 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         if (!item || !item.length) return;
         const totalPanel = [];
         const defaultConfig = JSON.parse(DefaultWidgetItemConfiguration.Panel);
-        const titleStyle = Uti.getItemRecursive(defaultConfig, 'TitleStyle');
-        const panelStyle = Uti.getItemRecursive(defaultConfig, 'PanelStyle');
-        const underLineStyle = Uti.getItemRecursive(defaultConfig, 'UnderLineStyle');
-        const behaviourPanel = Uti.getItemRecursive(defaultConfig, 'Behaviour');
-        titleStyle.children = Uti.adjustPropertyForPanelSetting(titleStyle, item);
+        const titleStyle = Uti.getItemRecursive(defaultConfig, "TitleStyle");
+        const panelStyle = Uti.getItemRecursive(defaultConfig, "PanelStyle");
+        const underLineStyle = Uti.getItemRecursive(
+            defaultConfig,
+            "UnderLineStyle"
+        );
+        const behaviourPanel = Uti.getItemRecursive(defaultConfig, "Behaviour");
+        titleStyle.children = Uti.adjustPropertyForPanelSetting(
+            titleStyle,
+            item
+        );
         totalPanel.push(titleStyle);
-        panelStyle.children = Uti.adjustPropertyForPanelSetting(panelStyle, item);
+        panelStyle.children = Uti.adjustPropertyForPanelSetting(
+            panelStyle,
+            item
+        );
         totalPanel.push(panelStyle);
-        underLineStyle.children = Uti.adjustPropertyForPanelSetting(underLineStyle, item);
+        underLineStyle.children = Uti.adjustPropertyForPanelSetting(
+            underLineStyle,
+            item
+        );
         totalPanel.push(underLineStyle);
-        behaviourPanel.children = Uti.adjustPropertyForPanelSetting(behaviourPanel, item);
+        behaviourPanel.children = Uti.adjustPropertyForPanelSetting(
+            behaviourPanel,
+            item
+        );
         totalPanel.push(behaviourPanel);
         return JSON.stringify(totalPanel);
     }
@@ -2670,54 +3180,86 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         if (!item || !item.length) return;
         const totalControl = [];
         const defaultConfig = JSON.parse(DefaultWidgetItemConfiguration.Field);
-        const generalSetting = Uti.getItemRecursive(defaultConfig, 'IGeneralSetting');
-        const labelSetting = Uti.getItemRecursive(defaultConfig, 'ILabelStyle');
-        const separateSetting = Uti.getItemRecursive(defaultConfig, 'ISeparate');
-        const dataSetting = Uti.getItemRecursive(defaultConfig, 'IDataStyle');
-        generalSetting.children = Uti.adjustPropertyForPanelSetting(generalSetting, item);
+        const generalSetting = Uti.getItemRecursive(
+            defaultConfig,
+            "IGeneralSetting"
+        );
+        const labelSetting = Uti.getItemRecursive(defaultConfig, "ILabelStyle");
+        const separateSetting = Uti.getItemRecursive(
+            defaultConfig,
+            "ISeparate"
+        );
+        const dataSetting = Uti.getItemRecursive(defaultConfig, "IDataStyle");
+        generalSetting.children = Uti.adjustPropertyForPanelSetting(
+            generalSetting,
+            item
+        );
         totalControl.push(generalSetting);
-        labelSetting.children = Uti.adjustPropertyForPanelSetting(labelSetting, item);
+        labelSetting.children = Uti.adjustPropertyForPanelSetting(
+            labelSetting,
+            item
+        );
         totalControl.push(labelSetting);
-        separateSetting.children = Uti.adjustPropertyForPanelSetting(separateSetting, item);
+        separateSetting.children = Uti.adjustPropertyForPanelSetting(
+            separateSetting,
+            item
+        );
         totalControl.push(separateSetting);
-        dataSetting.children = Uti.adjustPropertyForPanelSetting(dataSetting, item);
+        dataSetting.children = Uti.adjustPropertyForPanelSetting(
+            dataSetting,
+            item
+        );
         totalControl.push(dataSetting);
         return JSON.stringify(totalControl);
     }
 
     private getFieldStyleConfig(field: any) {
-        if (!field.config ||
-            !(JSON.parse(field.config).length)) {
+        if (!field.config || !JSON.parse(field.config).length) {
             return DefaultWidgetItemConfiguration.Field;
         }
         const fieldConfig = JSON.parse(field.config);
 
         // will remove after saved all new config
-        const generalSetting = Uti.getItemRecursive(fieldConfig, 'IGeneralSetting');
+        const generalSetting = Uti.getItemRecursive(
+            fieldConfig,
+            "IGeneralSetting"
+        );
         if (generalSetting) {
-            const keyChildren = Object.keys(generalSetting).some(v => v === 'children');
+            const keyChildren = Object.keys(generalSetting).some(
+                (v) => v === "children"
+            );
             if (keyChildren) {
                 return field.config;
             }
         }
 
         if (!generalSetting) {
-            const valueMergeConfig = this.filterValueForFieldConfig(fieldConfig);
+            const valueMergeConfig =
+                this.filterValueForFieldConfig(fieldConfig);
             return valueMergeConfig;
         }
     }
-    private isExistedInControlLayout(columnLayout: Array<any>, key: string): boolean {
+    private isExistedInControlLayout(
+        columnLayout: Array<any>,
+        key: string
+    ): boolean {
         for (const col of columnLayout) {
-            if (!this.isExistedInControlLayoutWithChildren(col.children, key)) continue;
+            if (!this.isExistedInControlLayoutWithChildren(col.children, key))
+                continue;
             return true;
         }
         return false;
     }
 
-    private isExistedInControlLayoutWithChildren(arr: Array<any>, key: string): boolean {
+    private isExistedInControlLayoutWithChildren(
+        arr: Array<any>,
+        key: string
+    ): boolean {
         if (!arr || !arr.length) return false;
         for (const control of arr) {
-            if (this.isExistedInControlLayoutWithChildren(control.children, key)) {
+            if (
+                this.isExistedInControlLayoutWithChildren(control.children, key)
+            ) {
                 return true;
             }
             if (control.key !== key) continue;
@@ -2727,7 +3269,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private isExistedInGroupContentList(key: string): boolean {
-        const item = this.groupContentList.find(x => x.key === key);
+        const item = this.groupContentList.find((x) => x.key === key);
         return !!(item && item.key);
     }
 
@@ -2735,31 +3277,38 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         let visibleIndex = 1;
         let hiddenIndex = 1000;
         for (const item of controls) {
-            item['layoutType'] = 'control';
+            item["layoutType"] = "control";
             if (!item.isHidden) {
-                item['order'] = visibleIndex;
+                item["order"] = visibleIndex;
                 visibleIndex++;
             }
             if (item.isHidden) {
-                item['order'] = hiddenIndex;
+                item["order"] = hiddenIndex;
                 hiddenIndex++;
             }
         }
         return controls.sort((a, b) => {
-            return Uti.sortBy(a, b, 'order');
+            return Uti.sortBy(a, b, "order");
         });
     }
 
-    private addControlForColumn(layoutType: string, title?: string, isRow?: boolean) {
+    private addControlForColumn(
+        layoutType: string,
+        title?: string,
+        isRow?: boolean
+    ) {
         this.currentColumn.children.push({
-            'layoutType': layoutType,
-            'title': title || '',
-            'key': Uti.guid(),
-            'isRow': isRow,
-            'checked': false,
-            'order': 0,
-            'children': [],
-            'config': (layoutType === 'panel' ? DefaultWidgetItemConfiguration.Panel : '[]')
+            layoutType: layoutType,
+            title: title || "",
+            key: Uti.guid(),
+            isRow: isRow,
+            checked: false,
+            order: 0,
+            children: [],
+            config:
+                layoutType === "panel"
+                    ? DefaultWidgetItemConfiguration.Panel
+                    : "[]",
         });
         this.reSetOrderNumber(this.currentColumn.children);
         this.setDirtyForChangeColumnLayout();
@@ -2768,7 +3317,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private buildDataForChildOfPanelList(control: any) {
         if (control.layoutType === TypeForm.Panel) {
-            this.setConfigForPanelLayout(control)
+            this.setConfigForPanelLayout(control);
         }
         for (const child of control.children) {
             this.setDataForOriginalControl(child);
@@ -2778,15 +3327,19 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private setConfigForPanelLayout(panel) {
         const item = JSON.parse(panel.config);
         if (item[0].children) return;
-        return item.length > 0 ? panel.config = this.filterValueForPanelConfig(item) : DefaultWidgetItemConfiguration.Panel;
+        return item.length > 0
+            ? (panel.config = this.filterValueForPanelConfig(item))
+            : DefaultWidgetItemConfiguration.Panel;
     }
 
     private setDataForOriginalControl(original: any) {
-        const control = this.groupContentList.find(x => x.key === original.key);
+        const control = this.groupContentList.find(
+            (x) => x.key === original.key
+        );
         if (!control) return;
         for (const prop in control) {
-            if (prop === 'order') continue;
-            if (prop === 'config') {
+            if (prop === "order") continue;
+            if (prop === "config") {
                 original[prop] = this.getFieldStyleConfig(original);
                 continue;
             }
@@ -2795,7 +3348,11 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private updateDatasourceForCombobox(currentControl: any) {
-        const control = Uti.getItemRecursive(this.controlColumnList, currentControl.key, 'key');
+        const control = Uti.getItemRecursive(
+            this.controlColumnList,
+            currentControl.key,
+            "key"
+        );
         if (isEmpty(control)) return;
         control.options = currentControl.options;
     }
@@ -2807,7 +3364,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private sortByAll() {
         let controlColumnList: any = cloneDeep(this.controlColumnList);
         controlColumnList = controlColumnList.sort((a, b) => {
-            return Uti.sortBy(a, b, 'order');
+            return Uti.sortBy(a, b, "order");
         });
         this.sortByAllObject(controlColumnList);
         this.controlColumnList = controlColumnList;
@@ -2817,7 +3374,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         for (const item of arr) {
             if (!item.children || !item.children.length) continue;
             item.children = item.children.sort((a, b) => {
-                return Uti.sortBy(a, b, 'order');
+                return Uti.sortBy(a, b, "order");
             });
             this.sortByAllObject(item.children);
         }
@@ -2826,7 +3383,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private reSetOrderNumber(arr: Array<any>) {
         for (let i = 1; i <= arr.length; i++) {
             if (!arr[i - 1]) continue;
-            arr[i - 1]['order'] = i;
+            arr[i - 1]["order"] = i;
         }
     }
 
@@ -2834,51 +3391,64 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         for (let i = 0; i < this.controlColumnList.length; i++) {
             if (column.key !== this.controlColumnList[i].key) continue;
             if (i === 0) {
-                this.controlColumnList[i + 1].children = [...this.controlColumnList[i + 1].children, ...this.controlColumnList[i].children];
+                this.controlColumnList[i + 1].children = [
+                    ...this.controlColumnList[i + 1].children,
+                    ...this.controlColumnList[i].children,
+                ];
                 break;
             }
-            this.controlColumnList[i - 1].children = [...this.controlColumnList[i - 1].children, ...this.controlColumnList[i].children];
+            this.controlColumnList[i - 1].children = [
+                ...this.controlColumnList[i - 1].children,
+                ...this.controlColumnList[i].children,
+            ];
             break;
         }
     }
 
     private setDirtyForChangeColumnLayout() {
-        this.wfColumnComponents.forEach((wfColumnComponent: WfColumnComponent) => {
-            wfColumnComponent.updateRenderData();
-        });
+        this.wfColumnComponents.forEach(
+            (wfColumnComponent: WfColumnComponent) => {
+                wfColumnComponent.updateRenderData();
+            }
+        );
         this.isChangeColumnLayoutAction.emit();
         this.callRenderScrollHandler();
     }
 
     private prepareSavingDataForColumnLayout() {
-        const controlColumnPanel = Uti.getItemRecursive(this.widgetProperties, 'ControlColumnPanel');
-        controlColumnPanel.value = JSON.stringify(this.makeSavingDataForColumnLayout(this.controlColumnList));
+        const controlColumnPanel = Uti.getItemRecursive(
+            this.widgetProperties,
+            "ControlColumnPanel"
+        );
+        controlColumnPanel.value = JSON.stringify(
+            this.makeSavingDataForColumnLayout(this.controlColumnList)
+        );
     }
 
     private makeSavingDataForColumnLayout(items: Array<any>) {
         if (!items || !items.length) return [];
-        return items.map(x => {
+        return items.map((x) => {
             if (x.layoutType === TypeForm.Panel) {
                 return {
-                    'layoutType': x.layoutType,
-                    'key': x.key,
-                    'order': x.order,
-                    'height': x.height,
-                    'width': x.width,
-                    'isRow': x.isRow,
-                    'title': x.title || '',
-                    'children': this.makeSavingDataForColumnLayout(x.children),
-                    'config': this.buildConfigForColumnLayout(x.config)
+                    layoutType: x.layoutType,
+                    key: x.key,
+                    order: x.order,
+                    height: x.height,
+                    width: x.width,
+                    isRow: x.isRow,
+                    title: x.title || "",
+                    children: this.makeSavingDataForColumnLayout(x.children),
+                    config: this.buildConfigForColumnLayout(x.config),
                 };
             } else {
                 return {
-                    'layoutType': x.layoutType,
-                    'key': x.key,
-                    'order': x.order,
-                    'height': x.height,
-                    'width': x.width,
-                    'children': this.makeSavingDataForColumnLayout(x.children),
-                    'config': this.buildConfigForColumnLayout(x.config)
+                    layoutType: x.layoutType,
+                    key: x.key,
+                    order: x.order,
+                    height: x.height,
+                    width: x.width,
+                    children: this.makeSavingDataForColumnLayout(x.children),
+                    config: this.buildConfigForColumnLayout(x.config),
                 };
             }
         });
@@ -2889,20 +3459,27 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         const parseConfig = JSON.parse(config);
 
         // panel
-        const titleStyle = Uti.getItemRecursive(parseConfig, 'TitleStyle');
-        const panelStyle = Uti.getItemRecursive(parseConfig, 'PanelStyle');
-        const underLineStyle = Uti.getItemRecursive(parseConfig, 'UnderLineStyle');
-        const behaviourPanel = Uti.getItemRecursive(parseConfig, 'Behaviour');
+        const titleStyle = Uti.getItemRecursive(parseConfig, "TitleStyle");
+        const panelStyle = Uti.getItemRecursive(parseConfig, "PanelStyle");
+        const underLineStyle = Uti.getItemRecursive(
+            parseConfig,
+            "UnderLineStyle"
+        );
+        const behaviourPanel = Uti.getItemRecursive(parseConfig, "Behaviour");
 
-        const generalSetting = Uti.getItemRecursive(parseConfig, 'IGeneralSetting');
-        const labelSetting = Uti.getItemRecursive(parseConfig, 'ILabelStyle');
-        const separateSetting = Uti.getItemRecursive(parseConfig, 'ISeparate');
-        const dataSetting = Uti.getItemRecursive(parseConfig, 'IDataStyle');
+        const generalSetting = Uti.getItemRecursive(
+            parseConfig,
+            "IGeneralSetting"
+        );
+        const labelSetting = Uti.getItemRecursive(parseConfig, "ILabelStyle");
+        const separateSetting = Uti.getItemRecursive(parseConfig, "ISeparate");
+        const dataSetting = Uti.getItemRecursive(parseConfig, "IDataStyle");
 
-        const columnSetting = Uti.getItemRecursive(parseConfig, 'ColumnStyle');
+        const columnSetting = Uti.getItemRecursive(parseConfig, "ColumnStyle");
 
         if (columnSetting) {
-            const reduceColumnSetting = Uti.filterValueInProperties(columnSetting);
+            const reduceColumnSetting =
+                Uti.filterValueInProperties(columnSetting);
             const totalColumn = [...reduceColumnSetting];
             return JSON.stringify(totalColumn);
         }
@@ -2910,19 +3487,34 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
         if (titleStyle || panelStyle || underLineStyle || behaviourPanel) {
             const reduceTitlePanel = Uti.filterValueInProperties(titleStyle);
             const reducePanelStyle = Uti.filterValueInProperties(panelStyle);
-            const reduceUnderLineStyle = Uti.filterValueInProperties(underLineStyle);
-            const reduceBehaviourPanel = Uti.filterValueInProperties(behaviourPanel);
-            const totalPanel = [...reduceTitlePanel, ...reducePanelStyle, ...reduceUnderLineStyle, ...reduceBehaviourPanel];
+            const reduceUnderLineStyle =
+                Uti.filterValueInProperties(underLineStyle);
+            const reduceBehaviourPanel =
+                Uti.filterValueInProperties(behaviourPanel);
+            const totalPanel = [
+                ...reduceTitlePanel,
+                ...reducePanelStyle,
+                ...reduceUnderLineStyle,
+                ...reduceBehaviourPanel,
+            ];
             return JSON.stringify(totalPanel);
         }
 
         // control
         if (generalSetting || labelSetting || separateSetting || dataSetting) {
-            const reduceGeneralSetting = Uti.filterValueInProperties(generalSetting);
-            const reduceLabelSetting = Uti.filterValueInProperties(labelSetting);
-            const reduceSeparateSetting = Uti.filterValueInProperties(separateSetting);
+            const reduceGeneralSetting =
+                Uti.filterValueInProperties(generalSetting);
+            const reduceLabelSetting =
+                Uti.filterValueInProperties(labelSetting);
+            const reduceSeparateSetting =
+                Uti.filterValueInProperties(separateSetting);
             const reduceDataSetting = Uti.filterValueInProperties(dataSetting);
-            const totalControl = [...reduceGeneralSetting, ...reduceLabelSetting, ...reduceSeparateSetting, ...reduceDataSetting];
+            const totalControl = [
+                ...reduceGeneralSetting,
+                ...reduceLabelSetting,
+                ...reduceSeparateSetting,
+                ...reduceDataSetting,
+            ];
             return JSON.stringify(totalControl);
         }
     }
@@ -2930,13 +3522,21 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     private queryWfFieldComponentsComponent() {
         if (!this.wfColumnComponents) return;
         this.wfFieldComponents.length = 0;
-        this.wfColumnComponents.forEach((wfColumnComponent: WfColumnComponent) => {
-            this.wfFieldComponents = [...this.wfFieldComponents, ...wfColumnComponent.queryWfFieldComponentsComponent()];
-        });
+        this.wfColumnComponents.forEach(
+            (wfColumnComponent: WfColumnComponent) => {
+                this.wfFieldComponents = [
+                    ...this.wfFieldComponents,
+                    ...wfColumnComponent.queryWfFieldComponentsComponent(),
+                ];
+            }
+        );
     }
 
     private checkOnlyItselfWhenClick(control: any) {
-        if (control.layoutType !== 'control' && control.layoutType !== 'lineBreak') {
+        if (
+            control.layoutType !== "control" &&
+            control.layoutType !== "lineBreak"
+        ) {
             return;
         }
         setTimeout(() => {
@@ -2948,7 +3548,7 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
     }
 
     private uncheckAllWithoutItself(control: any) {
-        this.unCheckAllControlOfOtherColumn({}, 'checked');
+        this.unCheckAllControlOfOtherColumn({}, "checked");
         if (control) {
             control.checked = true;
         }
@@ -2956,12 +3556,14 @@ export class WidgetFormComponent extends BaseWidget implements OnInit, OnChanges
 
     private setThreeDotsForValueAfterResize(currentResizeColumn: any) {
         let found = false;
-        for (const wfColumnComponent of (<any>this.wfColumnComponents)._results) {
+        for (const wfColumnComponent of (<any>this.wfColumnComponents)
+            ._results) {
             if (found) {
                 wfColumnComponent.setThreeDotsForValue();
                 break;
             }
-            if (currentResizeColumn.key !== wfColumnComponent.column.key) continue;
+            if (currentResizeColumn.key !== wfColumnComponent.column.key)
+                continue;
             found = true;
         }
     }

@@ -4,15 +4,8 @@ import { XnImageLoaderModule } from "app/shared/directives/xn-image-loader/xn-im
 import { XnGalleria } from "./xn-galleria.component";
 
 @NgModule({
-    imports: [
-        CommonModule,
-        XnImageLoaderModule
-    ],
-    declarations: [
-        XnGalleria
-    ],
-    exports: [
-        XnGalleria
-    ]
+    imports: [CommonModule, XnImageLoaderModule],
+    declarations: [XnGalleria],
+    exports: [XnGalleria],
 })
-export class XnGalleriaModule { }
+export class XnGalleriaModule {}

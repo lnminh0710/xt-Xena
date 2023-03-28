@@ -1,4 +1,4 @@
-﻿@import '~sass_files/color.scss';
+﻿@import "~sass_files/color.scss";
 
 :host-context(.widdget-template) .widget-template-tab {
     right: 0;
@@ -70,9 +70,17 @@
     background-color: #cde6f4;
 }
 
-.widget-template-tab .widget-categories ul li .widget-cat-item.has-widget::before,
-.widget-template-tab .widget-categories ul li .widget-cat-item.has-widget::after {
-    content: '';
+.widget-template-tab
+    .widget-categories
+    ul
+    li
+    .widget-cat-item.has-widget::before,
+.widget-template-tab
+    .widget-categories
+    ul
+    li
+    .widget-cat-item.has-widget::after {
+    content: "";
     position: absolute;
     left: 0;
     bottom: 0;
@@ -80,7 +88,11 @@
     border-style: solid;
 }
 
-.widget-template-tab .widget-categories ul li .widget-cat-item.has-widget::after {
+.widget-template-tab
+    .widget-categories
+    ul
+    li
+    .widget-cat-item.has-widget::after {
     border-radius: 0;
     border-width: 3px;
     border-left-color: #3c8dbc;

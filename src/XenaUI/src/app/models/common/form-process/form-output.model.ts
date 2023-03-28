@@ -1,4 +1,3 @@
-
 export class FormOutputModel {
     public formValue: any = null;
     public submitResult: any = null;

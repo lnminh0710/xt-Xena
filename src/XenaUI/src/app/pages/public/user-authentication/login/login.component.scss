@@ -93,7 +93,7 @@
     button {
         width: 100%;
         border-radius: 15px;
-        background-color: rgba(50,108,156,0.5) !important;
+        background-color: rgba(50, 108, 156, 0.5) !important;
         height: 40px;
     }
 }
@@ -164,15 +164,15 @@ input:-webkit-autofill:focus {
 
 @keyframes move_wave {
     0% {
-        transform: translateX(0) translateZ(0) scaleY(1)
+        transform: translateX(0) translateZ(0) scaleY(1);
     }
 
     50% {
-        transform: translateX(-25%) translateZ(0) scaleY(0.55)
+        transform: translateX(-25%) translateZ(0) scaleY(0.55);
     }
 
     100% {
-        transform: translateX(-50%) translateZ(0) scaleY(1)
+        transform: translateX(-50%) translateZ(0) scaleY(1);
     }
 }
 
@@ -192,7 +192,21 @@ input:-webkit-autofill:focus {
     overflow: hidden;
     height: 100%;
     bottom: -1px;
-    background: linear-gradient(45deg, rgba(12, 109, 165, 1) 0%, rgba(14, 96, 143, 1) 22%, rgba(18, 113, 167, 1) 60%, rgba(15, 105, 157, 1) 60%, rgba(19, 107, 158, 1) 70%, rgba(18, 99, 145, 1) 80%, rgba(18, 113, 167, 1) 80%, rgba(18, 113, 167, 1) 82%, rgba(30, 113, 161, 1) 83%, rgba(19, 103, 151, 1) 83%, rgba(17, 109, 161, 1) 93%, rgba(16, 105, 155, 1) 93%);
+    background: linear-gradient(
+        45deg,
+        rgba(12, 109, 165, 1) 0%,
+        rgba(14, 96, 143, 1) 22%,
+        rgba(18, 113, 167, 1) 60%,
+        rgba(15, 105, 157, 1) 60%,
+        rgba(19, 107, 158, 1) 70%,
+        rgba(18, 99, 145, 1) 80%,
+        rgba(18, 113, 167, 1) 80%,
+        rgba(18, 113, 167, 1) 82%,
+        rgba(30, 113, 161, 1) 83%,
+        rgba(19, 103, 151, 1) 83%,
+        rgba(17, 109, 161, 1) 93%,
+        rgba(16, 105, 155, 1) 93%
+    );
 }
 
 .bgTop {
@@ -220,7 +234,7 @@ input:-webkit-autofill:focus {
 }
 
 .waveTop {
-    background-image: url('~/public/assets/img/wave-top.png');
+    background-image: url("~/public/assets/img/wave-top.png");
     background-size: 50% 100px;
 }
 
@@ -232,7 +246,7 @@ input:-webkit-autofill:focus {
 }
 
 .waveMiddle {
-    background-image: url('~/public/assets/img/wave-mid.png');
+    background-image: url("~/public/assets/img/wave-mid.png");
     background-size: 50% 120px;
 }
 
@@ -241,7 +255,7 @@ input:-webkit-autofill:focus {
 }
 
 .waveBottom {
-    background-image: url('~/public/assets/img/wave-bot.png');
+    background-image: url("~/public/assets/img/wave-bot.png");
     background-size: 50% 100px;
 }
 

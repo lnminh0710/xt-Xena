@@ -1,1 +1,1 @@
-export * from './form-output.model';
+export * from "./form-output.model";

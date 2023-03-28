@@ -1,1 +1,1 @@
-export { ArticleImageGalleryComponent } from './article-image-gallery.component';
+export { ArticleImageGalleryComponent } from "./article-image-gallery.component";

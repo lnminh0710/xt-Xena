@@ -1,1 +1,1 @@
-export * from './note-control.component';
+export * from "./note-control.component";

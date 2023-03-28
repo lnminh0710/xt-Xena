@@ -1,4 +1,4 @@
-@import '~sass_files/color.scss';
+@import "~sass_files/color.scss";
 
 #user-dropdown {
     height: 53px;
@@ -164,7 +164,7 @@ img {
         background-color: rgba(214, 224, 226, 0.2);
 
         .cardheader {
-            background: url('~/public/assets/img/tree.jpg');
+            background: url("~/public/assets/img/tree.jpg");
             background-size: cover;
             height: 90px;
             webkit-filter: blur(2px);
@@ -188,7 +188,7 @@ img {
                 -webkit-border-radius: 50%;
                 -moz-border-radius: 50%;
                 border-radius: 50%;
-                border: 5px solid rgba(255,255,255,0.5);
+                border: 5px solid rgba(255, 255, 255, 0.5);
             }
         }
 

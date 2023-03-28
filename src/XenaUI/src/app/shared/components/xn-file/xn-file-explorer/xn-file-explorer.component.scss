@@ -30,7 +30,9 @@
     border: dotted 3px green !important;
 }
 
-.btn-del-editable-table, .icon-editable-table, .btn-upload-editable-table {
+.btn-del-editable-table,
+.icon-editable-table,
+.btn-upload-editable-table {
     float: right;
     padding: 3px 4px 0 4px;
     margin-top: -5px;
@@ -42,7 +44,9 @@
     font-size: 16px;
 }
 
-.btn-del-editable-table:hover, .btn-plus-editable-table:hover, .btn-upload-editable-table:hover {
+.btn-del-editable-table:hover,
+.btn-plus-editable-table:hover,
+.btn-upload-editable-table:hover {
     background-color: #d3d3d3;
 }
 

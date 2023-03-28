@@ -1,28 +1,33 @@
-import { Directive, OnInit, OnDestroy, Input, ElementRef, Renderer, OnChanges } from "@angular/core";
+import {
+    Directive,
+    OnInit,
+    OnDestroy,
+    Input,
+    ElementRef,
+    Renderer,
+    OnChanges,
+} from "@angular/core";
 import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 import { Uti } from "app/utilities";
 
 @Directive({
-    selector: '[DisabledWorkspaceButton]'
+    selector: "[DisabledWorkspaceButton]",
 })
-
-export class DisabledWorkspaceButtonDirective implements OnInit, OnDestroy, OnChanges {
-
+export class DisabledWorkspaceButtonDirective
+    implements OnInit, OnDestroy, OnChanges
+{
     constructor(
         private el: ElementRef,
         private renderer: Renderer,
         private uti: Uti
-    ) {
-    }
+    ) {}
 
     @Input() selectedWorkspace: any;
     @Input() checkOwner: boolean;
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
-    ngOnDestroy() {
-    }
+    ngOnDestroy() {}
 
     ngOnChanges() {
         setTimeout(() => {
@@ -30,21 +35,28 @@ export class DisabledWorkspaceButtonDirective implements OnInit, OnDestroy, OnCh
             if (!this.checkOwner) {
                 disabled = !this.selectedWorkspace;
             } else {
-                disabled = !this.selectedWorkspace ||
+                disabled =
+                    !this.selectedWorkspace ||
                     (this.selectedWorkspace &&
-                        (this.selectedWorkspace['IdLogin'] != this.uti.getUserInfo().id ||
-                            this.selectedWorkspace['IsSystem'] === true ||
-                            this.selectedWorkspace['IsUserDefault'] === true
-                        )
-                    );
+                        (this.selectedWorkspace["IdLogin"] !=
+                            this.uti.getUserInfo().id ||
+                            this.selectedWorkspace["IsSystem"] === true ||
+                            this.selectedWorkspace["IsUserDefault"] === true));
             }
 
             if (disabled) {
-                this.renderer.setElementAttribute(this.el.nativeElement, 'disabled', 'true');
+                this.renderer.setElementAttribute(
+                    this.el.nativeElement,
+                    "disabled",
+                    "true"
+                );
             } else {
-                this.renderer.setElementAttribute(this.el.nativeElement, 'disabled', null);
+                this.renderer.setElementAttribute(
+                    this.el.nativeElement,
+                    "disabled",
+                    null
+                );
             }
         }, 200);
     }
 }
-

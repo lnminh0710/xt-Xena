@@ -1,14 +1,13 @@
-﻿@import 'color.scss';
-
+﻿@import "color.scss";
 
 .ui-dialog.ui-widget {
-	.ui-dialog-content {
-		padding: 1em;	
-	}
+    .ui-dialog-content {
+        padding: 1em;
+    }
 }
 
 .ui-widget-content {
-	a {
-		color: $skin-blue-main;		
-	}
+    a {
+        color: $skin-blue-main;
+    }
 }

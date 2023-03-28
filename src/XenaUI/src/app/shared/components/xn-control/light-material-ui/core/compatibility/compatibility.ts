@@ -6,9 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {Directive, InjectionToken, NgModule} from '@angular/core';
+import { Directive, InjectionToken, NgModule } from "@angular/core";
 
-export const MATERIAL_COMPATIBILITY_MODE = new InjectionToken<boolean>('md-compatibility-mode');
+export const MATERIAL_COMPATIBILITY_MODE = new InjectionToken<boolean>(
+    "md-compatibility-mode"
+);
 
 /** Selector that matches all elements that may have style collisions with AngularJS Material. */
 export const MAT_ELEMENTS_SELECTOR = `
@@ -177,13 +179,12 @@ export const MD_ELEMENTS_SELECTOR = `
   md-vertical-stepper`;
 
 /** Directive that enforces that the `mat-` prefix cannot be used. */
-@Directive({selector: MAT_ELEMENTS_SELECTOR})
+@Directive({ selector: MAT_ELEMENTS_SELECTOR })
 export class MatPrefixRejector {}
 
 /** Directive that enforces that the `md-` prefix cannot be used. */
-@Directive({selector: MD_ELEMENTS_SELECTOR})
+@Directive({ selector: MD_ELEMENTS_SELECTOR })
 export class MdPrefixRejector {}
-
 
 /**
  * Module that enforces the default compatibility mode settings. When this module is loaded
@@ -191,11 +192,10 @@ export class MdPrefixRejector {}
  * there are any uses of the `mat-` prefix.
  */
 @NgModule({
-  declarations: [MatPrefixRejector, MdPrefixRejector],
-  exports: [MatPrefixRejector, MdPrefixRejector],
+    declarations: [MatPrefixRejector, MdPrefixRejector],
+    exports: [MatPrefixRejector, MdPrefixRejector],
 })
 export class CompatibilityModule {}
-
 
 /**
  * Module that enforces "no-conflict" compatibility mode settings. When this module is loaded,

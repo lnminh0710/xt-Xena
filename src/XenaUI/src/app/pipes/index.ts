@@ -1,5 +1,5 @@
-import * as appPipes from 'app/pipes';
-export * from './app.pipe';
+import * as appPipes from "app/pipes";
+export * from "./app.pipe";
 
 export const APP_PIPES = [
     appPipes.CellRangePipe,
@@ -14,5 +14,5 @@ export const APP_PIPES = [
     appPipes.ToOrderBy,
     appPipes.CallbackPipe,
     appPipes.SafeHtml,
-    appPipes.EscapeHtmlPipe
+    appPipes.EscapeHtmlPipe,
 ];

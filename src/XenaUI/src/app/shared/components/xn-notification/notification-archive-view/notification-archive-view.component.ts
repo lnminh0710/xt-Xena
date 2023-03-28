@@ -1,4 +1,3 @@
-
 import {
     Component,
     OnInit,
@@ -8,46 +7,46 @@ import {
     ViewChild,
     AfterViewInit,
     ChangeDetectorRef,
-    EventEmitter
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import { Observable } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcGrid from 'wijmo/wijmo.grid';
-import * as Ps from 'perfect-scrollbar';
+    EventEmitter,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Observable } from "rxjs";
+import { Subscription } from "rxjs/Subscription";
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcGrid from "wijmo/wijmo.grid";
+import * as Ps from "perfect-scrollbar";
 import {
     NotificationService,
     SearchService,
-    AppErrorHandler, PropertyPanelService
-} from 'app/services';
-import { User } from 'app/models';
-import { Uti } from 'app/utilities';
+    AppErrorHandler,
+    PropertyPanelService,
+} from "app/services";
+import { User } from "app/models";
+import { Uti } from "app/utilities";
 import {
     MainNotificationTypeEnum,
-    NotificationStatusEnum
-} from 'app/app.constants';
-import uniqBy from 'lodash-es/uniqBy';
-import { format } from 'date-fns/esm';
-import { parse } from 'date-fns/esm';
+    NotificationStatusEnum,
+} from "app/app.constants";
+import uniqBy from "lodash-es/uniqBy";
+import { format } from "date-fns/esm";
+import { parse } from "date-fns/esm";
 
 @Component({
-    selector: 'notification-archive-view',
-    styleUrls: ['./notification-archive-view.component.scss'],
-    templateUrl: './notification-archive-view.component.html'
+    selector: "notification-archive-view",
+    styleUrls: ["./notification-archive-view.component.scss"],
+    templateUrl: "./notification-archive-view.component.html",
 })
-export class NotificationArchiveViewComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-    public textSearch: string = '';
+export class NotificationArchiveViewComponent
+    extends BaseComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
+    public textSearch: string = "";
     public isSearching: boolean = false;
     public dataSource: any;
-    public searchText: string = '';
+    public searchText: string = "";
 
-    private _typeArchive: string = '';
+    private _typeArchive: string = "";
     private updatedLayoutHandlerTimer;
     private updatedLayoutHandlerInterval = 1000;
     private userData: User = new User();
@@ -55,13 +54,16 @@ export class NotificationArchiveViewComponent extends BaseComponent implements O
     private pageSize: number = 15;
     private globalDateFormat: string = null;
 
-    @ViewChild('flex') flex: wjcGrid.FlexGrid;
+    @ViewChild("flex") flex: wjcGrid.FlexGrid;
 
-    @Input() set typeArchive(type: any) { this.executeTypeArchie(type); }
+    @Input() set typeArchive(type: any) {
+        this.executeTypeArchie(type);
+    }
 
     @Output() showDetailAction = new EventEmitter<any>();
 
-    constructor(private notificationService: NotificationService,
+    constructor(
+        private notificationService: NotificationService,
         private searchService: SearchService,
         private appErrorHandler: AppErrorHandler,
         private changeDetectorRef: ChangeDetectorRef,
@@ -70,8 +72,9 @@ export class NotificationArchiveViewComponent extends BaseComponent implements O
         router?: Router
     ) {
         super(router);
-        this.scrollPositionChangedHandler = this.scrollPositionChangedHandler.bind(this);
-        this.userData = (new Uti()).getUserInfo();
+        this.scrollPositionChangedHandler =
+            this.scrollPositionChangedHandler.bind(this);
+        this.userData = new Uti().getUserInfo();
     }
     public ngOnInit() {
         this.setGlobalFormat();
@@ -81,13 +84,24 @@ export class NotificationArchiveViewComponent extends BaseComponent implements O
     }
     public ngAfterViewInit() {
         if (!this.flex) return;
-        this.flex.scrollPositionChanged.addHandler(this.scrollPositionChangedHandler);
-        this.flex.cells.hostElement.addEventListener('click', this.onCellClick.bind(this));
+        this.flex.scrollPositionChanged.addHandler(
+            this.scrollPositionChangedHandler
+        );
+        this.flex.cells.hostElement.addEventListener(
+            "click",
+            this.onCellClick.bind(this)
+        );
     }
 
     private setGlobalFormat() {
-        if (this.propertyPanelService.globalProperties && this.propertyPanelService.globalProperties.length) {
-            this.globalDateFormat = this.propertyPanelService.buildGlobalDateFormatFromProperties(this.propertyPanelService.globalProperties);
+        if (
+            this.propertyPanelService.globalProperties &&
+            this.propertyPanelService.globalProperties.length
+        ) {
+            this.globalDateFormat =
+                this.propertyPanelService.buildGlobalDateFormatFromProperties(
+                    this.propertyPanelService.globalProperties
+                );
         }
     }
 
@@ -105,7 +119,10 @@ export class NotificationArchiveViewComponent extends BaseComponent implements O
     }
     public updatedLayoutHandler(evt) {
         clearTimeout(this.updatedLayoutHandlerTimer);
-        this.updatedLayoutHandlerTimer = setTimeout(this.addPerfectScrollbar.bind(this), this.updatedLayoutHandlerInterval);
+        this.updatedLayoutHandlerTimer = setTimeout(
+            this.addPerfectScrollbar.bind(this),
+            this.updatedLayoutHandlerInterval
+        );
     }
     /*************************************************************************************************/
     /***************************************PRIVATE METHOD********************************************/
@@ -120,33 +137,39 @@ export class NotificationArchiveViewComponent extends BaseComponent implements O
     }
     private getData() {
         this.pageIndex = 1;
-        this.searchText = '*';
+        this.searchText = "*";
         this.search();
     }
     private search(sender?: any): void {
         const params = this.createRequestParam();
-        this.searchService.search(
-            'notification',
-            this.searchText,
-            null,
-            this.pageIndex,
-            this.pageSize,
-            '',
-            params.fieldNames,
-            params.fieldValues)
+        this.searchService
+            .search(
+                "notification",
+                this.searchText,
+                null,
+                this.pageIndex,
+                this.pageSize,
+                "",
+                params.fieldNames,
+                params.fieldValues
+            )
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (this.pageIndex > 1) {
                         const newData = this.buildResultData(response);
-                        if (newData && newData.length && this.dataSource.items) {
+                        if (
+                            newData &&
+                            newData.length &&
+                            this.dataSource.items
+                        ) {
                             this.dataSource.items.push(...newData);
                             if (sender && sender.collectionView)
                                 sender.collectionView.refresh();
-                        }
-                        else
-                            this.pageIndex -= 1;
+                        } else this.pageIndex -= 1;
                     } else {
-                        this.dataSource = new wjcCore.CollectionView(this.buildResultData(response));
+                        this.dataSource = new wjcCore.CollectionView(
+                            this.buildResultData(response)
+                        );
                         this.changeDetectorRef.detectChanges();
                     }
                     this.isSearching = false;
@@ -155,44 +178,62 @@ export class NotificationArchiveViewComponent extends BaseComponent implements O
     }
     private createRequestParam(): any {
         let fieldNames: Array<string> = [];
-        fieldNames.push('mainNotificationType');
-        fieldNames.push('isActive');
-        fieldNames.push('idLogin');
+        fieldNames.push("mainNotificationType");
+        fieldNames.push("isActive");
+        fieldNames.push("idLogin");
 
         let fieldValues: Array<string> = [];
         fieldValues.push(Uti.upperCaseFirstLetter(this._typeArchive));
-        fieldValues.push('false');
+        fieldValues.push("false");
         fieldValues.push(this.userData.id);
         return { fieldNames: fieldNames, fieldValues: fieldValues };
     }
     private addPerfectScrollbar() {
         setTimeout(() => {
-            let wijmoGridElm = $('div[wj-part=\'root\']', this.flex.hostElement);
+            let wijmoGridElm = $("div[wj-part='root']", this.flex.hostElement);
             if (wijmoGridElm.length) {
                 Ps.destroy(wijmoGridElm.get(0));
                 Ps.initialize(wijmoGridElm.get(0));
 
                 setTimeout(() => {
-                    $('.ps-scrollbar-x-rail', this.flex.hostElement).css('z-index', 9999);
-                    $('.ps-scrollbar-y-rail', this.flex.hostElement).css('z-index', 9999);
+                    $(".ps-scrollbar-x-rail", this.flex.hostElement).css(
+                        "z-index",
+                        9999
+                    );
+                    $(".ps-scrollbar-y-rail", this.flex.hostElement).css(
+                        "z-index",
+                        9999
+                    );
                 });
             }
         });
     }
     private buildResultData(response: any): Array<any> {
-        if (!Uti.isResquestSuccess(response) || !response.item.results || !response.item.results.length) {
+        if (
+            !Uti.isResquestSuccess(response) ||
+            !response.item.results ||
+            !response.item.results.length
+        ) {
             return [];
         }
-        return response.item.results.map(x => {
-
-            let createDateDisplay = '';
+        return response.item.results.map((x) => {
+            let createDateDisplay = "";
             if (x.sysCreateDate) {
                 const createDate = Uti.parseISODateToDate(x.sysCreateDate);
-                createDateDisplay = this.uti.formatLocale(createDate, this.globalDateFormat + ' HH:mm:ss');
-            }
-            else {
-                const createDate = parse(x.createDate, 'dd.MM.yyyy', new Date());
-                createDateDisplay = this.uti.formatLocale(createDate, this.globalDateFormat);
+                createDateDisplay = this.uti.formatLocale(
+                    createDate,
+                    this.globalDateFormat + " HH:mm:ss"
+                );
+            } else {
+                const createDate = parse(
+                    x.createDate,
+                    "dd.MM.yyyy",
+                    new Date()
+                );
+                createDateDisplay = this.uti.formatLocale(
+                    createDate,
+                    this.globalDateFormat
+                );
             }
 
             return {
@@ -200,8 +241,8 @@ export class NotificationArchiveViewComponent extends BaseComponent implements O
                 data: {
                     title: x.subject,
                     content: x.mainComment,
-                    createDateDisplay: createDateDisplay
-                }
+                    createDateDisplay: createDateDisplay,
+                },
             };
         });
     }

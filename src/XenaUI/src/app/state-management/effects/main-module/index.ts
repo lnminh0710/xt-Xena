@@ -1,1 +1,1 @@
-export * from './main-module.effect';
+export * from "./main-module.effect";

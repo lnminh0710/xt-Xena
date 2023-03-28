@@ -1,44 +1,45 @@
 import {
-    Component, OnInit, OnDestroy, EventEmitter, Input,
-    Output, ViewChild, ElementRef, AfterViewInit
-} from '@angular/core';
-import { ControlGridModel, ApiResultResponse} from 'app/models';
-import {  AppErrorHandler } from 'app/services';
-import { Uti } from 'app/utilities';
+    Component,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild,
+    ElementRef,
+    AfterViewInit,
+} from "@angular/core";
+import { ControlGridModel, ApiResultResponse } from "app/models";
+import { AppErrorHandler } from "app/services";
+import { Uti } from "app/utilities";
 
 @Component({
-    selector: 'doublette-group',
-    styleUrls: ['./doublette-group.component.scss'],
-    templateUrl: './doublette-group.component.html'
+    selector: "doublette-group",
+    styleUrls: ["./doublette-group.component.scss"],
+    templateUrl: "./doublette-group.component.html",
 })
-export class DoubletteGroupComponent implements OnInit, OnDestroy, AfterViewInit {
-
+export class DoubletteGroupComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     @Input() groupNumber: number = 1;
     @Input() groupTotal: number;
     @Output() nextGroup: EventEmitter<number> = new EventEmitter<number>();
-    @Output() groupNumberChange: EventEmitter<number> = new EventEmitter<number>();
+    @Output() groupNumberChange: EventEmitter<number> =
+        new EventEmitter<number>();
 
-    constructor(private appErrorHandler: AppErrorHandler) {
+    constructor(private appErrorHandler: AppErrorHandler) {}
 
-    }
+    public ngOnInit() {}
 
-    public ngOnInit() {
+    public ngOnDestroy() {}
 
-    }
-
-    public ngOnDestroy() {
-
-    }
-
-    ngAfterViewInit() {
-       
-    }
+    ngAfterViewInit() {}
 
     next() {
         if (this.groupNumber < this.groupTotal) {
             this.groupNumber += 1;
             this.groupNumberChange.emit(this.groupNumber);
-            this.nextGroup.emit(this.groupNumber);            
+            this.nextGroup.emit(this.groupNumber);
         }
     }
 
@@ -48,6 +49,6 @@ export class DoubletteGroupComponent implements OnInit, OnDestroy, AfterViewInit
         }
         this.groupNumber -= 1;
         this.groupNumberChange.emit(this.groupNumber);
-        this.nextGroup.emit(this.groupNumber);        
+        this.nextGroup.emit(this.groupNumber);
     }
 }

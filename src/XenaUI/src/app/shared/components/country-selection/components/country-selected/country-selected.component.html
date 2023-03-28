@@ -1,16 +1,19 @@
 <div class="selected-country">
-    <div *ngFor="let item of selectActiveItems()"
-         class="row-item">
+    <div *ngFor="let item of selectActiveItems()" class="row-item">
         <!--checkbox-->
-        <mat-checkbox color="primary"
-                      value="{{item.idValue}}"
-                      [(ngModel)]="item.isActive"
-                      (change)="itemChanged(item.idValue)">
-            <img *ngIf="item.isoCode"
-                 src="public/assets/img/blank.gif"
-                 class="flag  flag-{{item.isoCode.toLowerCase()}}"
-                 alt="{{item.textValue}}" />
-            {{item.textValue}}
+        <mat-checkbox
+            color="primary"
+            value="{{ item.idValue }}"
+            [(ngModel)]="item.isActive"
+            (change)="itemChanged(item.idValue)"
+        >
+            <img
+                *ngIf="item.isoCode"
+                src="public/assets/img/blank.gif"
+                class="flag  flag-{{ item.isoCode.toLowerCase() }}"
+                alt="{{ item.textValue }}"
+            />
+            {{ item.textValue }}
         </mat-checkbox>
     </div>
 </div>

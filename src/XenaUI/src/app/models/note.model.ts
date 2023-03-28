@@ -13,8 +13,10 @@ export class Note {
     constructor(init?: Partial<Note>) {
         if (init) {
             Object.keys(init).forEach((k: string) => {
-                if (k === 'Date') {
-                    const dateValue = init[k] ? init[k].replace(/(\d{2}).(\d{2}).(\d{4})/, '$2/$1/$3') : null;
+                if (k === "Date") {
+                    const dateValue = init[k]
+                        ? init[k].replace(/(\d{2}).(\d{2}).(\d{4})/, "$2/$1/$3")
+                        : null;
                     this.date = new Date(dateValue);
                     return;
                 }
@@ -42,8 +44,8 @@ export class NoteFormDataAction {
 }
 
 export enum NoteEnum {
-    ZERO = '0',
-    ONE = '1'
+    ZERO = "0",
+    ONE = "1",
 }
 
 export enum NoteActionEnum {

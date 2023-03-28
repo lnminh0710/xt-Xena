@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import isEmpty from 'lodash-es/isEmpty';
-import upperCase from 'lodash-es/upperCase';
-import camelCase from 'lodash-es/camelCase';
-import isUndefined from 'lodash-es/isUndefined';
-import isNil from 'lodash-es/isNil';
-import isObject from 'lodash-es/isObject';
-import isString from 'lodash-es/isString';
-import isNaN from 'lodash-es/isNaN';
+import { Injectable } from "@angular/core";
+import isEmpty from "lodash-es/isEmpty";
+import upperCase from "lodash-es/upperCase";
+import camelCase from "lodash-es/camelCase";
+import isUndefined from "lodash-es/isUndefined";
+import isNil from "lodash-es/isNil";
+import isObject from "lodash-es/isObject";
+import isString from "lodash-es/isString";
+import isNaN from "lodash-es/isNaN";
 import {
     TextFieldModel,
     SelectFieldModel,
@@ -14,43 +14,41 @@ import {
     ReadonlyFieldModel,
     DatetimeFieldModel,
     CheckboxFieldModel,
-    EsSearchResult
-} from 'app/models';
-import { ComboBoxTypeConstant, FilterModeEnum } from 'app/app.constants';
-import { GuidHelper } from 'app/utilities/guild.helper';
-import { FieldFilter, ControlGridModel } from 'app/models';
-import { Uti } from 'app/utilities/uti';
-import { parse, format } from 'date-fns/esm';
+    EsSearchResult,
+} from "app/models";
+import { ComboBoxTypeConstant, FilterModeEnum } from "app/app.constants";
+import { GuidHelper } from "app/utilities/guild.helper";
+import { FieldFilter, ControlGridModel } from "app/models";
+import { Uti } from "app/utilities/uti";
+import { parse, format } from "date-fns/esm";
 
 const BUTTON_COLUMNS = {
-    mediaCodeButton: 'mediaCodeButton',
-    download: 'download',
-    InvoicePDF: 'InvoicePDF',
-    RunSchedule: 'RunSchedule',
-    PDF: 'PDF',
-    Tracking: 'Tracking',
-    Return: 'Return',
-    SendLetter: 'SendLetter',
-    Unblock: 'Unblock',
-    Delete: 'Delete',
-    Preview: 'Preview',
-    EditRow: 'EditRow',
-    FilterExtended: 'FilterExtended',
-    Edit: 'Edit',
-    rowColCheckAll: 'rowColCheckAll'
+    mediaCodeButton: "mediaCodeButton",
+    download: "download",
+    InvoicePDF: "InvoicePDF",
+    RunSchedule: "RunSchedule",
+    PDF: "PDF",
+    Tracking: "Tracking",
+    Return: "Return",
+    SendLetter: "SendLetter",
+    Unblock: "Unblock",
+    Delete: "Delete",
+    Preview: "Preview",
+    EditRow: "EditRow",
+    FilterExtended: "FilterExtended",
+    Edit: "Edit",
+    rowColCheckAll: "rowColCheckAll",
 };
 
 const CHECKBOX_COLUMNS = {
-    deleted: 'deleted',
-    selectAll: 'selectAll',
-    noExport: 'noExport',
-}
+    deleted: "deleted",
+    selectAll: "selectAll",
+    noExport: "noExport",
+};
 
 @Injectable()
 export class DatatableService {
-
-    constructor() {
-    }
+    constructor() {}
 
     public buildEditableDataSource(data): any {
         let result = this.formatDataTableFromRawData(data);
@@ -73,14 +71,16 @@ export class DatatableService {
         const settingData: any = data[settingIndex][0];
 
         const formatColumnSetting: { [key: string]: any } = {};
-        let widgetTitle = '';
+        let widgetTitle = "";
         if (settingData && settingData.SettingColumnName) {
-            const columnSetting: Array<any> = JSON.parse(settingData.SettingColumnName);
+            const columnSetting: Array<any> = JSON.parse(
+                settingData.SettingColumnName
+            );
             if (columnSetting && columnSetting.length) {
                 widgetTitle = columnSetting[0].WidgetTitle;
                 if (columnSetting[1]) {
                     const columns: Array<any> = columnSetting[1].ColumnsName;
-                    columns.forEach(col => {
+                    columns.forEach((col) => {
                         formatColumnSetting[col.ColumnName] = col;
                     });
                 }
@@ -89,17 +89,15 @@ export class DatatableService {
         return {
             collectionData: collectionData,
             columnSettings: formatColumnSetting,
-            widgetTitle: widgetTitle
-        }
+            widgetTitle: widgetTitle,
+        };
     }
 
     public buildDataSource(contentDetail) {
-
         let dataSource: any;
         dataSource = this.buildTableDataFromCollection(contentDetail);
 
-        if (!dataSource.columns.length)
-            return dataSource;
+        if (!dataSource.columns.length) return dataSource;
 
         // Build column setting
         dataSource = this.buildColumnSetting(dataSource, contentDetail);
@@ -119,24 +117,26 @@ export class DatatableService {
     buildTableDataFromCollection(object: any) {
         if (!object || !object.columnSettings) {
             return {
-                'data': [],
-                'columns': []
+                data: [],
+                columns: [],
             };
         }
 
         const columns: Array<any> = [];
 
-        Object.keys(object.columnSettings).forEach(key => {
+        Object.keys(object.columnSettings).forEach((key) => {
             columns.push({
-                'title': object.columnSettings[key].ColumnHeader,
-                'data': object.columnSettings[key].ColumnName,
-                'visible': true
+                title: object.columnSettings[key].ColumnHeader,
+                data: object.columnSettings[key].ColumnName,
+                visible: true,
             });
         });
 
         return {
-            'data': !object.collectionData ? [] : Object.assign([], object.collectionData),
-            'columns': columns
+            data: !object.collectionData
+                ? []
+                : Object.assign([], object.collectionData),
+            columns: columns,
         };
     }
 
@@ -198,37 +198,38 @@ export class DatatableService {
     // }
 
     appendRowId(dataSource) {
-        if (!dataSource.data)
-            return dataSource;
+        if (!dataSource.data) return dataSource;
         for (let i = 0; i < dataSource.data.length; i++) {
-            dataSource.data[i]['DT_RowId'] = 'row_' + GuidHelper.generateGUID();
+            dataSource.data[i]["DT_RowId"] = "row_" + GuidHelper.generateGUID();
         }
 
         return dataSource;
     }
 
     appendRowIdForGridData(data) {
-        if (!data)
-            return;
+        if (!data) return;
         for (let i = 0; i < data.length; i++) {
-            data[i]['DT_RowId'] = 'row_' + GuidHelper.generateGUID();
+            data[i]["DT_RowId"] = "row_" + GuidHelper.generateGUID();
         }
 
         return data;
     }
 
     buildColumnSetting(dataSourceTable, contentDetail) {
-        if (isEmpty(dataSourceTable)
-            || isEmpty(dataSourceTable.columns)
-            || isEmpty(contentDetail)
-            || isEmpty(contentDetail.columnSettings)) {
+        if (
+            isEmpty(dataSourceTable) ||
+            isEmpty(dataSourceTable.columns) ||
+            isEmpty(contentDetail) ||
+            isEmpty(contentDetail.columnSettings)
+        ) {
             return dataSourceTable;
         }
 
         for (let i = 0; i < dataSourceTable.columns.length; i++) {
             for (const settingField in contentDetail.columnSettings) {
                 if (dataSourceTable.columns[i].data === settingField) {
-                    dataSourceTable.columns[i].setting = contentDetail.columnSettings[settingField];
+                    dataSourceTable.columns[i].setting =
+                        contentDetail.columnSettings[settingField];
                 }
             }
         }
@@ -238,13 +239,19 @@ export class DatatableService {
 
     setColumnVisible(dataSource) {
         for (const col of dataSource.columns) {
-            if (this.hasDisplayField(col, 'Hidden')) {
-                col.visible = (this.getDisplayFieldValue(col, 'Hidden') !== '1');
+            if (this.hasDisplayField(col, "Hidden")) {
+                col.visible = this.getDisplayFieldValue(col, "Hidden") !== "1";
             }
-            if (this.hasDisplayField(col, 'IsGrouped')) {
-                col.isGrouped = (this.getDisplayFieldValue(col, 'IsGrouped') === '1');
-                const groupDisplayColumn = this.getDisplayFieldValue(col, 'GroupDisplayColumn');
-                const rs = dataSource.columns.filter(p => p.setting.OriginalColumnName === groupDisplayColumn);
+            if (this.hasDisplayField(col, "IsGrouped")) {
+                col.isGrouped =
+                    this.getDisplayFieldValue(col, "IsGrouped") === "1";
+                const groupDisplayColumn = this.getDisplayFieldValue(
+                    col,
+                    "GroupDisplayColumn"
+                );
+                const rs = dataSource.columns.filter(
+                    (p) => p.setting.OriginalColumnName === groupDisplayColumn
+                );
                 if (rs.length > 0) {
                     col.groupDisplayColumn = rs[0].data;
                 }
@@ -264,17 +271,22 @@ export class DatatableService {
                     //    };
                     //    break;
 
-                    case 'creditcard':
+                    case "creditcard":
                         column.render = function (data, type, row) {
                             if (!data) {
-                                return '';
+                                return "";
                             }
 
-                            const ccList = data.split(',');
-                            let result = '';
+                            const ccList = data.split(",");
+                            let result = "";
                             if (ccList.length) {
                                 for (const cc of ccList) {
-                                    result += '<img src="public/assets/img/blank.gif" class="credit credit-' + cc + '" alt="' + upperCase(cc) + '">';
+                                    result +=
+                                        '<img src="public/assets/img/blank.gif" class="credit credit-' +
+                                        cc +
+                                        '" alt="' +
+                                        upperCase(cc) +
+                                        '">';
                                 }
                             }
 
@@ -317,47 +329,47 @@ export class DatatableService {
     buildColumnControl(column) {
         if (this.hasControlType(column)) {
             switch (this.getControlTypeName(column).toLowerCase()) {
-                case 'textbox':
+                case "textbox":
                     return new TextFieldModel({
-                        name: column.data
+                        name: column.data,
                     });
-                case 'combobox':
+                case "combobox":
                     return new SelectFieldModel({
                         name: column.data,
-                        options: column.options
+                        options: column.options,
                     });
-                case 'datetimepicker':
+                case "datetimepicker":
                     return new DatetimeFieldModel({
                         name: column.data,
-                        def: function () { return new Date(); },
-                        format: 'DD.MM.YYYY',
+                        def: function () {
+                            return new Date();
+                        },
+                        format: "DD.MM.YYYY",
                     });
-                case 'checkbox':
+                case "checkbox":
                     return new CheckboxFieldModel({
                         name: column.data,
-                        separator: '|',
-                        options: [
-                            { label: '', value: 'True' }
-                        ],
-                        unselectedValue: 'False'
+                        separator: "|",
+                        options: [{ label: "", value: "True" }],
+                        unselectedValue: "False",
                     });
             }
-        } else if (this.hasDisplayField(column, 'Hidden')) {
-            if (this.getDisplayFieldValue(column, 'Hidden') === '1') {
+        } else if (this.hasDisplayField(column, "Hidden")) {
+            if (this.getDisplayFieldValue(column, "Hidden") === "1") {
                 return new HiddenFieldModel({
-                    name: column.data
+                    name: column.data,
                 });
             }
-        } else if (this.hasDisplayField(column, 'Readonly')) {
-            if (this.getDisplayFieldValue(column, 'Readonly') === '1') {
+        } else if (this.hasDisplayField(column, "Readonly")) {
+            if (this.getDisplayFieldValue(column, "Readonly") === "1") {
                 return new ReadonlyFieldModel({
-                    name: column.data
+                    name: column.data,
                 });
             }
         }
 
         return new TextFieldModel({
-            name: column.data
+            name: column.data,
         });
     }
 
@@ -369,7 +381,7 @@ export class DatatableService {
         }
 
         for (const column of dataSource.columns) {
-            if (this.hasControlType(column, 'combobox')) {
+            if (this.hasControlType(column, "combobox")) {
                 comboboxList.push(column);
             }
         }
@@ -379,15 +391,20 @@ export class DatatableService {
 
     buildComboboxData(dataSource, comboboxData, comboboxTypeList) {
         for (const column of dataSource.columns) {
-            if (this.hasControlType(column, 'combobox')) {
+            if (this.hasControlType(column, "combobox")) {
                 const columnOptions = [];
 
                 for (const comboboxType of comboboxTypeList) {
-                    if (this.getControlTypeValue(column).toString().toLowerCase() === comboboxType.value.toString().toLowerCase()) {
+                    if (
+                        this.getControlTypeValue(column)
+                            .toString()
+                            .toLowerCase() ===
+                        comboboxType.value.toString().toLowerCase()
+                    ) {
                         for (const data of comboboxData[comboboxType.name]) {
                             columnOptions.push({
                                 label: data.textValue,
-                                value: data.idValue
+                                value: data.idValue,
                             });
                         }
                     }
@@ -405,11 +422,16 @@ export class DatatableService {
         for (const comboboxColumn of comboboxColumnList) {
             for (const typeName in ComboBoxTypeConstant) {
                 if (ComboBoxTypeConstant.hasOwnProperty(typeName)) {
-                    const typeValue = this.getControlTypeValue(comboboxColumn).trim();
-                    if (!isNaN(typeValue) && parseInt(typeValue, 10) === ComboBoxTypeConstant[typeName]) {
+                    const typeValue =
+                        this.getControlTypeValue(comboboxColumn).trim();
+                    if (
+                        !isNaN(typeValue) &&
+                        parseInt(typeValue, 10) ===
+                            ComboBoxTypeConstant[typeName]
+                    ) {
                         result.push({
                             name: typeName,
-                            value: ComboBoxTypeConstant[typeName]
+                            value: ComboBoxTypeConstant[typeName],
                         });
                     }
                 }
@@ -418,14 +440,17 @@ export class DatatableService {
 
         // Add item that does not exist in Constant to result
         for (const comboboxColumn of comboboxColumnList) {
-            const comboboxColumnValue = this.getControlTypeValue(comboboxColumn).trim();
+            const comboboxColumnValue =
+                this.getControlTypeValue(comboboxColumn).trim();
             if (isNaN(comboboxColumnValue) && comboboxColumnValue.length > 0) {
-                const existingResult = result.find(rs => rs.value === camelCase(comboboxColumnValue));
+                const existingResult = result.find(
+                    (rs) => rs.value === camelCase(comboboxColumnValue)
+                );
 
                 if (!existingResult) {
                     result.push({
                         name: camelCase(comboboxColumnValue),
-                        value: camelCase(comboboxColumnValue)
+                        value: camelCase(comboboxColumnValue),
                     });
                 }
             }
@@ -437,22 +462,27 @@ export class DatatableService {
     getComboboxType(comboboxColumn) {
         for (const typeName in ComboBoxTypeConstant) {
             if (ComboBoxTypeConstant.hasOwnProperty(typeName)) {
-                const typeValue = this.getControlTypeValue(comboboxColumn).trim();
-                if (!isNaN(typeValue) && parseInt(typeValue, 10) === ComboBoxTypeConstant[typeName]) {
+                const typeValue =
+                    this.getControlTypeValue(comboboxColumn).trim();
+                if (
+                    !isNaN(typeValue) &&
+                    parseInt(typeValue, 10) === ComboBoxTypeConstant[typeName]
+                ) {
                     return {
                         name: typeName,
-                        value: ComboBoxTypeConstant[typeName]
+                        value: ComboBoxTypeConstant[typeName],
                     };
                 }
             }
         }
 
         // Add item that does not exist in Constant to result
-        const comboboxColumnValue = this.getControlTypeValue(comboboxColumn).trim();
+        const comboboxColumnValue =
+            this.getControlTypeValue(comboboxColumn).trim();
         if (!isNil(comboboxColumnValue) && comboboxColumnValue.length > 0) {
             return {
                 name: camelCase(comboboxColumnValue),
-                value: camelCase(comboboxColumnValue)
+                value: camelCase(comboboxColumnValue),
             };
         }
 
@@ -478,21 +508,28 @@ export class DatatableService {
     }
 
     hasSetting(column) {
-        return column && column.setting
-            && !isUndefined(column.setting.Setting)
-            && column.setting.Setting.length;
+        return (
+            column &&
+            column.setting &&
+            !isUndefined(column.setting.Setting) &&
+            column.setting.Setting.length
+        );
     }
 
     hasControlType(column, controlName?) {
         let result = false;
         if (this.hasSetting(column)) {
-            const settingContainsControlType = this.getSettingContainsControlType(column.setting.Setting);
+            const settingContainsControlType =
+                this.getSettingContainsControlType(column.setting.Setting);
 
             if (settingContainsControlType) {
                 result = true;
 
                 if (!isEmpty(controlName)) {
-                    result = result && settingContainsControlType.ControlType.Type.toLowerCase() === controlName.toLowerCase();
+                    result =
+                        result &&
+                        settingContainsControlType.ControlType.Type.toLowerCase() ===
+                            controlName.toLowerCase();
                 }
             }
         }
@@ -502,7 +539,10 @@ export class DatatableService {
 
     getSettingContainsControlType(settingArray) {
         for (let i = 0; i < settingArray.length; i++) {
-            if (!isUndefined(settingArray[i].ControlType) && !isUndefined(settingArray[i].ControlType.Type)) {
+            if (
+                !isUndefined(settingArray[i].ControlType) &&
+                !isUndefined(settingArray[i].ControlType.Type)
+            ) {
                 return settingArray[i];
             }
         }
@@ -513,18 +553,21 @@ export class DatatableService {
     hasDisplayField(column, fieldName?) {
         let result = false;
         if (this.hasSetting(column)) {
-            const settingContainsDisplayField = this.getSettingContainsDisplayField(column.setting.Setting);
+            const settingContainsDisplayField =
+                this.getSettingContainsDisplayField(column.setting.Setting);
 
             if (settingContainsDisplayField) {
                 result = true;
 
                 if (!isEmpty(fieldName)) {
-                    const displayFieldKeys = Object.keys(settingContainsDisplayField.DisplayField);
+                    const displayFieldKeys = Object.keys(
+                        settingContainsDisplayField.DisplayField
+                    );
                     const filteredKeys = displayFieldKeys.filter((key) => {
                         return key.toLowerCase() === fieldName.toLowerCase();
                     });
 
-                    result = result && (filteredKeys.length > 0);
+                    result = result && filteredKeys.length > 0;
                 }
             }
         }
@@ -534,7 +577,8 @@ export class DatatableService {
 
     hasCustomStyle(column) {
         if (this.hasSetting(column)) {
-            const settingContainsCustomStyle = this.getSettingContainsCustomStyle(column.setting.Setting);
+            const settingContainsCustomStyle =
+                this.getSettingContainsCustomStyle(column.setting.Setting);
 
             if (settingContainsCustomStyle) {
                 return true;
@@ -587,21 +631,31 @@ export class DatatableService {
     hasValidation(column, validationName?, outputSettingContainsValidation?) {
         let result = false;
         if (this.hasSetting(column)) {
-            const settingContainsValidation = this.getSettingContainsValidation(column.setting.Setting);
+            const settingContainsValidation = this.getSettingContainsValidation(
+                column.setting.Setting
+            );
 
-            if (settingContainsValidation && settingContainsValidation.Validation) {
+            if (
+                settingContainsValidation &&
+                settingContainsValidation.Validation
+            ) {
                 if (outputSettingContainsValidation) {
-                    outputSettingContainsValidation['Validation'] = settingContainsValidation.Validation;
+                    outputSettingContainsValidation["Validation"] =
+                        settingContainsValidation.Validation;
                 }
                 result = true;
 
                 if (!isEmpty(validationName)) {
-                    const displayFieldKeys = Object.keys(settingContainsValidation.Validation);
+                    const displayFieldKeys = Object.keys(
+                        settingContainsValidation.Validation
+                    );
                     const filteredKeys = displayFieldKeys.filter((key) => {
-                        return key.toLowerCase() === validationName.toLowerCase();
+                        return (
+                            key.toLowerCase() === validationName.toLowerCase()
+                        );
                     });
 
-                    result = result && (filteredKeys.length > 0);
+                    result = result && filteredKeys.length > 0;
                 }
             }
         }
@@ -621,90 +675,99 @@ export class DatatableService {
 
     getControlTypeName(column) {
         if (this.hasSetting(column)) {
-            const settingContainsControlType = this.getSettingContainsControlType(column.setting.Setting);
+            const settingContainsControlType =
+                this.getSettingContainsControlType(column.setting.Setting);
 
             if (settingContainsControlType) {
                 return settingContainsControlType.ControlType.Type;
             }
         }
 
-        return '';
+        return "";
     }
 
     getControlTypeNameFromColumnDefine(column) {
         if (column.setting && column.setting.DataType) {
             switch (column.setting.DataType) {
-                case 'datetime':
-                    return 'DatetimePicker';
-                case 'int':
-                case 'smallint':
-                case 'bigint':
-                    return 'Integer';
-                case 'bit':
-                    return 'Checkbox';
+                case "datetime":
+                    return "DatetimePicker";
+                case "int":
+                case "smallint":
+                case "bigint":
+                    return "Integer";
+                case "bit":
+                    return "Checkbox";
                 default:
-                    return '';
+                    return "";
             }
         }
 
-        return '';
+        return "";
     }
 
     getControlTypeValue(column) {
         if (this.hasSetting(column)) {
-            const settingContainsControlType = this.getSettingContainsControlType(column.setting.Setting);
+            const settingContainsControlType =
+                this.getSettingContainsControlType(column.setting.Setting);
 
             if (settingContainsControlType) {
                 return settingContainsControlType.ControlType.Value;
             }
         }
 
-        return '';
+        return "";
     }
 
     getControlTypeFilterBy(column) {
         if (this.hasSetting(column)) {
-            const settingContainsControlType = this.getSettingContainsControlType(column.setting.Setting);
+            const settingContainsControlType =
+                this.getSettingContainsControlType(column.setting.Setting);
 
             if (settingContainsControlType) {
                 return settingContainsControlType.ControlType.FilterBy;
             }
         }
 
-        return '';
+        return "";
     }
 
     getDisplayFieldValue(column, fieldName) {
         if (this.hasSetting(column)) {
-            const settingContainsDisplayField = this.getSettingContainsDisplayField(column.setting.Setting);
+            const settingContainsDisplayField =
+                this.getSettingContainsDisplayField(column.setting.Setting);
 
             if (settingContainsDisplayField) {
                 if (!isEmpty(fieldName)) {
-                    const displayFieldKeys = Object.keys(settingContainsDisplayField.DisplayField);
+                    const displayFieldKeys = Object.keys(
+                        settingContainsDisplayField.DisplayField
+                    );
                     const filteredKeys = displayFieldKeys.filter((key) => {
                         return key.toLowerCase() === fieldName.toLowerCase();
                     });
 
                     if (filteredKeys.length) {
-                        return settingContainsDisplayField.DisplayField[filteredKeys[0]];
+                        return settingContainsDisplayField.DisplayField[
+                            filteredKeys[0]
+                        ];
                     }
                 }
             }
         }
 
-        return '';
+        return "";
     }
 
     getCustomStyleValue(column) {
         if (this.hasSetting(column)) {
-            const settingContainsCustomStyle = this.getSettingContainsCustomStyle(column.setting.Setting);
+            const settingContainsCustomStyle =
+                this.getSettingContainsCustomStyle(column.setting.Setting);
 
             if (settingContainsCustomStyle) {
                 return settingContainsCustomStyle.CustomStyle;
             }
         }
 
-        return '';
+        return "";
     }
 
     getColumnByName(columns, name) {
@@ -727,19 +790,27 @@ export class DatatableService {
         const newRow = {};
 
         for (const fieldName in firstRow) {
-            if (fieldName === 'DT_RowId') {
-                newRow[fieldName] = 'row_' + GuidHelper.generateGUID();
+            if (fieldName === "DT_RowId") {
+                newRow[fieldName] = "row_" + GuidHelper.generateGUID();
             } else {
-                const columnOfThisField = this.getColumnByName(columns, fieldName);
+                const columnOfThisField = this.getColumnByName(
+                    columns,
+                    fieldName
+                );
 
-                if (columnOfThisField && this.hasControlType(columnOfThisField, 'combobox')) {
-                    newRow[fieldName] = !isEmpty(columnOfThisField.options) ? columnOfThisField.options[0].value : '';
+                if (
+                    columnOfThisField &&
+                    this.hasControlType(columnOfThisField, "combobox")
+                ) {
+                    newRow[fieldName] = !isEmpty(columnOfThisField.options)
+                        ? columnOfThisField.options[0].value
+                        : "";
                 } else {
-                    newRow[fieldName] = '';
+                    newRow[fieldName] = "";
                 }
             }
         }
-        newRow['isNewRow'] = true;
+        newRow["isNewRow"] = true;
 
         return newRow;
     }
@@ -751,14 +822,16 @@ export class DatatableService {
     createNewRowForEmptyData(columns) {
         const newRow = {};
         for (let i = 0; i < columns.length; i++) {
-            if (this.hasControlType(columns[i], 'combobox')) {
-                newRow[columns[i].data] = !isEmpty(columns[i].options) ? columns[i].options[0].value : '';
+            if (this.hasControlType(columns[i], "combobox")) {
+                newRow[columns[i].data] = !isEmpty(columns[i].options)
+                    ? columns[i].options[0].value
+                    : "";
             } else {
-                newRow[columns[i].data] = '';
+                newRow[columns[i].data] = "";
             }
         }
-        newRow['DT_RowId'] = 'row_' + GuidHelper.generateGUID();
-        newRow['isNewRow'] = true;
+        newRow["DT_RowId"] = "row_" + GuidHelper.generateGUID();
+        newRow["isNewRow"] = true;
         return newRow;
     }
 
@@ -773,7 +846,12 @@ export class DatatableService {
     }
 
     updateDataSourceTable(dataSource, editedRowData, isDeleted?: boolean) {
-        if (isEmpty(dataSource) || isNil(dataSource.data) || isEmpty(editedRowData) || isEmpty(editedRowData.data)) {
+        if (
+            isEmpty(dataSource) ||
+            isNil(dataSource.data) ||
+            isEmpty(editedRowData) ||
+            isEmpty(editedRowData.data)
+        ) {
             return dataSource;
         }
 
@@ -786,43 +864,60 @@ export class DatatableService {
                         delete dataSource.data[index];
                     } else {
                         dataSource.data[index] = editedRowData.data[0];
-                        dataSource.data[index]['IsDeleted'] = true;
+                        dataSource.data[index]["IsDeleted"] = true;
                     }
                     return;
                 }
                 dataSource.data[index] = editedRowData.data[0];
-                dataSource.data[index]['isEdited'] = true;
+                dataSource.data[index]["isEdited"] = true;
                 return;
             }
         });
 
         if (willPush && !isDeleted) {
-            if (!isUndefined(editedRowData.data[0]['isNewRow'])) {
-                delete editedRowData.data[0]['isNewRow'];
+            if (!isUndefined(editedRowData.data[0]["isNewRow"])) {
+                delete editedRowData.data[0]["isNewRow"];
             }
             const newRow = editedRowData.data[0];
-            newRow['isEdited'] = true;
+            newRow["isEdited"] = true;
             dataSource.data.push(newRow);
         }
 
         return dataSource;
     }
 
-    updateTableColumnSettings(selectedFilter: FilterModeEnum, fieldFilters: Array<FieldFilter>, settings: any, data: any) {
-        if (selectedFilter === FilterModeEnum.ShowAllWithoutFilter || isNil(fieldFilters) || isNil(!selectedFilter) || !data || !settings)
+    updateTableColumnSettings(
+        selectedFilter: FilterModeEnum,
+        fieldFilters: Array<FieldFilter>,
+        settings: any,
+        data: any
+    ) {
+        if (
+            selectedFilter === FilterModeEnum.ShowAllWithoutFilter ||
+            isNil(fieldFilters) ||
+            isNil(!selectedFilter) ||
+            !data ||
+            !settings
+        )
             return settings;
         const keys = Object.keys(settings);
         keys.forEach((key) => {
             const columnSetting = settings[key];
             if (!columnSetting.Setting) {
-                columnSetting['Setting'] = [];
-            } else if (typeof columnSetting['Setting'] === 'string') {
-                const settingJson = Uti.tryParseJson(columnSetting['Setting']);
-                columnSetting['Setting'] = isEmpty(settingJson) ? [] : settingJson;
+                columnSetting["Setting"] = [];
+            } else if (typeof columnSetting["Setting"] === "string") {
+                const settingJson = Uti.tryParseJson(columnSetting["Setting"]);
+                columnSetting["Setting"] = isEmpty(settingJson)
+                    ? []
+                    : settingJson;
             }
-            const filterItem = fieldFilters.find((item) => item.fieldName === columnSetting.OriginalColumnName);
+            const filterItem = fieldFilters.find(
+                (item) => item.fieldName === columnSetting.OriginalColumnName
+            );
             if (filterItem) {
-                let displaySetting = columnSetting.Setting.find((item) => item.DisplayField);
+                let displaySetting = columnSetting.Setting.find(
+                    (item) => item.DisplayField
+                );
                 if (!displaySetting) {
                     displaySetting = { DisplayField: {} };
                     columnSetting.Setting.push(displaySetting);
@@ -830,27 +925,53 @@ export class DatatableService {
                 let isShowedColumnByDisplayMode = true;
                 switch (selectedFilter) {
                     case FilterModeEnum.HasData:
-                        isShowedColumnByDisplayMode = data.length > 0 && !isNil(data.find((item) =>
-                            (!isNil(item[key]) && !isObject(item[key]) && !isString(item[key])) ||
-                            (isString(item[key]) && item[key].length > 0) ||
-                            (isObject(item[key]) && !isEmpty(item[key]))));
+                        isShowedColumnByDisplayMode =
+                            data.length > 0 &&
+                            !isNil(
+                                data.find(
+                                    (item) =>
+                                        (!isNil(item[key]) &&
+                                            !isObject(item[key]) &&
+                                            !isString(item[key])) ||
+                                        (isString(item[key]) &&
+                                            item[key].length > 0) ||
+                                        (isObject(item[key]) &&
+                                            !isEmpty(item[key]))
+                                )
+                            );
                         break;
                     case FilterModeEnum.EmptyData:
-                        isShowedColumnByDisplayMode = data.length <= 0 || isNil(data.find((item) =>
-                            (!isNil(item[key]) && !isObject(item[key]) && !isString(item[key])) ||
-                            (isString(item[key]) && item[key].length > 0) ||
-                            (isObject(item[key]) && !isEmpty(item[key]))));
+                        isShowedColumnByDisplayMode =
+                            data.length <= 0 ||
+                            isNil(
+                                data.find(
+                                    (item) =>
+                                        (!isNil(item[key]) &&
+                                            !isObject(item[key]) &&
+                                            !isString(item[key])) ||
+                                        (isString(item[key]) &&
+                                            item[key].length > 0) ||
+                                        (isObject(item[key]) &&
+                                            !isEmpty(item[key]))
+                                )
+                            );
                         break;
                 }
-                if ((isNil(displaySetting.DisplayField['Hidden']) || displaySetting.DisplayField['Hidden'] == 0)
-                    && (!filterItem.selected || (!isShowedColumnByDisplayMode && filterItem.isEditable)))
-                    displaySetting.DisplayField['Hidden'] = '1';
-                else if (!filterItem.isHidden && filterItem.selected && displaySetting.DisplayField['Hidden'] == 1) {
-                    displaySetting.DisplayField['Hidden'] = '0';
+                if (
+                    (isNil(displaySetting.DisplayField["Hidden"]) ||
+                        displaySetting.DisplayField["Hidden"] == 0) &&
+                    (!filterItem.selected ||
+                        (!isShowedColumnByDisplayMode && filterItem.isEditable))
+                )
+                    displaySetting.DisplayField["Hidden"] = "1";
+                else if (
+                    !filterItem.isHidden &&
+                    filterItem.selected &&
+                    displaySetting.DisplayField["Hidden"] == 1
+                ) {
+                    displaySetting.DisplayField["Hidden"] = "0";
                 }
-
             }
-
         });
         return settings;
     }
@@ -860,7 +981,7 @@ export class DatatableService {
         for (const requiredField of requiredFields) {
             const editingField = editor.field(requiredField.data);
             if (isEmpty(editingField) || isEmpty(editingField.val())) {
-                editingField.error('Field is required');
+                editingField.error("Field is required");
                 return false;
             }
         }
@@ -875,25 +996,32 @@ export class DatatableService {
             if (isEmpty(editingField) || isEmpty(editingField.val())) {
                 return {
                     editingField: editingField,
-                    editingFieldErrorMsg: 'Field is required'
+                    editingFieldErrorMsg: "Field is required",
                 };
             }
         }
 
-        const hasValidationFromFields = this.getHasValidationFromFields(options);
+        const hasValidationFromFields =
+            this.getHasValidationFromFields(options);
         for (const hasValidationFromField of hasValidationFromFields) {
             const editingField = editor.field(hasValidationFromField.data);
             const editingFieldData = options.columns.find((opt) => {
                 return opt.data === hasValidationFromField.data;
             });
-            const regexData = this.buildValidationExpression(editor, editingFieldData);
+            const regexData = this.buildValidationExpression(
+                editor,
+                editingFieldData
+            );
             if (regexData) {
-                const regex = new RegExp(decodeURIComponent(regexData.Regex), 'g');
+                const regex = new RegExp(
+                    decodeURIComponent(regexData.Regex),
+                    "g"
+                );
 
                 if (!regex.test(editingField.val())) {
                     return {
                         editingField: editingField,
-                        editingFieldErrorMsg: regexData.ErrorMessage
+                        editingFieldErrorMsg: regexData.ErrorMessage,
                     };
                 }
             }
@@ -905,14 +1033,21 @@ export class DatatableService {
     buildValidationExpression(editor, editingFieldData) {
         let regex: any = {};
 
-        const settingContainsValidation = this.getSettingContainsValidation(editingFieldData.setting.Setting);
-        if (this.hasValidation(editingFieldData, 'ValidationFrom')) {
-            const validationFromFieldName = settingContainsValidation.Validation.ValidationFrom;
+        const settingContainsValidation = this.getSettingContainsValidation(
+            editingFieldData.setting.Setting
+        );
+        if (this.hasValidation(editingFieldData, "ValidationFrom")) {
+            const validationFromFieldName =
+                settingContainsValidation.Validation.ValidationFrom;
             const validationFromField = editor.field(validationFromFieldName);
 
-            regex = this.getExpression(settingContainsValidation.Validation.ValidationExpression, validationFromField.val());
+            regex = this.getExpression(
+                settingContainsValidation.Validation.ValidationExpression,
+                validationFromField.val()
+            );
         } else {
-            regex = settingContainsValidation.Validation.ValidationExpression[0];
+            regex =
+                settingContainsValidation.Validation.ValidationExpression[0];
         }
 
         return regex;
@@ -921,15 +1056,29 @@ export class DatatableService {
     buildWijmoGridValidationExpression(rowData, column) {
         let regex: any = {};
 
-        const settingContainsValidation = this.getSettingContainsValidation(column.setting.Setting);
-        if (this.hasValidation(column, 'ValidationFrom')) {
-            const validationFromFieldName = settingContainsValidation.Validation.ValidationFrom;
-            let value = rowData[validationFromFieldName] && rowData[validationFromFieldName].hasOwnProperty('key') ? rowData[validationFromFieldName].key : rowData[validationFromFieldName];
-            regex = this.getExpression(settingContainsValidation.Validation.ValidationExpression, value);
+        const settingContainsValidation = this.getSettingContainsValidation(
+            column.setting.Setting
+        );
+        if (this.hasValidation(column, "ValidationFrom")) {
+            const validationFromFieldName =
+                settingContainsValidation.Validation.ValidationFrom;
+            let value =
+                rowData[validationFromFieldName] &&
+                rowData[validationFromFieldName].hasOwnProperty("key")
+                    ? rowData[validationFromFieldName].key
+                    : rowData[validationFromFieldName];
+            regex = this.getExpression(
+                settingContainsValidation.Validation.ValidationExpression,
+                value
+            );
         } else {
-            if (settingContainsValidation.Validation.ValidationExpression &&
-                settingContainsValidation.Validation.ValidationExpression.length) {
-                regex = settingContainsValidation.Validation.ValidationExpression[0];
+            if (
+                settingContainsValidation.Validation.ValidationExpression &&
+                settingContainsValidation.Validation.ValidationExpression.length
+            ) {
+                regex =
+                    settingContainsValidation.Validation
+                        .ValidationExpression[0];
             }
         }
 
@@ -954,7 +1103,7 @@ export class DatatableService {
         }
 
         for (const column of dataSource.columns) {
-            if (this.hasValidation(column, 'IsRequired')) {
+            if (this.hasValidation(column, "IsRequired")) {
                 requiredFields.push(column);
             }
         }
@@ -970,7 +1119,7 @@ export class DatatableService {
         }
 
         for (const column of dataSource.columns) {
-            if (this.hasValidation(column, 'ValidationFrom')) {
+            if (this.hasValidation(column, "ValidationFrom")) {
                 hasValidationFromFields.push(column);
             }
         }
@@ -984,7 +1133,10 @@ export class DatatableService {
         }
 
         for (let i = 0; i < rows.data().length; i++) {
-            if (!isUndefined(rows.data()[i]['isNewRow']) && rows.data()[i]['isNewRow'] === true) {
+            if (
+                !isUndefined(rows.data()[i]["isNewRow"]) &&
+                rows.data()[i]["isNewRow"] === true
+            ) {
                 return true;
             }
         }
@@ -998,8 +1150,11 @@ export class DatatableService {
         }
         let row: any;
         for (let i = 0; i < rows.data().length; i++) {
-            if (!isUndefined(rows.data()[i]['isNewRow']) && rows.data()[i]['isNewRow'] === true) {
-                row = rows.data()[i]['DT_RowId'];
+            if (
+                !isUndefined(rows.data()[i]["isNewRow"]) &&
+                rows.data()[i]["isNewRow"] === true
+            ) {
+                row = rows.data()[i]["DT_RowId"];
             }
         }
 
@@ -1009,8 +1164,8 @@ export class DatatableService {
     getErrorCell(dtOptions, invalidField, nativeElement) {
         let idx = -1;
 
-        const notHiddenColumns = dtOptions.columns.filter(col => {
-            return !this.getDisplayFieldValue(col, 'Hidden');
+        const notHiddenColumns = dtOptions.columns.filter((col) => {
+            return !this.getDisplayFieldValue(col, "Hidden");
         });
 
         for (let i = 0; i < notHiddenColumns.length; i++) {
@@ -1020,7 +1175,12 @@ export class DatatableService {
         }
 
         if (idx !== -1) {
-            const errorCell = $('tr#' + invalidField.multiIds()[0], nativeElement).children().eq(idx);
+            const errorCell = $(
+                "tr#" + invalidField.multiIds()[0],
+                nativeElement
+            )
+                .children()
+                .eq(idx);
             if (errorCell) {
                 return errorCell;
             }
@@ -1030,7 +1190,7 @@ export class DatatableService {
     }
 
     getErrorRow(dtOptions, invalidField, nativeElement) {
-        const errorRow = $('tr#' + invalidField.multiIds()[0], nativeElement);
+        const errorRow = $("tr#" + invalidField.multiIds()[0], nativeElement);
         if (errorRow) {
             return errorRow;
         }
@@ -1040,7 +1200,16 @@ export class DatatableService {
 
     getNodeKeyName(columns: any[], getParentNode?: boolean) {
         for (let i = 0; i < columns.length; i++) {
-            if (this.hasDisplayField(columns[i], getParentNode ? 'ParentNodeKeyName' : 'NodeKeyName') && this.getDisplayFieldValue(columns[i], getParentNode ? 'ParentNodeKeyName' : 'NodeKeyName') == 1) {
+            if (
+                this.hasDisplayField(
+                    columns[i],
+                    getParentNode ? "ParentNodeKeyName" : "NodeKeyName"
+                ) &&
+                this.getDisplayFieldValue(
+                    columns[i],
+                    getParentNode ? "ParentNodeKeyName" : "NodeKeyName"
+                ) == 1
+            ) {
                 return columns[i].data;
             }
         }
@@ -1059,7 +1228,10 @@ export class DatatableService {
 
     updateDragDropTableData(tableData, newRowData) {
         for (let i = 0; i < tableData.length; i++) {
-            if (tableData[i].DT_RowId === newRowData.DT_RowId && tableData[i] !== newRowData) {
+            if (
+                tableData[i].DT_RowId === newRowData.DT_RowId &&
+                tableData[i] !== newRowData
+            ) {
                 tableData[i] = newRowData;
             }
         }
@@ -1069,23 +1241,26 @@ export class DatatableService {
 
     createReadOnlyColumnSetting() {
         return {
-            DataLength: '',
-            DataType: '',
-            OriginalColumnName: '',
+            DataLength: "",
+            DataType: "",
+            OriginalColumnName: "",
             Setting: [
                 {
                     DisplayField: {
-                        ReadOnly: '1'
-                    }
-                }
-            ]
+                        ReadOnly: "1",
+                    },
+                },
+            ],
         };
     }
 
     createEmptyRowData(newItem, column, config, dataLength) {
-        newItem['DT_RowId'] = 'newrow_' + dataLength;
+        newItem["DT_RowId"] = "newrow_" + dataLength;
 
-        if (column.data === BUTTON_COLUMNS.mediaCodeButton && config.allowMediaCode) {
+        if (
+            column.data === BUTTON_COLUMNS.mediaCodeButton &&
+            config.allowMediaCode
+        ) {
             newItem[BUTTON_COLUMNS.mediaCodeButton] = null;
         }
 
@@ -1093,7 +1268,10 @@ export class DatatableService {
             newItem[BUTTON_COLUMNS.download] = null;
         }
 
-        if (column.data === CHECKBOX_COLUMNS.selectAll && config.allowSelectAll) {
+        if (
+            column.data === CHECKBOX_COLUMNS.selectAll &&
+            config.allowSelectAll
+        ) {
             newItem[CHECKBOX_COLUMNS.selectAll] = null;
         }
 
@@ -1105,33 +1283,33 @@ export class DatatableService {
             newItem[column.data] = null;
         }
 
-
         if (!BUTTON_COLUMNS[column.data]) {
             if (this.hasControlType(column)) {
                 let controlTypeName = this.getControlTypeName(column);
                 if (!controlTypeName) {
-                    controlTypeName = this.getControlTypeNameFromColumnDefine(column);
+                    controlTypeName =
+                        this.getControlTypeNameFromColumnDefine(column);
                 }
 
                 switch (controlTypeName.toLowerCase()) {
-                    case 'combobox':
+                    case "combobox":
                         newItem[column.data] = {
-                            key: '',
-                            value: '',
-                            options: []
+                            key: "",
+                            value: "",
+                            options: [],
                         };
                         break;
-                    case 'numeric':
+                    case "numeric":
                         newItem[column.data] = 0;
                         break;
-                    case 'textbox':
+                    case "textbox":
                         newItem[column.data] = null;
                         break;
-                    case 'datetimepicker':
+                    case "datetimepicker":
                         newItem[column.data] = new Date();
                         break;
-                    case 'checkbox':
-                    case 'disablerow':
+                    case "checkbox":
+                    case "disablerow":
                         newItem[column.data] = false;
                         break;
                 }
@@ -1165,35 +1343,51 @@ export class DatatableService {
 
         for (const column of dataSource.columns) {
             let isReadOnly = false;
-            if (this.hasDisplayField(column, 'Readonly')) {
-                isReadOnly = this.getDisplayFieldValue(column, 'Readonly') === '1';
+            if (this.hasDisplayField(column, "Readonly")) {
+                isReadOnly =
+                    this.getDisplayFieldValue(column, "Readonly") === "1";
             } else {
                 isReadOnly = isNil(column.readOnly) ? false : column.readOnly;
             }
             column.readOnly = isReadOnly;
 
             let isVisible = false;
-            if (this.hasDisplayField(column, 'Hidden')) {
-                isVisible = this.getDisplayFieldValue(column, 'Hidden') != '1';
+            if (this.hasDisplayField(column, "Hidden")) {
+                isVisible = this.getDisplayFieldValue(column, "Hidden") != "1";
             } else {
                 isVisible = isNil(column.visible) ? true : column.visible;
             }
             column.visible = isVisible;
 
-            column.autoSize = (this.hasDisplayField(column, 'AutoSize') && this.getDisplayFieldValue(column, 'AutoSize') === '1');
-            column.required = this.hasValidation(column, 'IsRequired');
+            column.autoSize =
+                this.hasDisplayField(column, "AutoSize") &&
+                this.getDisplayFieldValue(column, "AutoSize") === "1";
+            column.required = this.hasValidation(column, "IsRequired");
 
-
-            column.width = this.getNumberSetting(column, 'Width');
-            column.align = this.hasDisplayField(column, 'Align') ? this.getDisplayFieldValue(column, 'Align').toLowerCase() : null;
-            column.fontWeight = this.hasDisplayField(column, 'FontWeight') ? this.getDisplayFieldValue(column, 'FontWeight').toLowerCase() : null;
-            column.valueAlign = this.hasDisplayField(column, 'ValueAlign') ? this.getDisplayFieldValue(column, 'ValueAlign').toLowerCase() : null;
-            column.allowResizing = this.hasDisplayField(column, 'AllowResizing') ? this.getDisplayFieldValue(column, 'AllowResizing') : true;
-            column.allowSorting = this.hasDisplayField(column, 'AllowSorting') ? this.getDisplayFieldValue(column, 'AllowSorting') : true;
-            column.disableFilter = this.hasDisplayField(column, 'DisableFilter') ? this.getDisplayFieldValue(column, 'DisableFilter') : false;
-            column.maxWidth = this.getNumberSetting(column, 'MaxWidth');
-            column.minWidth = this.getNumberSetting(column, 'MinWidth');
-            column.disabledBy = this.hasDisplayField(column, 'DisabledBy') ? this.getDisplayFieldValue(column, 'DisabledBy') : null;
+            column.width = this.getNumberSetting(column, "Width");
+            column.align = this.hasDisplayField(column, "Align")
+                ? this.getDisplayFieldValue(column, "Align").toLowerCase()
+                : null;
+            column.fontWeight = this.hasDisplayField(column, "FontWeight")
+                ? this.getDisplayFieldValue(column, "FontWeight").toLowerCase()
+                : null;
+            column.valueAlign = this.hasDisplayField(column, "ValueAlign")
+                ? this.getDisplayFieldValue(column, "ValueAlign").toLowerCase()
+                : null;
+            column.allowResizing = this.hasDisplayField(column, "AllowResizing")
+                ? this.getDisplayFieldValue(column, "AllowResizing")
+                : true;
+            column.allowSorting = this.hasDisplayField(column, "AllowSorting")
+                ? this.getDisplayFieldValue(column, "AllowSorting")
+                : true;
+            column.disableFilter = this.hasDisplayField(column, "DisableFilter")
+                ? this.getDisplayFieldValue(column, "DisableFilter")
+                : false;
+            column.maxWidth = this.getNumberSetting(column, "MaxWidth");
+            column.minWidth = this.getNumberSetting(column, "MinWidth");
+            column.disabledBy = this.hasDisplayField(column, "DisabledBy")
+                ? this.getDisplayFieldValue(column, "DisabledBy")
+                : null;
 
             if (this.hasCustomStyle(column)) {
                 column.customStyle = this.getCustomStyleValue(column);
@@ -1201,84 +1395,106 @@ export class DatatableService {
 
             let controlTypeName = this.getControlTypeName(column);
             if (!controlTypeName) {
-                controlTypeName = this.getControlTypeNameFromColumnDefine(column);
+                controlTypeName =
+                    this.getControlTypeNameFromColumnDefine(column);
             }
             column.controlType = controlTypeName.toLowerCase();
             switch (column.controlType) {
-                case 'textbox':
-                case 'reftextbox':
-                    column.dataType = 'String';
+                case "textbox":
+                case "reftextbox":
+                    column.dataType = "String";
                     break;
-                case 'combobox':
-                    column.dataType = 'Object';
+                case "combobox":
+                    column.dataType = "Object";
                     comboboxColumns.push(column);
                     break;
-                case 'autocomplete':
-                    column.dataType = 'Object';
+                case "autocomplete":
+                    column.dataType = "Object";
                     autoCompleteColumns.push(column);
                     break;
-                case 'date':
-                case 'datetimepicker':
-                    column.dataType = 'Date';
-                    column.format = 'd';
+                case "date":
+                case "datetimepicker":
+                    column.dataType = "Date";
+                    column.format = "d";
                     datetimepickerColumns.push(column);
                     break;
-                case 'checkbox':
-                case 'disablerow':
-                    column.dataType = 'Boolean';
+                case "checkbox":
+                case "disablerow":
+                    column.dataType = "Boolean";
                     break;
-                case 'integer':
-                    column.dataType = 'Number';
-                    column.controlType = 'numeric';
-                    column.format = 'n0';
+                case "integer":
+                    column.dataType = "Number";
+                    column.controlType = "numeric";
+                    column.format = "n0";
                     break;
             }
 
-            if (column.setting
-                && column.setting.DataType
-                && column.setting.DataType.toLowerCase() === 'bit'
-                && config && !config.hasDisableRow) {
-                column.dataType = 'Boolean';
+            if (
+                column.setting &&
+                column.setting.DataType &&
+                column.setting.DataType.toLowerCase() === "bit" &&
+                config &&
+                !config.hasDisableRow
+            ) {
+                column.dataType = "Boolean";
             }
 
-            if (column.data === 'DT_RowId') {
+            if (column.data === "DT_RowId") {
                 column.visible = false;
             }
 
-            if (config && config.hasCountryFlagColumn && column.data == 'Country') {
+            if (
+                config &&
+                config.hasCountryFlagColumn &&
+                column.data == "Country"
+            ) {
                 if (this.hasSetting(column)) {
-                    column.setting.Setting[0]['ControlType'] = { Type: 'CountryFlag' };
+                    column.setting.Setting[0]["ControlType"] = {
+                        Type: "CountryFlag",
+                    };
                 }
             }
 
             let willPushNumericColumn = false;
             if (this.hasControlType(column)) {
-                const controlType = this.getSettingContainsControlType(column.setting.Setting).ControlType.Type;
+                const controlType = this.getSettingContainsControlType(
+                    column.setting.Setting
+                ).ControlType.Type;
                 if (controlType) {
                     column.controlType = controlType;
-                    if (controlType.toLowerCase() === 'numeric') {
+                    if (controlType.toLowerCase() === "numeric") {
                         willPushNumericColumn = true;
                     }
                 }
-            } else if (column.setting && (column.setting.DataType == 'decimal' || column.setting.DataType == 'money')) {
-                column.controlType = 'Numeric'
+            } else if (
+                column.setting &&
+                (column.setting.DataType == "decimal" ||
+                    column.setting.DataType == "money")
+            ) {
+                column.controlType = "Numeric";
                 willPushNumericColumn = true;
             }
 
             if (willPushNumericColumn) {
                 if (this.hasControlType(column)) {
-                    const controlType = this.getSettingContainsControlType(column.setting.Setting).ControlType;
-                    column.allowNumberSeparator = isNil(controlType.AllowNumberSeparator) ? true : controlType.AllowNumberSeparator;
+                    const controlType = this.getSettingContainsControlType(
+                        column.setting.Setting
+                    ).ControlType;
+                    column.allowNumberSeparator = isNil(
+                        controlType.AllowNumberSeparator
+                    )
+                        ? true
+                        : controlType.AllowNumberSeparator;
                 }
                 numericColumns.push(column);
             }
 
             if (BUTTON_COLUMNS[column.data]) {
-                column.controlType = 'Button';
+                column.controlType = "Button";
             }
 
             if (CHECKBOX_COLUMNS[column.data]) {
-                column.controlType = 'Checkbox';
+                column.controlType = "Checkbox";
             }
         }
 
@@ -1292,27 +1508,31 @@ export class DatatableService {
         for (const dt of dataSource.data) {
             for (const prop in dt) {
                 if (dt[prop] !== null) {
-                    if (isString(dt[prop]) && dt[prop] === '') {
+                    if (isString(dt[prop]) && dt[prop] === "") {
                         dt[prop] = null;
-                    } else if (typeof dt[prop] === 'object' && Uti.isNullUndefinedEmptyObject(dt[prop])) {
-                        const columnDef = dataSource.columns.find(x => x.data === prop);
+                    } else if (
+                        typeof dt[prop] === "object" &&
+                        Uti.isNullUndefinedEmptyObject(dt[prop])
+                    ) {
+                        const columnDef = dataSource.columns.find(
+                            (x) => x.data === prop
+                        );
                         if (!columnDef) {
                             continue;
                         }
                         switch (columnDef.dataType) {
-                            case 'Boolean':
+                            case "Boolean":
                                 dt[prop] = false;
                                 break;
                             default:
                                 dt[prop] = null;
                                 break;
                         }
-                    }
-                    else if (isFormatMediaSize && prop =='MediaSize'){
-                        dt[prop] = Uti.formatBytesToMb(dt[prop], 3);;
+                    } else if (isFormatMediaSize && prop == "MediaSize") {
+                        dt[prop] = Uti.formatBytesToMb(dt[prop], 3);
                     }
                 }
-            }//for Columns
+            } //for Columns
 
             if (treeViewMode) {
                 dt.children = [];
@@ -1339,8 +1559,13 @@ export class DatatableService {
                     dt.noExport = !dt.noExport ? false : dt.noExport;
                 }
 
-                if (config && config.hasCountryFlagColumn && dt.hasOwnProperty('Country') && dt.hasOwnProperty('IsoCode')) {
-                    dt['Country'] = dt['IsoCode'] + ',' + dt['Country'];
+                if (
+                    config &&
+                    config.hasCountryFlagColumn &&
+                    dt.hasOwnProperty("Country") &&
+                    dt.hasOwnProperty("IsoCode")
+                ) {
+                    dt["Country"] = dt["IsoCode"] + "," + dt["Country"];
                 }
             }
 
@@ -1352,8 +1577,15 @@ export class DatatableService {
 
             for (const col of datetimepickerColumns) {
                 if (!Uti.isNullUndefinedEmptyObject(dt[col.data])) {
-                    if (typeof dt[col.data] === 'string' && dt[col.data].indexOf('/') === -1) {
-                        const dateObj = parse(dt[col.data], 'dd.MM.yyyy', new Date());
+                    if (
+                        typeof dt[col.data] === "string" &&
+                        dt[col.data].indexOf("/") === -1
+                    ) {
+                        const dateObj = parse(
+                            dt[col.data],
+                            "dd.MM.yyyy",
+                            new Date()
+                        );
                         dt[col.data] = dateObj;
                     }
                 } else {
@@ -1369,64 +1601,67 @@ export class DatatableService {
             for (const col of autoCompleteColumns) {
                 this.setDataForComboboxColumn(dt, col);
             }
-        }//for rows data
+        } //for rows data
 
         if (config) {
             if (config.allowMediaCode) {
                 dataSource.columns.push({
                     data: BUTTON_COLUMNS.mediaCodeButton,
-                    'readOnly': true,
-                    'required': false,
-                    title: 'Mediacode price',
+                    readOnly: true,
+                    required: false,
+                    title: "Mediacode price",
                     visible: true,
-                    setting: {}
+                    setting: {},
                 });
             }
 
             if (config.allowDownload) {
                 dataSource.columns.push({
                     data: BUTTON_COLUMNS.download,
-                    'readOnly': true,
-                    'required': false,
-                    title: 'Download',
+                    readOnly: true,
+                    required: false,
+                    title: "Download",
                     visible: false,
-                    setting: {}
+                    setting: {},
                 });
             }
 
             if (config.allowSelectAll) {
                 dataSource.columns.push({
                     data: CHECKBOX_COLUMNS.selectAll,
-                    'readOnly': false,
-                    'required': false,
-                    title: 'Select all',
+                    readOnly: false,
+                    required: false,
+                    title: "Select all",
                     visible: true,
-                    controlType: 'Checkbox',
-                    setting: {}
+                    controlType: "Checkbox",
+                    setting: {},
                 });
             }
 
-            if (config.allowDelete && !this.hasCustomColumn(dataSource.columns, 'deleted')) {
+            if (
+                config.allowDelete &&
+                !this.hasCustomColumn(dataSource.columns, "deleted")
+            ) {
                 dataSource.columns.push({
                     data: CHECKBOX_COLUMNS.deleted,
-                    'readOnly': true,
-                    'required': false,
-                    title: 'Delete',
+                    readOnly: true,
+                    required: false,
+                    title: "Delete",
                     visible: true,
-                    controlType: 'Checkbox',
-                    setting: {}
+                    controlType: "Checkbox",
+                    setting: {},
                 });
             }
 
             if (config.hasNoExport) {
                 dataSource.columns.push({
                     data: CHECKBOX_COLUMNS.noExport,
-                    'readOnly': false,
-                    'required': false,
-                    title: 'No export',
+                    readOnly: false,
+                    required: false,
+                    title: "No export",
                     visible: true,
-                    controlType: 'Checkbox',
-                    setting: {}
+                    controlType: "Checkbox",
+                    setting: {},
                 });
             }
         }
@@ -1437,7 +1672,7 @@ export class DatatableService {
             totalResults: dataSource.totalResults,
             autoGroupColumnDef: dataSource.autoGroupColumnDef,
             idSettingsGUI: dataSource.idSettingsGUI,
-            funcGetData: dataSource.funcGetData
+            funcGetData: dataSource.funcGetData,
         };
     }
 
@@ -1446,32 +1681,39 @@ export class DatatableService {
 
         if (isEmpty(dt[col.data])) {
             jsonData = [];
-        } else if (typeof dt[col.data] === 'string') {
+        } else if (typeof dt[col.data] === "string") {
             jsonData = JSON.parse(dt[col.data]);
         } else {
             jsonData.push(dt[col.data]);
         }
 
-        const key = (jsonData && jsonData.length && jsonData[0].key) ? jsonData[0].key.toString() : '';
-        const value = (jsonData && jsonData.length) ? jsonData[0].value : '';
+        const key =
+            jsonData && jsonData.length && jsonData[0].key
+                ? jsonData[0].key.toString()
+                : "";
+        const value = jsonData && jsonData.length ? jsonData[0].value : "";
         dt[col.data] = {
             key: key,
-            value: value
+            value: value,
         };
     }
 
     private hasCustomColumn(columns: any, customColumnName): boolean {
         if (!columns || !columns.length) return false;
-        const deleteColumn = columns.find(x => x.data === customColumnName);
-        return (deleteColumn && deleteColumn.visible);
+        const deleteColumn = columns.find((x) => x.data === customColumnName);
+        return deleteColumn && deleteColumn.visible;
     }
 
     findKeyByValue(options, selectedValue) {
-        return options.find(opt => opt.label == selectedValue) ? options.find(opt => opt.label == selectedValue).value : '';
+        return options.find((opt) => opt.label == selectedValue)
+            ? options.find((opt) => opt.label == selectedValue).value
+            : "";
     }
 
     findValueByKey(options, selectedKey) {
-        return options.find(opt => opt.value == selectedKey) ? options.find(opt => opt.value == selectedKey).label : '';
+        return options.find((opt) => opt.value == selectedKey)
+            ? options.find((opt) => opt.value == selectedKey).label
+            : "";
     }
 
     private continueButton = [
@@ -1484,17 +1726,21 @@ export class DatatableService {
         BUTTON_COLUMNS.Unblock,
         BUTTON_COLUMNS.Delete,
         BUTTON_COLUMNS.Preview,
-        BUTTON_COLUMNS.EditRow
+        BUTTON_COLUMNS.EditRow,
     ];
 
     buildWijmoFilterColumns(columns, config, noFilterColumns?: string[]) {
         const result = [];
         for (const col of columns) {
-            if (config.allowDelete && col.data === CHECKBOX_COLUMNS.deleted
-                || config.allowMediaCode && col.data === BUTTON_COLUMNS.mediaCodeButton
-                || config.allowDownload && col.data === BUTTON_COLUMNS.download
-                || config.allowSelectAll && col.data === CHECKBOX_COLUMNS.selectAll
-                || this.continueButton.indexOf(col.data) > -1
+            if (
+                (config.allowDelete && col.data === CHECKBOX_COLUMNS.deleted) ||
+                (config.allowMediaCode &&
+                    col.data === BUTTON_COLUMNS.mediaCodeButton) ||
+                (config.allowDownload &&
+                    col.data === BUTTON_COLUMNS.download) ||
+                (config.allowSelectAll &&
+                    col.data === CHECKBOX_COLUMNS.selectAll) ||
+                this.continueButton.indexOf(col.data) > -1
             ) {
                 continue;
             }
@@ -1513,7 +1759,10 @@ export class DatatableService {
         return result;
     }
 
-    buildDataSourceFromEsSearchResult(response: EsSearchResult, columnSettingIndex: number): ControlGridModel {
+    buildDataSourceFromEsSearchResult(
+        response: EsSearchResult,
+        columnSettingIndex: number
+    ): ControlGridModel {
         // Model List
         const results: Array<any> = response.results;
 
@@ -1523,14 +1772,16 @@ export class DatatableService {
             return;
         }
 
-        const columnSetting: Array<any> = JSON.parse(setting[0][0].SettingColumnName)[columnSettingIndex].ColumnsName;
+        const columnSetting: Array<any> = JSON.parse(
+            setting[0][0].SettingColumnName
+        )[columnSettingIndex].ColumnsName;
 
         const columns: Array<any> = [];
         for (const displayCol of columnSetting) {
             const col = {
-                'title': displayCol.ColumnHeader,
-                'data': displayCol.ColumnName,
-                'setting': displayCol
+                title: displayCol.ColumnHeader,
+                data: displayCol.ColumnName,
+                setting: displayCol,
             };
             columns.push(col);
         }
@@ -1541,11 +1792,13 @@ export class DatatableService {
                 const keys = Object.keys(model);
                 const formatModel: any = {};
                 for (const col of columns) {
-                    const rs = keys.filter(p => p.toLowerCase() === col.data.toLowerCase());
+                    const rs = keys.filter(
+                        (p) => p.toLowerCase() === col.data.toLowerCase()
+                    );
                     if (rs.length > 0) {
                         formatModel[col.data] = model[rs[0]];
                     } else {
-                        formatModel[col.data] = '';
+                        formatModel[col.data] = "";
                     }
                 }
                 formatResults.push(formatModel);
@@ -1554,18 +1807,17 @@ export class DatatableService {
         return new ControlGridModel({
             data: formatResults,
             columns: columns,
-            totalResults: response.total
+            totalResults: response.total,
         });
     }
 
     public updateValueForButtonAndCheckboxColumn(data, newData): string {
         try {
             let _jsonData = Uti.parseJsonString(data);
-            _jsonData['Value'] = newData;
+            _jsonData["Value"] = newData;
             return JSON.stringify(_jsonData);
         } catch (e) {
             return '{"Status": 0, "Value": 0}';
         }
     }
-
 }

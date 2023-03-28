@@ -1,4 +1,3 @@
-
 import {
     Component,
     OnInit,
@@ -6,59 +5,49 @@ import {
     Output,
     OnDestroy,
     EventEmitter,
-    ViewChild
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
+    ViewChild,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
 import {
     ScheduleEvent,
     MessageModel,
     ScheduleEventConfig,
     TimeSchedule,
     ScheduleSettingData,
-    User
-} from 'app/models';
-import {
-    ModalService,
-    AppErrorHandler
-} from 'app/services';
+    User,
+} from "app/models";
+import { ModalService, AppErrorHandler } from "app/services";
 import {
     MessageModal,
     DateConfiguration,
-    Configuration
-} from 'app/app.constants';
-import find from 'lodash-es/find';
-import reject from 'lodash-es/reject';
-import cloneDeep from 'lodash-es/cloneDeep';
-import sortBy from 'lodash-es/sortBy';
-import filter from 'lodash-es/filter';
-import { format } from 'date-fns/esm';
-import uniqBy from 'lodash-es/uniqBy';
-import {
-    Uti
-} from 'app/utilities/uti';
-import * as wjcCore from 'wijmo/wijmo';
-import {
-    FormGroup,
-    FormBuilder,
-    Validators
-} from '@angular/forms';
-import { ScheduleSettingGridComponent } from '../schedule-setting-grid';
-import { Subscription } from 'rxjs/Subscription';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { defaultLanguage } from 'app/app.resource';
-import {WjInputTime} from 'wijmo/wijmo.angular2.input';
+    Configuration,
+} from "app/app.constants";
+import find from "lodash-es/find";
+import reject from "lodash-es/reject";
+import cloneDeep from "lodash-es/cloneDeep";
+import sortBy from "lodash-es/sortBy";
+import filter from "lodash-es/filter";
+import { format } from "date-fns/esm";
+import uniqBy from "lodash-es/uniqBy";
+import { Uti } from "app/utilities/uti";
+import * as wjcCore from "wijmo/wijmo";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { ScheduleSettingGridComponent } from "../schedule-setting-grid";
+import { Subscription } from "rxjs/Subscription";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { defaultLanguage } from "app/app.resource";
+import { WjInputTime } from "wijmo/wijmo.angular2.input";
 
 @Component({
-    selector: 'schedule-setting-form',
-    styleUrls: ['./schedule-setting-form.component.scss'],
-    templateUrl: './schedule-setting-form.component.html'
+    selector: "schedule-setting-form",
+    styleUrls: ["./schedule-setting-form.component.scss"],
+    templateUrl: "./schedule-setting-form.component.html",
 })
-export class ScheduleSettingFormComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ScheduleSettingFormComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public SCHEDULE_TYPE = DateConfiguration.SCHEDULE_TYPE;
     public scheduleEventForm: FormGroup;
     public localScheduleType: any = {};
@@ -76,18 +65,18 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     public consts: Configuration = new Configuration();
     public isUpdateButtonDisabled: boolean = true;
     public classNameNote = {
-        'OneTime': 'n-o',
-        'Daily': 'n-d',
-        'Weekly': 'n-w',
-        'Monthly': 'n-m',
-        'Annual': 'n-y'
+        OneTime: "n-o",
+        Daily: "n-d",
+        Weekly: "n-w",
+        Monthly: "n-m",
+        Annual: "n-y",
     };
     public classNameForm = {
-        'OneTime': 'f-o',
-        'Daily': 'f-d',
-        'Weekly': 'f-w',
-        'Monthly': 'f-m',
-        'Annual': 'f-y'
+        OneTime: "f-o",
+        Daily: "f-d",
+        Weekly: "f-w",
+        Monthly: "f-m",
+        Annual: "f-y",
     };
 
     private currentUserInfo: User;
@@ -97,14 +86,19 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     private isDirty = false;
     private isEditing = false;
 
-    @ViewChild('scheduleSettingGrid') scheduleSettingGrid: ScheduleSettingGridComponent;
-    @ViewChild('scheduleTime') scheduleTimeCtr: WjInputTime;
+    @ViewChild("scheduleSettingGrid")
+    scheduleSettingGrid: ScheduleSettingGridComponent;
+    @ViewChild("scheduleTime") scheduleTimeCtr: WjInputTime;
 
-    @Input() set inputData(data: ScheduleSettingData) { this.execInputData(data); }
+    @Input() set inputData(data: ScheduleSettingData) {
+        this.execInputData(data);
+    }
     @Input() globalDateFormat: string;
     @Input() currentRowData: any;
     @Input() dontShowCalendarWhenFocus: boolean;
-    @Input() set scheduleType(data: string) { this.execScheduleType(data) }
+    @Input() set scheduleType(data: string) {
+        this.execScheduleType(data);
+    }
     @Output() outputDataAction: EventEmitter<any> = new EventEmitter();
     @Output() onRunAction: EventEmitter<any> = new EventEmitter();
     @Output() formDirtyAction: EventEmitter<any> = new EventEmitter();
@@ -120,7 +114,7 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     }
 
     public ngOnInit() {
-        this.currentUserInfo = (new Uti()).getUserInfo();
+        this.currentUserInfo = new Uti().getUserInfo();
         this.createEmptyForm();
         this.createTimeSchedule();
         this.buildScheduleEventConfigList();
@@ -146,17 +140,20 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     }
 
     public addScheduleEvent(): boolean {
-        this.scheduleEventForm['submitted'] = true;
+        this.scheduleEventForm["submitted"] = true;
         this.scheduleEventForm.updateValueAndValidity();
         return this.callAddScheduleEvent(this.scheduleEventForm.value);
     }
 
     public onDeleteHandle(gridId: any) {
-        this['scheduleEventGridData' + this.localScheduleType] = reject(this['scheduleEventGridData' + this.localScheduleType], {
-            'id': gridId
-        });
+        this["scheduleEventGridData" + this.localScheduleType] = reject(
+            this["scheduleEventGridData" + this.localScheduleType],
+            {
+                id: gridId,
+            }
+        );
         this.scheduleEventGridData = reject(this.scheduleEventGridData, {
-            'id': gridId
+            id: gridId,
         });
         this.setDirtyForScheduleEventConfigList();
     }
@@ -166,41 +163,61 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     }
 
     public buildSavingJsonData(): Array<any> {
-        return [...this.scheduleEventGridDataOneTime,
-                ...this.scheduleEventGridDataDaily,
-                ...this.scheduleEventGridDataWeekly,
-                ...this.scheduleEventGridDataMonthly,
-                ...this.scheduleEventGridDataAnnual];
+        return [
+            ...this.scheduleEventGridDataOneTime,
+            ...this.scheduleEventGridDataDaily,
+            ...this.scheduleEventGridDataWeekly,
+            ...this.scheduleEventGridDataMonthly,
+            ...this.scheduleEventGridDataAnnual,
+        ];
     }
 
     public isValid(): boolean {
         // if (!this.isFormValid()) return;
-        const changeList = this.scheduleEventConfigList.filter(x => x.isChange);
+        const changeList = this.scheduleEventConfigList.filter(
+            (x) => x.isChange
+        );
         if (changeList && !!changeList.length) {
             return true;
         }
-        this._toasterService.pop('warning', 'Validation Failed', 'No entry data for saving!');
+        this._toasterService.pop(
+            "warning",
+            "Validation Failed",
+            "No entry data for saving!"
+        );
         return false;
     }
 
     public isFormValid(): boolean {
         if (this.isStartDateGreaterThanStopDate) {
-            this._toasterService.pop('warning', 'Validation Failed', 'Start date is greater than Stop date!');
+            this._toasterService.pop(
+                "warning",
+                "Validation Failed",
+                "Start date is greater than Stop date!"
+            );
             return false;
         }
         if (this.scheduleEventForm.valid) {
             return true;
         }
-        this._toasterService.pop('warning', 'Validation Failed', 'No entry data for saving!');
+        this._toasterService.pop(
+            "warning",
+            "Validation Failed",
+            "No entry data for saving!"
+        );
         return false;
     }
 
     public updateScheduleEvent(): boolean {
-        return this.scheduleSettingGrid.deleteGridItem(this.currentGridItems[this.localScheduleType].id,
+        return this.scheduleSettingGrid.deleteGridItem(
+            this.currentGridItems[this.localScheduleType].id,
             () => {
-                this.onDeleteHandle(this.currentGridItems[this.localScheduleType].id);
+                this.onDeleteHandle(
+                    this.currentGridItems[this.localScheduleType].id
+                );
                 return this.addScheduleEvent();
-            });
+            }
+        );
     }
 
     public onRowDoubleClickedHandle(rowData: ScheduleEvent) {
@@ -220,7 +237,9 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
 
     public onGridEditedHandle(rowData: any) {
         if (!rowData) return;
-        for (let item of this['scheduleEventGridData' + this.localScheduleType]) {
+        for (let item of this[
+            "scheduleEventGridData" + this.localScheduleType
+        ]) {
             if (item.id !== rowData.id) continue;
             item.activeSchedule = rowData.activeSchedule;
             break;
@@ -229,7 +248,9 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     }
 
     public onCheckAllCheckedHandle(status: any) {
-        for (let item of this['scheduleEventGridData' + this.localScheduleType]) {
+        for (let item of this[
+            "scheduleEventGridData" + this.localScheduleType
+        ]) {
             item.activeSchedule = !!status;
         }
         this.setDirtyForScheduleEventConfigList();
@@ -239,7 +260,8 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     /***************************************PRIVATE METHOD********************************************/
 
     private subscribeFormValueChange() {
-        if (this.formValuesChangeSubscription) this.formValuesChangeSubscription.unsubscribe();
+        if (this.formValuesChangeSubscription)
+            this.formValuesChangeSubscription.unsubscribe();
 
         this.formValuesChangeSubscription = this.scheduleEventForm.valueChanges
             .debounceTime(this.consts.valueChangeDeboundTimeDefault)
@@ -256,37 +278,47 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
 
     private setIsStartDateGreaterThanStopDate() {
         const value = this.scheduleEventForm.value;
-        this.isStartDateGreaterThanStopDate = (value['startDate'] > value['stopDate']);
+        this.isStartDateGreaterThanStopDate =
+            value["startDate"] > value["stopDate"];
     }
 
     private setOutputData(isDirty?: boolean) {
         this.isDirty = isDirty === undefined ? this.isDirty : isDirty;
-        this.outputDataAction.emit(
-            {
-                formValue: this.scheduleEventForm,
-                isDirty: this.isDirty
-            });
+        this.outputDataAction.emit({
+            formValue: this.scheduleEventForm,
+            isDirty: this.isDirty,
+        });
     }
 
     private execInputData(data: ScheduleSettingData) {
         if (!data || !data.scheduleType) return;
         this.setDataForForm(data);
         this.buildDataForGrid(data);
-        this.scheduleEventGridData = cloneDeep(this['scheduleEventGridData' + data.scheduleType]);
+        this.scheduleEventGridData = cloneDeep(
+            this["scheduleEventGridData" + data.scheduleType]
+        );
         this.setScheduleDataForScheduleEventConfigList();
     }
 
     private setScheduleDataForScheduleEventConfigList() {
         for (let scheduleType of this.SCHEDULE_TYPE) {
-            Uti.setValueForArrayByKey(this.scheduleEventConfigList, 'data', cloneDeep(this['scheduleEventGridData' + scheduleType]), 'name', scheduleType);
+            Uti.setValueForArrayByKey(
+                this.scheduleEventConfigList,
+                "data",
+                cloneDeep(this["scheduleEventGridData" + scheduleType]),
+                "name",
+                scheduleType
+            );
         }
     }
 
     private buildDataForGrid(data: ScheduleSettingData) {
         for (let scheduleType of this.SCHEDULE_TYPE) {
-            this['scheduleEventGridData' + scheduleType] = cloneDeep(data.scheduleEvents.filter(x => {
-                return x.scheduleType === scheduleType;
-            }));
+            this["scheduleEventGridData" + scheduleType] = cloneDeep(
+                data.scheduleEvents.filter((x) => {
+                    return x.scheduleType === scheduleType;
+                })
+            );
         }
     }
 
@@ -297,25 +329,30 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     }
 
     private buildScheduleEventConfigList() {
-        this.scheduleEventConfigList = this.SCHEDULE_TYPE.map(x => {
+        this.scheduleEventConfigList = this.SCHEDULE_TYPE.map((x) => {
             return new ScheduleEventConfig({
                 name: x,
                 isChange: false,
                 // isPrimary: (x === this.scheduleTypePrimary),
-                data: this['scheduleEventGridData' + x]
+                data: this["scheduleEventGridData" + x],
             });
         });
     }
 
     private setDirtyForScheduleEventConfigList() {
-        const currentItem = this.scheduleEventConfigList.find(x => x.name == this.localScheduleType);
+        const currentItem = this.scheduleEventConfigList.find(
+            (x) => x.name == this.localScheduleType
+        );
         currentItem.isChange = true;
-        currentItem.data = this['scheduleEventGridData' + this.localScheduleType];
+        currentItem.data =
+            this["scheduleEventGridData" + this.localScheduleType];
         this.setOutputData(true);
     }
 
     private setDefaultScheduleEventGridData() {
-        this.scheduleEventGridData = cloneDeep(this.scheduleEventGridDataOneTime);
+        this.scheduleEventGridData = cloneDeep(
+            this.scheduleEventGridDataOneTime
+        );
     }
 
     private callAddScheduleEvent(formValue: any): boolean {
@@ -339,7 +376,9 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
 
     private addScheduleForOneTime(formValue: any): boolean {
         const newItem = this.createFirstScheduleEvent(formValue);
-        newItem.on = (JSON.stringify(Uti.getUTCDateWithoutHour(new Date(formValue['runDate'])))).replace(/"/g, "");
+        newItem.on = JSON.stringify(
+            Uti.getUTCDateWithoutHour(new Date(formValue["runDate"]))
+        ).replace(/"/g, "");
         newItem.dateFormat = this.globalDateFormat;
         if (this.checkExistData(newItem, true)) return false;
         this.scheduleEventGridDataOneTime.push(newItem);
@@ -352,12 +391,12 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
 
     private addScheduleForDaily(formValue: any): boolean {
         const newItem = this.createFirstScheduleEvent(formValue);
-        newItem.on = 'Daily';
+        newItem.on = "Daily";
         if (this.checkExistData(newItem)) return false;
         this.scheduleEventGridDataDaily.push(newItem);
         this.resetGridData();
         this.setDirtyForScheduleEventConfigList();
-        this.scheduleSettingGrid.callExpandNodeByData(['Daily']);
+        this.scheduleSettingGrid.callExpandNodeByData(["Daily"]);
         this.resetForm();
         return true;
     }
@@ -376,10 +415,17 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
             result.push(newItem);
         }
         if (!hasSelected) {
-            this._toasterService.pop('warning', 'Warning', 'Please select day in week.');
+            this._toasterService.pop(
+                "warning",
+                "Warning",
+                "Please select day in week."
+            );
         }
         if (!result.length) return false;
-        this.scheduleEventGridDataWeekly = [...this.scheduleEventGridDataWeekly, ...result];
+        this.scheduleEventGridDataWeekly = [
+            ...this.scheduleEventGridDataWeekly,
+            ...result,
+        ];
         this.resetGridData();
         this.setDirtyForScheduleEventConfigList();
         this.scheduleSettingGrid.callExpandNodeByData(ons);
@@ -401,10 +447,17 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
             result.push(newItem);
         }
         if (!hasSelected) {
-            this._toasterService.pop('warning', 'Warning', 'Please select day in month.');
+            this._toasterService.pop(
+                "warning",
+                "Warning",
+                "Please select day in month."
+            );
         }
         if (!result.length) return false;
-        this.scheduleEventGridDataMonthly = [...this.scheduleEventGridDataMonthly, ...result];
+        this.scheduleEventGridDataMonthly = [
+            ...this.scheduleEventGridDataMonthly,
+            ...result,
+        ];
         this.resetGridData();
         this.setDirtyForScheduleEventConfigList();
         this.scheduleSettingGrid.callExpandNodeByData(ons);
@@ -414,7 +467,9 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
 
     private addScheduleForAnnual(formValue: any): boolean {
         const newItem = this.createFirstScheduleEvent(formValue);
-        newItem.on = (JSON.stringify(Uti.getUTCDateWithoutHour(new Date(formValue['runDate'])))).replace(/"/g, "");
+        newItem.on = JSON.stringify(
+            Uti.getUTCDateWithoutHour(new Date(formValue["runDate"]))
+        ).replace(/"/g, "");
         newItem.dateFormat = this.globalDateFormat;
         if (this.checkExistData(newItem, true)) return false;
         this.scheduleEventGridDataAnnual.push(newItem);
@@ -428,15 +483,21 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     private createFirstScheduleEvent(formValue: any): ScheduleEvent {
         return new ScheduleEvent({
             id: Uti.getTempId(),
-            minute: formValue['runTime'].getMinutes(),
-            hour: formValue['runTime'].getHours(),
-            email: formValue['email'],
-            parameter: formValue['parameter'],
-            startDate: formValue['startDate'],
-            stopDate: formValue['stopDate'],
-            note: formValue['note'],
+            minute: formValue["runTime"].getMinutes(),
+            hour: formValue["runTime"].getHours(),
+            email: formValue["email"],
+            parameter: formValue["parameter"],
+            startDate: formValue["startDate"],
+            stopDate: formValue["stopDate"],
+            note: formValue["note"],
             scheduleType: this.localScheduleType,
-            activeSchedule: (this.currentGridItems && this.currentGridItems[this.localScheduleType]) ? this.currentGridItems[this.localScheduleType]['activeSchedule'] : true
+            activeSchedule:
+                this.currentGridItems &&
+                this.currentGridItems[this.localScheduleType]
+                    ? this.currentGridItems[this.localScheduleType][
+                          "activeSchedule"
+                      ]
+                    : true,
         });
     }
 
@@ -448,10 +509,10 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
             runDate: new Date(),
             runTime: new Date(new Date().setHours(0, 0, 0, 0)),
             email: [this.currentUserInfo.email, Validators.required],
-            parameter: '',
-            note: ''
+            parameter: "",
+            note: "",
         });
-        this.scheduleEventForm['submitted'] = false;
+        this.scheduleEventForm["submitted"] = false;
         this.subscribeFormValueChange();
     }
 
@@ -463,15 +524,16 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
 
     private appendDefaultValueToTranslateResource() {
         for (let weekDayItem of this.weekDayItems) {
-            defaultLanguage['Schedule_setting__w_' + weekDayItem.name] = weekDayItem.name;
+            defaultLanguage["Schedule_setting__w_" + weekDayItem.name] =
+                weekDayItem.name;
         }
     }
 
     private createTimeScheduleForWeekly(): Array<TimeSchedule> {
-        return this.dayOfWeekEnum.map(x => {
+        return this.dayOfWeekEnum.map((x) => {
             return new TimeSchedule({
                 name: x,
-                select: false
+                select: false,
             });
         });
     }
@@ -479,10 +541,12 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     private createTimeScheduleForMonthly(): Array<TimeSchedule> {
         let result: Array<TimeSchedule> = [];
         for (let i = 1; i < 32; i++) {
-            result.push(new TimeSchedule({
-                name: ('0' + i).slice(-2),
-                select: false
-            }));
+            result.push(
+                new TimeSchedule({
+                    name: ("0" + i).slice(-2),
+                    select: false,
+                })
+            );
         }
         return result;
     }
@@ -492,12 +556,15 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
         this.localScheduleType = data;
         this.builScheduleEventGridData();
         this.resetGridData();
-        this.isUpdateButtonDisabled = !this.currentGridItems[this.localScheduleType];
+        this.isUpdateButtonDisabled =
+            !this.currentGridItems[this.localScheduleType];
     }
 
     private resetGridData() {
         this.scheduleEventGridData.length = 0;
-        this.scheduleEventGridData = cloneDeep(this['scheduleEventGridData' + this.localScheduleType]);
+        this.scheduleEventGridData = cloneDeep(
+            this["scheduleEventGridData" + this.localScheduleType]
+        );
     }
 
     private builScheduleEventGridData() {
@@ -514,12 +581,16 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     }
 
     private builScheduleEventGridDataForItem(isDaily?: boolean) {
-        const currentItem = this.scheduleEventConfigList.find(x => x.name == this.localScheduleType);
+        const currentItem = this.scheduleEventConfigList.find(
+            (x) => x.name == this.localScheduleType
+        );
         if (!currentItem) return;
         if (isDaily) {
             this.buildDataForDaily(cloneDeep(currentItem.data));
         } else {
-            this['scheduleEventGridData' + this.localScheduleType] = cloneDeep(currentItem.data);
+            this["scheduleEventGridData" + this.localScheduleType] = cloneDeep(
+                currentItem.data
+            );
         }
     }
 
@@ -539,37 +610,59 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
     // }
     private buildDataForDaily(scheduleEventDadta: Array<ScheduleEvent>) {
         for (let item of scheduleEventDadta) {
-            item.on = 'Daily';
-            item.dateFormat = '';
+            item.on = "Daily";
+            item.dateFormat = "";
         }
-        this['scheduleEventGridData' + this.localScheduleType] = uniqBy(scheduleEventDadta, 'at');
+        this["scheduleEventGridData" + this.localScheduleType] = uniqBy(
+            scheduleEventDadta,
+            "at"
+        );
     }
     private checkExistData(newItem: any, isCheckOn?: boolean): boolean {
         let existedItem: any = false;
         if (isCheckOn) {
-            existedItem = find(this['scheduleEventGridData' + this.localScheduleType], {
-                'on': newItem.on,
-                'at': newItem.at
-            });
+            existedItem = find(
+                this["scheduleEventGridData" + this.localScheduleType],
+                {
+                    on: newItem.on,
+                    at: newItem.at,
+                }
+            );
         } else {
-            existedItem = find(this['scheduleEventGridData' + this.localScheduleType], {
-                'at': newItem.at
-            });
+            existedItem = find(
+                this["scheduleEventGridData" + this.localScheduleType],
+                {
+                    at: newItem.at,
+                }
+            );
         }
         if (!!existedItem) {
-            this._toasterService.pop('warning', 'Warning', 'This time is existed: On: ' + newItem.on + ' - At: ' + newItem.at);
+            this._toasterService.pop(
+                "warning",
+                "Warning",
+                "This time is existed: On: " +
+                    newItem.on +
+                    " - At: " +
+                    newItem.at
+            );
         }
         return !!existedItem;
     }
 
     private bindFormData(rowData: ScheduleEvent) {
         rowData = rowData || new ScheduleEvent();
-        this.scheduleEventForm.controls['runTime'].setValue(new Date(new Date().setHours(rowData.hour, rowData.minute, 0, 0)));
-        this.scheduleEventForm.controls['email'].setValue(rowData.email);
-        this.scheduleEventForm.controls['parameter'].setValue(rowData.parameter);
-        this.scheduleEventForm.controls['note'].setValue(rowData.note);
-        this.scheduleEventForm.controls['startDate'].setValue(rowData.startDate);
-        this.scheduleEventForm.controls['stopDate'].setValue(rowData.stopDate);
+        this.scheduleEventForm.controls["runTime"].setValue(
+            new Date(new Date().setHours(rowData.hour, rowData.minute, 0, 0))
+        );
+        this.scheduleEventForm.controls["email"].setValue(rowData.email);
+        this.scheduleEventForm.controls["parameter"].setValue(
+            rowData.parameter
+        );
+        this.scheduleEventForm.controls["note"].setValue(rowData.note);
+        this.scheduleEventForm.controls["startDate"].setValue(
+            rowData.startDate
+        );
+        this.scheduleEventForm.controls["stopDate"].setValue(rowData.stopDate);
         this.bindDataForOnControl(rowData);
     }
 
@@ -581,7 +674,9 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
             case this.SCHEDULE_TYPE[0]:
             case this.SCHEDULE_TYPE[1]:
             case this.SCHEDULE_TYPE[4]:
-                this.scheduleEventForm.controls['runDate'].setValue(Uti.parseStrDateToRealDate(rowData.on));
+                this.scheduleEventForm.controls["runDate"].setValue(
+                    Uti.parseStrDateToRealDate(rowData.on)
+                );
                 break;
             // Weekly
             case this.SCHEDULE_TYPE[2]:
@@ -595,20 +690,26 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
 
     private bindOnForMultiCheckbox(on: string, bindData: any) {
         for (let item of bindData) {
-            item.select = (item.name === on);
+            item.select = item.name === on;
         }
     }
 
     private resetForm() {
         if (!this.scheduleEventForm) return;
-        this.scheduleEventForm.controls['runTime'].setValue(new Date(new Date().setHours(0, 0, 0, 0)));
-        this.scheduleEventForm.controls['email'].setValue(this.currentUserInfo.email);
-        this.scheduleEventForm.controls['parameter'].setValue(null);
-        this.scheduleEventForm.controls['startDate'].setValue(null);
-        this.scheduleEventForm.controls['stopDate'].setValue(null);
-        this.scheduleEventForm.controls['note'].setValue(null);
-        this.scheduleEventForm.controls['runDate'].setValue(new Date(new Date().setHours(0, 0, 0, 0)));
-        this.scheduleEventForm['submitted'] = false;
+        this.scheduleEventForm.controls["runTime"].setValue(
+            new Date(new Date().setHours(0, 0, 0, 0))
+        );
+        this.scheduleEventForm.controls["email"].setValue(
+            this.currentUserInfo.email
+        );
+        this.scheduleEventForm.controls["parameter"].setValue(null);
+        this.scheduleEventForm.controls["startDate"].setValue(null);
+        this.scheduleEventForm.controls["stopDate"].setValue(null);
+        this.scheduleEventForm.controls["note"].setValue(null);
+        this.scheduleEventForm.controls["runDate"].setValue(
+            new Date(new Date().setHours(0, 0, 0, 0))
+        );
+        this.scheduleEventForm["submitted"] = false;
         this.scheduleEventForm.markAsPristine();
         this.resetDataForForm();
         this.currentGridItems[this.localScheduleType] = null;
@@ -620,11 +721,11 @@ export class ScheduleSettingFormComponent extends BaseComponent implements OnIni
         switch (this.localScheduleType) {
             // Weekly
             case this.SCHEDULE_TYPE[2]:
-                this.bindOnForMultiCheckbox('', this.weekDayItems);
+                this.bindOnForMultiCheckbox("", this.weekDayItems);
                 break;
             // Monthly
             case this.SCHEDULE_TYPE[3]:
-                this.bindOnForMultiCheckbox('', this.dayItems);
+                this.bindOnForMultiCheckbox("", this.dayItems);
         }
     }
 

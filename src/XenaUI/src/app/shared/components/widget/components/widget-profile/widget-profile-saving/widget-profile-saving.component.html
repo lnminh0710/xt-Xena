@@ -1,120 +1,184 @@
-<p-dialog header=""
-          width="480"
-          height="280"
-          [(visible)]="showDialog"
-          modal="true"
-          responsive="true"
-          appendTo="body">
+<p-dialog
+    header=""
+    width="480"
+    height="280"
+    [(visible)]="showDialog"
+    modal="true"
+    responsive="true"
+    appendTo="body"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="header-text"><label-translation [keyword]="'WidgetProfileSaving__Add_template_name'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="onCancel()">
+            <span class="header-text"
+                ><label-translation
+                    [keyword]="'WidgetProfileSaving__Add_template_name'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="onCancel()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <div *ngIf="showDialog"
-         class="row h-100 d-flex align-items-center justify-content-center">
+    <div
+        *ngIf="showDialog"
+        class="row h-100 d-flex align-items-center justify-content-center"
+    >
         <div class="w-75 selection-input-customize">
             <div class="group">
-                <input id="template-name"
-                       type="text" required
-                       [(ngModel)]="templateName"
-                       (change)="templateNameChanged()"
-                       (keydown)="onTemplateNameKeydown($event)">
+                <input
+                    id="template-name"
+                    type="text"
+                    required
+                    [(ngModel)]="templateName"
+                    (change)="templateNameChanged()"
+                    (keydown)="onTemplateNameKeydown($event)"
+                />
                 <span class="text-highlight"></span>
                 <span class="bar"></span>
-                <label><label-translation [keyword]="'WidgetProfileSaving__Template_name'"></label-translation></label>
+                <label
+                    ><label-translation
+                        [keyword]="'WidgetProfileSaving__Template_name'"
+                    ></label-translation
+                ></label>
             </div>
-            <div *ngIf="showRequired" class="alert  alert-danger">{{requiredMessage}}</div>
+            <div *ngIf="showRequired" class="alert alert-danger">
+                {{ requiredMessage }}
+            </div>
         </div>
     </div>
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button label="Cancel"
-                    pbutton=""
-                    type="button"
-                    mat-raised-button
-                    class="mat-raised-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                    (click)="onCancel()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'WidgetProfileSaving__Cancel'"></label-translation></span>
+            <button
+                label="Cancel"
+                pbutton=""
+                type="button"
+                mat-raised-button
+                class="mat-raised-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                (click)="onCancel()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'WidgetProfileSaving__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
-            <button label="Ok"
-                    pbutton=""
-                    type="button"
-                    mat-raised-button
-                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                    (click)="onCreateClicked()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'WidgetProfileSaving__Ok'"></label-translation></span>
+            <button
+                label="Ok"
+                pbutton=""
+                type="button"
+                mat-raised-button
+                class="mat-btn-blue ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                (click)="onCreateClicked()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'WidgetProfileSaving__Ok'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>
 </p-dialog>
 
-<p-dialog header=""
-          width="480"
-          height="280"
-          [(visible)]="showUpdateDialog"
-          modal="true"
-          responsive="true"
-          appendTo="body">
+<p-dialog
+    header=""
+    width="480"
+    height="280"
+    [(visible)]="showUpdateDialog"
+    modal="true"
+    responsive="true"
+    appendTo="body"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="header-text"><label-translation [keyword]="'WidgetProfileSaving__Select_a_profile'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="onCancel()">
+            <span class="header-text"
+                ><label-translation
+                    [keyword]="'WidgetProfileSaving__Select_a_profile'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="onCancel()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <div *ngIf="showUpdateDialog"
-         class="row h-100 d-flex align-items-center justify-content-center">
+    <div
+        *ngIf="showUpdateDialog"
+        class="row h-100 d-flex align-items-center justify-content-center"
+    >
         <div class="w-75">
-            <label for="txt-composition-quantity" class="label-title  col-xs-12  no-padding  required"><label-translation [keyword]="'WidgetProfileSaving__Profile_name'"></label-translation>:</label>
-            <div class="col-xs-12  no-padding  form-group">
-                <xn-combo-box #selectProfile
-                              wjDropdownHelper
-                              class="custom-wj-input-control xn-select"
-                              *ngIf="profileDatasource && (profileDatasource.length >= 0)"
-                              [itemsSource]="profileDatasource"
-                              [displayMemberPath]="'textValue'"
-                              [selectedValuePath]="'idValue'"
-                              [isEditable]="true"
-                              [isRequired]="false"
-                              (selectedIndexChanged)="changeProfile()"
-                              placeholder="Please select">
+            <label
+                for="txt-composition-quantity"
+                class="label-title col-xs-12 no-padding required"
+                ><label-translation
+                    [keyword]="'WidgetProfileSaving__Profile_name'"
+                ></label-translation
+                >:</label
+            >
+            <div class="col-xs-12 no-padding form-group">
+                <xn-combo-box
+                    #selectProfile
+                    wjDropdownHelper
+                    class="custom-wj-input-control xn-select"
+                    *ngIf="profileDatasource && profileDatasource.length >= 0"
+                    [itemsSource]="profileDatasource"
+                    [displayMemberPath]="'textValue'"
+                    [selectedValuePath]="'idValue'"
+                    [isEditable]="true"
+                    [isRequired]="false"
+                    (selectedIndexChanged)="changeProfile()"
+                    placeholder="Please select"
+                >
                 </xn-combo-box>
                 <control-messages icon="globe"></control-messages>
             </div>
-            <div *ngIf="showRequired" class="alert  alert-danger">{{requiredMessage}}</div>
+            <div *ngIf="showRequired" class="alert alert-danger">
+                {{ requiredMessage }}
+            </div>
         </div>
     </div>
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button label="Cancel"
-                    pbutton=""
-                    type="button"
-                    mat-raised-button
-                    class="mat-raised-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                    (click)="onCancel()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'WidgetProfileSaving__Cancel'"></label-translation></span>
+            <button
+                label="Cancel"
+                pbutton=""
+                type="button"
+                mat-raised-button
+                class="mat-raised-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                (click)="onCancel()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'WidgetProfileSaving__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
-            <button label="Ok"
-                    pbutton=""
-                    type="button"
-                    mat-raised-button
-                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                    (click)="onUpdateProfileClicked()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'WidgetProfileSaving__Ok'"></label-translation></span>
+            <button
+                label="Ok"
+                pbutton=""
+                type="button"
+                mat-raised-button
+                class="mat-btn-blue ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                (click)="onUpdateProfileClicked()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'WidgetProfileSaving__Ok'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>

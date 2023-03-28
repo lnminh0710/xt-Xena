@@ -1,4 +1,4 @@
-@import 'color.scss';
+@import "color.scss";
 
 .xn__menu {
     background-color: transparent;
@@ -35,7 +35,8 @@
         left: 0;
         width: 230px;
         border: 1px solid $gray3;
-        box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+            0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
         border-radius: 4px;
     }
 
@@ -73,11 +74,15 @@
         padding: 5px;
     }
 
-    li:hover, li:focus, li:active {
+    li:hover,
+    li:focus,
+    li:active {
         background-color: $white1;
     }
 
-    a:hover, a:focus, a:active {
+    a:hover,
+    a:focus,
+    a:active {
         text-decoration: none;
         color: $black;
     }

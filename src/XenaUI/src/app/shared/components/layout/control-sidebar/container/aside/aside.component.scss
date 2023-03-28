@@ -10,7 +10,9 @@
     }
 }
 
-.control-sidebar-menu a:hover, .control-sidebar-menu a:focus, .control-sidebar-menu a:active {
+.control-sidebar-menu a:hover,
+.control-sidebar-menu a:focus,
+.control-sidebar-menu a:active {
     background-color: lightblue;
 }
 
@@ -44,7 +46,7 @@
 }
 
 .language .active {
-    background-color: #3C8DBC;
+    background-color: #3c8dbc;
     padding-left: 2px;
 }
 
@@ -53,13 +55,14 @@
 }
 
 :host ::ng-deep {
-    .content, .widget-template-tab {
+    .content,
+    .widget-template-tab {
         display: none;
     }
 }
 
 :host ::ng-deep .control-sidebar-open {
-    .content  {
+    .content {
         display: block;
     }
 }

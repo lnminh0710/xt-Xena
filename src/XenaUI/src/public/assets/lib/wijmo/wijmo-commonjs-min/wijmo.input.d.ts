@@ -1,5 +1,5 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcSelf from 'wijmo/wijmo.input';
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcSelf from "wijmo/wijmo.input";
 export declare class DropDown extends wjcCore.Control {
     _tbx: HTMLInputElement;
     _elRef: HTMLElement;

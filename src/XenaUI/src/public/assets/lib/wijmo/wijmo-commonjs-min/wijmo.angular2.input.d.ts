@@ -1,12 +1,31 @@
-import * as wjcInput from 'wijmo/wijmo.input';
-import * as wjcCore from 'wijmo/wijmo';
-import { EventEmitter, AfterViewInit } from '@angular/core';
-import { ElementRef, Injector, ViewContainerRef, TemplateRef, Renderer } from '@angular/core';
-import { OnInit, OnChanges, OnDestroy, AfterContentInit, ChangeDetectorRef } from '@angular/core';
-import * as ngCore from '@angular/core';
-import { IWjComponentMetadata, IWjComponentMeta, IWjDirectiveMeta } from 'wijmo/wijmo.angular2.directiveBase';
+import * as wjcInput from "wijmo/wijmo.input";
+import * as wjcCore from "wijmo/wijmo";
+import { EventEmitter, AfterViewInit } from "@angular/core";
+import {
+    ElementRef,
+    Injector,
+    ViewContainerRef,
+    TemplateRef,
+    Renderer,
+} from "@angular/core";
+import {
+    OnInit,
+    OnChanges,
+    OnDestroy,
+    AfterContentInit,
+    ChangeDetectorRef,
+} from "@angular/core";
+import * as ngCore from "@angular/core";
+import {
+    IWjComponentMetadata,
+    IWjComponentMeta,
+    IWjDirectiveMeta,
+} from "wijmo/wijmo.angular2.directiveBase";
 export declare var wjComboBoxMeta: IWjComponentMeta;
-export declare class WjComboBox extends wjcInput.ComboBox implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjComboBox
+    extends wjcInput.ComboBox
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -30,10 +49,18 @@ export declare class WjComboBox extends wjcInput.ComboBox implements OnInit, OnD
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjAutoCompleteMeta: IWjComponentMeta;
-export declare class WjAutoComplete extends wjcInput.AutoComplete implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjAutoComplete
+    extends wjcInput.AutoComplete
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -57,10 +84,18 @@ export declare class WjAutoComplete extends wjcInput.AutoComplete implements OnI
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjCalendarMeta: IWjComponentMeta;
-export declare class WjCalendar extends wjcInput.Calendar implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjCalendar
+    extends wjcInput.Calendar
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -79,10 +114,18 @@ export declare class WjCalendar extends wjcInput.Calendar implements OnInit, OnD
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjColorPickerMeta: IWjComponentMeta;
-export declare class WjColorPicker extends wjcInput.ColorPicker implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjColorPicker
+    extends wjcInput.ColorPicker
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -98,10 +141,18 @@ export declare class WjColorPicker extends wjcInput.ColorPicker implements OnIni
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjInputMaskMeta: IWjComponentMeta;
-export declare class WjInputMask extends wjcInput.InputMask implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjInputMask
+    extends wjcInput.InputMask
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -118,10 +169,18 @@ export declare class WjInputMask extends wjcInput.InputMask implements OnInit, O
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjInputColorMeta: IWjComponentMeta;
-export declare class WjInputColor extends wjcInput.InputColor implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjInputColor
+    extends wjcInput.InputColor
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -142,10 +201,18 @@ export declare class WjInputColor extends wjcInput.InputColor implements OnInit,
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjMultiSelectMeta: IWjComponentMeta;
-export declare class WjMultiSelect extends wjcInput.MultiSelect implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjMultiSelect
+    extends wjcInput.MultiSelect
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -171,10 +238,18 @@ export declare class WjMultiSelect extends wjcInput.MultiSelect implements OnIni
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjMultiAutoCompleteMeta: IWjComponentMeta;
-export declare class WjMultiAutoComplete extends wjcInput.MultiAutoComplete implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjMultiAutoComplete
+    extends wjcInput.MultiAutoComplete
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -200,10 +275,18 @@ export declare class WjMultiAutoComplete extends wjcInput.MultiAutoComplete impl
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjInputNumberMeta: IWjComponentMeta;
-export declare class WjInputNumber extends wjcInput.InputNumber implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjInputNumber
+    extends wjcInput.InputNumber
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -221,10 +304,18 @@ export declare class WjInputNumber extends wjcInput.InputNumber implements OnIni
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjInputDateMeta: IWjComponentMeta;
-export declare class WjInputDate extends wjcInput.InputDate implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjInputDate
+    extends wjcInput.InputDate
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -245,10 +336,18 @@ export declare class WjInputDate extends wjcInput.InputDate implements OnInit, O
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjInputTimeMeta: IWjComponentMeta;
-export declare class WjInputTime extends wjcInput.InputTime implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjInputTime
+    extends wjcInput.InputTime
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -274,10 +373,18 @@ export declare class WjInputTime extends wjcInput.InputTime implements OnInit, O
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjInputDateTimeMeta: IWjComponentMeta;
-export declare class WjInputDateTime extends wjcInput.InputDateTime implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjInputDateTime
+    extends wjcInput.InputDateTime
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -298,10 +405,18 @@ export declare class WjInputDateTime extends wjcInput.InputDateTime implements O
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjListBoxMeta: IWjComponentMeta;
-export declare class WjListBox extends wjcInput.ListBox implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjListBox
+    extends wjcInput.ListBox
+    implements OnInit, OnDestroy, AfterViewInit
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -324,10 +439,18 @@ export declare class WjListBox extends wjcInput.ListBox implements OnInit, OnDes
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
 }
 export declare var wjMenuMeta: IWjComponentMeta;
-export declare class WjMenu extends wjcInput.Menu implements OnInit, OnDestroy, AfterViewInit, OnChanges, AfterContentInit {
+export declare class WjMenu
+    extends wjcInput.Menu
+    implements OnInit, OnDestroy, AfterViewInit, OnChanges, AfterContentInit
+{
     private _value;
     private _definedHeader;
     static readonly meta: IWjComponentMetadata;
@@ -355,11 +478,14 @@ export declare class WjMenu extends wjcInput.Menu implements OnInit, OnDestroy, 
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
     value: any;
-    ngOnChanges(changes: {
-        [key: string]: ngCore.SimpleChange;
-    }): void;
+    ngOnChanges(changes: { [key: string]: ngCore.SimpleChange }): void;
     ngAfterContentInit(): void;
     onItemClicked(e?: wjcCore.EventArgs): void;
     refresh(fullUpdate?: boolean): void;
@@ -384,7 +510,13 @@ export declare class WjMenuItem implements OnInit, OnDestroy, AfterViewInit {
     isInitialized: boolean;
     initialized: EventEmitter<any>;
     wjProperty: string;
-    constructor(elRef: ElementRef, injector: Injector, parentCmp: any, viewContainerRef: ViewContainerRef, domRenderer: Renderer);
+    constructor(
+        elRef: ElementRef,
+        injector: Injector,
+        parentCmp: any,
+        viewContainerRef: ViewContainerRef,
+        domRenderer: Renderer
+    );
     created(): void;
     ngOnInit(): void;
     ngAfterViewInit(): void;
@@ -399,16 +531,35 @@ export declare class WjMenuItemTemplateDir implements ngCore.AfterContentInit {
     wjMenuItemTemplateDir: any;
     ownerItem: WjMenuItem;
     contentRoot: HTMLElement;
-    constructor(viewContainerRef: ViewContainerRef, templateRef: TemplateRef<any>, elRef: ElementRef, injector: Injector, domRenderer: Renderer, menuItem: WjMenuItem, menuSeparator: WjMenuSeparator);
+    constructor(
+        viewContainerRef: ViewContainerRef,
+        templateRef: TemplateRef<any>,
+        elRef: ElementRef,
+        injector: Injector,
+        domRenderer: Renderer,
+        menuItem: WjMenuItem,
+        menuSeparator: WjMenuSeparator
+    );
     ngAfterContentInit(): void;
 }
 export declare var wjMenuSeparatorMeta: IWjComponentMeta;
-export declare class WjMenuSeparator extends WjMenuItem implements OnInit, OnDestroy, AfterViewInit {
-    constructor(elRef: ElementRef, injector: Injector, parentCmp: any, viewContainerRef: ViewContainerRef, domRenderer: Renderer);
+export declare class WjMenuSeparator
+    extends WjMenuItem
+    implements OnInit, OnDestroy, AfterViewInit
+{
+    constructor(
+        elRef: ElementRef,
+        injector: Injector,
+        parentCmp: any,
+        viewContainerRef: ViewContainerRef,
+        domRenderer: Renderer
+    );
     added(toItem: HTMLElement): void;
 }
 export declare var wjItemTemplateMeta: IWjDirectiveMeta;
-export declare class WjItemTemplate implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjItemTemplate
+    implements OnInit, OnDestroy, AfterViewInit
+{
     viewContainerRef: ViewContainerRef;
     templateRef: TemplateRef<any>;
     private domRenderer;
@@ -420,7 +571,15 @@ export declare class WjItemTemplate implements OnInit, OnDestroy, AfterViewInit 
     private _wjBehaviour;
     isInitialized: boolean;
     initialized: EventEmitter<any>;
-    constructor(elRef: ElementRef, injector: Injector, parentCmp: any, viewContainerRef: ViewContainerRef, templateRef: TemplateRef<any>, domRenderer: Renderer, cdRef: ChangeDetectorRef);
+    constructor(
+        elRef: ElementRef,
+        injector: Injector,
+        parentCmp: any,
+        viewContainerRef: ViewContainerRef,
+        templateRef: TemplateRef<any>,
+        domRenderer: Renderer,
+        cdRef: ChangeDetectorRef
+    );
     created(): void;
     ngOnInit(): void;
     ngAfterViewInit(): void;
@@ -432,7 +591,10 @@ export declare class WjItemTemplate implements OnInit, OnDestroy, AfterViewInit 
     private static _getListBox(ownerControl);
 }
 export declare var wjPopupMeta: IWjComponentMeta;
-export declare class WjPopup extends wjcInput.Popup implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+export declare class WjPopup
+    extends wjcInput.Popup
+    implements OnInit, OnDestroy, AfterViewInit, OnChanges
+{
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
     isInitialized: boolean;
@@ -449,10 +611,13 @@ export declare class WjPopup extends wjcInput.Popup implements OnInit, OnDestroy
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    addEventListener(target: EventTarget, type: string, fn: any, capture?: boolean): void;
-    ngOnChanges(changes: {
-        [key: string]: ngCore.SimpleChange;
-    }): void;
+    addEventListener(
+        target: EventTarget,
+        type: string,
+        fn: any,
+        capture?: boolean
+    ): void;
+    ngOnChanges(changes: { [key: string]: ngCore.SimpleChange }): void;
     dispose(): void;
 }
 export declare class WjContextMenu {
@@ -462,7 +627,9 @@ export declare class WjContextMenu {
     onContextMenu(e: MouseEvent): void;
 }
 export declare var wjCollectionViewNavigatorMeta: IWjComponentMeta;
-export declare class WjCollectionViewNavigator implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjCollectionViewNavigator
+    implements OnInit, OnDestroy, AfterViewInit
+{
     cv: wjcCore.CollectionView;
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
@@ -476,7 +643,9 @@ export declare class WjCollectionViewNavigator implements OnInit, OnDestroy, Aft
     ngOnDestroy(): void;
 }
 export declare var wjCollectionViewPagerMeta: IWjComponentMeta;
-export declare class WjCollectionViewPager implements OnInit, OnDestroy, AfterViewInit {
+export declare class WjCollectionViewPager
+    implements OnInit, OnDestroy, AfterViewInit
+{
     cv: wjcCore.CollectionView;
     static readonly meta: IWjComponentMetadata;
     private _wjBehaviour;
@@ -489,5 +658,4 @@ export declare class WjCollectionViewPager implements OnInit, OnDestroy, AfterVi
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
 }
-export declare class WjInputModule {
-}
+export declare class WjInputModule {}

@@ -1,6 +1,7 @@
 <p-dialog
     #pDialogModuleSearch
-    *ngIf="showDialog" header=""
+    *ngIf="showDialog"
+    header=""
     [(visible)]="showDialog"
     [styleClass]="dialogStyleClass"
     modal="true"
@@ -11,29 +12,36 @@
     appendTo="body"
     [resizable]="isResizable"
     [draggable]="isDraggable"
-    [contentStyle]="{'padding-bottom': 0, 'padding-top': 0}">
+    [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
+>
     <p-header>
         <div class="modal-header--information">
-        <span class="header-text">{{ headerTitle }}</span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="close()">
+            <span class="header-text">{{ headerTitle }}</span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="close()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-expand-popup"
-                    *ngIf="!isMaximized"
-                    (click)="maximize()">
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-expand-popup"
+                *ngIf="!isMaximized"
+                (click)="maximize()"
+            >
                 <span class="fa fa-window-maximize"></span>
             </button>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-collapse-popup"
-                    *ngIf="isMaximized"
-                    (click)="restore()">
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-collapse-popup"
+                *ngIf="isMaximized"
+                (click)="restore()"
+            >
                 <span class="fa fa-window-restore"></span>
             </button>
         </div>
@@ -41,34 +49,38 @@
 
     <div class="row content-detail">
         <div class="search-box">
-            <app-xn-input-debounce delayTimer="600"
-                                   placeholder="Search Here"
-                                   [value]="keyword"
-                                   cssClass="gs__search-text-input"
-                                   id="txt-global-search-article"
-                                   [hasSearchButton]="true"
-                                   [isLoading]="isSearching"
-                                   [hasIndicator]="true"
-                                   (onValueChanged)="search($event)"
-                                   (onSearchButtonClicked)="search($event)">
+            <app-xn-input-debounce
+                delayTimer="600"
+                placeholder="Search Here"
+                [value]="keyword"
+                cssClass="gs__search-text-input"
+                id="txt-global-search-article"
+                [hasSearchButton]="true"
+                [isLoading]="isSearching"
+                [hasIndicator]="true"
+                (onValueChanged)="search($event)"
+                (onSearchButtonClicked)="search($event)"
+            >
             </app-xn-input-debounce>
         </div>
         <!--<mat-checkbox color="primary" [(ngModel)]="isWithStarStatus">
             Search with *
         </mat-checkbox>-->
         <div class="search-result">
-            <gs-result #gsResult
-                       [keyword]="keyword"
-                       [gridId]="'3ae2f344-b25d-439b-969e-ee095631a8e9'"
-                       [searchIndex]="searchIndex"
-                       [isWithStar]="isWithStarStatus"
-                       [module]="module"
-                       [dontAllowSearchWhenInit]="true"
-                       [allowDrag]="allowDrag"
-                       [treeViewMode]="module && module.idSettingsGUI == 2"
-                       (onRowClicked)="rowClicked($event)"
-                       (onRowDoubleClicked)="rowDoubleClicked($event)"
-                       (onSearchCompleted)="onSearchCompleted($event)">
+            <gs-result
+                #gsResult
+                [keyword]="keyword"
+                [gridId]="'3ae2f344-b25d-439b-969e-ee095631a8e9'"
+                [searchIndex]="searchIndex"
+                [isWithStar]="isWithStarStatus"
+                [module]="module"
+                [dontAllowSearchWhenInit]="true"
+                [allowDrag]="allowDrag"
+                [treeViewMode]="module && module.idSettingsGUI == 2"
+                (onRowClicked)="rowClicked($event)"
+                (onRowDoubleClicked)="rowDoubleClicked($event)"
+                (onSearchCompleted)="onSearchCompleted($event)"
+            >
             </gs-result>
             <!--[allowMasterDetail]="module && module.idSettingsGUI == 2"-->
         </div>
@@ -76,15 +88,20 @@
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button label="Cancel"
-                    pbutton=""
-                    type="button"
-                    mat-raised-button
-                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                    (click)="ok()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'Module_Search__Ok'"></label-translation></span>
+            <button
+                label="Cancel"
+                pbutton=""
+                type="button"
+                mat-raised-button
+                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                (click)="ok()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'Module_Search__Ok'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>
-
 </p-dialog>

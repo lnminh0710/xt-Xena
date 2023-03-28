@@ -1,1 +1,1 @@
-﻿export { XnAdditionalInformationMainComponent } from './xn-ai-main.component'
+﻿export { XnAdditionalInformationMainComponent } from "./xn-ai-main.component";

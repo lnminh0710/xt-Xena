@@ -1,10 +1,10 @@
-import { Action, ActionReducer } from '@ngrx/store';
-import { WidgetDetail, LightWidgetDetail } from 'app/models';
-import { WidgetDetailActions } from 'app/state-management/store/actions/widget-content-detail';
-import { CustomAction } from 'app/state-management/store/actions/base';
-import * as baseReducer from 'app/state-management/store/reducer/reducer.base';
-import { Uti } from 'app/utilities';
-import { LocalStorageKey } from 'app/app.constants';
+import { Action, ActionReducer } from "@ngrx/store";
+import { WidgetDetail, LightWidgetDetail } from "app/models";
+import { WidgetDetailActions } from "app/state-management/store/actions/widget-content-detail";
+import { CustomAction } from "app/state-management/store/actions/base";
+import * as baseReducer from "app/state-management/store/reducer/reducer.base";
+import { Uti } from "app/utilities";
+import { LocalStorageKey } from "app/app.constants";
 
 export interface RowData {
     data?: any;
@@ -56,30 +56,37 @@ export const initialSubWidgetDetailState: SubWidgetDetailState = {
     requestSave: null,
     requestReload: null,
     isEditAllWidgetMode: false,
-    activeWidget: null
+    activeWidget: null,
 };
 
 export interface WidgetDetailState {
-    features: { [id: string]: SubWidgetDetailState }
+    features: { [id: string]: SubWidgetDetailState };
 }
 
 const initialState: WidgetDetailState = {
-    features: {}
+    features: {},
 };
 
-export function widgetDetailStateReducer(state = initialState, action: CustomAction): WidgetDetailState {
-    let feature = baseReducer.getFeature(action, state, initialSubWidgetDetailState);
+export function widgetDetailStateReducer(
+    state = initialState,
+    action: CustomAction
+): WidgetDetailState {
+    let feature = baseReducer.getFeature(
+        action,
+        state,
+        initialSubWidgetDetailState
+    );
 
     switch (action.type) {
         case WidgetDetailActions.LOAD_WIDGET_TYPE_DETAIL: {
             state = baseReducer.updateStateData(action, feature, state, {
-                rowData: action.payload
+                rowData: action.payload,
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.CLEAR_WIDGET_TYPE_DETAIL: {
             state = baseReducer.updateStateData(action, feature, state, {
-                rowData: null
+                rowData: null,
             });
             return Object.assign({}, state);
         }
@@ -90,8 +97,11 @@ export function widgetDetailStateReducer(state = initialState, action: CustomAct
             } else {
                 let exist = false;
                 result = feature.rowsData;
-                result.forEach(x => {
-                    if (action.payload.widgetDetail && x.widgetDetail && action.payload.widgetDetail.id == x.widgetDetail.id
+                result.forEach((x) => {
+                    if (
+                        action.payload.widgetDetail &&
+                        x.widgetDetail &&
+                        action.payload.widgetDetail.id == x.widgetDetail.id
                         //    x.widgetDetailId == action.payload.widgetDetailId
                     ) {
                         x.rowData = action.payload.rowData;
@@ -105,32 +115,38 @@ export function widgetDetailStateReducer(state = initialState, action: CustomAct
             }
 
             state = baseReducer.updateStateData(action, feature, state, {
-                rowsData: Object.assign([], result)
+                rowsData: Object.assign([], result),
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.CLEAR_WIDGET_TABLE_DATA_ROWS: {
-            let newRowsData = feature.rowsData.length ? feature.rowsData.filter(r => r.widgetDetail && r.widgetDetail.id !== action.payload.id) : [];
+            let newRowsData = feature.rowsData.length
+                ? feature.rowsData.filter(
+                      (r) =>
+                          r.widgetDetail &&
+                          r.widgetDetail.id !== action.payload.id
+                  )
+                : [];
             state = baseReducer.updateStateData(action, feature, state, {
-                rowsData: newRowsData
+                rowsData: newRowsData,
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.LOAD_WIDGET_TYPE_DETAIL_FOR_CAMPAIGN_MEDIA: {
             state = baseReducer.updateStateData(action, feature, state, {
-                [`rowCampaignMediaMainData_${action.area}`] :action.payload 
+                [`rowCampaignMediaMainData_${action.area}`]: action.payload,
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.CLEAR_WIDGET_TYPE_DETAIL_FOR_CAMPAIGN_MEDIA: {
             state = baseReducer.updateStateData(action, feature, state, {
-                [`rowCampaignMediaMainData_${action.area}`] : null 
+                [`rowCampaignMediaMainData_${action.area}`]: null,
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.SYNC_UPDATE_DATA_WIDGET: {
             state = baseReducer.updateStateData(action, feature, state, {
-                widgetDataUpdated: action.payload
+                widgetDataUpdated: action.payload,
             });
             return Object.assign({}, state);
         }
@@ -138,14 +154,21 @@ export function widgetDetailStateReducer(state = initialState, action: CustomAct
             const editingWidgetPayload: EditingWidget = action.payload;
             let isExists: boolean;
             if (feature.editingWidgets && feature.editingWidgets.length > 0) {
-                const rs = feature.editingWidgets.filter(p => p.widgetDetail.id == editingWidgetPayload.widgetDetail.id);
+                const rs = feature.editingWidgets.filter(
+                    (p) =>
+                        p.widgetDetail.id ==
+                        editingWidgetPayload.widgetDetail.id
+                );
                 if (rs.length > 0) {
                     isExists = true;
                 }
             }
             if (!isExists) {
                 state = baseReducer.updateStateData(action, feature, state, {
-                    editingWidgets: [...feature.editingWidgets, ...action.payload]
+                    editingWidgets: [
+                        ...feature.editingWidgets,
+                        ...action.payload,
+                    ],
                 });
                 return Object.assign({}, state);
             }
@@ -155,58 +178,64 @@ export function widgetDetailStateReducer(state = initialState, action: CustomAct
             const editingWidgetPayload: EditingWidget = action.payload;
             let editingWigetFilter: Array<EditingWidget> = [];
             if (feature.editingWidgets && feature.editingWidgets.length > 0) {
-                editingWigetFilter = feature.editingWidgets.filter(p => p.widgetDetail.id != editingWidgetPayload.widgetDetail.id);
+                editingWigetFilter = feature.editingWidgets.filter(
+                    (p) =>
+                        p.widgetDetail.id !=
+                        editingWidgetPayload.widgetDetail.id
+                );
             }
             state = baseReducer.updateStateData(action, feature, state, {
-                editingWidgets: [...editingWigetFilter]
+                editingWidgets: [...editingWigetFilter],
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.REQUEST_SAVE: {
             state = baseReducer.updateStateData(action, feature, state, {
-                requestSave: {}
+                requestSave: {},
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.CLEAR_REQUEST_SAVE: {
             state = baseReducer.updateStateData(action, feature, state, {
-                requestSave: null
+                requestSave: null,
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.REQUEST_RELOAD: {
             state = baseReducer.updateStateData(action, feature, state, {
-                requestReload: {}
+                requestReload: {},
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.CLEAR_REQUEST_RELOAD: {
             state = baseReducer.updateStateData(action, feature, state, {
-                requestReload: null
+                requestReload: null,
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.CANCEL_ALL_WIDGET_EDITING: {
             state = baseReducer.updateStateData(action, feature, state, {
-                editingWidgets: []
+                editingWidgets: [],
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.HOVER_AND_DISPLAY_RELATING_WIDGET: {
             state = baseReducer.updateStateData(action, feature, state, {
-                relatingWidget: action.payload
+                relatingWidget: action.payload,
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.TOGGLE_EDIT_ALL_WIDGET_MODE: {
             state = baseReducer.updateStateData(action, feature, state, {
-                isEditAllWidgetMode: action.payload
+                isEditAllWidgetMode: action.payload,
             });
             return Object.assign({}, state);
         }
         case WidgetDetailActions.ACTIVE_WIDGET: {
             state = baseReducer.updateStateData(action, feature, state, {
-                activeWidget: action.payload ? new LightWidgetDetail(action.payload) : null
+                activeWidget: action.payload
+                    ? new LightWidgetDetail(action.payload)
+                    : null,
             });
             return Object.assign({}, state);
         }
@@ -216,19 +245,30 @@ export function widgetDetailStateReducer(state = initialState, action: CustomAct
     }
 }
 
-export function persistWidgetDetailStateReducer(_reducer: ActionReducer<WidgetDetailState>) {
+export function persistWidgetDetailStateReducer(
+    _reducer: ActionReducer<WidgetDetailState>
+) {
     return (state: WidgetDetailState | undefined, action: Action) => {
         const nextState = _reducer(state, action);
         switch (action.type) {
             case WidgetDetailActions.LOAD_WIDGET_TABLE_DATA_ROWS:
-            case WidgetDetailActions.CLEAR_WIDGET_TYPE_DETAIL: 
+            case WidgetDetailActions.CLEAR_WIDGET_TYPE_DETAIL:
             case WidgetDetailActions.LOAD_WIDGET_TABLE_DATA_ROWS:
             case WidgetDetailActions.CLEAR_WIDGET_TABLE_DATA_ROWS:
             case WidgetDetailActions.SYNC_UPDATE_DATA_WIDGET:
-                if (location.pathname != "/search" && location.pathname != "/widget") {
+                if (
+                    location.pathname != "/search" &&
+                    location.pathname != "/widget"
+                ) {
                     //TODO: enhance, only save the necessary state
-                    nextState['browserTabId'] = Uti.defineBrowserTabId();
-                    localStorage.setItem(LocalStorageKey.buildKey(LocalStorageKey.LocalStorageWidgetContentDetailKey, nextState['browserTabId']), JSON.stringify(nextState));
+                    nextState["browserTabId"] = Uti.defineBrowserTabId();
+                    localStorage.setItem(
+                        LocalStorageKey.buildKey(
+                            LocalStorageKey.LocalStorageWidgetContentDetailKey,
+                            nextState["browserTabId"]
+                        ),
+                        JSON.stringify(nextState)
+                    );
                 }
                 break;
         }
@@ -236,16 +276,25 @@ export function persistWidgetDetailStateReducer(_reducer: ActionReducer<WidgetDe
     };
 }
 
-
-export function updatewidgetDetailStaeReducer(_reducer: ActionReducer<WidgetDetailState>) {
+export function updatewidgetDetailStaeReducer(
+    _reducer: ActionReducer<WidgetDetailState>
+) {
     return (state: WidgetDetailState | undefined, action: Action) => {
-        if (action.type === WidgetDetailActions.UPDATE_WIDGET_CONTENT_STATE_FROM_LOCAL_STORAGE) {
+        if (
+            action.type ===
+            WidgetDetailActions.UPDATE_WIDGET_CONTENT_STATE_FROM_LOCAL_STORAGE
+        ) {
             return (<any>action).payload;
         }
         return _reducer(state, action);
     };
 }
 
-export function widgetDetailReducer(state = initialState, action: CustomAction): WidgetDetailState {
-    return updatewidgetDetailStaeReducer(persistWidgetDetailStateReducer(widgetDetailStateReducer))(state, action);
-};
+export function widgetDetailReducer(
+    state = initialState,
+    action: CustomAction
+): WidgetDetailState {
+    return updatewidgetDetailStaeReducer(
+        persistWidgetDetailStateReducer(widgetDetailStateReducer)
+    )(state, action);
+}

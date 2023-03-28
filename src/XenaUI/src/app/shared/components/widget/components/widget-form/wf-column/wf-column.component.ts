@@ -11,34 +11,39 @@ import {
     ViewChildren,
     QueryList,
     ChangeDetectorRef,
-    forwardRef
-} from '@angular/core';
+    forwardRef,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { DragulaService } from "ng2-dragula";
 import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {DragulaService} from 'ng2-dragula';
-import {WfPanelComponent, WfFieldComponent} from 'app/shared/components/widget/components/widget-form';
-import {Uti} from 'app/utilities';
-import {Subscription} from 'rxjs/Subscription';
+    WfPanelComponent,
+    WfFieldComponent,
+} from "app/shared/components/widget/components/widget-form";
+import { Uti } from "app/utilities";
+import { Subscription } from "rxjs/Subscription";
 import {
     DomHandler,
-    ModalService, PropertyPanelService, WidgetFieldService
-} from 'app/services';
-import { ResizeEvent } from 'angular-resizable-element';
+    ModalService,
+    PropertyPanelService,
+    WidgetFieldService,
+} from "app/services";
+import { ResizeEvent } from "angular-resizable-element";
 
 @Component({
-    selector: 'wf-column',
-    styleUrls: ['./wf-column.component.scss'],
-    templateUrl: './wf-column.component.html',
+    selector: "wf-column",
+    styleUrls: ["./wf-column.component.scss"],
+    templateUrl: "./wf-column.component.html",
     host: {
-        '(contextmenu)': 'rightClicked($event)',
+        "(contextmenu)": "rightClicked($event)",
         // '(mouseup)': 'mouseUpEventHandler($event)',
-        '(mouseover)': 'mouseDragOverHandler($event)'}
+        "(mouseover)": "mouseDragOverHandler($event)",
+    },
 })
-export class WfColumnComponent extends BaseComponent implements OnInit, OnDestroy, OnChanges {
+export class WfColumnComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, OnChanges
+{
     // public isShowWatermark = false;
 
     public columnData: any[] = [];
@@ -82,10 +87,10 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     @Input() isSAVLetter: boolean;
     @Input() isControlPressing = false;
     @Input() isDragging = false;
-    @Input() backgroundColor: any = '';
-    @Input() backgroundImage: any = '';
+    @Input() backgroundColor: any = "";
+    @Input() backgroundImage: any = "";
     @Input() errorShow: boolean;
-    @Input() layoutTypeDragging = '';
+    @Input() layoutTypeDragging = "";
     @Input() isIncludeLinebreak = false;
     @Input() isSettingDialog = false;
     @Input() isDuplicatedDialogForm = false;
@@ -125,14 +130,16 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     @ViewChildren(forwardRef(() => WfFieldComponent))
     private wfFieldComponents: QueryList<WfFieldComponent>;
 
-    constructor(protected router: Router,
-                private propertyPanelService: PropertyPanelService,
-                private elementRef: ElementRef,
-                private domHandler: DomHandler,
-                private ref: ChangeDetectorRef,
-                private widgetFieldService: WidgetFieldService,
-                private modalService: ModalService,
-                private dragulaService: DragulaService) {
+    constructor(
+        protected router: Router,
+        private propertyPanelService: PropertyPanelService,
+        private elementRef: ElementRef,
+        private domHandler: DomHandler,
+        private ref: ChangeDetectorRef,
+        private widgetFieldService: WidgetFieldService,
+        private modalService: ModalService,
+        private dragulaService: DragulaService
+    ) {
         super(router);
     }
 
@@ -144,8 +151,10 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     }
 
     public ngOnChanges(changes: SimpleChanges) {
-        if (!changes['isEditingLayout'] ||
-            !Uti.hasChanges(changes['isEditingLayout']))
+        if (
+            !changes["isEditingLayout"] ||
+            !Uti.hasChanges(changes["isEditingLayout"])
+        )
             return;
         if (this.isEditingLayout) {
             this.initDragulaEvents();
@@ -195,7 +204,7 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     }
 
     public onDeletePanelHandle(panel: any) {
-        this.onDeletePanelAction.emit({column: this.column, panel: panel});
+        this.onDeletePanelAction.emit({ column: this.column, panel: panel });
     }
 
     public onSavePanelTitleHandle(panel: any) {
@@ -215,7 +224,10 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     }
 
     public onDeleteLineBreakHandler(lineBreak: any) {
-        this.onDeleteLineBreakAction.emit({parent: this.column, lineBreak: lineBreak});
+        this.onDeleteLineBreakAction.emit({
+            parent: this.column,
+            lineBreak: lineBreak,
+        });
     }
 
     public onDeleteLineBreakInPanelHandler(panel: any) {
@@ -223,7 +235,9 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     }
 
     public updateRenderData() {
-        this.columnData = [...this.column.children.filter(x => !!x && !x.isHidden)];
+        this.columnData = [
+            ...this.column.children.filter((x) => !!x && !x.isHidden),
+        ];
         // this.isShowWatermark = !this.columnData.length;
         if (!this.wfPanelComponents || !this.wfPanelComponents.length) return;
         this.wfPanelComponents.forEach((wfPanelComponent: WfPanelComponent) => {
@@ -239,35 +253,89 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     //     this.onMouseUpAction.emit();
     // }
 
-    public itemChecked(control: any) {
-
-    }
+    public itemChecked(control: any) {}
 
     public changePropertiesForColumnStyle(config: any) {
         if (!config) return;
         const controlConfig = JSON.parse(config);
-        const propShowColumnBorder = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleShowBorder');
-        const propColumnBorderColor = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleBorderColor');
-        const propColumnBorderWeight = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleBorderWeight');
-        const propColumnBorderStyle = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleBorderStyle');
-        const valueWeight = propColumnBorderWeight && propColumnBorderWeight.value;
-        const valueBorderStyle = propColumnBorderStyle && propColumnBorderStyle.value;
-        const valueBorderColor = propColumnBorderColor && propColumnBorderColor.value;
-        const propColumnShowShadow = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleShowShadow');
-        const propColumnShadowColor = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleShadowColor');
-        const propColumnBackground = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleBackgroundColor');
-        const propColumnWidth = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleWidth');
-        const propColumnPaddingRight = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleRight');
-        const propColumnPaddingLeft = this.propertyPanelService.getItemRecursive(controlConfig, 'ColumnStyleLeft');
-        const valueColumnBackgroundColor = propColumnBackground && propColumnBackground.value;
-        const valueColumnShadowColor = propColumnShadowColor && propColumnShadowColor.value;
-        this.column.width = (propColumnWidth && propColumnWidth.value) || this.column.width;
+        const propShowColumnBorder = this.propertyPanelService.getItemRecursive(
+            controlConfig,
+            "ColumnStyleShowBorder"
+        );
+        const propColumnBorderColor =
+            this.propertyPanelService.getItemRecursive(
+                controlConfig,
+                "ColumnStyleBorderColor"
+            );
+        const propColumnBorderWeight =
+            this.propertyPanelService.getItemRecursive(
+                controlConfig,
+                "ColumnStyleBorderWeight"
+            );
+        const propColumnBorderStyle =
+            this.propertyPanelService.getItemRecursive(
+                controlConfig,
+                "ColumnStyleBorderStyle"
+            );
+        const valueWeight =
+            propColumnBorderWeight && propColumnBorderWeight.value;
+        const valueBorderStyle =
+            propColumnBorderStyle && propColumnBorderStyle.value;
+        const valueBorderColor =
+            propColumnBorderColor && propColumnBorderColor.value;
+        const propColumnShowShadow = this.propertyPanelService.getItemRecursive(
+            controlConfig,
+            "ColumnStyleShowShadow"
+        );
+        const propColumnShadowColor =
+            this.propertyPanelService.getItemRecursive(
+                controlConfig,
+                "ColumnStyleShadowColor"
+            );
+        const propColumnBackground = this.propertyPanelService.getItemRecursive(
+            controlConfig,
+            "ColumnStyleBackgroundColor"
+        );
+        const propColumnWidth = this.propertyPanelService.getItemRecursive(
+            controlConfig,
+            "ColumnStyleWidth"
+        );
+        const propColumnPaddingRight =
+            this.propertyPanelService.getItemRecursive(
+                controlConfig,
+                "ColumnStyleRight"
+            );
+        const propColumnPaddingLeft =
+            this.propertyPanelService.getItemRecursive(
+                controlConfig,
+                "ColumnStyleLeft"
+            );
+        const valueColumnBackgroundColor =
+            propColumnBackground && propColumnBackground.value;
+        const valueColumnShadowColor =
+            propColumnShadowColor && propColumnShadowColor.value;
+        this.column.width =
+            (propColumnWidth && propColumnWidth.value) || this.column.width;
         this.configColumnStyle = {
-            'border': propShowColumnBorder && propShowColumnBorder.value ? `${valueWeight}px ${valueBorderStyle} ${valueBorderColor}` : '',
-            'box-shadow': propColumnShowShadow && propColumnShowShadow.value ? `5px 5px 5px 0px ${valueColumnShadowColor}` : '',
-            'background-color': valueColumnBackgroundColor ? valueColumnBackgroundColor : '',
-            'padding-right': propColumnPaddingRight && propColumnPaddingRight.value ? `${propColumnPaddingRight.value}px` : '',
-            'padding-left': propColumnPaddingLeft && propColumnPaddingLeft.value ? `${propColumnPaddingLeft.value}px` : '',
+            border:
+                propShowColumnBorder && propShowColumnBorder.value
+                    ? `${valueWeight}px ${valueBorderStyle} ${valueBorderColor}`
+                    : "",
+            "box-shadow":
+                propColumnShowShadow && propColumnShowShadow.value
+                    ? `5px 5px 5px 0px ${valueColumnShadowColor}`
+                    : "",
+            "background-color": valueColumnBackgroundColor
+                ? valueColumnBackgroundColor
+                : "",
+            "padding-right":
+                propColumnPaddingRight && propColumnPaddingRight.value
+                    ? `${propColumnPaddingRight.value}px`
+                    : "",
+            "padding-left":
+                propColumnPaddingLeft && propColumnPaddingLeft.value
+                    ? `${propColumnPaddingLeft.value}px`
+                    : "",
         };
     }
 
@@ -281,7 +349,7 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     }
 
     public updateWhenOpenConfigDialog(control: any): boolean {
-        if (control && control.layoutType !== 'panel' || !control) return;
+        if ((control && control.layoutType !== "panel") || !control) return;
         for (const wfPanelComponent of (<any>this.wfPanelComponents)._results) {
             if (control.key !== wfPanelComponent.panel.key) continue;
             wfPanelComponent.updateWhenOpenConfigDialog(control);
@@ -313,7 +381,7 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     }
 
     public onMouseDownHandler(control: any) {
-        this.onMouseDownAction.emit({column: this.column, control: control});
+        this.onMouseDownAction.emit({ column: this.column, control: control });
     }
 
     public onMenuMouseOverHandler(isOver: boolean) {
@@ -323,9 +391,9 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     public queryWfFieldComponentsComponent(): Array<WfFieldComponent> {
         let result: Array<WfFieldComponent> = [];
         for (const item of this.columnData) {
-            if (item.layoutType === 'control') {
+            if (item.layoutType === "control") {
                 result.push(this.getInlineEditFromChildren(item.key));
-            } else if (item.layoutType === 'panel') {
+            } else if (item.layoutType === "panel") {
                 result = [...result, ...this.getInlineEditFromPanel(item.key)];
             }
         }
@@ -336,7 +404,10 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
         this.wfPanelComponents.forEach((wfPanelComponent) => {
             wfPanelComponent.updatePanelChildren();
         });
-        this.column.children = [...this.columnData, ...this.column.children.filter(x => x.isHidden)];
+        this.column.children = [
+            ...this.columnData,
+            ...this.column.children.filter((x) => x.isHidden),
+        ];
         this.reSetOrderNumber(this.column.children);
     }
 
@@ -356,12 +427,12 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
         this.onApplyAction.emit($event);
     }
 
-     public onChangeHandler(data: any) {
-         if (data && data.config) {
-             this.changePropertiesForColumnStyle(data.config);
-         }
-         this.onChangeAction.emit(data);
-     }
+    public onChangeHandler(data: any) {
+        if (data && data.config) {
+            this.changePropertiesForColumnStyle(data.config);
+        }
+        this.onChangeAction.emit(data);
+    }
 
     public onMousedownOnResize(column: any) {
         if (this.isSettingDialog || this.isDuplicatedDialogForm) return;
@@ -390,7 +461,7 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
         if (this.isSettingDialog || this.isDuplicatedDialogForm) return;
         this.onColumnResizeEndAction.emit({
             column: column,
-            newWidthPixel: event.rectangle.width
+            newWidthPixel: event.rectangle.width,
         });
     }
 
@@ -409,7 +480,7 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
         this.widgetFieldService.changeWidthForColumn(this.column.config);
         this.onColumnResizeEndAction.emit({
             column: column,
-            newWidthPixel: event.rectangle.width
+            newWidthPixel: event.rectangle.width,
         });
         this.callRenderScrollAction.emit();
         this.enableGhostResize = false;
@@ -540,8 +611,8 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
         if (!arr || !arr.length) return;
         for (let i = 0; i < arr.length; i++) {
             if (!arr[i]) continue;
-            arr[i]['order'] = (i + 1);
-            this.reSetOrderNumber(arr[i]['children']);
+            arr[i]["order"] = i + 1;
+            this.reSetOrderNumber(arr[i]["children"]);
         }
     }
 
@@ -550,7 +621,7 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
     }
 
     private getInlineEditFromChildren(key: string): WfFieldComponent {
-        return this.wfFieldComponents.find(x => x.control.key === key);
+        return this.wfFieldComponents.find((x) => x.control.key === key);
     }
 
     private getInlineEditFromPanel(key: string): Array<WfFieldComponent> {
@@ -561,7 +632,7 @@ export class WfColumnComponent extends BaseComponent implements OnInit, OnDestro
         return [];
     }
 
-    private getColumnWidthAfterResize(elementWidth: number)  {
+    private getColumnWidthAfterResize(elementWidth: number) {
         // return elementWidth < this.minColumnWidth ? this.minColumnWidth
         //         : elementWidth;
     }

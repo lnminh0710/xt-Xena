@@ -1,24 +1,51 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, ChangeDetectorRef, Output, EventEmitter, OnChanges, SimpleChanges, ElementRef } from "@angular/core";
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    Input,
+    ViewChild,
+    ChangeDetectorRef,
+    Output,
+    EventEmitter,
+    OnChanges,
+    SimpleChanges,
+    ElementRef,
+} from "@angular/core";
 import { BaseComponent } from "app/pages/private/base";
 import { Router } from "@angular/router";
 import { Configuration, GlobalSettingConstant } from "app/app.constants";
-import { ControlGridModel, ApiResultResponse, MessageModel, GlobalSettingModel } from "app/models";
+import {
+    ControlGridModel,
+    ApiResultResponse,
+    MessageModel,
+    GlobalSettingModel,
+} from "app/models";
 import { XnAgGridComponent } from "../xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
-import { ProjectService, ModalService, AppErrorHandler, DatatableService, SearchService, GlobalSettingService } from "app/services";
+import {
+    ProjectService,
+    ModalService,
+    AppErrorHandler,
+    DatatableService,
+    SearchService,
+    GlobalSettingService,
+} from "app/services";
 import { IPageChangedEvent } from "../xn-pager/xn-pagination.component";
-import camelCase from 'lodash-es/camelCase';
-import isEmpty from 'lodash-es/isEmpty';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isEqual from 'lodash-es/isEqual';
-import isNil from 'lodash-es/isNil';
+import camelCase from "lodash-es/camelCase";
+import isEmpty from "lodash-es/isEmpty";
+import cloneDeep from "lodash-es/cloneDeep";
+import isEqual from "lodash-es/isEqual";
+import isNil from "lodash-es/isNil";
 import { Uti } from "app/utilities";
 import { ChangingModel } from "../form";
 import { Store, ReducerManagerDispatcher } from "@ngrx/store";
 import { AppState } from "app/state-management/store";
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import * as moduleSettingReducer from 'app/state-management/store/reducer/module-setting';
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import * as moduleSettingReducer from "app/state-management/store/reducer/module-setting";
 import { Subscription, Observable } from "rxjs";
-import { CustomAction, ProcessDataActions } from "app/state-management/store/actions";
+import {
+    CustomAction,
+    ProcessDataActions,
+} from "app/state-management/store/actions";
 import { SplitComponent } from "angular-split";
 
 class SelectionMediacodeExcluded {
@@ -66,12 +93,14 @@ class CacheData {
 }
 
 @Component({
-    selector: 'selection-project-detail',
-    templateUrl: './selection-project-detail.component.html',
-    styleUrls: ['./selection-project-detail.component.scss']
+    selector: "selection-project-detail",
+    templateUrl: "./selection-project-detail.component.html",
+    styleUrls: ["./selection-project-detail.component.scss"],
 })
-export class SelectionProjectDetailComponent extends BaseComponent implements OnInit, OnDestroy, OnChanges {
-
+export class SelectionProjectDetailComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, OnChanges
+{
     public perfectScrollbarConfig: any = {};
     public leftGridData: ControlGridModel;
     public rightGridData: ControlGridModel;
@@ -80,7 +109,7 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     public isBottomRightGridDisabled = false;
     public pageSize: number = Configuration.pageSize;
     private pageIndex: number = Configuration.pageIndex;
-    private keyword: string = '*';
+    private keyword: string = "*";
     private leftGrid: XnAgGridComponent;
     public columnsLayoutSettings: any = {};
     public splitterConfig = {
@@ -88,7 +117,7 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
         rightVertical: 65,
         topHorizontal: 50,
         botHorizontal: 50,
-    }
+    };
 
     private cacheData = new CacheData();
     private selectedEntity: any = null;
@@ -115,14 +144,16 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     @Output() onGridEditSuccess = new EventEmitter<any>();
     @Output() onSaveSuccess = new EventEmitter<any>();
 
-    @ViewChild('leftGrid') set leftGridInstance(leftGridInstance: XnAgGridComponent) {
+    @ViewChild("leftGrid") set leftGridInstance(
+        leftGridInstance: XnAgGridComponent
+    ) {
         this.leftGrid = leftGridInstance;
     }
-    @ViewChild('rightGrid') private rightGrid: XnAgGridComponent;
-    @ViewChild('bottomLeftGrid') private bottomLeftGrid: XnAgGridComponent;
-    @ViewChild('bottomRightGrid') private bottomRightGrid: XnAgGridComponent;
-    @ViewChild('verticalSplit') private verticalSplit: SplitComponent;
-    @ViewChild('horizontalSplit') private horizontalSplit: SplitComponent;
+    @ViewChild("rightGrid") private rightGrid: XnAgGridComponent;
+    @ViewChild("bottomLeftGrid") private bottomLeftGrid: XnAgGridComponent;
+    @ViewChild("bottomRightGrid") private bottomRightGrid: XnAgGridComponent;
+    @ViewChild("verticalSplit") private verticalSplit: SplitComponent;
+    @ViewChild("horizontalSplit") private horizontalSplit: SplitComponent;
 
     constructor(
         private store: Store<AppState>,
@@ -141,12 +172,24 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     ) {
         super(router);
 
-        this.selectedEntityState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).selectedEntity);
-        this.widgetListenKeyState = store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).widgetListenKey);
+        this.selectedEntityState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedEntity
+        );
+        this.widgetListenKeyState = store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).widgetListenKey
+        );
 
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
 
@@ -172,7 +215,7 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes['readOnly']) {
+        if (changes["readOnly"]) {
             if (!this.readOnly) {
                 setTimeout(() => {
                     this.search();
@@ -184,64 +227,119 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     private loadColumnLayoutSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
             .subscribe((data: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (data && data.length) {
-                        let gridColLayoutSettings = data.filter(p => p.globalType == 'GridColLayout');
-                        if (gridColLayoutSettings && gridColLayoutSettings.length) {
-                            gridColLayoutSettings.forEach(setting => {
-                                this.columnsLayoutSettings[setting.globalName] = JSON.parse(setting.jsonSettings);
+                        let gridColLayoutSettings = data.filter(
+                            (p) => p.globalType == "GridColLayout"
+                        );
+                        if (
+                            gridColLayoutSettings &&
+                            gridColLayoutSettings.length
+                        ) {
+                            gridColLayoutSettings.forEach((setting) => {
+                                this.columnsLayoutSettings[setting.globalName] =
+                                    JSON.parse(setting.jsonSettings);
                             });
                         }
 
                         this.changeDetectorRef.detectChanges();
                     }
-                })
-            })
+                });
+            });
     }
 
     private loadSplitterSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
             .subscribe((data: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (data && data.length) {
-                        let selectionWidgetSplitterSettings = data.filter(p => p.globalName == this.idRepWidgetApp && p.globalType == 'WidgetSplitter');
-                        if (selectionWidgetSplitterSettings && selectionWidgetSplitterSettings.length) {
-                            selectionWidgetSplitterSettings.forEach(setting => {
-                                this.splitterConfig = JSON.parse(setting.jsonSettings);
-                                this.verticalSplit.updateArea(this.verticalSplit.areas[0].component, 1, this.splitterConfig.leftVertical, 20);
-                                this.verticalSplit.updateArea(this.verticalSplit.areas[1].component, 1, this.splitterConfig.rightVertical, 20);
-                                this.horizontalSplit.updateArea(this.horizontalSplit.areas[0].component, 1, this.splitterConfig.topHorizontal, 20);
-                                this.horizontalSplit.updateArea(this.horizontalSplit.areas[1].component, 1, this.splitterConfig.botHorizontal, 20);
-                            });
+                        let selectionWidgetSplitterSettings = data.filter(
+                            (p) =>
+                                p.globalName == this.idRepWidgetApp &&
+                                p.globalType == "WidgetSplitter"
+                        );
+                        if (
+                            selectionWidgetSplitterSettings &&
+                            selectionWidgetSplitterSettings.length
+                        ) {
+                            selectionWidgetSplitterSettings.forEach(
+                                (setting) => {
+                                    this.splitterConfig = JSON.parse(
+                                        setting.jsonSettings
+                                    );
+                                    this.verticalSplit.updateArea(
+                                        this.verticalSplit.areas[0].component,
+                                        1,
+                                        this.splitterConfig.leftVertical,
+                                        20
+                                    );
+                                    this.verticalSplit.updateArea(
+                                        this.verticalSplit.areas[1].component,
+                                        1,
+                                        this.splitterConfig.rightVertical,
+                                        20
+                                    );
+                                    this.horizontalSplit.updateArea(
+                                        this.horizontalSplit.areas[0].component,
+                                        1,
+                                        this.splitterConfig.topHorizontal,
+                                        20
+                                    );
+                                    this.horizontalSplit.updateArea(
+                                        this.horizontalSplit.areas[1].component,
+                                        1,
+                                        this.splitterConfig.botHorizontal,
+                                        20
+                                    );
+                                }
+                            );
                         }
 
                         this.changeDetectorRef.detectChanges();
                     }
-                })
-            })
+                });
+            });
     }
 
     private saveSplitterSettings() {
-        this.globalSettingService.getAllGlobalSettings(-1)
-            .subscribe(getAllGlobalSettings => {
-                let selectionWidgetSplitterSettings = getAllGlobalSettings.find(x => x.globalName == this.idRepWidgetApp && x.globalType == 'WidgetSplitter')
-                if (!selectionWidgetSplitterSettings || !selectionWidgetSplitterSettings.idSettingsGlobal || !selectionWidgetSplitterSettings.globalName) {
+        this.globalSettingService
+            .getAllGlobalSettings(-1)
+            .subscribe((getAllGlobalSettings) => {
+                let selectionWidgetSplitterSettings = getAllGlobalSettings.find(
+                    (x) =>
+                        x.globalName == this.idRepWidgetApp &&
+                        x.globalType == "WidgetSplitter"
+                );
+                if (
+                    !selectionWidgetSplitterSettings ||
+                    !selectionWidgetSplitterSettings.idSettingsGlobal ||
+                    !selectionWidgetSplitterSettings.globalName
+                ) {
                     selectionWidgetSplitterSettings = new GlobalSettingModel({
                         globalName: this.idRepWidgetApp,
-                        globalType: 'WidgetSplitter',
-                        description: 'WidgetSplitter',
-                        isActive: true
+                        globalType: "WidgetSplitter",
+                        description: "WidgetSplitter",
+                        isActive: true,
                     });
                 }
                 selectionWidgetSplitterSettings.idSettingsGUI = -1;
-                selectionWidgetSplitterSettings.jsonSettings = JSON.stringify(this.splitterConfig)
+                selectionWidgetSplitterSettings.jsonSettings = JSON.stringify(
+                    this.splitterConfig
+                );
                 selectionWidgetSplitterSettings.isActive = true;
 
-                this.globalSettingService.saveGlobalSetting(selectionWidgetSplitterSettings)
-                    .subscribe(data => {
-                        this.globalSettingService.saveUpdateCache('-1', selectionWidgetSplitterSettings, data);
+                this.globalSettingService
+                    .saveGlobalSetting(selectionWidgetSplitterSettings)
+                    .subscribe((data) => {
+                        this.globalSettingService.saveUpdateCache(
+                            "-1",
+                            selectionWidgetSplitterSettings,
+                            data
+                        );
                     });
             });
     }
@@ -263,39 +361,48 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     private initEmptyDataForGrid() {
         this.leftGridData = {
             data: [],
-            columns: []
+            columns: [],
         };
         this.rightGridData = {
             data: [],
-            columns: []
+            columns: [],
         };
         this.bottomLeftGridData = {
             data: [],
-            columns: []
+            columns: [],
         };
         this.bottomRightGridData = {
             data: [],
-            columns: []
+            columns: [],
         };
     }
 
     private _subscribeRequestSaveWidgetState() {
-        this.requestSaveWidgetStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE_WIDGET && action.module.idSettingsGUI == this.ofModule.idSettingsGUI && this._eref.nativeElement.offsetParent != null;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.submit();
+        this.requestSaveWidgetStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE_WIDGET &&
+                    action.module.idSettingsGUI ==
+                        this.ofModule.idSettingsGUI &&
+                    this._eref.nativeElement.offsetParent != null
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.submit();
+                });
             });
-        });
     }
 
     public submit(callback?: any) {
         let saveData = {
-            IdSelectionProject: this.selectedEntity[camelCase(this.widgetListenKey)],
-            ProjectExcludeData: this.buildProjectExclude()
+            IdSelectionProject:
+                this.selectedEntity[camelCase(this.widgetListenKey)],
+            ProjectExcludeData: this.buildProjectExclude(),
         };
 
-        this.projectService.saveProjectExclude(saveData)
+        this.projectService
+            .saveProjectExclude(saveData)
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
@@ -305,7 +412,9 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
                         callback();
                     }
 
-                    this.store.dispatch(this.processDataActions.saveWidgetSuccess(this.ofModule));
+                    this.store.dispatch(
+                        this.processDataActions.saveWidgetSuccess(this.ofModule)
+                    );
                     this.reset();
                     this.onSaveSuccess.emit();
 
@@ -321,9 +430,23 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     private search() {
-        if (!this.leftGrid || this.modalService.isStopSearchWhenEmptySize(this.pageSize, this.pageIndex)) return;
+        if (
+            !this.leftGrid ||
+            this.modalService.isStopSearchWhenEmptySize(
+                this.pageSize,
+                this.pageIndex
+            )
+        )
+            return;
         this.leftGrid.isSearching = true;
-        this.searchService.search('selectioncampaignisactive', this.keyword, this.ofModule.idSettingsGUI, this.pageIndex, this.pageSize)
+        this.searchService
+            .search(
+                "selectioncampaignisactive",
+                this.keyword,
+                this.ofModule.idSettingsGUI,
+                this.pageIndex,
+                this.pageSize
+            )
             .finally(() => {
                 this.changeDetectorRef.detectChanges();
             })
@@ -332,12 +455,14 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
 
     private onSearchComplete(response: ApiResultResponse) {
         const results: Array<any> = response.item.results;
-        const columnSetting = this.formatColumnSetting(response.item.setting[0][0]);
+        const columnSetting = this.formatColumnSetting(
+            response.item.setting[0][0]
+        );
         if (!results || !results.length) {
             this.leftGridData = {
                 columns: columnSetting,
                 data: [],
-                totalResults: 0
+                totalResults: 0,
             };
             this.leftGrid.isSearching = false;
 
@@ -359,7 +484,11 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
                 continue;
             }
 
-            if (this.selectedEntity && res[camelCase(this.widgetListenKey)] == this.selectedEntity[camelCase(this.widgetListenKey)]) {
+            if (
+                this.selectedEntity &&
+                res[camelCase(this.widgetListenKey)] ==
+                    this.selectedEntity[camelCase(this.widgetListenKey)]
+            ) {
                 continue;
             }
 
@@ -373,7 +502,7 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
         let leftData = {
             data: newData,
             columns: columnSetting,
-            totalResults: response.item.total
+            totalResults: response.item.total,
         };
         // leftData = this.datatableService.appendRowId(leftData);
         this.leftGridData = leftData;
@@ -407,19 +536,21 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
             ProjectExclude = ProjectExclude || [];
             if (project.isDeleted) {
                 ProjectExclude.push({
-                    IdSelectionProjectExclude: project.idSelectionProjectExclude,
+                    IdSelectionProjectExclude:
+                        project.idSelectionProjectExclude,
                     IdSelectionProject: project.idSelectionProject,
                     ExcludeIdSelectionProject: null,
                     IsDeleted: 1,
-                    JsonCountiesExclude: this.buildJsonCountiesExclude(project)
+                    JsonCountiesExclude: this.buildJsonCountiesExclude(project),
                 });
             } else {
                 ProjectExclude.push({
-                    IdSelectionProjectExclude: project.idSelectionProjectExclude,
+                    IdSelectionProjectExclude:
+                        project.idSelectionProjectExclude,
                     IdSelectionProject: project.idSelectionProject,
                     ExcludeIdSelectionProject: null,
                     IsActive: 1,
-                    JsonCountiesExclude: this.buildJsonCountiesExclude(project)
+                    JsonCountiesExclude: this.buildJsonCountiesExclude(project),
                 });
             }
         });
@@ -432,7 +563,11 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
 
         for (let i = 0; i < project.selectionCountriesExcluded.length; i++) {
             ProjectExcludeCountries = ProjectExcludeCountries || [];
-            let isActive = Uti.isNullUndefinedEmptyObject(project.selectionCountriesExcluded[i].isActive) ? false : project.selectionCountriesExcluded[i].isActive;
+            let isActive = Uti.isNullUndefinedEmptyObject(
+                project.selectionCountriesExcluded[i].isActive
+            )
+                ? false
+                : project.selectionCountriesExcluded[i].isActive;
             if (isActive === 1) {
                 isActive = true;
             } else if (isActive === 0) {
@@ -440,10 +575,18 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
             }
 
             ProjectExcludeCountries.push({
-                IdSelectionProjectExcludeCountries: project.selectionCountriesExcluded[i].idSelectionProjectExcludeCountries,
-                IdSelectionProjectCountry: project.selectionCountriesExcluded[i].idSelectionProjectCountry,
+                IdSelectionProjectExcludeCountries:
+                    project.selectionCountriesExcluded[i]
+                        .idSelectionProjectExcludeCountries,
+                IdSelectionProjectCountry:
+                    project.selectionCountriesExcluded[i]
+                        .idSelectionProjectCountry,
                 IsActive: isActive,
-                JsonMediaCodeExclude: isActive ? this.buildJsonMediaCodeExclude(project.selectionCountriesExcluded[i]) : JSON.stringify({ ProjectExcludeMediaCode: null })
+                JsonMediaCodeExclude: isActive
+                    ? this.buildJsonMediaCodeExclude(
+                          project.selectionCountriesExcluded[i]
+                      )
+                    : JSON.stringify({ ProjectExcludeMediaCode: null }),
             });
         }
 
@@ -456,7 +599,11 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
         for (let i = 0; i < country.selectionMediacodeExcluded.length; i++) {
             ProjectExcludeMediaCode = ProjectExcludeMediaCode || [];
 
-            let isActive = Uti.isNullUndefinedEmptyObject(country.selectionMediacodeExcluded[i].isActive) ? false : country.selectionMediacodeExcluded[i].isActive;
+            let isActive = Uti.isNullUndefinedEmptyObject(
+                country.selectionMediacodeExcluded[i].isActive
+            )
+                ? false
+                : country.selectionMediacodeExcluded[i].isActive;
             if (isActive === 1) {
                 isActive = true;
             } else if (isActive === 0) {
@@ -465,17 +612,27 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
 
             if (isActive) {
                 ProjectExcludeMediaCode.push({
-                    IdSelectionProjectExcludeMediaCode: country.selectionMediacodeExcluded[i].idSelectionProjectExcludeMediaCode,
+                    IdSelectionProjectExcludeMediaCode:
+                        country.selectionMediacodeExcluded[i]
+                            .idSelectionProjectExcludeMediaCode,
                     MediaCode: country.selectionMediacodeExcluded[i].mediaCode,
-                    MediaCodeLabel: country.selectionMediacodeExcluded[i].mediaCodeLabel,
-                    IsActive: isActive
+                    MediaCodeLabel:
+                        country.selectionMediacodeExcluded[i].mediaCodeLabel,
+                    IsActive: isActive,
                 });
-            } else if (!isActive && country.selectionMediacodeExcluded[i].idSelectionProjectExcludeMediaCode) {
+            } else if (
+                !isActive &&
+                country.selectionMediacodeExcluded[i]
+                    .idSelectionProjectExcludeMediaCode
+            ) {
                 ProjectExcludeMediaCode.push({
-                    IdSelectionProjectExcludeMediaCode: country.selectionMediacodeExcluded[i].idSelectionProjectExcludeMediaCode,
+                    IdSelectionProjectExcludeMediaCode:
+                        country.selectionMediacodeExcluded[i]
+                            .idSelectionProjectExcludeMediaCode,
                     MediaCode: country.selectionMediacodeExcluded[i].mediaCode,
-                    MediaCodeLabel: country.selectionMediacodeExcluded[i].mediaCodeLabel,
-                    IsDeleted: true
+                    MediaCodeLabel:
+                        country.selectionMediacodeExcluded[i].mediaCodeLabel,
+                    IsDeleted: true,
                 });
             }
         }
@@ -494,18 +651,25 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     private reset() {
         this.cacheData.selectionIsExcluded.forEach((project) => {
             project.isDeleted = false;
-        })
+        });
     }
 
     private getSelectionToExclude() {
-        this.projectService.getSelectionToExclude(this.selectedEntity[camelCase(this.widgetListenKey)])
+        this.projectService
+            .getSelectionToExclude(
+                this.selectedEntity[camelCase(this.widgetListenKey)]
+            )
             .finally(() => {
                 this.changeDetectorRef.detectChanges();
             })
             .subscribe((response: ApiResultResponse) => {
                 if (Uti.isResquestSuccess(response)) {
-                    let tableData: any = this.datatableService.formatDataTableFromRawData(response.item);
-                    tableData = this.datatableService.buildDataSource(tableData);
+                    let tableData: any =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item
+                        );
+                    tableData =
+                        this.datatableService.buildDataSource(tableData);
 
                     const config = {
                         allowDelete: false,
@@ -513,18 +677,31 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
                         allowDownload: false,
                         allowSelectAll: false,
                         hasDisableRow: false,
-                        hasCountrySelectAll: false
-                    }
+                        hasCountrySelectAll: false,
+                    };
 
-                    tableData = this.datatableService.buildWijmoDataSource(tableData, config);
+                    tableData = this.datatableService.buildWijmoDataSource(
+                        tableData,
+                        config
+                    );
 
                     const newData: Array<any> = [];
                     for (const res of tableData.data) {
-                        if (this.checkExistPrimaryItem(res[this.widgetListenKey])) {
+                        if (
+                            this.checkExistPrimaryItem(
+                                res[this.widgetListenKey]
+                            )
+                        ) {
                             continue;
                         }
 
-                        if (this.selectedEntity && res[this.widgetListenKey] == this.selectedEntity[camelCase(this.widgetListenKey)]) {
+                        if (
+                            this.selectedEntity &&
+                            res[this.widgetListenKey] ==
+                                this.selectedEntity[
+                                    camelCase(this.widgetListenKey)
+                                ]
+                        ) {
                             continue;
                         }
 
@@ -534,7 +711,7 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
                     this.leftGridData = {
                         columns: tableData.columns,
                         data: newData,
-                        totalResults: newData.length
+                        totalResults: newData.length,
                     };
 
                     this.changeDetectorRef.detectChanges();
@@ -543,14 +720,21 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     private getSelectionIsExcluded() {
-        this.projectService.getSelectionIsExcluded(this.selectedEntity[camelCase(this.widgetListenKey)])
+        this.projectService
+            .getSelectionIsExcluded(
+                this.selectedEntity[camelCase(this.widgetListenKey)]
+            )
             .finally(() => {
                 this.changeDetectorRef.detectChanges();
             })
             .subscribe((response: ApiResultResponse) => {
                 if (Uti.isResquestSuccess(response)) {
-                    let tableData: any = this.datatableService.formatDataTableFromRawData(response.item);
-                    tableData = this.datatableService.buildDataSource(tableData);
+                    let tableData: any =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item
+                        );
+                    tableData =
+                        this.datatableService.buildDataSource(tableData);
 
                     const config = {
                         allowDelete: false,
@@ -558,14 +742,19 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
                         allowDownload: false,
                         allowSelectAll: false,
                         hasDisableRow: false,
-                        hasCountrySelectAll: false
-                    }
+                        hasCountrySelectAll: false,
+                    };
 
-                    tableData = this.datatableService.buildWijmoDataSource(tableData, config);
+                    tableData = this.datatableService.buildWijmoDataSource(
+                        tableData,
+                        config
+                    );
 
                     this.rightGridData = tableData;
 
-                    this.cacheData.selectionIsExcludedGridData = cloneDeep(this.rightGridData);
+                    this.cacheData.selectionIsExcludedGridData = cloneDeep(
+                        this.rightGridData
+                    );
 
                     this.changeDetectorRef.detectChanges();
                 }
@@ -573,7 +762,9 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     private getSelectionCountriesExcluded(idSelectionProject) {
-        let found = this.cacheData.selectionIsExcluded.find(item => item.idSelectionProject == idSelectionProject);
+        let found = this.cacheData.selectionIsExcluded.find(
+            (item) => item.idSelectionProject == idSelectionProject
+        );
         if (found && found.selectionCountriesExcluded.length) {
             this.bottomLeftGridData = found.selectionCountriesExcludedGridData;
 
@@ -581,14 +772,19 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
             return;
         }
 
-        this.projectService.getSelectionCountriesExcluded(idSelectionProject)
+        this.projectService
+            .getSelectionCountriesExcluded(idSelectionProject)
             .finally(() => {
                 this.changeDetectorRef.detectChanges();
             })
             .subscribe((response: ApiResultResponse) => {
                 if (Uti.isResquestSuccess(response)) {
-                    let tableData: any = this.datatableService.formatDataTableFromRawData(response.item);
-                    tableData = this.datatableService.buildDataSource(tableData);
+                    let tableData: any =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item
+                        );
+                    tableData =
+                        this.datatableService.buildDataSource(tableData);
 
                     const config = {
                         allowDelete: false,
@@ -596,15 +792,22 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
                         allowDownload: false,
                         allowSelectAll: false,
                         hasDisableRow: false,
-                        hasCountrySelectAll: false
-                    }
+                        hasCountrySelectAll: false,
+                    };
 
-                    tableData = this.datatableService.buildWijmoDataSource(tableData, config);
+                    tableData = this.datatableService.buildWijmoDataSource(
+                        tableData,
+                        config
+                    );
 
                     this.bottomLeftGridData = tableData;
 
                     found.selectionCountriesExcludedGridData = tableData;
-                    found.selectionCountriesExcluded = this.buildSelectionCountriesExcluded(idSelectionProject, tableData);
+                    found.selectionCountriesExcluded =
+                        this.buildSelectionCountriesExcluded(
+                            idSelectionProject,
+                            tableData
+                        );
 
                     this.changeDetectorRef.detectChanges();
                 }
@@ -615,36 +818,53 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
         return tableData.data.map((item) => {
             return new SelectionCountriesExcluded({
                 idSelectionProjectCountry: item.IdSelectionProjectCountry,
-                idSelectionProjectExcludeCountries: item.IdSelectionProjectExcludeCountries,
+                idSelectionProjectExcludeCountries:
+                    item.IdSelectionProjectExcludeCountries,
                 isActive: item.IsActive,
                 selectionMediacodeExcluded: [],
-                selectionMediacodeExcludedGridData: new ControlGridModel()
-            })
-        })
+                selectionMediacodeExcludedGridData: new ControlGridModel(),
+            });
+        });
     }
 
-    private getSelectionMediacodeExcluded(idSelectionProject, idSelectionProjectCountry) {
-        let project = this.cacheData.selectionIsExcluded.find(x => x.idSelectionProject == idSelectionProject);
+    private getSelectionMediacodeExcluded(
+        idSelectionProject,
+        idSelectionProjectCountry
+    ) {
+        let project = this.cacheData.selectionIsExcluded.find(
+            (x) => x.idSelectionProject == idSelectionProject
+        );
         let country: SelectionCountriesExcluded;
         if (project) {
-            country = project.selectionCountriesExcluded.find(x => x.idSelectionProjectCountry == idSelectionProjectCountry);
+            country = project.selectionCountriesExcluded.find(
+                (x) => x.idSelectionProjectCountry == idSelectionProjectCountry
+            );
 
             if (country && country.selectionMediacodeExcluded.length) {
-                this.bottomRightGridData = country.selectionMediacodeExcludedGridData;
+                this.bottomRightGridData =
+                    country.selectionMediacodeExcludedGridData;
 
                 this.changeDetectorRef.detectChanges();
                 return;
             }
         }
 
-        this.projectService.getSelectionMediacodeExcluded(idSelectionProject, idSelectionProjectCountry)
+        this.projectService
+            .getSelectionMediacodeExcluded(
+                idSelectionProject,
+                idSelectionProjectCountry
+            )
             .finally(() => {
                 this.changeDetectorRef.detectChanges();
             })
             .subscribe((response: ApiResultResponse) => {
                 if (Uti.isResquestSuccess(response)) {
-                    let tableData: any = this.datatableService.formatDataTableFromRawData(response.item);
-                    tableData = this.datatableService.buildDataSource(tableData);
+                    let tableData: any =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item
+                        );
+                    tableData =
+                        this.datatableService.buildDataSource(tableData);
 
                     const config = {
                         allowDelete: false,
@@ -652,41 +872,54 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
                         allowDownload: false,
                         allowSelectAll: false,
                         hasDisableRow: false,
-                        hasCountrySelectAll: false
-                    }
+                        hasCountrySelectAll: false,
+                    };
 
-                    tableData = this.datatableService.buildWijmoDataSource(tableData, config);
+                    tableData = this.datatableService.buildWijmoDataSource(
+                        tableData,
+                        config
+                    );
                     this.bottomRightGridData = tableData;
 
                     country.selectionMediacodeExcludedGridData = tableData;
-                    country.selectionMediacodeExcluded = this.buildSelectionMediacodeExcluded(idSelectionProjectCountry, tableData);
+                    country.selectionMediacodeExcluded =
+                        this.buildSelectionMediacodeExcluded(
+                            idSelectionProjectCountry,
+                            tableData
+                        );
 
                     this.changeDetectorRef.detectChanges();
                 }
             });
     }
 
-    private buildSelectionMediacodeExcluded(idSelectionProjectCountry, tableData) {
+    private buildSelectionMediacodeExcluded(
+        idSelectionProjectCountry,
+        tableData
+    ) {
         return tableData.data.map((item) => {
             return new SelectionMediacodeExcluded({
                 isActive: item.IsActive,
                 mediaCode: item.MediaCode,
                 mediaCodeLabel: item.MediaCodeLabel,
-                idSelectionProjectExcludeMediaCode: item.IdSelectionProjectExcludeMediacode
+                idSelectionProjectExcludeMediaCode:
+                    item.IdSelectionProjectExcludeMediacode,
             });
-        })
+        });
     }
 
     private formatColumnSetting(settingData) {
         const formatColumnSetting: { [key: string]: any } = {};
-        let widgetTitle = '';
+        let widgetTitle = "";
         if (settingData && settingData.SettingColumnName) {
-            const columnSetting: Array<any> = JSON.parse(settingData.SettingColumnName);
+            const columnSetting: Array<any> = JSON.parse(
+                settingData.SettingColumnName
+            );
             if (columnSetting && columnSetting.length) {
                 widgetTitle = columnSetting[0].WidgetTitle;
                 if (columnSetting[1]) {
                     const columns: Array<any> = columnSetting[1].ColumnsName;
-                    columns.forEach(col => {
+                    columns.forEach((col) => {
                         formatColumnSetting[col.ColumnName] = col;
                     });
                 }
@@ -695,13 +928,13 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
 
         const columns: Array<any> = [];
 
-        Object.keys(formatColumnSetting).forEach(key => {
+        Object.keys(formatColumnSetting).forEach((key) => {
             columns.push({
                 title: formatColumnSetting[key].ColumnHeader,
                 data: formatColumnSetting[key].ColumnName,
                 setting: {
-                    Setting: formatColumnSetting[key].Setting
-                }
+                    Setting: formatColumnSetting[key].Setting,
+                },
             });
         });
 
@@ -709,14 +942,22 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     private checkExistPrimaryItem(idSelectionProject: any): boolean {
-        const project = this.rightGridData.data.find(x => x.IdSelectionProject == idSelectionProject);
-        return (project && project.IdSelectionProject);
+        const project = this.rightGridData.data.find(
+            (x) => x.IdSelectionProject == idSelectionProject
+        );
+        return project && project.IdSelectionProject;
     }
 
     public addProject() {
         if (isEmpty(this.currentSelectedItemLeft())) return;
-        this.rightGridData = this.addProjectItem(this.rightGridData, this.getRightItem());
-        this.leftGridData = this.removeProjectItem(this.leftGridData, this.currentSelectedItemLeft());
+        this.rightGridData = this.addProjectItem(
+            this.rightGridData,
+            this.getRightItem()
+        );
+        this.leftGridData = this.removeProjectItem(
+            this.leftGridData,
+            this.currentSelectedItemLeft()
+        );
         this.focusRightLastItem();
         this.onTableEditSuccess();
 
@@ -724,42 +965,60 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     private currentSelectedItemLeft(): any {
-        return Uti.mapArrayToObject((this.leftGrid.selectedItem() || []), true);
+        return Uti.mapArrayToObject(this.leftGrid.selectedItem() || [], true);
     }
 
     private currentSelectedItemRight(): any {
-        return Uti.mapArrayToObject((this.rightGrid.selectedItem() || []), true);
+        return Uti.mapArrayToObject(this.rightGrid.selectedItem() || [], true);
     }
 
     private currentSelectedItemBottomLeft(): any {
-        return Uti.mapArrayToObject((this.bottomLeftGrid.selectedItem() || []), true);
+        return Uti.mapArrayToObject(
+            this.bottomLeftGrid.selectedItem() || [],
+            true
+        );
     }
 
     private focusRightLastItem() {
         // Select the last item
         setTimeout(() => {
             if (this.rightGrid) {
-                this.rightGrid.selectRowIndex(this.rightGridData.data.length - 1, true);
+                this.rightGrid.selectRowIndex(
+                    this.rightGridData.data.length - 1,
+                    true
+                );
             }
         }, 1000);
     }
 
-    private addProjectItem(controlGridModel: ControlGridModel, selectItem: any): ControlGridModel {
+    private addProjectItem(
+        controlGridModel: ControlGridModel,
+        selectItem: any
+    ): ControlGridModel {
         controlGridModel.data.push(selectItem);
         return Uti.cloneDataForGridItems(controlGridModel);
     }
 
     private getRightItem(): any {
         let leftSelectItem = this.currentSelectedItemLeft();
-        let cachedItem = this.cacheData.selectionIsExcludedGridData.data.find(x => x.IdSelectionProject == leftSelectItem.IdSelectionProject);
+        let cachedItem = this.cacheData.selectionIsExcludedGridData.data.find(
+            (x) => x.IdSelectionProject == leftSelectItem.IdSelectionProject
+        );
         if (cachedItem) {
             return cachedItem;
         }
         return leftSelectItem;
     }
 
-    private removeProjectItem(controlGridModel: ControlGridModel, selectItem: any): ControlGridModel {
-        Uti.removeItemInArray(controlGridModel.data, selectItem, 'IdSelectionProject');
+    private removeProjectItem(
+        controlGridModel: ControlGridModel,
+        selectItem: any
+    ): ControlGridModel {
+        Uti.removeItemInArray(
+            controlGridModel.data,
+            selectItem,
+            "IdSelectionProject"
+        );
         this.resetBottomGrid();
         return Uti.cloneDataForGridItems(controlGridModel);
     }
@@ -767,12 +1026,12 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     private resetBottomGrid() {
         this.bottomLeftGridData = Uti.cloneDataForGridItems({
             data: [],
-            columns: this.bottomLeftGridData.columns
+            columns: this.bottomLeftGridData.columns,
         });
 
         this.bottomRightGridData = Uti.cloneDataForGridItems({
             data: [],
-            columns: this.bottomRightGridData.columns
+            columns: this.bottomRightGridData.columns,
         });
     }
 
@@ -781,13 +1040,20 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
             return;
         }
 
-        let project = this.cacheData.selectionIsExcluded.find(x => x.idSelectionProject == this.currentSelectedItemRight().IdSelectionProject);
+        let project = this.cacheData.selectionIsExcluded.find(
+            (x) =>
+                x.idSelectionProject ==
+                this.currentSelectedItemRight().IdSelectionProject
+        );
         if (project) {
             project.isDeleted = true;
             project.selectionCountriesExcluded = [];
         }
 
-        this.rightGridData = this.removeProjectItem(this.rightGridData, this.currentSelectedItemRight());
+        this.rightGridData = this.removeProjectItem(
+            this.rightGridData,
+            this.currentSelectedItemRight()
+        );
         this.focusRightLastItem();
         this.search();
 
@@ -798,17 +1064,26 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
 
     public removeAllProjects() {
         if (!this.rightGridData.data.length) return;
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            message: [{key: '<p>'}, {key: 'Modal_Message__Are_You_Sure_You_Want_To_Remove_All_Projects'},
-                {key: '</p>'}],
-            callBack1: () => { this.removeAllProjectsAfterConfirm(); }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Are_You_Sure_You_Want_To_Remove_All_Projects",
+                    },
+                    { key: "</p>" },
+                ],
+                callBack1: () => {
+                    this.removeAllProjectsAfterConfirm();
+                },
+            })
+        );
     }
 
     private removeAllProjectsAfterConfirm() {
         this.rightGridData = {
             data: [],
-            columns: this.rightGridData.columns
+            columns: this.rightGridData.columns,
         };
         this.resetBottomGrid();
         this.focusRightLastItem();
@@ -830,18 +1105,26 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
 
     public rightGridRowClick($event: any) {
         setTimeout(() => {
-            let idSelectionProject = Uti.getValueFromArrayByKey($event, 'IdSelectionProject');
-            let idSelectionProjectExclude = Uti.getValueFromArrayByKey($event, 'IdSelectionProjectExclude');
+            let idSelectionProject = Uti.getValueFromArrayByKey(
+                $event,
+                "IdSelectionProject"
+            );
+            let idSelectionProjectExclude = Uti.getValueFromArrayByKey(
+                $event,
+                "IdSelectionProjectExclude"
+            );
 
-            let found = this.cacheData.selectionIsExcluded.find(x => x.idSelectionProject == idSelectionProject);
+            let found = this.cacheData.selectionIsExcluded.find(
+                (x) => x.idSelectionProject == idSelectionProject
+            );
             if (!found) {
                 this.cacheData.selectionIsExcluded.push({
                     idSelectionProject: idSelectionProject,
                     idSelectionProjectExclude: idSelectionProjectExclude,
                     selectionCountriesExcludedGridData: new ControlGridModel(),
                     selectionCountriesExcluded: [],
-                    isDeleted: false
-                })
+                    isDeleted: false,
+                });
             }
 
             this.getSelectionCountriesExcluded(idSelectionProject);
@@ -852,64 +1135,88 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
 
     public bottomLeftGridRowClick($event: any) {
         setTimeout(() => {
-            let idSelectionProject = this.currentSelectedItemRight()['IdSelectionProject'];
-            let idSelectionProjectCountry = Uti.getValueFromArrayByKey($event, 'IdSelectionProjectCountry');
-            let isActive = Uti.getValueFromArrayByKey($event, 'IsActive');
-            let idSelectionProjectExcludeCountries = Uti.getValueFromArrayByKey($event, 'IdSelectionProjectExcludeCountries');
+            let idSelectionProject =
+                this.currentSelectedItemRight()["IdSelectionProject"];
+            let idSelectionProjectCountry = Uti.getValueFromArrayByKey(
+                $event,
+                "IdSelectionProjectCountry"
+            );
+            let isActive = Uti.getValueFromArrayByKey($event, "IsActive");
+            let idSelectionProjectExcludeCountries = Uti.getValueFromArrayByKey(
+                $event,
+                "IdSelectionProjectExcludeCountries"
+            );
 
-            let project = this.cacheData.selectionIsExcluded.find(x => x.idSelectionProject == idSelectionProject);
+            let project = this.cacheData.selectionIsExcluded.find(
+                (x) => x.idSelectionProject == idSelectionProject
+            );
             if (project) {
-                let country = project.selectionCountriesExcluded.find(x => x.idSelectionProjectCountry == idSelectionProjectCountry);
+                let country = project.selectionCountriesExcluded.find(
+                    (x) =>
+                        x.idSelectionProjectCountry == idSelectionProjectCountry
+                );
 
                 if (!country) {
                     project.selectionCountriesExcluded.push({
                         idSelectionProjectCountry: idSelectionProjectCountry,
-                        idSelectionProjectExcludeCountries: idSelectionProjectExcludeCountries,
+                        idSelectionProjectExcludeCountries:
+                            idSelectionProjectExcludeCountries,
                         isActive: isActive,
-                        selectionMediacodeExcludedGridData: new ControlGridModel(),
-                        selectionMediacodeExcluded: []
-                    })
+                        selectionMediacodeExcludedGridData:
+                            new ControlGridModel(),
+                        selectionMediacodeExcluded: [],
+                    });
                 }
             }
 
             this.validateBottomRightGrid();
 
-            this.getSelectionMediacodeExcluded(idSelectionProject, idSelectionProjectCountry);
+            this.getSelectionMediacodeExcluded(
+                idSelectionProject,
+                idSelectionProjectCountry
+            );
 
             this.changeDetectorRef.detectChanges();
         }, 100);
     }
 
     private _subscribeWidgetListenKeyState() {
-        this.widgetListenKeyStateSubscription = this.widgetListenKeyState.subscribe((widgetListenKeyState: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.widgetListenKey = widgetListenKeyState;
+        this.widgetListenKeyStateSubscription =
+            this.widgetListenKeyState.subscribe(
+                (widgetListenKeyState: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.widgetListenKey = widgetListenKeyState;
 
-                this.changeDetectorRef.detectChanges();
-            });
-        });
+                        this.changeDetectorRef.detectChanges();
+                    });
+                }
+            );
     }
 
     private _subscribeSelectedEntityState() {
-        this.selectedEntityStateSubscription = this.selectedEntityState.subscribe((selectedEntityState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (isEmpty(selectedEntityState) && !isEmpty(this.selectedEntity)) {
-                    this.selectedEntity = null;
+        this.selectedEntityStateSubscription =
+            this.selectedEntityState.subscribe((selectedEntityState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (
+                        isEmpty(selectedEntityState) &&
+                        !isEmpty(this.selectedEntity)
+                    ) {
+                        this.selectedEntity = null;
+                        this.changeDetectorRef.detectChanges();
+                        return;
+                    }
+
+                    if (isEqual(this.selectedEntity, selectedEntityState)) {
+                        return;
+                    }
+
+                    this.selectedEntity = selectedEntityState;
+
+                    this.initData();
+
                     this.changeDetectorRef.detectChanges();
-                    return;
-                }
-
-                if (isEqual(this.selectedEntity, selectedEntityState)) {
-                    return;
-                }
-
-                this.selectedEntity = selectedEntityState;
-
-                this.initData();
-
-                this.changeDetectorRef.detectChanges();
+                });
             });
-        });
     }
 
     public onTableEditStart() {
@@ -925,13 +1232,21 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     public onBottomLeftGridEditSuccess($event) {
-        let idSelectionProject = this.currentSelectedItemRight()['IdSelectionProject'];
-        let idSelectionProjectCountry = Uti.getValueFromArrayByKey($event, 'IdSelectionProjectCountry');
-        let isActive = Uti.getValueFromArrayByKey($event, 'IsActive');
+        let idSelectionProject =
+            this.currentSelectedItemRight()["IdSelectionProject"];
+        let idSelectionProjectCountry = Uti.getValueFromArrayByKey(
+            $event,
+            "IdSelectionProjectCountry"
+        );
+        let isActive = Uti.getValueFromArrayByKey($event, "IsActive");
 
-        let project = this.cacheData.selectionIsExcluded.find(x => x.idSelectionProject == idSelectionProject);
+        let project = this.cacheData.selectionIsExcluded.find(
+            (x) => x.idSelectionProject == idSelectionProject
+        );
         if (project) {
-            let country = project.selectionCountriesExcluded.find(x => x.idSelectionProjectCountry == idSelectionProjectCountry);
+            let country = project.selectionCountriesExcluded.find(
+                (x) => x.idSelectionProjectCountry == idSelectionProjectCountry
+            );
 
             if (country) {
                 country.isActive = isActive;
@@ -950,17 +1265,25 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     public onBottomRightGridEditSuccess($event) {
-        let idSelectionProject = this.currentSelectedItemRight()['IdSelectionProject'];
-        let idSelectionProjectCountry = this.currentSelectedItemBottomLeft()['IdSelectionProjectCountry'];
-        let mediaCode = Uti.getValueFromArrayByKey($event, 'MediaCode');
-        let isActive = Uti.getValueFromArrayByKey($event, 'IsActive');
+        let idSelectionProject =
+            this.currentSelectedItemRight()["IdSelectionProject"];
+        let idSelectionProjectCountry =
+            this.currentSelectedItemBottomLeft()["IdSelectionProjectCountry"];
+        let mediaCode = Uti.getValueFromArrayByKey($event, "MediaCode");
+        let isActive = Uti.getValueFromArrayByKey($event, "IsActive");
 
-        let project = this.cacheData.selectionIsExcluded.find(x => x.idSelectionProject == idSelectionProject);
+        let project = this.cacheData.selectionIsExcluded.find(
+            (x) => x.idSelectionProject == idSelectionProject
+        );
         if (project) {
-            let country = project.selectionCountriesExcluded.find(x => x.idSelectionProjectCountry == idSelectionProjectCountry);
+            let country = project.selectionCountriesExcluded.find(
+                (x) => x.idSelectionProjectCountry == idSelectionProjectCountry
+            );
 
             if (country) {
-                let foundMediacode = country.selectionMediacodeExcluded.find(x => x.mediaCode == mediaCode);
+                let foundMediacode = country.selectionMediacodeExcluded.find(
+                    (x) => x.mediaCode == mediaCode
+                );
                 if (foundMediacode) {
                     foundMediacode.isActive = isActive;
                 }
@@ -987,13 +1310,20 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     private checkBottomRightGridDisabled() {
-        return this.bottomLeftGrid != null && this.bottomLeftGrid.selectedNode != null && !this.bottomLeftGrid.selectedNode.data['IsActive'];
+        return (
+            this.bottomLeftGrid != null &&
+            this.bottomLeftGrid.selectedNode != null &&
+            !this.bottomLeftGrid.selectedNode.data["IsActive"]
+        );
     }
 
     public onBottomLeftGridIsActiveAllChanged(checked) {
-        let idSelectionProject = this.currentSelectedItemRight()['IdSelectionProject'];
+        let idSelectionProject =
+            this.currentSelectedItemRight()["IdSelectionProject"];
 
-        let project = this.cacheData.selectionIsExcluded.find(x => x.idSelectionProject == idSelectionProject);
+        let project = this.cacheData.selectionIsExcluded.find(
+            (x) => x.idSelectionProject == idSelectionProject
+        );
         if (project) {
             project.selectionCountriesExcluded.forEach((item) => {
                 item.isActive = checked;
@@ -1001,7 +1331,7 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
             project.selectionCountriesExcludedGridData = new ControlGridModel({
                 columns: this.bottomLeftGridData.columns,
                 data: this.bottomLeftGrid.getGridData(),
-                totalResults: this.bottomLeftGrid.getGridData().length
+                totalResults: this.bottomLeftGrid.getGridData().length,
             });
         }
 
@@ -1011,22 +1341,29 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
     }
 
     public onBottomRightGridIsActiveAllChanged(checked) {
-        let idSelectionProject = this.currentSelectedItemRight()['IdSelectionProject'];
-        let idSelectionProjectCountry = this.currentSelectedItemBottomLeft()['IdSelectionProjectCountry'];
+        let idSelectionProject =
+            this.currentSelectedItemRight()["IdSelectionProject"];
+        let idSelectionProjectCountry =
+            this.currentSelectedItemBottomLeft()["IdSelectionProjectCountry"];
 
-        let project = this.cacheData.selectionIsExcluded.find(x => x.idSelectionProject == idSelectionProject);
+        let project = this.cacheData.selectionIsExcluded.find(
+            (x) => x.idSelectionProject == idSelectionProject
+        );
         if (project) {
-            let country = project.selectionCountriesExcluded.find(x => x.idSelectionProjectCountry == idSelectionProjectCountry);
+            let country = project.selectionCountriesExcluded.find(
+                (x) => x.idSelectionProjectCountry == idSelectionProjectCountry
+            );
 
             if (country) {
                 country.selectionMediacodeExcluded.forEach((item) => {
                     item.isActive = checked;
                 });
-                country.selectionMediacodeExcludedGridData = new ControlGridModel({
-                    columns: this.bottomRightGridData.columns,
-                    data: this.bottomRightGrid.getGridData(),
-                    totalResults: this.bottomRightGrid.getGridData().length
-                });
+                country.selectionMediacodeExcludedGridData =
+                    new ControlGridModel({
+                        columns: this.bottomRightGridData.columns,
+                        data: this.bottomRightGrid.getGridData(),
+                        totalResults: this.bottomRightGrid.getGridData().length,
+                    });
             }
         }
 
@@ -1045,7 +1382,7 @@ export class SelectionProjectDetailComponent extends BaseComponent implements On
             rightVertical: this.verticalSplit.areas[1].size,
             topHorizontal: this.horizontalSplit.areas[0].size,
             botHorizontal: this.horizontalSplit.areas[1].size,
-        }
+        };
 
         this.saveSplitterSettings();
 

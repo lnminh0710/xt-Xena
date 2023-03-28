@@ -1,7 +1,16 @@
-import { Component, OnInit, Input, OnDestroy, AfterViewInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
-import { Router } from '@angular/router';
-import isEqual from 'lodash-es/isEqual';
-import isEmpty from 'lodash-es/isEmpty';
+import {
+    Component,
+    OnInit,
+    Input,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChildren,
+    QueryList,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import isEqual from "lodash-es/isEqual";
+import isEmpty from "lodash-es/isEmpty";
 
 import {
     Module,
@@ -11,16 +20,16 @@ import {
     IDragDropCommunicationData,
     DragMode,
     TabSummaryModel,
-    ApiResultResponse
-} from 'app/models';
-import { EditingWidget, RelatingWidget } from 'app/state-management/store/reducer/widget-content-detail';
+    ApiResultResponse,
+} from "app/models";
 import {
-    Store,
-    ReducerManagerDispatcher
-} from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+    EditingWidget,
+    RelatingWidget,
+} from "app/state-management/store/reducer/widget-content-detail";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 import {
     TabSummaryActions,
     ProcessDataActions,
@@ -29,15 +38,13 @@ import {
     TabButtonActions,
     ModuleSettingActions,
     CustomAction,
-
-    GridActions
-} from 'app/state-management/store/actions';
+    GridActions,
+} from "app/state-management/store/actions";
 import {
     MenuModuleId,
     ArticleTabFieldMapping,
-
-    Configuration
-} from 'app/app.constants';
+    Configuration,
+} from "app/app.constants";
 import {
     TabService,
     AppErrorHandler,
@@ -45,33 +52,34 @@ import {
     PropertyPanelService,
     SplitterService,
     CampaignService,
-    GlobalSettingService
-} from 'app/services';
-import { Uti, String } from 'app/utilities';
-import * as parkedItemReducer from 'app/state-management/store/reducer/parked-item';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import * as moduleSettingReducer from 'app/state-management/store/reducer/module-setting';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import { BaseComponent, ModuleList } from 'app/pages/private/base';
-import * as widgetContentReducer from 'app/state-management/store/reducer/widget-content-detail';
-import { format } from 'date-fns';
-import { defaultLanguage } from 'app/app.resource';
+    GlobalSettingService,
+} from "app/services";
+import { Uti, String } from "app/utilities";
+import * as parkedItemReducer from "app/state-management/store/reducer/parked-item";
+import * as tabSummaryReducer from "app/state-management/store/reducer/tab-summary";
+import * as moduleSettingReducer from "app/state-management/store/reducer/module-setting";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import { BaseComponent, ModuleList } from "app/pages/private/base";
+import * as widgetContentReducer from "app/state-management/store/reducer/widget-content-detail";
+import { format } from "date-fns";
+import { defaultLanguage } from "app/app.resource";
 
 @Component({
-    selector: 'xn-tab-header',
-    styleUrls: ['./xn-tab-header.component.scss'],
-    templateUrl: './xn-tab-header.component.html',
+    selector: "xn-tab-header",
+    styleUrls: ["./xn-tab-header.component.scss"],
+    templateUrl: "./xn-tab-header.component.html",
     host: {
-        '(mouseenter)': 'onMouseEnter()',
-        '(window:resize)': 'onWindowResize($event)'
+        "(mouseenter)": "onMouseEnter()",
+        "(window:resize)": "onWindowResize($event)",
     },
 })
-
-export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
-
-    public globalDateFormat = '';
-    public globalNumberFormat = '';
+export class XnTabHeaderComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
+    public globalDateFormat = "";
+    public globalNumberFormat = "";
     public otherTabsHeader: TabSummaryModel[] = [];
     public mainTabHeader: TabSummaryModel;
     private selectedTabHeader: TabSummaryModel;
@@ -79,7 +87,7 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
     // private singleChoiceFilter: any = {};
     private willChangeTab: any = null;
     private editingWidgets: Array<EditingWidget> = [];
-    private modulePrimaryKey = '';
+    private modulePrimaryKey = "";
     public isViewMode: boolean;
     private scrollNo = 0;
     public isMainTabSelected = true;
@@ -89,7 +97,7 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
     private linkableWidget = false;
     public isConnectedToMain = false;
     public isSelectionProject = false;
-    private widgetListenKey = '';
+    private widgetListenKey = "";
     private activeSubModule: Module;
     public ofModuleLocal: Module;
 
@@ -134,12 +142,16 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
     }
     @Input() selectedEntity: any;
     @Input() set editingTabData(editingTabData: any) {
-        this.editingData = this.tabService.buildEditingData(editingTabData, this.ofModule ? this.ofModule.moduleName : '');
+        this.editingData = this.tabService.buildEditingData(
+            editingTabData,
+            this.ofModule ? this.ofModule.moduleName : ""
+        );
     }
     @Input() setting: any;
     @Input() subTabSetting: any;
 
-    @ViewChildren('headerIconContainer') headerIconContainerList: QueryList<ElementRef>;
+    @ViewChildren("headerIconContainer")
+    headerIconContainerList: QueryList<ElementRef>;
 
     constructor(
         protected router: Router,
@@ -166,23 +178,104 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
 
         this.ofModuleLocal = this.ofModule;
 
-        this.modulePrimaryKeyState = store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).modulePrimaryKey);
-        this.selectedTabHeaderModel = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).selectedTab);
+        this.modulePrimaryKeyState = store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).modulePrimaryKey
+        );
+        this.selectedTabHeaderModel = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedTab
+        );
         // this.singleChoiceFilterState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).singleChoiceFilter);
-        this.activeSubModuleState = store.select(state => state.mainModule.activeSubModule);
-        this.editingWidgetsState = store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).editingWidgets);
-        this.selectedSearchResultState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).selectedSearchResult);
-        this.selectedParkedItemState = store.select(state => parkedItemReducer.getParkedItemState(state, this.ofModule.moduleNameTrim).selectedParkedItem);
-        this.isViewModeState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).isViewMode);
-        this.requestSelectTabState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).requestSelectTab);
-        this.isTabCollapsedState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).isTabCollapsed);
-        this.widgetListenKeyState = store.select(state => moduleSettingReducer.getModuleSettingState(state, this.ofModule.moduleNameTrim).widgetListenKey);
-        this.globalPropertiesState = store.select(state => propertyPanelReducer.getPropertyPanelState(state, ModuleList.Base.moduleNameTrim).globalProperties);
-        this.requestUpdateTabHeaderState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.ofModule.moduleNameTrim).requestUpdateTabHeader);
-        this.setDisableTabHeaderState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).disableTabHeaderFormData);
-        this.relatingWidgetState = store.select(state => widgetContentReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).relatingWidget);
+        this.activeSubModuleState = store.select(
+            (state) => state.mainModule.activeSubModule
+        );
+        this.editingWidgetsState = store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).editingWidgets
+        );
+        this.selectedSearchResultState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedSearchResult
+        );
+        this.selectedParkedItemState = store.select(
+            (state) =>
+                parkedItemReducer.getParkedItemState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedParkedItem
+        );
+        this.isViewModeState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).isViewMode
+        );
+        this.requestSelectTabState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).requestSelectTab
+        );
+        this.isTabCollapsedState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).isTabCollapsed
+        );
+        this.widgetListenKeyState = store.select(
+            (state) =>
+                moduleSettingReducer.getModuleSettingState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).widgetListenKey
+        );
+        this.globalPropertiesState = store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    ModuleList.Base.moduleNameTrim
+                ).globalProperties
+        );
+        this.requestUpdateTabHeaderState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).requestUpdateTabHeader
+        );
+        this.setDisableTabHeaderState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).disableTabHeaderFormData
+        );
+        this.relatingWidgetState = store.select(
+            (state) =>
+                widgetContentReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).relatingWidget
+        );
 
-        this.isSelectionProject = Configuration.PublicSettings.isSelectionProject;
+        this.isSelectionProject =
+            Configuration.PublicSettings.isSelectionProject;
     }
 
     ngOnInit() {
@@ -212,62 +305,99 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
     ngOnDestroy() {
         if (this.headerIconContainerList) {
             this.headerIconContainerList.forEach((item, index) => {
-                item.nativeElement.removeEventListener('mouseenter', this.onTabIconMouseenter.bind(this), false);
-                item.nativeElement.removeEventListener('mouseleave', this.onTabIconMouseleave.bind(this), false);
-            })
+                item.nativeElement.removeEventListener(
+                    "mouseenter",
+                    this.onTabIconMouseenter.bind(this),
+                    false
+                );
+                item.nativeElement.removeEventListener(
+                    "mouseleave",
+                    this.onTabIconMouseleave.bind(this),
+                    false
+                );
+            });
         }
 
         Uti.unsubscribe(this);
     }
 
     onRouteChanged() {
-        // Now we need to keep state -> don't clear empty 
+        // Now we need to keep state -> don't clear empty
         // WidgetUtils.widgetDataTypeValues = {};
     }
 
     private subscribeGlobalProperties() {
-        this.globalPropertiesStateSubscription = this.globalPropertiesState.subscribe((globalProperties: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (globalProperties) {
-                    this.globalDateFormat = this.propertyPanelService.buildGlobalDateFormatFromProperties(globalProperties);
-                    this.globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(globalProperties);
-                }
+        this.globalPropertiesStateSubscription =
+            this.globalPropertiesState.subscribe((globalProperties: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (globalProperties) {
+                        this.globalDateFormat =
+                            this.propertyPanelService.buildGlobalDateFormatFromProperties(
+                                globalProperties
+                            );
+                        this.globalNumberFormat =
+                            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                                globalProperties
+                            );
+                    }
+                });
             });
-        });
     }
 
     private subscribeRequestUpdateTabHeader() {
-        this.requestUpdateTabHeaderSubscription = this.requestUpdateTabHeaderState.subscribe((requestUpdateTabHeaderState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (requestUpdateTabHeaderState
-                    && this.ofModule
-                    && this.ofModule.idSettingsGUI == MenuModuleId.warehouseMovement
-                    && this.tabService.isMainTabSelected(this.selectedTabHeader)
-                    && this.otherTabsHeader.length) {
-                    if (this.otherTabsHeader && this.otherTabsHeader.length) {
-                        this.otherTabsHeader[0].tabSummaryInfor.tabName = 'Movement Id: ' + requestUpdateTabHeaderState.tabHeader;
-                    }
+        this.requestUpdateTabHeaderSubscription =
+            this.requestUpdateTabHeaderState.subscribe(
+                (requestUpdateTabHeaderState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            requestUpdateTabHeaderState &&
+                            this.ofModule &&
+                            this.ofModule.idSettingsGUI ==
+                                MenuModuleId.warehouseMovement &&
+                            this.tabService.isMainTabSelected(
+                                this.selectedTabHeader
+                            ) &&
+                            this.otherTabsHeader.length
+                        ) {
+                            if (
+                                this.otherTabsHeader &&
+                                this.otherTabsHeader.length
+                            ) {
+                                this.otherTabsHeader[0].tabSummaryInfor.tabName =
+                                    "Movement Id: " +
+                                    requestUpdateTabHeaderState.tabHeader;
+                            }
 
-                    this.store.dispatch(this.tabSummaryActions.clearRequestUpdateTabHeader(this.ofModule));
+                            this.store.dispatch(
+                                this.tabSummaryActions.clearRequestUpdateTabHeader(
+                                    this.ofModule
+                                )
+                            );
+                        }
+                    });
                 }
-            });
-        });
+            );
     }
 
     private subscribeSelectedTabHeaderModel() {
-        this.selectedTabHeaderModelSubscription = this.selectedTabHeaderModel.subscribe((selectedTabHeader: TabSummaryModel) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!isEqual(this.selectedTabHeader, selectedTabHeader)) {
-                    this.resetColumnFilter();
-                }
+        this.selectedTabHeaderModelSubscription =
+            this.selectedTabHeaderModel.subscribe(
+                (selectedTabHeader: TabSummaryModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            !isEqual(this.selectedTabHeader, selectedTabHeader)
+                        ) {
+                            this.resetColumnFilter();
+                        }
 
-                this.selectedTabHeader = selectedTabHeader;
+                        this.selectedTabHeader = selectedTabHeader;
 
-                if (this.selectedTabHeader) {
-                    this.processToSelectTabHeader();
+                        if (this.selectedTabHeader) {
+                            this.processToSelectTabHeader();
+                        }
+                    });
                 }
-            });
-        });
+            );
     }
 
     // private subscribeSingleChoiceFilterState() {
@@ -279,157 +409,270 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
     // }
 
     private subscribeActiveSubModuleState() {
-        this.activeSubModuleStateSubscription = this.activeSubModuleState.subscribe((activeSubModuleState: Module) => {
-            this.appErrorHandler.executeAction(() => {
-                if (isEmpty(activeSubModuleState) || activeSubModuleState.idSettingsGUIParent != this.ofModule.idSettingsGUI) {
-                    return;
-                }
+        this.activeSubModuleStateSubscription =
+            this.activeSubModuleState.subscribe(
+                (activeSubModuleState: Module) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            isEmpty(activeSubModuleState) ||
+                            activeSubModuleState.idSettingsGUIParent !=
+                                this.ofModule.idSettingsGUI
+                        ) {
+                            return;
+                        }
 
-                this.activeSubModule = activeSubModuleState;
+                        this.activeSubModule = activeSubModuleState;
 
-                if (this.ofModule && this.ofModule.idSettingsGUI == MenuModuleId.administration
-                    && activeSubModuleState && activeSubModuleState.idSettingsGUI != MenuModuleId.cashProvider) {
-                    this.hideTabs(this.otherTabsHeader, this.mainTabHeader);
-                } else {
-                    this.tabService.resetVisible(this.otherTabsHeader);
+                        if (
+                            this.ofModule &&
+                            this.ofModule.idSettingsGUI ==
+                                MenuModuleId.administration &&
+                            activeSubModuleState &&
+                            activeSubModuleState.idSettingsGUI !=
+                                MenuModuleId.cashProvider
+                        ) {
+                            this.hideTabs(
+                                this.otherTabsHeader,
+                                this.mainTabHeader
+                            );
+                        } else {
+                            this.tabService.resetVisible(this.otherTabsHeader);
+                        }
+                    });
                 }
-            });
-        });
+            );
     }
 
     private subscribeEditingWidgetsState() {
-        this.editingWidgetsStateSubscription = this.editingWidgetsState.subscribe((editingWidgets: Array<EditingWidget>) => {
-            this.appErrorHandler.executeAction(() => {
-                this.editingWidgets = editingWidgets;
+        this.editingWidgetsStateSubscription =
+            this.editingWidgetsState.subscribe(
+                (editingWidgets: Array<EditingWidget>) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.editingWidgets = editingWidgets;
 
-                if (!this.editingWidgets.length && this.willChangeTab) {
-                    this.processChangeTab();
-                    this.store.dispatch(this.propertyPanelActions.clearProperties(this.ofModule));
-                    this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.ofModule));
+                        if (!this.editingWidgets.length && this.willChangeTab) {
+                            this.processChangeTab();
+                            this.store.dispatch(
+                                this.propertyPanelActions.clearProperties(
+                                    this.ofModule
+                                )
+                            );
+                            this.store.dispatch(
+                                this.layoutInfoActions.setRightPropertyPanelWidth(
+                                    "0",
+                                    this.ofModule
+                                )
+                            );
+                        }
+                    });
                 }
-            });
-        });
+            );
     }
 
     private subcribeOkToChangeTabState() {
-        this.okToChangeTabSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.OK_TO_CHANGE_TAB && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.willChangeTab) {
-                    this.store.dispatch(this.propertyPanelActions.requestClearProperties(this.ofModule));
-                }
+        this.okToChangeTabSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.OK_TO_CHANGE_TAB &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.willChangeTab) {
+                        this.store.dispatch(
+                            this.propertyPanelActions.requestClearProperties(
+                                this.ofModule
+                            )
+                        );
+                    }
+                });
             });
-        });
     }
 
     private subcribeIsTabCollapsedState() {
-        this.isTabCollapsedStateSubscription = this.isTabCollapsedState.subscribe((isTabCollapsedState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.isTabCollapsed = isTabCollapsedState;
+        this.isTabCollapsedStateSubscription =
+            this.isTabCollapsedState.subscribe(
+                (isTabCollapsedState: boolean) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.isTabCollapsed = isTabCollapsedState;
 
-                this.store.dispatch(this.layoutInfoActions.setTabHeaderHeight(this.isTabCollapsed ? '30' : '125', this.ofModule));
-            });
-        });
+                        this.store.dispatch(
+                            this.layoutInfoActions.setTabHeaderHeight(
+                                this.isTabCollapsed ? "30" : "125",
+                                this.ofModule
+                            )
+                        );
+                    });
+                }
+            );
     }
 
     private subscribeRequestClearPropertiesSuccessState() {
-        this.requestClearPropertiesSuccessSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === PropertyPanelActions.REQUEST_CLEAR_PROPERTIES_SUCCESS && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.willChangeTab) {
-                    this.processChangeTab();
-                }
+        this.requestClearPropertiesSuccessSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        PropertyPanelActions.REQUEST_CLEAR_PROPERTIES_SUCCESS &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.willChangeTab) {
+                        this.processChangeTab();
+                    }
 
-                this.store.dispatch(this.propertyPanelActions.clearProperties(this.ofModule));
-                this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.ofModule));
+                    this.store.dispatch(
+                        this.propertyPanelActions.clearProperties(this.ofModule)
+                    );
+                    this.store.dispatch(
+                        this.layoutInfoActions.setRightPropertyPanelWidth(
+                            "0",
+                            this.ofModule
+                        )
+                    );
+                });
             });
-        });
     }
 
     private subcribeSelectedSearchResultState() {
-        this.selectedSearchResultStateSubscription = this.selectedSearchResultState.subscribe((selectedSearchResultState: SearchResultItemModel) => {
-            this.appErrorHandler.executeAction(() => {
-                this.selectedSearchResult = selectedSearchResultState;
-            });
-        });
+        this.selectedSearchResultStateSubscription =
+            this.selectedSearchResultState.subscribe(
+                (selectedSearchResultState: SearchResultItemModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.selectedSearchResult = selectedSearchResultState;
+                    });
+                }
+            );
     }
 
     private subcribeSelectedParkedItemState() {
-        this.selectedParkedItemStateSubscription = this.selectedParkedItemState.subscribe((selectedParkedItemState: ParkedItemModel) => {
-            this.appErrorHandler.executeAction(() => {
-                this.selectedParkedItem = selectedParkedItemState;
-            });
-        });
+        this.selectedParkedItemStateSubscription =
+            this.selectedParkedItemState.subscribe(
+                (selectedParkedItemState: ParkedItemModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.selectedParkedItem = selectedParkedItemState;
+                    });
+                }
+            );
     }
 
     private subscribeIsViewModeState() {
-        this.isViewModeStateSubscription = this.isViewModeState.subscribe((isViewModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.isViewMode = isViewModeState;
-            });
-        });
+        this.isViewModeStateSubscription = this.isViewModeState.subscribe(
+            (isViewModeState: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.isViewMode = isViewModeState;
+                });
+            }
+        );
     }
 
     private subscribeRequestSelectTabState() {
-        this.requestSelectTabStateSubscription = this.requestSelectTabState.subscribe((requestSelectTabState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (requestSelectTabState) {
-                    if (this.mainTabHeader.tabSummaryInfor.tabID == requestSelectTabState.tabId) {
-                        this.willChangeTab = {
-                            tab: this.mainTabHeader,
-                            isMainTab: true
-                        };
+        this.requestSelectTabStateSubscription =
+            this.requestSelectTabState.subscribe(
+                (requestSelectTabState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (requestSelectTabState) {
+                            if (
+                                this.mainTabHeader.tabSummaryInfor.tabID ==
+                                requestSelectTabState.tabId
+                            ) {
+                                this.willChangeTab = {
+                                    tab: this.mainTabHeader,
+                                    isMainTab: true,
+                                };
 
-                        if (this.setting.Content) {
-                            let tabSetting = this.setting.Content.CustomTabs.find(t => t.TabID == this.selectedTabHeader.tabSummaryInfor.tabID);
-                            this.store.dispatch(this.processDataActions.requestChangeTab(tabSetting, this.ofModule));
-                        }
-                    } else {
-                        const otherTab = this.otherTabsHeader.find(ot => ot.tabSummaryInfor.tabID == requestSelectTabState.tabId);
-                        if (otherTab && otherTab.visible && !otherTab.disabled) {
-                            this.willChangeTab = {
-                                tab: otherTab,
-                                isMainTab: false
-                            };
+                                if (this.setting.Content) {
+                                    let tabSetting =
+                                        this.setting.Content.CustomTabs.find(
+                                            (t) =>
+                                                t.TabID ==
+                                                this.selectedTabHeader
+                                                    .tabSummaryInfor.tabID
+                                        );
+                                    this.store.dispatch(
+                                        this.processDataActions.requestChangeTab(
+                                            tabSetting,
+                                            this.ofModule
+                                        )
+                                    );
+                                }
+                            } else {
+                                const otherTab = this.otherTabsHeader.find(
+                                    (ot) =>
+                                        ot.tabSummaryInfor.tabID ==
+                                        requestSelectTabState.tabId
+                                );
+                                if (
+                                    otherTab &&
+                                    otherTab.visible &&
+                                    !otherTab.disabled
+                                ) {
+                                    this.willChangeTab = {
+                                        tab: otherTab,
+                                        isMainTab: false,
+                                    };
 
-                            if (this.setting.Content) {
-                                let tabSetting = this.setting.Content.CustomTabs.find(t => t.TabID == this.selectedTabHeader.tabSummaryInfor.tabID);
-                                this.store.dispatch(this.processDataActions.requestChangeTab(tabSetting, this.ofModule));
+                                    if (this.setting.Content) {
+                                        let tabSetting =
+                                            this.setting.Content.CustomTabs.find(
+                                                (t) =>
+                                                    t.TabID ==
+                                                    this.selectedTabHeader
+                                                        .tabSummaryInfor.tabID
+                                            );
+                                        this.store.dispatch(
+                                            this.processDataActions.requestChangeTab(
+                                                tabSetting,
+                                                this.ofModule
+                                            )
+                                        );
+                                    }
+                                } else {
+                                    this.store.dispatch(
+                                        this.tabSummaryActions.tabChangedFailed(
+                                            this.ofModule
+                                        )
+                                    );
+                                }
                             }
-                        } else {
-                            this.store.dispatch(this.tabSummaryActions.tabChangedFailed(this.ofModule));
                         }
-                    }
+                    });
                 }
-            });
-        });
+            );
     }
 
     private subcribeModulePrimaryKeyState() {
-        this.modulePrimaryKeyStateSubscription = this.modulePrimaryKeyState.subscribe((modulePrimaryKeyState: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.modulePrimaryKey = modulePrimaryKeyState;
-            });
-        });
+        this.modulePrimaryKeyStateSubscription =
+            this.modulePrimaryKeyState.subscribe(
+                (modulePrimaryKeyState: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.modulePrimaryKey = modulePrimaryKeyState;
+                    });
+                }
+            );
     }
 
     private subscribeWidgetListenKeyState() {
-        this.widgetListenKeyStateSubscription = this.widgetListenKeyState.subscribe((widgetListenKeyState: string) => {
-            this.appErrorHandler.executeAction(() => {
-                this.widgetListenKey = widgetListenKeyState;
-            });
-        });
+        this.widgetListenKeyStateSubscription =
+            this.widgetListenKeyState.subscribe(
+                (widgetListenKeyState: string) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.widgetListenKey = widgetListenKeyState;
+                    });
+                }
+            );
     }
 
     private subcribeSetDisableTabHeader() {
-        this.setDisableTabHeaderStateSubscription = this.setDisableTabHeaderState.subscribe((formData: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (isEmpty(formData)) return;
-                this.disableTabs(formData, MenuModuleId.article);
+        this.setDisableTabHeaderStateSubscription =
+            this.setDisableTabHeaderState.subscribe((formData: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (isEmpty(formData)) return;
+                    this.disableTabs(formData, MenuModuleId.article);
+                });
             });
-        });
     }
 
     private disableTabs(entity, moduleId) {
@@ -441,18 +684,34 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
                     if (ArticleTabFieldMapping.hasOwnProperty(mappingKey)) {
                         for (const key of searchResultKeys) {
                             if (mappingKey.toLowerCase() == key.toLowerCase()) {
-                                const thisTab = this.otherTabsHeader.find(tab => tab.tabSummaryInfor.tabID == ArticleTabFieldMapping[mappingKey]);
+                                const thisTab = this.otherTabsHeader.find(
+                                    (tab) =>
+                                        tab.tabSummaryInfor.tabID ==
+                                        ArticleTabFieldMapping[mappingKey]
+                                );
                                 if (thisTab) {
-                                    if (typeof entity[key] == 'object') {
-                                        thisTab.disabled = (entity[key].value == 'false' || entity[key].value == false);
+                                    if (typeof entity[key] == "object") {
+                                        thisTab.disabled =
+                                            entity[key].value == "false" ||
+                                            entity[key].value == false;
                                     } else {
                                         thisTab.disabled = entity[key] == false;
                                     }
 
-                                    if (thisTab.active == true && thisTab.disabled == true) {
+                                    if (
+                                        thisTab.active == true &&
+                                        thisTab.disabled == true
+                                    ) {
                                         this.mainTabHeader.active = false;
-                                        this.tabService.unSelectCurentActiveTab(this.otherTabsHeader);
-                                        this.store.dispatch(this.tabSummaryActions.selectTab(this.mainTabHeader, this.ofModule));
+                                        this.tabService.unSelectCurentActiveTab(
+                                            this.otherTabsHeader
+                                        );
+                                        this.store.dispatch(
+                                            this.tabSummaryActions.selectTab(
+                                                this.mainTabHeader,
+                                                this.ofModule
+                                            )
+                                        );
                                     }
                                 }
                             }
@@ -462,17 +721,30 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
                 break;
 
             case MenuModuleId.campaign:
-                let isWithAsile = entity['isWithAsile'].value === 'True';
-                let isWithInter = entity['isWithInter'].value === 'True';
-                let isWithTrack = entity['isWithTrack'].value === 'True';
-                const t6Tab = this.otherTabsHeader.find(tab => tab.tabSummaryInfor.tabID == 'T6');
+                let isWithAsile = entity["isWithAsile"].value === "True";
+                let isWithInter = entity["isWithInter"].value === "True";
+                let isWithTrack = entity["isWithTrack"].value === "True";
+                const t6Tab = this.otherTabsHeader.find(
+                    (tab) => tab.tabSummaryInfor.tabID == "T6"
+                );
                 if (t6Tab && !t6Tab.disabled) {
-                    t6Tab.disabled = !(isWithAsile || isWithInter || isWithTrack);
+                    t6Tab.disabled = !(
+                        isWithAsile ||
+                        isWithInter ||
+                        isWithTrack
+                    );
 
                     if (t6Tab.active == true && t6Tab.disabled == true) {
                         this.mainTabHeader.active = false;
-                        this.tabService.unSelectCurentActiveTab(this.otherTabsHeader);
-                        this.store.dispatch(this.tabSummaryActions.selectTab(this.mainTabHeader, this.ofModule));
+                        this.tabService.unSelectCurentActiveTab(
+                            this.otherTabsHeader
+                        );
+                        this.store.dispatch(
+                            this.tabSummaryActions.selectTab(
+                                this.mainTabHeader,
+                                this.ofModule
+                            )
+                        );
                     }
                 }
 
@@ -495,28 +767,49 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
         this.willChangeTab.tab.active = true;
 
         if (this.splitter.hasChanged) {
-            this.globalSettingService.getModuleLayoutSetting(this.ofModule.idSettingsGUI, String.hardTrimBlank(this.ofModule.moduleName)).subscribe((data: any) => {
-                this.store.dispatch(this.moduleSettingActions.loadModuleSettingSuccess(data, this.ofModule));
-            });
+            this.globalSettingService
+                .getModuleLayoutSetting(
+                    this.ofModule.idSettingsGUI,
+                    String.hardTrimBlank(this.ofModule.moduleName)
+                )
+                .subscribe((data: any) => {
+                    this.store.dispatch(
+                        this.moduleSettingActions.loadModuleSettingSuccess(
+                            data,
+                            this.ofModule
+                        )
+                    );
+                });
         }
 
-        this.store.dispatch(this.tabSummaryActions.selectTab(this.willChangeTab.tab, this.ofModule));
-        this.store.dispatch(this.layoutInfoActions.setRightPropertyPanelWidth('0', this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.selectTab(
+                this.willChangeTab.tab,
+                this.ofModule
+            )
+        );
+        this.store.dispatch(
+            this.layoutInfoActions.setRightPropertyPanelWidth(
+                "0",
+                this.ofModule
+            )
+        );
 
         this.willChangeTab = null;
 
-        this.store.dispatch(this.tabSummaryActions.tabChangedSuccess(this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.tabChangedSuccess(this.ofModule)
+        );
 
         if (this.isSelectionProject) {
-            this.store.dispatch(this.gridActions.requestInvalidate(this.ofModule));
+            this.store.dispatch(
+                this.gridActions.requestInvalidate(this.ofModule)
+            );
         }
     }
 
     private hideTabs(otherTabsHeader, mainTabHeader) {
-        const invisibleTabIdList = [
-            'CCPRN',
-            'ProviderCost'
-        ];
+        const invisibleTabIdList = ["CCPRN", "ProviderCost"];
 
         for (const tab of otherTabsHeader) {
             for (const tabId of invisibleTabIdList) {
@@ -524,7 +817,12 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
                     tab.visible = false;
 
                     if (tab.active) {
-                        this.store.dispatch(this.tabSummaryActions.selectTab(mainTabHeader, this.ofModule));
+                        this.store.dispatch(
+                            this.tabSummaryActions.selectTab(
+                                mainTabHeader,
+                                this.ofModule
+                            )
+                        );
                     }
                 }
             }
@@ -533,30 +831,51 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
 
     private processDisabledTab() {
         setTimeout(() => {
-            let selectedEntity = this.selectedParkedItem || this.selectedSearchResult;
-            if (((this.selectedParkedItem && this.selectedParkedItem.isNew != true) || this.selectedSearchResult)
-                && selectedEntity[this.modulePrimaryKey]) {
-
-                let entityId = typeof selectedEntity[this.modulePrimaryKey] == 'object' ? selectedEntity[this.modulePrimaryKey].value : selectedEntity[this.modulePrimaryKey];
+            let selectedEntity =
+                this.selectedParkedItem || this.selectedSearchResult;
+            if (
+                ((this.selectedParkedItem &&
+                    this.selectedParkedItem.isNew != true) ||
+                    this.selectedSearchResult) &&
+                selectedEntity[this.modulePrimaryKey]
+            ) {
+                let entityId =
+                    typeof selectedEntity[this.modulePrimaryKey] == "object"
+                        ? selectedEntity[this.modulePrimaryKey].value
+                        : selectedEntity[this.modulePrimaryKey];
                 switch (this.ofModule.idSettingsGUI) {
                     case MenuModuleId.article:
-                        this.articleService.getArticleById(entityId).subscribe((response: ApiResultResponse) => {
-                            if (!Uti.isResquestSuccess(response)) {
-                                return;
-                            }
-                            this.disableTabs(response.item, MenuModuleId.article);
-                        });
+                        this.articleService
+                            .getArticleById(entityId)
+                            .subscribe((response: ApiResultResponse) => {
+                                if (!Uti.isResquestSuccess(response)) {
+                                    return;
+                                }
+                                this.disableTabs(
+                                    response.item,
+                                    MenuModuleId.article
+                                );
+                            });
                         break;
 
                     case MenuModuleId.campaign:
-                        this.campaignService.getCampaignWizardT1(entityId).subscribe((response: ApiResultResponse) => {
-                            if (!Uti.isResquestSuccess(response)) {
-                                return;
-                            }
+                        this.campaignService
+                            .getCampaignWizardT1(entityId)
+                            .subscribe((response: ApiResultResponse) => {
+                                if (!Uti.isResquestSuccess(response)) {
+                                    return;
+                                }
 
-                            if (response.item && response.item.collectionData && response.item.collectionData.length)
-                                this.disableTabs(response.item.collectionData[0], MenuModuleId.campaign);
-                        });
+                                if (
+                                    response.item &&
+                                    response.item.collectionData &&
+                                    response.item.collectionData.length
+                                )
+                                    this.disableTabs(
+                                        response.item.collectionData[0],
+                                        MenuModuleId.campaign
+                                    );
+                            });
                         break;
 
                     default:
@@ -567,16 +886,21 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
     }
 
     private getLeftPos() {
-        return $('.tab-summary-list', this.elmRef.nativeElement).position().left;
+        return $(".tab-summary-list", this.elmRef.nativeElement).position()
+            .left;
     }
 
     private widthOfHidden() {
-        return (($('.tab-summary-wrapper', this.elmRef.nativeElement).outerWidth()) - this.widthOfList() - this.getLeftPos());
+        return (
+            $(".tab-summary-wrapper", this.elmRef.nativeElement).outerWidth() -
+            this.widthOfList() -
+            this.getLeftPos()
+        );
     }
 
     private widthOfList() {
         let itemsWidth = 0;
-        $('.tab-summary-list li', this.elmRef.nativeElement).each(function () {
+        $(".tab-summary-list li", this.elmRef.nativeElement).each(function () {
             const itemWidth = $(this).outerWidth();
             itemsWidth += itemWidth;
         });
@@ -584,103 +908,191 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
     }
 
     private widthOfVisible() {
-        return this.widthOfList() - this.numberOfHiddenItems() * this.widthOfItem();
+        return (
+            this.widthOfList() - this.numberOfHiddenItems() * this.widthOfItem()
+        );
     }
 
     private numberOfHiddenItems() {
-        if (parseInt($('.tab-summary-list').get(0).style.left) < 0) {
-            return (parseInt($('.tab-summary-list').get(0).style.left) * -1) / this.widthOfItem();
+        if (parseInt($(".tab-summary-list").get(0).style.left) < 0) {
+            return (
+                (parseInt($(".tab-summary-list").get(0).style.left) * -1) /
+                this.widthOfItem()
+            );
         }
 
-        return parseInt($('.tab-summary-list').get(0).style.left) / this.widthOfItem();
+        return (
+            parseInt($(".tab-summary-list").get(0).style.left) /
+            this.widthOfItem()
+        );
     }
 
     private adjustScrollingArea() {
-        if (!$('.tab-summary-wrapper', this.elmRef.nativeElement).length) {
+        if (!$(".tab-summary-wrapper", this.elmRef.nativeElement).length) {
             return;
         }
 
-        if (($('.tab-summary-wrapper', this.elmRef.nativeElement).outerWidth()) < this.widthOfList()) {
-            $('.scroller-right', this.elmRef.nativeElement).show();
-            $('.scroller-right', this.elmRef.nativeElement).removeClass('scroller-disabled');
-            this.store.dispatch(this.tabButtonActions.tabHeaderHasScroller('right', true, this.ofModule));
+        if (
+            $(".tab-summary-wrapper", this.elmRef.nativeElement).outerWidth() <
+            this.widthOfList()
+        ) {
+            $(".scroller-right", this.elmRef.nativeElement).show();
+            $(".scroller-right", this.elmRef.nativeElement).removeClass(
+                "scroller-disabled"
+            );
+            this.store.dispatch(
+                this.tabButtonActions.tabHeaderHasScroller(
+                    "right",
+                    true,
+                    this.ofModule
+                )
+            );
         } else {
-            $('.scroller-right', this.elmRef.nativeElement).hide();
-            this.store.dispatch(this.tabButtonActions.tabHeaderHasScroller('right', false, this.ofModule));
+            $(".scroller-right", this.elmRef.nativeElement).hide();
+            this.store.dispatch(
+                this.tabButtonActions.tabHeaderHasScroller(
+                    "right",
+                    false,
+                    this.ofModule
+                )
+            );
         }
 
         if (this.getLeftPos() < 0) {
-            $('.scroller-left', this.elmRef.nativeElement).show();
-            $('.scroller-left', this.elmRef.nativeElement).removeClass('scroller-disabled');
+            $(".scroller-left", this.elmRef.nativeElement).show();
+            $(".scroller-left", this.elmRef.nativeElement).removeClass(
+                "scroller-disabled"
+            );
         } else {
-            $('.tab-summary-list', this.elmRef.nativeElement).animate({ left: '-=' + this.getLeftPos() + 'px' }, 'fast');
-            $('.scroller-left', this.elmRef.nativeElement).hide();
+            $(".tab-summary-list", this.elmRef.nativeElement).animate(
+                { left: "-=" + this.getLeftPos() + "px" },
+                "fast"
+            );
+            $(".scroller-left", this.elmRef.nativeElement).hide();
         }
     }
 
     private widthOfItem() {
-        return $('.tab-summary-list li', this.elmRef.nativeElement).outerWidth();
+        return $(
+            ".tab-summary-list li",
+            this.elmRef.nativeElement
+        ).outerWidth();
     }
 
     private widthOfMainContainer() {
-        return $('xn-tab-header div.tab-header-container').width();
+        return $("xn-tab-header div.tab-header-container").width();
     }
 
     private maxScrollLeftItems() {
-        return $('.tab-summary-list li', this.elmRef.nativeElement).length - Math.floor(this.widthOfMainContainer() / this.widthOfItem());
+        return (
+            $(".tab-summary-list li", this.elmRef.nativeElement).length -
+            Math.floor(this.widthOfMainContainer() / this.widthOfItem())
+        );
     }
 
     public scrollerLeftClick(event) {
-        if ($(event.target).hasClass('disabled')) {
+        if ($(event.target).hasClass("disabled")) {
             return;
         }
 
-        $('.scroller-right', this.elmRef.nativeElement).fadeIn('slow');
-        this.store.dispatch(this.tabButtonActions.tabHeaderHasScroller('right', true, this.ofModule));
+        $(".scroller-right", this.elmRef.nativeElement).fadeIn("slow");
+        this.store.dispatch(
+            this.tabButtonActions.tabHeaderHasScroller(
+                "right",
+                true,
+                this.ofModule
+            )
+        );
 
-        if (this.scrollNo >= 0)
-            return;
+        if (this.scrollNo >= 0) return;
 
         this.scrollNo++;
-        $('.tab-summary-list', this.elmRef.nativeElement).animate({ left: '+=' + this.widthOfItem() + 'px' }, 'fast', function () { });
+        $(".tab-summary-list", this.elmRef.nativeElement).animate(
+            { left: "+=" + this.widthOfItem() + "px" },
+            "fast",
+            function () {}
+        );
 
         setTimeout(() => {
             if (this.getLeftPos() == 0) {
-                $('.scroller-left', this.elmRef.nativeElement).addClass('scroller-disabled');
+                $(".scroller-left", this.elmRef.nativeElement).addClass(
+                    "scroller-disabled"
+                );
 
-                if ($('.tab-summary-wrapper', this.elmRef.nativeElement).outerWidth() < this.widthOfList()) {
-                    $('.scroller-right', this.elmRef.nativeElement).show();
-                    $('.scroller-right', this.elmRef.nativeElement).removeClass('scroller-disabled');
-                    this.store.dispatch(this.tabButtonActions.tabHeaderHasScroller('right', true, this.ofModule));
+                if (
+                    $(
+                        ".tab-summary-wrapper",
+                        this.elmRef.nativeElement
+                    ).outerWidth() < this.widthOfList()
+                ) {
+                    $(".scroller-right", this.elmRef.nativeElement).show();
+                    $(".scroller-right", this.elmRef.nativeElement).removeClass(
+                        "scroller-disabled"
+                    );
+                    this.store.dispatch(
+                        this.tabButtonActions.tabHeaderHasScroller(
+                            "right",
+                            true,
+                            this.ofModule
+                        )
+                    );
                 } else {
-                    $('.scroller-right', this.elmRef.nativeElement).addClass('scroller-disabled');
+                    $(".scroller-right", this.elmRef.nativeElement).addClass(
+                        "scroller-disabled"
+                    );
                 }
             }
         }, 300);
     }
 
     public scrollerRightClick(event) {
-        if ($(event.target).hasClass('disabled')) {
+        if ($(event.target).hasClass("disabled")) {
             return;
         }
 
-        $('.scroller-left', this.elmRef.nativeElement).fadeIn('slow');
-        $('.scroller-left', this.elmRef.nativeElement).removeClass('scroller-disabled');
+        $(".scroller-left", this.elmRef.nativeElement).fadeIn("slow");
+        $(".scroller-left", this.elmRef.nativeElement).removeClass(
+            "scroller-disabled"
+        );
 
-        if (Math.abs(this.scrollNo) >= this.maxScrollLeftItems())
-            return;
+        if (Math.abs(this.scrollNo) >= this.maxScrollLeftItems()) return;
 
         this.scrollNo--;
-        $('.tab-summary-list', this.elmRef.nativeElement).animate({ left: '-=' + this.widthOfItem() + 'px' }, 'fast', function () { });
+        $(".tab-summary-list", this.elmRef.nativeElement).animate(
+            { left: "-=" + this.widthOfItem() + "px" },
+            "fast",
+            function () {}
+        );
 
         setTimeout(() => {
             if (this.getLeftPos() < 0) {
-                if ($('.tab-summary-wrapper', this.elmRef.nativeElement).outerWidth() + $('.tab-summary-list', this.elmRef.nativeElement).position().left * (-1) > this.widthOfList()) {
-                    $('.scroller-right', this.elmRef.nativeElement).addClass('scroller-disabled');
+                if (
+                    $(
+                        ".tab-summary-wrapper",
+                        this.elmRef.nativeElement
+                    ).outerWidth() +
+                        $(
+                            ".tab-summary-list",
+                            this.elmRef.nativeElement
+                        ).position().left *
+                            -1 >
+                    this.widthOfList()
+                ) {
+                    $(".scroller-right", this.elmRef.nativeElement).addClass(
+                        "scroller-disabled"
+                    );
                 } else {
-                    $('.scroller-right', this.elmRef.nativeElement).show();
-                    $('.scroller-right', this.elmRef.nativeElement).removeClass('scroller-disabled');
-                    this.store.dispatch(this.tabButtonActions.tabHeaderHasScroller('right', true, this.ofModule));
+                    $(".scroller-right", this.elmRef.nativeElement).show();
+                    $(".scroller-right", this.elmRef.nativeElement).removeClass(
+                        "scroller-disabled"
+                    );
+                    this.store.dispatch(
+                        this.tabButtonActions.tabHeaderHasScroller(
+                            "right",
+                            true,
+                            this.ofModule
+                        )
+                    );
                 }
             }
         }, 300);
@@ -688,11 +1100,18 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
 
     private onWindowResize(event) {
         setTimeout(() => {
-            if ($('.scroller-left', this.elmRef.nativeElement).is(':visible') && this.widthOfMainContainer() - this.widthOfVisible() >= this.widthOfItem()) {
+            if (
+                $(".scroller-left", this.elmRef.nativeElement).is(":visible") &&
+                this.widthOfMainContainer() - this.widthOfVisible() >=
+                    this.widthOfItem()
+            ) {
                 if (this.numberOfHiddenItems() > 1) {
                     for (let i = 0; i < this.numberOfHiddenItems(); i++) {
                         ((index, numberOfHiddenItems) => {
-                            $('.scroller-left', this.elmRef.nativeElement).click();
+                            $(
+                                ".scroller-left",
+                                this.elmRef.nativeElement
+                            ).click();
 
                             if (index == numberOfHiddenItems - 1) {
                                 setTimeout(() => {
@@ -702,7 +1121,7 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
                         })(i, this.numberOfHiddenItems());
                     }
                 } else {
-                    $('.scroller-left', this.elmRef.nativeElement).click();
+                    $(".scroller-left", this.elmRef.nativeElement).click();
                     setTimeout(() => {
                         this.adjustScrollingArea();
                     }, 300);
@@ -718,39 +1137,75 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
             return;
         }
 
-        if (this.tabService.isTabStructureChanged(this.mainTabHeader, this.otherTabsHeader, data)) {
+        if (
+            this.tabService.isTabStructureChanged(
+                this.mainTabHeader,
+                this.otherTabsHeader,
+                data
+            )
+        ) {
             this.mainTabHeader = this.tabService.getMainTabHeader(data);
 
-            if (this.mainTabHeader && this.ofModule.idSettingsGUI === MenuModuleId.selectionCampaign) {
+            if (
+                this.mainTabHeader &&
+                this.ofModule.idSettingsGUI === MenuModuleId.selectionCampaign
+            ) {
                 this.mainTabHeader.showAsOtherTab = true;
             }
 
             this.otherTabsHeader = this.tabService.getOtherTabsHeader(data);
-            this.otherTabsHeader = this.tabService.appendProp(this.otherTabsHeader, 'active', false);
-            this.otherTabsHeader = this.tabService.appendProp(this.otherTabsHeader, 'visible', true);
-            this.otherTabsHeader = this.tabService.appendProp(this.otherTabsHeader, 'disabled', false);
+            this.otherTabsHeader = this.tabService.appendProp(
+                this.otherTabsHeader,
+                "active",
+                false
+            );
+            this.otherTabsHeader = this.tabService.appendProp(
+                this.otherTabsHeader,
+                "visible",
+                true
+            );
+            this.otherTabsHeader = this.tabService.appendProp(
+                this.otherTabsHeader,
+                "disabled",
+                false
+            );
 
             if (this.selectedTabHeader) {
                 this.processToSelectTabHeader();
-            } else if (this.mainTabHeader.visible && this.mainTabHeader.accessRight && this.mainTabHeader.accessRight.read) {
+            } else if (
+                this.mainTabHeader.visible &&
+                this.mainTabHeader.accessRight &&
+                this.mainTabHeader.accessRight.read
+            ) {
                 this.mainTabHeader.active = true;
                 //this.clickMainTabHeader(this.mainTabHeader);
-            }
-            else if (this.otherTabsHeader.length) {
-                let visibleOtherTab = this.otherTabsHeader.find(t => t.visible && t.accessRight && t.accessRight.read);
+            } else if (this.otherTabsHeader.length) {
+                let visibleOtherTab = this.otherTabsHeader.find(
+                    (t) => t.visible && t.accessRight && t.accessRight.read
+                );
                 if (visibleOtherTab) {
                     visibleOtherTab.active = true;
                     //this.clickOtherTabsHeader(visibleOtherTab);
                 }
             }
         } else {
-            this.mainTabHeader = this.tabService.appendMainTabData(this.mainTabHeader, data);
-            this.otherTabsHeader = this.tabService.appendOtherTabsData(this.otherTabsHeader, data);
+            this.mainTabHeader = this.tabService.appendMainTabData(
+                this.mainTabHeader,
+                data
+            );
+            this.otherTabsHeader = this.tabService.appendOtherTabsData(
+                this.otherTabsHeader,
+                data
+            );
         }
         // this.appendDefaultValueToTranslateResource();
 
-        if (this.ofModule && this.ofModule.idSettingsGUI == MenuModuleId.administration
-            && this.activeSubModule && this.activeSubModule.idSettingsGUI != MenuModuleId.cashProvider) {
+        if (
+            this.ofModule &&
+            this.ofModule.idSettingsGUI == MenuModuleId.administration &&
+            this.activeSubModule &&
+            this.activeSubModule.idSettingsGUI != MenuModuleId.cashProvider
+        ) {
             this.hideTabs(this.otherTabsHeader, this.mainTabHeader);
         } else {
             this.tabService.resetVisible(this.otherTabsHeader);
@@ -759,62 +1214,108 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
         setTimeout(() => {
             if (this.headerIconContainerList) {
                 this.headerIconContainerList.forEach((item, index) => {
-                    item.nativeElement.addEventListener('mouseenter', this.onTabIconMouseenter.bind(this));
-                    item.nativeElement.addEventListener('mouseleave', this.onTabIconMouseleave.bind(this));
-                })
+                    item.nativeElement.addEventListener(
+                        "mouseenter",
+                        this.onTabIconMouseenter.bind(this)
+                    );
+                    item.nativeElement.addEventListener(
+                        "mouseleave",
+                        this.onTabIconMouseleave.bind(this)
+                    );
+                });
             }
         }, 200);
     }
 
     private clickMainTabHeader(mainTabHeader: TabSummaryModel, event?) {
-        if (!this.selectedTabHeader || (this.selectedTabHeader && this.selectedTabHeader.tabSummaryInfor.tabID != mainTabHeader.tabSummaryInfor.tabID)) {
-            if (typeof mainTabHeader.disabled != 'undefined' && mainTabHeader.disabled != undefined && mainTabHeader.disabled == true) {
+        if (
+            !this.selectedTabHeader ||
+            (this.selectedTabHeader &&
+                this.selectedTabHeader.tabSummaryInfor.tabID !=
+                    mainTabHeader.tabSummaryInfor.tabID)
+        ) {
+            if (
+                typeof mainTabHeader.disabled != "undefined" &&
+                mainTabHeader.disabled != undefined &&
+                mainTabHeader.disabled == true
+            ) {
                 event.preventDefault();
-                $(event.currentTarget).removeAttr('data-toggle');
+                $(event.currentTarget).removeAttr("data-toggle");
                 return false;
             }
 
             this.willChangeTab = {
                 tab: mainTabHeader,
-                isMainTab: true
+                isMainTab: true,
             };
 
             if (this.setting.Content) {
                 let currentTabID = this.selectedTabHeader.tabSummaryInfor.tabID;
-                let tabSetting = this.setting.Content.CustomTabs.find(t => t.TabID == mainTabHeader.tabSummaryInfor.tabID);
-                tabSetting = Object.assign(tabSetting, { CurrentTabID: currentTabID });
-                this.store.dispatch(this.processDataActions.requestChangeTab(tabSetting, this.ofModule));
+                let tabSetting = this.setting.Content.CustomTabs.find(
+                    (t) => t.TabID == mainTabHeader.tabSummaryInfor.tabID
+                );
+                tabSetting = Object.assign(tabSetting, {
+                    CurrentTabID: currentTabID,
+                });
+                this.store.dispatch(
+                    this.processDataActions.requestChangeTab(
+                        tabSetting,
+                        this.ofModule
+                    )
+                );
             }
         }
 
-        if (event && event.type == 'dblclick') {
-            this.store.dispatch(this.tabButtonActions.dblClickTabHeader(this.ofModule));
+        if (event && event.type == "dblclick") {
+            this.store.dispatch(
+                this.tabButtonActions.dblClickTabHeader(this.ofModule)
+            );
         }
     }
 
     private clickOtherTabsHeader(otherTabHeader, event?) {
-        if (!this.selectedTabHeader || (this.selectedTabHeader && this.selectedTabHeader.tabSummaryInfor.tabID != otherTabHeader.tabSummaryInfor.tabID)) {
-            if (typeof otherTabHeader.disabled != 'undefined' && otherTabHeader.disabled != undefined && otherTabHeader.disabled == true) {
+        if (
+            !this.selectedTabHeader ||
+            (this.selectedTabHeader &&
+                this.selectedTabHeader.tabSummaryInfor.tabID !=
+                    otherTabHeader.tabSummaryInfor.tabID)
+        ) {
+            if (
+                typeof otherTabHeader.disabled != "undefined" &&
+                otherTabHeader.disabled != undefined &&
+                otherTabHeader.disabled == true
+            ) {
                 event.preventDefault();
-                $(event.currentTarget).removeAttr('data-toggle');
+                $(event.currentTarget).removeAttr("data-toggle");
                 return false;
             }
 
             this.willChangeTab = {
                 tab: otherTabHeader,
-                isMainTab: false
+                isMainTab: false,
             };
 
             if (this.setting && this.setting.Content) {
                 let currentTabID = this.selectedTabHeader.tabSummaryInfor.tabID;
-                let tabSetting = this.setting.Content.CustomTabs.find(t => t.TabID == otherTabHeader.tabSummaryInfor.tabID);
-                tabSetting = Object.assign(tabSetting, { CurrentTabID: currentTabID });
-                this.store.dispatch(this.processDataActions.requestChangeTab(tabSetting, this.ofModule));
+                let tabSetting = this.setting.Content.CustomTabs.find(
+                    (t) => t.TabID == otherTabHeader.tabSummaryInfor.tabID
+                );
+                tabSetting = Object.assign(tabSetting, {
+                    CurrentTabID: currentTabID,
+                });
+                this.store.dispatch(
+                    this.processDataActions.requestChangeTab(
+                        tabSetting,
+                        this.ofModule
+                    )
+                );
             }
         }
 
-        if (event && event.type == 'dblclick') {
-            this.store.dispatch(this.tabButtonActions.dblClickTabHeader(this.ofModule));
+        if (event && event.type == "dblclick") {
+            this.store.dispatch(
+                this.tabButtonActions.dblClickTabHeader(this.ofModule)
+            );
         }
     }
 
@@ -823,12 +1324,18 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
             return;
         }
 
-        if (this.mainTabHeader.tabSummaryInfor.tabID == this.selectedTabHeader.tabSummaryInfor.tabID) {
+        if (
+            this.mainTabHeader.tabSummaryInfor.tabID ==
+            this.selectedTabHeader.tabSummaryInfor.tabID
+        ) {
             this.mainTabHeader.active = true;
             this.tabService.unSelectTabs(this.otherTabsHeader);
         } else {
             const clickedTabHeader = this.otherTabsHeader.filter((tab) => {
-                return tab.tabSummaryInfor.tabID == this.selectedTabHeader.tabSummaryInfor.tabID;
+                return (
+                    tab.tabSummaryInfor.tabID ==
+                    this.selectedTabHeader.tabSummaryInfor.tabID
+                );
             });
             if (clickedTabHeader.length) {
                 this.mainTabHeader.active = false;
@@ -837,16 +1344,20 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
             }
         }
 
-        this.store.dispatch(this.tabSummaryActions.toggleTabButton(true, this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.toggleTabButton(true, this.ofModule)
+        );
     }
 
     private onMouseEnter() {
-        this.store.dispatch(this.tabSummaryActions.toggleTabButton(true, this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.toggleTabButton(true, this.ofModule)
+        );
     }
 
     private changeIconColor(event, color) {
         if ($(event.target)) {
-            $(event.target).find('h3').css('color', color);
+            $(event.target).find("h3").css("color", color);
         }
     }
 
@@ -855,26 +1366,46 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
         sumData.active = !sumData.active;
         // this.store.dispatch(this.tabSummaryActions.storeSingleChoiceFilter(sumData, this.ofModule));
 
-        const activeList = otherTabHeader.tabSummaryData.filter(x => x.active);
+        const activeList = otherTabHeader.tabSummaryData.filter(
+            (x) => x.active
+        );
 
         // const columnFilter = this.tabService.buildColumnFilter(sumData.httpLink);
-        const columnFilter = this.tabService.buildCoumnFilterFromList(activeList);
-        this.store.dispatch(this.tabSummaryActions.selectTabHeaderTableFilter(columnFilter, this.ofModule));
-        this.store.dispatch(this.tabSummaryActions.uncheckTabHeaderTableFilterList(this.ofModule));
+        const columnFilter =
+            this.tabService.buildCoumnFilterFromList(activeList);
+        this.store.dispatch(
+            this.tabSummaryActions.selectTabHeaderTableFilter(
+                columnFilter,
+                this.ofModule
+            )
+        );
+        this.store.dispatch(
+            this.tabSummaryActions.uncheckTabHeaderTableFilterList(
+                this.ofModule
+            )
+        );
     }
 
     private onTabIconMouseenter(event) {
-        if (event && event.target && event.target.dataset
-            && event.target.dataset.isParentActive) {
+        if (
+            event &&
+            event.target &&
+            event.target.dataset &&
+            event.target.dataset.isParentActive
+        ) {
             this.changeIconColor(event, event.target.dataset.textColor);
         }
     }
 
     private onTabIconMouseleave(event) {
-        if (event && event.target && event.target.dataset
-            && event.target.dataset.isParentActive) {
+        if (
+            event &&
+            event.target &&
+            event.target.dataset &&
+            event.target.dataset.isParentActive
+        ) {
             // && this.singleChoiceFilter.httpLink != event.target.dataset.httpLink) {
-            this.changeIconColor(event, '');
+            this.changeIconColor(event, "");
         }
     }
 
@@ -886,8 +1417,14 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
 
     private resetColumnFilter() {
         // this.store.dispatch(this.tabSummaryActions.clearSingleChoiceFilter(this.ofModule));
-        this.store.dispatch(this.tabSummaryActions.unselectTabHeaderTableFilter(this.ofModule));
-        this.store.dispatch(this.tabSummaryActions.uncheckTabHeaderTableFilterList(this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.unselectTabHeaderTableFilter(this.ofModule)
+        );
+        this.store.dispatch(
+            this.tabSummaryActions.uncheckTabHeaderTableFilterList(
+                this.ofModule
+            )
+        );
     }
 
     /**
@@ -897,7 +1434,8 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
     private onConnectWidget(dropResultData: any) {
         this.linkableWidget = false;
         if (this.widgetListenKey && dropResultData && dropResultData.data) {
-            const dragDropCommunicationData: IDragDropCommunicationData = dropResultData.data;
+            const dragDropCommunicationData: IDragDropCommunicationData =
+                dropResultData.data;
             const srcWidgetDetail = dragDropCommunicationData.srcWidgetDetail;
             const status = this.isValidToConnect(srcWidgetDetail);
             if (status) {
@@ -905,7 +1443,7 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
                 srcWidgetDetail.widgetDataType.listenKey.sub = null;
                 srcWidgetDetail.widgetDataType.listenKey.main = {
                     key: srcWidgetDetail.widgetDataType.listenKey.key,
-                    filterKey: srcWidgetDetail.widgetDataType.filterKey
+                    filterKey: srcWidgetDetail.widgetDataType.filterKey,
                 };
                 if (dropResultData.callBack) {
                     dropResultData.callBack(srcWidgetDetail);
@@ -918,9 +1456,16 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
      * onDragOverWidget
      * @param srcWidgetDetail
      */
-    private onDragOverWidget(dragDropCommunicationData: IDragDropCommunicationData) {
-        if (dragDropCommunicationData && dragDropCommunicationData.mode == DragMode.Default) {
-            const status = this.isValidToConnect(dragDropCommunicationData.srcWidgetDetail);
+    private onDragOverWidget(
+        dragDropCommunicationData: IDragDropCommunicationData
+    ) {
+        if (
+            dragDropCommunicationData &&
+            dragDropCommunicationData.mode == DragMode.Default
+        ) {
+            const status = this.isValidToConnect(
+                dragDropCommunicationData.srcWidgetDetail
+            );
             if (status) {
                 this.linkableWidget = true;
             }
@@ -951,11 +1496,14 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
                 break;
             }
             let count = 0;
-            const listenkeyArr = srcWidgetDetail.widgetDataType.listenKey.key.split(',');
-            const parkedItemKeyArr = this.widgetListenKey.split(',');
+            const listenkeyArr =
+                srcWidgetDetail.widgetDataType.listenKey.key.split(",");
+            const parkedItemKeyArr = this.widgetListenKey.split(",");
             for (const listenkey of listenkeyArr) {
                 for (const parkedItemKey of parkedItemKeyArr) {
-                    if (listenkey.toLowerCase() == parkedItemKey.toLowerCase()) {
+                    if (
+                        listenkey.toLowerCase() == parkedItemKey.toLowerCase()
+                    ) {
                         count += 1;
                         break;
                     }
@@ -965,8 +1513,7 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
                 isValid = true;
             }
             break;
-        }
-        while (true);
+        } while (true);
         return isValid;
     }
 
@@ -990,8 +1537,7 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
                 isConnected = true;
             }
             break;
-        }
-        while (true);
+        } while (true);
         return isConnected;
     }
 
@@ -1002,26 +1548,34 @@ export class XnTabHeaderComponent extends BaseComponent implements OnInit, OnDes
         if (this.relatingWidgetSubscription) {
             this.relatingWidgetSubscription.unsubscribe();
         }
-        this.relatingWidgetSubscription = this.relatingWidgetState.subscribe((relatingWidget: RelatingWidget) => {
-            this.appErrorHandler.executeAction(() => {
-                if (relatingWidget) {
-                    if (relatingWidget.mode == 'hover') {
-                        this.linkableWidget = this.isValidToConnect(relatingWidget.scrWidgetDetail);
-                        if (this.linkableWidget) {
-                            this.isConnectedToMain = this.isConnectedToMainItem(relatingWidget.scrWidgetDetail);
+        this.relatingWidgetSubscription = this.relatingWidgetState.subscribe(
+            (relatingWidget: RelatingWidget) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (relatingWidget) {
+                        if (relatingWidget.mode == "hover") {
+                            this.linkableWidget = this.isValidToConnect(
+                                relatingWidget.scrWidgetDetail
+                            );
+                            if (this.linkableWidget) {
+                                this.isConnectedToMain =
+                                    this.isConnectedToMainItem(
+                                        relatingWidget.scrWidgetDetail
+                                    );
+                            }
+                        } else {
+                            this.linkableWidget = false;
+                            this.isConnectedToMain = false;
                         }
                     }
-                    else {
-                        this.linkableWidget = false;
-                        this.isConnectedToMain = false;
-                    }
-                }
-            });
-        });
+                });
+            }
+        );
     }
 
     formatDate(data: any, formatPattern: string) {
-        const result = !data ? '' : this.uti.formatLocale(new Date(data), formatPattern);
+        const result = !data
+            ? ""
+            : this.uti.formatLocale(new Date(data), formatPattern);
         return result;
     }
 

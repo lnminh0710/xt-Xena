@@ -1,18 +1,22 @@
-import { Output, EventEmitter, Input, HostListener, Directive, HostBinding } from '@angular/core';
-import { DragService } from 'app/services';
+import {
+    Output,
+    EventEmitter,
+    Input,
+    HostListener,
+    Directive,
+    HostBinding,
+} from "@angular/core";
+import { DragService } from "app/services";
 
 export interface DropTargetOptions {
     zone?: string;
 }
 
 @Directive({
-    selector: '[xnDropTarget]'
+    selector: "[xnDropTarget]",
 })
 export class DropTargetDirective {
-
-    constructor(private dragService: DragService) {
-
-    }
+    constructor(private dragService: DragService) {}
 
     @Input()
     set xnDropTarget(options: DropTargetOptions) {
@@ -28,39 +32,44 @@ export class DropTargetDirective {
 
     private options: DropTargetOptions = {};
 
-    @HostListener('dragenter', ['$event'])
+    @HostListener("dragenter", ["$event"])
     onDragEnter(event) {
-        const { zone = 'zone' } = this.options;
+        const { zone = "zone" } = this.options;
         if (this.dragService.accepts(zone)) {
             event.preventDefault();
             this.xnDragEnter.emit(this.dragService.data);
         }
     }
 
-    @HostListener('dragover', ['$event'])
+    @HostListener("dragover", ["$event"])
     onDragOver(event) {
-        const { zone = 'zone' } = this.options;
+        const { zone = "zone" } = this.options;
         if (this.dragService.accepts(zone)) {
             event.preventDefault();
-            event.dataTransfer.dropEffect = 'move';
+            event.dataTransfer.dropEffect = "move";
             this.xnDragOver.emit(this.dragService.data);
         }
     }
 
-    @HostListener('dragleave', ['$event'])
-    onDragLeave(event) {        
+    @HostListener("dragleave", ["$event"])
+    onDragLeave(event) {
         this.xnDragLeave.emit();
     }
 
-    @HostListener('drop', ['$event'])
+    @HostListener("drop", ["$event"])
     onDrop(event) {
-        const { zone = 'zone' } = this.options;
+        const { zone = "zone" } = this.options;
         if (this.dragService.accepts(zone)) {
-            this.xnDrop.emit(Object.assign({}, {
-                data: this.dragService.data,
-                callBack: this.dragService.callBack
-            }));
+            this.xnDrop.emit(
+                Object.assign(
+                    {},
+                    {
+                        data: this.dragService.data,
+                        callBack: this.dragService.callBack,
+                    }
+                )
+            );
             this.dragService.reset();
-        }        
+        }
     }
 }

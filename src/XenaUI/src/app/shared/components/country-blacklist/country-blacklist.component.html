@@ -1,40 +1,64 @@
-<split class="height-pc-100"
-       direction="horizontal"
-       (dragEnd)="dragEnd($event)"
-       [gutterSize]="5"
-       #horizontalSplit>
-    <split-area [size]="splitterConfig.leftHorizontal"
-                [perfect-scrollbar]="perfectScrollbarConfig">
-        <xn-ag-grid *ngIf="countryGridData && countryGridData.columns && countryGridData.columns.length"
-                    #countryGrid
-                    [id]="countryGridId"
-                    [dataSource]="countryGridData"
-                    [readOnly]="false"
-                    [globalProperties]="globalProperties"
-                    [columnsLayoutSettings]="columnsLayoutSettings[countryGridId]"
-                    [fitWidthColumn]="true"
-                    (rowClick)="countrySelectionChanged()"
-                    (cellEditingStarted)="onTableEditStart()"
-                    (cellEditingStopped)="onTableEditEnd()"
-                    (cellValueChanged)="onTableEditSuccess(); onCountryGridEditEnded($event)"
-                    (hasValidationError)="hasValidationErrorHandler($event, 'countryGrid')">
+<split
+    class="height-pc-100"
+    direction="horizontal"
+    (dragEnd)="dragEnd($event)"
+    [gutterSize]="5"
+    #horizontalSplit
+>
+    <split-area
+        [size]="splitterConfig.leftHorizontal"
+        [perfect-scrollbar]="perfectScrollbarConfig"
+    >
+        <xn-ag-grid
+            *ngIf="
+                countryGridData &&
+                countryGridData.columns &&
+                countryGridData.columns.length
+            "
+            #countryGrid
+            [id]="countryGridId"
+            [dataSource]="countryGridData"
+            [readOnly]="false"
+            [globalProperties]="globalProperties"
+            [columnsLayoutSettings]="columnsLayoutSettings[countryGridId]"
+            [fitWidthColumn]="true"
+            (rowClick)="countrySelectionChanged()"
+            (cellEditingStarted)="onTableEditStart()"
+            (cellEditingStopped)="onTableEditEnd()"
+            (cellValueChanged)="
+                onTableEditSuccess(); onCountryGridEditEnded($event)
+            "
+            (hasValidationError)="
+                hasValidationErrorHandler($event, 'countryGrid')
+            "
+        >
         </xn-ag-grid>
     </split-area>
-    <split-area [size]="splitterConfig.rightHorizontal"
-                [perfect-scrollbar]="perfectScrollbarConfig">
-        <xn-ag-grid *ngIf="blackListGridData && blackListGridData.columns && blackListGridData.columns.length"
-                    #blackListGrid
-                    [id]="filterGridId"
-                    [dataSource]="blackListGridData"
-                    [globalProperties]="globalProperties"
-                    [readOnly]="false"
-                    [disabledAll]="isBlacklistGridDisabled"
-                    [isEditting]="!isBlacklistGridReadOnly"
-                    [columnsLayoutSettings]="columnsLayoutSettings[filterGridId]"
-                    [fitWidthColumn]="true"
-                    (cellValueChanged)="onCheckboxExportChanged($event)"
-                    (onCheckAllChecked)="onAllCheckboxExportChanged($event)"
-                    (hasValidationError)="hasValidationErrorHandler($event, 'blackListGrid')">
+    <split-area
+        [size]="splitterConfig.rightHorizontal"
+        [perfect-scrollbar]="perfectScrollbarConfig"
+    >
+        <xn-ag-grid
+            *ngIf="
+                blackListGridData &&
+                blackListGridData.columns &&
+                blackListGridData.columns.length
+            "
+            #blackListGrid
+            [id]="filterGridId"
+            [dataSource]="blackListGridData"
+            [globalProperties]="globalProperties"
+            [readOnly]="false"
+            [disabledAll]="isBlacklistGridDisabled"
+            [isEditting]="!isBlacklistGridReadOnly"
+            [columnsLayoutSettings]="columnsLayoutSettings[filterGridId]"
+            [fitWidthColumn]="true"
+            (cellValueChanged)="onCheckboxExportChanged($event)"
+            (onCheckAllChecked)="onAllCheckboxExportChanged($event)"
+            (hasValidationError)="
+                hasValidationErrorHandler($event, 'blackListGrid')
+            "
+        >
         </xn-ag-grid>
     </split-area>
 </split>

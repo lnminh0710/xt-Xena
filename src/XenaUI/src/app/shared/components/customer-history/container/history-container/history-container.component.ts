@@ -1,7 +1,15 @@
 import {
-    Component, Input, Output, EventEmitter, OnInit,
-    OnDestroy, AfterViewInit, ElementRef,
-    ViewChild, ViewChildren, QueryList
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    ViewChild,
+    ViewChildren,
+    QueryList,
 } from "@angular/core";
 import {
     CustomerHistory,
@@ -10,31 +18,29 @@ import {
     HistoryFooterInfo,
     HistoryHeaderMenu,
     ApiResultResponse,
-    FieldFilter
-} from 'app/models';
-import {
-    ApiMethodResultId
-} from 'app/app.constants';
-import { Subscription } from 'rxjs/Subscription';
+    FieldFilter,
+} from "app/models";
+import { ApiMethodResultId } from "app/app.constants";
+import { Subscription } from "rxjs/Subscription";
 
-import {
-    PersonService,
-    AppErrorHandler
-} from 'app/services';
-import groupBy from 'lodash-es/groupBy';
-import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
-import { Uti } from 'app/utilities';
-import { BaseWidget } from 'app/pages/private/base';
-import { HistoryListComponent } from '../../components/history-list';
-import cloneDeep from 'lodash-es/cloneDeep';
+import { PersonService, AppErrorHandler } from "app/services";
+import groupBy from "lodash-es/groupBy";
+import { PerfectScrollbarDirective } from "ngx-perfect-scrollbar";
+import { Uti } from "app/utilities";
+import { BaseWidget } from "app/pages/private/base";
+import { HistoryListComponent } from "../../components/history-list";
+import cloneDeep from "lodash-es/cloneDeep";
 import { Object } from "core-js";
 
 @Component({
-    selector: 'history-container',
-    templateUrl: './history-container.component.html',
-    styleUrls: ['./history-container.component.scss']
+    selector: "history-container",
+    templateUrl: "./history-container.component.html",
+    styleUrls: ["./history-container.component.scss"],
 })
-export class HistoryContainerComponent extends BaseWidget implements OnInit, OnDestroy, AfterViewInit {
+export class HistoryContainerComponent
+    extends BaseWidget
+    implements OnInit, OnDestroy, AfterViewInit
+{
     private pageSize = 4;
     private pageIndex = 0;
     private key: string;
@@ -42,7 +48,7 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
     private personServiceSubscription: Subscription;
     private singleMode: boolean;
     private _fieldFilters: Array<FieldFilter>;
-     
+
     perfectScrollbarConfig: any = {};
     rawCustomerHistories: Array<Array<CustomerHistory>>;
     customerHistories: Array<Array<CustomerHistory>>;
@@ -66,24 +72,33 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
             return;
         }
         this._fieldFilters = fieldFilters;
-        this.customerHistories.forEach((historyGroup: Array<CustomerHistory>) => {
-            historyGroup.forEach((customerHistory: CustomerHistory) => {
-                const field = fieldFilters.find(p => p.fieldName == customerHistory.header.content.text);
-                if (field) {
-                    // Visible
-                    customerHistory.isHidden = false;
-                    if (!field.selected) {
-                        // Hidden
-                        customerHistory.isHidden = true;
+        this.customerHistories.forEach(
+            (historyGroup: Array<CustomerHistory>) => {
+                historyGroup.forEach((customerHistory: CustomerHistory) => {
+                    const field = fieldFilters.find(
+                        (p) =>
+                            p.fieldName == customerHistory.header.content.text
+                    );
+                    if (field) {
+                        // Visible
+                        customerHistory.isHidden = false;
+                        if (!field.selected) {
+                            // Hidden
+                            customerHistory.isHidden = true;
+                        }
                     }
-                }
-            });
-            this.historyListComponents.forEach(historyListComponent => {
-                if (historyListComponent.customerHistories == historyGroup) {
-                    historyListComponent.buildAgGridDataSource(historyGroup);
-                }
-            });
-        });        
+                });
+                this.historyListComponents.forEach((historyListComponent) => {
+                    if (
+                        historyListComponent.customerHistories == historyGroup
+                    ) {
+                        historyListComponent.buildAgGridDataSource(
+                            historyGroup
+                        );
+                    }
+                });
+            }
+        );
 
         this.emitCompletedRenderEvent();
     }
@@ -94,7 +109,10 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
     public changeToMultipleRowMode() {
         this.singleMode = false;
         if (this.rawCustomerHistories) {
-            this.customerHistories = Object.assign([], this.rawCustomerHistories);
+            this.customerHistories = Object.assign(
+                [],
+                this.rawCustomerHistories
+            );
             setTimeout(() => {
                 if (this.directiveScroll) {
                     this.directiveScroll.update();
@@ -111,13 +129,12 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
         this.singleMode = true;
         if (this.customerHistories) {
             if (this.selectedCustomerHistory) {
-                this.customerHistories.forEach(customerHistory => {
+                this.customerHistories.forEach((customerHistory) => {
                     if (customerHistory == this.selectedCustomerHistory) {
                         this.customerHistories = [this.selectedCustomerHistory];
                     }
                 });
-            }
-            else {
+            } else {
                 this.customerHistories = [this.customerHistories[0]];
             }
             setTimeout(() => {
@@ -129,14 +146,16 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
 
     @Output() onHeaderColsUpdated = new EventEmitter<Array<any>>();
 
-    @ViewChild(PerfectScrollbarDirective) directiveScroll: PerfectScrollbarDirective;
+    @ViewChild(PerfectScrollbarDirective)
+    directiveScroll: PerfectScrollbarDirective;
     @ViewChildren(HistoryListComponent)
     private historyListComponents: QueryList<HistoryListComponent>;
 
     constructor(
         private personService: PersonService,
         private appErrorHandler: AppErrorHandler,
-        private _eref: ElementRef) {
+        private _eref: ElementRef
+    ) {
         super();
     }
 
@@ -146,7 +165,7 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
     public ngOnInit() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
 
@@ -160,9 +179,7 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
     /**
      * ngAfterViewInit
      */
-    ngAfterViewInit() {
-
-    }
+    ngAfterViewInit() {}
 
     /**
      * getCustomerHistory
@@ -170,68 +187,89 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
      */
     private getCustomerHistory(idPerson: string) {
         this.isLoading = true;
-        this.personServiceSubscription = this.personService.getCustomerHistory(idPerson, this.pageIndex, this.pageSize).finally(() => {
-            this.isLoading = false;
-            setTimeout(() => {
-                this.directiveScroll.update();
-            }, 200);
-            this.emitCompletedRenderEvent();
-        }).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (response.statusCode != ApiMethodResultId.Success) {
-                    return;
-                }
+        this.personServiceSubscription = this.personService
+            .getCustomerHistory(idPerson, this.pageIndex, this.pageSize)
+            .finally(() => {
+                this.isLoading = false;
+                setTimeout(() => {
+                    this.directiveScroll.update();
+                }, 200);
+                this.emitCompletedRenderEvent();
+            })
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (response.statusCode != ApiMethodResultId.Success) {
+                        return;
+                    }
 
-                let item = response.item;
-                if (!item || (item && item.data && !item.data.length)) {
-                    this.isKeepPageIndex = true;
-                    return;
-                }
+                    let item = response.item;
+                    if (!item || (item && item.data && !item.data.length)) {
+                        this.isKeepPageIndex = true;
+                        return;
+                    }
 
-                this.isKeepPageIndex = false;
-                let headerCols = {};
-                let historyObj = groupBy(item.data[0], 'IdSalesOrder');
-                Object.keys(historyObj).forEach((key, index, arr) => {
-                    let historyList: Array<any> = historyObj[key];
-                    let customerHistories: Array<CustomerHistory> = [];
-                    historyList.forEach(item => {
-                        let header: HistoryHeaderInfo = this.processHeader(item.Header);
-                        let body: HistoryBodyInfo = this.processBody(item.Body);
-                        let footer: HistoryFooterInfo = this.processFooter(item.Footer);
-                        let customerHistory: CustomerHistory = new CustomerHistory({
-                            header: header,
-                            body: body,
-                            footer: footer,
-                            isHidden : false
-                        });
-                        if (this._fieldFilters && this._fieldFilters.length) {
-                            const field = this._fieldFilters.find(p => p.fieldName == customerHistory.header.content.text);
-                            if (field) {
-                                // Visible
-                                customerHistory.isHidden = false;
-                                if (!field.selected) {
-                                    customerHistory.isHidden = true;
+                    this.isKeepPageIndex = false;
+                    let headerCols = {};
+                    let historyObj = groupBy(item.data[0], "IdSalesOrder");
+                    Object.keys(historyObj).forEach((key, index, arr) => {
+                        let historyList: Array<any> = historyObj[key];
+                        let customerHistories: Array<CustomerHistory> = [];
+                        historyList.forEach((item) => {
+                            let header: HistoryHeaderInfo = this.processHeader(
+                                item.Header
+                            );
+                            let body: HistoryBodyInfo = this.processBody(
+                                item.Body
+                            );
+                            let footer: HistoryFooterInfo = this.processFooter(
+                                item.Footer
+                            );
+                            let customerHistory: CustomerHistory =
+                                new CustomerHistory({
+                                    header: header,
+                                    body: body,
+                                    footer: footer,
+                                    isHidden: false,
+                                });
+                            if (
+                                this._fieldFilters &&
+                                this._fieldFilters.length
+                            ) {
+                                const field = this._fieldFilters.find(
+                                    (p) =>
+                                        p.fieldName ==
+                                        customerHistory.header.content.text
+                                );
+                                if (field) {
+                                    // Visible
+                                    customerHistory.isHidden = false;
+                                    if (!field.selected) {
+                                        customerHistory.isHidden = true;
+                                    }
                                 }
                             }
-                        }
-                        customerHistories.push(customerHistory);
-                        headerCols[header.content.text] = 1;
+                            customerHistories.push(customerHistory);
+                            headerCols[header.content.text] = 1;
+                        });
+                        this.customerHistories.push(customerHistories);
                     });
-                    this.customerHistories.push(customerHistories);
+                    this.rawCustomerHistories = Object.assign(
+                        [],
+                        this.customerHistories
+                    );
+                    if (this.singleMode) {
+                        this.changeToSingleRowMode();
+                    }
+                    this.onHeaderColsUpdated.emit(
+                        Object.keys(headerCols).map((x) => {
+                            return {
+                                fieldName: x,
+                                fieldDisplayName: x,
+                            };
+                        })
+                    );
                 });
-                this.rawCustomerHistories = Object.assign([], this.customerHistories);
-                if (this.singleMode) {
-                    this.changeToSingleRowMode();
-                }
-                this.onHeaderColsUpdated.emit((Object.keys(headerCols)).map(x => {
-                        return {
-                            fieldName: x,
-                            fieldDisplayName: x
-                        };
-                    })
-                );
             });
-        })
     }
 
     /**
@@ -252,11 +290,9 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
         try {
             let bodyObj = JSON.parse(rawData);
             historyBodyInfo = bodyObj.body;
-        }
-        catch (ex) {
+        } catch (ex) {
             // console.log(ex);
-        }
-        finally {
+        } finally {
             return historyBodyInfo;
         }
     }
@@ -287,8 +323,11 @@ export class HistoryContainerComponent extends BaseWidget implements OnInit, OnD
     public selectHistoryItem(event: Array<CustomerHistory>) {
         this.selectedCustomerHistory = event;
 
-        this.historyListComponents.forEach(historyListComponent => {
-            if (historyListComponent.customerHistories != this.selectedCustomerHistory) {
+        this.historyListComponents.forEach((historyListComponent) => {
+            if (
+                historyListComponent.customerHistories !=
+                this.selectedCustomerHistory
+            ) {
                 historyListComponent.clearGridSelection();
             }
         });

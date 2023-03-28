@@ -1,2 +1,1 @@
-export { AsideComponent } from './aside.component';
-
+export { AsideComponent } from "./aside.component";

@@ -1,114 +1,138 @@
 <div class="panel panel-info">
     <div class="result-heading">
         <label class="result-summary" *ngIf="globalNumberFormat == 'N'">
-            <label-translation [keyword]="'Gs_Result__N_of_entries'"></label-translation>: {{numberOfEntries | number:0}} <label-translation [keyword]="'Gs_Result__of'"></label-translation> {{totalResults | number:0}}
+            <label-translation
+                [keyword]="'Gs_Result__N_of_entries'"
+            ></label-translation
+            >: {{ numberOfEntries | number : 0 }}
+            <label-translation [keyword]="'Gs_Result__of'"></label-translation>
+            {{ totalResults | number : 0 }}
         </label>
         <label class="result-summary" *ngIf="globalNumberFormat != 'N'">
-            <label-translation [keyword]="'Gs_Result__N_of_entries'"></label-translation>: {{numberOfEntries}} <label-translation [keyword]="'Gs_Result__of'"></label-translation> {{totalResults}}
+            <label-translation
+                [keyword]="'Gs_Result__N_of_entries'"
+            ></label-translation
+            >: {{ numberOfEntries }}
+            <label-translation [keyword]="'Gs_Result__of'"></label-translation>
+            {{ totalResults }}
         </label>
     </div>
-    <div class="panel-body {{cssClass}}">
-        <xn-ag-grid [id]="gridId"
-                    [pageIndex]="pageIndex"
-                    [pageSize]="pageSize"
-                    [treeViewMode]="treeViewMode"
-                    [serverPaging]="serverPaging"
-                    [hightlightKeywords]="hightlightKeywords"
-                    [suppressContextMenu]="false"
-                    [dataSource]="dataResult"
-                    [allowDrag]="allowDrag.value"
-                    [customDragContent]="customDragContent"
-                    [isGlobalSearch]="true"
-                    [parentInstance]="that"
-                    [globalProperties]="globalProperties"
-                    [autoSelectCurrentRowAfterChangingData]="false"
-                    [sheetName]="'Global Search'"
-                    [rowGrouping]="rowGrouping"
-                    [paginationFromPopup]="paginationFromPopup"
-                    (onRowGroupPanel)="handleRowGroupPanel($event)"
-                    (rowClick)="onResultSelect($event,false,true)"
-                    (rowDoubleClicked)="onRowDoubleClick($event)"
-                    (pageChanged)="onPageChanged($event)"
-                    (pageNumberChanged)="onPageNumberChanged($event)"
-                    (mousedown)="gridMouseDown($event)"
-                    (mouseup)="gridMouseUp($event)"
-                    (keydown)="gridKeyDown($event)"
-                    (onChangeColumnLayoutMasterDetail)="changeColumnLayoutMasterDetail($event)"
-                    (onDataAction)="foundInOnIconClick($event)"
-                    (onActionTranslateDialog)="openTranslateDialog($event)"
-                    [masterDetail]="allowMasterDetail"
-                    [rowDetailTemplateRef]="rowTemplate"
-                    [detailRowHeight]="100"
-                    [setDeselectAll]="isDeselectAllRowMaster">
+    <div class="panel-body {{ cssClass }}">
+        <xn-ag-grid
+            [id]="gridId"
+            [pageIndex]="pageIndex"
+            [pageSize]="pageSize"
+            [treeViewMode]="treeViewMode"
+            [serverPaging]="serverPaging"
+            [hightlightKeywords]="hightlightKeywords"
+            [suppressContextMenu]="false"
+            [dataSource]="dataResult"
+            [allowDrag]="allowDrag.value"
+            [customDragContent]="customDragContent"
+            [isGlobalSearch]="true"
+            [parentInstance]="that"
+            [globalProperties]="globalProperties"
+            [autoSelectCurrentRowAfterChangingData]="false"
+            [sheetName]="'Global Search'"
+            [rowGrouping]="rowGrouping"
+            [paginationFromPopup]="paginationFromPopup"
+            (onRowGroupPanel)="handleRowGroupPanel($event)"
+            (rowClick)="onResultSelect($event, false, true)"
+            (rowDoubleClicked)="onRowDoubleClick($event)"
+            (pageChanged)="onPageChanged($event)"
+            (pageNumberChanged)="onPageNumberChanged($event)"
+            (mousedown)="gridMouseDown($event)"
+            (mouseup)="gridMouseUp($event)"
+            (keydown)="gridKeyDown($event)"
+            (onChangeColumnLayoutMasterDetail)="
+                changeColumnLayoutMasterDetail($event)
+            "
+            (onDataAction)="foundInOnIconClick($event)"
+            (onActionTranslateDialog)="openTranslateDialog($event)"
+            [masterDetail]="allowMasterDetail"
+            [rowDetailTemplateRef]="rowTemplate"
+            [detailRowHeight]="100"
+            [setDeselectAll]="isDeselectAllRowMaster"
+        >
         </xn-ag-grid>
     </div>
 </div>
 
 <ng-template #rowTemplate let-data="data" let-renderCallback="renderCallback">
-    <div *ngIf="allowMasterDetail"
-         class="full-width-height">
-        <gs-customer-detail [gridId]="gridId"
-                            [itemData]="data"
-                            [searchIndex]="searchIndex"
-                            [moduleLocal]="moduleLocal"
-                            [renderCallback]="renderCallback"
-                            [globalProperties]="globalProperties"
-                            [parentInstance]="parentInstance"
-                            [isDeselectAllRow]="isDeselectAllRowDetail"
-                            [keyword]="keyword"
-                            (rowClick)="onResultSelect($event,true,false)"
-                            (rowDoubleClicked)="onRowDoubleClick($event)"
-                            (mousedown)="gridMouseDown($event)"
-                            (mouseup)="gridMouseUp($event)"
-                            (keydown)="gridKeyDown($event)"
-                            (foundInOnIconClick)="foundInOnIconClick($event)"
-                            [changeColumnLayoutMasterDetail]="changeColumnLayoutMasterDetailData"></gs-customer-detail>
+    <div *ngIf="allowMasterDetail" class="full-width-height">
+        <gs-customer-detail
+            [gridId]="gridId"
+            [itemData]="data"
+            [searchIndex]="searchIndex"
+            [moduleLocal]="moduleLocal"
+            [renderCallback]="renderCallback"
+            [globalProperties]="globalProperties"
+            [parentInstance]="parentInstance"
+            [isDeselectAllRow]="isDeselectAllRowDetail"
+            [keyword]="keyword"
+            (rowClick)="onResultSelect($event, true, false)"
+            (rowDoubleClicked)="onRowDoubleClick($event)"
+            (mousedown)="gridMouseDown($event)"
+            (mouseup)="gridMouseUp($event)"
+            (keydown)="gridKeyDown($event)"
+            (foundInOnIconClick)="foundInOnIconClick($event)"
+            [changeColumnLayoutMasterDetail]="
+                changeColumnLayoutMasterDetailData
+            "
+        ></gs-customer-detail>
     </div>
 </ng-template>
 
 <!--Customer Contacts-->
-<p-dialog *ngIf="foundInShowDialog"
-          [styleClass]="'prime-dialog-no-footer'"
-          header=""
-          appendTo="body"
-          [(visible)]="foundInShowDialog"
-          modal="modal"
-          [width]="foundInModalWidth"
-          [height]="foundInModalHeight"
-          responsive="true">
+<p-dialog
+    *ngIf="foundInShowDialog"
+    [styleClass]="'prime-dialog-no-footer'"
+    header=""
+    appendTo="body"
+    [(visible)]="foundInShowDialog"
+    modal="modal"
+    [width]="foundInModalWidth"
+    [height]="foundInModalHeight"
+    responsive="true"
+>
     <p-header>
         <div class="modal-header--information">
-            <span class="header-text  pull-left">Customer Contacts</span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="foundInCloseDialog()">
+            <span class="header-text pull-left">Customer Contacts</span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="foundInCloseDialog()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <div [ngStyle]="foundInBodyHeight"
-         *ngIf="foundInDataResult">
-        <xn-ag-grid *ngIf="foundInDataResult"
-                    [pageIndex]="1"
-                    [pageSize]="foundInPageSize"
-                    [hightlightKeywords]="hightlightKeywords"
-                    [isShowedHeader]="true"
-                    [suppressContextMenu]="false"
-                    [dataSource]="foundInDataResult"
-                    [autoSelectCurrentRowAfterChangingData]="false"
-                    [preventAutoSelectFirstRow]="true"
-                    [globalProperties]="globalProperties">
+    <div [ngStyle]="foundInBodyHeight" *ngIf="foundInDataResult">
+        <xn-ag-grid
+            *ngIf="foundInDataResult"
+            [pageIndex]="1"
+            [pageSize]="foundInPageSize"
+            [hightlightKeywords]="hightlightKeywords"
+            [isShowedHeader]="true"
+            [suppressContextMenu]="false"
+            [dataSource]="foundInDataResult"
+            [autoSelectCurrentRowAfterChangingData]="false"
+            [preventAutoSelectFirstRow]="true"
+            [globalProperties]="globalProperties"
+        >
         </xn-ag-grid>
     </div>
 </p-dialog>
 
-<widget-module-info-translation *ngIf="isRenderWidgetInfoTranslation"
-                                [translateTextGridId]="'c0013e96-2167-4278-a300-58276a7166e5'"
-                                [combinationTranslateMode]="combinationTranslateMode"
-                                [isGlobalSearch]="true"
-                                (onHide)="onHiddenWidgetInfoTranslation($event)"
-                                [data]="dataResult"
-                                (isCompletedRender)="reattach()"
-                                #widgetInfoTranslation></widget-module-info-translation>
+<widget-module-info-translation
+    *ngIf="isRenderWidgetInfoTranslation"
+    [translateTextGridId]="'c0013e96-2167-4278-a300-58276a7166e5'"
+    [combinationTranslateMode]="combinationTranslateMode"
+    [isGlobalSearch]="true"
+    (onHide)="onHiddenWidgetInfoTranslation($event)"
+    [data]="dataResult"
+    (isCompletedRender)="reattach()"
+    #widgetInfoTranslation
+></widget-module-info-translation>

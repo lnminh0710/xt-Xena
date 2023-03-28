@@ -1,4 +1,3 @@
-
 import {
     Component,
     OnInit,
@@ -6,29 +5,26 @@ import {
     Output,
     EventEmitter,
     ViewChild,
-    OnDestroy
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    FileUploadComponent
-} from '../file-upload';
+    OnDestroy,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { FileUploadComponent } from "../file-upload";
 @Component({
-    selector: 'file-upload-popup',
-    styleUrls: ['./file-upload-popup.component.scss'],
-    templateUrl: './file-upload-popup.component.html'
+    selector: "file-upload-popup",
+    styleUrls: ["./file-upload-popup.component.scss"],
+    templateUrl: "./file-upload-popup.component.html",
 })
-export class FileUploadPopupComponent extends BaseComponent implements OnInit, OnDestroy {
+export class FileUploadPopupComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public showFileUploadPopup: boolean = false;
-    @Input() acceptExtensionFiles: string = '*';
+    @Input() acceptExtensionFiles: string = "*";
     @Input() uploadFileMode: any;
     @Input() singleFile: boolean = false;
-    @Input() idFolder: string = '';
-    @Input() saveFileName: string = '';
+    @Input() idFolder: string = "";
+    @Input() saveFileName: string = "";
     @Input() allowSelectDuplicateFile: boolean = false;
     @Input() checkFileCorrect: Function;
     @Input() inputFilesData: File[];
@@ -36,15 +32,13 @@ export class FileUploadPopupComponent extends BaseComponent implements OnInit, O
     @Output() onCompleteItemAction = new EventEmitter<any>();
     @Output() onClosePopupAction = new EventEmitter<any>();
 
-    @ViewChild('fileUpload') fileUpload: FileUploadComponent;
+    @ViewChild("fileUpload") fileUpload: FileUploadComponent;
 
-    constructor(router ? : Router) {
+    constructor(router?: Router) {
         super(router);
     }
-    public ngOnInit() {
-    }
-    public ngOnDestroy() {
-    }
+    public ngOnInit() {}
+    public ngOnDestroy() {}
 
     public onCompleteItemHandler($event) {
         this.onCompleteItemAction.emit($event);

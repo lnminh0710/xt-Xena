@@ -1,4 +1,4 @@
-import { PageModel } from 'app/models/page.model';
+import { PageModel } from "app/models/page.model";
 
 export class TabPageViewSplitPageModel extends PageModel {
     public constructor(init?: Partial<TabPageViewSplitPageModel>) {

@@ -1,9 +1,9 @@
-﻿import { BaseFieldModel } from './base-field.model';
+﻿import { BaseFieldModel } from "./base-field.model";
 
 // Ref: https://editor.datatables.net/reference/field/radio
 
 export class RadioFieldModel extends BaseFieldModel {
-    public type: string = 'radio';
+    public type: string = "radio";
     public options: any = null;
     public optionsPair: any = null;
 

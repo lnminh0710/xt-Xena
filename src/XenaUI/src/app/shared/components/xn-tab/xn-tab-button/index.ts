@@ -1,1 +1,1 @@
-﻿export { XnTabButtonComponent } from './xn-tab-button.component';
+﻿export { XnTabButtonComponent } from "./xn-tab-button.component";

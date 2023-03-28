@@ -1,6 +1,15 @@
-import { ElementRef, AfterViewInit, AfterViewChecked, OnDestroy, EventEmitter, Renderer2 } from '@angular/core';
-import { DomHandler } from '../dom/domhandler';
-export declare class Dialog implements AfterViewInit, AfterViewChecked, OnDestroy {
+import {
+    ElementRef,
+    AfterViewInit,
+    AfterViewChecked,
+    OnDestroy,
+    EventEmitter,
+    Renderer2,
+} from "@angular/core";
+import { DomHandler } from "../dom/domhandler";
+export declare class Dialog
+    implements AfterViewInit, AfterViewChecked, OnDestroy
+{
     el: ElementRef;
     domHandler: DomHandler;
     renderer: Renderer2;
@@ -82,5 +91,4 @@ export declare class Dialog implements AfterViewInit, AfterViewChecked, OnDestro
     unbindDocumentEscapeListener(): void;
     ngOnDestroy(): void;
 }
-export declare class DialogModule {
-}
+export declare class DialogModule {}

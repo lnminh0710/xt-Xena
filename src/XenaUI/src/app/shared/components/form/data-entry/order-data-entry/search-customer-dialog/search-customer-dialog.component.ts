@@ -1,28 +1,28 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Configuration } from 'app/app.constants';
 import {
-    EsSearchResult
-} from 'app/models';
+    Component,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+} from "@angular/core";
+import { Configuration } from "app/app.constants";
+import { EsSearchResult } from "app/models";
 
-import {
-    DatatableService,
-    SearchService,
-
-    AppErrorHandler
-} from 'app/services';
-import { IPageChangedEvent } from 'app/shared/components/xn-pager/xn-pagination.component';
-import { WijmoGridComponent } from 'app/shared/components/wijmo';
-import isNil from 'lodash-es/isNil';
-import { Subscription } from 'rxjs/Subscription';
-import { Uti } from 'app/utilities';
+import { DatatableService, SearchService, AppErrorHandler } from "app/services";
+import { IPageChangedEvent } from "app/shared/components/xn-pager/xn-pagination.component";
+import { WijmoGridComponent } from "app/shared/components/wijmo";
+import isNil from "lodash-es/isNil";
+import { Subscription } from "rxjs/Subscription";
+import { Uti } from "app/utilities";
 
 @Component({
-    selector: 'search-customer-dialog',
-    styleUrls: ['./search-customer-dialog.component.scss'],
-    templateUrl: './search-customer-dialog.component.html'
+    selector: "search-customer-dialog",
+    styleUrls: ["./search-customer-dialog.component.scss"],
+    templateUrl: "./search-customer-dialog.component.html",
 })
 export class SearchCustomerDialogComponent implements OnInit, OnDestroy {
-
     @Input() searchText: string;
     @Output() selectedData: EventEmitter<any> = new EventEmitter();
 
@@ -32,23 +32,19 @@ export class SearchCustomerDialogComponent implements OnInit, OnDestroy {
     private COLUMN_SETTING_INDEX = Configuration.pageIndex;
     private pageIndex = Configuration.pageIndex;
     private pageSize = Configuration.pageSize;
-    public keyword = '';
+    public keyword = "";
     private searchServiceSubscription: Subscription;
 
-    @ViewChild('wjgridCustomerSearching') wjCustSearching: WijmoGridComponent;
+    @ViewChild("wjgridCustomerSearching") wjCustSearching: WijmoGridComponent;
 
     constructor(
         private datatableService: DatatableService,
         private consts: Configuration,
         private searchService: SearchService,
         private appErrorHandler: AppErrorHandler
-    ) {
+    ) {}
 
-    }
-
-    ngOnInit() {
-
-    }
+    ngOnInit() {}
 
     ngOnDestroy() {
         Uti.unsubscribe(this);
@@ -79,27 +75,23 @@ export class SearchCustomerDialogComponent implements OnInit, OnDestroy {
 
     public open() {
         this.showDialog = true;
-        if (this.searchText === this.keyword)
-            return;
+        if (this.searchText === this.keyword) return;
 
         if (this.dataSourceTable && this.dataSourceTable.columns) {
             this.dataSourceTable = Object.assign({}, this.dataSourceTable, {
-                'data': [],
-                'totalResults': 0
+                data: [],
+                totalResults: 0,
             });
         }
         if (this.wjCustSearching) {
             if (!this.searchText || !this.searchText.length) {
-                this.wjCustSearching.doSearch('');
+                this.wjCustSearching.doSearch("");
                 this.wjCustSearching.isSearching = false;
-            }
-            else {
+            } else {
                 this.wjCustSearching.doSearch(this.searchText);
             }
-        }
-        else {
-            if (!this.searchText || !this.searchText.length)
-                this.search('');
+        } else {
+            if (!this.searchText || !this.searchText.length) this.search("");
             else {
                 this.search(this.searchText);
             }
@@ -121,10 +113,13 @@ export class SearchCustomerDialogComponent implements OnInit, OnDestroy {
     }
 
     private buildDatatable(response: EsSearchResult) {
-        if (!response)
-            return;
+        if (!response) return;
 
-        this.dataSourceTable = this.datatableService.buildDataSourceFromEsSearchResult(response, this.COLUMN_SETTING_INDEX);
+        this.dataSourceTable =
+            this.datatableService.buildDataSourceFromEsSearchResult(
+                response,
+                this.COLUMN_SETTING_INDEX
+            );
         setTimeout(() => {
             if (this.wjCustSearching) {
                 this.wjCustSearching.doSearch(this.keyword);
@@ -134,18 +129,16 @@ export class SearchCustomerDialogComponent implements OnInit, OnDestroy {
     }
 
     private search(keyword) {
-        if (keyword && keyword === this.keyword)
-            return;
+        if (keyword && keyword === this.keyword) return;
 
         if (isNil(keyword)) {
-            if (this.keyword.length > 0)
-                keyword = this.keyword;
+            if (this.keyword.length > 0) keyword = this.keyword;
         } else {
             this.keyword = keyword;
         }
 
         this.searchServiceSubscription = this.searchService
-            .search('customer', keyword, 2, this.pageIndex, this.pageSize)
+            .search("customer", keyword, 2, this.pageIndex, this.pageSize)
             .debounceTime(this.consts.valueChangeDeboundTimeDefault)
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {

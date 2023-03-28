@@ -1,19 +1,19 @@
-import { Injectable, Injector } from '@angular/core';
-import { BaseService } from '../base.service';
-import { JwtHttp } from 'angular2-jwt-refresh';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { ModalActions } from 'app/state-management/store/actions';
-import * as models from 'app/models';
-import { MessageModal } from 'app/app.constants';
-import isBoolean from 'lodash-es/isBoolean';
+import { Injectable, Injector } from "@angular/core";
+import { BaseService } from "../base.service";
+import { JwtHttp } from "angular2-jwt-refresh";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { ModalActions } from "app/state-management/store/actions";
+import * as models from "app/models";
+import { MessageModal } from "app/app.constants";
+import isBoolean from "lodash-es/isBoolean";
 
 @Injectable()
 export class ModalService extends BaseService {
-    constructor(injector: Injector,
+    constructor(
+        injector: Injector,
         private store: Store<AppState>,
         private modalActions: ModalActions
-
     ) {
         super(injector);
     }
@@ -26,34 +26,49 @@ export class ModalService extends BaseService {
         this.store.dispatch(this.modalActions.modalShowMessage(true));
     }
 
-    public isStopSearchWhenEmptySize(pagesize: number, pageIndex: number): boolean {
+    public isStopSearchWhenEmptySize(
+        pagesize: number,
+        pageIndex: number
+    ): boolean {
         if (pagesize && pageIndex) return false;
-        this.warningMessage([{key: 'Modal_Message__Please_Input_Page_Size'}]);
+        this.warningMessage([{ key: "Modal_Message__Please_Input_Page_Size" }]);
         return true;
     }
 
     public hideModal() {
         this.store.dispatch(this.modalActions.modalCloseMessage(true));
-        const modal: HTMLElement = document.getElementById('xn-modal-message-main');
-        modal.style.removeProperty('z-index');
-        const modalBackdrops: HTMLCollectionOf<Element> = document.getElementsByClassName('modal-backdrop');
+        const modal: HTMLElement = document.getElementById(
+            "xn-modal-message-main"
+        );
+        modal.style.removeProperty("z-index");
+        const modalBackdrops: HTMLCollectionOf<Element> =
+            document.getElementsByClassName("modal-backdrop");
         if (!modalBackdrops || !modalBackdrops.length) return;
         const modalBackdrop: HTMLElement = <HTMLElement>modalBackdrops[0];
-        modalBackdrop.style.removeProperty('z-index');
+        modalBackdrop.style.removeProperty("z-index");
     }
 
     public errorText(translateKey: string, isOnTop?: boolean) {
-        this.createMessageErrorModal({ message: [{key: translateKey}], isOnTop: isOnTop }, false);
+        this.createMessageErrorModal(
+            { message: [{ key: translateKey }], isOnTop: isOnTop },
+            false
+        );
         this.showModal();
     }
 
     public warningText(translateKey: string, isOnTop?: boolean) {
-        this.createMessageWarningModal({ message: [{key: translateKey}], isOnTop: isOnTop }, false);
+        this.createMessageWarningModal(
+            { message: [{ key: translateKey }], isOnTop: isOnTop },
+            false
+        );
         this.showModal();
     }
 
     public warningHTMLText(message: Array<any>, isOnTop?: boolean) {
-        this.createMessageWarningModal({ message: message, isOnTop: isOnTop }, true);
+        this.createMessageWarningModal(
+            { message: message, isOnTop: isOnTop },
+            true
+        );
         this.showModal();
     }
 
@@ -87,20 +102,26 @@ export class ModalService extends BaseService {
         this.showModal();
     }
 
-    public confirmDeleteMessageHtmlContent(option: any, isStopPropagation?: boolean) {
+    public confirmDeleteMessageHtmlContent(
+        option: any,
+        isStopPropagation?: boolean
+    ) {
         option.buttonType1 = MessageModal.ButtonType.danger;
         option.messageType = MessageModal.MessageType.error;
         this.createMessageConfirmModal(option, true, isStopPropagation);
         this.showModal();
     }
 
-    public confirmMessageHtmlContent(option: models.MessageModel, isStopPropagation?: boolean) {
+    public confirmMessageHtmlContent(
+        option: models.MessageModel,
+        isStopPropagation?: boolean
+    ) {
         this.createMessageConfirmModal(option, true, isStopPropagation);
         this.showModal();
     }
 
     public unsavedWarningMessageDefault(option: any) {
-        option.message = [{key: 'Modal_Message__Saving_Change'}];
+        option.message = [{ key: "Modal_Message__Saving_Change" }];
         this.createUnsavedWarningMessageModal(option);
         this.showModal();
     }
@@ -115,8 +136,16 @@ export class ModalService extends BaseService {
         this.showModal();
     }
 
-    public alertMessage(option: any, isHtmlContent?: boolean, isStopPropagation?: boolean) {
-        this.createMessageAlertModal(option, isHtmlContent || false, isStopPropagation);
+    public alertMessage(
+        option: any,
+        isHtmlContent?: boolean,
+        isStopPropagation?: boolean
+    ) {
+        this.createMessageAlertModal(
+            option,
+            isHtmlContent || false,
+            isStopPropagation
+        );
         this.showModal();
     }
 
@@ -132,9 +161,11 @@ export class ModalService extends BaseService {
             callBackFunc: option.callBackFunc,
             messageType: MessageModal.MessageType.warning,
             modalSize: MessageModal.ModalSize.small,
-            showCloseButton: isBoolean(option.showCloseButton) ? option.showCloseButton : true,
+            showCloseButton: isBoolean(option.showCloseButton)
+                ? option.showCloseButton
+                : true,
             header: new models.MessageModalHeaderModel({
-                text: option.headerText || 'Saving Changes'
+                text: option.headerText || "Saving Changes",
             }),
             body: new models.MessageModalBodyModel({
                 isHtmlContent: true,
@@ -143,37 +174,48 @@ export class ModalService extends BaseService {
             footer: new models.MessageModalFooterModel({
                 buttonList: [
                     new models.ButtonList({
-                        buttonType: option.buttonType1 || MessageModal.ButtonType.warning,
-                        text: option.yesButtonText ? option.yesButtonText : 'Yes',
+                        buttonType:
+                            option.buttonType1 ||
+                            MessageModal.ButtonType.warning,
+                        text: option.yesButtonText
+                            ? option.yesButtonText
+                            : "Yes",
                         disabled: option.yesButtonDisabled,
-                        customClass: '',
+                        customClass: "",
                         callBackFunc: () => {
                             this.hideModal();
                             if (!option.onModalSaveAndExit) return;
                             option.onModalSaveAndExit();
-                        }
+                        },
                     }),
                     new models.ButtonList({
-                        buttonType: option.buttonType2 || MessageModal.ButtonType.danger,
-                        text: option.noButtonText ? option.noButtonText : 'No',
-                        customClass: '',
+                        buttonType:
+                            option.buttonType2 ||
+                            MessageModal.ButtonType.danger,
+                        text: option.noButtonText ? option.noButtonText : "No",
+                        customClass: "",
                         callBackFunc: () => {
                             this.hideModal();
                             if (!option.onModalExit) return;
                             option.onModalExit();
-                        }
+                        },
                     }),
                     new models.ButtonList({
-                        buttonType: option.buttonType3 || MessageModal.ButtonType.default,
-                        text: option.cancelButtonText ? option.cancelButtonText : 'Cancel',
-                        customClass: '',
+                        buttonType:
+                            option.buttonType3 ||
+                            MessageModal.ButtonType.default,
+                        text: option.cancelButtonText
+                            ? option.cancelButtonText
+                            : "Cancel",
+                        customClass: "",
                         callBackFunc: () => {
                             this.hideModal();
                             if (!option.onModalCancel) return;
                             option.onModalCancel();
-                        }
-                    })]
-            })
+                        },
+                    }),
+                ],
+            }),
         });
         this.createModal(messageOption);
         this.setIndexForMessageModal(option);
@@ -185,7 +227,7 @@ export class ModalService extends BaseService {
             modalSize: MessageModal.ModalSize.small,
             showCloseButton: option.showCloseButton,
             header: new models.MessageModalHeaderModel({
-                text: option.headerText || 'Warning'
+                text: option.headerText || "Warning",
             }),
             body: new models.MessageModalBodyModel({
                 isHtmlContent: true,
@@ -194,16 +236,19 @@ export class ModalService extends BaseService {
             footer: new models.MessageModalFooterModel({
                 buttonList: [
                     new models.ButtonList({
-                        buttonType: option.buttonType1 || MessageModal.ButtonType.primary,
-                        text: 'OK',
-                        customClass: '',
+                        buttonType:
+                            option.buttonType1 ||
+                            MessageModal.ButtonType.primary,
+                        text: "OK",
+                        customClass: "",
                         callBackFunc: () => {
                             this.hideModal();
                             if (!option.onModalExit) return;
                             option.onModalExit();
-                        }
-                    })]
-            })
+                        },
+                    }),
+                ],
+            }),
         });
         this.createModal(messageOption);
         this.setIndexForMessageModal(option);
@@ -211,20 +256,19 @@ export class ModalService extends BaseService {
 
     private createMessageErrorModal(option: any, isHtmlContent: boolean) {
         option.messageType = MessageModal.MessageType.error;
-        option.text = 'Error';
+        option.text = "Error";
         this.createMessageModal(option, isHtmlContent);
     }
 
-
     private createMessageWarningModal(option: any, isHtmlContent: boolean) {
         option.messageType = MessageModal.MessageType.warning;
-        option.text = option.text||'Warning';
+        option.text = option.text || "Warning";
         this.createMessageModal(option, isHtmlContent);
     }
 
     private createMessageSuccessModal(option: any, isHtmlContent: boolean) {
         option.messageType = MessageModal.MessageType.success;
-        option.text = 'Success';
+        option.text = "Success";
         this.createMessageModal(option, isHtmlContent);
     }
 
@@ -234,7 +278,7 @@ export class ModalService extends BaseService {
             messageType: option.messageType,
             modalSize: option.modalSize || MessageModal.ModalSize.small,
             header: new models.MessageModalHeaderModel({
-                text: option.text
+                text: option.text,
             }),
             body: new models.MessageModalBodyModel({
                 isHtmlContent: isHtmlContent,
@@ -243,30 +287,36 @@ export class ModalService extends BaseService {
             footer: new models.MessageModalFooterModel({
                 buttonList: [
                     new models.ButtonList({
-                        buttonType: option.buttonType1 || MessageModal.ButtonType.default,
-                        text: option.closeText || 'Close',
+                        buttonType:
+                            option.buttonType1 ||
+                            MessageModal.ButtonType.default,
+                        text: option.closeText || "Close",
                         callBackFunc: () => {
                             this.hideModal();
                             if (!option.callBack) return;
                             option.callBack();
-                        }
-                    })
-                ]
+                        },
+                    }),
+                ],
             }),
             callBackFunc: option.closedCallBack,
-            showCloseButton: option.showCloseButton
+            showCloseButton: option.showCloseButton,
         });
         this.createModal(messageOption);
         this.setIndexForMessageModal(option);
     }
 
-    private createMessageConfirmModal(option: any, isHtmlContent: boolean, isStopPropagation?: boolean) {
+    private createMessageConfirmModal(
+        option: any,
+        isHtmlContent: boolean,
+        isStopPropagation?: boolean
+    ) {
         const messageOption = new models.MessageModalModel({
             messageType: option.messageType || MessageModal.MessageType.confirm,
             customClass: option.customClass || null,
             modalSize: option.modalSize || MessageModal.ModalSize.small,
             header: new models.MessageModalHeaderModel({
-                text: option.headerText || 'Confirm'
+                text: option.headerText || "Confirm",
             }),
             body: new models.MessageModalBodyModel({
                 isHtmlContent: isHtmlContent,
@@ -275,44 +325,53 @@ export class ModalService extends BaseService {
             footer: new models.MessageModalFooterModel({
                 buttonList: [
                     new models.ButtonList({
-                        buttonType: option.buttonType1 || MessageModal.ButtonType.primary,
-                        text: option.okText || 'Ok',
-                        customClass: '',
+                        buttonType:
+                            option.buttonType1 ||
+                            MessageModal.ButtonType.primary,
+                        text: option.okText || "Ok",
+                        customClass: "",
                         callBackFunc: ($event) => {
                             if (isStopPropagation)
                                 event.stopImmediatePropagation();
                             this.hideModal();
                             if (!option.callBack1) return;
                             option.callBack1();
-                        }
+                        },
                     }),
                     new models.ButtonList({
-                        buttonType: option.buttonType2 || MessageModal.ButtonType.default,
-                        text: option.cancelText || 'Cancel',
-                        customClass: '',
+                        buttonType:
+                            option.buttonType2 ||
+                            MessageModal.ButtonType.default,
+                        text: option.cancelText || "Cancel",
+                        customClass: "",
                         callBackFunc: ($event) => {
                             if (isStopPropagation)
                                 event.stopImmediatePropagation();
                             this.hideModal();
                             if (!option.callBack2) return;
                             option.callBack2();
-                        }
-                    })
-                ]
+                        },
+                    }),
+                ],
             }),
-            showCloseButton: option.showCloseButton
+            showCloseButton: option.showCloseButton,
         });
         this.createModal(messageOption);
         this.setIndexForMessageModal(option);
     }
 
-    private createMessageAlertModal(option: any, isHtmlContent: boolean, isStopPropagation?: boolean) {
+    private createMessageAlertModal(
+        option: any,
+        isHtmlContent: boolean,
+        isStopPropagation?: boolean
+    ) {
         const messageOption = new models.MessageModalModel({
-            messageType: option.messageType || MessageModal.MessageType.information,
+            messageType:
+                option.messageType || MessageModal.MessageType.information,
             customClass: option.customClass || null,
             modalSize: option.modalSize || MessageModal.ModalSize.small,
             header: new models.MessageModalHeaderModel({
-                text: option.headerText || 'Information'
+                text: option.headerText || "Information",
             }),
             body: new models.MessageModalBodyModel({
                 isHtmlContent: isHtmlContent,
@@ -321,21 +380,23 @@ export class ModalService extends BaseService {
             footer: new models.MessageModalFooterModel({
                 buttonList: [
                     new models.ButtonList({
-                        buttonType: option.buttonType1 || MessageModal.ButtonType.default,
-                        text: option.okText || 'Ok',
-                        customClass: '',
+                        buttonType:
+                            option.buttonType1 ||
+                            MessageModal.ButtonType.default,
+                        text: option.okText || "Ok",
+                        customClass: "",
                         callBackFunc: ($event) => {
                             if (isStopPropagation)
                                 event.stopImmediatePropagation();
                             this.hideModal();
                             if (!option.callBack) return;
                             option.callBack();
-                        }
-                    })
-                ]
+                        },
+                    }),
+                ],
             }),
             callBackFunc: option.closedCallBack,
-            showCloseButton: option.showCloseButton
+            showCloseButton: option.showCloseButton,
         });
         this.createModal(messageOption);
         this.setIndexForMessageModal(option);
@@ -343,13 +404,16 @@ export class ModalService extends BaseService {
 
     private setIndexForMessageModal(option: any) {
         if (!option || !option.isOnTop) return;
-        const modal: HTMLElement = document.getElementById('xn-modal-message-main');
-        modal.style.setProperty('z-index', '1071', 'important');
+        const modal: HTMLElement = document.getElementById(
+            "xn-modal-message-main"
+        );
+        modal.style.setProperty("z-index", "1071", "important");
         setTimeout(() => {
-            const modalBackdrops: HTMLCollectionOf<Element> = document.getElementsByClassName('modal-backdrop');
+            const modalBackdrops: HTMLCollectionOf<Element> =
+                document.getElementsByClassName("modal-backdrop");
             if (!modalBackdrops || !modalBackdrops.length) return;
             const modalBackdrop: HTMLElement = <HTMLElement>modalBackdrops[0];
-            modalBackdrop.style.setProperty('z-index', '1070', 'important');
+            modalBackdrop.style.setProperty("z-index", "1070", "important");
         }, 200);
     }
 }

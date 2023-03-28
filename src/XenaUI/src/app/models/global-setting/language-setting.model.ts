@@ -1,6 +1,6 @@
 export class LanguageSettingModel {
-    public flag: string = '';
-    public name: string = '';
+    public flag: string = "";
+    public name: string = "";
     public active: boolean = false;
     public idRepLanguage: string;
 

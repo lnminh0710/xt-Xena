@@ -1,19 +1,20 @@
 import {
-    Component, Input, Output, EventEmitter, OnInit, OnDestroy
-} from '@angular/core';
-import { Uti } from 'app/utilities/uti';
-import { Subscription } from 'rxjs/Subscription';
-import {
-    DatatableService,
-    RuleService,
-    AppErrorHandler
-} from 'app/services';
-import isEmpty from 'lodash-es/isEmpty';
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    OnDestroy,
+} from "@angular/core";
+import { Uti } from "app/utilities/uti";
+import { Subscription } from "rxjs/Subscription";
+import { DatatableService, RuleService, AppErrorHandler } from "app/services";
+import isEmpty from "lodash-es/isEmpty";
 
 @Component({
-    selector: 'widget-profile-select',
-    styleUrls: ['./widget-profile-select.component.scss'],
-    templateUrl: './widget-profile-select.component.html'
+    selector: "widget-profile-select",
+    styleUrls: ["./widget-profile-select.component.scss"],
+    templateUrl: "./widget-profile-select.component.html",
 })
 export class WidgetProfileSelectComponent implements OnInit, OnDestroy {
     public dataSourceTable: any;
@@ -32,11 +33,9 @@ export class WidgetProfileSelectComponent implements OnInit, OnDestroy {
         private datatableService: DatatableService,
         private appErrorHandler: AppErrorHandler,
         private ruleService: RuleService
-    ) {
-    }
+    ) {}
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
@@ -45,14 +44,15 @@ export class WidgetProfileSelectComponent implements OnInit, OnDestroy {
     public onDeleteColumnClickHandler($event: any) {
         const deleteData = [
             {
-                "IsDeleted": "1",
-                "IdSelectionWidgetTemplate": $event.IdSelectionWidgetTemplate
-            }
+                IsDeleted: "1",
+                IdSelectionWidgetTemplate: $event.IdSelectionWidgetTemplate,
+            },
         ];
-        this.getProfileSubscription = this.ruleService.saveBlackListProfile(deleteData)
+        this.getProfileSubscription = this.ruleService
+            .saveBlackListProfile(deleteData)
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response)) {                        
+                    if (!Uti.isResquestSuccess(response)) {
                         return;
                     }
 
@@ -64,7 +64,7 @@ export class WidgetProfileSelectComponent implements OnInit, OnDestroy {
     public open(data?: any) {
         this.showDialog = true;
         this.data = data;
-        this.getProfile(data.idSelectionWidget)
+        this.getProfile(data.idSelectionWidget);
     }
 
     public close() {
@@ -72,7 +72,9 @@ export class WidgetProfileSelectComponent implements OnInit, OnDestroy {
     }
 
     public customerTableRowClick(data) {
-        this.selectedRow = this.dataSourceTable.data.find(x => x.DT_RowId === Uti.getValueFromArrayByKey(data, 'DT_RowId'));
+        this.selectedRow = this.dataSourceTable.data.find(
+            (x) => x.DT_RowId === Uti.getValueFromArrayByKey(data, "DT_RowId")
+        );
     }
 
     public onRowDoubleClick(data) {
@@ -81,7 +83,11 @@ export class WidgetProfileSelectComponent implements OnInit, OnDestroy {
     }
 
     public onSelect() {
-        if (isEmpty(this.selectedRow) || !this.selectedRow || !this.selectedRow.Description) {
+        if (
+            isEmpty(this.selectedRow) ||
+            !this.selectedRow ||
+            !this.selectedRow.Description
+        ) {
             return;
         }
         this.selectedData.emit(this.selectedRow);
@@ -93,19 +99,22 @@ export class WidgetProfileSelectComponent implements OnInit, OnDestroy {
     }
 
     private getProfile(idSelectionWidget: any) {
-        this.getProfileSubscription = this.ruleService.getTemplate(idSelectionWidget)
+        this.getProfileSubscription = this.ruleService
+            .getTemplate(idSelectionWidget)
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!Uti.isResquestSuccess(response)) {
                         return;
                     }
-                    response = this.datatableService.formatDataTableFromRawData(response.item);
+                    response = this.datatableService.formatDataTableFromRawData(
+                        response.item
+                    );
                     response = this.datatableService.buildDataSource(response);
                     response.columns.push({
-                        title: '',
-                        data: 'Delete',
+                        title: "",
+                        data: "Delete",
                         visible: true,
-                        readOnly: true
+                        readOnly: true,
                     });
                     this.dataSourceTable = response;
                 });

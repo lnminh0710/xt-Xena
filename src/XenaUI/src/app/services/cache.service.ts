@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Rx';
+import { Observable } from "rxjs/Observable";
+import { Subject } from "rxjs/Rx";
 
 interface CacheContent {
     expiry: number;
@@ -14,8 +14,11 @@ interface CacheContent {
  */
 export class CacheService {
     private cache: Map<string, CacheContent> = new Map<string, CacheContent>();
-    private inFlightObservables: Map<string, Subject<any>> = new Map<string, Subject<any>>();
-    readonly DEFAULT_MAX_AGE: number = 1800000;//in milliseconds: -> 1m * 60s * 1s * 1000ms -> 30 minutes
+    private inFlightObservables: Map<string, Subject<any>> = new Map<
+        string,
+        Subject<any>
+    >();
+    readonly DEFAULT_MAX_AGE: number = 1800000; //in milliseconds: -> 1m * 60s * 1s * 1000ms -> 30 minutes
 
     /**
      * Gets the value from cache if the key is provided.
@@ -23,8 +26,11 @@ export class CacheService {
      * in flight, if so return the subject. If not create a new
      * Subject inFlightObservable and return the source observable.
      */
-    get(key: string, fallback?: Observable<any>, maxAge?: number): Observable<any> | Subject<any> {
-
+    get(
+        key: string,
+        fallback?: Observable<any>,
+        maxAge?: number
+    ): Observable<any> | Subject<any> {
         if (this.hasValidCachedValue(key)) {
             //console.log(`%cGetting from cache ${key}`, 'color: green');
             return Observable.of(this.cache.get(key).value);
@@ -39,11 +45,12 @@ export class CacheService {
         } else if (fallback && fallback instanceof Observable) {
             this.inFlightObservables.set(key, new Subject());
             //console.log(`%c Calling api for ${key}`, 'color: purple');
-            return fallback.do((value) => { this.set(key, value, maxAge); });
+            return fallback.do((value) => {
+                this.set(key, value, maxAge);
+            });
         } else {
-            return Observable.throw('Requested key is not available in Cache');
+            return Observable.throw("Requested key is not available in Cache");
         }
-
     }
 
     getValue(key: string) {
@@ -70,7 +77,7 @@ export class CacheService {
                 }
             });
 
-            keys.forEach(k => {
+            keys.forEach((k) => {
                 this.cache.delete(k);
             });
         }

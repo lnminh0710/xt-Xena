@@ -5,39 +5,43 @@ import {
     Output,
     EventEmitter,
     AfterViewInit,
-    Input
-} from '@angular/core';
+    Input,
+} from "@angular/core";
 
 @Component({
-    selector: 'cell-edit-dialog',
-    styleUrls: ['./cell-edit-dialog.component.scss'],
-    templateUrl: './cell-edit-dialog.component.html'
+    selector: "cell-edit-dialog",
+    styleUrls: ["./cell-edit-dialog.component.scss"],
+    templateUrl: "./cell-edit-dialog.component.html",
 })
-export class CellEditDialogComponent implements OnInit, OnDestroy, AfterViewInit {
-    public cellData: { r: number, c: number, value: string, title: string, data: string } = {
+export class CellEditDialogComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
+    public cellData: {
+        r: number;
+        c: number;
+        value: string;
+        title: string;
+        data: string;
+    } = {
         c: -1,
         r: -1,
-        value: '',
-        title: '',
-        data: ''
+        value: "",
+        title: "",
+        data: "",
     };
 
     @Output() onAccept = new EventEmitter<any>();
     @Output() onClose = new EventEmitter<any>();
 
-    constructor(
-    ) {
-    }
+    constructor() {}
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
-    ngOnDestroy() {
-    }
+    ngOnDestroy() {}
 
     ngAfterViewInit() {
         setTimeout(() => {
-            this.selectElementContents($('.edit-field').get(0));
+            this.selectElementContents($(".edit-field").get(0));
         }, 200);
     }
 

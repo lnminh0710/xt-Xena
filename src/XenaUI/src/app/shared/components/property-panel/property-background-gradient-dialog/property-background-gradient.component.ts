@@ -6,20 +6,19 @@ import {
     OnInit,
     OnDestroy,
     ChangeDetectionStrategy,
-    ChangeDetectorRef
-} from '@angular/core';
-import {Uti} from 'app/utilities';
-import {ModalService} from 'app/services';
-import {Module} from 'app/models';
+    ChangeDetectorRef,
+} from "@angular/core";
+import { Uti } from "app/utilities";
+import { ModalService } from "app/services";
+import { Module } from "app/models";
 
 @Component({
-    selector: 'property-background-gradient',
-    styleUrls: ['./property-background-gradient.component.scss'],
-    templateUrl: './property-background-gradient.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: "property-background-gradient",
+    styleUrls: ["./property-background-gradient.component.scss"],
+    templateUrl: "./property-background-gradient.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PropertyBackgroundGradientComponent implements OnInit, OnDestroy {
-
     public showDialog = false;
     private isPropertyChanged = false;
     perfectScrollbarConfig: any;
@@ -29,32 +28,29 @@ export class PropertyBackgroundGradientComponent implements OnInit, OnDestroy {
 
     @Input() usingModule: Module;
 
-    @Input()  propertiesGradient: any
+    @Input() propertiesGradient: any;
 
     @Output() onApply = new EventEmitter<any>();
 
     constructor(
         private _modalService: ModalService,
-        private changeDetectorRef: ChangeDetectorRef,
-    ) {
-    }
+        private changeDetectorRef: ChangeDetectorRef
+    ) {}
 
     ngOnInit() {
         this.initPerfectScroll();
     }
 
-
     private initPerfectScroll() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
 
     ngOnDestroy() {
         Uti.unsubscribe(this);
     }
-
 
     public open(item) {
         this.showDialog = true;
@@ -67,9 +63,9 @@ export class PropertyBackgroundGradientComponent implements OnInit, OnDestroy {
             return;
         }
         this._modalService.unsavedWarningMessageDefault({
-            headerText: 'Save Data',
+            headerText: "Save Data",
             onModalSaveAndExit: this.apply.bind(this),
-            onModalExit: this.onModalExit.bind(this)
+            onModalExit: this.onModalExit.bind(this),
         });
         this.changeDetectorRef.markForCheck();
     }
@@ -78,7 +74,6 @@ export class PropertyBackgroundGradientComponent implements OnInit, OnDestroy {
         this.isPropertyChanged = false;
         this.showDialog = false;
     }
-
 
     applyGradientColor($event) {
         this.backgroundGradient = $event && $event.background;
@@ -98,7 +93,7 @@ export class PropertyBackgroundGradientComponent implements OnInit, OnDestroy {
         this.onApply.emit({
             background: this.backgroundGradient,
             type: this.typeGradient,
-            direction: this.directionGradient
+            direction: this.directionGradient,
         });
     }
 }

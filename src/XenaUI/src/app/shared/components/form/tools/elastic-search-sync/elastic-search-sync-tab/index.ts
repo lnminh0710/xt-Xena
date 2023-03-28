@@ -1,1 +1,1 @@
-export { ElasticSearchSyncTabComponent } from './elastic-search-sync-tab.component';
+export { ElasticSearchSyncTabComponent } from "./elastic-search-sync-tab.component";

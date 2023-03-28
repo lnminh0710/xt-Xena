@@ -1,5 +1,5 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcGrid from 'wijmo/wijmo.grid';
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcGrid from "wijmo/wijmo.grid";
 export declare class GroupPanel extends wjcCore.Control {
     _g: any;
     _gds: wjcCore.ObservableArray;

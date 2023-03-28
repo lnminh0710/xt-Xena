@@ -1,1 +1,1 @@
-﻿export { XnMessageModalModule } from './xn-message-modal.module'
+﻿export { XnMessageModalModule } from "./xn-message-modal.module";

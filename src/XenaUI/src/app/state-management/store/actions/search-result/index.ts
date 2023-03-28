@@ -1,1 +1,1 @@
-﻿export * from './search-result.action';
+﻿export * from "./search-result.action";

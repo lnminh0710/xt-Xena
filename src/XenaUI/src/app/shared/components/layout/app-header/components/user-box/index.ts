@@ -1,2 +1,1 @@
-export { UserBoxComponent } from './user-box.component'
-
+export { UserBoxComponent } from "./user-box.component";

@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import * as React from 'react';
+import * as React from "react";
 export declare class ComponentBase extends React.Component<any, any> {
     private _objPropHash;
     controlType: any;

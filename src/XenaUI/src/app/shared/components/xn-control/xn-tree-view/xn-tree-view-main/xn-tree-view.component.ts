@@ -1,33 +1,34 @@
 import {
-    Component, OnInit, OnDestroy, OnChanges,
-    Input, Output, EventEmitter, SimpleChanges,
-    ChangeDetectorRef
-} from '@angular/core';
-import isEmpty from 'lodash-es/isEmpty';
-import cloneDeep from 'lodash-es/cloneDeep';
-import {
-    WidgetDetail,
-    WidgetType,
-    MessageModel
-} from 'app/models';
+    Component,
+    OnInit,
+    OnDestroy,
+    OnChanges,
+    Input,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    ChangeDetectorRef,
+} from "@angular/core";
+import isEmpty from "lodash-es/isEmpty";
+import cloneDeep from "lodash-es/cloneDeep";
+import { WidgetDetail, WidgetType, MessageModel } from "app/models";
 import {
     WidgetTemplateSettingService,
     TreeViewService,
     ModalService,
-
-    AppErrorHandler
-} from 'app/services';
-import { Uti } from 'app/utilities/uti';
-import { MessageModal } from 'app/app.constants';
-import { debounce } from 'rxjs/operator/debounce';
+    AppErrorHandler,
+} from "app/services";
+import { Uti } from "app/utilities/uti";
+import { MessageModal } from "app/app.constants";
+import { debounce } from "rxjs/operator/debounce";
 
 @Component({
-    selector: 'app-xn-tree-view',
-    styleUrls: ['./xn-tree-view.component.scss'],
-    templateUrl: './xn-tree-view.component.html',
+    selector: "app-xn-tree-view",
+    styleUrls: ["./xn-tree-view.component.scss"],
+    templateUrl: "./xn-tree-view.component.html",
     host: {
-        '(contextmenu)': 'onRightClick($event)'
-    }
+        "(contextmenu)": "onRightClick($event)",
+    },
 })
 export class XnTreeViewComponent implements OnInit, OnDestroy {
     private editMode = false;
@@ -35,7 +36,7 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     private currentTreeViewData: Array<any>;
     private crossTreeData: Array<any>;
     private crossTreeDataFinal: Array<any>;
-    private config: any = { editMode: false};
+    private config: any = { editMode: false };
     private _widgetDetail: WidgetDetail;
     private _data: any;
     private currentNode: any = {};
@@ -56,12 +57,12 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
             this.makeData();
             return;
         }
-        this.editMode = (this.data.config && this.data.config.editMode);
+        this.editMode = this.data.config && this.data.config.editMode;
         this.deleteItems = [];
         this.config.editMode = this.editMode;
         this.makeData();
         this.bindToTooltip();
-    };
+    }
     get data() {
         return this._data;
     }
@@ -74,7 +75,7 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         }
         this._widgetDetail = data;
         this.setUpDataForTreeViewAfterGetService(this._widgetDetail);
-    };
+    }
 
     // If true , this form is displaying on Widget
     private _isActivated: boolean;
@@ -82,11 +83,10 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         this._isActivated = status;
         if (!status) {
             this.ref.detach();
-        }
-        else {
+        } else {
             this.ref.reattach();
         }
-    };
+    }
 
     get isActivated() {
         return this._isActivated;
@@ -100,15 +100,14 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         private treeViewService: TreeViewService,
         private widgetTemplateSettingService: WidgetTemplateSettingService,
         private modalService: ModalService,
-        private appErrorHandler: AppErrorHandler,
-    ) { }
+        private appErrorHandler: AppErrorHandler
+    ) {}
 
     public ngOnInit() {
         this.contextMenuData = this.createContextData();
     }
 
-    public ngOnDestroy() {
-    }
+    public ngOnDestroy() {}
 
     public onRightClick($event: MouseEvent) {
         $event.preventDefault();
@@ -117,7 +116,11 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         let el = $($event.target)[0];
         let treeNodeEle = this.getTreeNodeElement(el);
         if (!treeNodeEle) return;
-        let treeNode = Uti.getItemByPropertyInTree(this.treeViewData, 'id', (treeNodeEle.id || '0'));
+        let treeNode = Uti.getItemByPropertyInTree(
+            this.treeViewData,
+            "id",
+            treeNodeEle.id || "0"
+        );
         this.itemSelectHandler(treeNode);
     }
 
@@ -126,7 +129,7 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     }
 
     public unRenameHandler() {
-        this.setAllValueForTreeItem('isRename', false);
+        this.setAllValueForTreeItem("isRename", false);
         this.bindToTooltip();
     }
 
@@ -138,7 +141,7 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         }
         this.preventCircle++;
         if (!element || !element.parentNode) return null;
-        if (element.parentNode.className.indexOf('xn-tree-node') > -1) {
+        if (element.parentNode.className.indexOf("xn-tree-node") > -1) {
             return element.parentNode;
         }
         return this.getTreeNodeElement(element.parentNode);
@@ -147,14 +150,14 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     private bindToTooltip() {
         //console.log('bindToTooltip');
         setTimeout(() => {
-            let treeItems: any = $('.tree-view-node-text');
+            let treeItems: any = $(".tree-view-node-text");
             for (let item of treeItems) {
-                $(item).unbind('mouseenter');
-                $(item).bind('mouseenter', function () {
+                $(item).unbind("mouseenter");
+                $(item).bind("mouseenter", function () {
                     let $this: any = $(this);
                     if (this.offsetWidth < this.scrollWidth) {
-                        $this.attr('xn-tooltip', '');
-                        $this.attr('tooltipText', `${$this.text()}`);
+                        $this.attr("xn-tooltip", "");
+                        $this.attr("tooltipText", `${$this.text()}`);
                         // comment code, cause replace title to tooltip
                         // $this.tooltip({
                         //     title: $this.text(),
@@ -162,8 +165,8 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
                         // });
                         // $this.tooltip('show');
                     } else {
-                        $this.attr('xn-tooltip', '');
-                        $this.attr('tooltipText', '');
+                        $this.attr("xn-tooltip", "");
+                        $this.attr("tooltipText", "");
                         // $this.tooltip("destroy")
                         // $this.tooltip('hide');
                     }
@@ -173,14 +176,18 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     }
 
     private makeData() {
-        if (!this.data || !this.data.data || typeof this.data.data.length === 'undefined') {
+        if (
+            !this.data ||
+            !this.data.data ||
+            typeof this.data.data.length === "undefined"
+        ) {
             this.treeViewData = [];
             this.noEntryDataEvent.emit(true);
             return;
         }
         this.rawData = this.data.data;
         if (!this.editMode) {
-            this.rawData = this.data.data.filter(x => x.select);
+            this.rawData = this.data.data.filter((x) => x.select);
         }
         if (!this.rawData || !this.rawData.length) {
             this.treeViewData = [];
@@ -210,18 +217,32 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         this.makeCrossTreeData(this.crossTreeDataFinal, this.treeViewData);
         this.treeViewDataEdited = this.crossTreeDataFinal;
 
-        const key = Object.keys(this._widgetDetail.widgetDataType.listenKeyRequest(this.widgetModuleInfo.moduleNameTrim))[0];
-        const value = this._widgetDetail.widgetDataType.listenKeyRequest(this.widgetModuleInfo.moduleNameTrim)[key];
+        const key = Object.keys(
+            this._widgetDetail.widgetDataType.listenKeyRequest(
+                this.widgetModuleInfo.moduleNameTrim
+            )
+        )[0];
+        const value = this._widgetDetail.widgetDataType.listenKeyRequest(
+            this.widgetModuleInfo.moduleNameTrim
+        )[key];
 
-        const saveData1 = this.treeViewService.makeDataForSaveTreeView(this.treeViewDataEditMode, this.treeViewDataEdited, value);
-        const saveData2 = this.treeViewService.makeDataForSaveTreeViewMaster(this.addItems, this.deleteItems, value);
+        const saveData1 = this.treeViewService.makeDataForSaveTreeView(
+            this.treeViewDataEditMode,
+            this.treeViewDataEdited,
+            value
+        );
+        const saveData2 = this.treeViewService.makeDataForSaveTreeViewMaster(
+            this.addItems,
+            this.deleteItems,
+            value
+        );
         this.treeViewDataEditMode = this.treeViewDataEdited;
         return [...saveData1, ...saveData2];
     }
 
     public setExpandForTree(isExpandAll: boolean) {
-        $('#' + this.mainHtmlId).css('width', 5000);
-        this.setAllValueForTreeItem('expand', isExpandAll);
+        $("#" + this.mainHtmlId).css("width", 5000);
+        this.setAllValueForTreeItem("expand", isExpandAll);
         this.waitingElementCounter = 0;
         this.calculateWidthForTreeView(500);
     }
@@ -237,7 +258,11 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         this.currentNode = $event;
 
         //this.setAllValueForTreeItem('isSelected', false);
-        let findNode = this.searchSingleNodeFromTree(this.treeViewData, 'isSelected', true);
+        let findNode = this.searchSingleNodeFromTree(
+            this.treeViewData,
+            "isSelected",
+            true
+        );
         if (findNode) {
             findNode.isSelected = false;
         }
@@ -253,15 +278,15 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     public calculateWidthForTreeView(timeout: number) {
         if (this.waitingElementCounter > 20) return;
         setTimeout(() => {
-            const left = $('#' + this.leftHtmlId);
+            const left = $("#" + this.leftHtmlId);
             if (!left || !left.length) {
                 this.waitingElementCounter += 1;
                 this.calculateWidthForTreeView(timeout);
                 return;
             }
-            const main = $('#' + this.mainHtmlId);
-            const right = $('#' + this.rightHtmlId);
-            main.css('width', (left.outerWidth()) + (right.outerWidth()) + 25);
+            const main = $("#" + this.mainHtmlId);
+            const right = $("#" + this.rightHtmlId);
+            main.css("width", left.outerWidth() + right.outerWidth() + 25);
         }, timeout);
     }
 
@@ -272,9 +297,14 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     }
 
     private buildContextData() {
-        if (this.editMode && this.contextMenuData && this.contextMenuData.length > 2) {
+        if (
+            this.editMode &&
+            this.contextMenuData &&
+            this.contextMenuData.length > 2
+        ) {
             this.contextMenuData[1].disabled = this.currentNode.isRename;
-            this.contextMenuData[2].disabled = (this.currentNode.children && this.currentNode.children.length);
+            this.contextMenuData[2].disabled =
+                this.currentNode.children && this.currentNode.children.length;
         } else {
             this.contextMenuData = [];
         }
@@ -284,26 +314,32 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     private createContextData() {
         return [
             {
-                id: 'tree-view-add-category',
-                title: 'New Category',
-                iconName: 'fa-plus  green-color',
-                callback: (event) => { this.addCategory(); },
-                disabled: false
+                id: "tree-view-add-category",
+                title: "New Category",
+                iconName: "fa-plus  green-color",
+                callback: (event) => {
+                    this.addCategory();
+                },
+                disabled: false,
             },
             {
-                id: 'tree-view-rename-category',
-                title: 'Rename',
-                iconName: 'fa-pencil  orange-color',
-                callback: (event) => { this.renameCategory(); },
-                disabled: false
+                id: "tree-view-rename-category",
+                title: "Rename",
+                iconName: "fa-pencil  orange-color",
+                callback: (event) => {
+                    this.renameCategory();
+                },
+                disabled: false,
             },
             {
-                id: 'tree-view-delete-category',
-                title: 'Delete',
-                iconName: 'fa-times  red-color',
-                callback: (event) => { this.deleteCategory(); },
-                disabled: false
-            }
+                id: "tree-view-delete-category",
+                title: "Delete",
+                iconName: "fa-times  red-color",
+                callback: (event) => {
+                    this.deleteCategory();
+                },
+                disabled: false,
+            },
         ];
     }
 
@@ -311,20 +347,21 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         if (!this.currentNode) return;
         this.currentNode.children = this.currentNode.children || [];
         let item = {
-            'id': Uti.getTempId2() + '',
-            'select': false,
-            'text': 'New category',
-            'isMain': false,
-            'isMainText': 'Is Main',
-            'percentText': 'Percent',
-            'percent': '',
-            'expand': true,
-            'parentId': this.currentNode.id,
-            'level': this.currentNode.level + 1,
-            'idArticleGroups': this.currentNode.idArticleGroups,
-            'isSelected': false,
-            'isRename': false,
-            'idSharingTreeGroupsRootname': this.currentNode.idSharingTreeGroupsRootname
+            id: Uti.getTempId2() + "",
+            select: false,
+            text: "New category",
+            isMain: false,
+            isMainText: "Is Main",
+            percentText: "Percent",
+            percent: "",
+            expand: true,
+            parentId: this.currentNode.id,
+            level: this.currentNode.level + 1,
+            idArticleGroups: this.currentNode.idArticleGroups,
+            isSelected: false,
+            isRename: false,
+            idSharingTreeGroupsRootname:
+                this.currentNode.idSharingTreeGroupsRootname,
         };
         this.currentNode.children.push(item);
         this.addItems.push(item);
@@ -334,24 +371,27 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     }
 
     private addItemToRawData(item: any) {
-        this.rawData.push(
-            {
-                'id': item.id,
-                'select': false,
-                'text': item.text,
-                'isMain': false,
-                'isMainText': item.isMainText,
-                'percentText': item.percentText,
-                'percent': '',
-                'parentId': item.parentId,
-                'idArticleGroups': item.idArticleGroups,
-                'idSharingTreeGroupsRootname': item.idSharingTreeGroupsRootname
-            });
+        this.rawData.push({
+            id: item.id,
+            select: false,
+            text: item.text,
+            isMain: false,
+            isMainText: item.isMainText,
+            percentText: item.percentText,
+            percent: "",
+            parentId: item.parentId,
+            idArticleGroups: item.idArticleGroups,
+            idSharingTreeGroupsRootname: item.idSharingTreeGroupsRootname,
+        });
     }
 
     private renameCategory() {
         //this.setAllValueForTreeItem('isRename', false);
-        let findNode = this.searchSingleNodeFromTree(this.treeViewData, 'isRename', true);
+        let findNode = this.searchSingleNodeFromTree(
+            this.treeViewData,
+            "isRename",
+            true
+        );
         if (findNode) {
             findNode.isRename = false;
         }
@@ -360,26 +400,40 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         this.currentNode.isRename = true;
 
         setTimeout(() => {
-            $('#' + this.mainHtmlId + ' #inputCatName' + this.currentNode.id).focus();
+            $(
+                "#" + this.mainHtmlId + " #inputCatName" + this.currentNode.id
+            ).focus();
         }, 200);
     }
 
     private deleteCategory() {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Delete Item',
-            messageType: MessageModal.MessageType.error,
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_The_Selected_Items'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.deleteCurrentItem();
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Delete Item",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Delete_The_Selected_Items",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.deleteCurrentItem();
+                },
+            })
+        );
     }
 
     private deleteCurrentItem() {
-        Uti.removeItemInTreeArray(this.treeViewData, this.currentNode, 'id', 'children');
-        Uti.removeItemInArray(this.addItems, this.currentNode, 'id');
+        Uti.removeItemInTreeArray(
+            this.treeViewData,
+            this.currentNode,
+            "id",
+            "children"
+        );
+        Uti.removeItemInArray(this.addItems, this.currentNode, "id");
         this.addToDeleteItems();
     }
 
@@ -391,7 +445,9 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     }
 
     private setCurrentExpand() {
-        if (!this.currentTreeViewData || !this.currentTreeViewData.length) { return; }
+        if (!this.currentTreeViewData || !this.currentTreeViewData.length) {
+            return;
+        }
         this.crossTreeData = [];
         this.makeCrossTreeData(this.crossTreeData, this.currentTreeViewData);
     }
@@ -411,13 +467,15 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
                 level: 0,
                 idArticleGroups: item.idArticleGroups,
                 isSelected: false,
-                idSharingTreeGroupsRootname: item.idSharingTreeGroupsRootname
+                idSharingTreeGroupsRootname: item.idSharingTreeGroupsRootname,
             });
             this.makeCrossTreeDataChildren(crossTreeData, item);
         }
     }
     private makeCrossTreeDataChildren(crossTreeData, data) {
-        if (!data || !data.children || !data.children.length) { return; }
+        if (!data || !data.children || !data.children.length) {
+            return;
+        }
         for (const item of data.children) {
             crossTreeData.push({
                 id: item.id,
@@ -432,20 +490,24 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
                 level: item.level,
                 idArticleGroups: item.idArticleGroups,
                 isSelected: false,
-                idSharingTreeGroupsRootname: item.idSharingTreeGroupsRootname
+                idSharingTreeGroupsRootname: item.idSharingTreeGroupsRootname,
             });
             this.makeCrossTreeDataChildren(crossTreeData, item);
         }
     }
 
     private findCrossDataById(id: any) {
-        if (!this.crossTreeData || !this.crossTreeData.length) { return null; }
-        return this.crossTreeData.find(x => x.id === id);
+        if (!this.crossTreeData || !this.crossTreeData.length) {
+            return null;
+        }
+        return this.crossTreeData.find((x) => x.id === id);
     }
 
     private getCurrentExpandById(id: any): boolean {
         const currentCrossData = this.findCrossDataById(id);
-        if (!currentCrossData) { return false; }
+        if (!currentCrossData) {
+            return false;
+        }
         return currentCrossData.expand;
     }
 
@@ -453,14 +515,14 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         this.makeParentTreeViewData();
         let child: any;
         for (const item of this.treeViewData) {
-            child = this.rawData.filter(x => x.parentId === item.id);
+            child = this.rawData.filter((x) => x.parentId === item.id);
             this.makeChildrenTreeViewData(item, child, 1);
         }
     }
 
     private makeParentTreeViewData() {
-        const parent = this.rawData.filter(x => !x.parentId);
-        this.treeViewData = parent.map(x => {
+        const parent = this.rawData.filter((x) => !x.parentId);
+        this.treeViewData = parent.map((x) => {
             return {
                 id: x.id,
                 select: x.select,
@@ -469,20 +531,28 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
                 isMainText: x.isMainText,
                 percentText: x.percentText,
                 percent: x.percent,
-                expand: this.config.editMode ? this.getCurrentExpandById(x.id) : true,
+                expand: this.config.editMode
+                    ? this.getCurrentExpandById(x.id)
+                    : true,
                 parentId: 0,
                 level: 0,
                 idArticleGroups: x.idArticleGroups,
                 isSelected: false,
-                idSharingTreeGroupsRootname: x.idSharingTreeGroupsRootname
+                idSharingTreeGroupsRootname: x.idSharingTreeGroupsRootname,
             };
         });
         // For widget tree view know
         this.noEntryDataEvent.emit(this.treeViewData.length == 0);
     }
 
-    private makeChildrenTreeViewData(parent: any, children: any, level: number) {
-        if (!children || !children.length) { return; }
+    private makeChildrenTreeViewData(
+        parent: any,
+        children: any,
+        level: number
+    ) {
+        if (!children || !children.length) {
+            return;
+        }
         parent.children = [];
         let _children: any;
         for (const item of children) {
@@ -495,16 +565,18 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
                 isMainText: item.isMainText,
                 percentText: item.percentText,
                 percent: item.percent,
-                expand: this.config.editMode ? this.getCurrentExpandById(item.id) : true,
+                expand: this.config.editMode
+                    ? this.getCurrentExpandById(item.id)
+                    : true,
                 parentId: parent.id,
                 level: level,
                 idArticleGroups: item.idArticleGroups,
                 isSelected: false,
-                idSharingTreeGroupsRootname: item.idSharingTreeGroupsRootname
+                idSharingTreeGroupsRootname: item.idSharingTreeGroupsRootname,
             };
             parent.children.push(child);
-            _children = this.rawData.filter(x => x.parentId === item.id);
-            this.makeChildrenTreeViewData(child, _children, (level + 1));
+            _children = this.rawData.filter((x) => x.parentId === item.id);
+            this.makeChildrenTreeViewData(child, _children, level + 1);
         }
     }
 
@@ -518,7 +590,11 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    private setValueForAllTreeItem(treeData: any, property: string, value: any) {
+    private setValueForAllTreeItem(
+        treeData: any,
+        property: string,
+        value: any
+    ) {
         treeData[property] = value;
         if (!treeData.children || !treeData.children.length) return;
         for (const child of treeData.children) {
@@ -538,23 +614,41 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
     protected getTreeViewData(editMode?: boolean) {
         const getParam = cloneDeep(this._widgetDetail);
         if (editMode) {
-            getParam.request = getParam.request.replace('\\"Mode\\" : \\"\\"', '\\"Mode\\" : \\"Edit\\"');
+            getParam.request = getParam.request.replace(
+                '\\"Mode\\" : \\"\\"',
+                '\\"Mode\\" : \\"Edit\\"'
+            );
         } else {
-            getParam.request = getParam.request.replace('\\"Mode\\" : \\"Edit\\"', '\\"Mode\\" : \\"\\"');
+            getParam.request = getParam.request.replace(
+                '\\"Mode\\" : \\"Edit\\"',
+                '\\"Mode\\" : \\"\\"'
+            );
         }
         if (!getParam.request) {
-            console.log('xn-tree-view.component: getTreeViewData: request cannot empty. WidgetDetail:', this._widgetDetail);
+            console.log(
+                "xn-tree-view.component: getTreeViewData: request cannot empty. WidgetDetail:",
+                this._widgetDetail
+            );
             return;
         }
 
-        const rsObservable = this.widgetTemplateSettingService.getWidgetDetailByRequestString(getParam, this._widgetDetail.widgetDataType.listenKeyRequest(this.widgetModuleInfo.moduleNameTrim));
+        const rsObservable =
+            this.widgetTemplateSettingService.getWidgetDetailByRequestString(
+                getParam,
+                this._widgetDetail.widgetDataType.listenKeyRequest(
+                    this.widgetModuleInfo.moduleNameTrim
+                )
+            );
 
         rsObservable.subscribe((widgetDetail: WidgetDetail) => {
             this.appErrorHandler.executeAction(() => {
                 if (isEmpty(widgetDetail)) {
                     return;
                 }
-                this.setUpDataForTreeViewAfterGetService(widgetDetail, editMode);
+                this.setUpDataForTreeViewAfterGetService(
+                    widgetDetail,
+                    editMode
+                );
             });
         });
     }
@@ -574,38 +668,46 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         // 2. View Mode
         else {
             //check caching data
-            if ((this.isCacheViewData || afterService) && this.treeViewDataViewMode) {
+            if (
+                (this.isCacheViewData || afterService) &&
+                this.treeViewDataViewMode
+            ) {
                 tempData = this.treeViewDataViewMode;
             }
         }
 
         if (tempData) {
             this.data = {
-                data: tempData.sort((a, b) => { return Uti.sortBy(a, b, 'text'); }),
-                config: { editMode: editMode }
+                data: tempData.sort((a, b) => {
+                    return Uti.sortBy(a, b, "text");
+                }),
+                config: { editMode: editMode },
             };
-        }
-        else {
+        } else {
             // none caching data to re-get data from service
             this.getTreeViewData(editMode);
         }
     }
 
     public setUpDataForTreeViewAfterGetService(data: any, editMode?: boolean) {
-        if (data.idRepWidgetType !== WidgetType.TreeView ||
-            !data || !data.contentDetail ||
-            !data.contentDetail.collectionData || !data.contentDetail.collectionData.length) {
+        if (
+            data.idRepWidgetType !== WidgetType.TreeView ||
+            !data ||
+            !data.contentDetail ||
+            !data.contentDetail.collectionData ||
+            !data.contentDetail.collectionData.length
+        ) {
             this.noEntryDataEvent.emit(true);
             this.data = {
                 data: [],
-                config: { editMode: editMode }
-            }
+                config: { editMode: editMode },
+            };
             return;
         }
-        let treeData = data.contentDetail.collectionData.map(item => {
+        let treeData = data.contentDetail.collectionData.map((item) => {
             return this.treeViewService.makeTreeViewItemData(item);
         });
-        treeData = treeData.filter(x => !!x.id);
+        treeData = treeData.filter((x) => !!x.id);
         if (editMode) {
             this.treeViewDataEditMode = treeData;
             this.isCacheViewData = false;
@@ -632,7 +734,11 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
         if (!tree || !tree.length) return null;
 
         var result = null;
-        for (let i = 0, length = tree.length; result == null && i < length; i++) {
+        for (
+            let i = 0, length = tree.length;
+            result == null && i < length;
+            i++
+        ) {
             result = this.searchTreeNode(tree[i], key, valueToCompare);
             if (result) return result;
         }
@@ -645,8 +751,16 @@ export class XnTreeViewComponent implements OnInit, OnDestroy {
             return node;
         } else if (node.children != null) {
             let result = null;
-            for (let i = 0, length = node.children.length; result == null && i < length; i++) {
-                result = this.searchTreeNode(node.children[i], key, valueToCompare);
+            for (
+                let i = 0, length = node.children.length;
+                result == null && i < length;
+                i++
+            ) {
+                result = this.searchTreeNode(
+                    node.children[i],
+                    key,
+                    valueToCompare
+                );
             }
             return result;
         }

@@ -1,4 +1,16 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter, ElementRef, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, ViewChild, isDevMode } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    Output,
+    EventEmitter,
+    ElementRef,
+    ChangeDetectorRef,
+    HostListener,
+    ChangeDetectionStrategy,
+    ViewChild,
+    isDevMode,
+} from "@angular/core";
 import {
     GlobalSettingService,
     PropertyPanelService,
@@ -10,8 +22,9 @@ import {
     ModuleSettingService,
     ResourceTranslationService,
     LayoutSettingService,
-    SignalRService, EventEmitterService
-} from 'app/services';
+    SignalRService,
+    EventEmitterService,
+} from "app/services";
 import {
     GlobalSettingModel,
     MainSettingModel,
@@ -27,13 +40,20 @@ import {
     MessageModalHeaderModel,
     MessageModalBodyModel,
     MessageModalFooterModel,
-    ButtonList
-} from 'app/models';
-import { GlobalSettingConstant, AccessRightKeyEnum, Configuration, ModuleType, SignalRActionEnum, SignalRJobEnum } from 'app/app.constants';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+    ButtonList,
+} from "app/models";
+import {
+    GlobalSettingConstant,
+    AccessRightKeyEnum,
+    Configuration,
+    ModuleType,
+    SignalRActionEnum,
+    SignalRJobEnum,
+} from "app/app.constants";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
 import {
     WidgetTemplateActions,
     LayoutInfoActions,
@@ -42,33 +62,36 @@ import {
     SearchResultActions,
     PropertyPanelActions,
     LayoutSettingActions,
-    CustomAction
-} from 'app/state-management/store/actions';
-import { PageSize, LocalSettingKey } from 'app/app.constants';
-import * as uti from 'app/utilities';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import * as propertyPanelReducer from 'app/state-management/store/reducer/property-panel';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import { BaseComponent, ModuleList } from 'app/pages/private/base';
-import { Router } from '@angular/router';
-import { MessageModal } from 'app/app.constants';
-import { SessionStorageProvider, LocalStorageHelper } from 'app/utilities';
-import { DialogApplyWidgetSettingsComponent, DialogModuleLayoutSettingsComponent } from '../../components';
-import { Uti } from 'app/utilities';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+    CustomAction,
+} from "app/state-management/store/actions";
+import { PageSize, LocalSettingKey } from "app/app.constants";
+import * as uti from "app/utilities";
+import cloneDeep from "lodash-es/cloneDeep";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import * as propertyPanelReducer from "app/state-management/store/reducer/property-panel";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import { BaseComponent, ModuleList } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { MessageModal } from "app/app.constants";
+import { SessionStorageProvider, LocalStorageHelper } from "app/utilities";
+import {
+    DialogApplyWidgetSettingsComponent,
+    DialogModuleLayoutSettingsComponent,
+} from "../../components";
+import { Uti } from "app/utilities";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 
 @Component({
-    selector: 'app-aside',
-    styleUrls: ['./aside.component.scss'],
-    templateUrl: './aside.component.html',
+    selector: "app-aside",
+    styleUrls: ["./aside.component.scss"],
+    templateUrl: "./aside.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     @Output() onToggleWidgetTemplate = new EventEmitter<boolean>();
     private userMainSetting: GlobalSettingModel;
-    private colorDefaultClassName = 'skin-blue-light';
-    private languageDefaultName = 'English';
+    private colorDefaultClassName = "skin-blue-light";
+    private languageDefaultName = "English";
     private currentMainSetting: MainSettingModel;
     public languages: LanguageSettingModel[] = [];
     public isWidgetTemplate = false;
@@ -76,7 +99,7 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     public isLayoutSetting = false;
     public properties: WidgetPropertyModel[] = [];
     private propertiesSettings: any;
-    private propertiesSettingName = '';
+    private propertiesSettingName = "";
     private orgGlobalProperties: any;
     public ofModuleLocal: Module;
     private selectedEntity: any;
@@ -103,155 +126,161 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     public isLanguageComboboxFocused = false;
     private colors: ColorSettingModel[] = [
         new ColorSettingModel({
-            name: 'Blue',
-            class1: 'skin-blue-light',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'blue-header-left-theme',
-            class4: 'bg-light-blue blue-header-right-theme',
-            class5: 'blue-body-left-theme',
-            class6: 'blue-body-right-theme',
-            class7: '',
-            active: true
+            name: "Blue",
+            class1: "skin-blue-light",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "blue-header-left-theme",
+            class4: "bg-light-blue blue-header-right-theme",
+            class5: "blue-body-left-theme",
+            class6: "blue-body-right-theme",
+            class7: "",
+            active: true,
         }),
         new ColorSettingModel({
-            name: 'Black',
-            class1: 'skin-black-light',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'black-header-left-theme',
-            class4: 'black-header-right-theme',
-            class5: 'black-body-left-theme',
-            class6: 'black-body-right-theme',
-            class7: '',
-            active: false
+            name: "Black",
+            class1: "skin-black-light",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "black-header-left-theme",
+            class4: "black-header-right-theme",
+            class5: "black-body-left-theme",
+            class6: "black-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Purple',
-            class1: 'skin-purple-light',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'bg-purple-active purple-header-left-theme',
-            class4: 'bg-purple purple-header-right-theme',
-            class5: 'purple-body-left-theme',
-            class6: 'purple-body-right-theme',
-            class7: '',
-            active: false
+            name: "Purple",
+            class1: "skin-purple-light",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "bg-purple-active purple-header-left-theme",
+            class4: "bg-purple purple-header-right-theme",
+            class5: "purple-body-left-theme",
+            class6: "purple-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Green',
-            class1: 'skin-green-light',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'bg-green-active green-header-left-theme',
-            class4: 'bg-green green-header-right-theme',
-            class5: 'green-body-left-theme',
-            class6: 'green-body-right-theme',
-            class7: '',
-            active: false
+            name: "Green",
+            class1: "skin-green-light",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "bg-green-active green-header-left-theme",
+            class4: "bg-green green-header-right-theme",
+            class5: "green-body-left-theme",
+            class6: "green-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Red',
-            class1: 'skin-red-light',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'bg-red-active red-header-left-theme',
-            class4: 'bg-red red-header-right-theme',
-            class5: 'red-body-left-theme',
-            class6: 'red-body-right-theme',
-            class7: '',
-            active: false
+            name: "Red",
+            class1: "skin-red-light",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "bg-red-active red-header-left-theme",
+            class4: "bg-red red-header-right-theme",
+            class5: "red-body-left-theme",
+            class6: "red-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Yellow',
-            class1: 'skin-yellow-light',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'bg-yellow-active yellow-header-left-theme',
-            class4: 'bg-yellow yellow-header-right-theme',
-            class5: 'yellow-body-left-theme',
-            class6: 'yellow-body-right-theme',
-            class7: '',
-            active: false
+            name: "Yellow",
+            class1: "skin-yellow-light",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "bg-yellow-active yellow-header-left-theme",
+            class4: "bg-yellow yellow-header-right-theme",
+            class5: "yellow-body-left-theme",
+            class6: "yellow-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Dark Blue',
-            class1: 'skin-blue',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'blue-header-left-theme',
-            class4: 'bg-blue blue-header-right-theme',
-            class5: 'dark-body-left-theme',
-            class6: 'dark-body-right-theme',
-            class7: '',
-            active: false
+            name: "Dark Blue",
+            class1: "skin-blue",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "blue-header-left-theme",
+            class4: "bg-blue blue-header-right-theme",
+            class5: "dark-body-left-theme",
+            class6: "dark-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Dark Black',
-            class1: 'skin-black',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'black-header-left-theme',
-            class4: 'black-header-right-theme',
-            class5: 'dark-body-left-theme',
-            class6: 'dark-body-right-theme',
-            class7: '',
-            active: false
+            name: "Dark Black",
+            class1: "skin-black",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "black-header-left-theme",
+            class4: "black-header-right-theme",
+            class5: "dark-body-left-theme",
+            class6: "dark-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Dark Purple',
-            class1: 'skin-purple',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'bg-purple-active purple-header-left-theme',
-            class4: 'bg-purple purple-header-right-theme',
-            class5: 'dark-body-left-theme',
-            class6: 'dark-body-right-theme',
-            class7: '',
-            active: false
+            name: "Dark Purple",
+            class1: "skin-purple",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "bg-purple-active purple-header-left-theme",
+            class4: "bg-purple purple-header-right-theme",
+            class5: "dark-body-left-theme",
+            class6: "dark-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Dark Green',
-            class1: 'skin-green',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'bg-green-active green-header-left-theme',
-            class4: 'bg-green green-header-right-theme',
-            class5: 'dark-body-left-theme',
-            class6: 'dark-body-right-theme',
-            class7: '',
-            active: false
+            name: "Dark Green",
+            class1: "skin-green",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "bg-green-active green-header-left-theme",
+            class4: "bg-green green-header-right-theme",
+            class5: "dark-body-left-theme",
+            class6: "dark-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Dark Red',
-            class1: 'skin-red',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'bg-red-active red-header-left-theme',
-            class4: 'bg-red red-header-right-theme',
-            class5: 'dark-body-left-theme',
-            class6: 'dark-body-right-theme',
-            class7: '',
-            active: false
+            name: "Dark Red",
+            class1: "skin-red",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "bg-red-active red-header-left-theme",
+            class4: "bg-red red-header-right-theme",
+            class5: "dark-body-left-theme",
+            class6: "dark-body-right-theme",
+            class7: "",
+            active: false,
         }),
         new ColorSettingModel({
-            name: 'Dark Yellow',
-            class1: 'skin-yellow',
-            class2: 'full-opacity-hover header-skin-shadow',
-            class3: 'bg-yellow-active yellow-header-left-theme',
-            class4: 'bg-yellow yellow-header-right-theme',
-            class5: 'dark-body-left-theme',
-            class6: 'dark-body-right-theme',
-            class7: '',
-            active: false
-        })
+            name: "Dark Yellow",
+            class1: "skin-yellow",
+            class2: "full-opacity-hover header-skin-shadow",
+            class3: "bg-yellow-active yellow-header-left-theme",
+            class4: "bg-yellow yellow-header-right-theme",
+            class5: "dark-body-left-theme",
+            class6: "dark-body-right-theme",
+            class7: "",
+            active: false,
+        }),
     ];
 
-    @HostListener('document:click.out-zone', ['$event'])
+    @HostListener("document:click.out-zone", ["$event"])
     onDocumentClick($event) {
         this.onClick($event);
     }
 
-    @ViewChild('skinCombobox') skinCombobox: AngularMultiSelect;
-    @ViewChild('languageCombobox') languageCombobox: AngularMultiSelect;
+    @ViewChild("skinCombobox") skinCombobox: AngularMultiSelect;
+    @ViewChild("languageCombobox") languageCombobox: AngularMultiSelect;
 
     private dialogApplyWidgetSettings: DialogApplyWidgetSettingsComponent;
-    @ViewChild(DialogApplyWidgetSettingsComponent) set dialogApplyWidgetSettingsComponent(dialogApplyWidgetSettingsComponent: DialogApplyWidgetSettingsComponent) {
+    @ViewChild(DialogApplyWidgetSettingsComponent)
+    set dialogApplyWidgetSettingsComponent(
+        dialogApplyWidgetSettingsComponent: DialogApplyWidgetSettingsComponent
+    ) {
         this.dialogApplyWidgetSettings = dialogApplyWidgetSettingsComponent;
     }
 
     public showModuleLayoutSettingsDialog = false;
     private dialogModuleLayoutSettings: DialogModuleLayoutSettingsComponent;
-    @ViewChild(DialogModuleLayoutSettingsComponent) set dialogModuleLayoutSettingsInstance(dialogModuleLayoutSettingsInstance: DialogModuleLayoutSettingsComponent) {
+    @ViewChild(DialogModuleLayoutSettingsComponent)
+    set dialogModuleLayoutSettingsInstance(
+        dialogModuleLayoutSettingsInstance: DialogModuleLayoutSettingsComponent
+    ) {
         this.dialogModuleLayoutSettings = dialogModuleLayoutSettingsInstance;
     }
 
@@ -259,7 +288,7 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     public tranlationStatus = false;
 
     private designLayoutMessageSubscription: Subscription;
-    public designLayoutMessageTooltip = '';
+    public designLayoutMessageTooltip = "";
     public designLayoutEnabled = true;
 
     constructor(
@@ -294,19 +323,53 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
         super(router);
         this.getCurrentUser();
         this.ofModuleLocal = this.ofModule;
-        this.activeModuleState = store.select(state => state.mainModule.activeModule);
-        this.activeSubModuleState = store.select(state => state.mainModule.activeSubModule);
-        this.requestRollbackPropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, this.ofModule.moduleNameTrim).requestRollbackProperties);
-        this.requestSaveGlobalPropertiesState = this.store.select(state => propertyPanelReducer.getPropertyPanelState(state, ModuleList.Base.moduleNameTrim).requestSaveGlobal);
-        this.selectedEntityState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).selectedEntity);
+        this.activeModuleState = store.select(
+            (state) => state.mainModule.activeModule
+        );
+        this.activeSubModuleState = store.select(
+            (state) => state.mainModule.activeSubModule
+        );
+        this.requestRollbackPropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).requestRollbackProperties
+        );
+        this.requestSaveGlobalPropertiesState = this.store.select(
+            (state) =>
+                propertyPanelReducer.getPropertyPanelState(
+                    state,
+                    ModuleList.Base.moduleNameTrim
+                ).requestSaveGlobal
+        );
+        this.selectedEntityState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).selectedEntity
+        );
 
         this.accessRight = {
-            skin: this.accessRightsService.getAccessRightByKey(AccessRightKeyEnum.SettingMenu__Menu_Skin),
-            globalSettings: this.accessRightsService.getAccessRightByKey(AccessRightKeyEnum.SettingMenu__Menu_GlobalSetting),
-            widgetCustomization: this.accessRightsService.getAccessRightByKey(AccessRightKeyEnum.SettingMenu__Menu_WidgetCustomization),
-            designPageLayout: this.accessRightsService.getAccessRightByKey(AccessRightKeyEnum.SettingMenu__Menu_DesignPageLayout),
-            applyWidgetSettings: this.accessRightsService.getAccessRightByKey(AccessRightKeyEnum.SettingMenu__Menu_ApplyWidgetSetting),
-            moduleLayoutSettings: this.accessRightsService.getAccessRightByKey(AccessRightKeyEnum.SettingMenu__Menu_ModuleLayoutSetting),
+            skin: this.accessRightsService.getAccessRightByKey(
+                AccessRightKeyEnum.SettingMenu__Menu_Skin
+            ),
+            globalSettings: this.accessRightsService.getAccessRightByKey(
+                AccessRightKeyEnum.SettingMenu__Menu_GlobalSetting
+            ),
+            widgetCustomization: this.accessRightsService.getAccessRightByKey(
+                AccessRightKeyEnum.SettingMenu__Menu_WidgetCustomization
+            ),
+            designPageLayout: this.accessRightsService.getAccessRightByKey(
+                AccessRightKeyEnum.SettingMenu__Menu_DesignPageLayout
+            ),
+            applyWidgetSettings: this.accessRightsService.getAccessRightByKey(
+                AccessRightKeyEnum.SettingMenu__Menu_ApplyWidgetSetting
+            ),
+            moduleLayoutSettings: this.accessRightsService.getAccessRightByKey(
+                AccessRightKeyEnum.SettingMenu__Menu_ModuleLayoutSetting
+            ),
         };
     }
 
@@ -323,69 +386,113 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
         this.signalRListenMessage();
         this.signalRIsThereAnyoneEditing();
         this.getMainLanguages();
-        this.activeModuleStateSubscription = this.activeModuleState.subscribe((activeModuleState: Module) => {
-            this.appErrorHandler.executeAction(() => {
-                if (activeModuleState && activeModuleState.idSettingsGUI) {
-                    this.isShowWidgetSetting = true;
-                }
-                else {
-                    this.isShowWidgetSetting = false;
-                }
-                this.changeDetectorRef.markForCheck();
-                setTimeout(() => {
-                    this.resourceTranslationService.updateStatus(this.tranlationStatus);
+        this.activeModuleStateSubscription = this.activeModuleState.subscribe(
+            (activeModuleState: Module) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (activeModuleState && activeModuleState.idSettingsGUI) {
+                        this.isShowWidgetSetting = true;
+                    } else {
+                        this.isShowWidgetSetting = false;
+                    }
+                    this.changeDetectorRef.markForCheck();
+                    setTimeout(() => {
+                        this.resourceTranslationService.updateStatus(
+                            this.tranlationStatus
+                        );
+                    });
                 });
-            });
-        });
+            }
+        );
 
-        this.requestSaveGlobalPropertiesStateSubscription = this.requestSaveGlobalPropertiesState.subscribe((requestSaveGlobalPropertiesState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (requestSaveGlobalPropertiesState && requestSaveGlobalPropertiesState.globalProperties) {
-                    requestSaveGlobalPropertiesState.globalProperties = this.propertyPanelService.resetDirty(requestSaveGlobalPropertiesState.globalProperties);
-                    this.reloadAndSavePropertiesConfig(requestSaveGlobalPropertiesState.globalProperties);
+        this.requestSaveGlobalPropertiesStateSubscription =
+            this.requestSaveGlobalPropertiesState.subscribe(
+                (requestSaveGlobalPropertiesState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            requestSaveGlobalPropertiesState &&
+                            requestSaveGlobalPropertiesState.globalProperties
+                        ) {
+                            requestSaveGlobalPropertiesState.globalProperties =
+                                this.propertyPanelService.resetDirty(
+                                    requestSaveGlobalPropertiesState.globalProperties
+                                );
+                            this.reloadAndSavePropertiesConfig(
+                                requestSaveGlobalPropertiesState.globalProperties
+                            );
+                        }
+                    });
                 }
-            });
-        });
+            );
 
         this.buildPropertiesSettingName();
-        this.requestRollbackPropertiesStateSubscription = this.requestRollbackPropertiesState.subscribe((requestRollbackPropertiesState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (requestRollbackPropertiesState && requestRollbackPropertiesState.data && requestRollbackPropertiesState.isGlobal) {
-                    this.properties = cloneDeep(this.orgGlobalProperties);
-                    this.propertyPanelService.globalProperties = this.properties;
-                    this.store.dispatch(this.propertyPanelActions.requestUpdateGlobalProperty(this.orgGlobalProperties, ModuleList.Base));
+        this.requestRollbackPropertiesStateSubscription =
+            this.requestRollbackPropertiesState.subscribe(
+                (requestRollbackPropertiesState: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            requestRollbackPropertiesState &&
+                            requestRollbackPropertiesState.data &&
+                            requestRollbackPropertiesState.isGlobal
+                        ) {
+                            this.properties = cloneDeep(
+                                this.orgGlobalProperties
+                            );
+                            this.propertyPanelService.globalProperties =
+                                this.properties;
+                            this.store.dispatch(
+                                this.propertyPanelActions.requestUpdateGlobalProperty(
+                                    this.orgGlobalProperties,
+                                    ModuleList.Base
+                                )
+                            );
+                        }
+                    });
                 }
-            });
-        });
+            );
 
-        this.requestEditLayoutTogglePanelStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === LayoutSettingActions.REQUEST_TOGGLE_PANEL && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return action.payload;
-        }).subscribe((isShow: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.isLayoutSetting = isShow;
-                this.changeDetectorRef.markForCheck();
+        this.requestEditLayoutTogglePanelStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === LayoutSettingActions.REQUEST_TOGGLE_PANEL &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .map((action: CustomAction) => {
+                return action.payload;
+            })
+            .subscribe((isShow: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.isLayoutSetting = isShow;
+                    this.changeDetectorRef.markForCheck();
+                });
             });
-        });
 
-        this.requestEditLayoutTogglePanelStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WidgetTemplateActions.TOGGLE_WIDGET_TEMPLATE_SETTING_PANEL && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return action.payload;
-        }).subscribe((isShow: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.onWidgetTemplateToggle(isShow, true);
+        this.requestEditLayoutTogglePanelStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                        WidgetTemplateActions.TOGGLE_WIDGET_TEMPLATE_SETTING_PANEL &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .map((action: CustomAction) => {
+                return action.payload;
+            })
+            .subscribe((isShow: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.onWidgetTemplateToggle(isShow, true);
+                });
             });
-        });
 
-        this.selectedEntityStateSubscription = this.selectedEntityState.subscribe((selectedEntityState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.selectedEntity = selectedEntityState;
+        this.selectedEntityStateSubscription =
+            this.selectedEntityState.subscribe((selectedEntityState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.selectedEntity = selectedEntityState;
+                });
             });
-        });
 
-        this.enableLayoutCustomization = Configuration.PublicSettings.enableLayoutCustomization;
+        this.enableLayoutCustomization =
+            Configuration.PublicSettings.enableLayoutCustomization;
 
         this.buildSkins();
         setTimeout(() => {
@@ -414,33 +521,51 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
      */
     private getMainLanguages() {
         this.commonService.getMainLanguages().subscribe(
-            data => this.loadLanguagesSuccess(data),
-            error => this.loadLanguagesError(error));
+            (data) => this.loadLanguagesSuccess(data),
+            (error) => this.loadLanguagesError(error)
+        );
     }
 
     private buildSkins() {
         this.htmlSkins = [];
         for (let i = 0; i < this.colors.length; i++) {
-            let theme = `<div data-name="` + this.colors[i].name + `" data-class1="` + this.colors[i].class1 + `" style="display:flex; flex-direction: row; align-items: center">
+            let theme =
+                `<div data-name="` +
+                this.colors[i].name +
+                `" data-class1="` +
+                this.colors[i].class1 +
+                `" style="display:flex; flex-direction: row; align-items: center">
                              <a tabindex="-1"
                                style="width:60px;cursor:pointer"
-                               class="` + this.colors[i].class2 + `">
+                               class="` +
+                this.colors[i].class2 +
+                `">
                                 <div>
-                                    <span class="` + this.colors[i].class3 + `"></span>
-                                    <span class="` + this.colors[i].class4 + `"></span>
+                                    <span class="` +
+                this.colors[i].class3 +
+                `"></span>
+                                    <span class="` +
+                this.colors[i].class4 +
+                `"></span>
                                 </div>
                                 <div>
-                                    <span class="` + this.colors[i].class5 + `"></span>
-                                    <span class="` + this.colors[i].class6 + `"></span>
+                                    <span class="` +
+                this.colors[i].class5 +
+                `"></span>
+                                    <span class="` +
+                this.colors[i].class6 +
+                `"></span>
                                 </div>
                             </a>
-                            <span style="margin-left:5px;">` + this.colors[i].name + `</span>
+                            <span style="margin-left:5px;">` +
+                this.colors[i].name +
+                `</span>
                         </div>
                         `;
             this.htmlSkins.push({
                 idValue: i,
                 textValue: theme,
-                data: this.colors[i]
+                data: this.colors[i],
             });
         }
     }
@@ -448,21 +573,32 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     private buildLanguagesCombobox() {
         this.htmlLanguages = [];
         for (let i = 0; i < this.languages.length; i++) {
-            let language = `<div data-name="` + this.languages[i].name + `"
-                              data-flag="` + this.languages[i].flag + `"
-                              data-idRepLanguage="` + this.languages[i].idRepLanguage + `"
+            let language =
+                `<div data-name="` +
+                this.languages[i].name +
+                `"
+                              data-flag="` +
+                this.languages[i].flag +
+                `"
+                              data-idRepLanguage="` +
+                this.languages[i].idRepLanguage +
+                `"
                               style="display:flex; flex-direction: row; align-items: center">
                              <a tabindex="-1"
                                style="cursor:pointer">
-                                <span class="flag flag-` + this.languages[i].flag + `"></span>
+                                <span class="flag flag-` +
+                this.languages[i].flag +
+                `"></span>
                             </a>
-                            <span style="margin-left:5px;">` + this.languages[i].name + `</span>
+                            <span style="margin-left:5px;">` +
+                this.languages[i].name +
+                `</span>
                         </div>
                         `;
             this.htmlLanguages.push({
                 idValue: i,
                 textValue: language,
-                data: this.languages[i]
+                data: this.languages[i],
             });
         }
     }
@@ -473,32 +609,43 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
      */
     private loadLanguagesSuccess(response: ApiResultResponse) {
         this.languages = [];
-        if (response && response.item &&
-            response.item.data && response.item.data.length) {
+        if (
+            response &&
+            response.item &&
+            response.item.data &&
+            response.item.data.length
+        ) {
             let languages: Array<any> = response.item.data[1];
             if (languages && languages.length) {
                 let currentUserLanguage: string = this.userServ.getLanguage();
-                let isModeLanguage = LocalStorageHelper.toInstance(SessionStorageProvider).getItem(LocalSettingKey.SET_LANGUAGE_MODE);
+                let isModeLanguage = LocalStorageHelper.toInstance(
+                    SessionStorageProvider
+                ).getItem(LocalSettingKey.SET_LANGUAGE_MODE);
                 if (isModeLanguage && isModeLanguage.isMain) {
                     currentUserLanguage = this.currentUser.preferredLang;
                 }
-                languages.forEach(language => {
+                languages.forEach((language) => {
                     let userLanguage = new LanguageSettingModel({
                         flag: (language.LanguageCode as string).toLowerCase(),
                         name: language.DefaultValue,
                         active: language.IdRepLanguage == currentUserLanguage,
-                        idRepLanguage: language.IdRepLanguage
+                        idRepLanguage: language.IdRepLanguage,
                     });
                     this.languages.push(userLanguage);
                     if (userLanguage.active) {
-                        LocalStorageHelper.toInstance(SessionStorageProvider).setItem(LocalSettingKey.LANGUAGE, userLanguage);
+                        LocalStorageHelper.toInstance(
+                            SessionStorageProvider
+                        ).setItem(LocalSettingKey.LANGUAGE, userLanguage);
                     }
                 });
 
                 this.buildLanguagesCombobox();
 
                 setTimeout(() => {
-                    let selectedLanguage = this.htmlLanguages.find(language => language.data.idRepLanguage == currentUserLanguage);
+                    let selectedLanguage = this.htmlLanguages.find(
+                        (language) =>
+                            language.data.idRepLanguage == currentUserLanguage
+                    );
                     if (selectedLanguage) {
                         this.languageCombobox.selectedItem = selectedLanguage;
                     }
@@ -520,10 +667,19 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
             this.isWidgetTemplate = isExpanded;
             this.onToggleWidgetTemplate.emit(this.isWidgetTemplate);
             if (!noDispatch) {
-                const parkedItemWidth = this.isWidgetTemplate &&
-                    this._eref.nativeElement.children[0].classList.contains('control-sidebar-open') ?
-                    this.pageSize.ParkedItemShowSize.toString() : '0';
-                this.store.dispatch(this.layoutInfoActions.setRightMenuWidth(parkedItemWidth, this.ofModule));
+                const parkedItemWidth =
+                    this.isWidgetTemplate &&
+                    this._eref.nativeElement.children[0].classList.contains(
+                        "control-sidebar-open"
+                    )
+                        ? this.pageSize.ParkedItemShowSize.toString()
+                        : "0";
+                this.store.dispatch(
+                    this.layoutInfoActions.setRightMenuWidth(
+                        parkedItemWidth,
+                        this.ofModule
+                    )
+                );
             }
             if (isExpanded) {
                 this.openWidgetTemplateSetting();
@@ -532,21 +688,35 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     private buildPropertiesSettingName() {
-        this.propertiesSettingName = this.globalSettingConstant.globalWidgetProperties;
+        this.propertiesSettingName =
+            this.globalSettingConstant.globalWidgetProperties;
     }
 
     private loadSkinFromSetting() {
-        this.globalSettingSerSubscription = this.globalSettingSer.getAllGlobalSettings().subscribe(
-            data => this.loadSkinFromSettingSuccess(data),
-            error => this.loadSkinFromSettingError(error));
+        this.globalSettingSerSubscription = this.globalSettingSer
+            .getAllGlobalSettings()
+            .subscribe(
+                (data) => this.loadSkinFromSettingSuccess(data),
+                (error) => this.loadSkinFromSettingError(error)
+            );
     }
 
     private loadSkinFromSettingSuccess(data: GlobalSettingModel[]) {
-        if (!data || data.length <= 0) { return; }
-        this.userMainSetting = data.find(x => x.globalName === this.globalSettingConstant.settingUserMain);
-        if (!this.userMainSetting || !this.userMainSetting.idSettingsGlobal) { return; }
-        const serverMainSetting = JSON.parse(this.userMainSetting.jsonSettings) as MainSettingModel;
-        if (!serverMainSetting) { return; }
+        if (!data || data.length <= 0) {
+            return;
+        }
+        this.userMainSetting = data.find(
+            (x) => x.globalName === this.globalSettingConstant.settingUserMain
+        );
+        if (!this.userMainSetting || !this.userMainSetting.idSettingsGlobal) {
+            return;
+        }
+        const serverMainSetting = JSON.parse(
+            this.userMainSetting.jsonSettings
+        ) as MainSettingModel;
+        if (!serverMainSetting) {
+            return;
+        }
         this.setActiveForColorFromServer(serverMainSetting.color);
         // this.setActiveForLanguageFromServer(serverMainSetting.language);
     }
@@ -557,58 +727,106 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
 
     private setActiveForColorFromServer(colorName: string) {
         this.setActiveForColor(colorName);
-        const currentColor = this.colors.find(x => x.active);
-        if (!currentColor) { return; }
+        const currentColor = this.colors.find((x) => x.active);
+        if (!currentColor) {
+            return;
+        }
         this.overrideSkinClass(currentColor.class1);
     }
 
     private getGlobalPropertiesFromSetting() {
-        this.moduleSettingService.getModuleSetting(null, null, '-1', ModuleType.GLOBAL_PROPERTIES, '-1')
+        this.moduleSettingService
+            .getModuleSetting(
+                null,
+                null,
+                "-1",
+                ModuleType.GLOBAL_PROPERTIES,
+                "-1"
+            )
             .subscribe((response) => {
                 let globalPropsDefault: any;
-                if (uti.Uti.isResquestSuccess(response) && response.item.length) {
-                    let jsonSettings = uti.Uti.tryParseJson(response.item[0].jsonSettings);
-                    globalPropsDefault = !uti.Uti.isEmptyObject(jsonSettings) ? jsonSettings : null;
+                if (
+                    uti.Uti.isResquestSuccess(response) &&
+                    response.item.length
+                ) {
+                    let jsonSettings = uti.Uti.tryParseJson(
+                        response.item[0].jsonSettings
+                    );
+                    globalPropsDefault = !uti.Uti.isEmptyObject(jsonSettings)
+                        ? jsonSettings
+                        : null;
                 }
-                this.globalSettingSer.getAllGlobalSettings().subscribe((data: any) => {
-                    this.appErrorHandler.executeAction(() => {
-                        this.properties = this.buildPropertiesFromGlobalSetting(data, globalPropsDefault);
-                        this.updateGlobalProperties();
+                this.globalSettingSer
+                    .getAllGlobalSettings()
+                    .subscribe((data: any) => {
+                        this.appErrorHandler.executeAction(() => {
+                            this.properties =
+                                this.buildPropertiesFromGlobalSetting(
+                                    data,
+                                    globalPropsDefault
+                                );
+                            this.updateGlobalProperties();
+                        });
                     });
-                });
             });
     }
 
     private updateGlobalProperties() {
         this.orgGlobalProperties = cloneDeep(this.properties);
         this.propertyPanelService.globalProperties = this.orgGlobalProperties;
-        this.store.dispatch(this.propertyPanelActions.requestUpdateGlobalProperty(this.properties, ModuleList.Base));
+        this.store.dispatch(
+            this.propertyPanelActions.requestUpdateGlobalProperty(
+                this.properties,
+                ModuleList.Base
+            )
+        );
     }
 
-    private buildPropertiesFromGlobalSetting(data: GlobalSettingModel[], defaultProperties?): any[] {
+    private buildPropertiesFromGlobalSetting(
+        data: GlobalSettingModel[],
+        defaultProperties?
+    ): any[] {
         if (!data)
-            return defaultProperties ? defaultProperties.properties : this.propertyPanelService.createDefaultGlobalSettings();
+            return defaultProperties
+                ? defaultProperties.properties
+                : this.propertyPanelService.createDefaultGlobalSettings();
 
-        this.propertiesSettings = data.find(x => x.globalName === this.propertiesSettingName);
-        if (!this.propertiesSettings || !this.propertiesSettings.idSettingsGlobal)
-            return defaultProperties ? defaultProperties.properties : this.propertyPanelService.createDefaultGlobalSettings();
+        this.propertiesSettings = data.find(
+            (x) => x.globalName === this.propertiesSettingName
+        );
+        if (
+            !this.propertiesSettings ||
+            !this.propertiesSettings.idSettingsGlobal
+        )
+            return defaultProperties
+                ? defaultProperties.properties
+                : this.propertyPanelService.createDefaultGlobalSettings();
 
-        const properties = JSON.parse(this.propertiesSettings.jsonSettings) as GlobalSettingModel[];
+        const properties = JSON.parse(
+            this.propertiesSettings.jsonSettings
+        ) as GlobalSettingModel[];
         if (!properties || !properties.length)
-            return defaultProperties ? defaultProperties.properties : this.propertyPanelService.createDefaultGlobalSettings();
+            return defaultProperties
+                ? defaultProperties.properties
+                : this.propertyPanelService.createDefaultGlobalSettings();
 
-        return this.propertyPanelService.mergeProperties(properties, defaultProperties).properties;
+        return this.propertyPanelService.mergeProperties(
+            properties,
+            defaultProperties
+        ).properties;
     }
 
     private setActiveForColor(colorName: string) {
         colorName = colorName || this.colorDefaultClassName;
         for (const color of this.colors) {
-            color.active = (color.name === colorName);
+            color.active = color.name === colorName;
         }
 
         if (this.skinCombobox) {
             setTimeout(() => {
-                this.skinCombobox.selectedItem = this.htmlSkins.find(skin => skin.data.name === colorName);
+                this.skinCombobox.selectedItem = this.htmlSkins.find(
+                    (skin) => skin.data.name === colorName
+                );
             }, 200);
         }
 
@@ -618,37 +836,53 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     private setActiveForLanguageFromServer(languageName: string) {
         languageName = languageName || this.languageDefaultName;
         for (const language of this.languages) {
-            language.active = (language.name === languageName);
+            language.active = language.name === languageName;
         }
         this.changeDetectorRef.markForCheck();
     }
 
     private saveSkinToSetting() {
-        this.globalSettingSerSubscription = this.globalSettingSer.getAllGlobalSettings().subscribe(
-            data => this.saveNearExpireMessageSuccess(data),
-            error => this.loadSkinFromSettingError(error));
+        this.globalSettingSerSubscription = this.globalSettingSer
+            .getAllGlobalSettings()
+            .subscribe(
+                (data) => this.saveNearExpireMessageSuccess(data),
+                (error) => this.loadSkinFromSettingError(error)
+            );
     }
 
-    private saveNearExpireMessageSuccess(globalSettingModels: GlobalSettingModel[]) {
-        this.userMainSetting = globalSettingModels.find(x => x.globalName === this.globalSettingConstant.settingUserMain)
-        if (!this.userMainSetting || !this.userMainSetting.idSettingsGlobal || !this.userMainSetting.globalName) {
+    private saveNearExpireMessageSuccess(
+        globalSettingModels: GlobalSettingModel[]
+    ) {
+        this.userMainSetting = globalSettingModels.find(
+            (x) => x.globalName === this.globalSettingConstant.settingUserMain
+        );
+        if (
+            !this.userMainSetting ||
+            !this.userMainSetting.idSettingsGlobal ||
+            !this.userMainSetting.globalName
+        ) {
             this.userMainSetting = new GlobalSettingModel({
                 globalName: this.globalSettingConstant.settingUserMain,
-                description: 'Skin setting each of User',
-                isActive: true
+                description: "Skin setting each of User",
+                isActive: true,
             });
         }
         this.userMainSetting.idSettingsGUI = -1;
-        this.userMainSetting.jsonSettings = JSON.stringify(this.currentMainSetting)
+        this.userMainSetting.jsonSettings = JSON.stringify(
+            this.currentMainSetting
+        );
         this.userMainSetting.isActive = true;
 
-        this.globalSettingSerSubscription = this.globalSettingSer.saveGlobalSetting(this.userMainSetting).subscribe(
-            data => this.saveGlobalSettingSuccess(data),
-            error => this.loadSkinFromSettingError(error));
+        this.globalSettingSerSubscription = this.globalSettingSer
+            .saveGlobalSetting(this.userMainSetting)
+            .subscribe(
+                (data) => this.saveGlobalSettingSuccess(data),
+                (error) => this.loadSkinFromSettingError(error)
+            );
     }
 
     private saveGlobalSettingSuccess(data: any) {
-        this.globalSettingSer.saveUpdateCache('-1', this.userMainSetting, data);
+        this.globalSettingSer.saveUpdateCache("-1", this.userMainSetting, data);
         // Relogin to get the latest user info
         if (this.isChangeLanguage) {
             this.isChangeLanguage = false;
@@ -658,20 +892,40 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
 
     onClick(event) {
         // Click outside
-        if (!this._eref.nativeElement.contains(event.target) && !event.target.classList.contains('toggle-sidebar-right')) {
-            if (this._eref.nativeElement.children[0].classList.contains('control-sidebar-open')) {
+        if (
+            !this._eref.nativeElement.contains(event.target) &&
+            !event.target.classList.contains("toggle-sidebar-right")
+        ) {
+            if (
+                this._eref.nativeElement.children[0].classList.contains(
+                    "control-sidebar-open"
+                )
+            ) {
                 this.collapseSideBar();
 
-                this.store.dispatch(this.layoutInfoActions.setRightMenuWidth('0', this.ofModule));
+                this.store.dispatch(
+                    this.layoutInfoActions.setRightMenuWidth("0", this.ofModule)
+                );
             }
         }
-        if (event.target.classList.contains('toggle-sidebar-right')) {
+        if (event.target.classList.contains("toggle-sidebar-right")) {
             this.isWidgetTemplate = false;
 
-            if (this._eref.nativeElement.children[0].classList.contains('control-sidebar-open')) {
-                this.store.dispatch(this.layoutInfoActions.setRightMenuWidth(this.pageSize.ParkedItemShowSize.toString(), this.ofModule));
+            if (
+                this._eref.nativeElement.children[0].classList.contains(
+                    "control-sidebar-open"
+                )
+            ) {
+                this.store.dispatch(
+                    this.layoutInfoActions.setRightMenuWidth(
+                        this.pageSize.ParkedItemShowSize.toString(),
+                        this.ofModule
+                    )
+                );
             } else {
-                this.store.dispatch(this.layoutInfoActions.setRightMenuWidth('0', this.ofModule));
+                this.store.dispatch(
+                    this.layoutInfoActions.setRightMenuWidth("0", this.ofModule)
+                );
             }
         }
 
@@ -679,11 +933,15 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     collapseSideBar() {
-        this._eref.nativeElement.children[0].classList.remove('control-sidebar-open');
+        this._eref.nativeElement.children[0].classList.remove(
+            "control-sidebar-open"
+        );
     }
 
     expandSideBar() {
-        this._eref.nativeElement.children[0].classList.add('control-sidebar-open');
+        this._eref.nativeElement.children[0].classList.add(
+            "control-sidebar-open"
+        );
         this.isWidgetTemplate = false;
 
         this.changeDetectorRef.markForCheck();
@@ -696,21 +954,24 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
 
         this.setActiveForColor(selectedItem.data.name);
         this.overrideSkinClass(selectedItem.data.class1);
-        this.currentMainSetting = this.currentMainSetting || new MainSettingModel();
+        this.currentMainSetting =
+            this.currentMainSetting || new MainSettingModel();
         this.currentMainSetting.color = selectedItem.data.name;
         this.saveSkinToSetting();
     }
 
     private overrideSkinClass(colorClass: string) {
-        const classList = document.getElementsByTagName('body')[0].className.split(/\s+/);
+        const classList = document
+            .getElementsByTagName("body")[0]
+            .className.split(/\s+/);
         for (let i = 0; i < classList.length; i++) {
-            if (classList[i].startsWith('skin-')) {
-                $('body').removeClass(classList[i]);
+            if (classList[i].startsWith("skin-")) {
+                $("body").removeClass(classList[i]);
             }
         }
 
-        $('body').addClass('sidebar-mini');
-        $('body').addClass(colorClass);
+        $("body").addClass("sidebar-mini");
+        $("body").addClass(colorClass);
     }
 
     /**
@@ -722,24 +983,41 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            headerText: 'Change Language ',
-            messageType: MessageModal.MessageType.error,
-            message: [{ key: '<p>' }, { key: 'Modal_Message__Change_Language_Will_Reload_Page_Do_You_Want_To_Change' },
-            { key: '</p>' }],
-            buttonType1: MessageModal.ButtonType.danger,
-            callBack1: () => {
-                this.isChangeLanguage = true;
-                LocalStorageHelper.toInstance(SessionStorageProvider).setItem(LocalSettingKey.SET_LANGUAGE_MODE, { isMain: false });
-                LocalStorageHelper.toInstance(SessionStorageProvider).setItem(LocalSettingKey.LANGUAGE, selectedLanguage.data);
-                this.setActiveForLanguageFromServer(selectedLanguage.data.name);
-                this.currentMainSetting = this.currentMainSetting || new MainSettingModel();
-                this.currentMainSetting.language = selectedLanguage.data.name;
-                this.saveSkinToSetting();
-            },
-            callBack2: () => { },
-            callBackCloseButton: () => { }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                headerText: "Change Language ",
+                messageType: MessageModal.MessageType.error,
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Change_Language_Will_Reload_Page_Do_You_Want_To_Change",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.danger,
+                callBack1: () => {
+                    this.isChangeLanguage = true;
+                    LocalStorageHelper.toInstance(
+                        SessionStorageProvider
+                    ).setItem(LocalSettingKey.SET_LANGUAGE_MODE, {
+                        isMain: false,
+                    });
+                    LocalStorageHelper.toInstance(
+                        SessionStorageProvider
+                    ).setItem(LocalSettingKey.LANGUAGE, selectedLanguage.data);
+                    this.setActiveForLanguageFromServer(
+                        selectedLanguage.data.name
+                    );
+                    this.currentMainSetting =
+                        this.currentMainSetting || new MainSettingModel();
+                    this.currentMainSetting.language =
+                        selectedLanguage.data.name;
+                    this.saveSkinToSetting();
+                },
+                callBack2: () => {},
+                callBackCloseButton: () => {},
+            })
+        );
     }
 
     public openWidgetTemplateSetting(forceOpen?: boolean) {
@@ -759,12 +1037,25 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
         this.collapseSideBar();
         this.isWidgetTemplate = true;
 
-        this.store.dispatch(this.widgetTemplateActions.updateEditModeStatus(true, this.ofModule));
-        this.store.dispatch(this.layoutInfoActions.setRightMenuWidth('50', this.ofModule));
-        this.store.dispatch(this.additionalInformationActions.requestTogglePanel(false, this.ofModule));
-        this.store.dispatch(this.parkedItemActions.requestTogglePanel(false, this.ofModule));
+        this.store.dispatch(
+            this.widgetTemplateActions.updateEditModeStatus(true, this.ofModule)
+        );
+        this.store.dispatch(
+            this.layoutInfoActions.setRightMenuWidth("50", this.ofModule)
+        );
+        this.store.dispatch(
+            this.additionalInformationActions.requestTogglePanel(
+                false,
+                this.ofModule
+            )
+        );
+        this.store.dispatch(
+            this.parkedItemActions.requestTogglePanel(false, this.ofModule)
+        );
         this.store.dispatch(this.searchResultActions.requestTogglePanel(false));
-        this.store.dispatch(this.propertyPanelActions.requestClearProperties(this.ofModule));
+        this.store.dispatch(
+            this.propertyPanelActions.requestClearProperties(this.ofModule)
+        );
         this.onToggleWidgetTemplate.emit(this.isWidgetTemplate);
 
         this.changeDetectorRef.markForCheck();
@@ -773,46 +1064,86 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
 
     public openGlobalWidgetSetting() {
         const parentData = {
-            title: 'Global Widget Setting'
+            title: "Global Widget Setting",
         };
 
         this.collapseSideBar();
-        this.store.dispatch(this.additionalInformationActions.requestTogglePanel(false, this.ofModule));
-        this.store.dispatch(this.propertyPanelActions.togglePanel(this.ofModule, true, parentData, this.properties, true));
-        this.store.dispatch(this.layoutInfoActions.setRightMenuWidth('0', this.ofModule));
+        this.store.dispatch(
+            this.additionalInformationActions.requestTogglePanel(
+                false,
+                this.ofModule
+            )
+        );
+        this.store.dispatch(
+            this.propertyPanelActions.togglePanel(
+                this.ofModule,
+                true,
+                parentData,
+                this.properties,
+                true
+            )
+        );
+        this.store.dispatch(
+            this.layoutInfoActions.setRightMenuWidth("0", this.ofModule)
+        );
     }
 
     private reloadAndSavePropertiesConfig(globalProperties) {
-        this.globalSettingSerSubscription = this.globalSettingSer.getAllGlobalSettings().subscribe((data: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.savePropertiesConfig(data, globalProperties);
+        this.globalSettingSerSubscription = this.globalSettingSer
+            .getAllGlobalSettings()
+            .subscribe((data: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.savePropertiesConfig(data, globalProperties);
+                });
             });
-        });
     }
-    private savePropertiesConfig(data: GlobalSettingModel[], globalProperties: WidgetPropertyModel[]) {
-        this.propertiesSettings = data.find(x => x.globalName === this.propertiesSettingName);
-        if (!this.propertiesSettings || !this.propertiesSettings.idSettingsGlobal || !this.propertiesSettings.globalName) {
+    private savePropertiesConfig(
+        data: GlobalSettingModel[],
+        globalProperties: WidgetPropertyModel[]
+    ) {
+        this.propertiesSettings = data.find(
+            (x) => x.globalName === this.propertiesSettingName
+        );
+        if (
+            !this.propertiesSettings ||
+            !this.propertiesSettings.idSettingsGlobal ||
+            !this.propertiesSettings.globalName
+        ) {
             this.propertiesSettings = new GlobalSettingModel({
                 globalName: this.propertiesSettingName,
-                description: 'Global Widget Properties',
-                globalType: this.globalSettingConstant.globalWidgetProperties
+                description: "Global Widget Properties",
+                globalType: this.globalSettingConstant.globalWidgetProperties,
             });
         }
         this.propertiesSettings.idSettingsGUI = ModuleList.Base.idSettingsGUI;
-        globalProperties = this.propertyPanelService.resetDirty(globalProperties);
+        globalProperties =
+            this.propertyPanelService.resetDirty(globalProperties);
         this.propertiesSettings.jsonSettings = JSON.stringify(globalProperties);
         this.propertiesSettings.isActive = true;
 
-        this.globalSettingSerSubscription = this.globalSettingSer.saveGlobalSetting(this.propertiesSettings).subscribe(
-            _data => this.savePropertiesConfigSuccess(_data),
-            error => this.savePropertiesConfigError(error));
+        this.globalSettingSerSubscription = this.globalSettingSer
+            .saveGlobalSetting(this.propertiesSettings)
+            .subscribe(
+                (_data) => this.savePropertiesConfigSuccess(_data),
+                (error) => this.savePropertiesConfigError(error)
+            );
     }
 
     private savePropertiesConfigSuccess(data: any) {
-        this.toasterService.pop('success', 'Success', 'Global Settings saved successfully');
+        this.toasterService.pop(
+            "success",
+            "Success",
+            "Global Settings saved successfully"
+        );
         this.orgGlobalProperties = cloneDeep(this.properties);
-        this.store.dispatch(this.propertyPanelActions.togglePanel(this.ofModule, false));
-        this.globalSettingSer.saveUpdateCache('-1', this.propertiesSettings, data);
+        this.store.dispatch(
+            this.propertyPanelActions.togglePanel(this.ofModule, false)
+        );
+        this.globalSettingSer.saveUpdateCache(
+            "-1",
+            this.propertiesSettings,
+            data
+        );
     }
 
     private savePropertiesConfigError(error) {
@@ -840,12 +1171,23 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
         this.collapseSideBar();
         this.isLayoutSetting = true;
 
-        this.store.dispatch(this.additionalInformationActions.requestTogglePanel(false, this.ofModule));
-        this.store.dispatch(this.parkedItemActions.requestTogglePanel(false, this.ofModule));
+        this.store.dispatch(
+            this.additionalInformationActions.requestTogglePanel(
+                false,
+                this.ofModule
+            )
+        );
+        this.store.dispatch(
+            this.parkedItemActions.requestTogglePanel(false, this.ofModule)
+        );
         this.store.dispatch(this.searchResultActions.requestTogglePanel(false));
-        this.store.dispatch(this.propertyPanelActions.requestClearProperties(this.ofModule));
+        this.store.dispatch(
+            this.propertyPanelActions.requestClearProperties(this.ofModule)
+        );
 
-        this.store.dispatch(this.layoutSettingActions.updateEditModeStatus(true, this.ofModule));
+        this.store.dispatch(
+            this.layoutSettingActions.updateEditModeStatus(true, this.ofModule)
+        );
 
         this.changeDetectorRef.markForCheck();
     }
@@ -939,7 +1281,6 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
         this.toggleSystemTranslate();
     }
 
-
     //#region SignalR
     private signalRIsPinging: boolean = false;
     private signalRPingTimeout: any;
@@ -948,7 +1289,7 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
 
         let model = this.signalRService.createMessageDesignLayout();
         model.Action = action;
-        model.ObjectId = this.ofModuleLocal.idSettingsGUI + '';
+        model.ObjectId = this.ofModuleLocal.idSettingsGUI + "";
         model.Data = data;
         this.signalRService.sendMessage(model);
     }
@@ -970,8 +1311,7 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
                     this.signalRAllowDesignLayout(true);
                 }
             }, 2500);
-        }
-        else {
+        } else {
             this.signalRIsPinging = false;
         }
     }
@@ -989,69 +1329,85 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     private signalRListenMessage() {
         if (!Configuration.PublicSettings.enableSignalR) return;
 
-        if (this.designLayoutMessageSubscription) this.designLayoutMessageSubscription.unsubscribe();
+        if (this.designLayoutMessageSubscription)
+            this.designLayoutMessageSubscription.unsubscribe();
 
-        this.designLayoutMessageSubscription = this.signalRService.messageDesignLayout
-            .subscribe((message: SignalRNotifyModel) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (isDevMode())
-                        console.log(message);
+        this.designLayoutMessageSubscription =
+            this.signalRService.messageDesignLayout.subscribe(
+                (message: SignalRNotifyModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (isDevMode()) console.log(message);
 
-                    this.signalRIsPinging = false;
+                        this.signalRIsPinging = false;
 
-                    if (message.Job == SignalRJobEnum.Disconnected) {
-                        //Allow Design Layout
-                        this.signalRAllowDesignLayout(true);
-                        return;
-                    }
-
-                    switch (message.Action) {
-                        case SignalRActionEnum.DesignLayout_IsThereAnyoneEditing:
-                            if (this.signalRService.designLayoutIsWorking && this.isTheSameModule(message.ObjectId)) {
-                                //Notify to the same user that I am editing
-                                this.sendMessage(SignalRActionEnum.DesignLayout_ConnectEditing);
-                            }
-                            break;
-                        case SignalRActionEnum.DesignLayout_ConnectEditing:
-                            //The same account If he is editing on the same module -> disable this function and show tooltip for the current user
-                            if (this.isTheSameModule(message.ObjectId)) {
-                                //Not Allow Design Layout
-                                this.signalRAllowDesignLayout(false);
-
-                                //If the other module is designing module, the current module still is turned on the design mode
-                                //Turn off the design mode for the current module
-                                if (this.signalRService.designLayoutIsWorking) {
-                                    if (this.isWidgetTemplate) {
-                                        this.onWidgetTemplateToggle(false);
-                                        this.store.dispatch(this.widgetTemplateActions.updateEditModeStatus(false, this.ofModule));
-                                    }
-                                    else if (this.isLayoutSetting) {
-                                        this.isLayoutSetting = false;
-                                    }
-                                }
-                            }
-                            break;
-                        case SignalRActionEnum.DesignLayout_StopEditing:
+                        if (message.Job == SignalRJobEnum.Disconnected) {
                             //Allow Design Layout
                             this.signalRAllowDesignLayout(true);
-                            break;
-                        case SignalRActionEnum.DesignLayout_SavedSuccessfully:
-                            //If design the same module -> need to relload page
-                            this.signalRService.designLayoutModulesSaved[message.ObjectId] = true;
-                            break;
-                    }
-                });
-            });
+                            return;
+                        }
+
+                        switch (message.Action) {
+                            case SignalRActionEnum.DesignLayout_IsThereAnyoneEditing:
+                                if (
+                                    this.signalRService.designLayoutIsWorking &&
+                                    this.isTheSameModule(message.ObjectId)
+                                ) {
+                                    //Notify to the same user that I am editing
+                                    this.sendMessage(
+                                        SignalRActionEnum.DesignLayout_ConnectEditing
+                                    );
+                                }
+                                break;
+                            case SignalRActionEnum.DesignLayout_ConnectEditing:
+                                //The same account If he is editing on the same module -> disable this function and show tooltip for the current user
+                                if (this.isTheSameModule(message.ObjectId)) {
+                                    //Not Allow Design Layout
+                                    this.signalRAllowDesignLayout(false);
+
+                                    //If the other module is designing module, the current module still is turned on the design mode
+                                    //Turn off the design mode for the current module
+                                    if (
+                                        this.signalRService
+                                            .designLayoutIsWorking
+                                    ) {
+                                        if (this.isWidgetTemplate) {
+                                            this.onWidgetTemplateToggle(false);
+                                            this.store.dispatch(
+                                                this.widgetTemplateActions.updateEditModeStatus(
+                                                    false,
+                                                    this.ofModule
+                                                )
+                                            );
+                                        } else if (this.isLayoutSetting) {
+                                            this.isLayoutSetting = false;
+                                        }
+                                    }
+                                }
+                                break;
+                            case SignalRActionEnum.DesignLayout_StopEditing:
+                                //Allow Design Layout
+                                this.signalRAllowDesignLayout(true);
+                                break;
+                            case SignalRActionEnum.DesignLayout_SavedSuccessfully:
+                                //If design the same module -> need to relload page
+                                this.signalRService.designLayoutModulesSaved[
+                                    message.ObjectId
+                                ] = true;
+                                break;
+                        }
+                    });
+                }
+            );
     }
 
     private signalRAllowDesignLayout(allow) {
         if (allow) {
             this.designLayoutEnabled = true;
-            this.designLayoutMessageTooltip = '';
-        }
-        else {
+            this.designLayoutMessageTooltip = "";
+        } else {
             this.designLayoutEnabled = false;
-            this.designLayoutMessageTooltip = 'You can not use this feature at moment. There is someone is using the same your account login to design layout of this module. Please try it later';
+            this.designLayoutMessageTooltip =
+                "You can not use this feature at moment. There is someone is using the same your account login to design layout of this module. Please try it later";
         }
         this.changeDetectorRef.detectChanges();
     }
@@ -1061,49 +1417,64 @@ export class AsideComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     private isNeedToReloadPage() {
-        return this.signalRService.designLayoutModulesSaved[this.ofModuleLocal.idSettingsGUI];
+        return this.signalRService.designLayoutModulesSaved[
+            this.ofModuleLocal.idSettingsGUI
+        ];
     }
 
     private showDialogReloadPage() {
-
         //Only show warning when subTotal is negative
-        this.modalService.showMessageModal(new MessageModalModel({
-            customClass: 'dialog-confirm-total',
-            messageType: MessageModal.MessageType.warning,
-            modalSize: MessageModal.ModalSize.middle,
-            showCloseButton: false,
-            header: new MessageModalHeaderModel({
-                text: 'Refresh Widget'
-            }),
-            body: new MessageModalBodyModel({
-                isHtmlContent: true,
-                content: [{ key: '<p>' }, { key: 'Modal_Message__Page_Layout_Widgets_Changed_Using_Same_Account' },
-                { key: '<br/>' },
-                { key: 'Modal_Message__Please_Refresh_Widget_Continued' },
-                { key: '</p>' }]
-            }),
-            footer: new MessageModalFooterModel({
-                buttonList: [
-                    new ButtonList({
-                        buttonType: MessageModal.ButtonType.primary,
-                        text: 'Refresh Widget',
-                        customClass: '',
-                        callBackFunc: () => {
-                            this.eventEmitterService.onFirstRefreshWidgetButtonClick(true);
-                            this.modalService.hideModal();
-                            this.signalRService.designLayoutModulesSaved[this.ofModuleLocal.idSettingsGUI] = false;
-                        }
-                    }),
-                    new ButtonList({
-                        buttonType: MessageModal.ButtonType.default,
-                        text: 'Cancel',
-                        customClass: '',
-                        callBackFunc: () => {
-                            this.modalService.hideModal();
-                        }
-                    })]
+        this.modalService.showMessageModal(
+            new MessageModalModel({
+                customClass: "dialog-confirm-total",
+                messageType: MessageModal.MessageType.warning,
+                modalSize: MessageModal.ModalSize.middle,
+                showCloseButton: false,
+                header: new MessageModalHeaderModel({
+                    text: "Refresh Widget",
+                }),
+                body: new MessageModalBodyModel({
+                    isHtmlContent: true,
+                    content: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Page_Layout_Widgets_Changed_Using_Same_Account",
+                        },
+                        { key: "<br/>" },
+                        {
+                            key: "Modal_Message__Please_Refresh_Widget_Continued",
+                        },
+                        { key: "</p>" },
+                    ],
+                }),
+                footer: new MessageModalFooterModel({
+                    buttonList: [
+                        new ButtonList({
+                            buttonType: MessageModal.ButtonType.primary,
+                            text: "Refresh Widget",
+                            customClass: "",
+                            callBackFunc: () => {
+                                this.eventEmitterService.onFirstRefreshWidgetButtonClick(
+                                    true
+                                );
+                                this.modalService.hideModal();
+                                this.signalRService.designLayoutModulesSaved[
+                                    this.ofModuleLocal.idSettingsGUI
+                                ] = false;
+                            },
+                        }),
+                        new ButtonList({
+                            buttonType: MessageModal.ButtonType.default,
+                            text: "Cancel",
+                            customClass: "",
+                            callBackFunc: () => {
+                                this.modalService.hideModal();
+                            },
+                        }),
+                    ],
+                }),
             })
-        }));
+        );
     }
     //#endregion
 }

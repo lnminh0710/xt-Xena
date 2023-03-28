@@ -1,1 +1,1 @@
-export * from './widget-profile-select.component';
+export * from "./widget-profile-select.component";

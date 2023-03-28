@@ -1,5 +1,5 @@
-import * as wjcChart from 'wijmo/wijmo.chart';
-import * as wjcCore from 'wijmo/wijmo';
+import * as wjcChart from "wijmo/wijmo.chart";
+import * as wjcCore from "wijmo/wijmo";
 export declare enum AnnotationAttachment {
     DataIndex = 0,
     DataCoordinate = 1,
@@ -51,14 +51,30 @@ export declare class AnnotationBase {
     _render(engine: wjcChart.IRenderEngine): void;
     _repaint(): void;
     _convertPoint(pt?: wjcChart.DataPoint): wjcCore.Point;
-    _convertDataToLen(total: number, axis: wjcChart.Axis, val: any, converted?: boolean): number;
-    _renderCenteredText(content: string, engine: wjcChart.IRenderEngine, point: wjcCore.Point, className?: string, angle?: number, style?: any): void;
+    _convertDataToLen(
+        total: number,
+        axis: wjcChart.Axis,
+        val: any,
+        converted?: boolean
+    ): number;
+    _renderCenteredText(
+        content: string,
+        engine: wjcChart.IRenderEngine,
+        point: wjcCore.Point,
+        className?: string,
+        angle?: number,
+        style?: any
+    ): void;
     _adjustOffset(pt: wjcCore.Point, offset: wjcCore.Point): void;
     _getOffset(engine?: wjcChart.IRenderEngine): wjcCore.Point;
     _getPositionOffset(engine?: wjcChart.IRenderEngine): wjcCore.Point;
     _getSize(engine?: wjcChart.IRenderEngine): wjcCore.Size;
     _isValidPoint(pt: wjcCore.Point): boolean;
-    _measureString(engine: wjcChart.IRenderEngine, text: string, className: string): wjcCore.Size;
+    _measureString(
+        engine: wjcChart.IRenderEngine,
+        text: string,
+        className: string
+    ): wjcCore.Size;
 }
 export declare class Text extends AnnotationBase {
     static _CSS_TEXT: string;
@@ -122,7 +138,14 @@ export declare class Line extends Shape {
     _renderShape(engine: wjcChart.IRenderEngine): void;
     _getSize(): wjcCore.Size;
     _renderText(engine: wjcChart.IRenderEngine): void;
-    _renderCenteredText(content: string, engine: wjcChart.IRenderEngine, point: wjcCore.Point, className?: string, angle?: number, style?: any): void;
+    _renderCenteredText(
+        content: string,
+        engine: wjcChart.IRenderEngine,
+        point: wjcCore.Point,
+        className?: string,
+        angle?: number,
+        style?: any
+    ): void;
 }
 export declare class Polygon extends Shape {
     static _CSS_POLYGON: string;

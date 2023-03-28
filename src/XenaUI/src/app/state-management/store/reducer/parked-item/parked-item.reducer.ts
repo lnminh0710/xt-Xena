@@ -1,14 +1,12 @@
-import { Action, ActionReducer } from '@ngrx/store';
-import {
-    ParkedItemModel
-} from 'app/models';
-import { ParkedItemActions } from 'app/state-management/store/actions/parked-item';
-import cloneDeep from 'lodash-es/cloneDeep';
-import isEmpty from 'lodash-es/isEmpty';
-import { CustomAction } from 'app/state-management/store/actions/base';
-import * as baseReducer from 'app/state-management/store/reducer/reducer.base';
-import { LocalStorageKey } from 'app/app.constants';
-import { Uti } from 'app/utilities';
+import { Action, ActionReducer } from "@ngrx/store";
+import { ParkedItemModel } from "app/models";
+import { ParkedItemActions } from "app/state-management/store/actions/parked-item";
+import cloneDeep from "lodash-es/cloneDeep";
+import isEmpty from "lodash-es/isEmpty";
+import { CustomAction } from "app/state-management/store/actions/base";
+import * as baseReducer from "app/state-management/store/reducer/reducer.base";
+import { LocalStorageKey } from "app/app.constants";
+import { Uti } from "app/utilities";
 
 export interface SubParkedItemState {
     parkedItems: ParkedItemModel[];
@@ -29,19 +27,26 @@ export const initialSubParkedItemState: SubParkedItemState = {
     requestTogglePanel: null,
     toggleDisabledPanel: null,
     isCollapsed: false,
-    fieldConfig: []
+    fieldConfig: [],
 };
 
 export interface ParkedItemState {
-    features: { [id: string]: SubParkedItemState }
+    features: { [id: string]: SubParkedItemState };
 }
 
 const initialState: ParkedItemState = {
-    features: {}
+    features: {},
 };
 
-export function parkedItemStateReducer(state = initialState, action: CustomAction): ParkedItemState {
-    let feature = baseReducer.getFeature(action, state, initialSubParkedItemState);
+export function parkedItemStateReducer(
+    state = initialState,
+    action: CustomAction
+): ParkedItemState {
+    let feature = baseReducer.getFeature(
+        action,
+        state,
+        initialSubParkedItemState
+    );
     switch (action.type) {
         case ParkedItemActions.LOAD_PARKED_ITEMS_SUCCESS: {
             state = baseReducer.updateStateData(action, feature, state, {
@@ -60,7 +65,7 @@ export function parkedItemStateReducer(state = initialState, action: CustomActio
                 requestSaveParkedItemList: null,
                 requestTogglePanel: null,
                 toggleDisabledPanel: null,
-                isCollapsed: false
+                isCollapsed: false,
             });
             return Object.assign({}, state);
         }
@@ -68,14 +73,17 @@ export function parkedItemStateReducer(state = initialState, action: CustomActio
         case ParkedItemActions.SELECT_PARKED_ITEM: {
             state = baseReducer.updateStateData(action, feature, state, {
                 selectedParkedItem: action.payload.parkedItem,
-                currentParkedItem: action.payload.parkedItem
+                currentParkedItem: action.payload.parkedItem,
             });
             return Object.assign({}, state);
         }
 
         case ParkedItemActions.UNSELECT_PARKED_ITEM: {
             state = baseReducer.updateStateData(action, feature, state, {
-                parkedItems: updateSelected(feature.parkedItems, action.payload),
+                parkedItems: updateSelected(
+                    feature.parkedItems,
+                    action.payload
+                ),
                 selectedParkedItem: null,
                 currentParkedItem: null,
             });
@@ -83,10 +91,18 @@ export function parkedItemStateReducer(state = initialState, action: CustomActio
         }
 
         case ParkedItemActions.REMOVE_PARKED_ITEM: {
-            const currentSelectedParked = feature.parkedItems.find(c => c.selected);
+            const currentSelectedParked = feature.parkedItems.find(
+                (c) => c.selected
+            );
             state = baseReducer.updateStateData(action, feature, state, {
-                parkedItems: removeSelected(feature.parkedItems, action.payload.parkedItem),
-                selectedParkedItem: currentSelectedParked != null ? feature.selectedParkedItem : null
+                parkedItems: removeSelected(
+                    feature.parkedItems,
+                    action.payload.parkedItem
+                ),
+                selectedParkedItem:
+                    currentSelectedParked != null
+                        ? feature.selectedParkedItem
+                        : null,
             });
             return Object.assign({}, state);
         }
@@ -94,37 +110,39 @@ export function parkedItemStateReducer(state = initialState, action: CustomActio
         case ParkedItemActions.REMOVE_ALL_PARKED_ITEM: {
             state = baseReducer.updateStateData(action, feature, state, {
                 parkedItems: [],
-                selectedParkedItem: null
+                selectedParkedItem: null,
             });
             return Object.assign({}, state);
         }
 
         case ParkedItemActions.LOAD_THEN_ADD_PARKED_ITEM_SUCCESS: {
             // Check if this parked item exists state.
-            let index = findIndexParkedItem(action.payload.parkedItem, feature.parkedItems);
+            let index = findIndexParkedItem(
+                action.payload.parkedItem,
+                feature.parkedItems
+            );
 
             // Case 1: If exists, then we just need update
             if (index >= 0) {
                 action.payload.parkedItem.isNewInsertedItem = true;
                 feature.parkedItems[index] = action.payload.parkedItem;
                 state = baseReducer.updateStateData(action, feature, state, {
-                    parkedItems: Object.assign([], feature.parkedItems)
+                    parkedItems: Object.assign([], feature.parkedItems),
                 });
-            }
-            else {
+            } else {
                 action.payload.parkedItem.isNewInsertedItem = true;
                 action.payload.parkedItem.createDateValue = new Date();
                 const clone = feature.parkedItems.slice(0);
                 clone.splice(0, 0, action.payload.parkedItem);
                 state = baseReducer.updateStateData(action, feature, state, {
-                    parkedItems: clone
+                    parkedItems: clone,
                 });
             }
             return Object.assign({}, state);
         }
 
         case ParkedItemActions.ADD_DRAFT_ITEM: {
-            const newItem = feature.parkedItems.filter(item => {
+            const newItem = feature.parkedItems.filter((item) => {
                 return item.isNew == true;
             });
             if (newItem.length) {
@@ -134,27 +152,27 @@ export function parkedItemStateReducer(state = initialState, action: CustomActio
             clone.splice(0, 0, action.payload.draftItem);
             state = baseReducer.updateStateData(action, feature, state, {
                 parkedItems: updateSelected(clone, action.payload.draftItem),
-                selectedParkedItem: action.payload.draftItem
+                selectedParkedItem: action.payload.draftItem,
             });
             return Object.assign({}, state);
         }
 
         case ParkedItemActions.REMOVE_DRAFT_ITEM: {
-            const draftItem = feature.parkedItems.filter(item => {
+            const draftItem = feature.parkedItems.filter((item) => {
                 return item.isNew == true;
             });
             if (!draftItem.length) {
                 return state;
             }
 
-            const draftItemIndex = feature.parkedItems.findIndex(item => {
+            const draftItemIndex = feature.parkedItems.findIndex((item) => {
                 return item.isNew == true;
             });
             const clone = cloneDeep(feature.parkedItems);
             clone.splice(draftItemIndex, 1);
             state = baseReducer.updateStateData(action, feature, state, {
                 parkedItems: clone,
-                selectedParkedItem: null
+                selectedParkedItem: null,
             });
             return Object.assign({}, state);
         }
@@ -162,16 +180,19 @@ export function parkedItemStateReducer(state = initialState, action: CustomActio
         case ParkedItemActions.REQUEST_TOGGLE_PANEL: {
             state = baseReducer.updateStateData(action, feature, state, {
                 requestTogglePanel: {
-                    isShow: action.payload.isShow
-                }
+                    isShow: action.payload.isShow,
+                },
             });
             return Object.assign({}, state);
         }
 
         case ParkedItemActions.SELECT_PREVIOUS_PARKED_ITEM: {
             state = baseReducer.updateStateData(action, feature, state, {
-                parkedItems: updateSelected(feature.parkedItems, feature.currentParkedItem),
-                selectedParkedItem: feature.currentParkedItem
+                parkedItems: updateSelected(
+                    feature.parkedItems,
+                    feature.currentParkedItem
+                ),
+                selectedParkedItem: feature.currentParkedItem,
             });
             return Object.assign({}, state);
         }
@@ -179,22 +200,22 @@ export function parkedItemStateReducer(state = initialState, action: CustomActio
         case ParkedItemActions.TOGGLE_DISABLED_PANEL: {
             state = baseReducer.updateStateData(action, feature, state, {
                 toggleDisabledPanel: {
-                    isDisabled: action.payload.isDisabled
-                }
+                    isDisabled: action.payload.isDisabled,
+                },
             });
             return Object.assign({}, state);
         }
 
         case ParkedItemActions.SET_COLLAPSE_STATE: {
             state = baseReducer.updateStateData(action, feature, state, {
-                isCollapsed: action.payload.isCollapsed
+                isCollapsed: action.payload.isCollapsed,
             });
             return Object.assign({}, state);
         }
 
         case ParkedItemActions.STORE_FIELD_CONFIG: {
             state = baseReducer.updateStateData(action, feature, state, {
-                fieldConfig: action.payload
+                fieldConfig: action.payload,
             });
             return Object.assign({}, state);
         }
@@ -203,9 +224,11 @@ export function parkedItemStateReducer(state = initialState, action: CustomActio
             return state;
         }
     }
-};
+}
 
-export function persistParkedItemStateReducer(_reducer: ActionReducer<ParkedItemState>) {
+export function persistParkedItemStateReducer(
+    _reducer: ActionReducer<ParkedItemState>
+) {
     return (state: ParkedItemState | undefined, action: Action) => {
         const nextState = _reducer(state, action);
         switch (action.type) {
@@ -222,8 +245,14 @@ export function persistParkedItemStateReducer(_reducer: ActionReducer<ParkedItem
                 //console.log(location.pathname);
                 if (location.pathname != "/search") {
                     //TODO: enhance, only save the necessary state
-                    nextState['browserTabId'] = Uti.defineBrowserTabId();
-                    localStorage.setItem(LocalStorageKey.buildKey(LocalStorageKey.LocalStorageGSParkedItemsKey, nextState['browserTabId']), JSON.stringify(nextState));
+                    nextState["browserTabId"] = Uti.defineBrowserTabId();
+                    localStorage.setItem(
+                        LocalStorageKey.buildKey(
+                            LocalStorageKey.LocalStorageGSParkedItemsKey,
+                            nextState["browserTabId"]
+                        ),
+                        JSON.stringify(nextState)
+                    );
                 }
                 break;
         }
@@ -231,36 +260,51 @@ export function persistParkedItemStateReducer(_reducer: ActionReducer<ParkedItem
     };
 }
 
-export function updateParkedItemStateReducer(_reducer: ActionReducer<ParkedItemState>) {
+export function updateParkedItemStateReducer(
+    _reducer: ActionReducer<ParkedItemState>
+) {
     return (state: ParkedItemState | undefined, action: Action) => {
-        if (action.type === ParkedItemActions.UPDATE_GLOBAL_SEARCH_STATE_FROM_LOCAL_STORAGE) {
+        if (
+            action.type ===
+            ParkedItemActions.UPDATE_GLOBAL_SEARCH_STATE_FROM_LOCAL_STORAGE
+        ) {
             return (<any>action).payload;
         }
         return _reducer(state, action);
     };
 }
 
-export function parkedItemReducer(state = initialState, action: CustomAction): ParkedItemState {
-    return updateParkedItemStateReducer(persistParkedItemStateReducer(parkedItemStateReducer))(state, action);
-};
+export function parkedItemReducer(
+    state = initialState,
+    action: CustomAction
+): ParkedItemState {
+    return updateParkedItemStateReducer(
+        persistParkedItemStateReducer(parkedItemStateReducer)
+    )(state, action);
+}
 
 function findIndexParkedItem(item: ParkedItemModel, array: ParkedItemModel[]) {
     let index = -1;
     try {
-        index = array.findIndex(p => p.id.value == item.id.value);
-    } catch { }
-    finally {
+        index = array.findIndex((p) => p.id.value == item.id.value);
+    } catch {
+    } finally {
         return index;
     }
 }
 
-function updateSelected(array: ParkedItemModel[], selectedItem: ParkedItemModel) {
+function updateSelected(
+    array: ParkedItemModel[],
+    selectedItem: ParkedItemModel
+) {
     for (let i = 0; i < array.length; i++) {
         array[i].selected = false;
     }
 
     if (!isEmpty(selectedItem)) {
-        const item = array.find(i => i.id && i.id.value == selectedItem.id.value);
+        const item = array.find(
+            (i) => i.id && i.id.value == selectedItem.id.value
+        );
 
         if (item) {
             item.selected = true;
@@ -271,7 +315,9 @@ function updateSelected(array: ParkedItemModel[], selectedItem: ParkedItemModel)
 }
 
 function removeSelected(array: ParkedItemModel[], selectedItem) {
-    const idx = array.findIndex(i => i.id && i.id.value == selectedItem.id.value);
+    const idx = array.findIndex(
+        (i) => i.id && i.id.value == selectedItem.id.value
+    );
     if (idx > -1) {
         array.splice(idx, 1);
     }

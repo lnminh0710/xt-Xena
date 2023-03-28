@@ -1,4 +1,4 @@
-import {on, off} from './utils'
+import { on, off } from "./utils";
 
 /**
  * Handler is the color stop of the gradient
@@ -9,7 +9,7 @@ export default class Handler {
     public color: any;
     public selected: any;
     public el: any;
-    constructor(Grapick, position = 0, color = 'black', select = 1) {
+    constructor(Grapick, position = 0, color = "black", select = 1) {
         Grapick.getHandlers().push(this);
         this.gp = Grapick;
         this.position = position;
@@ -37,7 +37,7 @@ export default class Handler {
      */
     setColor(color, complete = 1) {
         this.color = color;
-        this.emit('handler:color:change', this, complete);
+        this.emit("handler:color:change", this, complete);
     }
 
     /**
@@ -52,7 +52,7 @@ export default class Handler {
         this.position = position;
         // tslint:disable-next-line:no-unused-expression
         el && (el.style.left = `${position}%`);
-        this.emit('handler:position:change', this, complete);
+        this.emit("handler:position:change", this, complete);
     }
 
     /**
@@ -95,12 +95,12 @@ export default class Handler {
     select() {
         const el = this.getEl();
         const handlers = this.gp.getHandlers();
-        handlers.forEach(handler => handler.deselect());
+        handlers.forEach((handler) => handler.deselect());
         this.selected = 1;
         const clsNameSel = this.getSelectedCls();
         // tslint:disable-next-line:no-unused-expression
         el && (el.className += ` ${clsNameSel}`);
-        this.emit('handler:select', this);
+        this.emit("handler:select", this);
     }
 
     /**
@@ -111,8 +111,8 @@ export default class Handler {
         this.selected = 0;
         const clsNameSel = this.getSelectedCls();
         // tslint:disable-next-line:no-unused-expression
-        el && (el.className = el.className.replace(clsNameSel, '').trim());
-        this.emit('handler:deselect', this);
+        el && (el.className = el.className.replace(clsNameSel, "").trim());
+        this.emit("handler:deselect", this);
     }
 
     getSelectedCls() {
@@ -133,7 +133,7 @@ export default class Handler {
         // tslint:disable-next-line:no-unused-expression
         el && el.parentNode.removeChild(el);
         // tslint:disable-next-line:no-unused-expression
-        !options['silent'] && this.emit('handler:remove', removed);
+        !options["silent"] && this.emit("handler:remove", removed);
         return removed;
     }
 
@@ -146,35 +146,39 @@ export default class Handler {
     }
 
     initEvents() {
-        const eventDown = 'touchstart mousedown';
-        const eventMove = 'touchmove mousemove';
-        const eventUp = 'touchend mouseup';
+        const eventDown = "touchstart mousedown";
+        const eventMove = "touchmove mousemove";
+        const eventUp = "touchend mouseup";
         const el = this.getEl();
         const previewEl = this.gp.previewEl;
         const options = this.gp.options;
         const min = options.min;
         const max = options.max;
-        const closeEl = el.querySelector('[data-toggle=handler-close]');
-        const colorContEl = el.querySelector('[data-toggle=handler-color-c]');
-        const colorWrapEl = el.querySelector('[data-toggle=handler-color-wrap]');
-        const colorEl = el.querySelector('[data-toggle=handler-color]');
-        const dragEl = el.querySelector('[data-toggle=handler-drag]');
+        const closeEl = el.querySelector("[data-toggle=handler-close]");
+        const colorContEl = el.querySelector("[data-toggle=handler-color-c]");
+        const colorWrapEl = el.querySelector(
+            "[data-toggle=handler-color-wrap]"
+        );
+        const colorEl = el.querySelector("[data-toggle=handler-color]");
+        const dragEl = el.querySelector("[data-toggle=handler-drag]");
         // tslint:disable-next-line:no-unused-expression
-        colorContEl && on(colorContEl, 'click', e => e.stopPropagation());
+        colorContEl && on(colorContEl, "click", (e) => e.stopPropagation());
         // tslint:disable-next-line:no-unused-expression
-        closeEl && on(closeEl, 'click', e => {
-            e.stopPropagation();
-            this.remove()
-        });
+        closeEl &&
+            on(closeEl, "click", (e) => {
+                e.stopPropagation();
+                this.remove();
+            });
         // tslint:disable-next-line:no-unused-expression
-        colorEl && on(colorEl, 'change', e => {
-            const target = e.target;
-            const value = target.value;
-            this.setColor(value);
-            console.log('setColor', value);
-            // tslint:disable-next-line:no-unused-expression
-            colorWrapEl && (colorWrapEl.style.backgroundColor = value);
-        });
+        colorEl &&
+            on(colorEl, "change", (e) => {
+                const target = e.target;
+                const value = target.value;
+                this.setColor(value);
+                console.log("setColor", value);
+                // tslint:disable-next-line:no-unused-expression
+                colorWrapEl && (colorWrapEl.style.backgroundColor = value);
+            });
 
         if (dragEl) {
             let pos = 0;
@@ -183,23 +187,23 @@ export default class Handler {
             const elDim = {};
             const startPos = {};
             const deltaPos = {};
-            const axis = 'x';
-            const drag = e => {
+            const axis = "x";
+            const drag = (e) => {
                 dragged = 1;
-                deltaPos['x'] = e.clientX - startPos['x'];
-                deltaPos['y'] = e.clientY - startPos['y'];
-                pos = (axis == 'x' ? deltaPos['x'] : deltaPos['y']) * 100;
-                pos = pos / (axis == 'x' ? elDim['w'] : elDim['h']);
+                deltaPos["x"] = e.clientX - startPos["x"];
+                deltaPos["y"] = e.clientY - startPos["y"];
+                pos = (axis == "x" ? deltaPos["x"] : deltaPos["y"]) * 100;
+                pos = pos / (axis == "x" ? elDim["w"] : elDim["h"]);
                 pos = posInit + pos;
                 pos = pos < min ? min : pos;
                 pos = pos > max ? max : pos;
                 this.setPosition(pos, 0);
-                this.emit('handler:drag', this, pos);
+                this.emit("handler:drag", this, pos);
                 // In case the mouse button was released outside of the window
                 // tslint:disable-next-line:no-unused-expression
                 // e.which === 0 && stopDrag(e);
             };
-            const stopDrag = e => {
+            const stopDrag = (e) => {
                 if (!dragged) {
                     return;
                 }
@@ -207,26 +211,26 @@ export default class Handler {
                 this.setPosition(pos);
                 off(document, eventMove, drag);
                 off(document, eventUp, stopDrag);
-                this.emit('handler:drag:end', this, pos);
+                this.emit("handler:drag:end", this, pos);
             };
-            const initDrag = e => {
+            const initDrag = (e) => {
                 // Right or middle click
                 if (e.button !== 0) {
                     return;
                 }
                 this.select();
                 posInit = this.position;
-                elDim['w'] = previewEl.clientWidth;
-                elDim['h'] = previewEl.clientHeight;
-                startPos['x'] = e.clientX;
-                startPos['y'] = e.clientY;
+                elDim["w"] = previewEl.clientWidth;
+                elDim["h"] = previewEl.clientHeight;
+                startPos["x"] = e.clientX;
+                startPos["y"] = e.clientY;
                 on(document, eventMove, drag);
                 on(document, eventUp, stopDrag);
-                this.emit('handler:drag:start', this);
+                this.emit("handler:drag:start", this);
             };
 
             on(dragEl, eventDown, initDrag);
-            on(dragEl, 'click', e => e.stopPropagation());
+            on(dragEl, "click", (e) => e.stopPropagation());
         }
     }
 
@@ -251,7 +255,7 @@ export default class Handler {
             return;
         }
 
-        const hEl = document.createElement('div');
+        const hEl = document.createElement("div");
         const style = hEl.style;
         const baseCls = `${pfx}-handler`;
         hEl.className = baseCls;
@@ -261,14 +265,17 @@ export default class Handler {
       </div>
       <div class="${baseCls}-drag" data-toggle="handler-drag"></div>
       <div class="${baseCls}-cp-c" data-toggle="handler-color-c">
-        ${colorEl || `
+        ${
+            colorEl ||
+            `
           <div class="${baseCls}-cp-wrap" data-toggle="handler-color-wrap" style="background-color: ${color}">
             <input type="color" data-toggle="handler-color" value="${color}">
-          </div>`}
+          </div>`
+        }
       </div>
     `;
-        style.position = 'absolute';
-        style.top = 0  + '';
+        style.position = "absolute";
+        style.top = 0 + "";
         style.left = `${this.position}%`;
         previewEl.appendChild(hEl);
         this.el = hEl;

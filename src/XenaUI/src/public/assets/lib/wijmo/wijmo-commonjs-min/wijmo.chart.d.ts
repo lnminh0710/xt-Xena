@@ -1,5 +1,5 @@
-import * as wjcCore from 'wijmo/wijmo';
-import * as wjcSelf from 'wijmo/wijmo.chart';
+import * as wjcCore from "wijmo/wijmo";
+import * as wjcSelf from "wijmo/wijmo.chart";
 export declare class DataPoint {
     x: any;
     y: any;
@@ -22,7 +22,10 @@ export declare enum ImageFormat {
     Jpeg = 1,
     Svg = 2,
 }
-export declare class FlexChartBase extends wjcCore.Control implements _IPalette {
+export declare class FlexChartBase
+    extends wjcCore.Control
+    implements _IPalette
+{
     static _WIDTH: number;
     static _HEIGHT: number;
     static _SELECTION_THRESHOLD: number;
@@ -86,15 +89,37 @@ export declare class FlexChartBase extends wjcCore.Control implements _IPalette 
     _renderFooter(engine: IRenderEngine, rect: wjcCore.Rect): void;
     _renderLegends(engine: IRenderEngine, rect: wjcCore.Rect): void;
     _prepareRender(): void;
-    _renderChart(engine: IRenderEngine, rect: wjcCore.Rect, applyElement: boolean): void;
+    _renderChart(
+        engine: IRenderEngine,
+        rect: wjcCore.Rect,
+        applyElement: boolean
+    ): void;
     _performBind(): void;
-    _getDesiredLegendSize(engine: IRenderEngine, isVertical: boolean, width: number, height: number): wjcCore.Size;
-    _renderLegend(engine: IRenderEngine, pt: wjcCore.Point, areas: any[], isVertical: boolean, width: number, height: number): void;
+    _getDesiredLegendSize(
+        engine: IRenderEngine,
+        isVertical: boolean,
+        width: number,
+        height: number
+    ): wjcCore.Size;
+    _renderLegend(
+        engine: IRenderEngine,
+        pt: wjcCore.Point,
+        areas: any[],
+        isVertical: boolean,
+        width: number,
+        height: number
+    ): void;
     _getHitTestItem(index: number): any;
     _getHitTestValue(index: number): any;
     _getHitTestLabel(index: number): any;
     _refreshChart(): void;
-    _drawTitle(engine: IRenderEngine, rect: wjcCore.Rect, title: string, style: any, isFooter: boolean): wjcCore.Rect;
+    _drawTitle(
+        engine: IRenderEngine,
+        rect: wjcCore.Rect,
+        title: string,
+        style: any,
+        isFooter: boolean
+    ): wjcCore.Rect;
     pageToControl(pt: any, y?: number): wjcCore.Point;
     _toControl(pt: any, y?: number): wjcCore.Point;
     _highlightItems(items: any, cls: any, selected: boolean): void;
@@ -162,21 +187,84 @@ export declare class FlexPie extends FlexChartBase {
     hitTest(pt: any, y?: number): HitTestInfo;
     _performBind(): void;
     _initData(): void;
-    _getBindData(item: any, values: any, labels: any, binding: any, bindingName: any): number;
+    _getBindData(
+        item: any,
+        values: any,
+        labels: any,
+        binding: any,
+        bindingName: any
+    ): number;
     _render(engine: IRenderEngine, applyElement?: boolean): void;
     _prepareRender(): void;
-    _renderChart(engine: IRenderEngine, rect: wjcCore.Rect, applyElement: boolean): void;
-    _getDesiredLegendSize(engine: IRenderEngine, isVertical: boolean, width: number, height: number): wjcCore.Size;
-    _renderLegend(engine: IRenderEngine, pos: wjcCore.Point, areas: any[], isVertical: boolean, width: number, height: number): void;
+    _renderChart(
+        engine: IRenderEngine,
+        rect: wjcCore.Rect,
+        applyElement: boolean
+    ): void;
+    _getDesiredLegendSize(
+        engine: IRenderEngine,
+        isVertical: boolean,
+        width: number,
+        height: number
+    ): wjcCore.Size;
+    _renderLegend(
+        engine: IRenderEngine,
+        pos: wjcCore.Point,
+        areas: any[],
+        isVertical: boolean,
+        width: number,
+        height: number
+    ): void;
     _renderData(engine: IRenderEngine, rect: wjcCore.Rect, g: any): void;
-    _renderPie(engine: any, radius: any, innerRadius: any, startAngle: any, offset: any): void;
+    _renderPie(
+        engine: any,
+        radius: any,
+        innerRadius: any,
+        startAngle: any,
+        offset: any
+    ): void;
     _getCenter(): wjcCore.Point;
-    _renderSlices(engine: any, values: any, sum: any, radius: any, innerRadius: any, startAngle: any, totalSweep: any, offset: any): void;
-    _renderSlice(engine: any, cx: any, cy: any, currentAngle: any, idx: any, radius: any, innerRadius: any, startAngle: any, sweep: any, totalSweep: any): void;
+    _renderSlices(
+        engine: any,
+        values: any,
+        sum: any,
+        radius: any,
+        innerRadius: any,
+        startAngle: any,
+        totalSweep: any,
+        offset: any
+    ): void;
+    _renderSlice(
+        engine: any,
+        cx: any,
+        cy: any,
+        currentAngle: any,
+        idx: any,
+        radius: any,
+        innerRadius: any,
+        startAngle: any,
+        sweep: any,
+        totalSweep: any
+    ): void;
     _renderLabels(engine: IRenderEngine): void;
-    _drawSlice(engine: IRenderEngine, i: number, reversed: boolean, cx: number, cy: number, r: number, irad: number, angle: number, sweep: number): void;
+    _drawSlice(
+        engine: IRenderEngine,
+        i: number,
+        reversed: boolean,
+        cx: number,
+        cy: number,
+        r: number,
+        irad: number,
+        angle: number,
+        sweep: number
+    ): void;
     _measureLegendItem(engine: IRenderEngine, name: string): wjcCore.Size;
-    _drawLegendItem(engine: IRenderEngine, rect: wjcCore.Rect, i: number, name: string): void;
+    _drawLegendItem(
+        engine: IRenderEngine,
+        rect: wjcCore.Rect,
+        i: number,
+        name: string
+    ): void;
     private _getLabelContent(ht, content);
     private _select(pointIndex, animate?);
     _highlightCurrent(): void;
@@ -203,7 +291,13 @@ export declare class _PieSegment implements _IHitArea, _ISegment {
     private _originAngle;
     private _originSweep;
     private _startAngle;
-    constructor(center: wjcCore.Point, radius: number, angle: number, sweep: number, startAngle?: number);
+    constructor(
+        center: wjcCore.Point,
+        radius: number,
+        angle: number,
+        sweep: number,
+        startAngle?: number
+    );
     contains(pt: wjcCore.Point): boolean;
     distance(pt: wjcCore.Point): number;
     readonly center: wjcCore.Point;
@@ -225,7 +319,14 @@ export declare class _DonutSegment implements _IHitArea, _ISegment {
     private _iradius2;
     private _isFull;
     private _startAngle;
-    constructor(center: wjcCore.Point, radius: number, innerRadius: number, angle: number, sweep: number, startAngle?: number);
+    constructor(
+        center: wjcCore.Point,
+        radius: number,
+        innerRadius: number,
+        angle: number,
+        sweep: number,
+        startAngle?: number
+    );
     contains(pt: wjcCore.Point): boolean;
     distance(pt: wjcCore.Point): number;
     readonly center: wjcCore.Point;
@@ -322,16 +423,50 @@ export declare class FlexChartCore extends FlexChartBase {
     _hitTestData(pt: any): HitTestInfo;
     _hitTestLabels(pt: wjcCore.Point): _IHitArea;
     private static _dist2(p1, p2);
-    static _dist(p0: wjcCore.Point, p1: wjcCore.Point, p2: wjcCore.Point): number;
-    static _distToSegmentSquared(p: wjcCore.Point, v: wjcCore.Point, w: wjcCore.Point): number;
+    static _dist(
+        p0: wjcCore.Point,
+        p1: wjcCore.Point,
+        p2: wjcCore.Point
+    ): number;
+    static _distToSegmentSquared(
+        p: wjcCore.Point,
+        v: wjcCore.Point,
+        w: wjcCore.Point
+    ): number;
     _isRotated(): boolean;
     _plotrectId: string;
     _getChartType(): ChartType;
     _prepareRender(): void;
-    _renderChart(engine: IRenderEngine, rect: wjcCore.Rect, applyElement: boolean): void;
-    _getDesiredLegendSize(engine: IRenderEngine, isVertical: boolean, width: number, height: number): wjcCore.Size;
-    _renderLegend(engine: IRenderEngine, pos: wjcCore.Point, areas: any[], isVertical: boolean, width: number, height: number): void;
-    private _renderLegendElements(engine, series, pos, p, areas, isVertical, width, height, colRowLen);
+    _renderChart(
+        engine: IRenderEngine,
+        rect: wjcCore.Rect,
+        applyElement: boolean
+    ): void;
+    _getDesiredLegendSize(
+        engine: IRenderEngine,
+        isVertical: boolean,
+        width: number,
+        height: number
+    ): wjcCore.Size;
+    _renderLegend(
+        engine: IRenderEngine,
+        pos: wjcCore.Point,
+        areas: any[],
+        isVertical: boolean,
+        width: number,
+        height: number
+    ): void;
+    private _renderLegendElements(
+        engine,
+        series,
+        pos,
+        p,
+        areas,
+        isVertical,
+        width,
+        height,
+        colRowLen
+    );
     private _renderLabels(engine);
     private _getAxes();
     private _clearPlotters();
@@ -343,7 +478,11 @@ export declare class FlexChartCore extends FlexChartBase {
     private readonly _financePlotter;
     private readonly _funnelPlotter;
     _getPlotter(series: SeriesBase): _IPlotter;
-    _layout(rect: wjcCore.Rect, size: wjcCore.Size, engine: IRenderEngine): void;
+    _layout(
+        rect: wjcCore.Rect,
+        size: wjcCore.Size,
+        engine: IRenderEngine
+    ): void;
     private _layoutSingle(rect, size, engine);
     private _layoutMultiple(rect, size, engine);
     private _convertX(x, left, right);
@@ -359,8 +498,29 @@ export declare class FlexChartCore extends FlexChartBase {
     static _msPerDay: number;
     static _toOADate(date: Date): number;
     static _fromOADate(val: number): Date;
-    static _renderText(engine: IRenderEngine, text: string, pos: wjcCore.Point, halign: any, valign: any, className?: string, groupName?: string, style?: any, test?: any): wjcCore.Rect;
-    static _renderRotatedText(engine: IRenderEngine, text: string, pos: wjcCore.Point, halign: any, valign: any, center: wjcCore.Point, angle: number, className: string, groupClassName?: string, style?: any): void;
+    static _renderText(
+        engine: IRenderEngine,
+        text: string,
+        pos: wjcCore.Point,
+        halign: any,
+        valign: any,
+        className?: string,
+        groupName?: string,
+        style?: any,
+        test?: any
+    ): wjcCore.Rect;
+    static _renderRotatedText(
+        engine: IRenderEngine,
+        text: string,
+        pos: wjcCore.Point,
+        halign: any,
+        valign: any,
+        center: wjcCore.Point,
+        angle: number,
+        className: string,
+        groupClassName?: string,
+        style?: any
+    ): void;
 }
 export declare class _DataInfo {
     private minY;
@@ -375,8 +535,22 @@ export declare class _DataInfo {
     private _xvals;
     private dx;
     constructor();
-    analyse(seriesList: any, isRotated: boolean, stacking: Stacking, xvals: Array<number>, logx: boolean, logy: boolean): void;
-    _parseYVal(val: any, xval: any, custom: any, stackAbs: any, stackPos: any, stackNeg: any): void;
+    analyse(
+        seriesList: any,
+        isRotated: boolean,
+        stacking: Stacking,
+        xvals: Array<number>,
+        logx: boolean,
+        logy: boolean
+    ): void;
+    _parseYVal(
+        val: any,
+        xval: any,
+        custom: any,
+        stackAbs: any,
+        stackPos: any,
+        stackNeg: any
+    ): void;
     getMinY(): number;
     getMaxY(): number;
     getMinX(): number;
@@ -541,33 +715,104 @@ export declare class Axis implements _IAxis {
     rangeChanged: wjcCore.Event;
     onRangeChanged(e?: wjcCore.EventArgs): void;
     _getPosition(): Position;
-    _isOverlapped(engine: IRenderEngine, w: number, lblClass: string, axisType: AxisType): boolean;
+    _isOverlapped(
+        engine: IRenderEngine,
+        w: number,
+        lblClass: string,
+        axisType: AxisType
+    ): boolean;
     _actualAngle: number;
     _getHeight(engine: IRenderEngine, maxw: number): number;
     _updateAutoFormat(delta: number): number;
-    _updateActualLimitsByChartType(labels: any, min: any, max: any): {
+    _updateActualLimitsByChartType(
+        labels: any,
+        min: any,
+        max: any
+    ): {
         min: any;
         max: any;
     };
-    _updateActualLimits(dataType: wjcCore.DataType, dataMin: number, dataMax: number, labels?: string[], values?: number[]): void;
+    _updateActualLimits(
+        dataType: wjcCore.DataType,
+        dataMin: number,
+        dataMax: number,
+        labels?: string[],
+        values?: number[]
+    ): void;
     _layout(axisRect: wjcCore.Rect, plotRect: wjcCore.Rect): void;
     _hasVisibileSeries(): boolean;
     _render(engine: IRenderEngine): void;
     _renderLineAndTitle(engine: any): void;
     _renderMinor(engine: any, vals: any, isCategory: any): void;
-    _renderRotatedText(engine: IRenderEngine, val: any, text: string, pos: wjcCore.Point, halign: any, valign: any, center: wjcCore.Point, angle: number, className: string, groupClassName?: string, style?: any): void;
-    _getFormattedItem(engine: IRenderEngine, val: any, text: string, pos: wjcCore.Point, className: string): {
+    _renderRotatedText(
+        engine: IRenderEngine,
+        val: any,
+        text: string,
+        pos: wjcCore.Point,
+        halign: any,
+        valign: any,
+        center: wjcCore.Point,
+        angle: number,
+        className: string,
+        groupClassName?: string,
+        style?: any
+    ): void;
+    _getFormattedItem(
+        engine: IRenderEngine,
+        val: any,
+        text: string,
+        pos: wjcCore.Point,
+        className: string
+    ): {
         val: any;
         text: string;
         pos: wjcCore.Point;
         cls: string;
     };
-    _renderLabelsAndTicks(engine: any, index: any, val: any, sval: any, labelAngle: any, tickMarks: any, showLabel: any, t1: any, t2: any): boolean;
+    _renderLabelsAndTicks(
+        engine: any,
+        index: any,
+        val: any,
+        sval: any,
+        labelAngle: any,
+        tickMarks: any,
+        showLabel: any,
+        t1: any,
+        t2: any
+    ): boolean;
     _xCross(x: number): boolean;
-    _createMinors(engine: IRenderEngine, vals: number[], isVert: boolean, isNear: boolean, isCategory: boolean): void;
-    _renderMinors(engine: IRenderEngine, ticks: number[], isVert: boolean, isNear: boolean): void;
-    _renderLabel(engine: IRenderEngine, val: number, text: string, pos: wjcCore.Point, ha: any, va: any, className?: string): boolean;
-    private _renderRotatedLabel(engine, val, sval, lpt, ha, labelAngle, lblClass, isNear);
+    _createMinors(
+        engine: IRenderEngine,
+        vals: number[],
+        isVert: boolean,
+        isNear: boolean,
+        isCategory: boolean
+    ): void;
+    _renderMinors(
+        engine: IRenderEngine,
+        ticks: number[],
+        isVert: boolean,
+        isNear: boolean
+    ): void;
+    _renderLabel(
+        engine: IRenderEngine,
+        val: number,
+        text: string,
+        pos: wjcCore.Point,
+        ha: any,
+        va: any,
+        className?: string
+    ): boolean;
+    private _renderRotatedLabel(
+        engine,
+        val,
+        sval,
+        lpt,
+        ha,
+        labelAngle,
+        lblClass,
+        isNear
+    );
     private _getLabelAlign(isVert);
     _customConvert: Function;
     _customConvertBack: Function;
@@ -580,7 +825,12 @@ export declare class Axis implements _IAxis {
     private _cvCollectionChanged(sender, e);
     private _createLabels(start, len, delta, vals, lbls);
     private _createLogarithmicLabels(min, max, unit, vals, lbls, isLabels);
-    _createTimeLabels(start: number, len: number, vals: number[], lbls: string[]): void;
+    _createTimeLabels(
+        start: number,
+        len: number,
+        vals: number[],
+        lbls: string[]
+    ): void;
     _formatValue(val: number): string;
     private _calcMajorUnit();
     private _getAnnoNumber(isVert);
@@ -638,7 +888,11 @@ export interface _ISeries {
     symbolStyle: any;
     getValues: (dim: number) => number[];
     getDataType: (dim: number) => wjcCore.DataType;
-    drawLegendItem(engine: IRenderEngine, rect: wjcCore.Rect, index: number): any;
+    drawLegendItem(
+        engine: IRenderEngine,
+        rect: wjcCore.Rect,
+        index: number
+    ): any;
     measureLegendItem(engine: IRenderEngine, index: number): wjcCore.Size;
     _setPointIndex(pointIndex: number, elementIndex: number): any;
 }
@@ -713,10 +967,17 @@ export declare class SeriesBase implements _ISeries {
     _plotter: _IPlotter;
     getDataType(dim: number): wjcCore.DataType;
     getValues(dim: number): number[];
-    drawLegendItem(engine: IRenderEngine, rect: wjcCore.Rect, index: number): void;
+    drawLegendItem(
+        engine: IRenderEngine,
+        rect: wjcCore.Rect,
+        index: number
+    ): void;
     measureLegendItem(engine: IRenderEngine, index: number): wjcCore.Size;
     legendItemLength(): number;
-    getDataRect(currentRect?: wjcCore.Rect, calculatedRect?: wjcCore.Rect): wjcCore.Rect;
+    getDataRect(
+        currentRect?: wjcCore.Rect,
+        calculatedRect?: wjcCore.Rect
+    ): wjcCore.Rect;
     _getChartType(): ChartType;
     _clearValues(): void;
     _getBinding(index: number): string;
@@ -730,9 +991,22 @@ export declare class SeriesBase implements _ISeries {
     _getAxisX(): Axis;
     _getAxisY(): Axis;
     _measureLegendItem(engine: IRenderEngine, text: string): wjcCore.Size;
-    _drawFunnelLegendItem(engine: IRenderEngine, rect: wjcCore.Rect, index: number, style: any, symbolStyle: any): void;
+    _drawFunnelLegendItem(
+        engine: IRenderEngine,
+        rect: wjcCore.Rect,
+        index: number,
+        style: any,
+        symbolStyle: any
+    ): void;
     private _getFunnelLegendName(index);
-    _drawLegendItem(engine: IRenderEngine, rect: wjcCore.Rect, chartType: ChartType, text: string, style: any, symbolStyle: any): void;
+    _drawLegendItem(
+        engine: IRenderEngine,
+        rect: wjcCore.Rect,
+        chartType: ChartType,
+        text: string,
+        style: any,
+        symbolStyle: any
+    ): void;
     private _cvCollectionChanged(sender, e);
     private _cvCurrentChanged(sender, e);
     _bindValues(items: Array<any>, binding: string, isX?: boolean): DataArray;
@@ -742,7 +1016,12 @@ export declare class SeriesBase implements _ISeries {
     _getSymbolStroke(seriesIndex?: number): string;
     _getAltSymbolStroke(seriesIndex?: number): string;
     _getAltSymbolFill(seriesIndex?: number): string;
-    _renderLabels(engine: IRenderEngine, smap: _IHitArea[], chart: FlexChartCore, lblAreas: _RectArea[]): void;
+    _renderLabels(
+        engine: IRenderEngine,
+        smap: _IHitArea[],
+        chart: FlexChartCore,
+        lblAreas: _RectArea[]
+    ): void;
 }
 export declare class Series extends SeriesBase {
     chartType: ChartType;
@@ -758,19 +1037,99 @@ export interface IRenderEngine {
     textFill: string;
     fontSize: string;
     fontFamily: string;
-    drawEllipse(cx: number, cy: number, rx: number, ry: number, className?: string, style?: any): any;
-    drawRect(x: number, y: number, w: number, h: number, className?: string, style?: any, clipPath?: string): any;
-    drawLine(x1: number, y1: number, x2: number, y2: number, className?: string, style?: any): any;
-    drawLines(xs: number[], ys: number[], className?: string, style?: any, clipPath?: string): any;
-    drawSplines(xs: number[], ys: number[], className?: string, style?: any, clipPath?: string): any;
-    drawPolygon(xs: number[], ys: number[], className?: string, style?: any, clipPath?: string): any;
-    drawPieSegment(cx: number, cy: number, radius: number, startAngle: number, sweepAngle: number, className?: string, style?: any, clipPath?: string): any;
-    drawDonutSegment(cx: number, cy: number, radius: number, innerRadius: number, startAngle: number, sweepAngle: number, className?: string, style?: any, clipPath?: string): any;
-    drawString(s: string, pt: wjcCore.Point, className?: string, style?: any): any;
-    drawStringRotated(s: string, pt: wjcCore.Point, center: wjcCore.Point, angle: number, className?: string, style?: any): any;
+    drawEllipse(
+        cx: number,
+        cy: number,
+        rx: number,
+        ry: number,
+        className?: string,
+        style?: any
+    ): any;
+    drawRect(
+        x: number,
+        y: number,
+        w: number,
+        h: number,
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): any;
+    drawLine(
+        x1: number,
+        y1: number,
+        x2: number,
+        y2: number,
+        className?: string,
+        style?: any
+    ): any;
+    drawLines(
+        xs: number[],
+        ys: number[],
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): any;
+    drawSplines(
+        xs: number[],
+        ys: number[],
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): any;
+    drawPolygon(
+        xs: number[],
+        ys: number[],
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): any;
+    drawPieSegment(
+        cx: number,
+        cy: number,
+        radius: number,
+        startAngle: number,
+        sweepAngle: number,
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): any;
+    drawDonutSegment(
+        cx: number,
+        cy: number,
+        radius: number,
+        innerRadius: number,
+        startAngle: number,
+        sweepAngle: number,
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): any;
+    drawString(
+        s: string,
+        pt: wjcCore.Point,
+        className?: string,
+        style?: any
+    ): any;
+    drawStringRotated(
+        s: string,
+        pt: wjcCore.Point,
+        center: wjcCore.Point,
+        angle: number,
+        className?: string,
+        style?: any
+    ): any;
     drawImage(href: string, x: number, y: number, w: number, h: number): any;
-    measureString(s: string, className?: string, groupName?: string, style?: any): wjcCore.Size;
-    startGroup(className?: string, clipPath?: string, createTransform?: boolean): any;
+    measureString(
+        s: string,
+        className?: string,
+        groupName?: string,
+        style?: any
+    ): wjcCore.Size;
+    startGroup(
+        className?: string,
+        clipPath?: string,
+        createTransform?: boolean
+    ): any;
     endGroup(): any;
     addClipRect(clipRect: wjcCore.Rect, id: string): any;
 }
@@ -804,20 +1163,106 @@ export declare class _SvgRenderEngine implements IRenderEngine {
     strokeWidth: number;
     textFill: string;
     addClipRect(clipRect: wjcCore.Rect, id: string): void;
-    drawEllipse(cx: number, cy: number, rx: number, ry: number, className?: string, style?: any): SVGElement;
-    drawRect(x: number, y: number, w: number, h: number, className?: string, style?: any, clipPath?: string): SVGElement;
-    drawLine(x1: number, y1: number, x2: number, y2: number, className?: string, style?: any): SVGElement;
-    drawLines(xs: number[], ys: number[], className?: string, style?: any, clipPath?: string): SVGElement;
-    drawSplines(xs: number[], ys: number[], className?: string, style?: any, clipPath?: string): SVGElement;
-    drawPolygon(xs: number[], ys: number[], className?: string, style?: any, clipPath?: string): SVGElement;
-    drawPieSegment(cx: number, cy: number, r: number, startAngle: number, sweepAngle: number, className?: string, style?: any, clipPath?: string): SVGElement;
-    drawDonutSegment(cx: number, cy: number, radius: number, innerRadius: number, startAngle: number, sweepAngle: number, className?: string, style?: any, clipPath?: string): SVGElement;
-    drawString(s: string, pt: wjcCore.Point, className?: string, style?: any): SVGElement;
-    drawStringRotated(s: string, pt: wjcCore.Point, center: wjcCore.Point, angle: number, className?: string, style?: any): SVGElement;
-    measureString(s: string, className?: string, groupName?: string, style?: any): wjcCore.Size;
-    startGroup(className?: string, clipPath?: string, createTransform?: boolean): SVGElement;
+    drawEllipse(
+        cx: number,
+        cy: number,
+        rx: number,
+        ry: number,
+        className?: string,
+        style?: any
+    ): SVGElement;
+    drawRect(
+        x: number,
+        y: number,
+        w: number,
+        h: number,
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): SVGElement;
+    drawLine(
+        x1: number,
+        y1: number,
+        x2: number,
+        y2: number,
+        className?: string,
+        style?: any
+    ): SVGElement;
+    drawLines(
+        xs: number[],
+        ys: number[],
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): SVGElement;
+    drawSplines(
+        xs: number[],
+        ys: number[],
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): SVGElement;
+    drawPolygon(
+        xs: number[],
+        ys: number[],
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): SVGElement;
+    drawPieSegment(
+        cx: number,
+        cy: number,
+        r: number,
+        startAngle: number,
+        sweepAngle: number,
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): SVGElement;
+    drawDonutSegment(
+        cx: number,
+        cy: number,
+        radius: number,
+        innerRadius: number,
+        startAngle: number,
+        sweepAngle: number,
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): SVGElement;
+    drawString(
+        s: string,
+        pt: wjcCore.Point,
+        className?: string,
+        style?: any
+    ): SVGElement;
+    drawStringRotated(
+        s: string,
+        pt: wjcCore.Point,
+        center: wjcCore.Point,
+        angle: number,
+        className?: string,
+        style?: any
+    ): SVGElement;
+    measureString(
+        s: string,
+        className?: string,
+        groupName?: string,
+        style?: any
+    ): wjcCore.Size;
+    startGroup(
+        className?: string,
+        clipPath?: string,
+        createTransform?: boolean
+    ): SVGElement;
     endGroup(): void;
-    drawImage(imageHref: string, x: number, y: number, w: number, h: number): SVGElement;
+    drawImage(
+        imageHref: string,
+        x: number,
+        y: number,
+        w: number,
+        h: number
+    ): SVGElement;
     private _appendChild(element);
     private _create();
     private _setText(element, s);
@@ -840,9 +1285,20 @@ export declare class Legend {
     position: Position;
     title: string;
     titleAlign: string;
-    _getDesiredSize(engine: IRenderEngine, pos: Position, w: number, h: number): wjcCore.Size;
+    _getDesiredSize(
+        engine: IRenderEngine,
+        pos: Position,
+        w: number,
+        h: number
+    ): wjcCore.Size;
     _getPosition(w: number, h: number): Position;
-    _render(engine: IRenderEngine, pt: wjcCore.Point, pos: Position, w: number, h: number): void;
+    _render(
+        engine: IRenderEngine,
+        pt: wjcCore.Point,
+        pos: Position,
+        w: number,
+        h: number
+    ): void;
     _hitTest(pt: wjcCore.Point): number;
 }
 export declare enum ChartElement {
@@ -871,7 +1327,11 @@ export declare class HitTestInfo {
     private _y;
     private __yfmt;
     private _name;
-    constructor(chart: FlexChartBase, point: wjcCore.Point, element?: ChartElement);
+    constructor(
+        chart: FlexChartBase,
+        point: wjcCore.Point,
+        element?: ChartElement
+    );
     readonly chart: FlexChartBase;
     readonly point: wjcCore.Point;
     readonly series: SeriesBase;
@@ -944,7 +1404,12 @@ export declare class DataLabelRenderEventArgs extends RenderEventArgs {
     private _ht;
     private _pt;
     private _text;
-    constructor(engine: IRenderEngine, ht: HitTestInfo, pt: wjcCore.Point, text: string);
+    constructor(
+        engine: IRenderEngine,
+        ht: HitTestInfo,
+        pt: wjcCore.Point,
+        text: string
+    );
     cancel: boolean;
     readonly point: wjcCore.Point;
     text: string;
@@ -1077,7 +1542,12 @@ export declare class _DataPoint {
     private _pointIndex;
     private _dataX;
     private _dataY;
-    constructor(seriesIndex: number, pointIndex: number, dataX: number, dataY: number);
+    constructor(
+        seriesIndex: number,
+        pointIndex: number,
+        dataX: number,
+        dataY: number
+    );
     readonly seriesIndex: number;
     readonly pointIndex: number;
     dataX: number;
@@ -1094,7 +1564,11 @@ export declare class _RectArea implements _IHitArea {
     readonly rect: wjcCore.Rect;
     tag: any;
     contains(pt: wjcCore.Point): boolean;
-    pointDistance(pt1: wjcCore.Point, pt2: wjcCore.Point, option: _MeasureOption): number;
+    pointDistance(
+        pt1: wjcCore.Point,
+        pt2: wjcCore.Point,
+        option: _MeasureOption
+    ): number;
     distance(pt: wjcCore.Point): number;
 }
 export declare class _CircleArea implements _IHitArea {
@@ -1141,9 +1615,33 @@ export interface _IPlotter {
     stacking: Stacking;
     rotated: boolean;
     adjustLimits(dataInfo: _DataInfo, plotRect: wjcCore.Rect): wjcCore.Rect;
-    plotSeries(engine: IRenderEngine, ax: _IAxis, ay: _IAxis, series: _ISeries, palette: _IPalette, iser: number, nser: number, customRender?: Function): any;
-    _renderLabels(engine: IRenderEngine, series: SeriesBase, smap: _IHitArea[], chart: FlexChartCore, lblAreas: _RectArea[]): any;
-    _renderLabel(engine: IRenderEngine, map: _IHitArea, dp: _DataPoint, chart: FlexChartCore, lbl: DataLabel, series: SeriesBase, offset: number, lblAreas: _RectArea[]): any;
+    plotSeries(
+        engine: IRenderEngine,
+        ax: _IAxis,
+        ay: _IAxis,
+        series: _ISeries,
+        palette: _IPalette,
+        iser: number,
+        nser: number,
+        customRender?: Function
+    ): any;
+    _renderLabels(
+        engine: IRenderEngine,
+        series: SeriesBase,
+        smap: _IHitArea[],
+        chart: FlexChartCore,
+        lblAreas: _RectArea[]
+    ): any;
+    _renderLabel(
+        engine: IRenderEngine,
+        map: _IHitArea,
+        dp: _DataPoint,
+        chart: FlexChartCore,
+        lbl: DataLabel,
+        series: SeriesBase,
+        offset: number,
+        lblAreas: _RectArea[]
+    ): any;
     load(): any;
     unload(): any;
 }
@@ -1157,11 +1655,40 @@ export declare class _BasePlotter {
     seriesIndex: number;
     seriesCount: number;
     clear(): void;
-    _renderLabels(engine: IRenderEngine, series: SeriesBase, smap: _IHitArea[], chart: FlexChartCore, lblAreas: _RectArea[]): void;
-    _renderLabel(engine: IRenderEngine, map: _IHitArea, dp: _DataPoint, chart: FlexChartCore, lbl: DataLabel, series: SeriesBase, offset: number, lblAreas: _RectArea[]): void;
-    _getPointAndPosition(pt: wjcCore.Point, pos: LabelPosition, map: _IHitArea, chart: FlexChartCore): void;
+    _renderLabels(
+        engine: IRenderEngine,
+        series: SeriesBase,
+        smap: _IHitArea[],
+        chart: FlexChartCore,
+        lblAreas: _RectArea[]
+    ): void;
+    _renderLabel(
+        engine: IRenderEngine,
+        map: _IHitArea,
+        dp: _DataPoint,
+        chart: FlexChartCore,
+        lbl: DataLabel,
+        series: SeriesBase,
+        offset: number,
+        lblAreas: _RectArea[]
+    ): void;
+    _getPointAndPosition(
+        pt: wjcCore.Point,
+        pos: LabelPosition,
+        map: _IHitArea,
+        chart: FlexChartCore
+    ): void;
     _getLabelPoint(series: SeriesBase, dataPoint: _DataPoint): wjcCore.Point;
-    _renderLabelAndBorder(engine: IRenderEngine, s: string, pos: LabelPosition, offset: number, pt: wjcCore.Point, line: boolean, marg: any, border: boolean): wjcCore.Rect;
+    _renderLabelAndBorder(
+        engine: IRenderEngine,
+        s: string,
+        pos: LabelPosition,
+        offset: number,
+        pt: wjcCore.Point,
+        line: boolean,
+        marg: any,
+        border: boolean
+    ): wjcCore.Rect;
     getOption(name: string, parent?: string): any;
     getNumOption(name: string, parent?: string): number;
     static cloneStyle(style: any, ignore: string[]): any;
@@ -1186,7 +1713,16 @@ export declare class _BarPlotter extends _BasePlotter implements _IPlotter {
     unload(): void;
     adjustLimits(dataInfo: _DataInfo, plotRect: wjcCore.Rect): wjcCore.Rect;
     private _isRange(series);
-    plotSeries(engine: IRenderEngine, ax: _IAxis, ay: _IAxis, series: _ISeries, palette: _IPalette, iser: number, nser: number, customRender?: Function): void;
+    plotSeries(
+        engine: IRenderEngine,
+        ax: _IAxis,
+        ay: _IAxis,
+        series: _ISeries,
+        palette: _IPalette,
+        iser: number,
+        nser: number,
+        customRender?: Function
+    ): void;
     private drawSymbol(engine, rect, series, pointIndex, point);
     private drawDefaultSymbol(engine, rect, series);
 }
@@ -1205,10 +1741,40 @@ export declare class _LinePlotter extends _BasePlotter implements _IPlotter {
     constructor();
     clear(): void;
     adjustLimits(dataInfo: _DataInfo, plotRect: wjcCore.Rect): wjcCore.Rect;
-    plotSeries(engine: IRenderEngine, ax: _IAxis, ay: _IAxis, series: _ISeries, palette: _IPalette, iser: number, nser: number, customRender?: Function): void;
-    _drawLines(engine: IRenderEngine, xs: number[], ys: number[], className?: string, style?: any, clipPath?: string): void;
-    _drawSymbol(engine: IRenderEngine, x: number, y: number, sz: number, series: SeriesBase, pointIndex: number): void;
-    _drawDefaultSymbol(engine: IRenderEngine, x: number, y: number, sz: number, marker: Marker, style?: any): void;
+    plotSeries(
+        engine: IRenderEngine,
+        ax: _IAxis,
+        ay: _IAxis,
+        series: _ISeries,
+        palette: _IPalette,
+        iser: number,
+        nser: number,
+        customRender?: Function
+    ): void;
+    _drawLines(
+        engine: IRenderEngine,
+        xs: number[],
+        ys: number[],
+        className?: string,
+        style?: any,
+        clipPath?: string
+    ): void;
+    _drawSymbol(
+        engine: IRenderEngine,
+        x: number,
+        y: number,
+        sz: number,
+        series: SeriesBase,
+        pointIndex: number
+    ): void;
+    _drawDefaultSymbol(
+        engine: IRenderEngine,
+        x: number,
+        y: number,
+        sz: number,
+        marker: Marker,
+        style?: any
+    ): void;
 }
 export declare class _AreaPlotter extends _BasePlotter implements _IPlotter {
     stacking: wjcSelf.Stacking;
@@ -1219,12 +1785,28 @@ export declare class _AreaPlotter extends _BasePlotter implements _IPlotter {
     constructor();
     adjustLimits(dataInfo: _DataInfo, plotRect: wjcCore.Rect): wjcCore.Rect;
     clear(): void;
-    plotSeries(engine: IRenderEngine, ax: _IAxis, ay: _IAxis, series: _ISeries, palette: _IPalette, iser: number, nser: number, customRender?: Function): void;
-    _convertToSpline(x: number[], y: number[]): {
+    plotSeries(
+        engine: IRenderEngine,
+        ax: _IAxis,
+        ay: _IAxis,
+        series: _ISeries,
+        palette: _IPalette,
+        iser: number,
+        nser: number,
+        customRender?: Function
+    ): void;
+    _convertToSpline(
+        x: number[],
+        y: number[]
+    ): {
         xs: any;
         ys: any;
     };
-    _drawSymbols(engine: IRenderEngine, series: _ISeries, seriesIndex: number): void;
+    _drawSymbols(
+        engine: IRenderEngine,
+        series: _ISeries,
+        seriesIndex: number
+    ): void;
 }
 export declare class _BubblePlotter extends _LinePlotter {
     private _MIN_SIZE;
@@ -1235,7 +1817,14 @@ export declare class _BubblePlotter extends _LinePlotter {
     private _maxValue;
     constructor();
     adjustLimits(dataInfo: _DataInfo, plotRect: wjcCore.Rect): wjcCore.Rect;
-    _drawSymbol(engine: IRenderEngine, x: number, y: number, sz: number, series: Series, pointIndex: number): void;
+    _drawSymbol(
+        engine: IRenderEngine,
+        x: number,
+        y: number,
+        sz: number,
+        series: Series,
+        pointIndex: number
+    ): void;
 }
 export declare class _FinancePlotter extends _BasePlotter {
     isCandle: boolean;
@@ -1252,8 +1841,30 @@ export declare class _FinancePlotter extends _BasePlotter {
     unload(): void;
     parseSymbolWidth(val: any): void;
     adjustLimits(dataInfo: _DataInfo, plotRect: wjcCore.Rect): wjcCore.Rect;
-    plotSeries(engine: IRenderEngine, ax: _IAxis, ay: _IAxis, series: _ISeries, palette: _IPalette, iser: number, nser: number, customRender?: Function): void;
-    _drawSymbol(engine: IRenderEngine, ax: _IAxis, ay: _IAxis, si: number, pi: number, fill: any, w: number, x: number, hi: number, lo: number, open: number, close: number): void;
+    plotSeries(
+        engine: IRenderEngine,
+        ax: _IAxis,
+        ay: _IAxis,
+        series: _ISeries,
+        palette: _IPalette,
+        iser: number,
+        nser: number,
+        customRender?: Function
+    ): void;
+    _drawSymbol(
+        engine: IRenderEngine,
+        ax: _IAxis,
+        ay: _IAxis,
+        si: number,
+        pi: number,
+        fill: any,
+        w: number,
+        x: number,
+        hi: number,
+        lo: number,
+        open: number,
+        close: number
+    ): void;
 }
 export declare class _FunnelPlotter extends _BasePlotter implements _IPlotter {
     _getSymbolOrigin: Function;
@@ -1261,12 +1872,26 @@ export declare class _FunnelPlotter extends _BasePlotter implements _IPlotter {
     stacking: wjcSelf.Stacking;
     rotated: boolean;
     adjustLimits(dataInfo: _DataInfo, plotRect: wjcCore.Rect): wjcCore.Rect;
-    plotSeries(engine: IRenderEngine, ax: _IAxis, ay: _IAxis, series: _ISeries, palette: _IPalette, iser: number, nser: number, customRender?: Function): void;
+    plotSeries(
+        engine: IRenderEngine,
+        ax: _IAxis,
+        ay: _IAxis,
+        series: _ISeries,
+        palette: _IPalette,
+        iser: number,
+        nser: number,
+        customRender?: Function
+    ): void;
     private _getTrapezoidArea(width, angle, height);
     private _getTrapezoidOffsetY(width, area, angle);
     private drawSymbol(engine, rect, series, pointIndex, point);
     private drawDefaultSymbol(engine, rect, series);
-    _getPointAndPosition(pt: wjcCore.Point, pos: LabelPosition, map: _IHitArea, chart: FlexChartCore): void;
+    _getPointAndPosition(
+        pt: wjcCore.Point,
+        pos: LabelPosition,
+        map: _IHitArea,
+        chart: FlexChartCore
+    ): void;
 }
 export declare class _FunnelSegment implements _IHitArea {
     private _center;
@@ -1277,7 +1902,13 @@ export declare class _FunnelSegment implements _IHitArea {
     private _neckHeight;
     private _offsetX;
     private _offsetY;
-    constructor(startPoint: wjcCore.Point, width: number, height: number, neckWidth: number, neckHeight: number);
+    constructor(
+        startPoint: wjcCore.Point,
+        width: number,
+        height: number,
+        neckWidth: number,
+        neckHeight: number
+    );
     contains(pt: wjcCore.Point): boolean;
     distance(pt: wjcCore.Point): number;
     readonly center: wjcCore.Point;
@@ -1291,11 +1922,23 @@ export declare class _VolumeHelper {
     private _xDataType;
     private _hasXs;
     private _calcData;
-    constructor(volumes: number[], xVals: number[], xDataMin: number, xDataMax: number, xDataType?: wjcCore.DataType);
+    constructor(
+        volumes: number[],
+        xVals: number[],
+        xDataMin: number,
+        xDataMax: number,
+        xDataType?: wjcCore.DataType
+    );
     convert(x: number, min: number, max: number): number;
     convertBack(x: number, min: number, max: number): number;
     private _init();
     private _getXVolume(x);
-    static convertToRange(value: number, newMin: number, newMax: number, oldMin: number, oldMax: number): number;
+    static convertToRange(
+        value: number,
+        newMin: number,
+        newMax: number,
+        oldMin: number,
+        oldMax: number
+    ): number;
     private _fillGaps();
 }

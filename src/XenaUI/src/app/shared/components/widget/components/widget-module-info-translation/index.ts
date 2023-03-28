@@ -1,1 +1,1 @@
-export { WidgetModuleInfoTranslationComponent } from './widget-module-info-translation.component';
+export { WidgetModuleInfoTranslationComponent } from "./widget-module-info-translation.component";

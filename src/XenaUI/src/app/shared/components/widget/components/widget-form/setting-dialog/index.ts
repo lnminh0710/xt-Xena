@@ -1,1 +1,1 @@
-export {SettingDialogComponent} from './setting-dialog.component';
+export { SettingDialogComponent } from "./setting-dialog.component";

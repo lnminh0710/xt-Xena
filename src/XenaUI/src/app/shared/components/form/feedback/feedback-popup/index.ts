@@ -1,1 +1,1 @@
-export * from './feedback-popup.component';
+export * from "./feedback-popup.component";

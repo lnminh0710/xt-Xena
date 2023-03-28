@@ -1,6 +1,6 @@
-import * as ng2 from '@angular/core';
-import { Injector, EventEmitter, NgZone } from '@angular/core';
-import { ControlValueAccessor } from '@angular/forms';
+import * as ng2 from "@angular/core";
+import { Injector, EventEmitter, NgZone } from "@angular/core";
+import { ControlValueAccessor } from "@angular/forms";
 export declare class WjOptions {
     static asyncBindings: boolean;
 }
@@ -60,11 +60,11 @@ export declare class WjDirectiveBehavior {
     static ngZone: NgZone;
     private static _ngZoneRun;
     static outsideZoneEvents: {
-        'pointermove': boolean;
-        'pointerover': boolean;
-        'mousemove': boolean;
-        'wheel': boolean;
-        'touchmove': boolean;
+        pointermove: boolean;
+        pointerover: boolean;
+        mousemove: boolean;
+        wheel: boolean;
+        touchmove: boolean;
     };
     private static _pathBinding;
     private _siblingInsertedEH;
@@ -79,13 +79,33 @@ export declare class WjDirectiveBehavior {
     parentBehavior: WjDirectiveBehavior;
     isInitialized: boolean;
     isDestroyed: boolean;
-    static getHostElement(ngHostElRef: ng2.ElementRef, injector?: Injector): HTMLElement;
-    static attach(directive: Object, elementRef: ng2.ElementRef, injector: ng2.Injector, injectedParent: any): WjDirectiveBehavior;
-    constructor(directive: Object, elementRef: ng2.ElementRef, injector: ng2.Injector, injectedParent: any);
+    static getHostElement(
+        ngHostElRef: ng2.ElementRef,
+        injector?: Injector
+    ): HTMLElement;
+    static attach(
+        directive: Object,
+        elementRef: ng2.ElementRef,
+        injector: ng2.Injector,
+        injectedParent: any
+    ): WjDirectiveBehavior;
+    constructor(
+        directive: Object,
+        elementRef: ng2.ElementRef,
+        injector: ng2.Injector,
+        injectedParent: any
+    );
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
-    static instantiateTemplate(parent: HTMLElement, viewContainerRef: ng2.ViewContainerRef, templateRef: ng2.TemplateRef<any>, domRenderer: ng2.Renderer, useTemplateRoot?: boolean, dataContext?: any): {
+    static instantiateTemplate(
+        parent: HTMLElement,
+        viewContainerRef: ng2.ViewContainerRef,
+        templateRef: ng2.TemplateRef<any>,
+        domRenderer: ng2.Renderer,
+        useTemplateRoot?: boolean,
+        dataContext?: any
+    ): {
         viewRef: ng2.EmbeddedViewRef<any>;
         rootElement: Element;
     };
@@ -117,7 +137,10 @@ export declare class WjDirectiveBehavior {
 export declare class Ng2Utils {
     static changeEventImplementSuffix: string;
     static wjEventImplementSuffix: string;
-    static initEvents(directiveType: any, changeEvents: EventPropertiesItem[]): string[];
+    static initEvents(
+        directiveType: any,
+        changeEvents: EventPropertiesItem[]
+    ): string[];
     static getChangeEventNameImplemented(propertyName: any): string;
     static getChangeEventNameExposed(propertyName: any): string;
     private static getWjEventNameImplemented(eventName);
@@ -125,9 +148,19 @@ export declare class Ng2Utils {
     static getBaseType(type: any): any;
     static getAnnotations(type: any): any[];
     static getAnnotation(annotations: any[], annotationType: any): any;
-    static getTypeAnnotation(type: any, annotationType: any, own?: boolean): any;
+    static getTypeAnnotation(
+        type: any,
+        annotationType: any,
+        own?: boolean
+    ): any;
     static equals(v1: any, v2: any): boolean;
-    static _copy(dst: any, src: any, override?: boolean, includePrivate?: boolean, filter?: (name: string, value: any) => boolean): void;
+    static _copy(
+        dst: any,
+        src: any,
+        override?: boolean,
+        includePrivate?: boolean,
+        filter?: (name: string, value: any) => boolean
+    ): void;
 }
 export declare class WjValueAccessor implements ControlValueAccessor {
     private _isFirstChange;
@@ -151,5 +184,4 @@ export declare class WjValueAccessor implements ControlValueAccessor {
     private _dirLostFocusEh(s, e);
 }
 export declare function WjValueAccessorFactory(directive: any): WjValueAccessor;
-export declare class WjDirectiveBaseModule {
-}
+export declare class WjDirectiveBaseModule {}

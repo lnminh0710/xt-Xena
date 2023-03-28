@@ -6,38 +6,28 @@ import {
     EventEmitter,
     ViewChild,
     OnDestroy,
-    ChangeDetectorRef
-} from '@angular/core';
+    ChangeDetectorRef,
+} from "@angular/core";
 import {
     BusinessCostService,
     CampaignService,
     AppErrorHandler,
     ModalService,
-    DownloadFileService
-} from 'app/services';
-import cloneDeep from 'lodash-es/cloneDeep';
-import 'rxjs/Rx';
-import {
-    WijmoGridComponent
-} from 'app/shared/components/wijmo';
-import {
-    ApiResultResponse
-} from 'app/models';
-import {
-    Uti
-} from 'app/utilities';
-import {
-    ApiMethodResultId
-} from 'app/app.constants';
-import {
-    FileUploadModuleType
-} from 'app/app.constants';
-import {XnAgGridComponent} from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
+    DownloadFileService,
+} from "app/services";
+import cloneDeep from "lodash-es/cloneDeep";
+import "rxjs/Rx";
+import { WijmoGridComponent } from "app/shared/components/wijmo";
+import { ApiResultResponse } from "app/models";
+import { Uti } from "app/utilities";
+import { ApiMethodResultId } from "app/app.constants";
+import { FileUploadModuleType } from "app/app.constants";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
 
 @Component({
-    selector: 'xn-table-uploaded-files',
-    styleUrls: ['./xn-table-of-uploaded-files.component.scss'],
-    templateUrl: './xn-table-of-uploaded-files.component.html'
+    selector: "xn-table-uploaded-files",
+    styleUrls: ["./xn-table-of-uploaded-files.component.scss"],
+    templateUrl: "./xn-table-of-uploaded-files.component.html",
 })
 export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
     public dataSourceTable: any;
@@ -72,7 +62,8 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
     @Input() rowGrouping = false;
     @Input() pivoting = false;
     @Input() columnFilter = false;
-    @Input() fileUploadModuleType: FileUploadModuleType = FileUploadModuleType.BusinessCost;
+    @Input() fileUploadModuleType: FileUploadModuleType =
+        FileUploadModuleType.BusinessCost;
     @Input() sheetName: string;
 
     @Output()
@@ -94,12 +85,14 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
     public xnAgGridComponent: XnAgGridComponent;
     private deletedFiles: Array<any> = [];
 
-    constructor(private businessService: BusinessCostService,
-                private appErrorHandler: AppErrorHandler,
-                private modalService: ModalService,
-                private campaignService: CampaignService,
-                private downloadFileService: DownloadFileService,
-                private _changeDetectorRef: ChangeDetectorRef) {
+    constructor(
+        private businessService: BusinessCostService,
+        private appErrorHandler: AppErrorHandler,
+        private modalService: ModalService,
+        private campaignService: CampaignService,
+        private downloadFileService: DownloadFileService,
+        private _changeDetectorRef: ChangeDetectorRef
+    ) {
         this.that = this;
     }
 
@@ -131,13 +124,18 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
     public onDeletedRows(event) {
         if (event && this.xnAgGridComponent) {
             // const willDeletedItems = this.wijmoGridComponent.getWillDeletedItems();
-            const willDeletedItems = this.xnAgGridComponent.getEditedItems()
-            if (!willDeletedItems || !willDeletedItems.itemsRemoved || !willDeletedItems.itemsRemoved.length) {
+            const willDeletedItems = this.xnAgGridComponent.getEditedItems();
+            if (
+                !willDeletedItems ||
+                !willDeletedItems.itemsRemoved ||
+                !willDeletedItems.itemsRemoved.length
+            ) {
                 this.deletedFiles = [];
                 return;
             }
             this.makeDeleteData(willDeletedItems.itemsRemoved);
-            if (this.deletedFiles && this.deletedFiles.length) this.onDeleteFiles.emit(true);
+            if (this.deletedFiles && this.deletedFiles.length)
+                this.onDeleteFiles.emit(true);
         }
     }
 
@@ -169,15 +167,17 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
     }
 
     public onDownloadFile(event) {
-        if (!event || !event['MediaName']) return;
+        if (!event || !event["MediaName"]) return;
         switch (this.fileUploadModuleType) {
             case FileUploadModuleType.BusinessCost:
             case FileUploadModuleType.ToolsFileTemplate:
-                this.downloadFileService.makeDownloadFile(event['MediaName'],
-                    event['MediaOriginalName'],
+                this.downloadFileService.makeDownloadFile(
+                    event["MediaName"],
+                    event["MediaOriginalName"],
                     this.modalService,
                     this.uploadFileMode,
-                    this.idFolder);
+                    this.idFolder
+                );
                 break;
             case FileUploadModuleType.Campaign:
                 this.onDownloadCampaignFileAction.emit(event);
@@ -196,17 +196,24 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
     /***************************************PRIVATE METHOD********************************************/
     private saveDelteForBusinessCost() {
         if (this.deletedFiles && this.deletedFiles.length) {
-            this.businessService.saveFilesByBusinessCostsId({
-                'CampaignCostFiles': this.deletedFiles,
-                'DeleteFiles': this.deletedFiles
-            }).subscribe((response: ApiResultResponse) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (response && response.statusCode === ApiMethodResultId.Success && response.item && response.item.returnID) {
-                        this.deletedFiles = [];
-                        this.onDeleteFilesCompleted.emit(true);
-                    } else this.onDeleteFilesCompleted.emit(false);
+            this.businessService
+                .saveFilesByBusinessCostsId({
+                    CampaignCostFiles: this.deletedFiles,
+                    DeleteFiles: this.deletedFiles,
+                })
+                .subscribe((response: ApiResultResponse) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            response &&
+                            response.statusCode === ApiMethodResultId.Success &&
+                            response.item &&
+                            response.item.returnID
+                        ) {
+                            this.deletedFiles = [];
+                            this.onDeleteFilesCompleted.emit(true);
+                        } else this.onDeleteFilesCompleted.emit(false);
+                    });
                 });
-            });
         } else {
             this.onDeleteFilesCompleted.emit(true);
         }
@@ -214,17 +221,24 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
 
     private saveDelteForToolFileTemplate() {
         if (this.deletedFiles && this.deletedFiles.length) {
-            this.campaignService.saveFilesByIdSharingTreeGroups({
-                'CampaignCostFiles': this.deletedFiles,
-                'DeleteFiles': this.deletedFiles
-            }).subscribe((response: ApiResultResponse) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (response && response.statusCode === ApiMethodResultId.Success && response.item && response.item.returnID) {
-                        this.deletedFiles = [];
-                        this.onDeleteFilesCompleted.emit(true);
-                    } else this.onDeleteFilesCompleted.emit(false);
+            this.campaignService
+                .saveFilesByIdSharingTreeGroups({
+                    CampaignCostFiles: this.deletedFiles,
+                    DeleteFiles: this.deletedFiles,
+                })
+                .subscribe((response: ApiResultResponse) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (
+                            response &&
+                            response.statusCode === ApiMethodResultId.Success &&
+                            response.item &&
+                            response.item.returnID
+                        ) {
+                            this.deletedFiles = [];
+                            this.onDeleteFilesCompleted.emit(true);
+                        } else this.onDeleteFilesCompleted.emit(false);
+                    });
                 });
-            });
         } else {
             this.onDeleteFilesCompleted.emit(true);
         }
@@ -232,10 +246,19 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
 
     private saveDelteForCampaign() {
         if (this.campaignEditingData && this.campaignEditingData.length) {
-            this.campaignService.saveSalesCampaignAddOn(this.campaignEditingData, this.deletedFiles)
+            this.campaignService
+                .saveSalesCampaignAddOn(
+                    this.campaignEditingData,
+                    this.deletedFiles
+                )
                 .subscribe((response: ApiResultResponse) => {
                     this.appErrorHandler.executeAction(() => {
-                        if (response && response.statusCode === ApiMethodResultId.Success && response.item && response.item.returnID) {
+                        if (
+                            response &&
+                            response.statusCode === ApiMethodResultId.Success &&
+                            response.item &&
+                            response.item.returnID
+                        ) {
                             this.deletedFiles = [];
                             this.onDeleteFilesCompleted.emit(true);
                         } else this.onDeleteFilesCompleted.emit(false);
@@ -248,51 +271,60 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
 
     private makeDeleteData(willDeletedItems: Array<any>) {
         for (let item of willDeletedItems) {
-            const filter = this.deletedFiles.find(x => x[this.getRightIdName()] == item[this.getRightIdName()]);
+            const filter = this.deletedFiles.find(
+                (x) => x[this.getRightIdName()] == item[this.getRightIdName()]
+            );
             if (filter && filter[this.getRightIdName()]) continue;
             switch (this.fileUploadModuleType) {
                 case FileUploadModuleType.Campaign:
                     this.makeCampaignSavingData(item);
                     this.deletedFiles.push({
-                        'IdSalesCampaignAddOnDocTemplate': item[this.getRightIdName()],
-                        'IsDeleted': '1',
-                        'MediaName': item['MediaName'],
-                        'SubFolder': this.idFolder,
-                        'UploadFileMode': this.uploadFileMode
+                        IdSalesCampaignAddOnDocTemplate:
+                            item[this.getRightIdName()],
+                        IsDeleted: "1",
+                        MediaName: item["MediaName"],
+                        SubFolder: this.idFolder,
+                        UploadFileMode: this.uploadFileMode,
                     });
                     break;
                 case FileUploadModuleType.BusinessCost:
                     this.deletedFiles.push({
-                        'IdBusinessCostsFileAttach': item[this.getRightIdName()],
-                        'IsDeleted': '1',
-                        'MediaName': item['MediaName'],
-                        'SubFolder': this.idFolder,
-                        'UploadFileMode': this.uploadFileMode
+                        IdBusinessCostsFileAttach: item[this.getRightIdName()],
+                        IsDeleted: "1",
+                        MediaName: item["MediaName"],
+                        SubFolder: this.idFolder,
+                        UploadFileMode: this.uploadFileMode,
                     });
                     break;
                 case FileUploadModuleType.ToolsFileTemplate:
                     this.deletedFiles.push({
-                        'IdSharingTreeMedia': item[this.getRightIdName()],
-                        'IsDeleted': '1',
-                        'MediaName': item['MediaName'],
-                        'SubFolder': this.idFolder,
-                        'UploadFileMode': this.uploadFileMode
+                        IdSharingTreeMedia: item[this.getRightIdName()],
+                        IsDeleted: "1",
+                        MediaName: item["MediaName"],
+                        SubFolder: this.idFolder,
+                        UploadFileMode: this.uploadFileMode,
                     });
             }
         }
     }
 
     private makeCampaignSavingData(item: any) {
-        Uti.removeItemInArray(this.campaignEditingData, item, this.getRightIdName());
+        Uti.removeItemInArray(
+            this.campaignEditingData,
+            item,
+            this.getRightIdName()
+        );
         this.campaignEditingData.push({
-            'IdSalesCampaignAddOnDocTemplate': item[this.getRightIdName()],
-            'IsDeleted': '1'
+            IdSalesCampaignAddOnDocTemplate: item[this.getRightIdName()],
+            IsDeleted: "1",
         });
     }
 
     private buildDatatable() {
         if (!this.inputData) return;
-        this.dataSourceTable = this.filterDataSourceWithDeletedFiles(this.inputData);
+        this.dataSourceTable = this.filterDataSourceWithDeletedFiles(
+            this.inputData
+        );
         this._changeDetectorRef.detectChanges();
     }
 
@@ -304,10 +336,14 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
         if (this.deletedFiles && this.deletedFiles.length) {
             let isSthRemoved = false;
             for (let i = 0; i < data.data.length; i++) {
-                const filter = this.deletedFiles.filter((item) => item[this.getRightIdName()] == data.data[i][this.getRightIdName()]);
+                const filter = this.deletedFiles.filter(
+                    (item) =>
+                        item[this.getRightIdName()] ==
+                        data.data[i][this.getRightIdName()]
+                );
                 if (filter && filter.length) {
                     isSthRemoved = true;
-                    data.data[i]['deleted'] = true;
+                    data.data[i]["deleted"] = true;
                 }
             }
             if (!isSthRemoved) this.deletedFiles = [];
@@ -316,16 +352,16 @@ export class XnTableUploadedFilesComponent implements OnInit, OnDestroy {
     }
 
     private getRightIdName(): string {
-        let idName = '';
+        let idName = "";
         switch (this.fileUploadModuleType) {
             case FileUploadModuleType.Campaign:
-                idName = 'IdSalesCampaignAddOnDocTemplate';
+                idName = "IdSalesCampaignAddOnDocTemplate";
                 break;
             case FileUploadModuleType.BusinessCost:
-                idName = 'IdBusinessCostsFileAttach';
+                idName = "IdBusinessCostsFileAttach";
                 break;
             case FileUploadModuleType.ToolsFileTemplate:
-                idName = 'IdSharingTreeMedia';
+                idName = "IdSharingTreeMedia";
         }
         return idName;
     }

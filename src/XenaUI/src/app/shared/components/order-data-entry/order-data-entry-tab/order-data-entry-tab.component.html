@@ -1,109 +1,153 @@
 <div class="tab-header-container">
     <ul class="nav order-data-entry-plus-tab">
         <ng-template ngFor let-tab [ngForOf]="tabs">
-            <li class="nav-item order-data-entry-plus-tab-item"
-                [ngClass]="{'active': tab.active}"
-                *ngIf="tab.visible">
-                <a data-target="#{{tab.TabID}}"
-                   class="order-data-entry-plus-tab-item-a cursor-pointer"
-                   [ngClass]="{'active': tab.active }"
-                   (click)="selectTab(tab)">
+            <li
+                class="nav-item order-data-entry-plus-tab-item"
+                [ngClass]="{ active: tab.active }"
+                *ngIf="tab.visible"
+            >
+                <a
+                    data-target="#{{ tab.TabID }}"
+                    class="order-data-entry-plus-tab-item-a cursor-pointer"
+                    [ngClass]="{ active: tab.active }"
+                    (click)="selectTab(tab)"
+                >
                     <!-- {{tab.TabName}} -->
-                    <label-translation *ngIf="tab.TransKey" [keyword]="tab.TransKey"></label-translation>
-                    <span *ngIf="!tab.TransKey">{{tab.TabName}}</span>
+                    <label-translation
+                        *ngIf="tab.TransKey"
+                        [keyword]="tab.TransKey"
+                    ></label-translation>
+                    <span *ngIf="!tab.TransKey">{{ tab.TabName }}</span>
                 </a>
-                <a *ngIf="tab.active"
-                   class="order-data-entry-plus-tab-close-tab cursor-pointer"
-                   (click)="removeTab(tab)">
+                <a
+                    *ngIf="tab.active"
+                    class="order-data-entry-plus-tab-close-tab cursor-pointer"
+                    (click)="removeTab(tab)"
+                >
                     <i class="fa fa-times-circle"></i>
                 </a>
                 <div class="remove-bottom-border" *ngIf="tab.active"></div>
             </li>
         </ng-template>
-        <li class="nav-item order-data-entry-plus-tab-item"
-            *ngIf="showAddTabButton">
+        <li
+            class="nav-item order-data-entry-plus-tab-item"
+            *ngIf="showAddTabButton"
+        >
             <a class="order-data-entry-plus-tab-item-a">
-                <app-order-data-entry-tab-plus [tabs]="tabs"
-                                               (dropdownItemClicked)="dropdownItemClickedHandler($event)"></app-order-data-entry-tab-plus>
+                <app-order-data-entry-tab-plus
+                    [tabs]="tabs"
+                    (dropdownItemClicked)="dropdownItemClickedHandler($event)"
+                ></app-order-data-entry-tab-plus>
             </a>
         </li>
     </ul>
 </div>
 
-<div class="tab-content-container"
-     [ngStyle]="tabContainerStyle"
-     *ngIf="setting">
-    <div *ngIf="!setting.AdditionalInfo"
-         class="xn__tab-content"
-         [ngStyle]="tabContainerStyle">
+<div
+    class="tab-content-container"
+    [ngStyle]="tabContainerStyle"
+    *ngIf="setting"
+>
+    <div
+        *ngIf="!setting.AdditionalInfo"
+        class="xn__tab-content"
+        [ngStyle]="tabContainerStyle"
+    >
         <div class="tab-content border-right">
             <ng-template ngFor let-tab [ngForOf]="tabs">
-                <div id="{{tab.TabID}}"
-                     class="tab-pane"
-                     [ngClass]="{'active': tab.active}"
-                     *ngIf="tab.visible">
+                <div
+                    id="{{ tab.TabID }}"
+                    class="tab-pane"
+                    [ngClass]="{ active: tab.active }"
+                    *ngIf="tab.visible"
+                >
                     <ng-template [ngIf]="tab.loaded">
-                        <app-xn-tab-page-view [tabID]="tab.TabID"
-                                              [data]="tab.TabContent[(contentDisplayModeState|async)]"
-                                              [isOrderDataEntry]="true"
-                                              [isActivated]="tab.active"
-                                              *ngIf="!tab.SimpleTabs"></app-xn-tab-page-view>
+                        <app-xn-tab-page-view
+                            [tabID]="tab.TabID"
+                            [data]="
+                                tab.TabContent[contentDisplayModeState | async]
+                            "
+                            [isOrderDataEntry]="true"
+                            [isActivated]="tab.active"
+                            *ngIf="!tab.SimpleTabs"
+                        ></app-xn-tab-page-view>
 
-                        <xn-tab-content-simple-tabs [tabID]="tab.TabID"
-                                                    [data]="tab.TabContent[(contentDisplayModeState|async)]"
-                                                    [isActivated]="tab.active"
-                                                    [globalProperties]="globalProperties"
-                                                    *ngIf="tab.SimpleTabs"></xn-tab-content-simple-tabs>
+                        <xn-tab-content-simple-tabs
+                            [tabID]="tab.TabID"
+                            [data]="
+                                tab.TabContent[contentDisplayModeState | async]
+                            "
+                            [isActivated]="tab.active"
+                            [globalProperties]="globalProperties"
+                            *ngIf="tab.SimpleTabs"
+                        ></xn-tab-content-simple-tabs>
                     </ng-template>
                 </div>
             </ng-template>
         </div>
     </div>
 
-    <split direction="horizontal"
-           *ngIf="setting.AdditionalInfo"
-           (dragStart)="dragStart()"
-           (dragEnd)="dragEnd($event)" [gutterSize]="5">
-        <split-area [size]="config.left"
-                    class="xn__tab-content__split">
-            <div class="xn__tab-content"
-                 [ngStyle]="tabContainerStyle">
+    <split
+        direction="horizontal"
+        *ngIf="setting.AdditionalInfo"
+        (dragStart)="dragStart()"
+        (dragEnd)="dragEnd($event)"
+        [gutterSize]="5"
+    >
+        <split-area [size]="config.left" class="xn__tab-content__split">
+            <div class="xn__tab-content" [ngStyle]="tabContainerStyle">
                 <div class="tab-content border-right">
                     <ng-template ngFor let-tab [ngForOf]="tabs">
-                        <div id="{{tab.TabID}}"
-                             class="tab-pane"
-                             [ngClass]="{'active': tab.active}"
-                             *ngIf="tab.visible">
+                        <div
+                            id="{{ tab.TabID }}"
+                            class="tab-pane"
+                            [ngClass]="{ active: tab.active }"
+                            *ngIf="tab.visible"
+                        >
                             <ng-template [ngIf]="tab.loaded">
-                                <app-xn-tab-page-view [tabID]="tab.TabID"
-                                                      [data]="tab.TabContent[(contentDisplayModeState|async)]"
-                                                      [isOrderDataEntry]="true"
-                                                      [isActivated]="tab.active"
-                                                      *ngIf="!tab.SimpleTabs"></app-xn-tab-page-view>
+                                <app-xn-tab-page-view
+                                    [tabID]="tab.TabID"
+                                    [data]="
+                                        tab.TabContent[
+                                            contentDisplayModeState | async
+                                        ]
+                                    "
+                                    [isOrderDataEntry]="true"
+                                    [isActivated]="tab.active"
+                                    *ngIf="!tab.SimpleTabs"
+                                ></app-xn-tab-page-view>
 
-                                <xn-tab-content-simple-tabs [tabID]="tab.TabID"
-                                                            [data]="tab.TabContent[(contentDisplayModeState|async)]"
-                                                            [isActivated]="tab.active"
-                                                            [globalProperties]="globalProperties"
-                                                            *ngIf="tab.SimpleTabs"></xn-tab-content-simple-tabs>
+                                <xn-tab-content-simple-tabs
+                                    [tabID]="tab.TabID"
+                                    [data]="
+                                        tab.TabContent[
+                                            contentDisplayModeState | async
+                                        ]
+                                    "
+                                    [isActivated]="tab.active"
+                                    [globalProperties]="globalProperties"
+                                    *ngIf="tab.SimpleTabs"
+                                ></xn-tab-content-simple-tabs>
                             </ng-template>
                         </div>
                     </ng-template>
                 </div>
             </div>
         </split-area>
-        <split-area [size]="config.right"
-                    class="additional-information__split"
-                    [perfect-scrollbar]="perfectScrollbarConfigForAI">
-            <app-xn-ai-main [data]="setting.AdditionalInfo"
-                            [config]="config"
-                            [configWidth]="configWidth"></app-xn-ai-main>
+        <split-area
+            [size]="config.right"
+            class="additional-information__split"
+            [perfect-scrollbar]="perfectScrollbarConfigForAI"
+        >
+            <app-xn-ai-main
+                [data]="setting.AdditionalInfo"
+                [config]="config"
+                [configWidth]="configWidth"
+            ></app-xn-ai-main>
         </split-area>
     </split>
     <!-- Golden Layout -->
-    <div *ngIf="editLayout"
-         class="edit-layout-setting">
+    <div *ngIf="editLayout" class="edit-layout-setting">
         <div class="edit-layout-setting-stage"></div>
     </div>
 </div>
-

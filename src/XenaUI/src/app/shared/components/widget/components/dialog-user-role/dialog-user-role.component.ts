@@ -1,16 +1,32 @@
-import { Component, Input, OnInit, OnDestroy, EventEmitter, Output, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { ControlGridModel, ApiResultResponse} from 'app/models';
-import { UserProfileService, AppErrorHandler, ModalService } from 'app/services';
-import { ToasterService } from 'angular2-toaster/angular2-toaster';
-import { Uti } from 'app/utilities';
-import { ColHeaderKey } from '../../../xn-control/xn-ag-grid/shared/ag-grid-constant';
+import {
+    Component,
+    Input,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+    Output,
+    ViewChild,
+    ElementRef,
+    AfterViewInit,
+} from "@angular/core";
+import { ControlGridModel, ApiResultResponse } from "app/models";
+import {
+    UserProfileService,
+    AppErrorHandler,
+    ModalService,
+} from "app/services";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { Uti } from "app/utilities";
+import { ColHeaderKey } from "../../../xn-control/xn-ag-grid/shared/ag-grid-constant";
 
 @Component({
-    selector: 'dialog-user-role',
-    styleUrls: ['./dialog-user-role.component.scss'],
-    templateUrl: './dialog-user-role.component.html'
+    selector: "dialog-user-role",
+    styleUrls: ["./dialog-user-role.component.scss"],
+    templateUrl: "./dialog-user-role.component.html",
 })
-export class DialogUserRoleComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DialogUserRoleComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     private normalUserRoleID = 2;
     private callBackAfterClose: Function;
     private callBackAfterSuccessSaved: Function;
@@ -23,23 +39,19 @@ export class DialogUserRoleComponent implements OnInit, OnDestroy, AfterViewInit
     //@Output() onSave = new EventEmitter();
     //@Output() onClose = new EventEmitter();
 
-    constructor(private userProfileService: UserProfileService,
+    constructor(
+        private userProfileService: UserProfileService,
         private modalService: ModalService,
         private toasterService: ToasterService,
-        private appErrorHandler: AppErrorHandler) {
-    }
+        private appErrorHandler: AppErrorHandler
+    ) {}
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
-    public ngOnDestroy() {
+    public ngOnDestroy() {}
 
-    }
+    ngAfterViewInit() {}
 
-    ngAfterViewInit() {
-       
-    }
-   
     /**
      * open
      * @param callBackAfterClose
@@ -53,32 +65,44 @@ export class DialogUserRoleComponent implements OnInit, OnDestroy, AfterViewInit
 
     public save() {
         let idLogins, idLoginRoles;
-        idLogins = this.selectedUsers.map(p => p['IdLogin']).join(',');
-        const selectedRoles = this.roleDatasource.data.filter(p => p[ColHeaderKey.SelectAll]);
+        idLogins = this.selectedUsers.map((p) => p["IdLogin"]).join(",");
+        const selectedRoles = this.roleDatasource.data.filter(
+            (p) => p[ColHeaderKey.SelectAll]
+        );
         if (selectedRoles && selectedRoles.length) {
-            idLoginRoles = selectedRoles.map(p => p['IdLoginRoles']).join(',');
+            idLoginRoles = selectedRoles
+                .map((p) => p["IdLoginRoles"])
+                .join(",");
         }
         if (idLogins && idLoginRoles) {
-            this.userProfileService.assignRoleToMultipleUser(idLogins, idLoginRoles).subscribe(res => {
-                if (res && res.item && res.item.returnID) {
-                    this.toasterService.pop('success', 'Success', 'Saved successfully');
-                    if (this.callBackAfterSuccessSaved) {
-                        this.callBackAfterSuccessSaved();
+            this.userProfileService
+                .assignRoleToMultipleUser(idLogins, idLoginRoles)
+                .subscribe((res) => {
+                    if (res && res.item && res.item.returnID) {
+                        this.toasterService.pop(
+                            "success",
+                            "Success",
+                            "Saved successfully"
+                        );
+                        if (this.callBackAfterSuccessSaved) {
+                            this.callBackAfterSuccessSaved();
+                        }
                     }
-                }
-                this.showDialog = false;
-                if (this.callBackAfterClose) {
-                    this.callBackAfterClose();
-                }
-            });
+                    this.showDialog = false;
+                    if (this.callBackAfterClose) {
+                        this.callBackAfterClose();
+                    }
+                });
         }
     }
 
     public cancel() {
-        const selectedRoles = this.roleDatasource.data.filter(p => p[ColHeaderKey.SelectAll]);
+        const selectedRoles = this.roleDatasource.data.filter(
+            (p) => p[ColHeaderKey.SelectAll]
+        );
         if (selectedRoles && selectedRoles.length) {
             this.modalService.unsavedWarningMessageDefault({
-                headerText: 'Saving Role',
+                headerText: "Saving Role",
                 onModalSaveAndExit: () => {
                     this.save();
                 },
@@ -88,30 +112,35 @@ export class DialogUserRoleComponent implements OnInit, OnDestroy, AfterViewInit
                         this.callBackAfterClose();
                     }
                 },
-                onModalCancel: () => {
-                }
+                onModalCancel: () => {},
             });
         }
     }
 
-    public onRoleChanged(e) {
-
-    }
+    public onRoleChanged(e) {}
 
     private buildDataForRole() {
-        this.userProfileService.getAllUserRole()
+        this.userProfileService
+            .getAllUserRole()
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.data || !response.item.data[0] || !response.item.data[0].length) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.data ||
+                        !response.item.data[0] ||
+                        !response.item.data[0].length
+                    ) {
                         return;
                     }
 
                     this.roleDatasource = {
                         data: response.item.data[0],
-                        columns: this.createGridColumns()
+                        columns: this.createGridColumns(),
                     };
 
-                    let found = this.roleDatasource.data.find(role => role.IdLoginRoles == this.normalUserRoleID);
+                    let found = this.roleDatasource.data.find(
+                        (role) => role.IdLoginRoles == this.normalUserRoleID
+                    );
                     if (found) {
                         found[ColHeaderKey.SelectAll] = true;
                     }
@@ -122,93 +151,93 @@ export class DialogUserRoleComponent implements OnInit, OnDestroy, AfterViewInit
     private createGridColumns(): any {
         return [
             {
-                'title': 'IdLoginRoles',
-                'data': 'IdLoginRoles',
-                'visible': false,
+                title: "IdLoginRoles",
+                data: "IdLoginRoles",
+                visible: false,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1',
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'IsBlocked',
-                'data': 'IsBlocked',
-                'visible': false,
+                title: "IsBlocked",
+                data: "IsBlocked",
+                visible: false,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1',
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'IsDeleted',
-                'data': 'IsDeleted',
-                'visible': false,
+                title: "IsDeleted",
+                data: "IsDeleted",
+                visible: false,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1',
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'RoleName',
-                'data': 'RoleName',
-                'visible': true,
+                title: "RoleName",
+                data: "RoleName",
+                visible: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'Description',
-                'data': 'Description',
-                'visible': true,
+                title: "Description",
+                data: "Description",
+                visible: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1'
-                            }
-                        }
-                    ]
-                }
+                                ReadOnly: "1",
+                            },
+                        },
+                    ],
+                },
             },
             {
-                'title': 'CreateDate',
-                'data': 'CreateDate',
-                'visible': true,
+                title: "CreateDate",
+                data: "CreateDate",
+                visible: true,
                 setting: {
                     Setting: [
                         {
                             DisplayField: {
-                                ReadOnly: '1',
-                                Hidden: '1'
-                            }
-                        }
-                    ]
-                }
-            }
+                                ReadOnly: "1",
+                                Hidden: "1",
+                            },
+                        },
+                    ],
+                },
+            },
         ];
     }
 }

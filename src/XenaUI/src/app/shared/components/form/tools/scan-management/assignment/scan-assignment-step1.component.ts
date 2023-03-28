@@ -1,23 +1,30 @@
 import {
-    Component, Input, Output, ViewChild, OnInit, OnDestroy, EventEmitter, ChangeDetectorRef
-} from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { ComboBoxTypeConstant, Configuration } from 'app/app.constants';
-import { ApiResultResponse } from 'app/models';
-import { Uti } from 'app/utilities/uti';
+    Component,
+    Input,
+    Output,
+    ViewChild,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+    ChangeDetectorRef,
+} from "@angular/core";
+import { Subscription } from "rxjs/Subscription";
+import { ComboBoxTypeConstant, Configuration } from "app/app.constants";
+import { ApiResultResponse } from "app/models";
+import { Uti } from "app/utilities/uti";
 import {
     ToolsService,
     AppErrorHandler,
     DatatableService,
-    CommonService
-} from 'app/services';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+    CommonService,
+} from "app/services";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 
 @Component({
-    selector: 'app-scan-assignment-step1',
-    styleUrls: ['./scan-assignment.component.scss'],
-    templateUrl: './scan-assignment-step1.component.html'
+    selector: "app-scan-assignment-step1",
+    styleUrls: ["./scan-assignment.component.scss"],
+    templateUrl: "./scan-assignment-step1.component.html",
 })
 export class ScanAssignmentStep1Component implements OnInit, OnDestroy {
     public dataEntryCenters: any;
@@ -29,13 +36,13 @@ export class ScanAssignmentStep1Component implements OnInit, OnDestroy {
     private currentGridItem: any = null;
     private idPerson: any;
 
-    @ViewChild('cboDataEntry') cboDataEntry: AngularMultiSelect;
-    @ViewChild('wjgridAssigmentTable') wjgridAssigmentTable: XnAgGridComponent;
+    @ViewChild("cboDataEntry") cboDataEntry: AngularMultiSelect;
+    @ViewChild("wjgridAssigmentTable") wjgridAssigmentTable: XnAgGridComponent;
 
     @Input() globalProperties: any;
     @Input() wjgridAssigmentTableId: string;
     @Output() outputData: EventEmitter<any> = new EventEmitter();
-    @Output() callToOpenStep2: EventEmitter<any> = new EventEmitter();    
+    @Output() callToOpenStep2: EventEmitter<any> = new EventEmitter();
 
     constructor(
         private consts: Configuration,
@@ -44,8 +51,7 @@ export class ScanAssignmentStep1Component implements OnInit, OnDestroy {
         private toolsService: ToolsService,
         private ref: ChangeDetectorRef,
         private appErrorHandler: AppErrorHandler
-    ) {
-    }
+    ) {}
 
     public ngOnInit() {
         this.loadDataEntryCenters();
@@ -54,7 +60,7 @@ export class ScanAssignmentStep1Component implements OnInit, OnDestroy {
     public ngOnDestroy() {
         Uti.unsubscribe(this);
     }
-    public onRowDoubleClicked($event: any) {        
+    public onRowDoubleClicked($event: any) {
         this.currentGridItem = $event;
         this.setOutPutData();
         this.callToOpenStep2.emit();
@@ -76,34 +82,41 @@ export class ScanAssignmentStep1Component implements OnInit, OnDestroy {
         this.isShowStep1 = isShown;
     }
 
-    public refreshData():void {
+    public refreshData(): void {
         this.loadGridData(this.idPerson);
         this.setOutPutData();
     }
 
     private setOutPutData() {
-        if(this.idPerson && this.currentGridItem)
+        if (this.idPerson && this.currentGridItem)
             this.outputData.emit({
                 idPerson: this.idPerson,
-                gridItemData: this.currentGridItem
+                gridItemData: this.currentGridItem,
             });
     }
 
     private loadGridData(idPerson: any) {
-        this.toolsServiceSubscription = this.toolsService.getScanAssignmentPool(idPerson)
+        this.toolsServiceSubscription = this.toolsService
+            .getScanAssignmentPool(idPerson)
             .subscribe((response: any) => {
                 this.appErrorHandler.executeAction(() => {
                     if (!response || !response.data) {
                         this.dataSourceTable = {
                             data: [],
-                            columns: this.dataSourceTable.columns
-                        }
+                            columns: this.dataSourceTable.columns,
+                        };
                         return;
                     }
-                    response = this.datatableService.formatDataTableFromRawData(response.data);
-                    this.dataSourceTable = this.datatableService.buildDataSource(response);
-                    if(this.currentGridItem) {
-                        this.wjgridAssigmentTable.setSelectedRow(this.currentGridItem, 'IdScansContainerDispatchers');
+                    response = this.datatableService.formatDataTableFromRawData(
+                        response.data
+                    );
+                    this.dataSourceTable =
+                        this.datatableService.buildDataSource(response);
+                    if (this.currentGridItem) {
+                        this.wjgridAssigmentTable.setSelectedRow(
+                            this.currentGridItem,
+                            "IdScansContainerDispatchers"
+                        );
                     }
                     this.reselectGridItem();
                     this.ref.detectChanges();
@@ -112,27 +125,39 @@ export class ScanAssignmentStep1Component implements OnInit, OnDestroy {
     }
 
     private loadDataEntryCenters() {
-        this.commonServiceSubscription = this.commonService.getListComboBox(ComboBoxTypeConstant.scanDispatcherDataEntryCenter)
+        this.commonServiceSubscription = this.commonService
+            .getListComboBox(ComboBoxTypeConstant.scanDispatcherDataEntryCenter)
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) || !response.item.scanDispatcherDataEntryCenter) {
+                    if (
+                        !Uti.isResquestSuccess(response) ||
+                        !response.item.scanDispatcherDataEntryCenter
+                    ) {
                         this.dataEntryCenters = [];
                         return;
                     }
-                    this.dataEntryCenters = response.item.scanDispatcherDataEntryCenter;
+                    this.dataEntryCenters =
+                        response.item.scanDispatcherDataEntryCenter;
                 });
             });
     }
 
     private reselectGridItem() {
-        if (!this.currentGridItem || !this.dataSourceTable || !this.dataSourceTable.data) return;
+        if (
+            !this.currentGridItem ||
+            !this.dataSourceTable ||
+            !this.dataSourceTable.data
+        )
+            return;
         for (let i = 0; i < this.dataSourceTable.data.length; i++) {
-            if (this.dataSourceTable.data[i]['IdScansContainerDispatchers'] == this.currentGridItem.IdScansContainerDispatchers) {
+            if (
+                this.dataSourceTable.data[i]["IdScansContainerDispatchers"] ==
+                this.currentGridItem.IdScansContainerDispatchers
+            ) {
                 this.wjgridAssigmentTable.selectRowIndex(i);
                 this.ref.detectChanges();
-                return;        
+                return;
             }
         }
-        
     }
 }

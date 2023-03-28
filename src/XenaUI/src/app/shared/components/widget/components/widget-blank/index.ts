@@ -1,1 +1,1 @@
-export * from './widget-blank.component';
+export * from "./widget-blank.component";

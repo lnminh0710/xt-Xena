@@ -1,24 +1,27 @@
-import { Component, ViewChild, ElementRef, Renderer2} from "@angular/core";
+import { Component, ViewChild, ElementRef, Renderer2 } from "@angular/core";
 import { IHeaderAngularComp } from "ag-grid-angular";
-import { BaseAgGridCellComponent } from '../../../shared/base-ag-grid-cell-component';
+import { BaseAgGridCellComponent } from "../../../shared/base-ag-grid-cell-component";
 import { Subscription } from "rxjs";
 
 @Component({
-    selector: 'custom-header-cell-renderer',
-    templateUrl: './custom-header-cell-renderer.html',
-    styleUrls: ['./custom-header-cell-renderer.scss']
+    selector: "custom-header-cell-renderer",
+    templateUrl: "./custom-header-cell-renderer.html",
+    styleUrls: ["./custom-header-cell-renderer.scss"],
 })
-export class CustomHeaderCellRenderer extends BaseAgGridCellComponent<string> implements IHeaderAngularComp {
-
-    @ViewChild('menuButton', { read: ElementRef }) public menuButton;
-    @ViewChild('languageIcon', { read: ElementRef }) public languageIcon: ElementRef;
+export class CustomHeaderCellRenderer
+    extends BaseAgGridCellComponent<string>
+    implements IHeaderAngularComp
+{
+    @ViewChild("menuButton", { read: ElementRef }) public menuButton;
+    @ViewChild("languageIcon", { read: ElementRef })
+    public languageIcon: ElementRef;
 
     public ascSort: string;
     public descSort: string;
     public noSort: string;
     // public activeTranslate: boolean = false;
 
-    private currentSort = '';
+    private currentSort = "";
     private translateColDetailSuscription: Subscription;
     private allowTranslationSuscription: Subscription;
 
@@ -28,17 +31,22 @@ export class CustomHeaderCellRenderer extends BaseAgGridCellComponent<string> im
 
     public get allowTranslation() {
         if (this.params && this.componentParent) {
-            return this.componentParent.allowTranslation && !this.isComboboxColumn();
+            return (
+                this.componentParent.allowTranslation &&
+                !this.isComboboxColumn()
+            );
         }
         return false;
     }
 
     private isComboboxColumn() {
         try {
-            return this.colDef && this.colDef.refData && this.colDef.refData.controlType.toLowerCase() == 'combobox';
-        }
-        catch {
-        }
+            return (
+                this.colDef &&
+                this.colDef.refData &&
+                this.colDef.refData.controlType.toLowerCase() == "combobox"
+            );
+        } catch {}
         return false;
     }
 
@@ -50,10 +58,10 @@ export class CustomHeaderCellRenderer extends BaseAgGridCellComponent<string> im
         event.stopPropagation();
         if (!this.allowTranslation) {
             this.params.showColumnMenu(this.menuButton.nativeElement);
-        }
-        else {
+        } else {
             // this.activeTranslate = !this.activeTranslate;
-            let activeTranslate = this.languageIcon.nativeElement.classList.contains('active');
+            let activeTranslate =
+                this.languageIcon.nativeElement.classList.contains("active");
             activeTranslate = !activeTranslate;
             if (activeTranslate && this.params.api) {
                 const field = this.colDef.field;
@@ -67,45 +75,62 @@ export class CustomHeaderCellRenderer extends BaseAgGridCellComponent<string> im
                 this.componentParent.onTranslateColDetail.emit({
                     keywords,
                     field,
-                    activeTranslate
+                    activeTranslate,
                 });
-                this.renderer2.addClass(this.languageIcon.nativeElement,'active');
-                const hostElement = this.params.context.componentParent.hostElement;
-                let languageIcons: NodeList = hostElement.querySelectorAll('custom-header-cell-renderer .translation');
+                this.renderer2.addClass(
+                    this.languageIcon.nativeElement,
+                    "active"
+                );
+                const hostElement =
+                    this.params.context.componentParent.hostElement;
+                let languageIcons: NodeList = hostElement.querySelectorAll(
+                    "custom-header-cell-renderer .translation"
+                );
                 if (languageIcons) {
                     for (let i = 0; i < languageIcons.length; i++) {
                         const languageIcon = languageIcons[i];
                         if (languageIcon != this.languageIcon.nativeElement) {
-                            this.renderer2.removeClass(languageIcon, 'active');
+                            this.renderer2.removeClass(languageIcon, "active");
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 this.removeTranslate(activeTranslate);
             }
         }
-    };
+    }
 
     private removeTranslate(activeTranslate) {
-        if (!this.languageIcon || !this.languageIcon.nativeElement.classList.contains('active')) return;
-        this.componentParent.activeTranslateField = '';
-        this.renderer2.removeClass(this.languageIcon.nativeElement, 'active');
+        if (
+            !this.languageIcon ||
+            !this.languageIcon.nativeElement.classList.contains("active")
+        )
+            return;
+        this.componentParent.activeTranslateField = "";
+        this.renderer2.removeClass(this.languageIcon.nativeElement, "active");
         this.componentParent.onTranslateColDetail.emit({
-            keywords : [],
+            keywords: [],
             field: this.colDef.field,
-            activeTranslate
+            activeTranslate,
         });
     }
 
     protected getCustomParam(params: any) {
-        this.params.column.addEventListener('sortChanged', this.onSortChanged.bind(this));
+        this.params.column.addEventListener(
+            "sortChanged",
+            this.onSortChanged.bind(this)
+        );
         this.onSortChanged();
-        let activeTranslate = this.componentParent && this.componentParent.activeTranslateField == this.colDef.field;
+        let activeTranslate =
+            this.componentParent &&
+            this.componentParent.activeTranslateField == this.colDef.field;
         if (activeTranslate) {
             setTimeout(() => {
                 if (this.languageIcon) {
-                    this.renderer2.addClass(this.languageIcon.nativeElement, 'active');
+                    this.renderer2.addClass(
+                        this.languageIcon.nativeElement,
+                        "active"
+                    );
                 }
             });
         }
@@ -117,46 +142,47 @@ export class CustomHeaderCellRenderer extends BaseAgGridCellComponent<string> im
         //    }
         //});
 
-        this.allowTranslationSuscription = this.componentParent.onAllowTranslationAction.subscribe(data => {
-           if (data) return;
-           this.removeTranslate(false);
-        });
+        this.allowTranslationSuscription =
+            this.componentParent.onAllowTranslationAction.subscribe((data) => {
+                if (data) return;
+                this.removeTranslate(false);
+            });
     }
 
     /**
      * onSortChanged
      **/
     public onSortChanged() {
-        this.ascSort = this.descSort = this.noSort = 'ag-hidden';
+        this.ascSort = this.descSort = this.noSort = "ag-hidden";
         if (this.params.column.isSortAscending()) {
-            this.ascSort = 'active';
+            this.ascSort = "active";
         } else if (this.params.column.isSortDescending()) {
-            this.descSort = 'active';
+            this.descSort = "active";
         } else {
-            this.noSort = 'active';
+            this.noSort = "active";
         }
     }
 
-     /**
+    /**
      * onSortRequested
      * @param order
      * @param event
      */
     public onSortRequested(event) {
-        let sortMode = '';
+        let sortMode = "";
         switch (this.currentSort) {
-            case '':
-                sortMode = 'asc';
+            case "":
+                sortMode = "asc";
                 break;
-            case 'asc':
-                sortMode = 'desc';
+            case "asc":
+                sortMode = "desc";
                 break;
-            case 'desc':
-                sortMode = '';
+            case "desc":
+                sortMode = "";
                 break;
         }
-         this.componentParent.isSortChanged = true;
-         this.currentSort = sortMode;
+        this.componentParent.isSortChanged = true;
+        this.currentSort = sortMode;
         this.params.setSort(this.currentSort, event.shiftKey);
     }
 }

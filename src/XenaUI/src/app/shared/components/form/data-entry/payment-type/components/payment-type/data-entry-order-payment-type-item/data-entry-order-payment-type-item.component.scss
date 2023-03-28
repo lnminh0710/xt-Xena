@@ -1,4 +1,4 @@
-@import '~sass_files/color.scss';
+@import "~sass_files/color.scss";
 
 .de__payment-type__item {
     .de__pt__item__title {
@@ -9,14 +9,16 @@
         font-size: 15px;
     }
 
-    .de__pt__item__close, .de__pt__item__add {
+    .de__pt__item__close,
+    .de__pt__item__add {
         font-size: 15px;
         float: right;
         margin-top: -12px;
         cursor: pointer;
         margin-right: 3px;
 
-        .fa-times-circle, .fa-plus-circle {
+        .fa-times-circle,
+        .fa-plus-circle {
             line-height: 10px;
             border-radius: 50%;
         }
@@ -82,9 +84,9 @@
     .custom-month {
         margin-left: -6px;
         padding: 3px 6px 3px 3px;
-        border: 1px solid #EAEAEA;
+        border: 1px solid #eaeaea;
         border-radius: 4px;
-        background-color: #F5F5F5;
+        background-color: #f5f5f5;
         border-left: none;
         border-bottom-left-radius: 0;
         float: left;
@@ -116,7 +118,7 @@
 
     .group-month {
         padding: 5px 6px 3px 3px;
-        border: 1px solid #EAEAEA;
+        border: 1px solid #eaeaea;
         border-radius: 4px;
         margin-right: 8px;
         float: left;
@@ -129,11 +131,11 @@
         }
 
         &.group0 {
-            background-color: #F5F5F5;
+            background-color: #f5f5f5;
         }
 
         &.group1 {
-            background-color: #E3F6FD;
+            background-color: #e3f6fd;
         }
     }
 }
@@ -148,7 +150,7 @@
 
     .group-amount {
         padding: 3px;
-        border: 1px solid #EAEAEA;
+        border: 1px solid #eaeaea;
         border-radius: 4px;
         width: calc((100% - 7px));
         margin: 0 8px 6px 0;
@@ -160,11 +162,11 @@
         }
 
         &.group0 {
-            background-color: #F5F5F5;
+            background-color: #f5f5f5;
         }
 
         &.group1 {
-            background-color: #E3F6FD;
+            background-color: #e3f6fd;
         }
     }
 }
@@ -179,7 +181,7 @@
 
     .group-amount {
         padding: 3px;
-        border: 1px solid #EAEAEA;
+        border: 1px solid #eaeaea;
         border-radius: 4px;
         height: 40px;
         margin-bottom: 4px;
@@ -190,13 +192,12 @@
         }
 
         &.group0 {
-            background-color: #F5F5F5;
+            background-color: #f5f5f5;
         }
 
         &.group1 {
-            background-color: #E3F6FD;
+            background-color: #e3f6fd;
         }
-
 
         .control-date {
             width: calc((100% - 43px));
@@ -234,7 +235,8 @@
     div.input-group-addon {
         .fa-sum {
             font-size: 11px;
-            font-family: Tahoma,'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+            font-family: Tahoma, "Source Sans Pro", "Helvetica Neue", Helvetica,
+                Arial, sans-serif !important;
 
             &:before {
                 content: "" !important;
@@ -258,7 +260,6 @@
 }
 
 :host .creditCard-options ::ng-deep {
-
     .mat-radio-group {
         .mat-radio-label {
             margin: 0 !important;

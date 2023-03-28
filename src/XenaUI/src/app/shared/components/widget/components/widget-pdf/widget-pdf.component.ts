@@ -1,24 +1,34 @@
-import { Component, Input, OnInit, ViewEncapsulation, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { Configuration } from 'app/app.constants';
-import { WjPdfViewer } from 'wijmo/wijmo.angular2.viewer';
-import { Uti } from 'app/utilities';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs';
-import { AppState } from 'app/state-management/store';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import * as tabButtonReducer from 'app/state-management/store/reducer/tab-button';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import { CustomAction, LayoutInfoActions } from 'app/state-management/store/actions';
-import { AppErrorHandler } from 'app/services';
-import { Module, TabSummaryModel } from 'app/models';
+import {
+    Component,
+    Input,
+    OnInit,
+    ViewEncapsulation,
+    ViewChild,
+    ElementRef,
+    ChangeDetectorRef,
+} from "@angular/core";
+import { Configuration } from "app/app.constants";
+import { WjPdfViewer } from "wijmo/wijmo.angular2.viewer";
+import { Uti } from "app/utilities";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs";
+import { AppState } from "app/state-management/store";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import * as tabButtonReducer from "app/state-management/store/reducer/tab-button";
+import * as tabSummaryReducer from "app/state-management/store/reducer/tab-summary";
+import {
+    CustomAction,
+    LayoutInfoActions,
+} from "app/state-management/store/actions";
+import { AppErrorHandler } from "app/services";
+import { Module, TabSummaryModel } from "app/models";
 
 @Component({
-    selector: 'pdf-widget',
-    styleUrls: ['./widget-pdf.component.scss'],
-    templateUrl: './widget-pdf.component.html',
-    encapsulation: ViewEncapsulation.None
+    selector: "pdf-widget",
+    styleUrls: ["./widget-pdf.component.scss"],
+    templateUrl: "./widget-pdf.component.html",
+    encapsulation: ViewEncapsulation.None,
 })
-
 export class WidgetPdfComponent implements OnInit {
     public pdfApiUrl: string = Configuration.PublicSettings.pdfApiUrl;
     public pdfUrl: string;
@@ -29,15 +39,19 @@ export class WidgetPdfComponent implements OnInit {
                                                                                         value: pdfString
                                                                                     }];
     */
-    private _pdfColumn: any = [{ key: 'pdf' }];
+    private _pdfColumn: any = [{ key: "pdf" }];
     private _rowData: any;
 
     @Input() set pdfColumn(pdfColumn: any) {
         if (pdfColumn) {
-            this._pdfColumn = pdfColumn.options.filter(v => v && v.value === pdfColumn.value || v.key === pdfColumn.value);
+            this._pdfColumn = pdfColumn.options.filter(
+                (v) =>
+                    (v && v.value === pdfColumn.value) ||
+                    v.key === pdfColumn.value
+            );
             this.execRowData(this._rowData, this._pdfColumn);
         }
-    };
+    }
 
     @Input() set rowData(data: any) {
         this._rowData = data;
@@ -49,7 +63,7 @@ export class WidgetPdfComponent implements OnInit {
     @Input() currentModule: Module;
     @Input() set setPdfUrl(pdfUrl: string) {
         if (!pdfUrl) {
-            this.pdfUrl = '';
+            this.pdfUrl = "";
             this.refresh(1000);
             return;
         }
@@ -75,15 +89,34 @@ export class WidgetPdfComponent implements OnInit {
     private selectedTabHeaderModelSubscription: Subscription;
     private isAfterViewInit: boolean = false;
 
-    constructor(private elRef: ElementRef,
+    constructor(
+        private elRef: ElementRef,
         private changeRef: ChangeDetectorRef,
         private store: Store<AppState>,
         private dispatcher: ReducerManagerDispatcher,
-        private appErrorHandler: AppErrorHandler, ) {
-
-        this.selectedTabHeaderModel = this.store.select(state => tabSummaryReducer.getTabSummaryState(state, this.currentModule.moduleNameTrim).selectedTab);
-        this.isShowTabButtonState = store.select(state => tabButtonReducer.getTabButtonState(state, this.currentModule.moduleNameTrim).isShow);
-        this.isTabCollapsedState = store.select(state => tabSummaryReducer.getTabSummaryState(state, this.currentModule.moduleNameTrim).isTabCollapsed);
+        private appErrorHandler: AppErrorHandler
+    ) {
+        this.selectedTabHeaderModel = this.store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).selectedTab
+        );
+        this.isShowTabButtonState = store.select(
+            (state) =>
+                tabButtonReducer.getTabButtonState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).isShow
+        );
+        this.isTabCollapsedState = store.select(
+            (state) =>
+                tabSummaryReducer.getTabSummaryState(
+                    state,
+                    this.currentModule.moduleNameTrim
+                ).isTabCollapsed
+        );
     }
 
     public ngOnInit() {
@@ -101,68 +134,100 @@ export class WidgetPdfComponent implements OnInit {
 
     ngOnDestroy() {
         Uti.unsubscribe(this);
-        $(window).unbind('resize');
+        $(window).unbind("resize");
     }
 
     private subscribe() {
-        if (this.resizeSplitterStateSubscription) this.resizeSplitterStateSubscription.unsubscribe();
-        this.resizeSplitterStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === LayoutInfoActions.RESIZE_SPLITTER && action.module.idSettingsGUI == this.currentModule.idSettingsGUI;
-        }).subscribe((data: CustomAction) => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.isAfterViewInit) {
-                    if (!data) return;
+        if (this.resizeSplitterStateSubscription)
+            this.resizeSplitterStateSubscription.unsubscribe();
+        this.resizeSplitterStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === LayoutInfoActions.RESIZE_SPLITTER &&
+                    action.module.idSettingsGUI ==
+                        this.currentModule.idSettingsGUI
+                );
+            })
+            .subscribe((data: CustomAction) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.isAfterViewInit) {
+                        if (!data) return;
 
-                    // if widget element is not visible, do nothing
-                    if (this.elRef && this.elRef.nativeElement && this.elRef.nativeElement.offsetParent == null) return;
+                        // if widget element is not visible, do nothing
+                        if (
+                            this.elRef &&
+                            this.elRef.nativeElement &&
+                            this.elRef.nativeElement.offsetParent == null
+                        )
+                            return;
 
-                    this.calculateSizeWithTimeout();
+                        this.calculateSizeWithTimeout();
+                    }
+                });
+            });
+
+        if (this.isShowTabButtonStateSubscription)
+            this.isShowTabButtonStateSubscription.unsubscribe();
+        this.isShowTabButtonStateSubscription =
+            this.isShowTabButtonState.subscribe(
+                (isShowTabButtonState: boolean) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (isShowTabButtonState) {
+                            //console.log('isShowTabButton: ' + isShowTabButtonState);
+                            this.calculateSizeWithTimeout();
+                        }
+                    });
                 }
-            });
-        });
+            );
 
-        if (this.isShowTabButtonStateSubscription) this.isShowTabButtonStateSubscription.unsubscribe();
-        this.isShowTabButtonStateSubscription = this.isShowTabButtonState.subscribe((isShowTabButtonState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                if (isShowTabButtonState) {
-                    //console.log('isShowTabButton: ' + isShowTabButtonState);
-                    this.calculateSizeWithTimeout();
+        if (this.isTabCollapsedStateSubscription)
+            this.isTabCollapsedStateSubscription.unsubscribe();
+        this.isTabCollapsedStateSubscription =
+            this.isTabCollapsedState.subscribe(
+                (isTabCollapsedState: boolean) => {
+                    this.appErrorHandler.executeAction(() => {
+                        //console.log('isTabCollapsed');
+                        this.calculateSizeWithTimeout();
+                    });
                 }
-            });
-        });
+            );
 
-        if (this.isTabCollapsedStateSubscription) this.isTabCollapsedStateSubscription.unsubscribe();
-        this.isTabCollapsedStateSubscription = this.isTabCollapsedState.subscribe((isTabCollapsedState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                //console.log('isTabCollapsed');
-                this.calculateSizeWithTimeout();
-            });
-        });
-
-        if (this.selectedTabHeaderModelSubscription) this.selectedTabHeaderModelSubscription.unsubscribe();
-        this.selectedTabHeaderModelSubscription = this.selectedTabHeaderModel.subscribe((selectedTabHeader: TabSummaryModel) => {
-            this.appErrorHandler.executeAction(() => {
-                //console.log('selectedTab');
-                this.calculateSizeWithTimeout();
-            });
-        });
+        if (this.selectedTabHeaderModelSubscription)
+            this.selectedTabHeaderModelSubscription.unsubscribe();
+        this.selectedTabHeaderModelSubscription =
+            this.selectedTabHeaderModel.subscribe(
+                (selectedTabHeader: TabSummaryModel) => {
+                    this.appErrorHandler.executeAction(() => {
+                        //console.log('selectedTab');
+                        this.calculateSizeWithTimeout();
+                    });
+                }
+            );
     }
 
     private execRowData(rowData: any, columnPdf: any) {
-        if (!columnPdf || !columnPdf.length || !rowData || !rowData.data) return;
+        if (!columnPdf || !columnPdf.length || !rowData || !rowData.data)
+            return;
 
-        const removeCharacterSpecial = columnPdf[0].key.replace(/_/g, '').toLowerCase();
+        const removeCharacterSpecial = columnPdf[0].key
+            .replace(/_/g, "")
+            .toLowerCase();
         for (const fileName of rowData.data) {
-            if (!fileName.key ||
-                removeCharacterSpecial !== fileName.key.toLowerCase()) {
+            if (
+                !fileName.key ||
+                removeCharacterSpecial !== fileName.key.toLowerCase()
+            ) {
                 continue;
             }
 
-            this.pdfUrl = (fileName.value || '').replace(Configuration.PublicSettings.fileShareUrl, '');
-            console.log('pdfUrl: ' + this.pdfUrl);
+            this.pdfUrl = (fileName.value || "").replace(
+                Configuration.PublicSettings.fileShareUrl,
+                ""
+            );
+            console.log("pdfUrl: " + this.pdfUrl);
             this.refresh(1000);
             return;
-        }//for
+        } //for
     }
 
     public refresh(delayTimeout?: number) {
@@ -172,14 +237,16 @@ export class WidgetPdfComponent implements OnInit {
             setTimeout(() => {
                 this.wjPdfViewer.refresh();
             }, delayTimeout);
-        }
-        else {
+        } else {
             this.wjPdfViewer.refresh();
         }
     }
 
     private setImageSizeTimeout: any = null;
-    private calculateSizeWithTimeout(timeout?: number, timeoutRefresh?: number) {
+    private calculateSizeWithTimeout(
+        timeout?: number,
+        timeoutRefresh?: number
+    ) {
         if (!this.pdfUrl) return;
 
         timeout = timeout || 300;
@@ -197,7 +264,9 @@ export class WidgetPdfComponent implements OnInit {
         const parentHeight = $(this.elRef.nativeElement).parent().height();
         if (parentHeight) {
             //console.log('parentHeight: ' + parentHeight);
-            $(this.elRef.nativeElement).find('wj-pdf-viewer').css('height', parentHeight + 'px');
+            $(this.elRef.nativeElement)
+                .find("wj-pdf-viewer")
+                .css("height", parentHeight + "px");
         }
     }
 }

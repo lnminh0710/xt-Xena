@@ -1,5 +1,5 @@
-import * as wjcGrid from 'wijmo/wijmo.grid';
-import * as wjcCore from 'wijmo/wijmo';
+import * as wjcGrid from "wijmo/wijmo.grid";
+import * as wjcCore from "wijmo/wijmo";
 export interface IColumnFilter {
     column: wjcGrid.Column;
     isActive: boolean;
@@ -152,7 +152,7 @@ export declare class ColumnFilterEditor extends wjcCore.Control {
     private _btnCancel;
     private _btnClear;
     static controlTemplate: string;
-    '</div>': any;
+    "</div>": any;
     constructor(element: any, filter: ColumnFilter, sortButtons?: boolean);
     readonly filter: ColumnFilter;
     updateEditor(): void;

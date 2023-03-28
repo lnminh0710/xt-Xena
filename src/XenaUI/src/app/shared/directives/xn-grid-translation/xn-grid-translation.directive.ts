@@ -1,26 +1,50 @@
-import { Input, Directive, EventEmitter, Output, OnDestroy, OnInit, ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
+import {
+    Input,
+    Directive,
+    EventEmitter,
+    Output,
+    OnDestroy,
+    OnInit,
+    ComponentRef,
+    ComponentFactoryResolver,
+    ViewContainerRef,
+} from "@angular/core";
 import { Store, ReducerManagerDispatcher } from "@ngrx/store";
 import { Observable } from "rxjs/Observable";
-import { Subscription } from 'rxjs/Subscription';
-import isEmpty from 'lodash-es/isEmpty';
-import isNil from 'lodash-es/isNil';
+import { Subscription } from "rxjs/Subscription";
+import isEmpty from "lodash-es/isEmpty";
+import isNil from "lodash-es/isNil";
 import {
-    ModuleService, AppErrorHandler, PropertyPanelService, ModalService, CommonService, GlobalSettingService, ResourceTranslationService
-} from 'app/services';
-import { Module, WidgetDetail, ApiResultResponse, WidgetPropertyModel } from 'app/models';
-import { Uti } from 'app/utilities';
-import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { WidgetModuleComponent } from 'app/shared/components/widget';
-import { AgGridService } from 'app/shared/components/xn-control/xn-ag-grid/shared/ag-grid.service';
-import { TranslateDataTypeEnum, TranslateModeEnum, RepWidgetAppIdEnum } from 'app/app.constants';
-import { LanguageCellRenderer } from 'app/shared/components/xn-control/xn-ag-grid/components';
-import { TranslateService } from '@ngx-translate/core';
+    ModuleService,
+    AppErrorHandler,
+    PropertyPanelService,
+    ModalService,
+    CommonService,
+    GlobalSettingService,
+    ResourceTranslationService,
+} from "app/services";
+import {
+    Module,
+    WidgetDetail,
+    ApiResultResponse,
+    WidgetPropertyModel,
+} from "app/models";
+import { Uti } from "app/utilities";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import { WidgetModuleComponent } from "app/shared/components/widget";
+import { AgGridService } from "app/shared/components/xn-control/xn-ag-grid/shared/ag-grid.service";
+import {
+    TranslateDataTypeEnum,
+    TranslateModeEnum,
+    RepWidgetAppIdEnum,
+} from "app/app.constants";
+import { LanguageCellRenderer } from "app/shared/components/xn-control/xn-ag-grid/components";
+import { TranslateService } from "@ngx-translate/core";
 
 @Directive({
-    selector: '[gridTranslation]',
-    inputs: ['gridInstance: gridTranslation'],
+    selector: "[gridTranslation]",
+    inputs: ["gridInstance: gridTranslation"],
 })
-
 export class GridTranslationDirective implements OnDestroy, OnInit {
     private activeTranslateField: string;
     private translateColDetailSubscription: Subscription;
@@ -29,17 +53,17 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
     private dataChangeSubscription: Subscription;
     private isSytemTranslate: boolean = false;
 
-    private languageKey = 'Language';
+    private languageKey = "Language";
     private edittingData: any;
     private successSavedSubscription: Subscription;
 
     private _parentInstance: WidgetModuleComponent;
-    @Input() set parentInstance(instance){
+    @Input() set parentInstance(instance) {
         this._parentInstance = instance;
         this.registerEventFromParentInstance();
     }
 
-    get parentInstance(){
+    get parentInstance() {
         return this._parentInstance;
     }
 
@@ -72,11 +96,13 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
         this._allowTranslation = status;
         if (status) {
             this.getTranslateLanguageList();
-            if (this.parentInstance && this.parentInstance.widgetMenuStatusComponent) {
+            if (
+                this.parentInstance &&
+                this.parentInstance.widgetMenuStatusComponent
+            ) {
                 this.parentInstance.widgetMenuStatusComponent.toggleTranslationTableControlButtons();
             }
-        }
-        else {
+        } else {
             if (this.edittingData && Object.keys(this.edittingData).length) {
                 this.parentInstance.isTableEdited = false;
                 this.parentInstance.isWidgetDataEdited = false;
@@ -95,80 +121,92 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
         return this._allowTranslation;
     }
 
-    constructor(private store: Store<any>,
+    constructor(
+        private store: Store<any>,
         private appErrorHandler: AppErrorHandler,
         private commonService: CommonService,
         private globalSettingService: GlobalSettingService,
         private translate: TranslateService,
         private resourceTranslationService: ResourceTranslationService
-        ) {
+    ) {
         this.subscribeData();
     }
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
     }
 
     public registerEventFromParentInstance() {
-        this.saveWidgetSubscription = this.parentInstance.onSaveWidget.subscribe(() => {
-            if (this.gridInstance) {
-                this.gridInstance.stopEditing();
-            }
-            setTimeout(() => {
-                this.saveTranslation();
+        this.saveWidgetSubscription =
+            this.parentInstance.onSaveWidget.subscribe(() => {
+                if (this.gridInstance) {
+                    this.gridInstance.stopEditing();
+                }
+                setTimeout(() => {
+                    this.saveTranslation();
+                });
             });
-        });
 
-        this.successSavedSubscription = this.resourceTranslationService.successSaved$.subscribe(status => {
-            if (status) {
-                this.systemTranlateHandler();
-            }
-        });
+        this.successSavedSubscription =
+            this.resourceTranslationService.successSaved$.subscribe(
+                (status) => {
+                    if (status) {
+                        this.systemTranlateHandler();
+                    }
+                }
+            );
     }
 
     private currentColDetailTranslate: any;
 
-
     private registerEventFromGrid() {
+        this.dataChangeSubscription = this.gridInstance.onGridReady.subscribe(
+            () => {
+                this.systemTranlateHandler();
+            }
+        );
 
-        this.dataChangeSubscription = this.gridInstance.onGridReady.subscribe(() => {
-            this.systemTranlateHandler();
-        });
-
-        this.dataChangeSubscription = this.gridInstance.onDataChanged.subscribe((data) => {
-            this.systemTranlateHandler();
-            if (this.allowTranslation && this.currentColDetailTranslate) {
-                let isTranslateColExists = this.isTranslateColExists();
-                if (!isTranslateColExists) {
-                    this.getTranslateLanguageList();
+        this.dataChangeSubscription = this.gridInstance.onDataChanged.subscribe(
+            (data) => {
+                this.systemTranlateHandler();
+                if (this.allowTranslation && this.currentColDetailTranslate) {
+                    let isTranslateColExists = this.isTranslateColExists();
+                    if (!isTranslateColExists) {
+                        this.getTranslateLanguageList();
+                    }
+                    this.getTranslateLanguageFromSelectedCol(
+                        this.currentColDetailTranslate
+                    );
                 }
-                this.getTranslateLanguageFromSelectedCol(this.currentColDetailTranslate);
             }
-        });
+        );
 
-        this.translateColDetailSubscription = this.gridInstance.onTranslateColDetail.subscribe((data: any) => {
-            this.currentColDetailTranslate = data;
-            this.getTranslateLanguageFromSelectedCol(data);
-        });
+        this.translateColDetailSubscription =
+            this.gridInstance.onTranslateColDetail.subscribe((data: any) => {
+                this.currentColDetailTranslate = data;
+                this.getTranslateLanguageFromSelectedCol(data);
+            });
 
-        this.cellEditingStoppedSubscription = this.gridInstance.cellEditingStopped.subscribe((data) => {
-            if (data) {
-                this.updateEdittingData(data);
-            }
-        });
+        this.cellEditingStoppedSubscription =
+            this.gridInstance.cellEditingStopped.subscribe((data) => {
+                if (data) {
+                    this.updateEdittingData(data);
+                }
+            });
 
         this.gridInstance.preventDefault = (params) => {
             let isPrevented = false;
             if (this.allowTranslation) {
                 if (params && params.column && params.column.getColDef()) {
                     const colDef = params.column.getColDef();
-                    if (colDef.colId && colDef.colId.indexOf('translateCol_') < 0) {
+                    if (
+                        colDef.colId &&
+                        colDef.colId.indexOf("translateCol_") < 0
+                    ) {
                         isPrevented = true;
-                    }
-                    else {
+                    } else {
                         if (!this.activeTranslateField) {
                             isPrevented = true;
                         }
@@ -176,22 +214,26 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
                 }
             }
             return isPrevented;
-        }
+        };
     }
 
     private systemTranlateHandler() {
-        if (this.widgetDetail && this.widgetDetail.idRepWidgetApp == RepWidgetAppIdEnum.SystemTranslateText) {
+        if (
+            this.widgetDetail &&
+            this.widgetDetail.idRepWidgetApp ==
+                RepWidgetAppIdEnum.SystemTranslateText
+        ) {
             if (this.gridInstance.api && this.gridInstance.columnApi) {
                 this.isSytemTranslate = true;
-                this.parentInstance.widgetMenuStatusComponent.settings.btnWidgetTranslation.enable = false;
+                this.parentInstance.widgetMenuStatusComponent.settings.btnWidgetTranslation.enable =
+                    false;
                 let isTranslateColExists = this.isTranslateColExists();
                 if (!isTranslateColExists) {
                     this.getTranslateLanguageList(() => {
                         this.getSystemTranslate();
                         this.gridInstance.loadColumnLayout();
                     });
-                }
-                else {
+                } else {
                     this.getSystemTranslate();
                 }
             }
@@ -199,40 +241,47 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
     }
 
     private getSystemTranslate() {
-        const originalField = 'OriginalText';
-        this.activeTranslateField = 'OriginalText';
+        const originalField = "OriginalText";
+        this.activeTranslateField = "OriginalText";
         this.gridInstance.stopEditing();
         let nodeItems = this.gridInstance.getCurrentNodeItems();
-        nodeItems.filter(node => {
+        nodeItems.filter((node) => {
             node = Object.assign(node, this.emptyLanguage);
         });
-        this.globalSettingService.getSystemTranslateText()
+        this.globalSettingService
+            .getSystemTranslateText()
             .subscribe((response) => {
                 if (response) {
                     const resultList: Array<any> = response.data[1];
-                    this.processTranslateData(resultList, nodeItems, originalField, true);
+                    this.processTranslateData(
+                        resultList,
+                        nodeItems,
+                        originalField,
+                        true
+                    );
                 }
             });
     }
 
     private getTranslateLanguageFromSelectedCol(data) {
         if (data) {
-            const keywords : Array<any> = data.keywords;
+            const keywords: Array<any> = data.keywords;
             const originalField = data.field;
-            this.activeTranslateField = data.activeTranslate ? data.field : null;
+            this.activeTranslateField = data.activeTranslate
+                ? data.field
+                : null;
             let strArr: Array<string> = [];
             keywords.forEach((item) => {
                 if (item) {
-                    if (typeof item == 'object') {
+                    if (typeof item == "object") {
                         strArr.push(item.value);
-                    }
-                    else {
+                    } else {
                         strArr.push(item);
                     }
                 }
             });
-            const originalValue = strArr.join(';');
-            const widgetMainID = '' + this.widgetDetail.idRepWidgetApp;
+            const originalValue = strArr.join(";");
+            const widgetMainID = "" + this.widgetDetail.idRepWidgetApp;
             const widgetCloneID = this.widgetDetail.id;
             const translateDataType = TranslateDataTypeEnum.Data;
 
@@ -240,7 +289,7 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
             this.gridInstance.stopEditing();
 
             let nodeItems = this.gridInstance.getCurrentNodeItems();
-            nodeItems.filter(node => {
+            nodeItems.filter((node) => {
                 node = Object.assign(node, this.emptyLanguage);
             });
 
@@ -249,12 +298,29 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
                 return;
             }
 
-            const tableName = this.globalSettingService.getFieldTableName(originalField, this.widgetDetail);
-            this.globalSettingService.getMultiTranslateLabelText(originalValue, widgetMainID, widgetCloneID, translateDataType + '', null, originalField, tableName)
+            const tableName = this.globalSettingService.getFieldTableName(
+                originalField,
+                this.widgetDetail
+            );
+            this.globalSettingService
+                .getMultiTranslateLabelText(
+                    originalValue,
+                    widgetMainID,
+                    widgetCloneID,
+                    translateDataType + "",
+                    null,
+                    originalField,
+                    tableName
+                )
                 .subscribe((response) => {
                     if (response) {
                         const resultList: Array<any> = response.data[1];
-                        this.processTranslateData(resultList, nodeItems, originalField, false);
+                        this.processTranslateData(
+                            resultList,
+                            nodeItems,
+                            originalField,
+                            false
+                        );
                         //    resultList.forEach(item => {
                         //        const keyword = item.Keyword;
                         //        const idRepLanguage = item.IdRepLanguage
@@ -288,20 +354,28 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
         }
     }
 
-    private processTranslateData(resultList, nodeItems, originalField, isForSystemTranslate) {
+    private processTranslateData(
+        resultList,
+        nodeItems,
+        originalField,
+        isForSystemTranslate
+    ) {
         if (resultList && resultList.length) {
-            resultList.forEach(item => {
+            resultList.forEach((item) => {
                 const keyword = item.Keyword;
-                const idRepLanguage = item.IdRepLanguage
-                const translateText = isForSystemTranslate ? item.AllTranslateText : item.OnlyThisWidgetTranslateText;
-                const key = isForSystemTranslate ? item.AllIdTranslateLabelText : item.OnlyThisWidgetIdTranslateLabelText;
+                const idRepLanguage = item.IdRepLanguage;
+                const translateText = isForSystemTranslate
+                    ? item.AllTranslateText
+                    : item.OnlyThisWidgetTranslateText;
+                const key = isForSystemTranslate
+                    ? item.AllIdTranslateLabelText
+                    : item.OnlyThisWidgetIdTranslateLabelText;
                 // const nodes = nodeItems.filter(p => p[originalField] == keyword);
-                const nodes = nodeItems.filter(item => {
+                const nodes = nodeItems.filter((item) => {
                     if (item[originalField]) {
-                        if (typeof item[originalField] == 'object') {
+                        if (typeof item[originalField] == "object") {
                             return item[originalField].value == keyword;
-                        }
-                        else {
+                        } else {
                             return item[originalField] == keyword;
                         }
                     }
@@ -309,10 +383,10 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
                 });
 
                 if (nodes && nodes.length) {
-                    nodes.forEach(node => {
+                    nodes.forEach((node) => {
                         node[idRepLanguage] = {
                             key: key,
-                            value: translateText
+                            value: translateText,
                         };
                     });
                 }
@@ -334,7 +408,7 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
             let keyword;
             const field = data[this.activeTranslateField];
             keyword = field;
-            if (field && typeof field == 'object') {
+            if (field && typeof field == "object") {
                 keyword = field.value;
             }
             if (!keyword) {
@@ -345,39 +419,59 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
                 this.edittingData[keyword] = {};
             }
             this.edittingData[keyword][languageId] = {
-                value: (cellData.value && cellData.value.value) ? cellData.value.value : '',
-                idTranslateLabelText: (cellData.value && cellData.value.key) ? cellData.value.key : null
-            }
+                value:
+                    cellData.value && cellData.value.value
+                        ? cellData.value.value
+                        : "",
+                idTranslateLabelText:
+                    cellData.value && cellData.value.key
+                        ? cellData.value.key
+                        : null,
+            };
         }
     }
 
     prepareDataFroSaving(editData): any {
         const result = [];
-        const translateDataType = this.isSytemTranslate ? TranslateDataTypeEnum.System : TranslateDataTypeEnum.Data;
-        const widgetMainID = '' + this.widgetDetail.idRepWidgetApp;
+        const translateDataType = this.isSytemTranslate
+            ? TranslateDataTypeEnum.System
+            : TranslateDataTypeEnum.Data;
+        const widgetMainID = "" + this.widgetDetail.idRepWidgetApp;
         const widgetCloneID = this.widgetDetail.id;
         (editData as Array<any>).forEach((item) => {
             let originalField = item.FieldName;
-            let editingText : string = item.OriginalText;
-            const tableName = this.globalSettingService.getFieldTableName(originalField, this.widgetDetail);
-            const  isDeleted = isEmpty(item.TranslateText);
-            if (!(isDeleted && (isNil(item.IdTranslateLabelText) || item.IdTranslateLabelText <= 0))) {
+            let editingText: string = item.OriginalText;
+            const tableName = this.globalSettingService.getFieldTableName(
+                originalField,
+                this.widgetDetail
+            );
+            const isDeleted = isEmpty(item.TranslateText);
+            if (
+                !(
+                    isDeleted &&
+                    (isNil(item.IdTranslateLabelText) ||
+                        item.IdTranslateLabelText <= 0)
+                )
+            ) {
                 const isModeAll = item.Mode === TranslateModeEnum.All;
                 result.push({
-                    'IdTranslateLabelText': item.IdTranslateLabelText > 0 ? item.IdTranslateLabelText : null,
-                    'IdRepTranslateModuleType': translateDataType,
-                    'IdRepLanguage': item.IdRepLanguage,
-                    'TableName': tableName,
-                    'WidgetMainID': this.isSytemTranslate ? null : widgetMainID,
-                    'WidgetCloneID': this.isSytemTranslate ? null : widgetCloneID,
-                    'OriginalText': editingText.trim(),
-                    'TranslatedText': item.TranslateText,
-                     // 'IsDeleted': isDeleted ? '1' : null,
-                    'FieldName': originalField
+                    IdTranslateLabelText:
+                        item.IdTranslateLabelText > 0
+                            ? item.IdTranslateLabelText
+                            : null,
+                    IdRepTranslateModuleType: translateDataType,
+                    IdRepLanguage: item.IdRepLanguage,
+                    TableName: tableName,
+                    WidgetMainID: this.isSytemTranslate ? null : widgetMainID,
+                    WidgetCloneID: this.isSytemTranslate ? null : widgetCloneID,
+                    OriginalText: editingText.trim(),
+                    TranslatedText: item.TranslateText,
+                    // 'IsDeleted': isDeleted ? '1' : null,
+                    FieldName: originalField,
                 });
             }
         });
-        return { 'Translations': result };
+        return { Translations: result };
     }
 
     private saveTranslation() {
@@ -394,42 +488,49 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
                     resultItem.push({
                         IdRepLanguage: idRepLanguage,
                         TranslateText: language[idRepLanguage].value,
-                        IdTranslateLabelText: language[idRepLanguage].idTranslateLabelText,
+                        IdTranslateLabelText:
+                            language[idRepLanguage].idTranslateLabelText,
                         OriginalText: keyword,
-                        FieldName: this.activeTranslateField
+                        FieldName: this.activeTranslateField,
                     });
                 }
             }
             const saveData = this.prepareDataFroSaving(resultItem);
             if (saveData.Translations && saveData.Translations.length) {
-                this.globalSettingService.saveTranslateLabelText(saveData).subscribe(
-                    (response) => {
+                this.globalSettingService
+                    .saveTranslateLabelText(saveData)
+                    .subscribe((response) => {
                         this.appErrorHandler.executeAction(() => {
-                            if (response && response.eventType === 'Successfully') {
+                            if (
+                                response &&
+                                response.eventType === "Successfully"
+                            ) {
                                 this.parentInstance.updateTableStatusAfterCompletedSaving();
-                                let lang = this.translate.currentLang || this.translate.defaultLang;
+                                let lang =
+                                    this.translate.currentLang ||
+                                    this.translate.defaultLang;
                                 this.translate.resetLang(lang);
-                                let newLang = lang == 'en' ? 'en_' : 'en';
-                                this.translate.use(newLang).subscribe((data) => {
-                                    this.resourceTranslationService.saveSuccess();
-                                });
+                                let newLang = lang == "en" ? "en_" : "en";
+                                this.translate
+                                    .use(newLang)
+                                    .subscribe((data) => {
+                                        this.resourceTranslationService.saveSuccess();
+                                    });
                             }
                         });
-                    }
-                );
+                    });
             }
         }
     }
 
-    private subscribeData() {
-
-    }
+    private subscribeData() {}
 
     /**
      * getTranslateLanguageList
      */
     private getTranslateLanguageList(callback?) {
-        this.commonService.getListComboBox(this.languageKey)
+        this.commonService
+            .getListComboBox(this.languageKey)
             .finally(() => {
                 if (callback) {
                     callback();
@@ -455,12 +556,13 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
         this.languageList = options;
         options.forEach((item) => {
             this.emptyLanguage[item.idValue] = null;
-            let isEnglishSystemTranslate = this.isSytemTranslate && item.idValue == '4';
-            let pinnedMode = this.isSytemTranslate  ? '' : 'right';
+            let isEnglishSystemTranslate =
+                this.isSytemTranslate && item.idValue == "4";
+            let pinnedMode = this.isSytemTranslate ? "" : "right";
             cols.push({
                 headerName: item.textValue,
                 field: item.idValue,
-                colId: 'translateCol_' + item.idValue,
+                colId: "translateCol_" + item.idValue,
                 // lockPosition: true,
                 pinned: pinnedMode,
                 editable: this.buildEditable.bind(this),
@@ -469,16 +571,15 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
                 valueFormatter: this.languageFormatter.bind(this),
                 width: 90,
                 minWidth: 90,
-                headerClass: 'translation-col',
-                comparator: this.customComparator
+                headerClass: "translation-col",
+                comparator: this.customComparator,
             });
         });
 
         cols = cols.sort(function (x, y) {
-            if (x.field == '4') {
+            if (x.field == "4") {
                 return -1;
-            }
-            else if (y.field == '4') {
+            } else if (y.field == "4") {
                 return 1;
             }
             return 0;
@@ -486,7 +587,7 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
         });
 
         const columns = this.gridInstance.columnApi.getAllColumns();
-        const currentColDefs = columns.map(p => p.getColDef());
+        const currentColDefs = columns.map((p) => p.getColDef());
         this.gridInstance.api.setColumnDefs([...currentColDefs, ...cols]);
         this.gridInstance.api.sizeColumnsToFit();
         /*
@@ -533,7 +634,7 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
         if (params && params.value && params.value.value) {
             return params.value.value;
         }
-        return '';
+        return "";
     }
 
     /**
@@ -541,16 +642,22 @@ export class GridTranslationDirective implements OnDestroy, OnInit {
      */
     private isTranslateColExists() {
         const columns = this.gridInstance.columnApi.getAllColumns();
-        const currentColDefs = columns.map(p => p.getColDef());
-        const rs = currentColDefs.find(p => (p.colId && p.colId.indexOf('translateCol_') >= 0));
+        const currentColDefs = columns.map((p) => p.getColDef());
+        const rs = currentColDefs.find(
+            (p) => p.colId && p.colId.indexOf("translateCol_") >= 0
+        );
         return rs != null;
     }
 
     private removeAllTranslateCol() {
         if (this.gridInstance && this.gridInstance.columnApi) {
             const columns = this.gridInstance.columnApi.getAllColumns();
-            const currentColDefs = columns.map(p => p.getColDef());
-            const cols = currentColDefs.filter(p => (!p.colId || (p.colId && p.colId.indexOf('translateCol_') < 0)));
+            const currentColDefs = columns.map((p) => p.getColDef());
+            const cols = currentColDefs.filter(
+                (p) =>
+                    !p.colId ||
+                    (p.colId && p.colId.indexOf("translateCol_") < 0)
+            );
             this.gridInstance.api.setColumnDefs(cols);
         }
         if (this.gridInstance.columnsLayoutSettings) {

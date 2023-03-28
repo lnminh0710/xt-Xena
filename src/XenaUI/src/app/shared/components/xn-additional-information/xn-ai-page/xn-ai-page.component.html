@@ -1,6 +1,8 @@
-<div id="{{page.PageId || ''}}" class="height-pc-100" *ngIf="page">
-    <div class="col-xs-12  height-pc-100  no-padding">
-        <widget-container [pageId]="page.PageId"
-                          [tabID]="tabID"></widget-container>
+<div id="{{ page.PageId || '' }}" class="height-pc-100" *ngIf="page">
+    <div class="col-xs-12 height-pc-100 no-padding">
+        <widget-container
+            [pageId]="page.PageId"
+            [tabID]="tabID"
+        ></widget-container>
     </div>
 </div>

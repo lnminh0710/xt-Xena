@@ -1,59 +1,109 @@
-<div class="working-modules-container"
-     #wmContainer
-     [draggable]="isHovering">
+<div class="working-modules-container" #wmContainer [draggable]="isHovering">
     <ng-template [ngIf]="workingModules && workingModules.length > 0">
-
-        <div class="pulse-container"
-             (mouseenter)="toggleIsHovering(true)"
-             [ngClass]="{'visible': !isHovering && !isDragging}">
-            <div #pulseDot
-                 class="dot {{stickPosition}}"></div>
-            <div class="pulse {{stickPosition}}"></div>
+        <div
+            class="pulse-container"
+            (mouseenter)="toggleIsHovering(true)"
+            [ngClass]="{ visible: !isHovering && !isDragging }"
+        >
+            <div #pulseDot class="dot {{ stickPosition }}"></div>
+            <div class="pulse {{ stickPosition }}"></div>
         </div>
 
-        <ul [ngClass]="{'display-horizontal': stickPosition === 'top' || stickPosition === 'bottom',
-                        'visible': isHovering || isDragging}">
-            <li *ngFor="let workingModule of workingModules"
-                [ngClass]="{'active-working-module': workingModule.workingModule.idSettingsGUI == ofModule.idSettingsGUI}">
-                <a class="module-container cursor-pointer"
-                   (click)="selectWorkingModule(workingModule.workingModule)">
-                    <i class="module-icon fa {{workingModule.workingModule.iconName}}"></i>
-                    <a class="module-caret-container cursor-pointer"
-                       [ngClass]="{'no-hover-effect': isDragging}"
-                       [attr.data-module-name]="workingModule.workingModule.moduleName">
-                        <span class="module-name"
-                              id="{{workingModule.workingModule.idSettingsGUI}}-module-name">
-                            <i class="module-caret fa"
-                               [ngClass]="{'pull-left fa-caret-left': stickPosition === 'right',
-                                       'pull-right': stickPosition !== 'right',
-                                       'fa-caret-right': stickPosition === 'left',
-                                       'fa-caret-down': stickPosition === 'top',
-                                       'margin-top-2': stickPosition !== 'bottom',
-                                       'fa-caret-up': stickPosition === 'bottom'}"
-                               aria-hidden="true"></i>
-                            <span class="badge"
-                                  [ngClass]="{'pull-left': stickPosition === 'right',
-                                              'pull-right': stickPosition !== 'right'}"
-                                  *ngIf="workingModule.parkedItems && workingModule.parkedItems.length > 0">
-                                {{workingModule.parkedItems.length || 0}}
+        <ul
+            [ngClass]="{
+                'display-horizontal':
+                    stickPosition === 'top' || stickPosition === 'bottom',
+                visible: isHovering || isDragging
+            }"
+        >
+            <li
+                *ngFor="let workingModule of workingModules"
+                [ngClass]="{
+                    'active-working-module':
+                        workingModule.workingModule.idSettingsGUI ==
+                        ofModule.idSettingsGUI
+                }"
+            >
+                <a
+                    class="module-container cursor-pointer"
+                    (click)="selectWorkingModule(workingModule.workingModule)"
+                >
+                    <i
+                        class="module-icon fa {{
+                            workingModule.workingModule.iconName
+                        }}"
+                    ></i>
+                    <a
+                        class="module-caret-container cursor-pointer"
+                        [ngClass]="{ 'no-hover-effect': isDragging }"
+                        [attr.data-module-name]="
+                            workingModule.workingModule.moduleName
+                        "
+                    >
+                        <span
+                            class="module-name"
+                            id="{{
+                                workingModule.workingModule.idSettingsGUI
+                            }}-module-name"
+                        >
+                            <i
+                                class="module-caret fa"
+                                [ngClass]="{
+                                    'pull-left fa-caret-left':
+                                        stickPosition === 'right',
+                                    'pull-right': stickPosition !== 'right',
+                                    'fa-caret-right': stickPosition === 'left',
+                                    'fa-caret-down': stickPosition === 'top',
+                                    'margin-top-2': stickPosition !== 'bottom',
+                                    'fa-caret-up': stickPosition === 'bottom'
+                                }"
+                                aria-hidden="true"
+                            ></i>
+                            <span
+                                class="badge"
+                                [ngClass]="{
+                                    'pull-left': stickPosition === 'right',
+                                    'pull-right': stickPosition !== 'right'
+                                }"
+                                *ngIf="
+                                    workingModule.parkedItems &&
+                                    workingModule.parkedItems.length > 0
+                                "
+                            >
+                                {{ workingModule.parkedItems.length || 0 }}
                             </span>
-                            <span class="module-name-detail  pull-right"
-
-                                  [ngClass]="{'pull-left': stickPosition === 'right',
-                                              'pull-right': stickPosition !== 'right',
-                                              'more-width': !workingModule.parkedItems || workingModule.parkedItems.length === 0}">
-                                {{workingModule.workingModule.moduleName}}
+                            <span
+                                class="module-name-detail pull-right"
+                                [ngClass]="{
+                                    'pull-left': stickPosition === 'right',
+                                    'pull-right': stickPosition !== 'right',
+                                    'more-width':
+                                        !workingModule.parkedItems ||
+                                        workingModule.parkedItems.length === 0
+                                }"
+                            >
+                                {{ workingModule.workingModule.moduleName }}
                             </span>
                         </span>
-                        <xn-working-modules-parked-items *ngIf="!isDragging && hoverModuleName == workingModule.workingModule.moduleName"
-                                                         [parkedItems]="workingModule.parkedItems"
-                                                         [fieldConfig]="workingModule.fieldConfig"
-                                                         [activeModule]="!workingModule.parkedItems ? workingModule.workingModule : ofModule"
-                                                         [workingModule]="workingModule.workingModule"
-                                                         [subModules]="workingModule.subModules"
-                                                         [stickPosition]="stickPosition"
-                                                         (hovering)="workingModuleHovering($event)"
-                                                         (close)="parkedItemsPanelClosed($event)"></xn-working-modules-parked-items>
+                        <xn-working-modules-parked-items
+                            *ngIf="
+                                !isDragging &&
+                                hoverModuleName ==
+                                    workingModule.workingModule.moduleName
+                            "
+                            [parkedItems]="workingModule.parkedItems"
+                            [fieldConfig]="workingModule.fieldConfig"
+                            [activeModule]="
+                                !workingModule.parkedItems
+                                    ? workingModule.workingModule
+                                    : ofModule
+                            "
+                            [workingModule]="workingModule.workingModule"
+                            [subModules]="workingModule.subModules"
+                            [stickPosition]="stickPosition"
+                            (hovering)="workingModuleHovering($event)"
+                            (close)="parkedItemsPanelClosed($event)"
+                        ></xn-working-modules-parked-items>
                     </a>
                 </a>
             </li>

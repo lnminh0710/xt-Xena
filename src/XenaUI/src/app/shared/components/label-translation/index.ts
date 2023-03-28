@@ -1,1 +1,1 @@
-export * from './label-translation.component';
+export * from "./label-translation.component";

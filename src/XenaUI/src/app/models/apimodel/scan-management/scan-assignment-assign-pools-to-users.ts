@@ -1,4 +1,3 @@
-
 export class ScanAssignmentAssignPoolsToUsers {
     public ScanAssignmentPools: Array<ScanAssignmentPool>;
     public ScanAssignmentUserLogins: Array<ScanAssignmentUserLogin>;
@@ -10,10 +9,10 @@ export class ScanAssignmentAssignPoolsToUsers {
 
 export class ScanAssignmentPool {
     public IdScansContainerDispatchers?: number;
-	public IdRepAssignedMethods?: number;
-	public IdCountrylanguage?: number;
-	public IdScansContainerAssignment?: number;
-	public Notes?: string;    
+    public IdRepAssignedMethods?: number;
+    public IdCountrylanguage?: number;
+    public IdScansContainerAssignment?: number;
+    public Notes?: string;
 
     public constructor(init?: Partial<ScanAssignmentPool>) {
         Object.assign(this, init);
@@ -26,6 +25,6 @@ export class ScanAssignmentUserLogin {
     public InvalidQuantity?: boolean;
 
     public constructor(init?: Partial<ScanAssignmentUserLogin>) {
-        Object.assign(this, init);        
+        Object.assign(this, init);
     }
 }

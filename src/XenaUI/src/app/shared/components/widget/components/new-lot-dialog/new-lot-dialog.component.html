@@ -1,51 +1,74 @@
-<p-dialog header=""
-          *ngIf="showDialog"
-          [(visible)]="showDialog"
-          [styleClass]="'prime-dialog'"
-          appendTo="body"
-          modal="true"
-          [draggable]="true"
-          [resizable]="false"
-          responsive="true"
-          [width]="400"
-          [height]="210">
+<p-dialog
+    header=""
+    *ngIf="showDialog"
+    [(visible)]="showDialog"
+    [styleClass]="'prime-dialog'"
+    appendTo="body"
+    modal="true"
+    [draggable]="true"
+    [resizable]="false"
+    responsive="true"
+    [width]="400"
+    [height]="210"
+>
     <p-header>
         <div class="modal-header--confirm">
-            <span class="fa  fa-question-circle  header-icon  pull-left"></span>
-            <span class="header-text  pull-left"><label-translation [keyword]="'New_lot_dialog__New_lot_name'"></label-translation></span>
-            <button type="button"
-                    mat-raised-button
-                    class="mat-btn-close-popup"
-                    aria-label="Close"
-                    (click)="close()">
+            <span class="fa fa-question-circle header-icon pull-left"></span>
+            <span class="header-text pull-left"
+                ><label-translation
+                    [keyword]="'New_lot_dialog__New_lot_name'"
+                ></label-translation
+            ></span>
+            <button
+                type="button"
+                mat-raised-button
+                class="mat-btn-close-popup"
+                aria-label="Close"
+                (click)="close()"
+            >
                 <span class="fa fa-fw fa-close"></span>
             </button>
         </div>
     </p-header>
-    <form *ngIf="showDialog"
-          class="margin-top--md  selection-input-customize">
+    <form *ngIf="showDialog" class="margin-top--md selection-input-customize">
         <div class="group">
-            <input type="text" required>
+            <input type="text" required />
             <span class="text-highlight"></span>
             <span class="bar"></span>
-            <label><label-translation [keyword]="'New_lot_dialog__Lot_Name'"></label-translation></label>
+            <label
+                ><label-translation
+                    [keyword]="'New_lot_dialog__Lot_Name'"
+                ></label-translation
+            ></label>
         </div>
     </form>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button label="Cancel"
-                    type="button"
-                    mat-raised-button
-                    class="ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
-                    (click)="cancel()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'New_lot_dialog__Cancel'"></label-translation></span>
+            <button
+                label="Cancel"
+                type="button"
+                mat-raised-button
+                class="ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                (click)="cancel()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'New_lot_dialog__Cancel'"
+                    ></label-translation
+                ></span>
             </button>
-            <button label="OK"
-                    type="button"
-                    mat-raised-button
-                    class="mat-btn-blue  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
-                    (click)="ok()">
-                <span class="bt-t  ui-button-text ui-c"><label-translation [keyword]="'New_lot_dialog__OK'"></label-translation></span>
+            <button
+                label="OK"
+                type="button"
+                mat-raised-button
+                class="mat-btn-blue ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+                (click)="ok()"
+            >
+                <span class="bt-t ui-button-text ui-c"
+                    ><label-translation
+                        [keyword]="'New_lot_dialog__OK'"
+                    ></label-translation
+                ></span>
             </button>
         </div>
     </p-footer>

@@ -1,7 +1,7 @@
-import { Injectable, Injector} from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BaseService } from '../base.service';
-import isNil from 'lodash-es/isNil';
+import { Injectable, Injector } from "@angular/core";
+import { Observable } from "rxjs/Observable";
+import { BaseService } from "../base.service";
+import isNil from "lodash-es/isNil";
 
 @Injectable()
 export class BusinessCostService extends BaseService {
@@ -10,37 +10,45 @@ export class BusinessCostService extends BaseService {
     }
 
     public getBusinessCosts(id: any, _isWrap?: boolean): Observable<any> {
-        if (isNil(_isWrap))
-            _isWrap = false;
+        if (isNil(_isWrap)) _isWrap = false;
         return this.get<any>(this.serUrl.getCampaignCosts, {
             idBusinessCosts: id,
-            isWrap: _isWrap
+            isWrap: _isWrap,
         });
     }
 
     public getBusinessCostsItem(idBusinessCosts: any): Observable<any> {
         return this.get<any>(this.serUrl.getBusinessCostsItem, {
-            idBusinessCosts: idBusinessCosts
+            idBusinessCosts: idBusinessCosts,
         });
     }
-    public getBusinessCostsCountries(idBusinessCostsItems: any, idSalesCampaignWizard: any): Observable<any> {
+    public getBusinessCostsCountries(
+        idBusinessCostsItems: any,
+        idSalesCampaignWizard: any
+    ): Observable<any> {
         return this.get<any>(this.serUrl.getBusinessCostsCountries, {
             idBusinessCostsItems: idBusinessCostsItems,
-            idSalesCampaignWizard: idSalesCampaignWizard
+            idSalesCampaignWizard: idSalesCampaignWizard,
         });
     }
 
     public getFilesByBusinessCostsId(idBusinessCosts: any): Observable<any> {
         return this.get<any>(this.serUrl.getFilesByBusinessCostsId, {
-            idBusinessCosts: idBusinessCosts
+            idBusinessCosts: idBusinessCosts,
         });
     }
 
     public saveFilesByBusinessCostsId(data: any): Observable<any> {
-        return this.post<any>(this.serUrl.saveFilesByBusinessCostsId, JSON.stringify(data));
+        return this.post<any>(
+            this.serUrl.saveFilesByBusinessCostsId,
+            JSON.stringify(data)
+        );
     }
 
     public saveBusinessCostsItem(data: any): Observable<any> {
-        return this.post<any>(this.serUrl.saveBusinessCostsItem, JSON.stringify(data));
+        return this.post<any>(
+            this.serUrl.saveBusinessCostsItem,
+            JSON.stringify(data)
+        );
     }
 }

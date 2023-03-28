@@ -1,1 +1,1 @@
-export * from './printer-form-dialog.component';
+export * from "./printer-form-dialog.component";

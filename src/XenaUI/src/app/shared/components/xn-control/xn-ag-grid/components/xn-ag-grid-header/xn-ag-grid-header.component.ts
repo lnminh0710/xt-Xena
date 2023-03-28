@@ -1,14 +1,21 @@
-import { Component, OnInit, Input, OnChanges, Output, SimpleChanges, EventEmitter } from "@angular/core";
-import { ModalService} from "app/services";
-import { defaultLanguage } from 'app/app.resource';
+import {
+    Component,
+    OnInit,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges,
+    EventEmitter,
+} from "@angular/core";
+import { ModalService } from "app/services";
+import { defaultLanguage } from "app/app.resource";
 
 @Component({
-    selector: 'xn-ag-grid-header',
-    templateUrl: './xn-ag-grid-header.component.html',
-    styleUrls: ['./xn-ag-grid-header.component.scss']
+    selector: "xn-ag-grid-header",
+    templateUrl: "./xn-ag-grid-header.component.html",
+    styleUrls: ["./xn-ag-grid-header.component.scss"],
 })
 export class XnAgGridHeaderComponent implements OnInit, OnChanges {
-
     @Input() isShowedHeader = false;
     @Input() isShowCellMoveBtn: boolean;
     @Input() hasHeaderBorder = false;
@@ -23,7 +30,7 @@ export class XnAgGridHeaderComponent implements OnInit, OnChanges {
     @Input() allowDelete = false;
     @Input() hasValidationError = false;
     @Input() isMarkedAsDelete = false;
-    @Input() searchText: string = '*';
+    @Input() searchText: string = "*";
     @Input() isSearching: boolean;
     @Input() pageIndex: number;
     @Input() itemsPerPage: number;
@@ -36,26 +43,30 @@ export class XnAgGridHeaderComponent implements OnInit, OnChanges {
     @Output() onDeleteRows = new EventEmitter<any>();
     @Output() onCellDirectionChanged = new EventEmitter<any>();
 
-    public filter = '';
+    public filter = "";
     public isCellMoveForward = false;
     public isCellMoveDefault = true;
 
-    constructor(private modalService: ModalService) {
-    }
+    constructor(private modalService: ModalService) {}
 
-    ngOnInit() {
-
-    }
+    ngOnInit() {}
 
     public ngOnChanges(changes: SimpleChanges) {
-        if (changes['headerTitle'] && this.headerTitle) {
-            defaultLanguage['XnAgGridHeader__ht_' + this.headerTitle] = this.headerTitle;
+        if (changes["headerTitle"] && this.headerTitle) {
+            defaultLanguage["XnAgGridHeader__ht_" + this.headerTitle] =
+                this.headerTitle;
         }
     }
 
     public doSearch(value: string) {
         if (this.serverPaging) {
-            if (this.modalService.isStopSearchWhenEmptySize(this.itemsPerPage, this.pageIndex)) return;
+            if (
+                this.modalService.isStopSearchWhenEmptySize(
+                    this.itemsPerPage,
+                    this.pageIndex
+                )
+            )
+                return;
         }
         if (!value) {
             this.isSearching = false;
@@ -71,7 +82,13 @@ export class XnAgGridHeaderComponent implements OnInit, OnChanges {
 
     public searchClicked($event) {
         if (this.serverPaging) {
-            if (this.modalService.isStopSearchWhenEmptySize(this.itemsPerPage, this.pageIndex)) return;
+            if (
+                this.modalService.isStopSearchWhenEmptySize(
+                    this.itemsPerPage,
+                    this.pageIndex
+                )
+            )
+                return;
         }
         if (!this.searchText) {
             this.isSearching = false;

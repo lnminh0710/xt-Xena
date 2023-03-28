@@ -1,19 +1,28 @@
 <div class="form-group">
-    <label class="control-label col-sm-2"><label-translation [keyword]="'CC_Payment_Type__Issuer'"></label-translation></label>
+    <label class="control-label col-sm-2"
+        ><label-translation
+            [keyword]="'CC_Payment_Type__Issuer'"
+        ></label-translation
+    ></label>
     <div class="col-sm-10">
         <div class="full-width">
-            <xn-combo-box #creditCardListCtrl
-                          class="custom-wj-input-control xn-select"
-                          [itemsSource]="creditCardList"
-                          [displayMemberPath]="'value'"
-                          [selectedValuePath]="'key'"
-                          [isEditable]="true"
-                          [isRequired]="false"
-                          placeholder="Please select"
-                          (gotFocus)="creditCardListCtrl.isDroppedDown = true">
+            <xn-combo-box
+                #creditCardListCtrl
+                class="custom-wj-input-control xn-select"
+                [itemsSource]="creditCardList"
+                [displayMemberPath]="'value'"
+                [selectedValuePath]="'key'"
+                [isEditable]="true"
+                [isRequired]="false"
+                placeholder="Please select"
+                (gotFocus)="creditCardListCtrl.isDroppedDown = true"
+            >
             </xn-combo-box>
-            <control-messages [xn-trigger-click-inside-cbo]="creditCardListCtrl" [type]="'textbox'"
-                              [icon]="'credit-card'"></control-messages>
+            <control-messages
+                [xn-trigger-click-inside-cbo]="creditCardListCtrl"
+                [type]="'textbox'"
+                [icon]="'credit-card'"
+            ></control-messages>
             <div class="input-group-addon">
                 <i class="fa fa-credit-card" aria-hidden="true"></i>
             </div>
@@ -22,49 +31,86 @@
 </div>
 
 <div class="form-group">
-    <label class="control-label col-sm-2"><label-translation [keyword]="'CC_Payment_Type__Creditcard_Number'"></label-translation></label>
+    <label class="control-label col-sm-2"
+        ><label-translation
+            [keyword]="'CC_Payment_Type__Creditcard_Number'"
+        ></label-translation
+    ></label>
     <div class="col-sm-10">
-        <input type="text" class="form-control xn-input" autocomplete="off">
-        <control-messages [type]="'textbox'"
-                          [icon]="'credit-card'"></control-messages>
+        <input type="text" class="form-control xn-input" autocomplete="off" />
+        <control-messages
+            [type]="'textbox'"
+            [icon]="'credit-card'"
+        ></control-messages>
     </div>
 </div>
 
 <div class="form-group">
-    <label class="control-label col-sm-2"><label-translation [keyword]="'CC_Payment_Type__Valid_thru'"></label-translation></label>
+    <label class="control-label col-sm-2"
+        ><label-translation
+            [keyword]="'CC_Payment_Type__Valid_thru'"
+        ></label-translation
+    ></label>
     <div class="col-sm-1">
-        <input type="text" [textMask]="{mask: dayMask, guide: true }" class="form-control valid-month" placeholder="MM" autocomplete="off">
+        <input
+            type="text"
+            [textMask]="{ mask: dayMask, guide: true }"
+            class="form-control valid-month"
+            placeholder="MM"
+            autocomplete="off"
+        />
     </div>
     <div class="col-sm-2">
-        <input type="text" [textMask]="{mask: yearMask, guide: true }" class="form-control valid-year" placeholder="YYYY" autocomplete="off">
+        <input
+            type="text"
+            [textMask]="{ mask: yearMask, guide: true }"
+            class="form-control valid-year"
+            placeholder="YYYY"
+            autocomplete="off"
+        />
     </div>
-    <label class="control-label col-sm-4"><label-translation [keyword]="'CC_Payment_Type__CVV_CVC'"></label-translation></label>
+    <label class="control-label col-sm-4"
+        ><label-translation
+            [keyword]="'CC_Payment_Type__CVV_CVC'"
+        ></label-translation
+    ></label>
     <div class="col-sm-3">
-        <input type="text" class="form-control" autocomplete="off">
+        <input type="text" class="form-control" autocomplete="off" />
     </div>
 </div>
 
 <div class="form-group">
-    <label class="control-label col-sm-2"><label-translation [keyword]="'CC_Payment_Type__Amount'"></label-translation></label>
+    <label class="control-label col-sm-2"
+        ><label-translation
+            [keyword]="'CC_Payment_Type__Amount'"
+        ></label-translation
+    ></label>
     <div class="col-sm-4">
-        <input type="text" class="form-control xn-input" autocomplete="off">
-        <control-messages [type]="'textbox'"
-                          [icon]="'money'"></control-messages>
+        <input type="text" class="form-control xn-input" autocomplete="off" />
+        <control-messages
+            [type]="'textbox'"
+            [icon]="'money'"
+        ></control-messages>
     </div>
     <div class="col-sm-2">
         <div class="full-width">
-            <xn-combo-box #currencyListCtrl
-                          class="custom-wj-input-control xn-select"
-                          [itemsSource]="currencyList"
-                          [displayMemberPath]="'value'"
-                          [selectedValuePath]="'key'"
-                          [isEditable]="true"
-                          [isRequired]="false"
-                          placeholder="Please select"
-                          (gotFocus)="currencyListCtrl.isDroppedDown = true">
+            <xn-combo-box
+                #currencyListCtrl
+                class="custom-wj-input-control xn-select"
+                [itemsSource]="currencyList"
+                [displayMemberPath]="'value'"
+                [selectedValuePath]="'key'"
+                [isEditable]="true"
+                [isRequired]="false"
+                placeholder="Please select"
+                (gotFocus)="currencyListCtrl.isDroppedDown = true"
+            >
             </xn-combo-box>
-            <control-messages [xn-trigger-click-inside-cbo]="currencyListCtrl" [type]="'textbox'"
-                              [icon]="'credit-card'"></control-messages>
+            <control-messages
+                [xn-trigger-click-inside-cbo]="currencyListCtrl"
+                [type]="'textbox'"
+                [icon]="'credit-card'"
+            ></control-messages>
         </div>
     </div>
 </div>

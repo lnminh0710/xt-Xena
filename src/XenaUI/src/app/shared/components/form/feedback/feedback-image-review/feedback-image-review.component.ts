@@ -4,25 +4,21 @@ import {
     Input,
     Output,
     OnDestroy,
-    EventEmitter
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import {
-    Uti,
-    CustomValidators
-} from 'app/utilities';
+    EventEmitter,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Uti, CustomValidators } from "app/utilities";
 @Component({
-    selector: 'feedback-image-review',
-    styleUrls: ['./feedback-image-review.component.scss'],
-    templateUrl: './feedback-image-review.component.html'
+    selector: "feedback-image-review",
+    styleUrls: ["./feedback-image-review.component.scss"],
+    templateUrl: "./feedback-image-review.component.html",
 })
-export class FeedbackImageReviewComponent extends BaseComponent implements OnInit, OnDestroy {
-    public description: string = '';
+export class FeedbackImageReviewComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
+    public description: string = "";
     public perfectScrollbarConfig: any;
     public currentIndex: number = -1;
     private _images: any[];
@@ -35,10 +31,10 @@ export class FeedbackImageReviewComponent extends BaseComponent implements OnIni
             this._images.push({
                 id: item.id,
                 source: item.image,
-                title: '',
-                alt: '',
+                title: "",
+                alt: "",
                 description: item.text,
-                isSelected: (this.config && item.id === this.config.item.id)
+                isSelected: this.config && item.id === this.config.item.id,
             });
         }
     }
@@ -48,21 +44,21 @@ export class FeedbackImageReviewComponent extends BaseComponent implements OnIni
     }
     @Output() closeImageReview = new EventEmitter<any>();
 
-    constructor(router ? : Router) {
+    constructor(router?: Router) {
         super(router);
     }
     public ngOnInit() {
         this.perfectScrollbarConfig = {
             suppressScrollX: false,
-            suppressScrollY: false
+            suppressScrollY: false,
         };
     }
     public ngOnDestroy() {
         Uti.unsubscribe(this);
     }
     public onImageClickedHandle($event: any) {
-        for(let i=0; i<this.imageTemps.length; i++) {
-            if (this.imageTemps[i].id  === $event.image.id) {
+        for (let i = 0; i < this.imageTemps.length; i++) {
+            if (this.imageTemps[i].id === $event.image.id) {
                 this.currentIndex = i;
                 return;
             }

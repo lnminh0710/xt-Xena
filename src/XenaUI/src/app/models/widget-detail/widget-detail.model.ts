@@ -1,44 +1,52 @@
-import { NgGridItemConfig } from 'app/shared/components/grid-stack';
-import { FilterModeEnum, WidgetLayoutSettingModeEnum, WidgetFormTypeEnum, OrderDataEntryWidgetLayoutModeEnum } from 'app/app.constants';
-import { FieldFilter, ColumnLayoutSetting, WidgetKeyType } from 'app/models';
-import { WidgetUtils } from 'app/shared/components/widget/utils';
-import { WidgetPropertyModel } from 'app/models/property-panel';
-import { RowSetting } from '../filter-mode.model';
+import { NgGridItemConfig } from "app/shared/components/grid-stack";
+import {
+    FilterModeEnum,
+    WidgetLayoutSettingModeEnum,
+    WidgetFormTypeEnum,
+    OrderDataEntryWidgetLayoutModeEnum,
+} from "app/app.constants";
+import { FieldFilter, ColumnLayoutSetting, WidgetKeyType } from "app/models";
+import { WidgetUtils } from "app/shared/components/widget/utils";
+import { WidgetPropertyModel } from "app/models/property-panel";
+import { RowSetting } from "../filter-mode.model";
 
 export class WidgetDetail {
     public idSettingsWidget: number = null;
-    public id: string = '';
+    public id: string = "";
     public idRepWidgetType: number = null;
     public idRepWidgetApp: number = null;
-    public moduleName: string = '';
-    public title: string = '';
+    public moduleName: string = "";
+    public title: string = "";
     public fieldsTranslating: boolean = false;
 
     // Detail widget content
     public contentDetail: any = {};
 
     // Request string for get widget data
-    public request: string = '';
+    public request: string = "";
 
     // Request string for updating data
-    public updateRequest: string = '';
+    public updateRequest: string = "";
 
     // Widget Settings
     public widgetDataType: WidgetDataType = null;
 
     public isMainArea: boolean = false;
 
-    public defaultProperties: string = '';
+    public defaultProperties: string = "";
 
     // Custom Data (Optional)
-    public extensionData: any = '';
+    public extensionData: any = "";
 
     // Used for table widget that have the same type.
     public syncWidgetIds: Array<string> = null;
 
     public constructor(init?: Partial<WidgetDetail>) {
         Object.assign(this, init);
-        this.widgetDataType = (init && init.widgetDataType) ? new WidgetDataType(init.widgetDataType) : null;
+        this.widgetDataType =
+            init && init.widgetDataType
+                ? new WidgetDataType(init.widgetDataType)
+                : null;
     }
 }
 
@@ -51,7 +59,7 @@ export interface IListenKeyConfig {
 }
 
 /**ListenKey
- * 
+ *
  */
 export class ListenKey {
     public main: IListenKeyConfig = null;
@@ -80,8 +88,14 @@ export class WidgetDataType {
 
     public constructor(init?: Partial<WidgetDataType>) {
         Object.assign(this, init);
-        this.editTableSetting = (init && init.editTableSetting) ? new EditTableSetting(init.editTableSetting) : null;
-        this.otherSetting = (init && init.otherSetting) ? new OtherSetting(init.otherSetting) : null;
+        this.editTableSetting =
+            init && init.editTableSetting
+                ? new EditTableSetting(init.editTableSetting)
+                : null;
+        this.otherSetting =
+            init && init.otherSetting
+                ? new OtherSetting(init.otherSetting)
+                : null;
     }
 
     public listenKeyRequest(moduleId: string): { [key: string]: any } {
@@ -90,42 +104,75 @@ export class WidgetDataType {
         let widgetUtils: WidgetUtils = new WidgetUtils();
 
         if (this.filterKey) {
-            this.filterKey.split(',').forEach(filKey => {
-                filterParam[filKey] = '';
+            this.filterKey.split(",").forEach((filKey) => {
+                filterParam[filKey] = "";
             });
         }
 
         if (this.listenKey.main && this.listenKey.main.key) {
-            mainValue = widgetUtils.getValueFromWidgetDataTypeValues(moduleId, this.listenKey.main.key, true);
-            const filterKey = this.listenKey.main.filterKey || this.listenKey.main.key;
-            filterParam[filterKey] = mainValue ? mainValue : '';
+            mainValue = widgetUtils.getValueFromWidgetDataTypeValues(
+                moduleId,
+                this.listenKey.main.key,
+                true
+            );
+            const filterKey =
+                this.listenKey.main.filterKey || this.listenKey.main.key;
+            filterParam[filterKey] = mainValue ? mainValue : "";
         }
 
         if (this.listenKey.sub && this.listenKey.sub.length) {
             // Find valid parent
-            let parentId = this.parentWidgetIds && this.parentWidgetIds.length ? this.parentWidgetIds[0] : '';
+            let parentId =
+                this.parentWidgetIds && this.parentWidgetIds.length
+                    ? this.parentWidgetIds[0]
+                    : "";
             if (WidgetUtils.widgetDataTypeValues[moduleId]) {
-                if (WidgetUtils.widgetDataTypeValues[moduleId].renderFor && WidgetUtils.widgetDataTypeValues[moduleId].renderFor.length) {
-                    this.parentWidgetIds.forEach(prId => {
-                        WidgetUtils.widgetDataTypeValues[moduleId].renderFor.forEach(widgetTargetRender => {
-                            if (prId == widgetTargetRender.srcWidgetId && widgetTargetRender.widgetKeyType == WidgetKeyType.Sub) {
+                if (
+                    WidgetUtils.widgetDataTypeValues[moduleId].renderFor &&
+                    WidgetUtils.widgetDataTypeValues[moduleId].renderFor.length
+                ) {
+                    this.parentWidgetIds.forEach((prId) => {
+                        WidgetUtils.widgetDataTypeValues[
+                            moduleId
+                        ].renderFor.forEach((widgetTargetRender) => {
+                            if (
+                                prId == widgetTargetRender.srcWidgetId &&
+                                widgetTargetRender.widgetKeyType ==
+                                    WidgetKeyType.Sub
+                            ) {
                                 parentId = prId;
                             }
                         });
                     });
                 }
             }
-            this.listenKey.sub.forEach(sub => {
-                subValue = widgetUtils.getValueFromWidgetDataTypeValues(moduleId, sub.key, false, parentId);
-                filterParam[sub.filterKey] = subValue ? subValue : '';
-                if (subValue && WidgetUtils.widgetDataTypeValues[moduleId] &&
-                    WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey] &&
-                    WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey].Sub && WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey].Sub.length) {
-
-                    const arraySub: Array<any> = WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey].Sub;
-                    const findItem = arraySub.find(item => item['value'] == subValue);
-                    if (findItem)
-                        filterParam['item'] = findItem.item;
+            this.listenKey.sub.forEach((sub) => {
+                subValue = widgetUtils.getValueFromWidgetDataTypeValues(
+                    moduleId,
+                    sub.key,
+                    false,
+                    parentId
+                );
+                filterParam[sub.filterKey] = subValue ? subValue : "";
+                if (
+                    subValue &&
+                    WidgetUtils.widgetDataTypeValues[moduleId] &&
+                    WidgetUtils.widgetDataTypeValues[moduleId][
+                        this.filterKey
+                    ] &&
+                    WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey]
+                        .Sub &&
+                    WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey]
+                        .Sub.length
+                ) {
+                    const arraySub: Array<any> =
+                        WidgetUtils.widgetDataTypeValues[moduleId][
+                            this.filterKey
+                        ].Sub;
+                    const findItem = arraySub.find(
+                        (item) => item["value"] == subValue
+                    );
+                    if (findItem) filterParam["item"] = findItem.item;
                 }
             });
         }
@@ -144,68 +191,59 @@ export class WidgetDataType {
     }
 }
 
-
-
 /**
  * EditTableSetting
  */
 export class EditTableSetting {
-    public edit: string = '0';
-    public addNew: string = '0';
-    public delete: string = '0';
-    public dontAllowRefresh: string = '0';
-    public doesNotHasGetSP: string = '0';
-    public mediaCode: string = '0';
-    public fitColumn: string = '0';
+    public edit: string = "0";
+    public addNew: string = "0";
+    public delete: string = "0";
+    public dontAllowRefresh: string = "0";
+    public doesNotHasGetSP: string = "0";
+    public mediaCode: string = "0";
+    public fitColumn: string = "0";
     public colTranslate: string;
-    public treeView: string = '0';
-    public showFilter: string = '0';
+    public treeView: string = "0";
+    public showFilter: string = "0";
 
     public get allowEditRow(): boolean {
-        if (this.edit == '1' || this.addNew == '1' || this.delete == '1')
+        if (this.edit == "1" || this.addNew == "1" || this.delete == "1")
             return true;
         return false;
     }
 
     public get allowNewRowAdd(): boolean {
-        if (this.addNew == '1')
-            return true;
+        if (this.addNew == "1") return true;
         return false;
     }
 
     public get allowRowDelete(): boolean {
-        if (this.delete == '1')
-            return true;
+        if (this.delete == "1") return true;
         return false;
     }
 
     public get allowMediaCode(): boolean {
-        if (this.mediaCode == '1')
-            return true;
+        if (this.mediaCode == "1") return true;
         return false;
     }
 
     public get allowFitColumn(): boolean {
-        if (this.fitColumn == '1')
-            return true;
+        if (this.fitColumn == "1") return true;
         return false;
     }
 
     public get allowColTranslation(): boolean {
-        if (this.colTranslate)
-            return true;
+        if (this.colTranslate) return true;
         return false;
     }
 
     public get allowTreeView(): boolean {
-        if (this.treeView == '1')
-            return true;
+        if (this.treeView == "1") return true;
         return false;
     }
 
     public get allowShowFilter(): boolean {
-        if (this.showFilter == '1')
-            return true;
+        if (this.showFilter == "1") return true;
         return false;
     }
 
@@ -218,18 +256,16 @@ export class EditTableSetting {
  * OtherSetting
  */
 export class OtherSetting {
-    public dontAllowRefresh: string = '0';
-    public doesNotHasGetSP: string = '0';
+    public dontAllowRefresh: string = "0";
+    public doesNotHasGetSP: string = "0";
 
     public get getDontAllowRefresh(): boolean {
-        if (this.dontAllowRefresh == '1')
-            return true;
+        if (this.dontAllowRefresh == "1") return true;
         return false;
     }
 
     public get getDoesNotHasGetSP(): boolean {
-        if (this.doesNotHasGetSP == '1')
-            return true;
+        if (this.doesNotHasGetSP == "1") return true;
         return false;
     }
 
@@ -244,10 +280,13 @@ export class FilterData {
     public fieldFilters: Array<FieldFilter> = [];
     public columnLayoutsetting: ColumnLayoutSetting = null;
     public rowSetting: RowSetting = null;
-    public widgetLayoutSettingMode: WidgetLayoutSettingModeEnum = WidgetLayoutSettingModeEnum.FullWidth;
+    public widgetLayoutSettingMode: WidgetLayoutSettingModeEnum =
+        WidgetLayoutSettingModeEnum.FullWidth;
     public widgetFormType: WidgetFormTypeEnum = null;
-    public orderDataEntryWidgetLayoutMode: OrderDataEntryWidgetLayoutModeEnum = null;
-    public orderDataEntryProperties: OrderDataEntryProperties = new OrderDataEntryProperties();
+    public orderDataEntryWidgetLayoutMode: OrderDataEntryWidgetLayoutModeEnum =
+        null;
+    public orderDataEntryProperties: OrderDataEntryProperties =
+        new OrderDataEntryProperties();
 
     public constructor(init?: Partial<FilterData>) {
         Object.assign(this, init);
@@ -260,9 +299,9 @@ export class FilterData {
  */
 export class LightWidgetDetail {
     public idSettingsWidget: number = null;
-    public id: string = '';
-    public title: string = '';
-    public moduleName: string = '';
+    public id: string = "";
+    public title: string = "";
+    public moduleName: string = "";
     public widgetDataType: WidgetDataType = null;
     // Used for table widget that have the same type.
     public syncWidgetIds: Array<string> = null;
@@ -274,7 +313,7 @@ export class LightWidgetDetail {
     public constructor(init?: Partial<LightWidgetDetail>) {
         // Don't use Object.assign in this case to avoid unnescessary param that causing huge memmory in store
         // Object.assign(this, init);
-        this.id = init.id || '';
+        this.id = init.id || "";
         this.idSettingsWidget = init.idSettingsWidget || null;
         this.title = init.title || null;
         this.moduleName = init.moduleName || null;
@@ -282,7 +321,10 @@ export class LightWidgetDetail {
         this.syncWidgetIds = init.syncWidgetIds || null;
         this.idRepWidgetType = init.idRepWidgetType || null;
         this.idRepWidgetApp = init.idRepWidgetApp || null;
-        this.widgetDataType = (init && init.widgetDataType) ? new WidgetDataType(init.widgetDataType) : null;
+        this.widgetDataType =
+            init && init.widgetDataType
+                ? new WidgetDataType(init.widgetDataType)
+                : null;
     }
 }
 
@@ -291,8 +333,8 @@ export class LightWidgetDetail {
  */
 export class WidgetDetailPage {
     public widgetDetail: WidgetDetail = null;
-    public defaultValue: string = '';
-    public description: string = '';
+    public defaultValue: string = "";
+    public description: string = "";
     public config: NgGridItemConfig = null;
     public columnsLayoutSettings: any;
     public filterData: FilterData = null;
@@ -304,13 +346,15 @@ export class WidgetDetailPage {
         if (init) {
             widgetDetail = Object.assign({}, init.widgetDetail);
         }
-        this.widgetDetail = widgetDetail ? <WidgetDetail>(new LightWidgetDetail(widgetDetail)) : null;
+        this.widgetDetail = widgetDetail
+            ? <WidgetDetail>new LightWidgetDetail(widgetDetail)
+            : null;
     }
 }
 
 /**
-*GridConfig
-*/
+ *GridConfig
+ */
 export interface GridConfig {
     designSizeDiffPercentage?: number;
 }
@@ -332,7 +376,6 @@ export interface WidgetItemSize {
     height: number;
 }
 
-
 export interface IDragDropCommunicationData {
     srcWidgetDetail?: WidgetDetail;
     mode?: string;
@@ -344,18 +387,21 @@ export interface IDragDropCommunicationData {
 }
 
 export class DragMode {
-    static Default = 'default';
-    static Translate = 'translate';
+    static Default = "default";
+    static Translate = "translate";
 }
 
 /**
  * LayoutPageInfoModel
  */
 export class LayoutPageInfoModel {
-
     public id: string;
     public moduleName: string;
-    public widgetboxesTitle: { id: string, title: string, widgetDetail: WidgetDetail }[];
+    public widgetboxesTitle: {
+        id: string;
+        title: string;
+        widgetDetail: WidgetDetail;
+    }[];
 
     constructor(init?: Partial<LayoutPageInfoModel>) {
         Object.assign(this, init);
@@ -375,15 +421,13 @@ export class TableDataState {
     }
 }
 
-
 /**
  * ReloadMode
  **/
 export enum ReloadMode {
     ListenKey,
-    UpdatingData
+    UpdatingData,
 }
-
 
 /**
  * WidgetState

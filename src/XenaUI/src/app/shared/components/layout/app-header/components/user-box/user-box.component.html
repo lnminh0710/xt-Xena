@@ -1,96 +1,159 @@
 <!-- Menu Toggle Button -->
-<a mat-button
-   dropdownToggle
-   id="user-dropdown"
-   class="dropdown-toggle login-icon-sm">
+<a
+    mat-button
+    dropdownToggle
+    id="user-dropdown"
+    class="dropdown-toggle login-icon-sm"
+>
     <!-- The user image in the navbar-->
     <div class="avatar-container">
-        <img [imageLoader]="profileImageUrl" [imageNameDefault]="'avata-default.png'" class="user-image" [alt]="currentUser.getName()">
-        <div class="nickname-text hidden-xs">{{currentUser.nickName}}</div>
+        <img
+            [imageLoader]="profileImageUrl"
+            [imageNameDefault]="'avata-default.png'"
+            class="user-image"
+            [alt]="currentUser.getName()"
+        />
+        <div class="nickname-text hidden-xs">{{ currentUser.nickName }}</div>
     </div>
 </a>
 
-<div class="container dropdown-menu"
-     *dropdownMenu
-     role="menu"
-     aria-labelledby="user-dropdown"
-     (click)="preventClose($event)">
+<div
+    class="container dropdown-menu"
+    *dropdownMenu
+    role="menu"
+    aria-labelledby="user-dropdown"
+    (click)="preventClose($event)"
+>
     <perfect-scrollbar class="scrollbar-container">
         <div class="col-xs-12 no-padding">
             <div class="card hovercard">
-                <div class="cardheader">
-                </div>
+                <div class="cardheader"></div>
                 <div class="avatar">
-                    <img [imageLoader]="profileImageUrl" [imageNameDefault]="'avata-default.png'" [alt]="currentUser.getName()">
+                    <img
+                        [imageLoader]="profileImageUrl"
+                        [imageNameDefault]="'avata-default.png'"
+                        [alt]="currentUser.getName()"
+                    />
                 </div>
                 <div class="info">
                     <div class="title">
-                        <a>{{currentUser.getName()}}</a>
+                        <a>{{ currentUser.getName() }}</a>
                     </div>
-                    <div class="desc"><label-translation [keyword]="'User_box__Login_time'"></label-translation>: {{ formatDate(currentUser.lastLoginDate, globalDateFormat + ' HH:mm')}}</div>
-                    <div class="desc"><label-translation [keyword]="'User_box__Working_time'"></label-translation>: <time>{{buildWorkingTime(currentUser.lastLoginDate)}}</time></div>
-                    <div class="desc"><label-translation [keyword]="'User_box__Language'"></label-translation>: {{userLanguage}}</div>
-                    <div class="desc">Version: {{buildVersion}}</div>
+                    <div class="desc">
+                        <label-translation
+                            [keyword]="'User_box__Login_time'"
+                        ></label-translation
+                        >:
+                        {{
+                            formatDate(
+                                currentUser.lastLoginDate,
+                                globalDateFormat + " HH:mm"
+                            )
+                        }}
+                    </div>
+                    <div class="desc">
+                        <label-translation
+                            [keyword]="'User_box__Working_time'"
+                        ></label-translation
+                        >:
+                        <time>{{
+                            buildWorkingTime(currentUser.lastLoginDate)
+                        }}</time>
+                    </div>
+                    <div class="desc">
+                        <label-translation
+                            [keyword]="'User_box__Language'"
+                        ></label-translation
+                        >: {{ userLanguage }}
+                    </div>
+                    <div class="desc">Version: {{ buildVersion }}</div>
 
-                    <div class="col-xs-12 no-padding"
-                         *ngIf="showForm">
-                        <um-user-profile-form #userProfileForm
-                                              [gridId]="'b7859025-f9d3-42f6-beb5-2e961ff5a62e'"
-                                              [isUserEditting]="true"
-                                              [userEdittingId]="currentUser.id"
-                                              [useInDropdown]="true"
-                                              [globalProperties]="globalProperties"
-                                              (outputData)="userProfileOutput($event)"
-                                              (loaded)="userProfileFormLoaded()">
+                    <div class="col-xs-12 no-padding" *ngIf="showForm">
+                        <um-user-profile-form
+                            #userProfileForm
+                            [gridId]="'b7859025-f9d3-42f6-beb5-2e961ff5a62e'"
+                            [isUserEditting]="true"
+                            [userEdittingId]="currentUser.id"
+                            [useInDropdown]="true"
+                            [globalProperties]="globalProperties"
+                            (outputData)="userProfileOutput($event)"
+                            (loaded)="userProfileFormLoaded()"
+                        >
                         </um-user-profile-form>
                     </div>
                 </div>
                 <div class="bottom">
                     <ng-template [ngIf]="!showForm">
-                        <xn-combo-box #roleCombo
-                                      wjDropdownHelper
-                                      class="role-combobox custom-wj-input-control"
-                                      *ngIf="roles && (roles.length >= 0)"
-                                      [itemsSource]="roles"
-                                      [displayMemberPath]="'RoleName'"
-                                      [selectedValuePath]="'IdLoginRolesLoginGw'"
-                                      [(selectedValue)]="selectedRole"
-                                      [isRequired]="false"
-                                      (selectedIndexChanged)="roleChanged()"
-                                      (gotFocus)="roleFocus(true)"
-                                      (lostFocus)="roleFocus(false)"
-                                      placeholder="Please select">
+                        <xn-combo-box
+                            #roleCombo
+                            wjDropdownHelper
+                            class="role-combobox custom-wj-input-control"
+                            *ngIf="roles && roles.length >= 0"
+                            [itemsSource]="roles"
+                            [displayMemberPath]="'RoleName'"
+                            [selectedValuePath]="'IdLoginRolesLoginGw'"
+                            [(selectedValue)]="selectedRole"
+                            [isRequired]="false"
+                            (selectedIndexChanged)="roleChanged()"
+                            (gotFocus)="roleFocus(true)"
+                            (lostFocus)="roleFocus(false)"
+                            placeholder="Please select"
+                        >
                         </xn-combo-box>
-                        <button type="button"
-                                mat-raised-button
-                                class="mat-btn-blue new-size margin-top--sd"
-                                (click)="editProfile()">
-                            <span class="bt-t"><label-translation [keyword]="'User_box__Edit_Profile'"></label-translation></span>
+                        <button
+                            type="button"
+                            mat-raised-button
+                            class="mat-btn-blue new-size margin-top--sd"
+                            (click)="editProfile()"
+                        >
+                            <span class="bt-t"
+                                ><label-translation
+                                    [keyword]="'User_box__Edit_Profile'"
+                                ></label-translation
+                            ></span>
                         </button>
-                        <button type="button"
-                                mat-raised-button
-                                class="mat-btn-red new-size margin-top--sd"
-                                (click)="logout()">
-                            <span class="bt-t"><label-translation [keyword]="'User_box__Log_Out'"></label-translation></span>
+                        <button
+                            type="button"
+                            mat-raised-button
+                            class="mat-btn-red new-size margin-top--sd"
+                            (click)="logout()"
+                        >
+                            <span class="bt-t"
+                                ><label-translation
+                                    [keyword]="'User_box__Log_Out'"
+                                ></label-translation
+                            ></span>
                         </button>
                     </ng-template>
                     <ng-template [ngIf]="showForm && !formLoaded">
                         <i class="fa fa-spinner fa-spin loading-spinner"></i>
                     </ng-template>
                     <ng-template [ngIf]="showForm && formLoaded">
-                        <button type="button"
-                                mat-raised-button
-                                class="mat-btn-blue new-size margin-top--sd"
-                                title="Close"
-                                (click)="saveUserProfile()">
-                            <span class="bt-t"><label-translation [keyword]="'User_box__Save'"></label-translation></span>
+                        <button
+                            type="button"
+                            mat-raised-button
+                            class="mat-btn-blue new-size margin-top--sd"
+                            title="Close"
+                            (click)="saveUserProfile()"
+                        >
+                            <span class="bt-t"
+                                ><label-translation
+                                    [keyword]="'User_box__Save'"
+                                ></label-translation
+                            ></span>
                         </button>
-                        <button type="button"
-                                mat-raised-button
-                                class="mat-btn-red new-size margin-top--sd"
-                                title="Close"
-                                (click)="close()">
-                            <span class="bt-t"><label-translation [keyword]="'User_box__Close'"></label-translation></span>
+                        <button
+                            type="button"
+                            mat-raised-button
+                            class="mat-btn-red new-size margin-top--sd"
+                            title="Close"
+                            (click)="close()"
+                        >
+                            <span class="bt-t"
+                                ><label-translation
+                                    [keyword]="'User_box__Close'"
+                                ></label-translation
+                            ></span>
                         </button>
                     </ng-template>
                 </div>

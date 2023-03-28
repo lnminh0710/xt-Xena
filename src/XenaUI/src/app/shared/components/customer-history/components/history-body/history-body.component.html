@@ -1,5 +1,4 @@
 <div *ngIf="data" class="history-body">
-
     <ng-container [ngSwitch]="data.type">
         <div *ngSwitchCase="1">
             <!-- Form without label-->
@@ -7,7 +6,12 @@
                 <form class="form-horizontal">
                     <div class="form-group" *ngFor="let item of data.content">
                         <div class="col-sm-12">
-                            <label class="control-label" xn-tooltip [tooltipText]="item.label">{{item.value}}</label>
+                            <label
+                                class="control-label"
+                                xn-tooltip
+                                [tooltipText]="item.label"
+                                >{{ item.value }}</label
+                            >
                         </div>
                     </div>
                 </form>
@@ -19,8 +23,8 @@
                 <table class="table">
                     <tbody>
                         <tr *ngFor="let item of data.content">
-                            <td>{{item.label}}</td>
-                            <td>{{item.value}}</td>
+                            <td>{{ item.label }}</td>
+                            <td>{{ item.value }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -31,7 +35,9 @@
             <table class="table table-striped" *ngIf="tableDataSource">
                 <thead>
                     <tr>
-                        <th *ngFor="let item of tableDataSource.header">{{item.value}}</th>
+                        <th *ngFor="let item of tableDataSource.header">
+                            {{ item.value }}
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,5 +53,4 @@
             <!--<iframe [src]="data.content | safe"></iframe>-->
         </div>
     </ng-container>
-
 </div>

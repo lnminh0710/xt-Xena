@@ -33,7 +33,7 @@ $max-line-width: 465px;
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: $line-height;
-    max-height: $line-height*$lines-to-show;
+    max-height: $line-height * $lines-to-show;
     -webkit-line-clamp: $lines-to-show;
     display: -webkit-box;
     display: box;

@@ -1,1 +1,1 @@
-export * from './ad-cheques-prn.component';
+export * from "./ad-cheques-prn.component";

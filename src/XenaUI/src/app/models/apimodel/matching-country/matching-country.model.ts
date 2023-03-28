@@ -7,6 +7,6 @@ export class MatchingCountry {
 
     public constructor(init?: Partial<MatchingCountry>) {
         Object.assign(this, init);
-        this.Country = this.IsoCode + ',' + this.DefaultValue;
+        this.Country = this.IsoCode + "," + this.DefaultValue;
     }
 }

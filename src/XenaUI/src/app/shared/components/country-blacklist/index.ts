@@ -1,2 +1,2 @@
-export * from './country-blacklist.component';
-export * from './country-blacklist.module';
+export * from "./country-blacklist.component";
+export * from "./country-blacklist.module";

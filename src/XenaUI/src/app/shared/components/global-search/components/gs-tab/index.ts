@@ -1,1 +1,1 @@
-﻿export { GlobalSearchTabComponent } from './gs-tab.component';
+﻿export { GlobalSearchTabComponent } from "./gs-tab.component";

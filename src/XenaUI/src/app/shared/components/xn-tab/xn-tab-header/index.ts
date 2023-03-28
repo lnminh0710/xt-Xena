@@ -1,1 +1,1 @@
-﻿export { XnTabHeaderComponent } from './xn-tab-header.component';
+﻿export { XnTabHeaderComponent } from "./xn-tab-header.component";

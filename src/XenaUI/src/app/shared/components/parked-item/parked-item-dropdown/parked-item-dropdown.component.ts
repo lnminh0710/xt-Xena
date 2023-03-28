@@ -1,27 +1,34 @@
-import { Component, OnInit, Output, EventEmitter, Input, ElementRef, ChangeDetectorRef, OnDestroy, HostListener, ChangeDetectionStrategy } from '@angular/core';
-import { ParkedItemService, AppErrorHandler } from 'app/services';
 import {
-    ParkedItemMenuModel,
-    Module
-} from 'app/models';
+    Component,
+    OnInit,
+    Output,
+    EventEmitter,
+    Input,
+    ElementRef,
+    ChangeDetectorRef,
+    OnDestroy,
+    HostListener,
+    ChangeDetectionStrategy,
+} from "@angular/core";
+import { ParkedItemService, AppErrorHandler } from "app/services";
+import { ParkedItemMenuModel, Module } from "app/models";
 
-import { BsDropdownConfig } from 'ngx-bootstrap/dropdown';
-import { Subscription } from 'rxjs/Subscription';
-import { Uti } from 'app/utilities';
+import { BsDropdownConfig } from "ngx-bootstrap/dropdown";
+import { Subscription } from "rxjs/Subscription";
+import { Uti } from "app/utilities";
 
 export function getDropdownConfig(): BsDropdownConfig {
     return Object.assign(new BsDropdownConfig(), { autoClose: false });
 }
 
 @Component({
-    selector: 'parked-item-dropdown',
-    styleUrls: ['./parked-item-dropdown.component.scss'],
-    templateUrl: './parked-item-dropdown.component.html',
+    selector: "parked-item-dropdown",
+    styleUrls: ["./parked-item-dropdown.component.scss"],
+    templateUrl: "./parked-item-dropdown.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [{ provide: BsDropdownConfig, useFactory: getDropdownConfig }]
+    providers: [{ provide: BsDropdownConfig, useFactory: getDropdownConfig }],
 })
 export class ParkedItemDropdownComponent implements OnInit, OnDestroy {
-
     public status: { isopen: boolean } = { isopen: false };
     private menuItems: ParkedItemMenuModel[] = [];
     public activeModule: Module;
@@ -29,7 +36,7 @@ export class ParkedItemDropdownComponent implements OnInit, OnDestroy {
 
     @Input()
     set config(config: any) {
-        config = this.parkedItemService.setFieldActive('IdPerson', config);
+        config = this.parkedItemService.setFieldActive("IdPerson", config);
         this.menuItems = config;
         this.changeDetectorRef.markForCheck();
     }
@@ -44,9 +51,10 @@ export class ParkedItemDropdownComponent implements OnInit, OnDestroy {
     @Output() onApply: EventEmitter<boolean> = new EventEmitter();
     @Output() deleteAllParkedItem: EventEmitter<boolean> = new EventEmitter();
 
-    @HostListener('document:click.out-zone', ['$event'])
+    @HostListener("document:click.out-zone", ["$event"])
     onDocumentClick(event) {
-        if (!this._eref.nativeElement.contains(event.target)) // or some similar check
+        if (!this._eref.nativeElement.contains(event.target))
+            // or some similar check
             this.toggled(false);
     }
 
@@ -57,11 +65,9 @@ export class ParkedItemDropdownComponent implements OnInit, OnDestroy {
         private parkedItemService: ParkedItemService,
         private changeDetectorRef: ChangeDetectorRef,
         private appErrorHandler: AppErrorHandler
-    ) { }
+    ) {}
 
-    ngOnInit(): void {
-
-    }
+    ngOnInit(): void {}
 
     ngOnDestroy() {
         Uti.unsubscribe(this);
@@ -73,9 +79,12 @@ export class ParkedItemDropdownComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const menuItems = this.parkedItemService.buildActiveMenuItemListForSave(this.menuItems);
+        const menuItems = this.parkedItemService.buildActiveMenuItemListForSave(
+            this.menuItems
+        );
 
-        this.parkedItemServiceSubscription = this.parkedItemService.saveParkedMenuItem(menuItems, this.activeModule)
+        this.parkedItemServiceSubscription = this.parkedItemService
+            .saveParkedMenuItem(menuItems, this.activeModule)
             .subscribe((result: boolean) => {
                 this.appErrorHandler.executeAction(() => {
                     if (result) {

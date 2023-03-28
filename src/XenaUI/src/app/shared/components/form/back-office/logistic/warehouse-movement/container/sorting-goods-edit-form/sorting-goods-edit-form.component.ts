@@ -1,57 +1,63 @@
 import {
-    Component, OnInit, OnDestroy, Input,
-    ViewChild, ChangeDetectorRef,
-    Injector, AfterViewInit, ElementRef
-} from '@angular/core';
-import {Validators} from '@angular/forms';
+    Component,
+    OnInit,
+    OnDestroy,
+    Input,
+    ViewChild,
+    ChangeDetectorRef,
+    Injector,
+    AfterViewInit,
+    ElementRef,
+} from "@angular/core";
+import { Validators } from "@angular/forms";
 import {
     DropdownListModel,
     ControlGridModel,
     ApiResultResponse,
     MessageModel,
-    FormOutputModel
-} from 'app/models';
-import {MessageModal} from 'app/app.constants';
-import {Uti} from 'app/utilities';
-import * as wjInput from 'wijmo/wijmo.angular2.input';
+    FormOutputModel,
+} from "app/models";
+import { MessageModal } from "app/app.constants";
+import { Uti } from "app/utilities";
+import * as wjInput from "wijmo/wijmo.angular2.input";
 import {
     PropertyPanelService,
     WareHouseMovementService,
     DatatableService,
     CommonService,
     ModalService,
-    BackOfficeService
-} from 'app/services';
-import {
-    Store,
-    ReducerManagerDispatcher
-} from '@ngrx/store';
-import {AppState} from 'app/state-management/store';
-import {Observable} from 'rxjs/Observable';
-import {RowData} from 'app/state-management/store/reducer/widget-content-detail';
+    BackOfficeService,
+} from "app/services";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { Observable } from "rxjs/Observable";
+import { RowData } from "app/state-management/store/reducer/widget-content-detail";
 import {
     ProcessDataActions,
     TabButtonActions,
     CustomAction,
-    WarehouseMovementActions
-} from 'app/state-management/store/actions';
-import {Subscription} from 'rxjs/Subscription';
-import {XnAgGridComponent} from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import cloneDeep from 'lodash-es/cloneDeep';
-import * as widgetContentDetailReducer from 'app/state-management/store/reducer/widget-content-detail';
-import {Router} from '@angular/router';
-import {ToasterService} from 'angular2-toaster/angular2-toaster';
-import {FormBase} from 'app/shared/components/form/form-base';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import { ControlFocusComponent } from 'app/shared/components/form';
-import { AngularMultiSelect } from 'app/shared/components/xn-control/xn-dropdown';
+    WarehouseMovementActions,
+} from "app/state-management/store/actions";
+import { Subscription } from "rxjs/Subscription";
+import { XnAgGridComponent } from "app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component";
+import cloneDeep from "lodash-es/cloneDeep";
+import * as widgetContentDetailReducer from "app/state-management/store/reducer/widget-content-detail";
+import { Router } from "@angular/router";
+import { ToasterService } from "angular2-toaster/angular2-toaster";
+import { FormBase } from "app/shared/components/form/form-base";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import { ControlFocusComponent } from "app/shared/components/form";
+import { AngularMultiSelect } from "app/shared/components/xn-control/xn-dropdown";
 
 @Component({
-    selector: 'sorting-goods-edit-form',
-    styleUrls: ['./sorting-goods-edit-form.component.scss'],
-    templateUrl: './sorting-goods-edit-form.component.html'
+    selector: "sorting-goods-edit-form",
+    styleUrls: ["./sorting-goods-edit-form.component.scss"],
+    templateUrl: "./sorting-goods-edit-form.component.html",
 })
-export class SortingGoodsEditFormComponent extends FormBase implements OnInit, OnDestroy, AfterViewInit {
+export class SortingGoodsEditFormComponent
+    extends FormBase
+    implements OnInit, OnDestroy, AfterViewInit
+{
     private comServiceSubscription: Subscription;
     private getSortingGoodSubscription: Subscription;
     private getStockedArticlesSubscription: Subscription;
@@ -67,21 +73,24 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
     private currentRightGridData: any = [];
     // private cachedGridData: any = [];
     // private deleteCachedGridData: any = [];
-    private gridSectionHeight: any = {'height': `calc(100% - 65px)`};
+    private gridSectionHeight: any = { height: `calc(100% - 65px)` };
     private formGroupValueChangeSubscription: Subscription;
     private currentRowIndex: number = 0;
 
-    @ViewChild('closingReasonDropDownList') closingReasonDropDownList: AngularMultiSelect;
-    @ViewChild('arrivedArticleGridComponent') arrivedArticleGridComponent: XnAgGridComponent;
-    @ViewChild('stockedArticleGridComponent') stockedArticleGridComponent: XnAgGridComponent;
-    @ViewChild('focusControl') controlFocusComponent: ControlFocusComponent;
-    @ViewChild('focusQuantity') quantityField: ElementRef;
+    @ViewChild("closingReasonDropDownList")
+    closingReasonDropDownList: AngularMultiSelect;
+    @ViewChild("arrivedArticleGridComponent")
+    arrivedArticleGridComponent: XnAgGridComponent;
+    @ViewChild("stockedArticleGridComponent")
+    stockedArticleGridComponent: XnAgGridComponent;
+    @ViewChild("focusControl") controlFocusComponent: ControlFocusComponent;
+    @ViewChild("focusQuantity") quantityField: ElementRef;
     // public disableForm = true;
     public disabledFormStokedArticle = true;
     // public articleNumber = '';
-    public newArticleNumber = '';
-    public globalDateFormat = '';
-    public globalNumberFormat = '';
+    public newArticleNumber = "";
+    public globalDateFormat = "";
+    public globalNumberFormat = "";
     public dontShowCalendarWhenFocus: boolean = true;
     public isRenderForm: boolean;
     public closingReasonData: Array<DropdownListModel> = [];
@@ -90,8 +99,14 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
 
     @Input() set globalProperties(globalProperties: any[]) {
         this._globalProperties = globalProperties;
-        this.globalDateFormat = this.propertyPanelService.buildGlobalInputDateFormatFromProperties(globalProperties);
-        this.globalNumberFormat = this.propertyPanelService.buildGlobalNumberFormatFromProperties(globalProperties);
+        this.globalDateFormat =
+            this.propertyPanelService.buildGlobalInputDateFormatFromProperties(
+                globalProperties
+            );
+        this.globalNumberFormat =
+            this.propertyPanelService.buildGlobalNumberFormatFromProperties(
+                globalProperties
+            );
         // this.dontShowCalendarWhenFocus = this.propertyPanelService.getValueDropdownFromGlobalProperties(globalProperties);
     }
 
@@ -118,10 +133,28 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
     ) {
         super(injector, router);
 
-        this.warehouseMovementDataState = this.store.select(state => widgetContentDetailReducer.getWidgetContentDetailState(state, this.ofModule.moduleNameTrim).rowsData);
+        this.warehouseMovementDataState = this.store.select(
+            (state) =>
+                widgetContentDetailReducer.getWidgetContentDetailState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).rowsData
+        );
 
-        this.formEditModeState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditMode);
-        this.formEditDataState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).formEditData);
+        this.formEditModeState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditMode
+        );
+        this.formEditDataState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).formEditData
+        );
     }
 
     public ngOnInit() {
@@ -144,15 +177,23 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
 
     public arrivedArticleGridRowClick($event: any) {
         this.currentArrivedArticle = $event;
-        const articleNumber = Uti.getValueFromArrayByKey(this.currentArrivedArticle, 'ArticleNr');
-        const newArticleNumber = Uti.getValueFromArrayByKey(this.currentArrivedArticle, 'New ArticleNr');
-        this.newArticleNumber = newArticleNumber ? newArticleNumber : articleNumber;
+        const articleNumber = Uti.getValueFromArrayByKey(
+            this.currentArrivedArticle,
+            "ArticleNr"
+        );
+        const newArticleNumber = Uti.getValueFromArrayByKey(
+            this.currentArrivedArticle,
+            "New ArticleNr"
+        );
+        this.newArticleNumber = newArticleNumber
+            ? newArticleNumber
+            : articleNumber;
         this.checkingFormEnable();
         this.initFocusControl();
     }
 
     public addStokedArticleItemClick() {
-        this.formGroup['submitted'] = true;
+        this.formGroup["submitted"] = true;
         this.formGroup.updateValueAndValidity();
         if (!this.formGroup.valid) {
             return;
@@ -166,18 +207,21 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
         //     return;
         // }
         if (!this.isAllowQuantity(formValue.quantity)) {
-            this.modalService.warningMessage([{
-                key: 'Modal_Message__Quantity_Received_Is_Greater_Than_Quantity_In_Order'
-            }]);
+            this.modalService.warningMessage([
+                {
+                    key: "Modal_Message__Quantity_Received_Is_Greater_Than_Quantity_In_Order",
+                },
+            ]);
             return;
         }
         if (!formValue.quantity) {
-            this.modalService.warningMessage([{
-                key: 'Modal_Message__Quantity_Must_Greater_Than_Zero'
-            }]);
+            this.modalService.warningMessage([
+                {
+                    key: "Modal_Message__Quantity_Must_Greater_Than_Zero",
+                },
+            ]);
             return;
         }
-        ;
         this.insertItemToGrid(formValue);
         this._isDirty = true;
         Uti.resetValueForForm(this.formGroup);
@@ -186,28 +230,41 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
 
     public onDeleteColumnClickHandler(eventData) {
         if (eventData) {
-            this.modalService.confirmMessageHtmlContent(new MessageModel({
-                messageType: MessageModal.MessageType.error,
-                headerText: 'Delete Order',
-                message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Delete_This_Order'},
-                    {key: '</p>'}],
-                buttonType1: MessageModal.ButtonType.danger,
-                callBack1: () => {
-                    this.stockedArticleGridComponent.deleteRowByRowId(eventData.DT_RowId);
-                    // this.addCachedDeleteData(eventData);
-                    const data = cloneDeep(this.stockedArticleGrid.data);
-                    Uti.removeItemInArray(data, eventData, 'IdWarehouseMovementGoodsReceiptPosted');
-                    this._isDirty = true;
-                    this.stockedArticleGrid = {
-                        columns: this.stockedArticleGrid.columns,
-                        data: data
-                    };
-                    // this.updateCached();
-                    // this.updateArrivedArticleGrid(eventData);
-                    this.checkingFormEnable();
-                    this.setFormOutputData(null);
-                }
-            }));
+            this.modalService.confirmMessageHtmlContent(
+                new MessageModel({
+                    messageType: MessageModal.MessageType.error,
+                    headerText: "Delete Order",
+                    message: [
+                        { key: "<p>" },
+                        {
+                            key: "Modal_Message__Do_You_Want_To_Delete_This_Order",
+                        },
+                        { key: "</p>" },
+                    ],
+                    buttonType1: MessageModal.ButtonType.danger,
+                    callBack1: () => {
+                        this.stockedArticleGridComponent.deleteRowByRowId(
+                            eventData.DT_RowId
+                        );
+                        // this.addCachedDeleteData(eventData);
+                        const data = cloneDeep(this.stockedArticleGrid.data);
+                        Uti.removeItemInArray(
+                            data,
+                            eventData,
+                            "IdWarehouseMovementGoodsReceiptPosted"
+                        );
+                        this._isDirty = true;
+                        this.stockedArticleGrid = {
+                            columns: this.stockedArticleGrid.columns,
+                            data: data,
+                        };
+                        // this.updateCached();
+                        // this.updateArrivedArticleGrid(eventData);
+                        this.checkingFormEnable();
+                        this.setFormOutputData(null);
+                    },
+                })
+            );
         }
     }
 
@@ -225,8 +282,10 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
             this.setFormOutputData(false, null);
             return;
         }
-        this.wareHouseMovementService.saveGoodsReceiptPosted(this.prepareSubmitData())
-            .subscribe((response: any) => {
+        this.wareHouseMovementService
+            .saveGoodsReceiptPosted(this.prepareSubmitData())
+            .subscribe(
+                (response: any) => {
                     this.appErrorHandler.executeAction(() => {
                         if (!response || !response.returnID) {
                             this.setFormOutputData(true, null);
@@ -243,22 +302,29 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
                 },
                 (err) => {
                     this.setFormOutputData(true);
-                });
+                }
+            );
     }
 
     public prepareSubmitData() {
         return [...this.makeInsertDataItem(), ...this.makeDeleteDataItem()];
     }
 
-    protected setFormOutputData(submitResult: any, returnID?: any, errorMessage?: string) {
-        this.setValueForOutputModel(new FormOutputModel({
-            submitResult: submitResult,
-            formValue: this.formEditData,
-            isValid: this.isValid(),
-            isDirty: this.isDirty(),
-            returnID: returnID,
-            errorMessage: errorMessage || null
-        }));
+    protected setFormOutputData(
+        submitResult: any,
+        returnID?: any,
+        errorMessage?: string
+    ) {
+        this.setValueForOutputModel(
+            new FormOutputModel({
+                submitResult: submitResult,
+                formValue: this.formEditData,
+                isValid: this.isValid(),
+                isDirty: this.isDirty(),
+                returnID: returnID,
+                errorMessage: errorMessage || null,
+            })
+        );
     }
 
     public rowClickedHandler($event) {
@@ -272,60 +338,79 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
     /********************************************************************************************/
 
     private subscribeSave() {
-        this.dispatcherSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.REQUEST_SAVE && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                this.submit();
+        this.dispatcherSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.REQUEST_SAVE &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    this.submit();
+                });
             });
-        });
     }
 
     private subscribeFormEditModeState() {
-        this.formEditModeStateSubscription = this.formEditModeState.subscribe((formEditModeState: boolean) => {
-            this.appErrorHandler.executeAction(() => {
-                this.formEditMode = formEditModeState;
-            });
-        });
+        this.formEditModeStateSubscription = this.formEditModeState.subscribe(
+            (formEditModeState: boolean) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.formEditMode = formEditModeState;
+                });
+            }
+        );
 
-        this.formEditDataStateSubscription = this.formEditDataState.subscribe((formEditDataState: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.formEditData = formEditDataState;
-            });
-        });
+        this.formEditDataStateSubscription = this.formEditDataState.subscribe(
+            (formEditDataState: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.formEditData = formEditDataState;
+                });
+            }
+        );
     }
 
     private formValueChange() {
         setTimeout(() => {
             this.formGroupValueChangeSubscription = this.formGroup.valueChanges
-            .debounceTime(this.consts.valueChangeDeboundTimeDefault)
-            .subscribe((data) => {
-                this.appErrorHandler.executeAction(() => {
-                    if (this.formGroup.pristine) return;
+                .debounceTime(this.consts.valueChangeDeboundTimeDefault)
+                .subscribe((data) => {
+                    this.appErrorHandler.executeAction(() => {
+                        if (this.formGroup.pristine) return;
 
-                    if (!this.isAllowQuantity(this.formGroup.value.quantity || 0)) {
-                        this.modalService.warningMessage([{
-                            key: 'Modal_Message__Quantity_Received_Is_Greater_Than_Quantity_In_Order'
-                        }]);
-                    }
-                    if (this.formGroup.valid) {
-                        this.gridSectionHeight = {'height': `calc(100% - 65px)`};
-                        return;
-                    }
-                    this.gridSectionHeight = {'height': `calc(100% - 85px)`};
+                        if (
+                            !this.isAllowQuantity(
+                                this.formGroup.value.quantity || 0
+                            )
+                        ) {
+                            this.modalService.warningMessage([
+                                {
+                                    key: "Modal_Message__Quantity_Received_Is_Greater_Than_Quantity_In_Order",
+                                },
+                            ]);
+                        }
+                        if (this.formGroup.valid) {
+                            this.gridSectionHeight = {
+                                height: `calc(100% - 65px)`,
+                            };
+                            return;
+                        }
+                        this.gridSectionHeight = {
+                            height: `calc(100% - 85px)`,
+                        };
+                    });
                 });
-            });
         }, 2000);
     }
 
     private initEmptyForm() {
         this.initForm({
-            quantity: ['', Validators.required],
-            division: '',
-            coordinates: '',
-            lot: '',
-            expiryDate: '',
-            closingReason: ''
+            quantity: ["", Validators.required],
+            division: "",
+            coordinates: "",
+            lot: "",
+            expiryDate: "",
+            closingReason: "",
         });
         this.isRenderForm = true;
     }
@@ -361,13 +446,18 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
     }
 
     private insertItemToGrid(formValue: any) {
-        let closingText = '';
-        const idWarehouseMovementGoodsIssue = Uti.getValueFromArrayByKey(this.currentArrivedArticle, 'IdWarehouseMovementGoodsIssue');
+        let closingText = "";
+        const idWarehouseMovementGoodsIssue = Uti.getValueFromArrayByKey(
+            this.currentArrivedArticle,
+            "IdWarehouseMovementGoodsIssue"
+        );
         if (this.closingReasonDropDownList)
             closingText = this.closingReasonDropDownList.text;
         const receiveDate = formValue.expiryDate || null;
         const gridItem = {
-            IdWarehouseMovementGoodsReceiptPosted: -(Math.random() * 1000000000000),
+            IdWarehouseMovementGoodsReceiptPosted: -(
+                Math.random() * 1000000000000
+            ),
             IdWarehouseMovementGoodsIssue: idWarehouseMovementGoodsIssue,
             ArticleNr: this.newArticleNumber,
             QuantityToPosted: formValue.quantity,
@@ -378,13 +468,13 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
             ReceiveDate: receiveDate,
             ClosingReason: closingText,
             IdRepWarehouseCorrection: formValue.closingReason,
-            IsCanDeleted: 1
+            IsCanDeleted: 1,
         };
         const currentGridData = this.stockedArticleGrid.data;
         currentGridData.unshift(gridItem);
         this.stockedArticleGrid = cloneDeep({
             data: currentGridData,
-            columns: this.stockedArticleGrid.columns
+            columns: this.stockedArticleGrid.columns,
         });
         // this.updateArrivedArticleGrid({
         //     ArticleNr: articleNr,
@@ -398,10 +488,13 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
 
         this.changeDetectorRef.detectChanges();
     }
-    
+
     private moveNextRowInArrivedArticleGrid() {
-        if (this.currentRowIndex >= (this.arrivedArticleGrid.data.length - 1)) return;
-        this.arrivedArticleGridComponent.selectRowIndex(this.currentRowIndex + 1);
+        if (this.currentRowIndex >= this.arrivedArticleGrid.data.length - 1)
+            return;
+        this.arrivedArticleGridComponent.selectRowIndex(
+            this.currentRowIndex + 1
+        );
         this.currentRowIndex++;
     }
 
@@ -431,9 +524,11 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
 
     // private makeInsertDataItem(cachedItem: any): Array<any> {
     private makeInsertDataItem(): Array<any> {
-        const insertData = this.stockedArticleGrid.data.filter(x => x.IdWarehouseMovementGoodsReceiptPosted < 0);
+        const insertData = this.stockedArticleGrid.data.filter(
+            (x) => x.IdWarehouseMovementGoodsReceiptPosted < 0
+        );
         if (!insertData || !insertData.length) return [];
-        return insertData.map(x => {
+        return insertData.map((x) => {
             return {
                 IdWarehouseMovementGoodsIssue: x.IdWarehouseMovementGoodsIssue,
                 IdRepWarehouseCorrection: x.IdRepWarehouseCorrection,
@@ -443,7 +538,7 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
                 Coordinate: x.Coordinate,
                 ShelfLife: x.ShelfLife,
                 ReceiveDate: x.ReceiveDate,
-                IsActive: true
+                IsActive: true,
             };
         });
     }
@@ -457,66 +552,99 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
     // }
 
     private makeDeleteDataItem(): Array<any> {
-        const deleteData = Uti.getItemsDontExistItems(this.currentRightGridData, this.stockedArticleGrid.data, 'IdWarehouseMovementGoodsReceiptPosted');
+        const deleteData = Uti.getItemsDontExistItems(
+            this.currentRightGridData,
+            this.stockedArticleGrid.data,
+            "IdWarehouseMovementGoodsReceiptPosted"
+        );
         if (!deleteData || !deleteData.length) return [];
-        return deleteData.map(x => {
+        return deleteData.map((x) => {
             return {
-                IdWarehouseMovementGoodsReceiptPosted: x.IdWarehouseMovementGoodsReceiptPosted,
-                IsDeleted: '1'
+                IdWarehouseMovementGoodsReceiptPosted:
+                    x.IdWarehouseMovementGoodsReceiptPosted,
+                IsDeleted: "1",
             };
         });
     }
 
     private subscribeWarehouseMovementRequestConfirmAllState() {
-        this.warehouseMovementRequestConfirmAllStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WarehouseMovementActions.REQUEST_CONFIRM_ALL && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((simpleTabID: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.confirmAll();
-            });
-        });
+        this.warehouseMovementRequestConfirmAllStateSubscription =
+            this.dispatcher
+                .filter((action: CustomAction) => {
+                    return (
+                        action.type ===
+                            WarehouseMovementActions.REQUEST_CONFIRM_ALL &&
+                        action.module.idSettingsGUI ==
+                            this.ofModule.idSettingsGUI
+                    );
+                })
+                .subscribe((simpleTabID: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.confirmAll();
+                    });
+                });
     }
 
     private subscribeWarehouseMovementSaveAndConfirmState() {
-        this.warehouseMovementRequestConfirmAllStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === WarehouseMovementActions.REQUEST_SAVE_AND_CONFIRM && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe((simpleTabID: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.saveAndConfirm();
-            });
-        });
+        this.warehouseMovementRequestConfirmAllStateSubscription =
+            this.dispatcher
+                .filter((action: CustomAction) => {
+                    return (
+                        action.type ===
+                            WarehouseMovementActions.REQUEST_SAVE_AND_CONFIRM &&
+                        action.module.idSettingsGUI ==
+                            this.ofModule.idSettingsGUI
+                    );
+                })
+                .subscribe((simpleTabID: any) => {
+                    this.appErrorHandler.executeAction(() => {
+                        this.saveAndConfirm();
+                    });
+                });
     }
 
     private confirmAll() {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            messageType: MessageModal.MessageType.confirm,
-            headerText: 'Confirm All',
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Confirm_All_Items'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.primary,
-            callBack1: () => {
-                this.savingConfirmAllData();
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                messageType: MessageModal.MessageType.confirm,
+                headerText: "Confirm All",
+                message: [
+                    { key: "<p>" },
+                    { key: "Modal_Message__Do_You_Want_To_Confirm_All_Items" },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.primary,
+                callBack1: () => {
+                    this.savingConfirmAllData();
+                },
+            })
+        );
     }
 
     private saveAndConfirm() {
-        this.modalService.confirmMessageHtmlContent(new MessageModel({
-            messageType: MessageModal.MessageType.confirm,
-            headerText: 'Save & Confirm',
-            message: [{key: '<p>'}, {key: 'Modal_Message__Do_You_Want_To_Save_Confirm_All_Items'},
-                {key: '</p>'}],
-            buttonType1: MessageModal.ButtonType.primary,
-            callBack1: () => {
-                this.saveAndConfirmSortingGoods();
-            }
-        }));
+        this.modalService.confirmMessageHtmlContent(
+            new MessageModel({
+                messageType: MessageModal.MessageType.confirm,
+                headerText: "Save & Confirm",
+                message: [
+                    { key: "<p>" },
+                    {
+                        key: "Modal_Message__Do_You_Want_To_Save_Confirm_All_Items",
+                    },
+                    { key: "</p>" },
+                ],
+                buttonType1: MessageModal.ButtonType.primary,
+                callBack1: () => {
+                    this.saveAndConfirmSortingGoods();
+                },
+            })
+        );
     }
 
     private checkingFormEnable(inputQuantity = 0): boolean {
         if (!this.isAllowQuantity(inputQuantity)) {
             this.formGroup.disable();
-            return this.disabledFormStokedArticle = true;
+            return (this.disabledFormStokedArticle = true);
         }
 
         this.formGroup.enable();
@@ -525,36 +653,55 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
             this.quantityField.nativeElement.focus();
             this.initFocusControl();
         }, 300);
-        return this.disabledFormStokedArticle = false;
+        return (this.disabledFormStokedArticle = false);
     }
 
     private isAllowQuantity(inputQuantity = 0) {
-        const idWarehouseMovementGoodsIssue = Uti.getValueFromArrayByKey(this.currentArrivedArticle, 'IdWarehouseMovementGoodsIssue');
+        const idWarehouseMovementGoodsIssue = Uti.getValueFromArrayByKey(
+            this.currentArrivedArticle,
+            "IdWarehouseMovementGoodsIssue"
+        );
         if (!idWarehouseMovementGoodsIssue) {
             return false;
         }
-        const quantityToMove = Uti.getValueFromArrayByKey(this.currentArrivedArticle, 'QuantityToMove');
-        const totalQuantiry = this.stockedArticleGrid.data.filter((x) => x.IdWarehouseMovementGoodsIssue === idWarehouseMovementGoodsIssue)
-        .reduce((acc, value) => {
-            return Uti.parFloatFromObject(acc, 0) + Uti.parFloatFromObject(value.QuantityToPosted, 0)
-        }, inputQuantity);
+        const quantityToMove = Uti.getValueFromArrayByKey(
+            this.currentArrivedArticle,
+            "QuantityToMove"
+        );
+        const totalQuantiry = this.stockedArticleGrid.data
+            .filter(
+                (x) =>
+                    x.IdWarehouseMovementGoodsIssue ===
+                    idWarehouseMovementGoodsIssue
+            )
+            .reduce((acc, value) => {
+                return (
+                    Uti.parFloatFromObject(acc, 0) +
+                    Uti.parFloatFromObject(value.QuantityToPosted, 0)
+                );
+            }, inputQuantity);
         if (inputQuantity > 0) {
-            return (quantityToMove >= totalQuantiry);
+            return quantityToMove >= totalQuantiry;
         } else {
-            return (quantityToMove > totalQuantiry);
+            return quantityToMove > totalQuantiry;
         }
     }
 
     private getClosingReasonData() {
-        this.comServiceSubscription = this.commonService.getListComboBox('WareHouse,WarehouseCorrectionReason')
+        this.comServiceSubscription = this.commonService
+            .getListComboBox("WareHouse,WarehouseCorrectionReason")
             .debounceTime(this.consts.valueChangeDeboundTimeDefault)
             .subscribe((response: ApiResultResponse) => {
                 this.appErrorHandler.executeAction(() => {
-                    if (!Uti.isResquestSuccess(response) && !response.item.WarehouseCorrectionReason) {
+                    if (
+                        !Uti.isResquestSuccess(response) &&
+                        !response.item.WarehouseCorrectionReason
+                    ) {
                         this.formValueChange();
                         return;
                     }
-                    this.closingReasonData = response.item.WarehouseCorrectionReason;
+                    this.closingReasonData =
+                        response.item.WarehouseCorrectionReason;
                     setTimeout(() => {
                         this.closingReasonDropDownList.selectedIndex = -1;
                         this.formValueChange();
@@ -564,28 +711,38 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
     }
 
     private getArrivedArticleData() {
-        this.getSortingGoodSubscription = this.wareHouseMovementService.getArrivedArticles(this.mainId).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    if (this.arrivedArticleGrid && this.arrivedArticleGrid.columns && this.arrivedArticleGrid.columns.length) {
-                        this.arrivedArticleGrid = {
-                            columns: this.arrivedArticleGrid.columns,
-                            data: []
-                        };
+        this.getSortingGoodSubscription = this.wareHouseMovementService
+            .getArrivedArticles(this.mainId)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        if (
+                            this.arrivedArticleGrid &&
+                            this.arrivedArticleGrid.columns &&
+                            this.arrivedArticleGrid.columns.length
+                        ) {
+                            this.arrivedArticleGrid = {
+                                columns: this.arrivedArticleGrid.columns,
+                                data: [],
+                            };
+                        }
+                        return;
                     }
-                    return;
-                }
-                // response.item.data[1].push({"IdWarehouseMovementGoodsIssue": 3, "ArticleNr": "560001", "New ArticleNr": null, "ArticleNameShort": "Station Temporelle", "QuantityToMove": 500, "Moved": 100, "Confirmed": null, "NotConfirmed": 400});
-                let gridData = this.datatableService.formatDataTableFromRawData(response.item.data);
-                gridData = this.datatableService.buildDataSource(gridData);
-                this.arrivedArticleGrid = this.datatableService.appendRowId(gridData);
-                // this.getStockedArticleData();
-                // if (!this.arrivedArticleGrid.data.length) {
-                //     this.getDataForStockedArticles();
-                // }
-                this.setEnableForConfirmAllButton();
+                    // response.item.data[1].push({"IdWarehouseMovementGoodsIssue": 3, "ArticleNr": "560001", "New ArticleNr": null, "ArticleNameShort": "Station Temporelle", "QuantityToMove": 500, "Moved": 100, "Confirmed": null, "NotConfirmed": 400});
+                    let gridData =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item.data
+                        );
+                    gridData = this.datatableService.buildDataSource(gridData);
+                    this.arrivedArticleGrid =
+                        this.datatableService.appendRowId(gridData);
+                    // this.getStockedArticleData();
+                    // if (!this.arrivedArticleGrid.data.length) {
+                    //     this.getDataForStockedArticles();
+                    // }
+                    this.setEnableForConfirmAllButton();
+                });
             });
-        });
     }
 
     // private getDataForStockedArticles() {
@@ -604,39 +761,46 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
     // private getStockedArticleData(idWarehouseMovementGoodsIssue: any) {
     private getStockedArticleData() {
         // if (idWarehouseMovementGoodsIssue) {
-        this.getStockedArticlesSubscription = this.wareHouseMovementService.stockedArticles(this.mainId).subscribe((response: ApiResultResponse) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!Uti.isResquestSuccess(response)) {
-                    if (this.stockedArticleGrid && this.stockedArticleGrid.columns && this.stockedArticleGrid.columns.length) {
-                        this.stockedArticleGrid = {
-                            columns: this.stockedArticleGrid.columns,
-                            data: []
-                        };
+        this.getStockedArticlesSubscription = this.wareHouseMovementService
+            .stockedArticles(this.mainId)
+            .subscribe((response: ApiResultResponse) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        if (
+                            this.stockedArticleGrid &&
+                            this.stockedArticleGrid.columns &&
+                            this.stockedArticleGrid.columns.length
+                        ) {
+                            this.stockedArticleGrid = {
+                                columns: this.stockedArticleGrid.columns,
+                                data: [],
+                            };
+                        }
+                        return;
                     }
-                    return;
-                }
-                let gridData: any = this.datatableService.formatDataTableFromRawData(response.item.data);
-                gridData = this.datatableService.buildDataSource(gridData);
+                    let gridData: any =
+                        this.datatableService.formatDataTableFromRawData(
+                            response.item.data
+                        );
+                    gridData = this.datatableService.buildDataSource(gridData);
 
-
-                gridData = this.datatableService.appendRowId(gridData);
-                gridData.columns.push(
-                    {
-                        title: 'Delete',
-                        data: 'Delete',
+                    gridData = this.datatableService.appendRowId(gridData);
+                    gridData.columns.push({
+                        title: "Delete",
+                        data: "Delete",
                         visible: true,
                         readOnly: true,
-                        setting: {}
+                        setting: {},
                     });
-                this.stockedArticleGrid = gridData;
-                // this.cachedGridData.push({
-                //     itemId: idWarehouseMovementGoodsIssue,
-                //     gridData: cloneDeep(this.stockedArticleGrid)
-                // });
-                this.currentRightGridData = cloneDeep(gridData.data);
-                this.checkingFormEnable();
+                    this.stockedArticleGrid = gridData;
+                    // this.cachedGridData.push({
+                    //     itemId: idWarehouseMovementGoodsIssue,
+                    //     gridData: cloneDeep(this.stockedArticleGrid)
+                    // });
+                    this.currentRightGridData = cloneDeep(gridData.data);
+                    this.checkingFormEnable();
+                });
             });
-        });
         // }
     }
 
@@ -650,16 +814,18 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
         }
 
         if (movedTotal <= confirmTotal) return;
-        this.setValueForOutputModel(new FormOutputModel({
-            submitResult: null,
-            formValue: this.formEditData,
-            isValid: true,
-            isDirty: false,
-            returnID: null,
-            payload: {
-                isConfirmAllDirty: true
-            }
-        }));
+        this.setValueForOutputModel(
+            new FormOutputModel({
+                submitResult: null,
+                formValue: this.formEditData,
+                isValid: true,
+                isDirty: false,
+                returnID: null,
+                payload: {
+                    isConfirmAllDirty: true,
+                },
+            })
+        );
     }
 
     // private checkIdSalesCampaignWizardItems() {
@@ -684,18 +850,32 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
     }
 
     public savingConfirmAllData() {
-        this.backOfficeService.confirmGoodsReceiptPosted(this.mainId).subscribe(response => {
-            this.appErrorHandler.executeAction(() => {
-                this._isDirty = false;
-                if (!Uti.isResquestSuccess(response)) {
-                    this.toasterService.pop('error', 'Fail', 'Can not Confirm!');
-                    return;
-                }
-                this.setFormOutputData(true, this.mainId);
-                this.toasterService.pop('success', 'Success', 'The data was confirmed.');
-                this.store.dispatch(this.wareHouseMovementActions.requestConfirmAllSuccess(this.ofModule));
+        this.backOfficeService
+            .confirmGoodsReceiptPosted(this.mainId)
+            .subscribe((response) => {
+                this.appErrorHandler.executeAction(() => {
+                    this._isDirty = false;
+                    if (!Uti.isResquestSuccess(response)) {
+                        this.toasterService.pop(
+                            "error",
+                            "Fail",
+                            "Can not Confirm!"
+                        );
+                        return;
+                    }
+                    this.setFormOutputData(true, this.mainId);
+                    this.toasterService.pop(
+                        "success",
+                        "Success",
+                        "The data was confirmed."
+                    );
+                    this.store.dispatch(
+                        this.wareHouseMovementActions.requestConfirmAllSuccess(
+                            this.ofModule
+                        )
+                    );
+                });
             });
-        });
     }
 
     public saveAndConfirmSortingGoods() {
@@ -703,27 +883,43 @@ export class SortingGoodsEditFormComponent extends FormBase implements OnInit, O
             this.setFormOutputData(false, null);
             return;
         }
-        this.wareHouseMovementService.saveGoodsReceiptPosted(this.prepareSubmitData()).subscribe((value) => {
-            this.appErrorHandler.executeAction(() => {
-                if (!value || !value.returnID) {
-                    this.setFormOutputData(true);
-                    return;
-                }
-                this._isDirty = false;
-            });
-            this.backOfficeService.confirmGoodsReceiptPosted(this.mainId).subscribe((data) => {
+        this.wareHouseMovementService
+            .saveGoodsReceiptPosted(this.prepareSubmitData())
+            .subscribe((value) => {
                 this.appErrorHandler.executeAction(() => {
-                    this._isDirty = false;
-                    if (!Uti.isResquestSuccess(data)) {
-                        this.toasterService.pop('error', 'Fail', 'Can not Confirm!');
+                    if (!value || !value.returnID) {
+                        this.setFormOutputData(true);
                         return;
                     }
-                    this.setFormOutputData(true, this.mainId);
-                    this.toasterService.pop('success', 'Success', 'The data was confirmed.');
-                    this.store.dispatch(this.wareHouseMovementActions.requestSaveAndConfirmSuccess(this.ofModule));
+                    this._isDirty = false;
                 });
+                this.backOfficeService
+                    .confirmGoodsReceiptPosted(this.mainId)
+                    .subscribe((data) => {
+                        this.appErrorHandler.executeAction(() => {
+                            this._isDirty = false;
+                            if (!Uti.isResquestSuccess(data)) {
+                                this.toasterService.pop(
+                                    "error",
+                                    "Fail",
+                                    "Can not Confirm!"
+                                );
+                                return;
+                            }
+                            this.setFormOutputData(true, this.mainId);
+                            this.toasterService.pop(
+                                "success",
+                                "Success",
+                                "The data was confirmed."
+                            );
+                            this.store.dispatch(
+                                this.wareHouseMovementActions.requestSaveAndConfirmSuccess(
+                                    this.ofModule
+                                )
+                            );
+                        });
+                    });
             });
-        });
     }
 
     // private updateCached() {

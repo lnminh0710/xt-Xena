@@ -1,4 +1,3 @@
-
 import {
     Component,
     OnInit,
@@ -6,22 +5,21 @@ import {
     Output,
     OnDestroy,
     EventEmitter,
-    ChangeDetectorRef
-} from '@angular/core';
-import {
-    BaseComponent
-} from 'app/pages/private/base';
-import {
-    Router
-} from '@angular/router';
-import { Uti } from 'app/utilities';
-import { SyncModeConstant } from 'app/models/elastic-search.mode';
+    ChangeDetectorRef,
+} from "@angular/core";
+import { BaseComponent } from "app/pages/private/base";
+import { Router } from "@angular/router";
+import { Uti } from "app/utilities";
+import { SyncModeConstant } from "app/models/elastic-search.mode";
 @Component({
-    selector: 'elastic-search-sync-command',
-    styleUrls: ['./elastic-search-sync-command.component.scss'],
-    templateUrl: './elastic-search-sync-command.component.html'
+    selector: "elastic-search-sync-command",
+    styleUrls: ["./elastic-search-sync-command.component.scss"],
+    templateUrl: "./elastic-search-sync-command.component.html",
 })
-export class ElasticSearchSyncCommandComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ElasticSearchSyncCommandComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy
+{
     public SYNC_MODE_CONSTANT = SyncModeConstant;
 
     private isStopped = true;
@@ -33,34 +31,34 @@ export class ElasticSearchSyncCommandComponent extends BaseComponent implements 
     public syncModeList: Array<any> = [
         {
             idValue: this.SYNC_MODE_CONSTANT.all,
-            textValue: 'All',
+            textValue: "All",
         },
         {
             idValue: this.SYNC_MODE_CONSTANT.currentDate,
-            textValue: 'Current Date',
+            textValue: "Current Date",
         },
         {
             idValue: this.SYNC_MODE_CONSTANT.byId,
-            textValue: 'By Id',
-        }
+            textValue: "By Id",
+        },
     ];
-    public syncIdString: string = '';
+    public syncIdString: string = "";
 
     @Input() isIdle: boolean = true;
-    @Input() set percentValue(data: number) { this.executePercentValue(data); }
+    @Input() set percentValue(data: number) {
+        this.executePercentValue(data);
+    }
 
     @Output() output: EventEmitter<any> = new EventEmitter();
     @Output() updateSyncIds: EventEmitter<any> = new EventEmitter();
     @Output() callStart: EventEmitter<any> = new EventEmitter();
     @Output() callStop: EventEmitter<any> = new EventEmitter();
 
-    constructor(private ref: ChangeDetectorRef,
-        router?: Router) {
+    constructor(private ref: ChangeDetectorRef, router?: Router) {
         super(router);
     }
 
-    public ngOnInit() {
-    }
+    public ngOnInit() {}
 
     public ngOnDestroy() {
         Uti.unsubscribe(this);
@@ -102,4 +100,3 @@ export class ElasticSearchSyncCommandComponent extends BaseComponent implements 
         this.ref.detectChanges();
     }
 }
-

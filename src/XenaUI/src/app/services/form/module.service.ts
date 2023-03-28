@@ -1,16 +1,14 @@
-import { Injectable, Injector, Inject, forwardRef } from '@angular/core';
-import { BaseService } from '../base.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Module, ApiResultResponse } from 'app/models';
-import { Store } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import {
-    ModuleActions
-} from 'app/state-management/store/actions';
-import { MenuModuleId } from 'app/app.constants';
-import { Uti } from 'app/utilities';
-import { AccessRightsService } from 'app/services';
+import { Injectable, Injector, Inject, forwardRef } from "@angular/core";
+import { BaseService } from "../base.service";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { Observable } from "rxjs/Observable";
+import { Module, ApiResultResponse } from "app/models";
+import { Store } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { ModuleActions } from "app/state-management/store/actions";
+import { MenuModuleId } from "app/app.constants";
+import { Uti } from "app/utilities";
+import { AccessRightsService } from "app/services";
 
 @Injectable()
 export class ModuleService extends BaseService {
@@ -18,11 +16,14 @@ export class ModuleService extends BaseService {
         injector: Injector,
         private store: Store<AppState>,
         private moduleActions: ModuleActions,
-        @Inject(forwardRef(() => AccessRightsService)) private accessRightsService: AccessRightsService) {
+        @Inject(forwardRef(() => AccessRightsService))
+        private accessRightsService: AccessRightsService
+    ) {
         super(injector);
     }
 
-    private onModuleSelectedSource: BehaviorSubject<Module> = new BehaviorSubject<Module>(null);
+    private onModuleSelectedSource: BehaviorSubject<Module> =
+        new BehaviorSubject<Module>(null);
 
     onModuleSelected$ = this.onModuleSelectedSource.asObservable();
 
@@ -31,35 +32,51 @@ export class ModuleService extends BaseService {
     }
 
     getModules(): Observable<ApiResultResponse> {
-        return BaseService.cacheService.get(this.serUrl.getModules, this.get<ApiResultResponse>(this.serUrl.getModules)
-            .map((response: ApiResultResponse) => {
-                if (!Uti.isResquestSuccess(response)) {
-                    return null;
+        return BaseService.cacheService.get(
+            this.serUrl.getModules,
+            this.get<ApiResultResponse>(this.serUrl.getModules).map(
+                (response: ApiResultResponse) => {
+                    if (!Uti.isResquestSuccess(response)) {
+                        return null;
+                    }
+
+                    response.item = response.item
+                        ? this.mappingModules(response.item)
+                        : [];
+
+                    //Set accessRight for Module
+                    this.accessRightsService.SetAccessRightsForModule(
+                        response.item
+                    );
+
+                    return response;
                 }
-
-                response.item = response.item ? this.mappingModules(response.item) : [];
-
-                //Set accessRight for Module
-                this.accessRightsService.SetAccessRightsForModule(response.item);
-
-                return response;
-            }));
+            )
+        );
     }
 
     getDetailSubModule(moduleId: number): Observable<ApiResultResponse> {
-        return BaseService.cacheService.get(this.serUrl.getDetailSubModule + ':' + moduleId, this.get<ApiResultResponse>(this.serUrl.getDetailSubModule, { xenapr_moduleId: moduleId })
-            .map((response: ApiResultResponse) => {
+        return BaseService.cacheService.get(
+            this.serUrl.getDetailSubModule + ":" + moduleId,
+            this.get<ApiResultResponse>(this.serUrl.getDetailSubModule, {
+                xenapr_moduleId: moduleId,
+            }).map((response: ApiResultResponse) => {
                 if (!Uti.isResquestSuccess(response)) {
                     return null;
                 }
 
-                response.item = response.item ? this.mappingModules(response.item) : [];
+                response.item = response.item
+                    ? this.mappingModules(response.item)
+                    : [];
 
                 //Set accessRight for SubModule
-                this.accessRightsService.SetAccessRightsForSubModule(response.item);
+                this.accessRightsService.SetAccessRightsForSubModule(
+                    response.item
+                );
 
                 return response;
-            }));
+            })
+        );
     }
 
     /**
@@ -68,16 +85,26 @@ export class ModuleService extends BaseService {
      * False: Keep current module/submodule
      * @param selectedModule
      */
-    loadContentDetailBySelectedModule(selectedModule: Module, activeModule: Module, activeSubModule: Module, mainModules: Array<Module>): boolean {
-
+    loadContentDetailBySelectedModule(
+        selectedModule: Module,
+        activeModule: Module,
+        activeSubModule: Module,
+        mainModules: Array<Module>
+    ): boolean {
         if (!selectedModule) {
             return false;
         }
 
-        if (activeModule && activeModule.idSettingsGUI == selectedModule.idSettingsGUI) {
+        if (
+            activeModule &&
+            activeModule.idSettingsGUI == selectedModule.idSettingsGUI
+        ) {
             return false;
         }
-        if (activeSubModule && activeSubModule.idSettingsGUI == selectedModule.idSettingsGUI) {
+        if (
+            activeSubModule &&
+            activeSubModule.idSettingsGUI == selectedModule.idSettingsGUI
+        ) {
             return false;
         }
 
@@ -85,16 +112,29 @@ export class ModuleService extends BaseService {
 
         if (selectedModule.idSettingsGUIParent) {
             let mainModule: Module = activeModule;
-            if (selectedModule.idSettingsGUIParent !== mainModule.idSettingsGUI) {
-                mainModule = mainModules.find(md => md.idSettingsGUI === selectedModule.idSettingsGUIParent);
+            if (
+                selectedModule.idSettingsGUIParent !== mainModule.idSettingsGUI
+            ) {
+                mainModule = mainModules.find(
+                    (md) =>
+                        md.idSettingsGUI === selectedModule.idSettingsGUIParent
+                );
                 if (mainModule) {
-                    this.store.dispatch(this.moduleActions.requestChangeModule(mainModule));
-                }
-                else {
+                    this.store.dispatch(
+                        this.moduleActions.requestChangeModule(mainModule)
+                    );
+                } else {
                     switch (selectedModule.idSettingsGUIParent) {
                         case MenuModuleId.logistic:
-                            mainModule = mainModules.find(md => md.idSettingsGUI === MenuModuleId.backoffice);
-                            this.store.dispatch(this.moduleActions.requestChangeModule(mainModule));
+                            mainModule = mainModules.find(
+                                (md) =>
+                                    md.idSettingsGUI === MenuModuleId.backoffice
+                            );
+                            this.store.dispatch(
+                                this.moduleActions.requestChangeModule(
+                                    mainModule
+                                )
+                            );
                             break;
                         default:
                             break;
@@ -104,12 +144,18 @@ export class ModuleService extends BaseService {
 
             if (mainModule && mainModule.idSettingsGUI) {
                 setTimeout(() => {
-                    this.store.dispatch(this.moduleActions.requestChangeSubModule(mainModule.idSettingsGUI, selectedModule.idSettingsGUI));
+                    this.store.dispatch(
+                        this.moduleActions.requestChangeSubModule(
+                            mainModule.idSettingsGUI,
+                            selectedModule.idSettingsGUI
+                        )
+                    );
                 }, 200);
             }
-        }
-        else {
-            this.store.dispatch(this.moduleActions.requestChangeModule(selectedModule));
+        } else {
+            this.store.dispatch(
+                this.moduleActions.requestChangeModule(selectedModule)
+            );
         }
         return true;
     }
@@ -132,7 +178,10 @@ export class ModuleService extends BaseService {
                 if (modules[i].idSettingsGUI === idSettingsGUI) {
                     return modules[i];
                 }
-                const found = this.getModuleRecursive(modules[i].children, idSettingsGUI);
+                const found = this.getModuleRecursive(
+                    modules[i].children,
+                    idSettingsGUI
+                );
                 if (found) return found;
             }
         }

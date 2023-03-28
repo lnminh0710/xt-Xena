@@ -1,1 +1,1 @@
-export * from './dispatcher-form-step2.component';
+export * from "./dispatcher-form-step2.component";

@@ -14,11 +14,7 @@ import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
         AngularSplitModule,
         PerfectScrollbarModule.forRoot(),
     ],
-    declarations: [
-        MediacodePricingGridComponent
-    ],
-    exports: [
-        MediacodePricingGridComponent
-    ]
+    declarations: [MediacodePricingGridComponent],
+    exports: [MediacodePricingGridComponent],
 })
-export class MediacodePricingGridModule { }
+export class MediacodePricingGridModule {}

@@ -1,21 +1,25 @@
-import { Component, Input, OnInit, OnDestroy, AfterViewInit, ElementRef, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { SubLayoutInfoState } from 'app/state-management/store/reducer/layout-info';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import {
-    GlobalSettingService, AppErrorHandler
-} from 'app/services';
+    Component,
+    Input,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ElementRef,
+    HostListener,
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { Store, ReducerManagerDispatcher } from "@ngrx/store";
+import { AppState } from "app/state-management/store";
+import { SubLayoutInfoState } from "app/state-management/store/reducer/layout-info";
+import { Observable } from "rxjs/Observable";
+import { Subscription } from "rxjs/Subscription";
+import { GlobalSettingService, AppErrorHandler } from "app/services";
+import { GlobalSettingModel, Module, HotKey } from "app/models";
 import {
-    GlobalSettingModel,
-    Module,
-    HotKey
-} from 'app/models';
-import { GlobalSettingConstant,
+    GlobalSettingConstant,
     RequestSavingMode,
-    Configuration } from 'app/app.constants';
+    Configuration,
+} from "app/app.constants";
 import {
     XnCommonActions,
     ProcessDataActions,
@@ -25,43 +29,44 @@ import {
     CustomAction,
     LayoutSettingActions,
     TabButtonActions,
-
-    DataEntryActions
-} from 'app/state-management/store/actions';
-import * as layoutInfoReducer from 'app/state-management/store/reducer/layout-info';
-import * as commonReducer from 'app/state-management/store/reducer/xn-common';
-import * as processDataReducer from 'app/state-management/store/reducer/process-data';
-import { BaseComponent, ModuleList } from 'app/pages/private/base';
-import { LayoutInfoActions } from 'app/state-management/store/actions';
-import cloneDeep from 'lodash-es/cloneDeep';
-import { Uti, String } from 'app/utilities';
+    DataEntryActions,
+} from "app/state-management/store/actions";
+import * as layoutInfoReducer from "app/state-management/store/reducer/layout-info";
+import * as commonReducer from "app/state-management/store/reducer/xn-common";
+import * as processDataReducer from "app/state-management/store/reducer/process-data";
+import { BaseComponent, ModuleList } from "app/pages/private/base";
+import { LayoutInfoActions } from "app/state-management/store/actions";
+import cloneDeep from "lodash-es/cloneDeep";
+import { Uti, String } from "app/utilities";
 
 @Component({
-    selector: 'order-data-entry-tab',
-    templateUrl: './order-data-entry-tab.component.html',
-    styleUrls: ['./order-data-entry-tab.component.scss'],
+    selector: "order-data-entry-tab",
+    templateUrl: "./order-data-entry-tab.component.html",
+    styleUrls: ["./order-data-entry-tab.component.scss"],
     host: {
-        '(mousemove)': 'onMouseEnter()'
-    }
+        "(mousemove)": "onMouseEnter()",
+    },
 })
-
-export class OrderDataEntryTabComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OrderDataEntryTabComponent
+    extends BaseComponent
+    implements OnInit, OnDestroy, AfterViewInit
+{
     public isHotKeyActive: boolean = false;
     public tabContainerStyle: Object = {};
     public tabs: any[] = [];
     public config: any = {
         left: 68,
-        right: 32
+        right: 32,
     };
     public configWidth: any = { left: 0, right: 0, spliter: 0 };
     public perfectScrollbarConfigForAI: any = {
         suppressScrollX: true,
-        suppressScrollY: true
+        suppressScrollY: true,
     };
     public setting: any;
     public showAddTabButton = true;
     private tabListSettings: any;
-    private globalSettingName = '';
+    private globalSettingName = "";
     private willChangeTab: any;
     private willRemoveTab: any;
     private editLayout: boolean = false;
@@ -94,7 +99,7 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
 
     private keyDownStatus = false;
 
-    @HostListener('document:keyup.out-zone', ['$event'])
+    @HostListener("document:keyup.out-zone", ["$event"])
     onKeyUp(event) {
         const e = <KeyboardEvent>event;
         if (e.keyCode == 34) return; // Pagedown to save data
@@ -102,7 +107,7 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
     }
 
     // Support to be able to press double key press for Hotkey feature
-    @HostListener('document:keydown.out-zone', ['$event'])
+    @HostListener("document:keydown.out-zone", ["$event"])
     onKeyDown(event) {
         const e = <KeyboardEvent>event;
         this.pushKeyDownIntoBuffer(e.keyCode);
@@ -128,9 +133,26 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
     ) {
         super(router);
 
-        this.layoutInfoState = store.select(state => layoutInfoReducer.getLayoutInfoState(state, this.ofModule.moduleNameTrim));
-        this.hotKeyState = this.store.select(state => commonReducer.getCommonState(state, this.ofModule.moduleNameTrim).hotKey);
-        this.contentDisplayModeState = store.select(state => processDataReducer.getProcessDataState(state, this.ofModule.moduleNameTrim).contentDisplayMode);
+        this.layoutInfoState = store.select((state) =>
+            layoutInfoReducer.getLayoutInfoState(
+                state,
+                this.ofModule.moduleNameTrim
+            )
+        );
+        this.hotKeyState = this.store.select(
+            (state) =>
+                commonReducer.getCommonState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).hotKey
+        );
+        this.contentDisplayModeState = store.select(
+            (state) =>
+                processDataReducer.getProcessDataState(
+                    state,
+                    this.ofModule.moduleNameTrim
+                ).contentDisplayMode
+        );
     }
 
     ngOnInit() {
@@ -140,73 +162,107 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
         this.subcribeOkToRemoveTabState();
         this.subcribeRequestChangeTabState();
         this.getModule();
-        this.store.dispatch(this.hotKeySettingActions.loadHotKeySetting(this.ofModule));
+        this.store.dispatch(
+            this.hotKeySettingActions.loadHotKeySetting(this.ofModule)
+        );
     }
 
     ngAfterViewInit() {
-        window.addEventListener('blur', () => {
+        window.addEventListener("blur", () => {
             this.keyBuffer = [];
         });
     }
 
     ngOnDestroy() {
         Uti.unsubscribe(this);
-    }    
+    }
 
     private subcribeOkToChangeTabState() {
-        this.okToChangeTabSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.OK_TO_CHANGE_TAB && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.willChangeTab) {
-                    const activeTabs = this.tabs.filter(p => p.active);
-                    activeTabs.forEach(_tab => {
-                        _tab.active = false;
-                    });
-                    this.willChangeTab.active = true;
-                    this.willChangeTab.loaded = true;
+        this.okToChangeTabSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.OK_TO_CHANGE_TAB &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.willChangeTab) {
+                        const activeTabs = this.tabs.filter((p) => p.active);
+                        activeTabs.forEach((_tab) => {
+                            _tab.active = false;
+                        });
+                        this.willChangeTab.active = true;
+                        this.willChangeTab.loaded = true;
 
-                    this.store.dispatch(this.moduleSettingActions.selectToolbarSetting(this.willChangeTab.Toolbar, this.ofModule));
-                    this.store.dispatch(this.tabSummaryActions.selectODETab(this.willChangeTab, ModuleList.OrderDataEntry));
+                        this.store.dispatch(
+                            this.moduleSettingActions.selectToolbarSetting(
+                                this.willChangeTab.Toolbar,
+                                this.ofModule
+                            )
+                        );
+                        this.store.dispatch(
+                            this.tabSummaryActions.selectODETab(
+                                this.willChangeTab,
+                                ModuleList.OrderDataEntry
+                            )
+                        );
 
-                    this.reloadAndSaveTabsConfig();
+                        this.reloadAndSaveTabsConfig();
 
-                    this.willChangeTab = null;
+                        this.willChangeTab = null;
 
-                    this.store.dispatch(this.tabSummaryActions.toggleTabButton(true, this.ofModule));
-                }
+                        this.store.dispatch(
+                            this.tabSummaryActions.toggleTabButton(
+                                true,
+                                this.ofModule
+                            )
+                        );
+                    }
+                });
             });
-        });
     }
 
     private subcribeOkToRemoveTabState() {
-        this.okToChangeTabSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === ProcessDataActions.OK_TO_REMOVE_TAB && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).subscribe(() => {
-            this.appErrorHandler.executeAction(() => {
-                if (this.willRemoveTab) {
-                    if (!this.tabs.length || this.tabs.length === 1) {
-                        return;
+        this.okToChangeTabSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === ProcessDataActions.OK_TO_REMOVE_TAB &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .subscribe(() => {
+                this.appErrorHandler.executeAction(() => {
+                    if (this.willRemoveTab) {
+                        if (!this.tabs.length || this.tabs.length === 1) {
+                            return;
+                        }
+
+                        this.willRemoveTab["visible"] = false;
+                        this.willRemoveTab["active"] = false;
+
+                        this.selectFirstVisibleTab(this.tabs);
+                        this.showAddTabButton = !this.isAllTabsVisible(
+                            this.tabs
+                        );
+
+                        this.reloadAndSaveTabsConfig();
+
+                        this.willRemoveTab = null;
                     }
-
-                    this.willRemoveTab['visible'] = false;
-                    this.willRemoveTab['active'] = false;
-
-                    this.selectFirstVisibleTab(this.tabs);
-                    this.showAddTabButton = !this.isAllTabsVisible(this.tabs);
-
-                    this.reloadAndSaveTabsConfig();
-
-                    this.willRemoveTab = null;
-                }
+                });
             });
-        });
     }
 
     selectTab(tab: any) {
         this.willChangeTab = tab;
 
-        this.store.dispatch(this.processDataActions.requestChangeTab(null, ModuleList.OrderDataEntry));
+        this.store.dispatch(
+            this.processDataActions.requestChangeTab(
+                null,
+                ModuleList.OrderDataEntry
+            )
+        );
     }
 
     selectFirstVisibleTab(tabs) {
@@ -215,7 +271,7 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
         }
 
         for (const tab of tabs) {
-            if (tab['visible']) {
+            if (tab["visible"]) {
                 this.selectTab(tab);
                 return;
             }
@@ -226,47 +282,66 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
         if (tab) {
             this.willRemoveTab = tab;
 
-            this.store.dispatch(this.processDataActions.requestRemoveTab(null, ModuleList.OrderDataEntry));
+            this.store.dispatch(
+                this.processDataActions.requestRemoveTab(
+                    null,
+                    ModuleList.OrderDataEntry
+                )
+            );
         }
     }
 
     private getModule() {
-        this.globalSettingName = String.Format('{0}_{1}',
+        this.globalSettingName = String.Format(
+            "{0}_{1}",
             this.globalSettingConstant.orderDataEntryTabList,
-            String.hardTrimBlank(this.ofModule.moduleName));
+            String.hardTrimBlank(this.ofModule.moduleName)
+        );
     }
 
     private getTabListFromGlobalSetting() {
-        this.globalSettingServiceSubscription = this.globalSettingService.getAllGlobalSettings(this.ofModule.idSettingsGUI).subscribe((data: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.tabs = this.buildTabs(this.setting);
+        this.globalSettingServiceSubscription = this.globalSettingService
+            .getAllGlobalSettings(this.ofModule.idSettingsGUI)
+            .subscribe((data: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.tabs = this.buildTabs(this.setting);
 
-                this.tabs = this.buildTabsFromGlobalSetting(this.tabs, data);
+                    this.tabs = this.buildTabsFromGlobalSetting(
+                        this.tabs,
+                        data
+                    );
 
-                this.showAddTabButton = !this.isAllTabsVisible(this.tabs);
+                    this.showAddTabButton = !this.isAllTabsVisible(this.tabs);
 
-                let activeTab = this.tabs.find(x => x.active);
-                if (activeTab) {
-                    this.selectTab(activeTab);
-                }
+                    let activeTab = this.tabs.find((x) => x.active);
+                    if (activeTab) {
+                        this.selectTab(activeTab);
+                    }
+                });
             });
-        });
     }
 
-    private buildTabsFromGlobalSetting(tabs: any[], data: GlobalSettingModel[]): any[] {
+    private buildTabsFromGlobalSetting(
+        tabs: any[],
+        data: GlobalSettingModel[]
+    ): any[] {
         if (!data || !data.length || !Array.isArray(data)) {
             return tabs;
         }
-        this.tabListSettings = data.find(x => x.globalName === this.globalSettingName);
+        this.tabListSettings = data.find(
+            (x) => x.globalName === this.globalSettingName
+        );
         if (!this.tabListSettings || !this.tabListSettings.idSettingsGlobal) {
             return tabs;
         }
-        const tabShowSetting = JSON.parse(this.tabListSettings.jsonSettings) as Array<any>;
+        const tabShowSetting = JSON.parse(
+            this.tabListSettings.jsonSettings
+        ) as Array<any>;
         if (!tabShowSetting || !tabShowSetting.length) {
             return tabs;
         }
 
-        tabs.forEach(tab => {
+        tabs.forEach((tab) => {
             tab.visible = false;
             tab.active = false;
         });
@@ -284,14 +359,18 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
     }
 
     private buildTabs(tabSetting) {
-        if (!tabSetting || !tabSetting.Content || !tabSetting.Content.CustomTabs) {
+        if (
+            !tabSetting ||
+            !tabSetting.Content ||
+            !tabSetting.Content.CustomTabs
+        ) {
             return [];
         }
 
         const result = tabSetting.Content.CustomTabs;
         for (let i = 0; i < result.length; i++) {
-            result[i]['active'] = i === 0;
-            result[i]['visible'] = i === 0;
+            result[i]["active"] = i === 0;
+            result[i]["visible"] = i === 0;
         }
 
         return result;
@@ -303,7 +382,7 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
         }
 
         for (const tab of tabs) {
-            if (!tab['visible']) {
+            if (!tab["visible"]) {
                 return false;
             }
         }
@@ -317,7 +396,7 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
         }
 
         for (const tab of tabs) {
-            if (tab['active']) {
+            if (tab["active"]) {
                 return false;
             }
         }
@@ -326,54 +405,70 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
     }
 
     private subcribeLayoutInfoState() {
-        this.layoutInfoStateSubscription = this.layoutInfoState.subscribe((layoutInfo: SubLayoutInfoState) => {
-            this.appErrorHandler.executeAction(() => {
-                this.tabContainerStyle = {
-                    // 'height': `calc(100vh - ${layoutInfo.globalSearchHeight}px - ${layoutInfo.headerHeight}px - ${layoutInfo.smallTabHeaderHeight}px - ${layoutInfo.smallHeaderLineHeight}px - ${layoutInfo.dashboardPaddingTop}px)`
-                    'height': `calc(100vh - ${layoutInfo.headerHeight}px - ${layoutInfo.smallTabHeaderHeight}px - ${layoutInfo.smallHeaderLineHeight}px - ${layoutInfo.dashboardPaddingTop}px)`
-                };
-            });
-        });
+        this.layoutInfoStateSubscription = this.layoutInfoState.subscribe(
+            (layoutInfo: SubLayoutInfoState) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.tabContainerStyle = {
+                        // 'height': `calc(100vh - ${layoutInfo.globalSearchHeight}px - ${layoutInfo.headerHeight}px - ${layoutInfo.smallTabHeaderHeight}px - ${layoutInfo.smallHeaderLineHeight}px - ${layoutInfo.dashboardPaddingTop}px)`
+                        height: `calc(100vh - ${layoutInfo.headerHeight}px - ${layoutInfo.smallTabHeaderHeight}px - ${layoutInfo.smallHeaderLineHeight}px - ${layoutInfo.dashboardPaddingTop}px)`,
+                    };
+                });
+            }
+        );
 
-        this.requestEditLayoutStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === LayoutSettingActions.REQUEST_TOGGLE_PANEL && action.module.idSettingsGUI == this.ofModule.idSettingsGUI;
-        }).map((action: CustomAction) => {
-            return action.payload;
-        }).subscribe((isShow: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.editLayout = isShow;
+        this.requestEditLayoutStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type === LayoutSettingActions.REQUEST_TOGGLE_PANEL &&
+                    action.module.idSettingsGUI == this.ofModule.idSettingsGUI
+                );
+            })
+            .map((action: CustomAction) => {
+                return action.payload;
+            })
+            .subscribe((isShow: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.editLayout = isShow;
+                });
             });
-        });
     }
 
     private subcribeRequestChangeTabState() {
-        this.requestChangeTabStateSubscription = this.dispatcher.filter((action: CustomAction) => {
-            return action.type === DataEntryActions.DATA_ENTRY_REQUEST_CHANGE_TAB;
-        }).map((action: CustomAction) => {
-            return action.payload;
-        }).subscribe((tabId: any) => {
-            this.appErrorHandler.executeAction(() => {
-                if (tabId) {
-                    let selectTab = this.tabs.find(x => x.TabID == tabId);
-                    if (selectTab) {
-                        this.selectTab(selectTab);
+        this.requestChangeTabStateSubscription = this.dispatcher
+            .filter((action: CustomAction) => {
+                return (
+                    action.type ===
+                    DataEntryActions.DATA_ENTRY_REQUEST_CHANGE_TAB
+                );
+            })
+            .map((action: CustomAction) => {
+                return action.payload;
+            })
+            .subscribe((tabId: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (tabId) {
+                        let selectTab = this.tabs.find((x) => x.TabID == tabId);
+                        if (selectTab) {
+                            this.selectTab(selectTab);
+                        }
                     }
-                }
+                });
             });
-        });
     }
 
     /**
      * subscribeHotkeyState
      */
     private subscribeHotkeyState() {
-        this.hotKeyStateSubscription = this.hotKeyState.subscribe((hotkey: HotKey) => {
-            this.appErrorHandler.executeAction(() => {
-                if (hotkey) {
-                    this.isHotKeyActive = hotkey.altKey;
-                }
-            });
-        });
+        this.hotKeyStateSubscription = this.hotKeyState.subscribe(
+            (hotkey: HotKey) => {
+                this.appErrorHandler.executeAction(() => {
+                    if (hotkey) {
+                        this.isHotKeyActive = hotkey.altKey;
+                    }
+                });
+            }
+        );
     }
 
     public dragStart() {
@@ -382,28 +477,40 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
 
     public dragEnd(event: any) {
         setTimeout(() => {
-            const leftSize = $('.xn__tab-content__split', this.elmRef.nativeElement).innerWidth();
-            const rightSize = $('.additional-information__split', this.elmRef.nativeElement).innerWidth();
-            const spliters = $('split-gutter', this.elmRef.nativeElement);
+            const leftSize = $(
+                ".xn__tab-content__split",
+                this.elmRef.nativeElement
+            ).innerWidth();
+            const rightSize = $(
+                ".additional-information__split",
+                this.elmRef.nativeElement
+            ).innerWidth();
+            const spliters = $("split-gutter", this.elmRef.nativeElement);
             const lastSpliter = $(spliters[spliters.length - 1]);
             const splitSize = lastSpliter.innerWidth();
             const totalSize = leftSize + rightSize + splitSize;
 
-            if (!lastSpliter.is(':visible')) { return; }
-            this.configWidth.left = ((leftSize + splitSize / 2) * 100) / totalSize;
-            this.configWidth.right = ((rightSize + splitSize / 2) * 100) / totalSize;
+            if (!lastSpliter.is(":visible")) {
+                return;
+            }
+            this.configWidth.left =
+                ((leftSize + splitSize / 2) * 100) / totalSize;
+            this.configWidth.right =
+                ((rightSize + splitSize / 2) * 100) / totalSize;
             this.configWidth.spliter = splitSize;
-            this.store.dispatch(this.layoutInfoActions.resizeSplitter(this.ofModule));
+            this.store.dispatch(
+                this.layoutInfoActions.resizeSplitter(this.ofModule)
+            );
         }, 200);
     }
 
     public dropdownItemClickedHandler(tab) {
-        const clickedTab = this.tabs.find(t => t.TabID === tab.TabID);
+        const clickedTab = this.tabs.find((t) => t.TabID === tab.TabID);
         if (clickedTab) {
-            clickedTab['visible'] = true;
+            clickedTab["visible"] = true;
 
             if (this.isAllTabsInactive(this.tabs)) {
-                clickedTab['active'] = true
+                clickedTab["active"] = true;
             }
 
             this.showAddTabButton = !this.isAllTabsVisible(this.tabs);
@@ -413,35 +520,50 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
     }
 
     public onMouseEnter() {
-        this.store.dispatch(this.tabSummaryActions.toggleTabButton(true, this.ofModule));
+        this.store.dispatch(
+            this.tabSummaryActions.toggleTabButton(true, this.ofModule)
+        );
     }
 
     private reloadAndSaveTabsConfig() {
-        this.globalSettingServiceSubscription = this.globalSettingService.getAllGlobalSettings(this.ofModule.idSettingsGUI).subscribe((data: any) => {
-            this.appErrorHandler.executeAction(() => {
-                this.saveTabsConfig(data);
+        this.globalSettingServiceSubscription = this.globalSettingService
+            .getAllGlobalSettings(this.ofModule.idSettingsGUI)
+            .subscribe((data: any) => {
+                this.appErrorHandler.executeAction(() => {
+                    this.saveTabsConfig(data);
+                });
             });
-        });
     }
     private saveTabsConfig(data: GlobalSettingModel[]) {
         if (!data || !data.length || !Array.isArray(data)) return;
 
-        this.tabListSettings = data.find(x => x.globalName === this.globalSettingName);
-        if (!this.tabListSettings || !this.tabListSettings.idSettingsGlobal || !this.tabListSettings.globalName) {
+        this.tabListSettings = data.find(
+            (x) => x.globalName === this.globalSettingName
+        );
+        if (
+            !this.tabListSettings ||
+            !this.tabListSettings.idSettingsGlobal ||
+            !this.tabListSettings.globalName
+        ) {
             this.tabListSettings = new GlobalSettingModel({
                 globalName: this.globalSettingName,
-                description: 'Order Data Entry Tab List',
-                globalType: this.globalSettingConstant.orderDataEntryTabList
+                description: "Order Data Entry Tab List",
+                globalType: this.globalSettingConstant.orderDataEntryTabList,
             });
         }
         this.tabListSettings.idSettingsGUI = this.ofModule.idSettingsGUI;
-        const visibleTabs = this.tabs.filter(t => t.visible === true);
-        this.tabListSettings.jsonSettings = JSON.stringify(this.getShowTabsNameToList(visibleTabs));
+        const visibleTabs = this.tabs.filter((t) => t.visible === true);
+        this.tabListSettings.jsonSettings = JSON.stringify(
+            this.getShowTabsNameToList(visibleTabs)
+        );
         this.tabListSettings.isActive = true;
 
-        this.globalSettingServiceSubscription = this.globalSettingService.saveGlobalSetting(this.tabListSettings).subscribe(
-            _data => this.saveTabsConfigSuccess(_data),
-            error => this.saveTabsConfigError(error));
+        this.globalSettingServiceSubscription = this.globalSettingService
+            .saveGlobalSetting(this.tabListSettings)
+            .subscribe(
+                (_data) => this.saveTabsConfigSuccess(_data),
+                (error) => this.saveTabsConfigError(error)
+            );
     }
 
     private getShowTabsNameToList(tabs: any[]): Array<string> {
@@ -449,14 +571,18 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
         for (const item of tabs) {
             result.push({
                 tabID: item.TabID,
-                active: item.active
+                active: item.active,
             });
         }
         return result;
     }
 
     private saveTabsConfigSuccess(data: any) {
-        this.globalSettingService.saveUpdateCache(this.ofModule.idSettingsGUI, this.tabListSettings, data);
+        this.globalSettingService.saveUpdateCache(
+            this.ofModule.idSettingsGUI,
+            this.tabListSettings,
+            data
+        );
     }
 
     private saveTabsConfigError(error) {
@@ -467,21 +593,25 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
         if (!this.keyBuffer.length) {
             this.keyBufferKeep.length = 0;
         }
-        if (this.keyBuffer && this.keyBuffer.indexOf(keyCode) === -1 &&
-                ((keyCode > 64 && keyCode < 91) ||  // from A -> Z
-                (keyCode > 15 && keyCode < 19) ||  // Ctr + Shift + Alt
-                (keyCode > 47 && keyCode < 58))) { // 0 -> 9
+        if (
+            this.keyBuffer &&
+            this.keyBuffer.indexOf(keyCode) === -1 &&
+            ((keyCode > 64 && keyCode < 91) || // from A -> Z
+                (keyCode > 15 && keyCode < 19) || // Ctr + Shift + Alt
+                (keyCode > 47 && keyCode < 58))
+        ) {
+            // 0 -> 9
             this.keyBuffer.push(keyCode);
         }
         // if (this.keyBuffer.length > 1) {
-            this.keyBufferKeep = cloneDeep(this.keyBuffer);
-            this.buildKeyName();
+        this.keyBufferKeep = cloneDeep(this.keyBuffer);
+        this.buildKeyName();
         // }
     }
 
     private removeKeyUpIntoBuffer(keyCode: any) {
         if (this.keyBuffer && this.keyBuffer.indexOf(keyCode) > -1) {
-            this.keyBuffer = this.keyBuffer.filter(x => x !== keyCode);
+            this.keyBuffer = this.keyBuffer.filter((x) => x !== keyCode);
         }
         if (this.timeoutKeyup) {
             clearTimeout(this.timeoutKeyup);
@@ -495,39 +625,56 @@ export class OrderDataEntryTabComponent extends BaseComponent implements OnInit,
 
     private buildKeyName() {
         if (this.keyBufferKeep.length === 0) {
-            this.store.dispatch(this.commonActions.addHotKey(new HotKey({
-                altKey: this.isHotKeyActive,
-                keyCombineCode: null
-            }), this.ofModule));
+            this.store.dispatch(
+                this.commonActions.addHotKey(
+                    new HotKey({
+                        altKey: this.isHotKeyActive,
+                        keyCombineCode: null,
+                    }),
+                    this.ofModule
+                )
+            );
             return;
         }
         this.keyBufferKeep = this.keyBufferKeep.sort((a, b) => a - b);
-        let displayText = '';
+        let displayText = "";
         for (let i = 0; i < this.keyBufferKeep.length; i++) {
             displayText += this.consts.keyCode[this.keyBufferKeep[i]];
-            if (i < this.keyBufferKeep.length - 1) { 
-                displayText += '+';
+            if (i < this.keyBufferKeep.length - 1) {
+                displayText += "+";
             }
         }
 
-        this.store.dispatch(this.commonActions.addHotKey(new HotKey({
-            altKey: this.isHotKeyActive,
-            keyCombineCode: displayText
-        }), this.ofModule));
+        this.store.dispatch(
+            this.commonActions.addHotKey(
+                new HotKey({
+                    altKey: this.isHotKeyActive,
+                    keyCombineCode: displayText,
+                }),
+                this.ofModule
+            )
+        );
         // console.log(displayText);
     }
 
     private setHotKeyActiveValue(e: any) {
-        if (e.keyCode !== 18 || this.keyBufferKeep.length > 1) { // Alt key: 18
+        if (e.keyCode !== 18 || this.keyBufferKeep.length > 1) {
+            // Alt key: 18
             return;
         }
 
-        this.store.dispatch(this.commonActions.addHotKey(new HotKey({
-            altKey: !this.isHotKeyActive,
-            keyCombineCode: null
-        }), this.ofModule));
-        $('input').each(function () { $(this).blur(); });
+        this.store.dispatch(
+            this.commonActions.addHotKey(
+                new HotKey({
+                    altKey: !this.isHotKeyActive,
+                    keyCombineCode: null,
+                }),
+                this.ofModule
+            )
+        );
+        $("input").each(function () {
+            $(this).blur();
+        });
         e.preventDefault();
     }
-
 }

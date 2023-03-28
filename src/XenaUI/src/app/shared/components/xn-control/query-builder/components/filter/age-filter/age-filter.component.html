@@ -8,147 +8,229 @@
     <table>
         <tr>
             <td class="padding-top-25">
-                <xn-combo-box #logicalOperator
-                              wjDropdownHelper
-                              class="custom-wj-input-control xn-select no-padding-left fix-width-control"
-                              [ngClass]="{'ng-invalid': !logicalOperator._pristine && !logicalOperator.selectedValue}"
-                              [itemsSource]="listComboBox.LogicalOperatores"
-                              [displayMemberPath]="'textValue'"
-                              [selectedValuePath]="'idValue'"
-                              [isEditable]="true"
-                              [isRequired]="false"
-                              [(ngModel)]="condition"
-                              (gotFocus)="onLogicalOperatorFocus()"
-                              (selectedIndexChanged)="changeLogicalOperator()"
-                              placeholder="Please select">
+                <xn-combo-box
+                    #logicalOperator
+                    wjDropdownHelper
+                    class="custom-wj-input-control xn-select no-padding-left fix-width-control"
+                    [ngClass]="{
+                        'ng-invalid':
+                            !logicalOperator._pristine &&
+                            !logicalOperator.selectedValue
+                    }"
+                    [itemsSource]="listComboBox.LogicalOperatores"
+                    [displayMemberPath]="'textValue'"
+                    [selectedValuePath]="'idValue'"
+                    [isEditable]="true"
+                    [isRequired]="false"
+                    [(ngModel)]="condition"
+                    (gotFocus)="onLogicalOperatorFocus()"
+                    (selectedIndexChanged)="changeLogicalOperator()"
+                    placeholder="Please select"
+                >
                 </xn-combo-box>
             </td>
             <td>
-                <div class="right-filter-content form-container"
-                     [ngClass]="{'submitted': ageForm['submitted']}">
-                    <form class="form-inline"
-                          [formGroup]="ageForm"
-                          id="ageForm">
+                <div
+                    class="right-filter-content form-container"
+                    [ngClass]="{ submitted: ageForm['submitted'] }"
+                >
+                    <form
+                        class="form-inline"
+                        [formGroup]="ageForm"
+                        id="ageForm"
+                    >
                         <div class="form-group">
-                            <span style="display: block"><label-translation [keyword]="'AgeFilter__Range'"></label-translation></span>
-                            <xn-combo-box #rangeCombobox
-                                          wjDropdownHelper
-                                          formControlName="range"
-                                          class="custom-wj-input-control xn-select no-padding-left fix-width-control"
-                                          [ngClass]="{'ng-invalid': !rangeCombobox._pristine && !rangeCombobox.selectedValue}"
-                                          [displayMemberPath]="'value'"
-                                          [selectedValuePath]="'key'"
-                                          [itemsSource]="ranges"
-                                          [isEditable]="false"
-                                          [isRequired]="false"
-                                          (gotFocus)="onTypeFocus()"
-                                          (selectedIndexChanged)="changeRange()">
+                            <span style="display: block"
+                                ><label-translation
+                                    [keyword]="'AgeFilter__Range'"
+                                ></label-translation
+                            ></span>
+                            <xn-combo-box
+                                #rangeCombobox
+                                wjDropdownHelper
+                                formControlName="range"
+                                class="custom-wj-input-control xn-select no-padding-left fix-width-control"
+                                [ngClass]="{
+                                    'ng-invalid':
+                                        !rangeCombobox._pristine &&
+                                        !rangeCombobox.selectedValue
+                                }"
+                                [displayMemberPath]="'value'"
+                                [selectedValuePath]="'key'"
+                                [itemsSource]="ranges"
+                                [isEditable]="false"
+                                [isRequired]="false"
+                                (gotFocus)="onTypeFocus()"
+                                (selectedIndexChanged)="changeRange()"
+                            >
                             </xn-combo-box>
                         </div>
 
                         <div class="form-group">
-                            <span style="display: block"><label-translation [keyword]="'AgeFilter__From'"></label-translation></span>
+                            <span style="display: block"
+                                ><label-translation
+                                    [keyword]="'AgeFilter__From'"
+                                ></label-translation
+                            ></span>
 
-                            <ng-container [ngSwitch]="ageForm.get('range').value">
-
-                                <input #fromNumber *ngSwitchDefault formControlName="fromValue"
+                            <ng-container
+                                [ngSwitch]="ageForm.get('range').value"
+                            >
+                                <input
+                                    #fromNumber
+                                    *ngSwitchDefault
+                                    formControlName="fromValue"
                                     type="text"
                                     [placeholder]="'From'"
                                     xn-numeric
                                     [min]="fromNumberMin"
                                     [max]="fromNumberMax"
                                     class="custom-wj-input-control xn-input no-padding-left fix-width-control"
-                                    [ngClass]="{'ng-invalid': !fromNumber._pristine && !fromNumber.value}"
-                                    (ngModelChange)="setMinMaxValueForControls()"
-                                    format="n0">
+                                    [ngClass]="{
+                                        'ng-invalid':
+                                            !fromNumber._pristine &&
+                                            !fromNumber.value
+                                    }"
+                                    (ngModelChange)="
+                                        setMinMaxValueForControls()
+                                    "
+                                    format="n0"
+                                />
 
-                                <wj-input-date #fromDate
-                                               formControlName="fromValue"
-                                               class="custom-wj-input-control xn-input no-padding-left fix-width-control"
-                                               [ngClass]="{'ng-invalid': !fromDate._pristine && !fromDate.value}"
-                                               [format]="'MM/dd/yyyy'"
-                                               [placeholder]="'From'"
-                                               [isRequired]="false"
-                                               (valueChanged)="setMinMaxValueForControls()"
-                                               *ngSwitchCase="'dates'">
+                                <wj-input-date
+                                    #fromDate
+                                    formControlName="fromValue"
+                                    class="custom-wj-input-control xn-input no-padding-left fix-width-control"
+                                    [ngClass]="{
+                                        'ng-invalid':
+                                            !fromDate._pristine &&
+                                            !fromDate.value
+                                    }"
+                                    [format]="'MM/dd/yyyy'"
+                                    [placeholder]="'From'"
+                                    [isRequired]="false"
+                                    (valueChanged)="setMinMaxValueForControls()"
+                                    *ngSwitchCase="'dates'"
+                                >
                                 </wj-input-date>
-
                             </ng-container>
                         </div>
 
                         <div class="form-group">
-                            <i class="fa fa-window-minimize horizontal-line"></i>
+                            <i
+                                class="fa fa-window-minimize horizontal-line"
+                            ></i>
                         </div>
                         <div class="form-group">
-                            <span style="display: block"><label-translation [keyword]="'AgeFilter__To'"></label-translation></span>
+                            <span style="display: block"
+                                ><label-translation
+                                    [keyword]="'AgeFilter__To'"
+                                ></label-translation
+                            ></span>
 
-                            <ng-container [ngSwitch]="ageForm.get('range').value">
-                                <input #toNumber *ngSwitchDefault formControlName="toValue"
+                            <ng-container
+                                [ngSwitch]="ageForm.get('range').value"
+                            >
+                                <input
+                                    #toNumber
+                                    *ngSwitchDefault
+                                    formControlName="toValue"
                                     type="text"
                                     [placeholder]="'To'"
                                     xn-numeric
                                     [min]="toNumberMin"
                                     class="custom-wj-input-control xn-input no-padding-left fix-width-control"
-                                    [ngClass]="{'ng-invalid': !toNumber._pristine && !toNumber.value}"
-                                    (ngModelChange)="setMinMaxValueForControls()"
-                                    format="n0">
-                                <wj-input-date #toDate
-                                               formControlName="toValue"
-                                               class="custom-wj-input-control xn-input no-padding-left fix-width-control"
-                                               [ngClass]="{'ng-invalid': !toDate._pristine && !toDate.value}"
-                                               [format]="'MM/dd/yyyy'"
-                                               [placeholder]="'To'"
-                                               [isRequired]="false"
-                                               (valueChanged)="setMinMaxValueForControls()"
-                                               *ngSwitchCase="'dates'">
+                                    [ngClass]="{
+                                        'ng-invalid':
+                                            !toNumber._pristine &&
+                                            !toNumber.value
+                                    }"
+                                    (ngModelChange)="
+                                        setMinMaxValueForControls()
+                                    "
+                                    format="n0"
+                                />
+                                <wj-input-date
+                                    #toDate
+                                    formControlName="toValue"
+                                    class="custom-wj-input-control xn-input no-padding-left fix-width-control"
+                                    [ngClass]="{
+                                        'ng-invalid':
+                                            !toDate._pristine && !toDate.value
+                                    }"
+                                    [format]="'MM/dd/yyyy'"
+                                    [placeholder]="'To'"
+                                    [isRequired]="false"
+                                    (valueChanged)="setMinMaxValueForControls()"
+                                    *ngSwitchCase="'dates'"
+                                >
                                 </wj-input-date>
                             </ng-container>
                         </div>
                         <div class="form-group">
-                            <span style="display: block"><label-translation [keyword]="'AgeFilter__Type'"></label-translation></span>
-                            <xn-combo-box #typeCombobox
-                                          wjDropdownHelper
-                                          class="custom-wj-input-control xn-select no-padding-left fix-width-control"
-                                          [ngClass]="{'ng-invalid': !typeCombobox._pristine && !typeCombobox.selectedValue}"
-                                          formControlName="groupType"
-                                          [itemsSource]="listComboBox.Types"
-                                          [displayMemberPath]="'textValue'"
-                                          [selectedValuePath]="'idValue'"
-                                          [isEditable]="true"
-                                          [isRequired]="false"
-                                          (selectedIndexChanged)="changeType()"
-                                          placeholder="Please select">
+                            <span style="display: block"
+                                ><label-translation
+                                    [keyword]="'AgeFilter__Type'"
+                                ></label-translation
+                            ></span>
+                            <xn-combo-box
+                                #typeCombobox
+                                wjDropdownHelper
+                                class="custom-wj-input-control xn-select no-padding-left fix-width-control"
+                                [ngClass]="{
+                                    'ng-invalid':
+                                        !typeCombobox._pristine &&
+                                        !typeCombobox.selectedValue
+                                }"
+                                formControlName="groupType"
+                                [itemsSource]="listComboBox.Types"
+                                [displayMemberPath]="'textValue'"
+                                [selectedValuePath]="'idValue'"
+                                [isEditable]="true"
+                                [isRequired]="false"
+                                (selectedIndexChanged)="changeType()"
+                                placeholder="Please select"
+                            >
                             </xn-combo-box>
                         </div>
-                        <div class="form-group"
-                             *ngIf="!isSingle">
-                            <span style="display: block"><label-translation [keyword]="'AgeFilter__Rule'"></label-translation></span>
-                            <xn-combo-box #operatorCombobox
-                                          wjDropdownHelper
-                                          class="custom-wj-input-control xn-select no-padding-left fix-width-control"
-                                          [ngClass]="{'ng-invalid': !operatorCombobox._pristine && !operatorCombobox.selectedValue}"
-                                          formControlName="groupOperators"
-                                          [itemsSource]="listComboBox.Operatores"
-                                          [displayMemberPath]="'textValue'"
-                                          [selectedValuePath]="'idValue'"
-                                          [isEditable]="true"
-                                          [isRequired]="false"
-                                          (selectedIndexChanged)="changeRule()"
-                                          placeholder="Please select">
+                        <div class="form-group" *ngIf="!isSingle">
+                            <span style="display: block"
+                                ><label-translation
+                                    [keyword]="'AgeFilter__Rule'"
+                                ></label-translation
+                            ></span>
+                            <xn-combo-box
+                                #operatorCombobox
+                                wjDropdownHelper
+                                class="custom-wj-input-control xn-select no-padding-left fix-width-control"
+                                [ngClass]="{
+                                    'ng-invalid':
+                                        !operatorCombobox._pristine &&
+                                        !operatorCombobox.selectedValue
+                                }"
+                                formControlName="groupOperators"
+                                [itemsSource]="listComboBox.Operatores"
+                                [displayMemberPath]="'textValue'"
+                                [selectedValuePath]="'idValue'"
+                                [isEditable]="true"
+                                [isRequired]="false"
+                                (selectedIndexChanged)="changeRule()"
+                                placeholder="Please select"
+                            >
                             </xn-combo-box>
                         </div>
-                        <div class="form-group"
-                             *ngIf="!isSingle">
+                        <div class="form-group" *ngIf="!isSingle">
                             <span style="display: block">&nbsp;</span>
-                            <input class="form-control xn-input--no-icon fix-width-control"
-                                   type="text"
-                                   formControlName="groupQuantity"
-                                   placeholder="Value">
+                            <input
+                                class="form-control xn-input--no-icon fix-width-control"
+                                type="text"
+                                formControlName="groupQuantity"
+                                placeholder="Value"
+                            />
                         </div>
                     </form>
                 </div>
             </td>
         </tr>
     </table>
-
 </div>

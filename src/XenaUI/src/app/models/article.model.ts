@@ -1,5 +1,5 @@
 ﻿export class ArticleModel {
-    public articleManufacturersNr: any = '';
+    public articleManufacturersNr: any = "";
     public articleNr: any = {};
     public articleNameShort: any = {};
     public idArticle: any = {};

@@ -1,1 +1,1 @@
-﻿export * from './article-order.model';
+﻿export * from "./article-order.model";

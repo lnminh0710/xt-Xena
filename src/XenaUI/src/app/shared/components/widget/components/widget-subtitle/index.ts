@@ -1,1 +1,1 @@
-export * from './widget-subtitle.component';
+export * from "./widget-subtitle.component";
