@@ -34,7 +34,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ```
 Node 14.17.0
 Git
-ASP.Net
+ASP.Net 2.1.4
 ```
 
 ### Script
