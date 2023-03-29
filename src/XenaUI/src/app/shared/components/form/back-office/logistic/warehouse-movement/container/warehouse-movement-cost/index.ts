@@ -1,1 +1,1 @@
-﻿export * from "./warehouse-movement-cost.component";
+﻿export * from './warehouse-movement-cost.component';

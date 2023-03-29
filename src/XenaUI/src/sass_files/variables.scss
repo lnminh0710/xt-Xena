@@ -1,7 +1,7 @@
-@import "color";
-@import "size";
+@import 'color';
+@import 'size';
 
-$assets-root: "~/public/assets/";
-$image-folder: "img/";
-$images-root: "#{$assets-root}#{$image-folder}";
+$assets-root: '~/public/assets/';
+$image-folder: 'img/';
+$images-root: '#{$assets-root}#{$image-folder}';
 $widget-main-toolbar-width: 100px;

@@ -1,1 +1,1 @@
-export * from "./widget-profile-saving.component";
+export * from './widget-profile-saving.component';

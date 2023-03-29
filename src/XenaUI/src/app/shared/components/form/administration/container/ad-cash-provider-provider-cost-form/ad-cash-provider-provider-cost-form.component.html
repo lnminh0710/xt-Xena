@@ -1,186 +1,178 @@
 <div
-    *ngIf="isRenderForm"
-    class="form-container height-pc-100"
-    [ngClass]="{ submitted: adCashProviderPCForm.submitted }"
+  *ngIf="isRenderForm"
+  class="form-container height-pc-100"
+  [ngClass]="{ submitted: adCashProviderPCForm.submitted }"
 >
-    <form
-        [formGroup]="adCashProviderPCForm"
-        class="form-horizontal height-pc-100"
-        id="adCashProviderPCForm"
-        novalidate
-    >
-        <control-focus
-            [formName]="'adCashProviderPCForm'"
-            [isFocusOnFirstControl]="true"
-        ></control-focus>
-        <div class="col-xs-12 col-sm-6 height-pc-100">
-            <div class="form-group">
-                <label for="isActive" class="control-label col-sm-3">{{
-                    data.isActive.displayValue
-                }}</label>
-                <div class="col-sm-9">
-                    <mat-checkbox color="primary" formControlName="isActive">
-                    </mat-checkbox>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="paymentType" class="control-label col-sm-3">{{
-                    paymentTypeLabel
-                }}</label>
-                <div class="col-sm-9">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #paymentType
-                            wjDropdownHelper
-                            [form]="adCashProviderPCForm"
-                            formControlName="paymentType"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.paymentType"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            [isDisabled]="isPaymentTypeDisabled"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="paymentType"
-                            [control]="
-                                adCashProviderPCForm.controls.paymentType
-                            "
-                            icon="credit-card"
-                        ></control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="paymentCostType" class="control-label col-sm-3">{{
-                    paymentCostTypeLabel
-                }}</label>
-                <div class="col-sm-9">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #paymentCostType
-                            wjDropdownHelper
-                            [form]="adCashProviderPCForm"
-                            formControlName="paymentCostType"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.paymentCostType"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="paymentCostType"
-                            [control]="
-                                adCashProviderPCForm.controls.paymentCostType
-                            "
-                            icon="credit-card"
-                        ></control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="amount" class="control-label col-sm-3">{{
-                    amountLabel
-                }}</label>
-                <div class="col-sm-9">
-                    <input
-                        #amountNumber
-                        formControlName="amount"
-                        id="amount"
-                        name="amount"
-                        type="text"
-                        xn-numeric
-                        [min]="0"
-                        [format]="globalNumberFormat"
-                        class="custom-wj-input-control xn-input"
-                    />
-                    <clear-text
-                        [enableClearText]="true"
-                        [controlType]="'number'"
-                        [inputControl]="adCashProviderPCForm.controls.amount"
-                        [controlName]="'amount'"
-                    ></clear-text>
-                    <control-messages
-                        [control]="adCashProviderPCForm.controls.amount"
-                        [icon]="'th'"
-                    ></control-messages>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="currency" class="control-label col-sm-3">{{
-                    currencyLabel
-                }}</label>
-                <div class="col-sm-9">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #currency
-                            wjDropdownHelper
-                            [form]="adCashProviderPCForm"
-                            formControlName="currency"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.currency"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="currency"
-                            [control]="adCashProviderPCForm.controls.currency"
-                            [icon]="'money'"
-                        ></control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group col-xs-12">
-                <button
-                    [disabled]="paymentTypeDisable"
-                    type="button"
-                    mat-raised-button
-                    class="mat-btn-blue pull-right"
-                    (click)="addToGrid($event)"
-                >
-                    <span class="bt-t"
-                        ><label-translation
-                            [keyword]="'Ad_Ca_Pro__Add'"
-                        ></label-translation
-                    ></span>
-                </button>
-            </div>
+  <form
+    [formGroup]="adCashProviderPCForm"
+    class="form-horizontal height-pc-100"
+    id="adCashProviderPCForm"
+    novalidate
+  >
+    <control-focus
+      [formName]="'adCashProviderPCForm'"
+      [isFocusOnFirstControl]="true"
+    ></control-focus>
+    <div class="col-xs-12 col-sm-6 height-pc-100">
+      <div class="form-group">
+        <label for="isActive" class="control-label col-sm-3">{{
+          data.isActive.displayValue
+        }}</label>
+        <div class="col-sm-9">
+          <mat-checkbox color="primary" formControlName="isActive">
+          </mat-checkbox>
         </div>
-        <div class="col-xs-12 col-sm-6 height-pc-100">
-            <label
-                *ngIf="!paymentCostTypeData.data.length && formSubmitted"
-                class="alert alert-danger"
+      </div>
+      <div class="form-group">
+        <label for="paymentType" class="control-label col-sm-3">{{
+          paymentTypeLabel
+        }}</label>
+        <div class="col-sm-9">
+          <div class="full-width">
+            <xn-combo-box
+              #paymentType
+              wjDropdownHelper
+              [form]="adCashProviderPCForm"
+              formControlName="paymentType"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.paymentType"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              [isDisabled]="isPaymentTypeDisabled"
+              placeholder="Please select"
             >
-                <label-translation
-                    [keyword]="
-                        'Ad_Ca_Pro__Please_add_at_least_a_Provider_cost_item'
-                    "
-                ></label-translation>
-            </label>
-            <div class="form-group height-pc-100 payment-cost-type">
-                <xn-ag-grid
-                    *ngIf="
-                        paymentCostTypeData &&
-                        paymentCostTypeData.columns &&
-                        paymentCostTypeData.columns.length
-                    "
-                    [id]="gridId"
-                    [fitWidthColumn]="true"
-                    [dataSource]="paymentCostTypeData"
-                    [globalProperties]="globalProps"
-                >
-                </xn-ag-grid>
-            </div>
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="paymentType"
+              [control]="adCashProviderPCForm.controls.paymentType"
+              icon="credit-card"
+            ></control-messages>
+          </div>
         </div>
-    </form>
+      </div>
+      <div class="form-group">
+        <label for="paymentCostType" class="control-label col-sm-3">{{
+          paymentCostTypeLabel
+        }}</label>
+        <div class="col-sm-9">
+          <div class="full-width">
+            <xn-combo-box
+              #paymentCostType
+              wjDropdownHelper
+              [form]="adCashProviderPCForm"
+              formControlName="paymentCostType"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.paymentCostType"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="paymentCostType"
+              [control]="adCashProviderPCForm.controls.paymentCostType"
+              icon="credit-card"
+            ></control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="amount" class="control-label col-sm-3">{{
+          amountLabel
+        }}</label>
+        <div class="col-sm-9">
+          <input
+            #amountNumber
+            formControlName="amount"
+            id="amount"
+            name="amount"
+            type="text"
+            xn-numeric
+            [min]="0"
+            [format]="globalNumberFormat"
+            class="custom-wj-input-control xn-input"
+          />
+          <clear-text
+            [enableClearText]="true"
+            [controlType]="'number'"
+            [inputControl]="adCashProviderPCForm.controls.amount"
+            [controlName]="'amount'"
+          ></clear-text>
+          <control-messages
+            [control]="adCashProviderPCForm.controls.amount"
+            [icon]="'th'"
+          ></control-messages>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="currency" class="control-label col-sm-3">{{
+          currencyLabel
+        }}</label>
+        <div class="col-sm-9">
+          <div class="full-width">
+            <xn-combo-box
+              #currency
+              wjDropdownHelper
+              [form]="adCashProviderPCForm"
+              formControlName="currency"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.currency"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="currency"
+              [control]="adCashProviderPCForm.controls.currency"
+              [icon]="'money'"
+            ></control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-xs-12">
+        <button
+          [disabled]="paymentTypeDisable"
+          type="button"
+          mat-raised-button
+          class="mat-btn-blue pull-right"
+          (click)="addToGrid($event)"
+        >
+          <span class="bt-t"
+            ><label-translation [keyword]="'Ad_Ca_Pro__Add'"></label-translation
+          ></span>
+        </button>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 height-pc-100">
+      <label
+        *ngIf="!paymentCostTypeData.data.length && formSubmitted"
+        class="alert alert-danger"
+      >
+        <label-translation
+          [keyword]="'Ad_Ca_Pro__Please_add_at_least_a_Provider_cost_item'"
+        ></label-translation>
+      </label>
+      <div class="form-group height-pc-100 payment-cost-type">
+        <xn-ag-grid
+          *ngIf="
+            paymentCostTypeData &&
+            paymentCostTypeData.columns &&
+            paymentCostTypeData.columns.length
+          "
+          [id]="gridId"
+          [fitWidthColumn]="true"
+          [dataSource]="paymentCostTypeData"
+          [globalProperties]="globalProps"
+        >
+        </xn-ag-grid>
+      </div>
+    </div>
+  </form>
 </div>

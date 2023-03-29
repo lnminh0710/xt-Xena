@@ -1,23 +1,23 @@
 <base-header-cell-renderer
-    [params]="params"
-    [template]="template"
-    [contentStyle]="'text-center full-width-height'"
+  [params]="params"
+  [template]="template"
+  [contentStyle]="'text-center full-width-height'"
 >
 </base-header-cell-renderer>
 
 <ng-template #template>
-    <span
-        ><label-translation
-            [keyword]="'SelectAllCheckBoxHeader__Select'"
-        ></label-translation>
-    </span>
-    <span class="inline-block">
-        <mat-checkbox
-            color="primary"
-            [(ngModel)]="value"
-            (click)="onClick($event)"
-            (change)="onCheckboxChange($event)"
-        >
-        </mat-checkbox>
-    </span>
+  <span
+    ><label-translation
+      [keyword]="'SelectAllCheckBoxHeader__Select'"
+    ></label-translation>
+  </span>
+  <span class="inline-block">
+    <mat-checkbox
+      color="primary"
+      [(ngModel)]="value"
+      (click)="onClick($event)"
+      (change)="onCheckboxChange($event)"
+    >
+    </mat-checkbox>
+  </span>
 </ng-template>

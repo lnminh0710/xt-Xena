@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: "app-root",
-    templateUrl: "./public.component.html",
+  selector: 'app-root',
+  templateUrl: './public.component.html',
 })
 export class PublicComponent implements OnInit {
-    constructor() {}
+  constructor() {}
 
-    ngOnInit() {
-        $("#page-loading").remove();
-    }
+  ngOnInit() {
+    $('#page-loading').remove();
+  }
 }

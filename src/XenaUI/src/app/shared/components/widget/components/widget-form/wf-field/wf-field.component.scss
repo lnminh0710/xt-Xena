@@ -1,194 +1,194 @@
 $minControlHeight: 18px;
 .widget-info .fa-circle.active {
-    font-size: 12px;
+  font-size: 12px;
 }
 .widget-info .fa-circle.in-active {
-    font-size: 12px;
+  font-size: 12px;
 }
 .columns {
-    // columns: 240px;
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    display: block;
-    -webkit-transform: translateX(0);
-    -moz-transform: translateX(0);
-    transform: translateX(0);
+  // columns: 240px;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  display: block;
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  transform: translateX(0);
 }
 .form-group {
-    margin-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 .label-field {
-    white-space: normal;
+  white-space: normal;
 }
 .control-label {
-    //padding-top: 0px;
-    vertical-align: middle;
+  //padding-top: 0px;
+  vertical-align: middle;
 }
 .field-value {
-    padding-left: 5px;
+  padding-left: 5px;
 }
 .container-inline {
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    min-height: $minControlHeight;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  min-height: $minControlHeight;
 }
 .container-inline-col {
-    // min-width: 240px;
-    overflow: hidden;
+  // min-width: 240px;
+  overflow: hidden;
 }
 .container-inline-label,
 .container-inline-content {
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    // vertical-align: middle;
-    //min-width: 100px;
-    //height: 100%;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  // vertical-align: middle;
+  //min-width: 100px;
+  //height: 100%;
 }
 .columns .container-inline-label {
-    width: 30%;
+  width: 30%;
 }
 .container-inline-label {
-    // display: grid;
+  // display: grid;
 }
 .container-inline-content {
-    // display: grid;
-    height: 100%;
+  // display: grid;
+  height: 100%;
 }
 .item-inline-label,
 .item-inline-content {
-    //line-height: 1.2;
-    font-size: 12px;
-    overflow-x: hidden;
+  //line-height: 1.2;
+  font-size: 12px;
+  overflow-x: hidden;
 }
 .item-inline-label {
-    padding: 0 0 0 2px;
+  padding: 0 0 0 2px;
 }
 .item-inline-content {
-    padding: 0 0 0 5px;
+  padding: 0 0 0 5px;
 }
 .item-inline-content {
-    overflow: hidden;
-    width: 100%;
+  overflow: hidden;
+  width: 100%;
 }
 .edit-form-mode .item-inline-label,
 .edit-form-mode .item-inline-content,
 .edit-language-mode .item-inline-label,
 .edit-language-mode .item-inline-content {
-    min-height: 32px;
+  min-height: 32px;
 }
 .edit-form-mode .single-group .item-inline-label.readonly,
 .edit-form-mode .single-group .item-inline-content.readonly {
-    min-height: 26px;
+  min-height: 26px;
 }
 .item-inline-label {
-    display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 .xn-hidden,
 .columns .xn-hidden {
-    display: none;
+  display: none;
 }
 .columns .xn-show {
-    display: table;
+  display: table;
 }
 .columns .virtual-container {
-    height: 10px;
-    min-height: 10px;
+  height: 10px;
+  min-height: 10px;
 }
 .label-field {
-    white-space: nowrap;
-    overflow: hidden;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .m-o:hover {
-    cursor: move;
+  cursor: move;
 }
 .m-i {
-    height: 100%;
-    width: 100%;
-    opacity: 1;
-    z-index: 10;
-    position: absolute;
-    top: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 1;
+  z-index: 10;
+  position: absolute;
+  top: 0;
 }
 .m-uc {
-    cursor: pointer;
+  cursor: pointer;
 }
 .m-c {
-    cursor: move;
-    top: 0;
-    min-height: $minControlHeight;
+  cursor: move;
+  top: 0;
+  min-height: $minControlHeight;
 }
 .separator {
-    //min-width: 0px;
-    //max-width: 105px;
-    //white-space: nowrap;
-    overflow: hidden;
-    //text-overflow: ellipsis;
-    text-align: center;
-    display: flex;
-    //.control-label {
-    //    line-height: 1.2;
-    //}
+  //min-width: 0px;
+  //max-width: 105px;
+  //white-space: nowrap;
+  overflow: hidden;
+  //text-overflow: ellipsis;
+  text-align: center;
+  display: flex;
+  //.control-label {
+  //    line-height: 1.2;
+  //}
 }
 .m-uc {
-    cursor: pointer;
+  cursor: pointer;
 }
 .m-c {
-    cursor: move;
+  cursor: move;
 }
 .d-field {
-    cursor: pointer;
-    position: absolute;
-    display: none;
-    //left: 25px;
-    top: 0;
+  cursor: pointer;
+  position: absolute;
+  display: none;
+  //left: 25px;
+  top: 0;
 }
 .m-i:hover {
-    .d-field {
-        display: block !important;
-    }
+  .d-field {
+    display: block !important;
+  }
 }
 .isResizing {
-    display: none;
+  display: none;
 }
 .resize-ghost-element {
-    position: inherit !important;
-    // max-height: 250px;
-    min-height: 14px;
+  position: inherit !important;
+  // max-height: 250px;
+  min-height: 14px;
 }
 $fz: 13px;
 $padding: 3px;
 .rz {
-    position: absolute;
-    cursor: n-resize;
+  position: absolute;
+  cursor: n-resize;
 
-    bottom: -0.5px;
-    width: 100%;
-    height: 0;
-    z-index: 11;
-    background: transparent;
+  bottom: -0.5px;
+  width: 100%;
+  height: 0;
+  z-index: 11;
+  background: transparent;
 }
 .fa-circle-o {
-    position: absolute;
-    left: calc(50% - #{$padding});
-    font-size: $fz;
-    z-index: 11;
-    bottom: -$fz/2;
+  position: absolute;
+  left: calc(50% - #{$padding});
+  font-size: $fz;
+  z-index: 11;
+  bottom: -$fz/2;
 }
 
 .align-self-top {
-    align-self: flex-start;
+  align-self: flex-start;
 }
 
 .align-self-bottom {
-    align-self: flex-end;
+  align-self: flex-end;
 }

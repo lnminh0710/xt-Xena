@@ -1,1 +1,1 @@
-export * from "./widget-template-setting.component";
+export * from './widget-template-setting.component';

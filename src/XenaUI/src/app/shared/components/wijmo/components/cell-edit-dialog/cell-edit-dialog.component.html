@@ -1,70 +1,70 @@
 <p-dialog
-    header=""
-    [visible]="true"
-    [styleClass]="'cell-edit-dialog'"
-    [resizable]="false"
-    [draggable]="true"
-    modal="true"
-    width="640"
-    height="480"
-    responsive="true"
-    appendTo="body"
+  header=""
+  [visible]="true"
+  [styleClass]="'cell-edit-dialog'"
+  [resizable]="false"
+  [draggable]="true"
+  modal="true"
+  width="640"
+  height="480"
+  responsive="true"
+  appendTo="body"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="font-size-18px"
-                ><label-translation
-                    [keyword]="'CellEditDialog__Edit_Text_Field'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="close()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 no-padding height-pc-100">
-        <label for="cellData">{{ cellData.title }}:</label>
-        <div
-            class="edit-field overflow-auto"
-            [attr.contenteditable]="true"
-            [textContent]="cellData.value"
-            (input)="cellData.value = $event.target.textContent"
-        ></div>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="font-size-18px"
+        ><label-translation
+          [keyword]="'CellEditDialog__Edit_Text_Field'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                label="Cancel"
-                type="button"
-                mat-raised-button
-                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size mat-btn-white"
-                (click)="close()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'CellEditDialog__Cancel'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                label="Accept"
-                type="button"
-                mat-raised-button
-                class="mat-btn-blue ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
-                (click)="accept()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'CellEditDialog__Accept'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+  </p-header>
+  <div class="col-xs-12 no-padding height-pc-100">
+    <label for="cellData">{{ cellData.title }}:</label>
+    <div
+      class="edit-field overflow-auto"
+      [attr.contenteditable]="true"
+      [textContent]="cellData.value"
+      (input)="cellData.value = $event.target.textContent"
+    ></div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        label="Cancel"
+        type="button"
+        mat-raised-button
+        class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size mat-btn-white"
+        (click)="close()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'CellEditDialog__Cancel'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        label="Accept"
+        type="button"
+        mat-raised-button
+        class="mat-btn-blue ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only new-size"
+        (click)="accept()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'CellEditDialog__Accept'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

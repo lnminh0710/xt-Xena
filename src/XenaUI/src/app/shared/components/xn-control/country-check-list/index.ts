@@ -1,1 +1,1 @@
-export * from "./country-check-list.component";
+export * from './country-check-list.component';

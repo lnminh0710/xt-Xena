@@ -1,75 +1,75 @@
 <p-dialog
-    #pDialogEmailTemplate
-    header=""
-    width="600"
-    height="500"
-    [styleClass]="'translation-dialog'"
-    [(visible)]="showDialog"
-    [resizable]="true"
-    [draggable]="true"
-    modal="modal"
-    width="500"
-    responsive="false"
-    appendTo="body"
-    [closable]="false"
+  #pDialogEmailTemplate
+  header=""
+  width="600"
+  height="500"
+  [styleClass]="'translation-dialog'"
+  [(visible)]="showDialog"
+  [resizable]="true"
+  [draggable]="true"
+  modal="modal"
+  width="500"
+  responsive="false"
+  appendTo="body"
+  [closable]="false"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="fa fa-language header-icon pull-left"></span>
-            <span class="header-text pull-left"
-                ><label-translation
-                    [allowUpdateLanguage]="false"
-                    [keyword]="'Dialog_resource_translation__Translation'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                (click)="cancel()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 no-padding height-pc-100">
-        <resource-translation-form
-            #resourceTranslationFormComponent
-            [keyword]="keyword"
-            [defaultValue]="defaultValue"
-            (outputDataAction)="outputDataHandler($event)"
-        >
-        </resource-translation-form>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="fa fa-language header-icon pull-left"></span>
+      <span class="header-text pull-left"
+        ><label-translation
+          [allowUpdateLanguage]="false"
+          [keyword]="'Dialog_resource_translation__Translation'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        (click)="cancel()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                type="button"
-                mat-raised-button
-                class="btn-cancel pull-right"
-                (click)="cancel()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [allowUpdateLanguage]="false"
-                        [keyword]="'Dialog_resource_translation__Cancel'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                [disabled]="!isDirty"
-                class="mat-btn-orange pull-right"
-                (click)="save()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [allowUpdateLanguage]="false"
-                        [keyword]="'Dialog_resource_translation__Save'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+  </p-header>
+  <div class="col-xs-12 no-padding height-pc-100">
+    <resource-translation-form
+      #resourceTranslationFormComponent
+      [keyword]="keyword"
+      [defaultValue]="defaultValue"
+      (outputDataAction)="outputDataHandler($event)"
+    >
+    </resource-translation-form>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        type="button"
+        mat-raised-button
+        class="btn-cancel pull-right"
+        (click)="cancel()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [allowUpdateLanguage]="false"
+            [keyword]="'Dialog_resource_translation__Cancel'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        [disabled]="!isDirty"
+        class="mat-btn-orange pull-right"
+        (click)="save()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [allowUpdateLanguage]="false"
+            [keyword]="'Dialog_resource_translation__Save'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

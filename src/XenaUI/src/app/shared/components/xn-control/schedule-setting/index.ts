@@ -1,2 +1,2 @@
-export * from "./components";
-export { ScheduleSettingComponent } from "./schedule-setting.component";
+export * from './components';
+export { ScheduleSettingComponent } from './schedule-setting.component';

@@ -1,1 +1,1 @@
-export * from "./xn-support-wijmo-input-date.component";
+export * from './xn-support-wijmo-input-date.component';

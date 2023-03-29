@@ -1,77 +1,75 @@
 <div
-    class="project-status-container"
-    [ngClass]="{
-        'margin-top--sm': !showInHeader,
-        'small-height': showInHeader
-    }"
+  class="project-status-container"
+  [ngClass]="{
+    'margin-top--sm': !showInHeader,
+    'small-height': showInHeader
+  }"
 >
-    <span *ngIf="!showInHeader" class="font-size-17px margin-left--md"
-        ><label-translation
-            [keyword]="'Parked_item_ps__Project_Status'"
-        ></label-translation
-    ></span>
-    <div
-        class="panel panel-primary"
-        [ngClass]="{
-            'no-margin no-border': showInHeader,
-            'margin-left--md margin-right--md margin-top--sm margin-bottom--sm':
-                !showInHeader,
-            disabled: !selectedEntity
-        }"
-    >
-        <div class="panel-body" [ngClass]="{ 'small-padding': showInHeader }">
-            <div class="row">
-                <div
-                    class="col-xs-6"
-                    [ngClass]="{
-                        'project-system--master--in-header': showInHeader,
-                        'project-system--master': !showInHeader
-                    }"
-                >
-                    <circle-progress
-                        [percent]="selectedEntity ? circleOption.percent : 0"
-                        [radius]="circleOption.radius"
-                        [outerStrokeWidth]="circleOption.outerStrokeWidth"
-                        [innerStrokeWidth]="circleOption.innerStrokeWidth"
-                        [space]="circleOption.space"
-                        [outerStrokeColor]="selectedEntity ? '#56b746' : '#aaa'"
-                        [innerStrokeColor]="'#ccc'"
-                        [animation]="true"
-                    ></circle-progress>
-                    <i
-                        class="fa fa-cogs"
-                        [ngClass]="{
-                            'project-system--img--in-header': showInHeader,
-                            'project-system--img': !showInHeader
-                        }"
-                        aria-hidden="true"
-                    ></i>
-                </div>
-                <div
-                    class="status-info-container col-xs-6 no-padding"
-                    [ngClass]="{
-                        'font-size-big': !showInHeader,
-                        disabled: !selectedEntity
-                    }"
-                >
-                    <h4 class="blue-text no-margin-bottom no-margin-top">
-                        <label-translation
-                            [keyword]="'Parked_item_ps__Done_step'"
-                        ></label-translation
-                        >:
-                    </h4>
-                    <h4 class="blue-text no-margin-bottom margin-top--sm">
-                        6
-                        <label-translation
-                            [keyword]="'Parked_item_ps__of'"
-                        ></label-translation>
-                        7
-                    </h4>
-                    <h4 class="green-text no-margin-bottom margin-top--sm">
-                        85%
-                    </h4>
-                </div>
-            </div>
+  <span *ngIf="!showInHeader" class="font-size-17px margin-left--md"
+    ><label-translation
+      [keyword]="'Parked_item_ps__Project_Status'"
+    ></label-translation
+  ></span>
+  <div
+    class="panel panel-primary"
+    [ngClass]="{
+      'no-margin no-border': showInHeader,
+      'margin-left--md margin-right--md margin-top--sm margin-bottom--sm':
+        !showInHeader,
+      disabled: !selectedEntity
+    }"
+  >
+    <div class="panel-body" [ngClass]="{ 'small-padding': showInHeader }">
+      <div class="row">
+        <div
+          class="col-xs-6"
+          [ngClass]="{
+            'project-system--master--in-header': showInHeader,
+            'project-system--master': !showInHeader
+          }"
+        >
+          <circle-progress
+            [percent]="selectedEntity ? circleOption.percent : 0"
+            [radius]="circleOption.radius"
+            [outerStrokeWidth]="circleOption.outerStrokeWidth"
+            [innerStrokeWidth]="circleOption.innerStrokeWidth"
+            [space]="circleOption.space"
+            [outerStrokeColor]="selectedEntity ? '#56b746' : '#aaa'"
+            [innerStrokeColor]="'#ccc'"
+            [animation]="true"
+          ></circle-progress>
+          <i
+            class="fa fa-cogs"
+            [ngClass]="{
+              'project-system--img--in-header': showInHeader,
+              'project-system--img': !showInHeader
+            }"
+            aria-hidden="true"
+          ></i>
         </div>
+        <div
+          class="status-info-container col-xs-6 no-padding"
+          [ngClass]="{
+            'font-size-big': !showInHeader,
+            disabled: !selectedEntity
+          }"
+        >
+          <h4 class="blue-text no-margin-bottom no-margin-top">
+            <label-translation
+              [keyword]="'Parked_item_ps__Done_step'"
+            ></label-translation
+            >:
+          </h4>
+          <h4 class="blue-text no-margin-bottom margin-top--sm">
+            6
+            <label-translation
+              [keyword]="'Parked_item_ps__of'"
+            ></label-translation>
+            7
+          </h4>
+          <h4 class="green-text no-margin-bottom margin-top--sm">85%</h4>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

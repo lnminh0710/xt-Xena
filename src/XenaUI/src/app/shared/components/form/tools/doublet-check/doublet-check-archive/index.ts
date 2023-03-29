@@ -1,1 +1,1 @@
-export * from "./doublet-check-archive.component";
+export * from './doublet-check-archive.component';

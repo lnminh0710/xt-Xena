@@ -1,1 +1,1 @@
-export * from "./xn-input-debounce.component";
+export * from './xn-input-debounce.component';

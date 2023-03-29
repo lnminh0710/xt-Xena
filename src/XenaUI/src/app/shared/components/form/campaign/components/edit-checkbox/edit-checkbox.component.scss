@@ -1,19 +1,19 @@
 .checkbox-primary {
-    margin: 1px !important;
+  margin: 1px !important;
 }
 
 .checkbox-primary label {
-    width: 100%;
+  width: 100%;
 }
 
 .checkbox-primary label input {
-    width: calc(100% - 18px);
-    height: 25px;
+  width: calc(100% - 18px);
+  height: 25px;
 }
 
 .checkbox-primary ::ng-deep {
-    .wj-input {
-        margin-right: 15px;
-        margin-left: 0px;
-    }
+  .wj-input {
+    margin-right: 15px;
+    margin-left: 0px;
+  }
 }

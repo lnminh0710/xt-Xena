@@ -1,2 +1,2 @@
-﻿export * from "./grid.reducer";
-export * from "./grid.selectors";
+﻿export * from './grid.reducer';
+export * from './grid.selectors';

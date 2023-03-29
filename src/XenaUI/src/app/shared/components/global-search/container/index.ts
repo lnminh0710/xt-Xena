@@ -1,1 +1,1 @@
-﻿export * from "./gs-main";
+﻿export * from './gs-main';

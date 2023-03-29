@@ -1,1 +1,1 @@
-﻿export * from "./ad-form-base";
+﻿export * from './ad-form-base';

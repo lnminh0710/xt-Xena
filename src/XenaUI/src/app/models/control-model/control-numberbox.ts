@@ -1,11 +1,11 @@
-import { ControlBase } from "./control-base";
+import { ControlBase } from './control-base';
 
 export class NumberBoxControl extends ControlBase<number> {
-    public controlType: string = "numberbox";
-    public type: string = "";
+  public controlType: string = 'numberbox';
+  public type: string = '';
 
-    public constructor(init?: Partial<NumberBoxControl>) {
-        super(init);
-        Object.assign(this, init);
-    }
+  public constructor(init?: Partial<NumberBoxControl>) {
+    super(init);
+    Object.assign(this, init);
+  }
 }

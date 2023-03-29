@@ -1,18 +1,18 @@
 .doublette-group {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    a {
-        font-size: 17pt;
-        cursor: pointer;
-    }
+  a {
+    font-size: 17pt;
+    cursor: pointer;
+  }
 
-    a,
-    .title {
-        padding-left: 8px;
-    }
+  a,
+  .title {
+    padding-left: 8px;
+  }
 
-    .title {
-        font-weight: bold;
-    }
+  .title {
+    font-weight: bold;
+  }
 }

@@ -1,1 +1,1 @@
-﻿export * from "./filter.action";
+﻿export * from './filter.action';

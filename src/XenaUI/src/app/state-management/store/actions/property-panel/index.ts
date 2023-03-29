@@ -1,1 +1,1 @@
-﻿export * from "./property-panel.action";
+﻿export * from './property-panel.action';

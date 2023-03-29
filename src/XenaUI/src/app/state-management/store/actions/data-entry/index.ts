@@ -1,1 +1,1 @@
-export * from "./data-entry.action";
+export * from './data-entry.action';

@@ -1,1 +1,1 @@
-export { ModuleWelcomeItemComponent } from "./module-welcome-item.component";
+export { ModuleWelcomeItemComponent } from './module-welcome-item.component';

@@ -1,18 +1,18 @@
-﻿@import "variables";
+﻿@import 'variables';
 
 .order-list-summary {
-    position: absolute;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    top: 0px;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 0px;
 }
 
 .header-grid {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #dddddd;
-    margin-bottom: -1px;
-    padding: 8px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #dddddd;
+  margin-bottom: -1px;
+  padding: 8px 5px;
 }

@@ -1,2 +1,2 @@
-export * from "./database-combine-grid.component";
-export * from "./database-combine-grid.module";
+export * from './database-combine-grid.component';
+export * from './database-combine-grid.module';

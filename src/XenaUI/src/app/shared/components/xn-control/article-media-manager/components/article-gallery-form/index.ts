@@ -1,1 +1,1 @@
-export { ArticleGalleryFormComponent } from "./article-gallery-form.component";
+export { ArticleGalleryFormComponent } from './article-gallery-form.component';

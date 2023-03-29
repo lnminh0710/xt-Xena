@@ -1,1 +1,1 @@
-export * from "./email-note.component";
+export * from './email-note.component';

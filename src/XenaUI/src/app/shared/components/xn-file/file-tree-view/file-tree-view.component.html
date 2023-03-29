@@ -1,19 +1,19 @@
 <div [context-menu-directive]="contextMenuData" class="campaign-file-tree-view">
-    <div *ngIf="!treeViewData || !treeViewData.length" class="tree-view__empty">
-        <label-translation
-            [keyword]="'FileTreeView__Empty_data_right_click'"
-        ></label-translation>
-    </div>
-    <wj-tree-view
-        #tvEdit
-        [itemsSource]="treeViewData"
-        [displayMemberPath]="'header'"
-        [childItemsPath]="'items'"
-        [imageMemberPath]="'img'"
-        [isReadOnly]="false"
-        (selectedItemChange)="selectedItemChange(tvEdit, $event)"
-        (nodeEditStarted)="nodeEditStarted(tvEdit, $event)"
-        (nodeEditEnded)="nodeEditEnded(tvEdit, $event)"
-    >
-    </wj-tree-view>
+  <div *ngIf="!treeViewData || !treeViewData.length" class="tree-view__empty">
+    <label-translation
+      [keyword]="'FileTreeView__Empty_data_right_click'"
+    ></label-translation>
+  </div>
+  <wj-tree-view
+    #tvEdit
+    [itemsSource]="treeViewData"
+    [displayMemberPath]="'header'"
+    [childItemsPath]="'items'"
+    [imageMemberPath]="'img'"
+    [isReadOnly]="false"
+    (selectedItemChange)="selectedItemChange(tvEdit, $event)"
+    (nodeEditStarted)="nodeEditStarted(tvEdit, $event)"
+    (nodeEditEnded)="nodeEditEnded(tvEdit, $event)"
+  >
+  </wj-tree-view>
 </div>

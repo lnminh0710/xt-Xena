@@ -1,1 +1,1 @@
-﻿export { SearchCustomerDialogComponent } from "./search-customer-dialog.component";
+﻿export { SearchCustomerDialogComponent } from './search-customer-dialog.component';

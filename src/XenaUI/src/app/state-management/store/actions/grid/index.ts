@@ -1,1 +1,1 @@
-﻿export * from "./grid.action";
+﻿export * from './grid.action';

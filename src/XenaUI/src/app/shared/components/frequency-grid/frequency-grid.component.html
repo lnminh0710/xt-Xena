@@ -1,128 +1,128 @@
 <split
-    #splitContainer
-    class="height-pc-100"
-    direction="horizontal"
-    (dragEnd)="dragEnd($event)"
-    [gutterSize]="5"
+  #splitContainer
+  class="height-pc-100"
+  direction="horizontal"
+  (dragEnd)="dragEnd($event)"
+  [gutterSize]="5"
 >
-    <split-area
-        [size]="splitterConfig.leftHorizontal"
-        [perfect-scrollbar]="perfectScrollbarConfig"
+  <split-area
+    [size]="splitterConfig.leftHorizontal"
+    [perfect-scrollbar]="perfectScrollbarConfig"
+  >
+    <xn-ag-grid
+      *ngIf="
+        countryGridData &&
+        countryGridData.columns &&
+        countryGridData.columns.length
+      "
+      [id]="gridId"
+      #countryGrid
+      [dataSource]="countryGridData"
+      [readOnly]="true"
+      [globalProperties]="globalProperties"
+      [fitWidthColumn]="true"
+      (rowClick)="countrySelectionChanged($event)"
     >
-        <xn-ag-grid
-            *ngIf="
-                countryGridData &&
-                countryGridData.columns &&
-                countryGridData.columns.length
-            "
-            [id]="gridId"
-            #countryGrid
-            [dataSource]="countryGridData"
-            [readOnly]="true"
-            [globalProperties]="globalProperties"
-            [fitWidthColumn]="true"
-            (rowClick)="countrySelectionChanged($event)"
-        >
-        </xn-ag-grid>
-    </split-area>
-    <split-area
-        [size]="splitterConfig.rightHorizontal"
-        [perfect-scrollbar]="perfectScrollbarConfig"
+    </xn-ag-grid>
+  </split-area>
+  <split-area
+    [size]="splitterConfig.rightHorizontal"
+    [perfect-scrollbar]="perfectScrollbarConfig"
+  >
+    <wijmo-grid-selection
+      *ngIf="frequencyGridData"
+      #frequencyGrid
+      [customClass]="'frequency-grid'"
+      [dataSource]="frequencyGridData"
+      [readOnly]="readOnly"
+      [smallRowHeaders]="true"
+      [hasQuantityPriorityColumn]="true"
+      [noFilterColumns]="noFilterColumns"
+      [selectionMode]="'None'"
+      [requiredAddressNumber]="
+        selectedCountry ? selectedCountry['QtyToNeeded'] : null
+      "
+      [globalProperties]="globalProperties"
+      [fitWidthColumn]="fitWidthColumn"
+      [showTotalRow]="true"
+      (onTableEditStart)="onTableEditStart($event)"
+      (onTableEditEnd)="onTableEditEnd($event)"
+      (onRowEditEnded)="onTableEditSuccess($event, true)"
+      (onPriorityEditEnded)="addAllFrequencyItemsToCache($event)"
     >
-        <wijmo-grid-selection
-            *ngIf="frequencyGridData"
-            #frequencyGrid
-            [customClass]="'frequency-grid'"
-            [dataSource]="frequencyGridData"
-            [readOnly]="readOnly"
-            [smallRowHeaders]="true"
-            [hasQuantityPriorityColumn]="true"
-            [noFilterColumns]="noFilterColumns"
-            [selectionMode]="'None'"
-            [requiredAddressNumber]="
-                selectedCountry ? selectedCountry['QtyToNeeded'] : null
-            "
-            [globalProperties]="globalProperties"
-            [fitWidthColumn]="fitWidthColumn"
-            [showTotalRow]="true"
-            (onTableEditStart)="onTableEditStart($event)"
-            (onTableEditEnd)="onTableEditEnd($event)"
-            (onRowEditEnded)="onTableEditSuccess($event, true)"
-            (onPriorityEditEnded)="addAllFrequencyItemsToCache($event)"
-        >
-        </wijmo-grid-selection>
-    </split-area>
+    </wijmo-grid-selection>
+  </split-area>
 </split>
 
 <p-dialog
-    [styleClass]="'custom-message-dialog'"
-    [(visible)]="showLoading"
-    modal="modal"
-    [width]="410"
-    [height]="250"
-    responsive="true"
-    appendTo="body"
+  [styleClass]="'custom-message-dialog'"
+  [(visible)]="showLoading"
+  modal="modal"
+  [width]="410"
+  [height]="250"
+  responsive="true"
+  appendTo="body"
 >
-    <p-header>
-        <div class="message-dialog__header">
-            <span
-                class="fa fa-info-circle message-dialog__header-icon pull-left"
-            ></span>
-            <span class="message-dialog__header-text pull-left">
-                <label-translation
-                    [keyword]="'Frequency_grid__Being_processed'"
-                ></label-translation
-                >...
-            </span>
-        </div>
-    </p-header>
-    <div *ngIf="showLoading" class="message-dialog__body">
-        <p>
-            <label-translation
-                [keyword]="'Frequency_grid__The_system_is'"
-            ></label-translation
-            >.
-        </p>
-        <p>
-            <label-translation
-                [keyword]="'Frequency_grid__Please_waiting_in_patience'"
-            ></label-translation
-            >.
-        </p>
-        <div class="loading-container">
-            <h4 id="loading-info">
-                <label-translation
-                    [keyword]="'Frequency_grid__Processing'"
-                ></label-translation
-                >: <span id="loading-text"></span>
-            </h4>
-
-            <div class="w3-light-grey">
-                <span class="percentage">{{ percentage }}%</span>
-                <div
-                    id="loading-bar"
-                    class="w3-green"
-                    style="height: 24px; width: 0%"
-                ></div>
-            </div>
-        </div>
+  <p-header>
+    <div class="message-dialog__header">
+      <span
+        class="fa fa-info-circle message-dialog__header-icon pull-left"
+      ></span>
+      <span class="message-dialog__header-text pull-left">
+        <label-translation
+          [keyword]="'Frequency_grid__Being_processed'"
+        ></label-translation
+        >...
+      </span>
     </div>
-    <p-footer>
+  </p-header>
+  <div *ngIf="showLoading" class="message-dialog__body">
+    <p>
+      <label-translation
+        [keyword]="'Frequency_grid__The_system_is'"
+      ></label-translation
+      >.
+    </p>
+    <p>
+      <label-translation
+        [keyword]="'Frequency_grid__Please_waiting_in_patience'"
+      ></label-translation
+      >.
+    </p>
+    <div class="loading-container">
+      <h4 id="loading-info">
+        <label-translation
+          [keyword]="'Frequency_grid__Processing'"
+        ></label-translation
+        >: <span id="loading-text"></span>
+      </h4>
+
+      <div class="w3-light-grey">
+        <span class="percentage">{{ percentage }}%</span>
         <div
-            class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix no-border no-padding"
-        >
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-raised-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                (click)="closeLoadingDialog()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'Frequency_grid__Close'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+          id="loading-bar"
+          class="w3-green"
+          style="height: 24px; width: 0%"
+        ></div>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div
+      class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix no-border no-padding"
+    >
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-raised-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+        (click)="closeLoadingDialog()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'Frequency_grid__Close'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

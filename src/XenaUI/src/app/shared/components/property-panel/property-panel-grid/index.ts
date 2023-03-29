@@ -1,1 +1,1 @@
-﻿export { PropertyPanelGridComponent } from "./property-panel-grid.component";
+﻿export { PropertyPanelGridComponent } from './property-panel-grid.component';

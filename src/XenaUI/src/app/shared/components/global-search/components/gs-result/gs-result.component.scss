@@ -1,46 +1,46 @@
 .panel {
-    height: 100%;
+  height: 100%;
 }
 
 .panel-info {
-    padding-top: 10px;
-    border: none;
+  padding-top: 10px;
+  border: none;
 }
 
 .panel-info > .panel-heading {
-    color: #31708f;
-    background-color: #d9edf7 !important;
+  color: #31708f;
+  background-color: #d9edf7 !important;
 }
 
 .panel-body {
-    padding: 0px;
-    height: 100%;
+  padding: 0px;
+  height: 100%;
 }
 
 .result-summary {
-    float: right;
+  float: right;
 }
 
 .result-heading {
-    position: absolute;
-    right: 0;
-    top: -23px;
+  position: absolute;
+  right: 0;
+  top: -23px;
 }
 
 :host ::ng-deep .paging-grid {
-    position: absolute;
-    top: -32px;
-    left: 320px;
+  position: absolute;
+  top: -32px;
+  left: 320px;
 }
 
 :host .gs__search-result ::ng-deep {
-    .paging-grid {
-        left: 740px;
-    }
+  .paging-grid {
+    left: 740px;
+  }
 }
 
 :host ::ng-deep .no-footer {
-    .ui-dialog div.ui-dialog-content {
-        height: 100% !important;
-    }
+  .ui-dialog div.ui-dialog-content {
+    height: 100% !important;
+  }
 }

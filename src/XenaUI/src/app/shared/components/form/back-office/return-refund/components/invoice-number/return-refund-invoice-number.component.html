@@ -1,145 +1,131 @@
 <div
-    *ngIf="isRenderForm"
-    class="form-container no-padding margin-top--sd col-xs-12 no-padding-left"
-    [ngClass]="{ submitted: invoiceForm.submitted }"
+  *ngIf="isRenderForm"
+  class="form-container no-padding margin-top--sd col-xs-12 no-padding-left"
+  [ngClass]="{ submitted: invoiceForm.submitted }"
 >
-    <form
-        [formGroup]="invoiceForm"
-        class="form-horizontal"
-        id="invoiceForm"
-        novalidate
-    >
-        <div class="col-xs-12 no-padding form-container">
-            <div class="col-xs-8 no-padding form-group">
-                <div class="col-xs-6 no-padding-right">
-                    <label
-                        for="invoiceNumber"
-                        class="pull-left col-xs-12 no-padding"
-                        ><label-translation
-                            [keyword]="'Return_Refund_Number__Invoice_Number'"
-                        ></label-translation
-                    ></label>
-                    <div
-                        class="col-xs-12 no-padding pull-left auto-expaned-width"
-                    >
-                        <input
-                            type="text"
-                            XnOnlyNumber="true"
-                            [allowCharacters]="allowInputCharacters"
-                            class="form-control xn-input search-text"
-                            id="return-refund-invoice-number"
-                            name="invoiceNumber"
-                            formControlName="invoiceNumber"
-                            autocomplete="off"
-                        />
-                        <control-messages
-                            [icon]="'search'"
-                            [control]="invoiceForm.controls['invoiceNumber']"
-                        ></control-messages>
-                    </div>
-                </div>
-                <div class="col-xs-6 no-padding">
-                    <label
-                        for="barcode"
-                        class="pull-left col-xs-12 no-padding-right"
-                        ><label-translation
-                            [keyword]="
-                                'Return_Refund_Number__Barcode_Datamatrix'
-                            "
-                        ></label-translation
-                    ></label>
-                    <div class="col-xs-12 no-padding-right">
-                        <input
-                            type="text"
-                            XnOnlyNumber="true"
-                            [allowCharacters]="allowInputCharacters"
-                            class="form-control xn-input search-text"
-                            id="return-refund-barcode"
-                            name="barcode"
-                            formControlName="barcode"
-                            autocomplete="off"
-                        />
-                        <control-messages
-                            [icon]="'barcode'"
-                            [control]="invoiceForm.controls['barcode']"
-                        ></control-messages>
-                    </div>
-                </div>
-                <div
-                    class="col-xs-12 no-padding alert alert-danger"
-                    *ngIf="dontExistSearchData"
-                >
-                    <label-translation
-                        [keyword]="
-                            'Return_Refund_Number__The_invoice_number_does_not_exist'
-                        "
-                    ></label-translation>
-                </div>
-            </div>
-            <div class="col-xs-4">
-                <label for="barcode" class="pull-left col-xs-12 opacity-0"
-                    >Spacing</label
-                >
-                <div class="col-xs-12 no-padding">
-                    <button
-                        class="mat-btn-blue pull-left min-width--100"
-                        mat-raised-button
-                        (click)="go()"
-                    >
-                        <i
-                            class="fa fa-long-arrow-right"
-                            aria-hidden="true"
-                        ></i>
-                        <span class="bt-t-i"
-                            ><label-translation
-                                [keyword]="'Return_Refund_Number__Go'"
-                            ></label-translation
-                        ></span>
-                    </button>
-                    <button
-                        class="mat-btn-blue pull-left min-width--100"
-                        mat-raised-button
-                        (click)="reset()"
-                    >
-                        <i class="fa fa-undo" aria-hidden="true"></i>
-                        <span class="bt-t-i"
-                            ><label-translation
-                                [keyword]="'Return_Refund_Number__Reset'"
-                            ></label-translation
-                        ></span>
-                    </button>
-                </div>
-                <div class="pull-left auto-group form-group hidden">
-                    <label
-                        class="pull-left"
-                        for="return-refund-invoice-num-autoSave"
-                    >
-                        <label-translation
-                            [keyword]="'Return_Refund_Number__Autosave'"
-                        ></label-translation>
-                    </label>
-                    <mat-checkbox
-                        color="primary"
-                        class="pull-left"
-                        formControlName="autoSave"
-                    >
-                    </mat-checkbox>
-                    <label
-                        class="pull-left margin-left--sd"
-                        for="return-refund-invoice-num-autoBroken"
-                    >
-                        <label-translation
-                            [keyword]="'Return_Refund_Number__AutoBROKEN'"
-                        ></label-translation>
-                    </label>
-                    <mat-checkbox
-                        color="primary"
-                        class="pull-left"
-                        formControlName="autoBroken"
-                    >
-                    </mat-checkbox>
-                </div>
-            </div>
+  <form
+    [formGroup]="invoiceForm"
+    class="form-horizontal"
+    id="invoiceForm"
+    novalidate
+  >
+    <div class="col-xs-12 no-padding form-container">
+      <div class="col-xs-8 no-padding form-group">
+        <div class="col-xs-6 no-padding-right">
+          <label for="invoiceNumber" class="pull-left col-xs-12 no-padding"
+            ><label-translation
+              [keyword]="'Return_Refund_Number__Invoice_Number'"
+            ></label-translation
+          ></label>
+          <div class="col-xs-12 no-padding pull-left auto-expaned-width">
+            <input
+              type="text"
+              XnOnlyNumber="true"
+              [allowCharacters]="allowInputCharacters"
+              class="form-control xn-input search-text"
+              id="return-refund-invoice-number"
+              name="invoiceNumber"
+              formControlName="invoiceNumber"
+              autocomplete="off"
+            />
+            <control-messages
+              [icon]="'search'"
+              [control]="invoiceForm.controls['invoiceNumber']"
+            ></control-messages>
+          </div>
         </div>
-    </form>
+        <div class="col-xs-6 no-padding">
+          <label for="barcode" class="pull-left col-xs-12 no-padding-right"
+            ><label-translation
+              [keyword]="'Return_Refund_Number__Barcode_Datamatrix'"
+            ></label-translation
+          ></label>
+          <div class="col-xs-12 no-padding-right">
+            <input
+              type="text"
+              XnOnlyNumber="true"
+              [allowCharacters]="allowInputCharacters"
+              class="form-control xn-input search-text"
+              id="return-refund-barcode"
+              name="barcode"
+              formControlName="barcode"
+              autocomplete="off"
+            />
+            <control-messages
+              [icon]="'barcode'"
+              [control]="invoiceForm.controls['barcode']"
+            ></control-messages>
+          </div>
+        </div>
+        <div
+          class="col-xs-12 no-padding alert alert-danger"
+          *ngIf="dontExistSearchData"
+        >
+          <label-translation
+            [keyword]="
+              'Return_Refund_Number__The_invoice_number_does_not_exist'
+            "
+          ></label-translation>
+        </div>
+      </div>
+      <div class="col-xs-4">
+        <label for="barcode" class="pull-left col-xs-12 opacity-0"
+          >Spacing</label
+        >
+        <div class="col-xs-12 no-padding">
+          <button
+            class="mat-btn-blue pull-left min-width--100"
+            mat-raised-button
+            (click)="go()"
+          >
+            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+            <span class="bt-t-i"
+              ><label-translation
+                [keyword]="'Return_Refund_Number__Go'"
+              ></label-translation
+            ></span>
+          </button>
+          <button
+            class="mat-btn-blue pull-left min-width--100"
+            mat-raised-button
+            (click)="reset()"
+          >
+            <i class="fa fa-undo" aria-hidden="true"></i>
+            <span class="bt-t-i"
+              ><label-translation
+                [keyword]="'Return_Refund_Number__Reset'"
+              ></label-translation
+            ></span>
+          </button>
+        </div>
+        <div class="pull-left auto-group form-group hidden">
+          <label class="pull-left" for="return-refund-invoice-num-autoSave">
+            <label-translation
+              [keyword]="'Return_Refund_Number__Autosave'"
+            ></label-translation>
+          </label>
+          <mat-checkbox
+            color="primary"
+            class="pull-left"
+            formControlName="autoSave"
+          >
+          </mat-checkbox>
+          <label
+            class="pull-left margin-left--sd"
+            for="return-refund-invoice-num-autoBroken"
+          >
+            <label-translation
+              [keyword]="'Return_Refund_Number__AutoBROKEN'"
+            ></label-translation>
+          </label>
+          <mat-checkbox
+            color="primary"
+            class="pull-left"
+            formControlName="autoBroken"
+          >
+          </mat-checkbox>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>

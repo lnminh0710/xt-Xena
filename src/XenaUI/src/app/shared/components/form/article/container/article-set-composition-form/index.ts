@@ -1,1 +1,1 @@
-export * from "./article-set-composition-form.component";
+export * from './article-set-composition-form.component';

@@ -1,1 +1,1 @@
-export { ImportDataMatrixComponent } from "./import-data-matrix.component";
+export { ImportDataMatrixComponent } from './import-data-matrix.component';

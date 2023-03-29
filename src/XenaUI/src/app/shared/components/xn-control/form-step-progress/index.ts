@@ -1,1 +1,1 @@
-export * from "./form-step-progress.component";
+export * from './form-step-progress.component';

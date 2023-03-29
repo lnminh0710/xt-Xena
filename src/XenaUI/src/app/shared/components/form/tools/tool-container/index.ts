@@ -1,1 +1,1 @@
-export * from "./tool-container.component";
+export * from './tool-container.component';

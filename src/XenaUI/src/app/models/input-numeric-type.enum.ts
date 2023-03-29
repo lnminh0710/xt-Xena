@@ -1,5 +1,5 @@
 export enum InputTypeNumber {
-    Integer,
-    Decimal,
-    Positive,
+  Integer,
+  Decimal,
+  Positive,
 }

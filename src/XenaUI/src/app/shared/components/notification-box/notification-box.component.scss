@@ -1,34 +1,34 @@
 .dropdown-menu {
-    max-height: calc(100vh - 55px);
+  max-height: calc(100vh - 55px);
 }
 
 .mat-button {
-    min-width: 0px;
-    height: 53px;
+  min-width: 0px;
+  height: 53px;
 }
 
 a.mat-button {
-    height: 53px;
+  height: 53px;
 }
 
 .label-warning {
-    position: absolute;
-    top: 9px;
-    right: 7px;
-    text-align: center;
-    font-size: 9px;
-    padding: 2px 3px;
-    line-height: 0.9;
+  position: absolute;
+  top: 9px;
+  right: 7px;
+  text-align: center;
+  font-size: 9px;
+  padding: 2px 3px;
+  line-height: 0.9;
 }
 
 :host-context(.notificationsBox.disabled) .dropdown-toggle {
-    color: rgba(0, 0, 0, 0.38) !important;
+  color: rgba(0, 0, 0, 0.38) !important;
 }
 
 :host-context(.notificationsBox.disabled) .label-warning {
-    background-color: rgba(0, 0, 0, 0.38) !important;
+  background-color: rgba(0, 0, 0, 0.38) !important;
 }
 
 .dropdown-menu {
-    width: 500px !important;
+  width: 500px !important;
 }

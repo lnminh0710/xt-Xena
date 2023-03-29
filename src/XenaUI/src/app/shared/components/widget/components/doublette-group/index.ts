@@ -1,1 +1,1 @@
-export * from "./doublette-group.component";
+export * from './doublette-group.component';

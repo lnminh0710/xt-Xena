@@ -1,1 +1,1 @@
-export * from "./global-search.effect";
+export * from './global-search.effect';

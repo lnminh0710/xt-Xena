@@ -1,6 +1,6 @@
-import { IMyDate } from "./my-date.interface";
+import { IMyDate } from './my-date.interface';
 
 export interface IMyMarkedDates {
-    dates: Array<IMyDate>;
-    color: string;
+  dates: Array<IMyDate>;
+  color: string;
 }

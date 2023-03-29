@@ -1,2 +1,2 @@
-export * from "./widget-note-form.component";
-export * from "./email-note";
+export * from './widget-note-form.component';
+export * from './email-note';

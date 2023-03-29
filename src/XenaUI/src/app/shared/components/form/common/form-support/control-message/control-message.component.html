@@ -1,75 +1,75 @@
 <div
-    type="button"
-    *ngIf="hasIcon && !isButtonControl"
-    (click)="onClickGroupAddon($event)"
-    class="input-group-addon {{ _cssClass }} {{ styleClass }}"
-    [ngClass]="{ 'xn-disabled': disabled }"
-    [ngStyle]="{ 'border-right': boderStyle ? boderStyle : '' }"
+  type="button"
+  *ngIf="hasIcon && !isButtonControl"
+  (click)="onClickGroupAddon($event)"
+  class="input-group-addon {{ _cssClass }} {{ styleClass }}"
+  [ngClass]="{ 'xn-disabled': disabled }"
+  [ngStyle]="{ 'border-right': boderStyle ? boderStyle : '' }"
 >
-    <i *ngIf="showIcon" class="fa fa-{{ iconClass }}">{{ iconContent }}</i>
+  <i *ngIf="showIcon" class="fa fa-{{ iconClass }}">{{ iconContent }}</i>
 </div>
 <button
-    type="button"
-    *ngIf="hasIcon && isButtonControl"
-    tabindex="-1"
-    (click)="onClickGroupAddon($event)"
-    mat-raised-button
-    class="input-group-addon  no-padding  {{ _cssClass }}  {{ styleClass }}  {{
-        classDisabled
-    }}"
-    [ngStyle]="{ 'border-right': boderStyle ? boderStyle : '' }"
+  type="button"
+  *ngIf="hasIcon && isButtonControl"
+  tabindex="-1"
+  (click)="onClickGroupAddon($event)"
+  mat-raised-button
+  class="input-group-addon  no-padding  {{ _cssClass }}  {{ styleClass }}  {{
+    classDisabled
+  }}"
+  [ngStyle]="{ 'border-right': boderStyle ? boderStyle : '' }"
 >
-    <i
-        *ngIf="showIcon"
-        class="fa fa-{{ iconClass }}"
-        [ngClass]="{ enable: !disabledControl }"
-    ></i>
+  <i
+    *ngIf="showIcon"
+    class="fa fa-{{ iconClass }}"
+    [ngClass]="{ enable: !disabledControl }"
+  ></i>
 </button>
 <span
-    *ngIf="
-        controlType == 'textbox' &&
-        isShown &&
-        control &&
-        control.value &&
-        (control.value + '').trim().length > 0
-    "
-    class="clear-textbox"
-    (click)="clearText($event)"
+  *ngIf="
+    controlType == 'textbox' &&
+    isShown &&
+    control &&
+    control.value &&
+    (control.value + '').trim().length > 0
+  "
+  class="clear-textbox"
+  (click)="clearText($event)"
 >
-    <i class="fa fa-times-circle" aria-hidden="true"></i>
+  <i class="fa fa-times-circle" aria-hidden="true"></i>
 </span>
 <div
-    *ngIf="_errorMessage && isShowMessage && !isHotKeyActive"
-    class="alert alert-danger text-left"
+  *ngIf="_errorMessage && isShowMessage && !isHotKeyActive"
+  class="alert alert-danger text-left"
 >
-    {{ _errorMessage }}
+  {{ _errorMessage }}
 </div>
 
 <div
-    *ngIf="hotKeyValue"
-    [ngStyle]="{
-        display:
-            !isShowHotkeyDialog && isHotKeyActive && deferHotKeyDisplay
-                ? 'block'
-                : 'none'
-    }"
-    class="hot-key_suggestion"
-    [ngClass]="{
-        'has-short-key': hotKeyValue.value,
-        'has-not-short-key': !hotKeyValue.value
-    }"
-    xn-tooltip
-    [tooltipText]="hotKeyValue.value"
-    [tooltipPlacement]="'top'"
-    container="body"
-    (click)="clickEditHotkey($event)"
-    (dblclick)="editHotkey($event)"
+  *ngIf="hotKeyValue"
+  [ngStyle]="{
+    display:
+      !isShowHotkeyDialog && isHotKeyActive && deferHotKeyDisplay
+        ? 'block'
+        : 'none'
+  }"
+  class="hot-key_suggestion"
+  [ngClass]="{
+    'has-short-key': hotKeyValue.value,
+    'has-not-short-key': !hotKeyValue.value
+  }"
+  xn-tooltip
+  [tooltipText]="hotKeyValue.value"
+  [tooltipPlacement]="'top'"
+  container="body"
+  (click)="clickEditHotkey($event)"
+  (dblclick)="editHotkey($event)"
 ></div>
 <hot-key-setting-dialog
-    *ngIf="isShowHotkeyDialog && hotKeyValue"
-    [controlKey]="hotKeyValue.key"
-    [hotKey]="hotKeyValue.value"
-    [showDialog]="isShowHotkeyDialog"
-    (onClose)="onClose($event)"
+  *ngIf="isShowHotkeyDialog && hotKeyValue"
+  [controlKey]="hotKeyValue.key"
+  [hotKey]="hotKeyValue.value"
+  [showDialog]="isShowHotkeyDialog"
+  (onClose)="onClose($event)"
 >
 </hot-key-setting-dialog>

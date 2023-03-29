@@ -1,2 +1,2 @@
-﻿export * from "./widget-template.reducer";
-export * from "./widget-template.selectors";
+﻿export * from './widget-template.reducer';
+export * from './widget-template.selectors';

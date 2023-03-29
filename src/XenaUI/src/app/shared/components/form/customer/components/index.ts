@@ -1,1 +1,1 @@
-export * from "./matching-customer-data-dialog";
+export * from './matching-customer-data-dialog';

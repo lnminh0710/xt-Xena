@@ -1,1 +1,1 @@
-﻿export * from "./customer-form-base";
+﻿export * from './customer-form-base';

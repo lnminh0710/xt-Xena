@@ -1,1 +1,1 @@
-export { XnUploadTemplateFileComponent } from "./xn-upload-template-file.component";
+export { XnUploadTemplateFileComponent } from './xn-upload-template-file.component';

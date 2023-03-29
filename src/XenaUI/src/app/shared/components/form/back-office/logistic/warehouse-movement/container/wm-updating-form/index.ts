@@ -1,1 +1,1 @@
-﻿export * from "./wm-updating-form.component";
+﻿export * from './wm-updating-form.component';

@@ -1,31 +1,31 @@
 ﻿import {
-    Component,
-    OnInit,
-    OnDestroy,
-    Output,
-    EventEmitter,
-} from "@angular/core";
+  Component,
+  OnInit,
+  OnDestroy,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 
 @Component({
-    selector: "edit-dropdown",
-    styleUrls: ["./edit-dropdown.component.scss"],
-    templateUrl: "./edit-dropdown.component.html",
+  selector: 'edit-dropdown',
+  styleUrls: ['./edit-dropdown.component.scss'],
+  templateUrl: './edit-dropdown.component.html',
 })
 export class EditDropdownComponent implements OnInit, OnDestroy {
-    @Output() editInPopupClick = new EventEmitter<any>();
-    @Output() editInlineClick = new EventEmitter<any>();
+  @Output() editInPopupClick = new EventEmitter<any>();
+  @Output() editInlineClick = new EventEmitter<any>();
 
-    constructor() {}
+  constructor() {}
 
-    ngOnInit() {}
+  ngOnInit() {}
 
-    ngOnDestroy() {}
+  ngOnDestroy() {}
 
-    public editInPopup() {
-        this.editInPopupClick.emit();
-    }
+  public editInPopup() {
+    this.editInPopupClick.emit();
+  }
 
-    public editInline() {
-        this.editInlineClick.emit();
-    }
+  public editInline() {
+    this.editInlineClick.emit();
+  }
 }

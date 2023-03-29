@@ -1,60 +1,59 @@
 <ng-container [ngSwitch]="control.controlType">
-    <div class="form-group" [ngClass]="{ hidden: control.isHidden }">
-        <ng-container *ngSwitchCase="'dropdown'">
-            <span class="display-block">{{ control.label }}</span>
-            <xn-combo-box
-                #combobox
-                wjDropdownHelper
-                class="custom-wj-input-control xn-select no-padding-left fix-width-control"
-                [ngClass]="{
-                    'ng-invalid': !combobox._pristine && !combobox.selectedValue
-                }"
-                [displayMemberPath]="'value'"
-                [selectedValuePath]="'key'"
-                [itemsSource]="control.options"
-                [isEditable]="false"
-                [isRequired]="false"
-                [selectedValue]="control.value"
-                (selectedIndexChanged)="selectedIndexChanged()"
-            >
-            </xn-combo-box>
-        </ng-container>
-        <ng-container *ngSwitchCase="'textbox'">
-            <span class="display-block">&nbsp;</span>
-            <input
-                class="form-control xn-input--no-icon fix-width-control"
-                [ngModel]="control.value"
-                (input)="valueChange($event.target.value)"
-                type="text"
-                placeholder="Value"
-            />
-        </ng-container>
-        <ng-container *ngSwitchCase="'range'">
-            <range-control
-                [control]="control"
-                (onUpdateValue)="valueChange($event)"
-            ></range-control>
-        </ng-container>
-        <ng-container *ngSwitchCase="'priority'">
-            <span class="display-block">{{ control.label }}</span>
-            <wj-multi-select
-                #multiselect
-                class="custom-wj-input-control xn-select pl-0 w-300px"
-                [ngClass]="{
-                    'ng-invalid':
-                        !multiselect._pristine &&
-                        !multiselect.checkedItems.length
-                }"
-                [dropDownCssClass]="'wjmo-ddl'"
-                [itemsSource]="control.options"
-                [isEditable]="false"
-                [isRequired]="false"
-                [displayMemberPath]="'value'"
-                [checkedMemberPath]="'priority'"
-                [headerFormatter]="headerFormatter"
-                (initialized)="initRichCombo()"
-            >
-            </wj-multi-select>
-        </ng-container>
-    </div>
+  <div class="form-group" [ngClass]="{ hidden: control.isHidden }">
+    <ng-container *ngSwitchCase="'dropdown'">
+      <span class="display-block">{{ control.label }}</span>
+      <xn-combo-box
+        #combobox
+        wjDropdownHelper
+        class="custom-wj-input-control xn-select no-padding-left fix-width-control"
+        [ngClass]="{
+          'ng-invalid': !combobox._pristine && !combobox.selectedValue
+        }"
+        [displayMemberPath]="'value'"
+        [selectedValuePath]="'key'"
+        [itemsSource]="control.options"
+        [isEditable]="false"
+        [isRequired]="false"
+        [selectedValue]="control.value"
+        (selectedIndexChanged)="selectedIndexChanged()"
+      >
+      </xn-combo-box>
+    </ng-container>
+    <ng-container *ngSwitchCase="'textbox'">
+      <span class="display-block">&nbsp;</span>
+      <input
+        class="form-control xn-input--no-icon fix-width-control"
+        [ngModel]="control.value"
+        (input)="valueChange($event.target.value)"
+        type="text"
+        placeholder="Value"
+      />
+    </ng-container>
+    <ng-container *ngSwitchCase="'range'">
+      <range-control
+        [control]="control"
+        (onUpdateValue)="valueChange($event)"
+      ></range-control>
+    </ng-container>
+    <ng-container *ngSwitchCase="'priority'">
+      <span class="display-block">{{ control.label }}</span>
+      <wj-multi-select
+        #multiselect
+        class="custom-wj-input-control xn-select pl-0 w-300px"
+        [ngClass]="{
+          'ng-invalid':
+            !multiselect._pristine && !multiselect.checkedItems.length
+        }"
+        [dropDownCssClass]="'wjmo-ddl'"
+        [itemsSource]="control.options"
+        [isEditable]="false"
+        [isRequired]="false"
+        [displayMemberPath]="'value'"
+        [checkedMemberPath]="'priority'"
+        [headerFormatter]="headerFormatter"
+        (initialized)="initRichCombo()"
+      >
+      </wj-multi-select>
+    </ng-container>
+  </div>
 </ng-container>

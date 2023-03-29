@@ -1,1 +1,1 @@
-﻿export * from "./parked-item.action";
+﻿export * from './parked-item.action';

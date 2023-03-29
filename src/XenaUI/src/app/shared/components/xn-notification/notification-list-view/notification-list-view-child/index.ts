@@ -1,1 +1,1 @@
-export { NotificationListViewChildComponent } from "./notification-list-view-child.component";
+export { NotificationListViewChildComponent } from './notification-list-view-child.component';

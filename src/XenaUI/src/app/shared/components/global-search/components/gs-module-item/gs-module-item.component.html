@@ -1,59 +1,59 @@
 <div
-    *ngIf="moduleItem.accessRight && moduleItem.accessRight.read"
-    class="gs_module-item  {{
-        moduleItem.mainClassName
-    }}  col-xs-12  col-sm-4  col-md-2  col-lg-1  padding__small"
-    (click)="globalItemClicked()"
-    (dblclick)="globalItemDoubleClicked()"
-    [ngClass]="{
-        'gs_module-item__clicked': moduleItem.isClicked,
-        'gs__all-icon--blur': moduleItem.isSearchEmpty
-    }"
+  *ngIf="moduleItem.accessRight && moduleItem.accessRight.read"
+  class="gs_module-item  {{
+    moduleItem.mainClassName
+  }}  col-xs-12  col-sm-4  col-md-2  col-lg-1  padding__small"
+  (click)="globalItemClicked()"
+  (dblclick)="globalItemDoubleClicked()"
+  [ngClass]="{
+    'gs_module-item__clicked': moduleItem.isClicked,
+    'gs__all-icon--blur': moduleItem.isSearchEmpty
+  }"
 >
-    <div class="gs_module-item__header gs__header">
-        <p>{{ moduleItem.moduleName }}</p>
-    </div>
+  <div class="gs_module-item__header gs__header">
+    <p>{{ moduleItem.moduleName }}</p>
+  </div>
+  <div
+    *ngIf="globalNumberFormat == 'N'"
+    class="{{ moduleItem.textClassName }}  pull-right"
+  >
+    {{ moduleItem.searchResult | number : 0 }}
+  </div>
+  <div
+    *ngIf="globalNumberFormat != 'N'"
+    class="{{ moduleItem.textClassName }}  pull-right"
+  >
+    {{ moduleItem.searchResult }}
+  </div>
+  <div
+    class="gs__all-icon  {{ moduleItem.controlClassName }}  fa  {{
+      moduleItem.iconName
+    }}  pull-left  no-margin"
+  ></div>
+  <div
+    *ngIf="moduleItem.isLoading"
+    class="gs__all-icon--loading__wrapper col-xs-12 no-padding no-margin"
+  >
     <div
-        *ngIf="globalNumberFormat == 'N'"
-        class="{{ moduleItem.textClassName }}  pull-right"
+      *ngIf="globalNumberFormat == 'N'"
+      class="{{
+        moduleItem.textClassName
+      }}  pull-right  display-none-keep-space"
     >
-        {{ moduleItem.searchResult | number : 0 }}
+      {{ moduleItem.searchResult | number : 0 }}
     </div>
     <div
-        *ngIf="globalNumberFormat != 'N'"
-        class="{{ moduleItem.textClassName }}  pull-right"
+      *ngIf="globalNumberFormat != 'N'"
+      class="{{
+        moduleItem.textClassName
+      }}  pull-right  display-none-keep-space"
     >
-        {{ moduleItem.searchResult }}
+      {{ moduleItem.searchResult }}
     </div>
     <div
-        class="gs__all-icon  {{ moduleItem.controlClassName }}  fa  {{
-            moduleItem.iconName
-        }}  pull-left  no-margin"
+      class="gs__all-icon--loading__sub  {{
+        moduleItem.controlClassName
+      }}  fa fa-circle-o-notch fa-spin fa-3x fa-fw  pull-left  no-margin"
     ></div>
-    <div
-        *ngIf="moduleItem.isLoading"
-        class="gs__all-icon--loading__wrapper col-xs-12 no-padding no-margin"
-    >
-        <div
-            *ngIf="globalNumberFormat == 'N'"
-            class="{{
-                moduleItem.textClassName
-            }}  pull-right  display-none-keep-space"
-        >
-            {{ moduleItem.searchResult | number : 0 }}
-        </div>
-        <div
-            *ngIf="globalNumberFormat != 'N'"
-            class="{{
-                moduleItem.textClassName
-            }}  pull-right  display-none-keep-space"
-        >
-            {{ moduleItem.searchResult }}
-        </div>
-        <div
-            class="gs__all-icon--loading__sub  {{
-                moduleItem.controlClassName
-            }}  fa fa-circle-o-notch fa-spin fa-3x fa-fw  pull-left  no-margin"
-        ></div>
-    </div>
+  </div>
 </div>

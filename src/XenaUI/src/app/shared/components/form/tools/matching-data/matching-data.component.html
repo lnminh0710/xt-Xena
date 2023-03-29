@@ -1,55 +1,53 @@
 <div class="m">
-    <div class="g col-xs-12 no-padding">
-        <xn-ag-grid
-            #matchingGrid
-            *ngIf="
-                dataSource && dataSource.columns && dataSource.columns.length
-            "
-            [id]="gridId"
-            [dataSource]="dataSource"
-            [readOnly]="false"
-            [isEditting]="true"
-            [showMenuRowGrouping]="true"
-            [rowBackground]="rowBackground"
-            [rowBackgroundGlobal]="rowBackgroundGlobal"
-            [borderRow]="borderRow"
-            [backgroundImage]="backgroundImage"
-            [background]="background"
-            [gridStyle]="gridStyle"
-            [isShowedHeader]="true"
-            [fitWidthColumn]="true"
-        >
-        </xn-ag-grid>
-    </div>
-    <div class="col-xs-12 padding-top--sd">
-        <span
-            ><label-translation
-                [keyword]="'Matching_data__Status'"
-            ></label-translation
-            >: {{ status }}</span
-        >
-        <button
-            type="button"
-            class="{{
-                matchingStatus ? 'mat-btn-red' : 'mat-btn-green'
-            }}  mat-raised-button  pull-right"
-            mat-raised-button
-            (click)="startStop()"
-        >
-            <i
-                class="fa {{ matchingStatus ? 'fa-ban' : 'fa-play' }}"
-                aria-hidden="true"
-            ></i>
-            <span class="bt-t-i">
-                <label-translation
-                    *ngIf="matchingStatus"
-                    [keyword]="'Matching_data__Stop'"
-                ></label-translation>
-                <label-translation
-                    *ngIf="!matchingStatus"
-                    [keyword]="'Matching_data__Start'"
-                ></label-translation>
-            </span>
-        </button>
-    </div>
+  <div class="g col-xs-12 no-padding">
+    <xn-ag-grid
+      #matchingGrid
+      *ngIf="dataSource && dataSource.columns && dataSource.columns.length"
+      [id]="gridId"
+      [dataSource]="dataSource"
+      [readOnly]="false"
+      [isEditting]="true"
+      [showMenuRowGrouping]="true"
+      [rowBackground]="rowBackground"
+      [rowBackgroundGlobal]="rowBackgroundGlobal"
+      [borderRow]="borderRow"
+      [backgroundImage]="backgroundImage"
+      [background]="background"
+      [gridStyle]="gridStyle"
+      [isShowedHeader]="true"
+      [fitWidthColumn]="true"
+    >
+    </xn-ag-grid>
+  </div>
+  <div class="col-xs-12 padding-top--sd">
+    <span
+      ><label-translation
+        [keyword]="'Matching_data__Status'"
+      ></label-translation
+      >: {{ status }}</span
+    >
+    <button
+      type="button"
+      class="{{
+        matchingStatus ? 'mat-btn-red' : 'mat-btn-green'
+      }}  mat-raised-button  pull-right"
+      mat-raised-button
+      (click)="startStop()"
+    >
+      <i
+        class="fa {{ matchingStatus ? 'fa-ban' : 'fa-play' }}"
+        aria-hidden="true"
+      ></i>
+      <span class="bt-t-i">
+        <label-translation
+          *ngIf="matchingStatus"
+          [keyword]="'Matching_data__Stop'"
+        ></label-translation>
+        <label-translation
+          *ngIf="!matchingStatus"
+          [keyword]="'Matching_data__Start'"
+        ></label-translation>
+      </span>
+    </button>
+  </div>
 </div>

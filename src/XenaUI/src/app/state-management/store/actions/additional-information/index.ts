@@ -1,1 +1,1 @@
-﻿export * from "./additional-information.action";
+﻿export * from './additional-information.action';

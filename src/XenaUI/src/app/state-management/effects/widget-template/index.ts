@@ -1,1 +1,1 @@
-export * from "./widget-template.effect";
+export * from './widget-template.effect';

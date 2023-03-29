@@ -1,159 +1,152 @@
 <div *ngIf="widgetType" [ngSwitch]="widgetType">
-    <ng-template [ngSwitchCase]="2">
-        <div *ngIf="gridData" class="sub-title">
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_entries'"
-            ></label-translation
-            >:&nbsp;{{
-                gridData && gridData.gridOptions
-                    ? gridData.gridOptions.rowData.length
-                    : 0
-            }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="3">
-        <div *ngIf="gridData" class="sub-title">
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_entries'"
-            ></label-translation
-            >:&nbsp;{{
-                gridData && gridData.gridOptions
-                    ? gridData.gridOptions.rowData.length
-                    : 0
-            }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="19">
-        <div *ngIf="gridData" class="sub-title">
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_entries'"
-            ></label-translation
-            >:&nbsp;{{ gridData && gridData.data ? gridData.data.length : 0 }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="39">
-        <div class="sub-title">
-            <label-translation
-                [keyword]="'WidgetSubtitle__User'"
-            ></label-translation
-            >:&nbsp;{{ contentSav.Sender }}
-            <label-translation
-                [keyword]="'WidgetSubtitle__Create_Date'"
-            ></label-translation
-            >:&nbsp;{{ formatDate(contentSav.CreateDate) }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="6">
-        <div
-            *ngIf="creditCardData && creditCardData.selectedCreditCards"
-            class="sub-title"
-        >
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_selected_CC'"
-            ></label-translation
-            >:&nbsp;{{ creditCardData.selectedCreditCards.length }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="10">
-        <div
-            *ngIf="
-                articleMediaManagerData &&
-                articleMediaManagerData.articleImageGalleryComponent &&
-                articleMediaManagerData.articleImageGalleryComponent
-                    .galleryImages
-            "
-            class="sub-title"
-        >
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_images'"
-            ></label-translation
-            >:&nbsp;{{
-                articleMediaManagerData.articleImageGalleryComponent
-                    .galleryImages.length
-            }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="11">
-        <div
-            *ngIf="treeViewData && treeViewData && treeViewData.rawData"
-            class="sub-title"
-        >
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_selected_categories'"
-            ></label-translation
-            >:&nbsp;{{ treeViewData.rawData.length }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="12">
-        <div
-            *ngIf="
-                fileExplorerData &&
-                fileExplorerData.xnTableUploadedFilesComponent &&
-                fileExplorerData.xnTableUploadedFilesComponent
-                    .wijmoGridComponent
-            "
-            class="sub-title"
-        >
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_files'"
-            ></label-translation
-            >:&nbsp;{{
-                fileExplorerData.xnTableUploadedFilesComponent
-                    .wijmoGridComponent.gridData
-                    ? fileExplorerData.xnTableUploadedFilesComponent
-                          .wijmoGridComponent.gridData.items.length
-                    : 0
-            }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="25">
-        <div
-            *ngIf="
-                fileExplorerData &&
-                fileExplorerData.xnTableUploadedFilesComponent &&
-                fileExplorerData.xnTableUploadedFilesComponent
-                    .wijmoGridComponent
-            "
-            class="sub-title"
-        >
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_files'"
-            ></label-translation
-            >:&nbsp;{{
-                fileExplorerData.xnTableUploadedFilesComponent
-                    .wijmoGridComponent.gridData
-                    ? fileExplorerData.xnTableUploadedFilesComponent
-                          .wijmoGridComponent.gridData.items.length
-                    : 0
-            }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="17">
-        <div
-            *ngIf="translationData && translationData.wijmoGridComponent"
-            class="sub-title"
-        >
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_languages'"
-            ></label-translation
-            >:&nbsp;{{
-                translationData.wijmoGridComponent.gridData
-                    ? translationData.wijmoGridComponent.gridData.items.length
-                    : 0
-            }}
-        </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="18">
-        <div
-            *ngIf="
-                historyContainerData && historyContainerData.customerHistories
-            "
-            class="sub-title"
-        >
-            <label-translation
-                [keyword]="'WidgetSubtitle__N_of_entries'"
-            ></label-translation
-            >:&nbsp;{{ historyContainerData.customerHistories.length }}
-        </div>
-    </ng-template>
+  <ng-template [ngSwitchCase]="2">
+    <div *ngIf="gridData" class="sub-title">
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_entries'"
+      ></label-translation
+      >:&nbsp;{{
+        gridData && gridData.gridOptions
+          ? gridData.gridOptions.rowData.length
+          : 0
+      }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="3">
+    <div *ngIf="gridData" class="sub-title">
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_entries'"
+      ></label-translation
+      >:&nbsp;{{
+        gridData && gridData.gridOptions
+          ? gridData.gridOptions.rowData.length
+          : 0
+      }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="19">
+    <div *ngIf="gridData" class="sub-title">
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_entries'"
+      ></label-translation
+      >:&nbsp;{{ gridData && gridData.data ? gridData.data.length : 0 }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="39">
+    <div class="sub-title">
+      <label-translation [keyword]="'WidgetSubtitle__User'"></label-translation
+      >:&nbsp;{{ contentSav.Sender }}
+      <label-translation
+        [keyword]="'WidgetSubtitle__Create_Date'"
+      ></label-translation
+      >:&nbsp;{{ formatDate(contentSav.CreateDate) }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="6">
+    <div
+      *ngIf="creditCardData && creditCardData.selectedCreditCards"
+      class="sub-title"
+    >
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_selected_CC'"
+      ></label-translation
+      >:&nbsp;{{ creditCardData.selectedCreditCards.length }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="10">
+    <div
+      *ngIf="
+        articleMediaManagerData &&
+        articleMediaManagerData.articleImageGalleryComponent &&
+        articleMediaManagerData.articleImageGalleryComponent.galleryImages
+      "
+      class="sub-title"
+    >
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_images'"
+      ></label-translation
+      >:&nbsp;{{
+        articleMediaManagerData.articleImageGalleryComponent.galleryImages
+          .length
+      }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="11">
+    <div
+      *ngIf="treeViewData && treeViewData && treeViewData.rawData"
+      class="sub-title"
+    >
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_selected_categories'"
+      ></label-translation
+      >:&nbsp;{{ treeViewData.rawData.length }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="12">
+    <div
+      *ngIf="
+        fileExplorerData &&
+        fileExplorerData.xnTableUploadedFilesComponent &&
+        fileExplorerData.xnTableUploadedFilesComponent.wijmoGridComponent
+      "
+      class="sub-title"
+    >
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_files'"
+      ></label-translation
+      >:&nbsp;{{
+        fileExplorerData.xnTableUploadedFilesComponent.wijmoGridComponent
+          .gridData
+          ? fileExplorerData.xnTableUploadedFilesComponent.wijmoGridComponent
+              .gridData.items.length
+          : 0
+      }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="25">
+    <div
+      *ngIf="
+        fileExplorerData &&
+        fileExplorerData.xnTableUploadedFilesComponent &&
+        fileExplorerData.xnTableUploadedFilesComponent.wijmoGridComponent
+      "
+      class="sub-title"
+    >
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_files'"
+      ></label-translation
+      >:&nbsp;{{
+        fileExplorerData.xnTableUploadedFilesComponent.wijmoGridComponent
+          .gridData
+          ? fileExplorerData.xnTableUploadedFilesComponent.wijmoGridComponent
+              .gridData.items.length
+          : 0
+      }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="17">
+    <div
+      *ngIf="translationData && translationData.wijmoGridComponent"
+      class="sub-title"
+    >
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_languages'"
+      ></label-translation
+      >:&nbsp;{{
+        translationData.wijmoGridComponent.gridData
+          ? translationData.wijmoGridComponent.gridData.items.length
+          : 0
+      }}
+    </div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="18">
+    <div
+      *ngIf="historyContainerData && historyContainerData.customerHistories"
+      class="sub-title"
+    >
+      <label-translation
+        [keyword]="'WidgetSubtitle__N_of_entries'"
+      ></label-translation
+      >:&nbsp;{{ historyContainerData.customerHistories.length }}
+    </div>
+  </ng-template>
 </div>

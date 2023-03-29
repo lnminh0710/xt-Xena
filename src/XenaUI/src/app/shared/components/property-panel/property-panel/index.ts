@@ -1,1 +1,1 @@
-﻿export { PropertyPanelComponent } from "./property-panel.component";
+﻿export { PropertyPanelComponent } from './property-panel.component';

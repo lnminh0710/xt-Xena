@@ -1,81 +1,78 @@
 <div class="form-group">
-    <label class="control-label col-sm-2"
-        ><label-translation
-            [keyword]="'Check_Ppayment_Type__Currency'"
-        ></label-translation
-    ></label>
-    <div class="col-sm-4">
-        <div class="full-width">
-            <xn-combo-box
-                #currencyListCtrl
-                class="custom-wj-input-control xn-select"
-                [itemsSource]="currencyList"
-                [displayMemberPath]="'value'"
-                [selectedValuePath]="'key'"
-                [isEditable]="true"
-                [isRequired]="false"
-                placeholder="Please select"
-                (gotFocus)="currencyListCtrl.isDroppedDown = true"
-            >
-            </xn-combo-box>
-            <control-messages
-                [xn-trigger-click-inside-cbo]="currencyListCtrl"
-                [type]="'textbox'"
-                [icon]="'credit-card'"
-            ></control-messages>
-        </div>
+  <label class="control-label col-sm-2"
+    ><label-translation
+      [keyword]="'Check_Ppayment_Type__Currency'"
+    ></label-translation
+  ></label>
+  <div class="col-sm-4">
+    <div class="full-width">
+      <xn-combo-box
+        #currencyListCtrl
+        class="custom-wj-input-control xn-select"
+        [itemsSource]="currencyList"
+        [displayMemberPath]="'value'"
+        [selectedValuePath]="'key'"
+        [isEditable]="true"
+        [isRequired]="false"
+        placeholder="Please select"
+        (gotFocus)="currencyListCtrl.isDroppedDown = true"
+      >
+      </xn-combo-box>
+      <control-messages
+        [xn-trigger-click-inside-cbo]="currencyListCtrl"
+        [type]="'textbox'"
+        [icon]="'credit-card'"
+      ></control-messages>
     </div>
-    <label class="control-label col-sm-2"
-        ><label-translation
-            [keyword]="'Check_Ppayment_Type__Codeline'"
-        ></label-translation
-    ></label>
-    <div class="col-sm-4">
-        <input type="text" class="form-control" autocomplete="off" />
-    </div>
+  </div>
+  <label class="control-label col-sm-2"
+    ><label-translation
+      [keyword]="'Check_Ppayment_Type__Codeline'"
+    ></label-translation
+  ></label>
+  <div class="col-sm-4">
+    <input type="text" class="form-control" autocomplete="off" />
+  </div>
 </div>
 <div class="form-group">
-    <label class="control-label col-sm-2"
-        ><label-translation
-            [keyword]="'Check_Ppayment_Type__Amount'"
-        ></label-translation
-    ></label>
-    <div class="col-sm-4">
-        <input type="text" class="form-control xn-input" autocomplete="off" />
-        <control-messages
-            [type]="'textbox'"
-            [icon]="'fa-money'"
-        ></control-messages>
+  <label class="control-label col-sm-2"
+    ><label-translation
+      [keyword]="'Check_Ppayment_Type__Amount'"
+    ></label-translation
+  ></label>
+  <div class="col-sm-4">
+    <input type="text" class="form-control xn-input" autocomplete="off" />
+    <control-messages [type]="'textbox'" [icon]="'fa-money'"></control-messages>
+  </div>
+  <label class="control-label col-sm-2"
+    ><label-translation
+      [keyword]="'Check_Ppayment_Type__Date'"
+    ></label-translation
+  ></label>
+  <div class="date-input">
+    <div class="col-sm-1">
+      <input
+        [textMask]="{ mask: dayMask, guide: true, showMask: true }"
+        class="form-control"
+        type="text"
+        autocomplete="off"
+      />
     </div>
-    <label class="control-label col-sm-2"
-        ><label-translation
-            [keyword]="'Check_Ppayment_Type__Date'"
-        ></label-translation
-    ></label>
-    <div class="date-input">
-        <div class="col-sm-1">
-            <input
-                [textMask]="{ mask: dayMask, guide: true, showMask: true }"
-                class="form-control"
-                type="text"
-                autocomplete="off"
-            />
-        </div>
-        <div class="col-sm-1">
-            <input
-                [textMask]="{ mask: dayMask, guide: true, showMask: true }"
-                class="form-control"
-                type="text"
-                autocomplete="off"
-            />
-        </div>
-        <div class="col-sm-2">
-            <input
-                [textMask]="{ mask: yearMask, guide: true, showMask: true }"
-                class="form-control"
-                type="text"
-                autocomplete="off"
-            />
-        </div>
+    <div class="col-sm-1">
+      <input
+        [textMask]="{ mask: dayMask, guide: true, showMask: true }"
+        class="form-control"
+        type="text"
+        autocomplete="off"
+      />
     </div>
+    <div class="col-sm-2">
+      <input
+        [textMask]="{ mask: yearMask, guide: true, showMask: true }"
+        class="form-control"
+        type="text"
+        autocomplete="off"
+      />
+    </div>
+  </div>
 </div>

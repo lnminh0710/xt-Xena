@@ -1,2 +1,2 @@
-﻿export * from "./additional-information.reducer";
-export * from "./additional-information.selectors";
+﻿export * from './additional-information.reducer';
+export * from './additional-information.selectors';

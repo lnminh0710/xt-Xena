@@ -1,85 +1,83 @@
 <p-dialog
-    header=""
-    [styleClass]="'prime-dialog-article-orders'"
-    [(visible)]="showDialog"
-    modal="true"
-    width="1200"
-    height="500"
-    positionTop="150"
-    responsive="true"
-    appendTo="body"
-    [resizable]="true"
-    [draggable]="true"
-    [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
-    *ngIf="showDialog"
+  header=""
+  [styleClass]="'prime-dialog-article-orders'"
+  [(visible)]="showDialog"
+  modal="true"
+  width="1200"
+  height="500"
+  positionTop="150"
+  responsive="true"
+  appendTo="body"
+  [resizable]="true"
+  [draggable]="true"
+  [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
+  *ngIf="showDialog"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="header-text"
-                ><label-translation
-                    [keyword]="'Search Article'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="close()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-
-    <div class="row content-detail">
-        <div class="search-box">
-            <app-xn-input-debounce
-                delayTimer="600"
-                [isLoading]="false"
-                placeholder="Search Here"
-                [value]="keyword"
-                id="txt-global-search-article"
-                (onValueChanged)="search($event)"
-            >
-            </app-xn-input-debounce>
-
-            <!--<a mat-button class="fa fa-search  mat-btn-blue form-control__right-icon input-group-addon"></a>-->
-
-            <a
-                mat-button
-                class="form-control__right-icon mat-btn-blue form-control__right-icon--gs-search"
-            >
-                <i class="fa fa-search"></i>
-            </a>
-        </div>
-        <div class="search-result">
-            <gs-result
-                [keyword]="keyword"
-                [gridId]="'287952a2-1bf9-42c1-9613-e83d5ca2c155'"
-                [searchIndex]="searchIndex"
-                [module]="module"
-                [allowDrag]="allowDrag"
-                (onRowDoubleClicked)="rowDoubleClicked($event)"
-            >
-            </gs-result>
-        </div>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="header-text"
+        ><label-translation [keyword]="'Search Article'"></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
+  </p-header>
 
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                label="Cancel"
-                pbutton=""
-                type="button"
-                mat-raised-button
-                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                (click)="close()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation [keyword]="'Close'"></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+  <div class="row content-detail">
+    <div class="search-box">
+      <app-xn-input-debounce
+        delayTimer="600"
+        [isLoading]="false"
+        placeholder="Search Here"
+        [value]="keyword"
+        id="txt-global-search-article"
+        (onValueChanged)="search($event)"
+      >
+      </app-xn-input-debounce>
+
+      <!--<a mat-button class="fa fa-search  mat-btn-blue form-control__right-icon input-group-addon"></a>-->
+
+      <a
+        mat-button
+        class="form-control__right-icon mat-btn-blue form-control__right-icon--gs-search"
+      >
+        <i class="fa fa-search"></i>
+      </a>
+    </div>
+    <div class="search-result">
+      <gs-result
+        [keyword]="keyword"
+        [gridId]="'287952a2-1bf9-42c1-9613-e83d5ca2c155'"
+        [searchIndex]="searchIndex"
+        [module]="module"
+        [allowDrag]="allowDrag"
+        (onRowDoubleClicked)="rowDoubleClicked($event)"
+      >
+      </gs-result>
+    </div>
+  </div>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        label="Cancel"
+        pbutton=""
+        type="button"
+        mat-raised-button
+        class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+        (click)="close()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation [keyword]="'Close'"></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

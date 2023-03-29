@@ -1,1 +1,1 @@
-﻿export * from "./widget-template.action";
+﻿export * from './widget-template.action';

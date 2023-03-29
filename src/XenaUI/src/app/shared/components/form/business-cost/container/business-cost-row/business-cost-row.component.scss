@@ -1,63 +1,63 @@
 .bc__row-form {
-    height: calc(100% - 5px);
-    min-height: 700px;
+  height: calc(100% - 5px);
+  min-height: 700px;
 
-    .business-cost-row__form {
-        height: 350px;
-    }
-    .business-cost-row__grid {
-        height: calc(100% - 365px);
-        margin-bottom: 15px;
-    }
+  .business-cost-row__form {
+    height: 350px;
+  }
+  .business-cost-row__grid {
+    height: calc(100% - 365px);
+    margin-bottom: 15px;
+  }
 
-    .bc__row-form__note {
-        margin-top: 0;
-        padding-right: 0;
-    }
+  .bc__row-form__note {
+    margin-top: 0;
+    padding-right: 0;
+  }
 
-    .bc__row-form__note {
-        .input-group-addon {
-            height: 48px !important;
-            margin-top: -49px !important;
-            padding-top: 15px !important;
-        }
-
-        .control-label {
-            padding-top: 0;
-            padding-left: 0;
-        }
+  .bc__row-form__note {
+    .input-group-addon {
+      height: 48px !important;
+      margin-top: -49px !important;
+      padding-top: 15px !important;
     }
 
-    textarea {
-        height: 50px;
+    .control-label {
+      padding-top: 0;
+      padding-left: 0;
     }
+  }
 
-    .bc__row-form__search-country {
-        margin-left: 65px;
-    }
+  textarea {
+    height: 50px;
+  }
 
-    .campaign-grid {
-        height: calc(100% - 38px);
-    }
+  .bc__row-form__search-country {
+    margin-left: 65px;
+  }
 
-    .indicator {
-        font-size: 1.5em;
-        position: absolute;
-        z-index: 100;
-        top: 50%;
-        transform: translateY(-50%);
-        right: 40px;
-    }
+  .campaign-grid {
+    height: calc(100% - 38px);
+  }
+
+  .indicator {
+    font-size: 1.5em;
+    position: absolute;
+    z-index: 100;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 40px;
+  }
 }
 :host ::ng-deep {
-    .wj-input-group-btn {
-        display: none;
+  .wj-input-group-btn {
+    display: none;
+  }
+  .wj-input-group {
+    border-radius: 0 4px 4px 0 !important;
+    input {
+      font-weight: 900;
+      border-radius: 0 4px 4px 0 !important;
     }
-    .wj-input-group {
-        border-radius: 0 4px 4px 0 !important;
-        input {
-            font-weight: 900;
-            border-radius: 0 4px 4px 0 !important;
-        }
-    }
+  }
 }

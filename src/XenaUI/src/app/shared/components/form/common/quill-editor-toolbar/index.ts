@@ -1,1 +1,1 @@
-export * from "./quill-editor-toolbar.component";
+export * from './quill-editor-toolbar.component';

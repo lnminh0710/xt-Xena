@@ -1,110 +1,104 @@
 <div class="pdf-body">
+  <div class="pdf-item-zone" [ngClass]="{ 'pdf-item-zone-collapse': collapse }">
+    <div class="item-text-length">
+      <span class="item-text-title">
+        <label-translation
+          [keyword]="'SAV_Letter_NUMBER_OF_DOC'"
+        ></label-translation> </span
+      >&nbsp;
+      <span class="item-text-content">{{ pdfData.length }}</span>
+    </div>
     <div
-        class="pdf-item-zone"
-        [ngClass]="{ 'pdf-item-zone-collapse': collapse }"
+      class="pdf-list"
+      [perfect-scrollbar]="{
+        suppressScrollX: true,
+        suppressScrollY: false
+      }"
     >
-        <div class="item-text-length">
-            <span class="item-text-title">
-                <label-translation
-                    [keyword]="'SAV_Letter_NUMBER_OF_DOC'"
-                ></label-translation> </span
-            >&nbsp;
-            <span class="item-text-content">{{ pdfData.length }}</span>
+      <div
+        class="pdf-item"
+        *ngFor="let pdf of pdfData"
+        [ngClass]="{ 'pdf-file-active': pdf.isActive }"
+        [ngStyle]="{ 'border-color': pdf.SAVColorType }"
+        (click)="onPDFItemClicked(pdf)"
+        (mouseover)="
+          setDisplayIconAction(
+            $event,
+            'action-' + pdf?.IdGenerateLetter,
+            'block'
+          )
+        "
+        (mouseout)="
+          setDisplayIconAction(
+            $event,
+            'action-' + pdf?.IdGenerateLetter,
+            'none'
+          )
+        "
+      >
+        <div class="item-text">
+          <span class="item-text-title">
+            <label-translation
+              [keyword]="'SAV_Letter_Create_Date'"
+            ></label-translation> </span
+          >&nbsp;
+          <span class="item-text-content">{{
+            formatDate(pdf.CreateDate)
+          }}</span>
         </div>
-        <div
-            class="pdf-list"
-            [perfect-scrollbar]="{
-                suppressScrollX: true,
-                suppressScrollY: false
-            }"
-        >
-            <div
-                class="pdf-item"
-                *ngFor="let pdf of pdfData"
-                [ngClass]="{ 'pdf-file-active': pdf.isActive }"
-                [ngStyle]="{ 'border-color': pdf.SAVColorType }"
-                (click)="onPDFItemClicked(pdf)"
-                (mouseover)="
-                    setDisplayIconAction(
-                        $event,
-                        'action-' + pdf?.IdGenerateLetter,
-                        'block'
-                    )
-                "
-                (mouseout)="
-                    setDisplayIconAction(
-                        $event,
-                        'action-' + pdf?.IdGenerateLetter,
-                        'none'
-                    )
-                "
-            >
-                <div class="item-text">
-                    <span class="item-text-title">
-                        <label-translation
-                            [keyword]="'SAV_Letter_Create_Date'"
-                        ></label-translation> </span
-                    >&nbsp;
-                    <span class="item-text-content">{{
-                        formatDate(pdf.CreateDate)
-                    }}</span>
-                </div>
-                <div class="item-text">
-                    <span class="item-text-title">
-                        <label-translation
-                            [keyword]="'SAV_Letter_Sender'"
-                        ></label-translation> </span
-                    >&nbsp;
-                    <span class="item-text-content">{{ pdf.Sender }}</span>
-                </div>
-                <div class="item-text">
-                    <span class="item-text-title">
-                        <label-translation
-                            [keyword]="'SAV_Letter_Letter_Name'"
-                        ></label-translation> </span
-                    >&nbsp;
-                    <span class="item-text-content">{{ pdf.LetterName }}</span>
-                </div>
-                <div class="item-text">
-                    <span class="item-text-title">
-                        <label-translation
-                            [keyword]="'SAV_Letter_Note'"
-                        ></label-translation> </span
-                    >&nbsp;
-                    <span class="item-text-content">{{ pdf.Note }}</span>
-                </div>
-                <div
-                    class="item-icon-action"
-                    id="action-{{ pdf?.IdGenerateLetter }}"
-                >
-                    <i
-                        class="fa fa-trash-o"
-                        (click)="callModalConfirmDeleteSAVLetter($event, pdf)"
-                    ></i>
-                </div>
-            </div>
+        <div class="item-text">
+          <span class="item-text-title">
+            <label-translation
+              [keyword]="'SAV_Letter_Sender'"
+            ></label-translation> </span
+          >&nbsp;
+          <span class="item-text-content">{{ pdf.Sender }}</span>
         </div>
+        <div class="item-text">
+          <span class="item-text-title">
+            <label-translation
+              [keyword]="'SAV_Letter_Letter_Name'"
+            ></label-translation> </span
+          >&nbsp;
+          <span class="item-text-content">{{ pdf.LetterName }}</span>
+        </div>
+        <div class="item-text">
+          <span class="item-text-title">
+            <label-translation
+              [keyword]="'SAV_Letter_Note'"
+            ></label-translation> </span
+          >&nbsp;
+          <span class="item-text-content">{{ pdf.Note }}</span>
+        </div>
+        <div class="item-icon-action" id="action-{{ pdf?.IdGenerateLetter }}">
+          <i
+            class="fa fa-trash-o"
+            (click)="callModalConfirmDeleteSAVLetter($event, pdf)"
+          ></i>
+        </div>
+      </div>
     </div>
-    <div class="sav-send-letter-collapse-zone" (click)="onCollapseClicked()">
-        <div class="sav-send-letter-collapse-flip">
-            <i
-                class="fa"
-                [ngClass]="{
-                    'fa-caret-right': collapse,
-                    'fa-caret-left': !collapse
-                }"
-            ></i>
-        </div>
+  </div>
+  <div class="sav-send-letter-collapse-zone" (click)="onCollapseClicked()">
+    <div class="sav-send-letter-collapse-flip">
+      <i
+        class="fa"
+        [ngClass]="{
+          'fa-caret-right': collapse,
+          'fa-caret-left': !collapse
+        }"
+      ></i>
     </div>
-    <!--<div class="pdf-view-wrap" [perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
+  </div>
+  <!--<div class="pdf-view-wrap" [perfect-scrollbar]="{suppressScrollX: false, suppressScrollY: false}">
         <div class="pdf-view">
             <wj-pdf-viewer [serviceUrl]="pdfApiUrl" [filePath]="pdfUrl"></wj-pdf-viewer>
         </div>
     </div>-->
-    <div class="pdf-view-wrap">
-        <pdf-widget
-            [setPdfUrl]="pdfUrl"
-            [currentModule]="currentModule"
-        ></pdf-widget>
-    </div>
+  <div class="pdf-view-wrap">
+    <pdf-widget
+      [setPdfUrl]="pdfUrl"
+      [currentModule]="currentModule"
+    ></pdf-widget>
+  </div>
 </div>

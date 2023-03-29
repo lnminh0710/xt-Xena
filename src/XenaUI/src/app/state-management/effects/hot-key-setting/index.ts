@@ -1,1 +1,1 @@
-﻿export * from "./hot-key-setting.effect";
+﻿export * from './hot-key-setting.effect';

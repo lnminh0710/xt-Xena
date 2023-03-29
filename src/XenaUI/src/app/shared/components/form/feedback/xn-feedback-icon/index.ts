@@ -1,1 +1,1 @@
-export { XnFeedbackIconComponent } from "./xn-feedback-icon.component";
+export { XnFeedbackIconComponent } from './xn-feedback-icon.component';

@@ -1,1 +1,1 @@
-export { NotificationArchivePopupComponent } from "./notification-archive-popup.component";
+export { NotificationArchivePopupComponent } from './notification-archive-popup.component';

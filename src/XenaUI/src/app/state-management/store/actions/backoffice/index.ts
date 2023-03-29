@@ -1,1 +1,1 @@
-﻿export * from "./backoffice.action";
+﻿export * from './backoffice.action';

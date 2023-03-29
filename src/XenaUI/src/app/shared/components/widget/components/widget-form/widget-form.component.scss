@@ -136,37 +136,37 @@
 }
 */
 .w-f {
-    min-height: 100%;
-    padding: 0 5px 0 0;
+  min-height: 100%;
+  padding: 0 5px 0 0;
 }
 .wf-c {
-    position: relative;
-    min-height: 100%;
-    min-width: 30px;
+  position: relative;
+  min-height: 100%;
+  min-width: 30px;
 }
 .form-horizontal {
-    display: flex;
-    justify-content: flex-start;
+  display: flex;
+  justify-content: flex-start;
 }
 
 :host ::ng-deep {
-    wf-column {
-        .c-not-first {
-            border-left: none;
-        }
+  wf-column {
+    .c-not-first {
+      border-left: none;
     }
-    .ctr-uc {
-        cursor: pointer;
-    }
-    .ctr-c {
-        cursor: move;
-    }
-    .width-auto {
-        width: auto !important;
-        min-width: auto !important;
-    }
+  }
+  .ctr-uc {
+    cursor: pointer;
+  }
+  .ctr-c {
+    cursor: move;
+  }
+  .width-auto {
+    width: auto !important;
+    min-width: auto !important;
+  }
 
-    .container-inline-content {
-        flex-grow: 1000;
-    }
+  .container-inline-content {
+    flex-grow: 1000;
+  }
 }

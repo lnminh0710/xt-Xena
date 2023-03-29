@@ -1,1 +1,1 @@
-export * from "./used-countries.component";
+export * from './used-countries.component';

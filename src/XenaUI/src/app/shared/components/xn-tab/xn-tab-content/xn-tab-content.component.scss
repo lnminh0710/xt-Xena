@@ -1,20 +1,15 @@
 ﻿:host /deep/ .tab-content {
-    height: 100%;
+  height: 100%;
 
-    > .tab-pane {
-        height: 100%;
-    }
+  > .tab-pane {
+    height: 100%;
+  }
 }
 
 .gradient-background {
-    background: linear-gradient(
-        to bottom,
-        #ffffff 0%,
-        #f8f8f8 60%,
-        #ececec 90%
-    );
+  background: linear-gradient(to bottom, #ffffff 0%, #f8f8f8 60%, #ececec 90%);
 }
 
 :host ::ng-deep .ps-scrollbar-y-rail {
-    z-index: 6;
+  z-index: 6;
 }

@@ -1,290 +1,256 @@
 <aside
-    class="main-sidebar"
-    [ngClass]="[
-        showList && (accessRight.read || usingModule.idSettingsGUI == 7)
-            ? ''
-            : 'main-sidebar-collapse'
-    ]"
+  class="main-sidebar"
+  [ngClass]="[
+    showList && (accessRight.read || usingModule.idSettingsGUI == 7)
+      ? ''
+      : 'main-sidebar-collapse'
+  ]"
 >
-    <section class="sidebar">
-        <parked-item-project-status
-            *ngIf="isSelectionProject && showList"
-            [selectedEntity]="selectedEntity"
-        >
-        </parked-item-project-status>
+  <section class="sidebar">
+    <parked-item-project-status
+      *ngIf="isSelectionProject && showList"
+      [selectedEntity]="selectedEntity"
+    >
+    </parked-item-project-status>
 
-        <div
-            *ngIf="
-                !isSelectionProject &&
-                showList &&
-                accessRight &&
-                accessRight.read
-            "
-            class="current-item padding-left--sm padding-right--sm"
-        >
-            <parked-item
-                *ngIf="selectedEntity"
-                [standAlone]="true"
-                [data]="{ item: selectedEntity, fieldConfig: fieldConfig }"
-                [isNewItem]="selectedEntity.isNew"
-                [isNewInsertedItem]="selectedEntity.isNewInsertedItem"
-                [subModules]="subModules"
-                [activeModule]="usingModule"
-                [globalProperties]="globalProperties"
-                [selectedParkedItem]="selectedEntity"
-                (onClose)="closeParkedItem($event)"
-                (onSelect)="selectParkedItem($event)"
-                [accessRight]="accessRight"
-            ></parked-item>
-            <div
-                *ngIf="!selectedEntity"
-                class="panel no-margin padding-left--md padding-top--md padding-right--md no-selected-entity-panel"
-            >
-                <div class="panel-body text-center">
-                    <h4>
-                        <label-translation
-                            [keyword]="'Parked_item_list__selected'"
-                        ></label-translation>
-                        <span *ngIf="usingModule.idSettingsGUI != 7">{{
-                            usingModule.moduleName
-                        }}</span>
-                        <label-translation
-                            *ngIf="usingModule.idSettingsGUI == 7"
-                            [keyword]="'Parked_item_list__Failed_Orders'"
-                        ></label-translation>
-                    </h4>
-                </div>
-            </div>
+    <div
+      *ngIf="!isSelectionProject && showList && accessRight && accessRight.read"
+      class="current-item padding-left--sm padding-right--sm"
+    >
+      <parked-item
+        *ngIf="selectedEntity"
+        [standAlone]="true"
+        [data]="{ item: selectedEntity, fieldConfig: fieldConfig }"
+        [isNewItem]="selectedEntity.isNew"
+        [isNewInsertedItem]="selectedEntity.isNewInsertedItem"
+        [subModules]="subModules"
+        [activeModule]="usingModule"
+        [globalProperties]="globalProperties"
+        [selectedParkedItem]="selectedEntity"
+        (onClose)="closeParkedItem($event)"
+        (onSelect)="selectParkedItem($event)"
+        [accessRight]="accessRight"
+      ></parked-item>
+      <div
+        *ngIf="!selectedEntity"
+        class="panel no-margin padding-left--md padding-top--md padding-right--md no-selected-entity-panel"
+      >
+        <div class="panel-body text-center">
+          <h4>
+            <label-translation
+              [keyword]="'Parked_item_list__selected'"
+            ></label-translation>
+            <span *ngIf="usingModule.idSettingsGUI != 7">{{
+              usingModule.moduleName
+            }}</span>
+            <label-translation
+              *ngIf="usingModule.idSettingsGUI == 7"
+              [keyword]="'Parked_item_list__Failed_Orders'"
+            ></label-translation>
+          </h4>
         </div>
+      </div>
+    </div>
 
-        <div
-            class="parked-item-panel"
+    <div
+      class="parked-item-panel"
+      [ngClass]="{
+        'parked-item-panel-disabled':
+          isPanelDisabled ||
+          (!accessRight.read && usingModule.idSettingsGUI != 7) ||
+          (usingModule.idSettingsGUI == 7 && !parkedItems.length),
+        'red-bg':
+          !showList && usingModule.idSettingsGUI == 7 && parkedItems.length
+      }"
+    >
+      <div class="row parked-item-header">
+        <div class="col-xs-12">
+          <div
+            class="pull-left parked-item-menu"
             [ngClass]="{
-                'parked-item-panel-disabled':
-                    isPanelDisabled ||
-                    (!accessRight.read && usingModule.idSettingsGUI != 7) ||
-                    (usingModule.idSettingsGUI == 7 && !parkedItems.length),
-                'red-bg':
+              'xn-disabled': isDropDownDisableToggleMenu
+            }"
+          >
+            <h4>
+              <parked-item-dropdown
+                (onApply)="onParkedItemDropdownApply($event)"
+                [config]="menuConfig"
+                [moduleData]="usingModule"
+                [isDisableToggleMenu]="isDropDownDisableToggleMenu"
+                (deleteAllParkedItem)="deleteAllParkedItem($event)"
+                [accessRight]="accessRight"
+              ></parked-item-dropdown>
+            </h4>
+          </div>
+          <a
+            #toggleButton
+            [attr.data-toggle]="
+              isPanelDisabled ||
+              (!accessRight.read && usingModule.idSettingsGUI != 7) ||
+              (usingModule.idSettingsGUI == 7 && !parkedItems.length)
+                ? ''
+                : 'offcanvas'
+            "
+            (click)="
+              isPanelDisabled ||
+              (!accessRight.read && usingModule.idSettingsGUI != 7) ||
+              (usingModule.idSettingsGUI == 7 && !parkedItems.length)
+                ? false
+                : toggle()
+            "
+            class="parked-item-title-collapse"
+          >
+            <div class="pull-left parked-item-title cursor-pointer">
+              <h4>
+                <label-translation
+                  *ngIf="usingModule.idSettingsGUI != 7"
+                  [keyword]="'Parked_item_list__Parked_Items'"
+                ></label-translation>
+                <label-translation
+                  *ngIf="usingModule.idSettingsGUI == 7"
+                  [keyword]="'Parked_item_list__Failed_Orders'"
+                ></label-translation>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'red-bg': usingModule.idSettingsGUI == 7
+                  }"
+                  >{{ parkedItems.length }}</span
+                >
+              </h4>
+            </div>
+          </a>
+          <div class="pull-right parked-item-collapse">
+            <h4>
+              <a
+                class="parked-item-toggle cursor-pointer"
+                [ngClass]="{
+                  'white-text':
                     !showList &&
                     usingModule.idSettingsGUI == 7 &&
                     parkedItems.length
-            }"
-        >
-            <div class="row parked-item-header">
-                <div class="col-xs-12">
-                    <div
-                        class="pull-left parked-item-menu"
-                        [ngClass]="{
-                            'xn-disabled': isDropDownDisableToggleMenu
-                        }"
-                    >
-                        <h4>
-                            <parked-item-dropdown
-                                (onApply)="onParkedItemDropdownApply($event)"
-                                [config]="menuConfig"
-                                [moduleData]="usingModule"
-                                [isDisableToggleMenu]="
-                                    isDropDownDisableToggleMenu
-                                "
-                                (deleteAllParkedItem)="
-                                    deleteAllParkedItem($event)
-                                "
-                                [accessRight]="accessRight"
-                            ></parked-item-dropdown>
-                        </h4>
-                    </div>
-                    <a
-                        #toggleButton
-                        [attr.data-toggle]="
-                            isPanelDisabled ||
-                            (!accessRight.read &&
-                                usingModule.idSettingsGUI != 7) ||
-                            (usingModule.idSettingsGUI == 7 &&
-                                !parkedItems.length)
-                                ? ''
-                                : 'offcanvas'
-                        "
-                        (click)="
-                            isPanelDisabled ||
-                            (!accessRight.read &&
-                                usingModule.idSettingsGUI != 7) ||
-                            (usingModule.idSettingsGUI == 7 &&
-                                !parkedItems.length)
-                                ? false
-                                : toggle()
-                        "
-                        class="parked-item-title-collapse"
-                    >
-                        <div class="pull-left parked-item-title cursor-pointer">
-                            <h4>
-                                <label-translation
-                                    *ngIf="usingModule.idSettingsGUI != 7"
-                                    [keyword]="'Parked_item_list__Parked_Items'"
-                                ></label-translation>
-                                <label-translation
-                                    *ngIf="usingModule.idSettingsGUI == 7"
-                                    [keyword]="
-                                        'Parked_item_list__Failed_Orders'
-                                    "
-                                ></label-translation>
-                                <span
-                                    class="badge"
-                                    [ngClass]="{
-                                        'red-bg': usingModule.idSettingsGUI == 7
-                                    }"
-                                    >{{ parkedItems.length }}</span
-                                >
-                            </h4>
-                        </div>
-                    </a>
-                    <div class="pull-right parked-item-collapse">
-                        <h4>
-                            <a
-                                class="parked-item-toggle cursor-pointer"
-                                [ngClass]="{
-                                    'white-text':
-                                        !showList &&
-                                        usingModule.idSettingsGUI == 7 &&
-                                        parkedItems.length
-                                }"
-                                id="parked-item-list-toggle"
-                                [attr.data-toggle]="
-                                    isPanelDisabled ||
-                                    (!accessRight.read &&
-                                        usingModule.idSettingsGUI != 7) ||
-                                    (usingModule.idSettingsGUI == 7 &&
-                                        !parkedItems.length)
-                                        ? ''
-                                        : 'offcanvas'
-                                "
-                                (click)="
-                                    isPanelDisabled ||
-                                    (!accessRight.read &&
-                                        usingModule.idSettingsGUI != 7) ||
-                                    (usingModule.idSettingsGUI == 7 &&
-                                        !parkedItems.length)
-                                        ? false
-                                        : toggle()
-                                "
-                                role="button"
-                            >
-                                <span class="sr-only"
-                                    ><label-translation
-                                        [keyword]="
-                                            'Parked_item_list__Toggle_navigation'
-                                        "
-                                    ></label-translation
-                                ></span>
-                            </a>
-                        </h4>
-                    </div>
-
-                    <div class="pull-right parked-item-title-vertical">
-                        <a
-                            class="cursor-pointer"
-                            [attr.data-toggle]="
-                                isPanelDisabled ||
-                                (!accessRight.read &&
-                                    usingModule.idSettingsGUI != 7) ||
-                                (usingModule.idSettingsGUI == 7 &&
-                                    !parkedItems.length)
-                                    ? ''
-                                    : 'offcanvas'
-                            "
-                            (click)="
-                                isPanelDisabled ||
-                                (!accessRight.read &&
-                                    usingModule.idSettingsGUI != 7) ||
-                                (usingModule.idSettingsGUI == 7 &&
-                                    !parkedItems.length)
-                                    ? false
-                                    : toggle()
-                            "
-                        >
-                            <h4
-                                class="vertical-text"
-                                [ngClass]="{
-                                    'white-text':
-                                        !showList &&
-                                        usingModule.idSettingsGUI == 7 &&
-                                        parkedItems.length
-                                }"
-                                id="vertical-text"
-                            >
-                                <label-translation
-                                    *ngIf="usingModule.idSettingsGUI != 7"
-                                    [keyword]="'Parked_item_list__Parked_Items'"
-                                ></label-translation>
-                                <label-translation
-                                    *ngIf="usingModule.idSettingsGUI == 7"
-                                    [keyword]="
-                                        'Parked_item_list__Failed_Orders'
-                                    "
-                                ></label-translation>
-                                <span
-                                    class="badge horizontal-text"
-                                    [ngClass]="{
-                                        'white-bg':
-                                            !showList &&
-                                            usingModule.idSettingsGUI == 7
-                                    }"
-                                    >{{ parkedItems.length }}</span
-                                >
-                            </h4>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!--<hr class="custom-hr" />-->
-
-            <perfect-scrollbar
-                *ngIf="
-                    showList &&
-                    (accessRight.read || usingModule.idSettingsGUI == 7)
+                }"
+                id="parked-item-list-toggle"
+                [attr.data-toggle]="
+                  isPanelDisabled ||
+                  (!accessRight.read && usingModule.idSettingsGUI != 7) ||
+                  (usingModule.idSettingsGUI == 7 && !parkedItems.length)
+                    ? ''
+                    : 'offcanvas'
                 "
-                class="col-xs-12 parked-item-content"
-                (drop)="onDrop($event)"
-                (dragover)="onDragOver($event)"
-                (dragleave)="onDragLeave($event)"
-                (dragenter)="onDragEnter($event)"
-                dnd-droppable
-                [dropZones]="['parked-item']"
-                (onDropSuccess)="transferDataSuccess($event)"
-                [ngStyle]="parkedItemContainerStyle"
-            >
-                <div
-                    id="parked-items"
-                    class="padding-left--sm padding-right--sm"
-                    [dragula]="'parked-item-bag'"
-                    [dragulaModel]="parkedItems"
-                    [dragulaOptions]="options"
-                    [ngStyle]="
-                        parkedItems.length
-                            ? parkedItemListStyle
-                            : { 'min-height': '40px', 'max-height': '40px' }
-                    "
-                >
-                    <parked-item
-                        [data]="{ item: item, fieldConfig: fieldConfig }"
-                        [isNewItem]="item.isNew"
-                        [isNewInsertedItem]="item.isNewInsertedItem"
-                        [subModules]="subModules"
-                        [activeModule]="usingModule"
-                        [globalProperties]="globalProperties"
-                        [selectedParkedItem]="selectedParkedItem"
-                        *ngFor="let item of parkedItems; trackBy: itemsTrackBy"
-                        (onClose)="closeParkedItem($event)"
-                        (onSelect)="selectParkedItem($event)"
-                        [accessRight]="accessRight"
-                    ></parked-item>
-                </div>
+                (click)="
+                  isPanelDisabled ||
+                  (!accessRight.read && usingModule.idSettingsGUI != 7) ||
+                  (usingModule.idSettingsGUI == 7 && !parkedItems.length)
+                    ? false
+                    : toggle()
+                "
+                role="button"
+              >
+                <span class="sr-only"
+                  ><label-translation
+                    [keyword]="'Parked_item_list__Toggle_navigation'"
+                  ></label-translation
+                ></span>
+              </a>
+            </h4>
+          </div>
 
-                <app-parked-item-guide
-                    *ngIf="!parkedItems.length"
-                    [usingModule]="usingModule"
-                ></app-parked-item-guide>
-            </perfect-scrollbar>
+          <div class="pull-right parked-item-title-vertical">
+            <a
+              class="cursor-pointer"
+              [attr.data-toggle]="
+                isPanelDisabled ||
+                (!accessRight.read && usingModule.idSettingsGUI != 7) ||
+                (usingModule.idSettingsGUI == 7 && !parkedItems.length)
+                  ? ''
+                  : 'offcanvas'
+              "
+              (click)="
+                isPanelDisabled ||
+                (!accessRight.read && usingModule.idSettingsGUI != 7) ||
+                (usingModule.idSettingsGUI == 7 && !parkedItems.length)
+                  ? false
+                  : toggle()
+              "
+            >
+              <h4
+                class="vertical-text"
+                [ngClass]="{
+                  'white-text':
+                    !showList &&
+                    usingModule.idSettingsGUI == 7 &&
+                    parkedItems.length
+                }"
+                id="vertical-text"
+              >
+                <label-translation
+                  *ngIf="usingModule.idSettingsGUI != 7"
+                  [keyword]="'Parked_item_list__Parked_Items'"
+                ></label-translation>
+                <label-translation
+                  *ngIf="usingModule.idSettingsGUI == 7"
+                  [keyword]="'Parked_item_list__Failed_Orders'"
+                ></label-translation>
+                <span
+                  class="badge horizontal-text"
+                  [ngClass]="{
+                    'white-bg': !showList && usingModule.idSettingsGUI == 7
+                  }"
+                  >{{ parkedItems.length }}</span
+                >
+              </h4>
+            </a>
+          </div>
         </div>
-    </section>
+      </div>
+
+      <!--<hr class="custom-hr" />-->
+
+      <perfect-scrollbar
+        *ngIf="showList && (accessRight.read || usingModule.idSettingsGUI == 7)"
+        class="col-xs-12 parked-item-content"
+        (drop)="onDrop($event)"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (dragenter)="onDragEnter($event)"
+        dnd-droppable
+        [dropZones]="['parked-item']"
+        (onDropSuccess)="transferDataSuccess($event)"
+        [ngStyle]="parkedItemContainerStyle"
+      >
+        <div
+          id="parked-items"
+          class="padding-left--sm padding-right--sm"
+          [dragula]="'parked-item-bag'"
+          [dragulaModel]="parkedItems"
+          [dragulaOptions]="options"
+          [ngStyle]="
+            parkedItems.length
+              ? parkedItemListStyle
+              : { 'min-height': '40px', 'max-height': '40px' }
+          "
+        >
+          <parked-item
+            [data]="{ item: item, fieldConfig: fieldConfig }"
+            [isNewItem]="item.isNew"
+            [isNewInsertedItem]="item.isNewInsertedItem"
+            [subModules]="subModules"
+            [activeModule]="usingModule"
+            [globalProperties]="globalProperties"
+            [selectedParkedItem]="selectedParkedItem"
+            *ngFor="let item of parkedItems; trackBy: itemsTrackBy"
+            (onClose)="closeParkedItem($event)"
+            (onSelect)="selectParkedItem($event)"
+            [accessRight]="accessRight"
+          ></parked-item>
+        </div>
+
+        <app-parked-item-guide
+          *ngIf="!parkedItems.length"
+          [usingModule]="usingModule"
+        ></app-parked-item-guide>
+      </perfect-scrollbar>
+    </div>
+  </section>
 </aside>

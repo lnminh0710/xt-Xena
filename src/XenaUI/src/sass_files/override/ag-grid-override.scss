@@ -1,96 +1,94 @@
 ag-grid-angular {
-    .ag-header-cell {
-        border-bottom: solid 1px #beb7b7;
-    }
+  .ag-header-cell {
+    border-bottom: solid 1px #beb7b7;
+  }
 
-    .editable-col.editing {
-        border-bottom: solid 1px orange;
-    }
+  .editable-col.editing {
+    border-bottom: solid 1px orange;
+  }
 
-    .ag-header,
-    .ag-header-row {
-        border-bottom-style: none !important;
-    }
+  .ag-header,
+  .ag-header-row {
+    border-bottom-style: none !important;
+  }
 
+  .ag-cell {
+    border-right: solid 1px #d9dcde !important;
+  }
+
+  .ag-ltr
+    .ag-cell-focus:not(.invalid-cell):not(.positive-qty):not(.negative-qty) {
+    border: none !important;
+  }
+
+  .in-active-cell {
+    // opacity: 0.6;
+    //pointer-events: all;
+  }
+
+  .edited-cell {
+    background-color: #f9f8b3;
+  }
+
+  .no-entry-data-block {
+    font-size: 30px;
+    color: #c4c1c1;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .status-header-col {
+    background-color: #f5f7f7;
+  }
+
+  .ag-ltr .ag-cell-focus {
+    background-color: #d3eeef;
+  }
+
+  .ag-row-group {
     .ag-cell {
-        border-right: solid 1px #d9dcde !important;
+      border-right: none !important;
     }
+  }
 
-    .ag-ltr
-        .ag-cell-focus:not(.invalid-cell):not(.positive-qty):not(
-            .negative-qty
-        ) {
-        border: none !important;
-    }
+  .ag-overlay-no-rows-center {
+    font-size: 30px;
+    color: #c4c1c1;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .ag-cell-inline-editing {
+    .quantity-article {
+      padding: 0 11px;
 
-    .in-active-cell {
-        // opacity: 0.6;
-        //pointer-events: all;
+      input {
+        height: 30px;
+      }
     }
-
-    .edited-cell {
-        background-color: #f9f8b3;
-    }
-
-    .no-entry-data-block {
-        font-size: 30px;
-        color: #c4c1c1;
-        font-weight: 800;
-        white-space: nowrap;
-    }
-
-    .status-header-col {
-        background-color: #f5f7f7;
-    }
-
-    .ag-ltr .ag-cell-focus {
-        background-color: #d3eeef;
-    }
-
-    .ag-row-group {
-        .ag-cell {
-            border-right: none !important;
-        }
-    }
-
-    .ag-overlay-no-rows-center {
-        font-size: 30px;
-        color: #c4c1c1;
-        font-weight: 800;
-        white-space: nowrap;
-    }
-    .ag-cell-inline-editing {
-        .quantity-article {
-            padding: 0 11px;
-
-            input {
-                height: 30px;
-            }
-        }
-    }
+  }
 }
 
 .resource-translation {
-    .ag-root-wrapper-body {
-        .ag-overlay {
-            pointer-events: inherit !important;
-            left: calc(50% - 102px);
-            top: calc(50% - 20px);
-            height: auto !important;
-            width: auto !important;
+  .ag-root-wrapper-body {
+    .ag-overlay {
+      pointer-events: inherit !important;
+      left: calc(50% - 102px);
+      top: calc(50% - 20px);
+      height: auto !important;
+      width: auto !important;
 
-            .ag-overlay-panel {
-                pointer-events: inherit !important;
-            }
-        }
+      .ag-overlay-panel {
+        pointer-events: inherit !important;
+      }
     }
+  }
 }
 
 .standalone-widget {
-    .grid-item {
-        left: 0 !important;
-        top: 0 !important;
-        width: 99.9% !important;
-        height: 100% !important;
-    }
+  .grid-item {
+    left: 0 !important;
+    top: 0 !important;
+    width: 99.9% !important;
+    height: 100% !important;
+  }
 }

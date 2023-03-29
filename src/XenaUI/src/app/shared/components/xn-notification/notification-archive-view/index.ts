@@ -1,1 +1,1 @@
-export { NotificationArchiveViewComponent } from "./notification-archive-view.component";
+export { NotificationArchiveViewComponent } from './notification-archive-view.component';

@@ -1,140 +1,140 @@
-@import "~sass_files/color.scss";
+@import '~sass_files/color.scss';
 
 .panel {
-    margin-bottom: 5px;
-    box-shadow: 3px 3px 10px 0px $gray35;
+  margin-bottom: 5px;
+  box-shadow: 3px 3px 10px 0px $gray35;
 }
 
 .panel-heading {
-    padding: 2px 2px;
-    border-bottom: none;
+  padding: 2px 2px;
+  border-bottom: none;
 }
 
 .parkedItemFooter {
-    display: none;
+  display: none;
 }
 
 .close-btn {
-    position: absolute;
-    right: 15px;
-    z-index: 1;
+  position: absolute;
+  right: 15px;
+  z-index: 1;
 }
 
 .panel-body {
-    padding: 2px 6px;
-    max-height: 95px;
+  padding: 2px 6px;
+  max-height: 95px;
 
-    table {
-        width: 100%;
-    }
+  table {
+    width: 100%;
+  }
 
-    &.small-height {
-        max-height: 58px;
-    }
+  &.small-height {
+    max-height: 58px;
+  }
 
-    &.stand-alone {
-        min-height: 123px;
-        max-height: 123px;
-    }
+  &.stand-alone {
+    min-height: 123px;
+    max-height: 123px;
+  }
 }
 
 .panel-footer {
-    padding: 2px;
+  padding: 2px;
 }
 
 .btn-circle {
-    width: 13px;
-    height: 13px;
-    text-align: center;
-    padding: 0;
-    font-size: 11px;
-    line-height: 1;
-    border-radius: 15px;
-    margin-top: -7px;
+  width: 13px;
+  height: 13px;
+  text-align: center;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1;
+  border-radius: 15px;
+  margin-top: -7px;
 }
 
 .header-row {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .field-value-cell {
-    display: inline-block;
-    width: 145px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  display: inline-block;
+  width: 145px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .parkedItemHeader {
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    text-align: center;
-    padding: 1px 0 1px 0;
-    margin-bottom: 3px;
-    float: left;
-    width: 100%;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  text-align: center;
+  padding: 1px 0 1px 0;
+  margin-bottom: 3px;
+  float: left;
+  width: 100%;
 
-    &.panel-header {
-        height: 14px;
-    }
+  &.panel-header {
+    height: 14px;
+  }
 }
 
 .parkedItemHeader:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .parkedItemHeader .line {
-    width: 16%;
-    margin: 1px 40% 0 40%;
-    height: 2px;
-    border-top-width: 1px;
-    border-top-style: solid;
-    float: left;
+  width: 16%;
+  margin: 1px 40% 0 40%;
+  height: 2px;
+  border-top-width: 1px;
+  border-top-style: solid;
+  float: left;
 }
 
 .new-inserted-data {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 .new-inserted-data .line {
-    margin-top: 3px;
+  margin-top: 3px;
 }
 
 .new-inserted-data > .line ~ .line {
-    margin-top: 1px;
+  margin-top: 1px;
 }
 
 .new-inserted-data .line {
-    margin-left: 20% !important;
+  margin-left: 20% !important;
 }
 
 .parkedItemHeader .new-mark {
-    float: left;
-    background-color: #009651;
-    width: 20%;
-    border-radius: 3px 0 0 0;
-    color: #fff;
-    font-size: 10px;
-    height: 14px;
+  float: left;
+  background-color: #009651;
+  width: 20%;
+  border-radius: 3px 0 0 0;
+  color: #fff;
+  font-size: 10px;
+  height: 14px;
 }
 
 .btn-remove {
-    display: none;
+  display: none;
 }
 
 .btn-remove,
 .btn-remove:focus,
 .btn-remove:active {
-    font-size: 15px;
-    padding-top: 0;
-    border: none;
-    width: 11px;
-    height: 11px;
-    margin-top: -5px;
+  font-size: 15px;
+  padding-top: 0;
+  border: none;
+  width: 11px;
+  height: 11px;
+  margin-top: -5px;
 
-    & i {
-        position: absolute;
-        top: -2px;
-        left: -1px;
-    }
+  & i {
+    position: absolute;
+    top: -2px;
+    left: -1px;
+  }
 }

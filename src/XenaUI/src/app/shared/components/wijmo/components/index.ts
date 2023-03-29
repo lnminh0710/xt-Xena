@@ -1,1 +1,1 @@
-export * from "./cell-edit-dialog";
+export * from './cell-edit-dialog';

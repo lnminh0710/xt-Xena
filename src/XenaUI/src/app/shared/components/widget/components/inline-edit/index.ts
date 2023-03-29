@@ -1,1 +1,1 @@
-export { InlineEditComponent } from "./inline-edit.component";
+export { InlineEditComponent } from './inline-edit.component';

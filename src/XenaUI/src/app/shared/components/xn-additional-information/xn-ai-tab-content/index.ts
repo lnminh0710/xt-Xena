@@ -1,1 +1,1 @@
-﻿export * from "./xn-ai-tab-content.component";
+﻿export * from './xn-ai-tab-content.component';

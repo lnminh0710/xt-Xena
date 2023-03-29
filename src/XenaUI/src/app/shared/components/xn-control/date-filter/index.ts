@@ -1,1 +1,1 @@
-export { DateFilterComponent } from "./date-filter.component";
+export { DateFilterComponent } from './date-filter.component';

@@ -1,38 +1,38 @@
 ﻿import {
-    Component,
-    OnInit,
-    OnDestroy,
-    Output,
-    EventEmitter,
-} from "@angular/core";
+  Component,
+  OnInit,
+  OnDestroy,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 
 @Component({
-    selector: "new-lot-dialog",
-    styleUrls: ["./new-lot-dialog.component.scss"],
-    templateUrl: "./new-lot-dialog.component.html",
+  selector: 'new-lot-dialog',
+  styleUrls: ['./new-lot-dialog.component.scss'],
+  templateUrl: './new-lot-dialog.component.html',
 })
 export class NewLotDialogComponent implements OnInit, OnDestroy {
-    public showDialog = false;
+  public showDialog = false;
 
-    constructor() {}
+  constructor() {}
 
-    ngOnInit() {}
+  ngOnInit() {}
 
-    ngOnDestroy() {}
+  ngOnDestroy() {}
 
-    public close() {
-        this.showDialog = false;
-    }
+  public close() {
+    this.showDialog = false;
+  }
 
-    public open() {
-        this.showDialog = true;
-    }
+  public open() {
+    this.showDialog = true;
+  }
 
-    public cancel() {
-        this.close();
-    }
+  public cancel() {
+    this.close();
+  }
 
-    public ok() {
-        this.close();
-    }
+  public ok() {
+    this.close();
+  }
 }

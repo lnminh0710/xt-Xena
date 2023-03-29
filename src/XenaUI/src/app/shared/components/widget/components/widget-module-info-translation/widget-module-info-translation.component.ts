@@ -1,574 +1,562 @@
 import {
-    Component,
-    Input,
-    Output,
-    EventEmitter,
-    ElementRef,
-    ViewChild,
-    Renderer,
-    OnInit,
-    OnDestroy,
-    AfterViewInit,
-} from "@angular/core";
-import { WidgetDetail, WidgetType } from "app/models";
-import isEmpty from "lodash-es/isEmpty";
-import cloneDeep from "lodash-es/cloneDeep";
-import { Uti } from "app/utilities";
-import { Dialog } from "primeng/primeng";
-import { WidgetTranslateComponent } from "../widget-translate";
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ElementRef,
+  ViewChild,
+  Renderer,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+} from '@angular/core';
+import { WidgetDetail, WidgetType } from 'app/models';
+import isEmpty from 'lodash-es/isEmpty';
+import cloneDeep from 'lodash-es/cloneDeep';
+import { Uti } from 'app/utilities';
+import { Dialog } from 'primeng/primeng';
+import { WidgetTranslateComponent } from '../widget-translate';
 import {
-    ModalService,
-    WidgetTemplateSettingService,
-    AppErrorHandler,
-    DatatableService,
-} from "app/services";
-import { Configuration } from "app/app.constants";
-import { Subscription } from "rxjs/Subscription";
-import { BaseComponent } from "app/pages/private/base";
-import { Router } from "@angular/router";
+  ModalService,
+  WidgetTemplateSettingService,
+  AppErrorHandler,
+  DatatableService,
+} from 'app/services';
+import { Configuration } from 'app/app.constants';
+import { Subscription } from 'rxjs/Subscription';
+import { BaseComponent } from 'app/pages/private/base';
+import { Router } from '@angular/router';
 
 @Component({
-    selector: "widget-module-info-translation",
-    templateUrl: "./widget-module-info-translation.component.html",
+  selector: 'widget-module-info-translation',
+  templateUrl: './widget-module-info-translation.component.html',
 })
 export class WidgetModuleInfoTranslationComponent
-    extends BaseComponent
-    implements OnInit, OnDestroy, AfterViewInit
+  extends BaseComponent
+  implements OnInit, OnDestroy, AfterViewInit
 {
-    public showDialog = false;
-    public isResizable = true;
-    public isDraggable = true;
-    public isMaximized = false;
-    private _data: WidgetDetail;
-    private isUpdated = false;
+  public showDialog = false;
+  public isResizable = true;
+  public isDraggable = true;
+  public isMaximized = false;
+  private _data: WidgetDetail;
+  private isUpdated = false;
 
-    private preDialogW: string;
-    private preDialogH: string;
-    private preDialogLeft: string;
-    private preDialogTop: string;
-    private isDataDirty = false;
-    private translationData = [];
+  private preDialogW: string;
+  private preDialogH: string;
+  private preDialogLeft: string;
+  private preDialogTop: string;
+  private isDataDirty = false;
+  private translationData = [];
 
-    public dialogStyleClass = this.consts.popupResizeClassName;
-    private _keyword: string;
-    public isShowSaveOnlyButton = false;
-    private widgetTemplateSettingServiceSubscription: Subscription;
+  public dialogStyleClass = this.consts.popupResizeClassName;
+  private _keyword: string;
+  public isShowSaveOnlyButton = false;
+  private widgetTemplateSettingServiceSubscription: Subscription;
 
-    private pDialogTranslation;
-    @ViewChild("pDialogTranslation") set pDialogTranslationInstance(
-        pDialogTranslationInstance: Dialog
-    ) {
-        this.pDialogTranslation = pDialogTranslationInstance;
-    }
-    @ViewChild("translateWidget") translateWidget: WidgetTranslateComponent;
+  private pDialogTranslation;
+  @ViewChild('pDialogTranslation') set pDialogTranslationInstance(
+    pDialogTranslationInstance: Dialog
+  ) {
+    this.pDialogTranslation = pDialogTranslationInstance;
+  }
+  @ViewChild('translateWidget') translateWidget: WidgetTranslateComponent;
 
-    // Used to decide form or table translate mode for combination widget
-    @Input() combinationTranslateMode: string;
-    @Input() translateTextGridId: string;
-    @Input() isGlobalSearch: boolean;
-    @Input() isEditArticleT3: boolean;
+  // Used to decide form or table translate mode for combination widget
+  @Input() combinationTranslateMode: string;
+  @Input() translateTextGridId: string;
+  @Input() isGlobalSearch: boolean;
+  @Input() isEditArticleT3: boolean;
 
-    @Input() set data(data: WidgetDetail) {
-        if (!data) return;
+  @Input() set data(data: WidgetDetail) {
+    if (!data) return;
 
-        this._data = cloneDeep(data);
-        setTimeout(() => {
-            this.buildTranslationData(this._data);
-        }, 200);
-    }
+    this._data = cloneDeep(data);
+    setTimeout(() => {
+      this.buildTranslationData(this._data);
+    }, 200);
+  }
 
-    @Input() set keyword(_keyword: string) {
-        if (!_keyword) return;
+  @Input() set keyword(_keyword: string) {
+    if (!_keyword) return;
 
-        setTimeout(() => {
-            if (this.isTranslateDataTextOnly) {
-                this._keyword = _keyword;
-                this.isShowSaveOnlyButton = true;
-            }
-        }, 200);
-    }
+    setTimeout(() => {
+      if (this.isTranslateDataTextOnly) {
+        this._keyword = _keyword;
+        this.isShowSaveOnlyButton = true;
+      }
+    }, 200);
+  }
 
-    @Input("originalTranslateSource") originalTranslateSource: Array<any>;
+  @Input('originalTranslateSource') originalTranslateSource: Array<any>;
 
-    @Input() set tableData(data: any) {
-        if (!data) return;
-        this.buildTranslateForTable({
-            contentDetail: data,
-        });
-    }
+  @Input() set tableData(data: any) {
+    if (!data) return;
+    this.buildTranslateForTable({
+      contentDetail: data,
+    });
+  }
 
-    get keyword() {
-        return this._keyword;
-    }
+  get keyword() {
+    return this._keyword;
+  }
 
-    @Input() isTranslateDataTextOnly = false;
-    @Input() tableId = null;
-    @Input() enableApplyFor: boolean = true;
-    @Input() isOrderDataEntry: boolean = false;
+  @Input() isTranslateDataTextOnly = false;
+  @Input() tableId = null;
+  @Input() enableApplyFor: boolean = true;
+  @Input() isOrderDataEntry: boolean = false;
 
-    @Output() onHide = new EventEmitter<any>();
-    @Output() resetWidgetTranslation = new EventEmitter<any>();
-    @Output() isCompletedRender: EventEmitter<any> = new EventEmitter();
+  @Output() onHide = new EventEmitter<any>();
+  @Output() resetWidgetTranslation = new EventEmitter<any>();
+  @Output() isCompletedRender: EventEmitter<any> = new EventEmitter();
 
-    constructor(
-        private element: ElementRef,
-        private _renderer: Renderer,
-        private widgetTemplateSettingService: WidgetTemplateSettingService,
-        private consts: Configuration,
-        private modalService: ModalService,
-        private datatableService: DatatableService,
-        protected router: Router,
-        private appErrorHandler: AppErrorHandler
-    ) {
-        super(router);
-    }
+  constructor(
+    private element: ElementRef,
+    private _renderer: Renderer,
+    private widgetTemplateSettingService: WidgetTemplateSettingService,
+    private consts: Configuration,
+    private modalService: ModalService,
+    private datatableService: DatatableService,
+    protected router: Router,
+    private appErrorHandler: AppErrorHandler
+  ) {
+    super(router);
+  }
 
-    public ngOnInit() {
-        this.isUpdated = false;
-    }
+  public ngOnInit() {
+    this.isUpdated = false;
+  }
 
-    /**
-     * ngAfterViewInit
-     */
-    ngAfterViewInit() {
-        setTimeout(() => {
-            this.isCompletedRender.emit(true);
-        });
-    }
+  /**
+   * ngAfterViewInit
+   */
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.isCompletedRender.emit(true);
+    });
+  }
 
-    public ngOnDestroy() {
-        Uti.unsubscribe(this);
-    }
+  public ngOnDestroy() {
+    Uti.unsubscribe(this);
+  }
 
-    private resetWidget($event: any) {
-        this.resetWidgetTranslation.emit();
-    }
+  private resetWidget($event: any) {
+    this.resetWidgetTranslation.emit();
+  }
 
-    public save(saveOnly?: boolean, thenClose?: boolean) {
-        this.translateWidget.gridComponent.stopEditing();
-        setTimeout(() => {
-            if (this.translateWidget) {
-                let thenCloseCb: any;
-                if (thenClose) {
-                    thenCloseCb = () => {
-                        this.close();
-                    };
-                }
-                this.translateWidget.submit(saveOnly, thenCloseCb);
-            }
-        }, 200);
-    }
-
-    public close() {
-        setTimeout(() => {
-            //if (this.isDataDirty) {
-            //    this.confirmWhenClose();
-            //    return;
-            //}
-            this.closeDialog();
-        }, 200);
-    }
-
-    private closeDialog() {
-        this.showDialog = false;
-        this.onHide.emit({ isUpdated: this.isUpdated, isHidden: true });
-        this.isUpdated = false;
-    }
-
-    //private confirmWhenClose() {
-    //    this.modalService.unsavedWarningMessageDefault({
-    //        headerText: 'Saving Changes',
-    //        onModalSaveAndExit: () => {
-    //            this.save(this.isShowSaveOnlyButton);
-    //            this.closeDialog();
-    //        },
-    //        onModalExit: () => { this.closeDialog(); }
-    //    });
-    //}
-
-    public changeData($event: any) {
-        this.isDataDirty = true;
-    }
-
-    public saveData($event: any) {
-        this.isDataDirty = false;
-        this.isUpdated = true;
-    }
-
-    public onShow(event) {
-        setTimeout(() => {
-            if (this.pDialogTranslation) {
-                this.pDialogTranslation.unbindDocumentEscapeListener();
-            }
-            this.bindResizeEvent();
-        });
-    }
-
-    private maximize() {
-        if (this.translateWidget) this.translateWidget.resized();
-        this.isMaximized = true;
-        this.isResizable = false;
-        this.isDraggable = false;
-        this.dialogStyleClass =
-            this.consts.popupResizeClassName +
-            "  " +
-            this.consts.popupFullViewClassName;
-        if (this.pDialogTranslation) {
-            this.preDialogW =
-                this.pDialogTranslation.containerViewChild.nativeElement.style.width;
-            this.preDialogH =
-                this.pDialogTranslation.containerViewChild.nativeElement.style.height;
-            this.preDialogLeft =
-                this.pDialogTranslation.containerViewChild.nativeElement.style.left;
-            this.preDialogTop =
-                this.pDialogTranslation.containerViewChild.nativeElement.style.top;
-
-            this.pDialogTranslation.containerViewChild.nativeElement.style.width =
-                $(document).width() + "px";
-            this.pDialogTranslation.containerViewChild.nativeElement.style.height =
-                $(document).height() + "px";
-            this.pDialogTranslation.containerViewChild.nativeElement.style.top =
-                "0px";
-            this.pDialogTranslation.containerViewChild.nativeElement.style.left =
-                "0px";
+  public save(saveOnly?: boolean, thenClose?: boolean) {
+    this.translateWidget.gridComponent.stopEditing();
+    setTimeout(() => {
+      if (this.translateWidget) {
+        let thenCloseCb: any;
+        if (thenClose) {
+          thenCloseCb = () => {
+            this.close();
+          };
         }
-    }
+        this.translateWidget.submit(saveOnly, thenCloseCb);
+      }
+    }, 200);
+  }
 
-    private restore() {
-        if (this.translateWidget) this.translateWidget.resized();
-        this.isMaximized = false;
-        this.isResizable = true;
-        this.isDraggable = true;
-        this.dialogStyleClass = this.consts.popupResizeClassName;
-        if (this.pDialogTranslation) {
-            this.pDialogTranslation.containerViewChild.nativeElement.style.width =
-                this.preDialogW;
-            this.pDialogTranslation.containerViewChild.nativeElement.style.height =
-                this.preDialogH;
-            this.pDialogTranslation.containerViewChild.nativeElement.style.top =
-                this.preDialogTop;
-            this.pDialogTranslation.containerViewChild.nativeElement.style.left =
-                this.preDialogLeft;
+  public close() {
+    setTimeout(() => {
+      //if (this.isDataDirty) {
+      //    this.confirmWhenClose();
+      //    return;
+      //}
+      this.closeDialog();
+    }, 200);
+  }
+
+  private closeDialog() {
+    this.showDialog = false;
+    this.onHide.emit({ isUpdated: this.isUpdated, isHidden: true });
+    this.isUpdated = false;
+  }
+
+  //private confirmWhenClose() {
+  //    this.modalService.unsavedWarningMessageDefault({
+  //        headerText: 'Saving Changes',
+  //        onModalSaveAndExit: () => {
+  //            this.save(this.isShowSaveOnlyButton);
+  //            this.closeDialog();
+  //        },
+  //        onModalExit: () => { this.closeDialog(); }
+  //    });
+  //}
+
+  public changeData($event: any) {
+    this.isDataDirty = true;
+  }
+
+  public saveData($event: any) {
+    this.isDataDirty = false;
+    this.isUpdated = true;
+  }
+
+  public onShow(event) {
+    setTimeout(() => {
+      if (this.pDialogTranslation) {
+        this.pDialogTranslation.unbindDocumentEscapeListener();
+      }
+      this.bindResizeEvent();
+    });
+  }
+
+  private maximize() {
+    if (this.translateWidget) this.translateWidget.resized();
+    this.isMaximized = true;
+    this.isResizable = false;
+    this.isDraggable = false;
+    this.dialogStyleClass =
+      this.consts.popupResizeClassName +
+      '  ' +
+      this.consts.popupFullViewClassName;
+    if (this.pDialogTranslation) {
+      this.preDialogW =
+        this.pDialogTranslation.containerViewChild.nativeElement.style.width;
+      this.preDialogH =
+        this.pDialogTranslation.containerViewChild.nativeElement.style.height;
+      this.preDialogLeft =
+        this.pDialogTranslation.containerViewChild.nativeElement.style.left;
+      this.preDialogTop =
+        this.pDialogTranslation.containerViewChild.nativeElement.style.top;
+
+      this.pDialogTranslation.containerViewChild.nativeElement.style.width =
+        $(document).width() + 'px';
+      this.pDialogTranslation.containerViewChild.nativeElement.style.height =
+        $(document).height() + 'px';
+      this.pDialogTranslation.containerViewChild.nativeElement.style.top =
+        '0px';
+      this.pDialogTranslation.containerViewChild.nativeElement.style.left =
+        '0px';
+    }
+  }
+
+  private restore() {
+    if (this.translateWidget) this.translateWidget.resized();
+    this.isMaximized = false;
+    this.isResizable = true;
+    this.isDraggable = true;
+    this.dialogStyleClass = this.consts.popupResizeClassName;
+    if (this.pDialogTranslation) {
+      this.pDialogTranslation.containerViewChild.nativeElement.style.width =
+        this.preDialogW;
+      this.pDialogTranslation.containerViewChild.nativeElement.style.height =
+        this.preDialogH;
+      this.pDialogTranslation.containerViewChild.nativeElement.style.top =
+        this.preDialogTop;
+      this.pDialogTranslation.containerViewChild.nativeElement.style.left =
+        this.preDialogLeft;
+    }
+    setTimeout(() => {
+      this.bindResizeEvent();
+    }, 200);
+  }
+
+  private bindResizeEvent() {
+    if (this.pDialogTranslation) {
+      const resizeEle = $(
+        'div.ui-resizable-handle',
+        $(this.pDialogTranslation.containerViewChild.nativeElement)
+      );
+      if (resizeEle && resizeEle.length) {
+        resizeEle.bind('mousemove', () => {
+          if (this.pDialogTranslation.resizing) {
+            setTimeout(() => {
+              if (this.translateWidget) this.translateWidget.resized();
+            }, 200);
+          }
+        });
+      }
+    }
+  }
+
+  private buildTranslationData(data: WidgetDetail) {
+    if (!data) return;
+
+    switch (data.idRepWidgetType) {
+      case WidgetType.FieldSet:
+      case WidgetType.CombinationCreditCard: {
+        if (
+          !data ||
+          !data.contentDetail ||
+          !data.contentDetail.data ||
+          data.contentDetail.data.length < 2
+        ) {
+          return;
         }
-        setTimeout(() => {
-            this.bindResizeEvent();
-        }, 200);
+        this.buildTranslateData(data, true);
+        break;
+      }
+      case WidgetType.DataGrid:
+      case WidgetType.EditableRoleTreeGrid:
+      case WidgetType.EditableGrid: {
+        if (
+          !data ||
+          !data.contentDetail ||
+          !data.contentDetail.columnSettings ||
+          isEmpty(data.contentDetail.columnSettings)
+        ) {
+          return;
+        }
+        this.buildTranslateData(data, false);
+        break;
+      }
+      case WidgetType.FileExplorer:
+      case WidgetType.ToolFileTemplate:
+      case WidgetType.FileExplorerWithLabel: {
+        if (
+          !data ||
+          !data.contentDetail ||
+          !data.contentDetail.data ||
+          !data.contentDetail.data.length ||
+          !data.contentDetail.data[0].length ||
+          isEmpty(data.contentDetail.data[0][0])
+        ) {
+          return;
+        }
+        this.buildDataForFileExplorer(data);
+        this.buildTranslateData(data, false);
+        break;
+      }
+      case WidgetType.Combination: {
+        let isFormMode = this.combinationTranslateMode == 'form' ? true : false;
+        this.buildTranslateData(data, isFormMode);
+        break;
+      }
+      default:
+        this.buildTranslateData(data, true);
+        break;
+    }
+  }
+
+  /**
+   * buildTranslateData
+   * @param data
+   * @param isForm
+   */
+  private buildTranslateData(data: WidgetDetail, isForm: boolean) {
+    if (this.isGlobalSearch || this.isEditArticleT3) {
+      this.buildTranslateForGlobal(data);
+      return;
     }
 
-    private bindResizeEvent() {
-        if (this.pDialogTranslation) {
-            const resizeEle = $(
-                "div.ui-resizable-handle",
-                $(this.pDialogTranslation.containerViewChild.nativeElement)
-            );
-            if (resizeEle && resizeEle.length) {
-                resizeEle.bind("mousemove", () => {
-                    if (this.pDialogTranslation.resizing) {
-                        setTimeout(() => {
-                            if (this.translateWidget)
-                                this.translateWidget.resized();
-                        }, 200);
+    if (!data || !data.contentDetail) {
+      return;
+    }
+
+    if (
+      this.isOrderDataEntry ||
+      (data.fieldsTranslating && data.idRepWidgetApp == 106)
+    ) {
+      // Repository Name widget
+      this.buildTranslateForForm(data);
+    } else {
+      this.widgetTemplateSettingServiceSubscription =
+        this.widgetTemplateSettingService
+          .getWidgetDetailByRequestString(
+            data,
+            data.widgetDataType.listenKeyRequest(this.ofModule.moduleNameTrim),
+            true
+          )
+          .finally(() => {
+            setTimeout(() => {
+              this.isCompletedRender.emit(true);
+            }, 500);
+          })
+          .subscribe((result) => {
+            this.appErrorHandler.executeAction(() => {
+              switch (data.idRepWidgetType) {
+                case WidgetType.Combination:
+                  if (isForm) {
+                    this.buildTranslateForForm(result);
+                  } else {
+                    if (
+                      result.contentDetail &&
+                      result.contentDetail.data &&
+                      result.contentDetail.data[2] &&
+                      result.contentDetail.data[2][0]
+                    ) {
+                      const dataTranslate = {
+                        contentDetail: result.contentDetail.data[2][0],
+                      };
+                      this.buildTranslateForTable(dataTranslate);
                     }
-                });
-            }
-        }
-    }
-
-    private buildTranslationData(data: WidgetDetail) {
-        if (!data) return;
-
-        switch (data.idRepWidgetType) {
-            case WidgetType.FieldSet:
-            case WidgetType.CombinationCreditCard: {
-                if (
-                    !data ||
-                    !data.contentDetail ||
-                    !data.contentDetail.data ||
-                    data.contentDetail.data.length < 2
-                ) {
-                    return;
-                }
-                this.buildTranslateData(data, true);
-                break;
-            }
-            case WidgetType.DataGrid:
-            case WidgetType.EditableRoleTreeGrid:
-            case WidgetType.EditableGrid: {
-                if (
-                    !data ||
-                    !data.contentDetail ||
-                    !data.contentDetail.columnSettings ||
-                    isEmpty(data.contentDetail.columnSettings)
-                ) {
-                    return;
-                }
-                this.buildTranslateData(data, false);
-                break;
-            }
-            case WidgetType.FileExplorer:
-            case WidgetType.ToolFileTemplate:
-            case WidgetType.FileExplorerWithLabel: {
-                if (
+                  }
+                  break;
+                case WidgetType.FileExplorer:
+                case WidgetType.ToolFileTemplate:
+                case WidgetType.FileExplorerWithLabel: {
+                  if (
                     !data ||
                     !data.contentDetail ||
                     !data.contentDetail.data ||
                     !data.contentDetail.data.length ||
                     !data.contentDetail.data[0].length ||
                     isEmpty(data.contentDetail.data[0][0])
-                ) {
+                  ) {
                     return;
+                  }
+                  this.buildDataForFileExplorer(result);
+                  this.buildTranslateForTable(result);
+                  break;
                 }
-                this.buildDataForFileExplorer(data);
-                this.buildTranslateData(data, false);
-                break;
-            }
-            case WidgetType.Combination: {
-                let isFormMode =
-                    this.combinationTranslateMode == "form" ? true : false;
-                this.buildTranslateData(data, isFormMode);
-                break;
-            }
-            default:
-                this.buildTranslateData(data, true);
-                break;
-        }
-    }
-
-    /**
-     * buildTranslateData
-     * @param data
-     * @param isForm
-     */
-    private buildTranslateData(data: WidgetDetail, isForm: boolean) {
-        if (this.isGlobalSearch || this.isEditArticleT3) {
-            this.buildTranslateForGlobal(data);
-            return;
-        }
-
-        if (!data || !data.contentDetail) {
-            return;
-        }
-
-        if (
-            this.isOrderDataEntry ||
-            (data.fieldsTranslating && data.idRepWidgetApp == 106)
-        ) {
-            // Repository Name widget
-            this.buildTranslateForForm(data);
-        } else {
-            this.widgetTemplateSettingServiceSubscription =
-                this.widgetTemplateSettingService
-                    .getWidgetDetailByRequestString(
-                        data,
-                        data.widgetDataType.listenKeyRequest(
-                            this.ofModule.moduleNameTrim
-                        ),
-                        true
-                    )
-                    .finally(() => {
-                        setTimeout(() => {
-                            this.isCompletedRender.emit(true);
-                        }, 500);
-                    })
-                    .subscribe((result) => {
-                        this.appErrorHandler.executeAction(() => {
-                            switch (data.idRepWidgetType) {
-                                case WidgetType.Combination:
-                                    if (isForm) {
-                                        this.buildTranslateForForm(result);
-                                    } else {
-                                        if (
-                                            result.contentDetail &&
-                                            result.contentDetail.data &&
-                                            result.contentDetail.data[2] &&
-                                            result.contentDetail.data[2][0]
-                                        ) {
-                                            const dataTranslate = {
-                                                contentDetail:
-                                                    result.contentDetail
-                                                        .data[2][0],
-                                            };
-                                            this.buildTranslateForTable(
-                                                dataTranslate
-                                            );
-                                        }
-                                    }
-                                    break;
-                                case WidgetType.FileExplorer:
-                                case WidgetType.ToolFileTemplate:
-                                case WidgetType.FileExplorerWithLabel: {
-                                    if (
-                                        !data ||
-                                        !data.contentDetail ||
-                                        !data.contentDetail.data ||
-                                        !data.contentDetail.data.length ||
-                                        !data.contentDetail.data[0].length ||
-                                        isEmpty(data.contentDetail.data[0][0])
-                                    ) {
-                                        return;
-                                    }
-                                    this.buildDataForFileExplorer(result);
-                                    this.buildTranslateForTable(result);
-                                    break;
-                                }
-                                default:
-                                    if (isForm) {
-                                        this.buildTranslateForForm(result);
-                                        return;
-                                    }
-                                    this.buildTranslateForTable(result);
-                                    break;
-                            }
-                        });
-                    });
-        }
-    }
-
-    private buildDataForFileExplorer(data: any): any {
-        const contentDetail = this.datatableService.formatDataTableFromRawData(
-            data.contentDetail.data
-        );
-        data.contentDetail = contentDetail;
-    }
-
-    private buildTranslateForGlobal(data) {
-        const widgetData = data.columns;
-        const collectionData = data.data && data.data.length ? data.data : {};
-        let i = 0;
-        for (const itemName in widgetData) {
-            if (widgetData.hasOwnProperty(itemName)) {
-                const item = widgetData[itemName].setting;
-                const settingColumn = item.Setting;
-                if (
-                    settingColumn &&
-                    !!settingColumn.length &&
-                    settingColumn[0].DisplayField &&
-                    settingColumn[0].DisplayField.Hidden === "1"
-                ) {
-                    continue;
-                }
-                this.translationData.push({
-                    // this is temporaries ID
-                    id: i++,
-                    text: item.ColumnName,
-                    value: this.getValueForColumn(
-                        collectionData,
-                        itemName,
-                        settingColumn
-                    ),
-                    dataType: item.DataType,
-                    isActive: item.Selected,
-                    isGroupName: item.IsGroupName,
-                });
-            }
-        }
-
-        this.translationData = cloneDeep(this.translationData);
-    }
-
-    private buildTranslateForTable(data: any) {
-        const widgetData = data.contentDetail.columnSettings;
-        const colectionData =
-            data.contentDetail.collectionData &&
-            data.contentDetail.collectionData.length
-                ? data.contentDetail.collectionData[0]
-                : {};
-        let i = 0;
-        for (const itemName in widgetData) {
-            if (widgetData.hasOwnProperty(itemName)) {
-                const item = widgetData[itemName];
-                const setting = item.Setting;
-                if (
-                    setting &&
-                    !!setting.length &&
-                    setting[0].DisplayField &&
-                    setting[0].DisplayField.Hidden === "1"
-                ) {
-                    continue;
-                }
-                this.translationData.push({
-                    // this is temporaries ID
-                    id: i++,
-                    text: item.ColumnHeader,
-                    value: this.getValueForColumn(
-                        colectionData,
-                        itemName,
-                        setting
-                    ),
-                    dataType: item.DataType,
-                    isActive: item.Selected,
-                    isGroupName: item.IsGroupName,
-                });
-            }
-        }
-
-        this.translationData = cloneDeep(this.translationData);
-    }
-
-    private buildTranslateForForm(data) {
-        const widgetData = data.contentDetail.data[1];
-        let i = 0;
-        for (const item of widgetData) {
-            const setting = Uti.tryParseJson(item.Setting);
-            if (
-                setting &&
-                !!setting.length &&
-                setting[0].DisplayField &&
-                setting[0].DisplayField.Hidden === "1"
-            ) {
-                continue;
-            }
-            this.translationData.push({
-                // TODO: this is temporaries ID
-                id: i++,
-                text: item.ColumnName,
-                value: !!item.Value ? item.Value.toString() : "",
-                dataType: item.DataType,
-                isActive: item.Selected,
-                isGroupName: item.IsGroupName,
+                default:
+                  if (isForm) {
+                    this.buildTranslateForForm(result);
+                    return;
+                  }
+                  this.buildTranslateForTable(result);
+                  break;
+              }
             });
-        }
-
-        this.translationData = cloneDeep(this.translationData);
+          });
     }
+  }
 
-    private getValueForColumn(
-        colectionData: any,
-        itemName: string,
-        setting: any
-    ): any {
+  private buildDataForFileExplorer(data: any): any {
+    const contentDetail = this.datatableService.formatDataTableFromRawData(
+      data.contentDetail.data
+    );
+    data.contentDetail = contentDetail;
+  }
+
+  private buildTranslateForGlobal(data) {
+    const widgetData = data.columns;
+    const collectionData = data.data && data.data.length ? data.data : {};
+    let i = 0;
+    for (const itemName in widgetData) {
+      if (widgetData.hasOwnProperty(itemName)) {
+        const item = widgetData[itemName].setting;
+        const settingColumn = item.Setting;
         if (
-            !setting ||
-            !setting.length ||
-            !setting[0].ControlType ||
-            !setting[0].ControlType.Type
+          settingColumn &&
+          !!settingColumn.length &&
+          settingColumn[0].DisplayField &&
+          settingColumn[0].DisplayField.Hidden === '1'
         ) {
-            return this.getItemValue(colectionData, itemName);
+          continue;
         }
-        switch (setting[0].ControlType.Type) {
-            case "Combobox": {
-                const data = Uti.tryParseJson(colectionData[itemName]);
-                if (isEmpty(data)) return "";
-                return data[0].value;
-            }
-            default: {
-                return this.getItemValue(colectionData, itemName);
-            }
-        }
+        this.translationData.push({
+          // this is temporaries ID
+          id: i++,
+          text: item.ColumnName,
+          value: this.getValueForColumn(
+            collectionData,
+            itemName,
+            settingColumn
+          ),
+          dataType: item.DataType,
+          isActive: item.Selected,
+          isGroupName: item.IsGroupName,
+        });
+      }
     }
 
-    private getItemValue(colectionData: any, itemName: string): any {
-        const valueType = typeof colectionData[itemName];
-        switch (valueType) {
-            case "number":
-            case "boolean": {
-                return colectionData[itemName].toString();
-            }
-            default: {
-                return isEmpty(colectionData[itemName])
-                    ? ""
-                    : colectionData[itemName].toString();
-            }
+    this.translationData = cloneDeep(this.translationData);
+  }
+
+  private buildTranslateForTable(data: any) {
+    const widgetData = data.contentDetail.columnSettings;
+    const colectionData =
+      data.contentDetail.collectionData &&
+      data.contentDetail.collectionData.length
+        ? data.contentDetail.collectionData[0]
+        : {};
+    let i = 0;
+    for (const itemName in widgetData) {
+      if (widgetData.hasOwnProperty(itemName)) {
+        const item = widgetData[itemName];
+        const setting = item.Setting;
+        if (
+          setting &&
+          !!setting.length &&
+          setting[0].DisplayField &&
+          setting[0].DisplayField.Hidden === '1'
+        ) {
+          continue;
         }
+        this.translationData.push({
+          // this is temporaries ID
+          id: i++,
+          text: item.ColumnHeader,
+          value: this.getValueForColumn(colectionData, itemName, setting),
+          dataType: item.DataType,
+          isActive: item.Selected,
+          isGroupName: item.IsGroupName,
+        });
+      }
     }
+
+    this.translationData = cloneDeep(this.translationData);
+  }
+
+  private buildTranslateForForm(data) {
+    const widgetData = data.contentDetail.data[1];
+    let i = 0;
+    for (const item of widgetData) {
+      const setting = Uti.tryParseJson(item.Setting);
+      if (
+        setting &&
+        !!setting.length &&
+        setting[0].DisplayField &&
+        setting[0].DisplayField.Hidden === '1'
+      ) {
+        continue;
+      }
+      this.translationData.push({
+        // TODO: this is temporaries ID
+        id: i++,
+        text: item.ColumnName,
+        value: !!item.Value ? item.Value.toString() : '',
+        dataType: item.DataType,
+        isActive: item.Selected,
+        isGroupName: item.IsGroupName,
+      });
+    }
+
+    this.translationData = cloneDeep(this.translationData);
+  }
+
+  private getValueForColumn(
+    colectionData: any,
+    itemName: string,
+    setting: any
+  ): any {
+    if (
+      !setting ||
+      !setting.length ||
+      !setting[0].ControlType ||
+      !setting[0].ControlType.Type
+    ) {
+      return this.getItemValue(colectionData, itemName);
+    }
+    switch (setting[0].ControlType.Type) {
+      case 'Combobox': {
+        const data = Uti.tryParseJson(colectionData[itemName]);
+        if (isEmpty(data)) return '';
+        return data[0].value;
+      }
+      default: {
+        return this.getItemValue(colectionData, itemName);
+      }
+    }
+  }
+
+  private getItemValue(colectionData: any, itemName: string): any {
+    const valueType = typeof colectionData[itemName];
+    switch (valueType) {
+      case 'number':
+      case 'boolean': {
+        return colectionData[itemName].toString();
+      }
+      default: {
+        return isEmpty(colectionData[itemName])
+          ? ''
+          : colectionData[itemName].toString();
+      }
+    }
+  }
 }

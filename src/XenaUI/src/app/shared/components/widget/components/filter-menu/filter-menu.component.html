@@ -1,489 +1,459 @@
 <ul
-    class="sub-menu filter-menu filter-menu-top"
-    [ngClass]="{ right: position === 'right', isHidden: isHidden }"
+  class="sub-menu filter-menu filter-menu-top"
+  [ngClass]="{ right: position === 'right', isHidden: isHidden }"
 >
-    <ng-template [ngIf]="widgetType != 11">
-        <li
-            class="menu-list display-field"
-            [attr.data-index]="0"
-            (click)="designTempateClicked()"
-            *ngIf="filterModes && filterModes.length && showColumnDesign"
-        >
-            <a
-                id="liDesignTemplate{{ randomNumb }}"
-                class="main-setting cursor-pointer"
-            >
-                <i
-                    class="fa fa-columns custom-filter__icon"
-                    aria-hidden="true"
-                ></i>
-                <span
-                    ><label-translation
-                        [keyword]="'Filter_menu__Design_Columns'"
-                    ></label-translation
-                ></span>
-            </a>
-        </li>
-        <li
-            class="menu-list display-field"
-            [attr.data-index]="1"
-            (mouseenter)="handleMouseOverSubmenu($event)"
-            *ngIf="filterModes && filterModes.length"
-            [xn-dropdown]="
-                copyFieldFilters ? [copyFieldFilters] : [filterModes]
+  <ng-template [ngIf]="widgetType != 11">
+    <li
+      class="menu-list display-field"
+      [attr.data-index]="0"
+      (click)="designTempateClicked()"
+      *ngIf="filterModes && filterModes.length && showColumnDesign"
+    >
+      <a
+        id="liDesignTemplate{{ randomNumb }}"
+        class="main-setting cursor-pointer"
+      >
+        <i class="fa fa-columns custom-filter__icon" aria-hidden="true"></i>
+        <span
+          ><label-translation
+            [keyword]="'Filter_menu__Design_Columns'"
+          ></label-translation
+        ></span>
+      </a>
+    </li>
+    <li
+      class="menu-list display-field"
+      [attr.data-index]="1"
+      (mouseenter)="handleMouseOverSubmenu($event)"
+      *ngIf="filterModes && filterModes.length"
+      [xn-dropdown]="copyFieldFilters ? [copyFieldFilters] : [filterModes]"
+    >
+      <a
+        id="liShowDataSetting{{ randomNumb }}"
+        *ngIf="
+          getAccessRight('SettingButton') &&
+          getAccessRight('SettingButton__ShowDataSettingMenu')
+        "
+        class="main-setting cursor-pointer"
+      >
+        <i class="fa fa-cog custom-filter__icon" aria-hidden="true"></i>
+        <span
+          ><label-translation
+            [keyword]="'Filter_menu__Show_Data_Setting'"
+          ></label-translation
+        ></span>
+        <i class="fa fa-angle-right pull-right"></i>
+      </a>
+      <ul
+        class="sub-menu sub-menu-level-1-1"
+        [ngClass]="{ right: position === 'right' }"
+      >
+        <mat-radio-group name="{{ menuDataSettingName }}">
+          <li
+            *ngFor="
+              let filterMode of filterModes;
+              let idx = index;
+              trackBy: filterModesTrackBy
             "
-        >
-            <a
-                id="liShowDataSetting{{ randomNumb }}"
-                *ngIf="
-                    getAccessRight('SettingButton') &&
-                    getAccessRight('SettingButton__ShowDataSettingMenu')
-                "
-                class="main-setting cursor-pointer"
+            class="menu-list"
+          >
+            <mat-radio-button
+              color="primary"
+              value="{{ filterMode.mode }}"
+              [checked]="filterMode.selected"
+              (change)="changeDisplayMode($event)"
             >
-                <i class="fa fa-cog custom-filter__icon" aria-hidden="true"></i>
-                <span
-                    ><label-translation
-                        [keyword]="'Filter_menu__Show_Data_Setting'"
-                    ></label-translation
-                ></span>
-                <i class="fa fa-angle-right pull-right"></i>
-            </a>
-            <ul
-                class="sub-menu sub-menu-level-1-1"
-                [ngClass]="{ right: position === 'right' }"
-            >
-                <mat-radio-group name="{{ menuDataSettingName }}">
-                    <li
-                        *ngFor="
-                            let filterMode of filterModes;
-                            let idx = index;
-                            trackBy: filterModesTrackBy
-                        "
-                        class="menu-list"
-                    >
-                        <mat-radio-button
-                            color="primary"
-                            value="{{ filterMode.mode }}"
-                            [checked]="filterMode.selected"
-                            (change)="changeDisplayMode($event)"
-                        >
-                            <label-translation
-                                *ngIf="filterMode.value"
-                                [keyword]="'Filter_Menu__' + filterMode.value"
-                            ></label-translation>
-                        </mat-radio-button>
-                        <p
-                            *ngIf="filterMode.mode === 3"
-                            class="divider dropdown-divider"
-                        >
-                            &nbsp;
-                        </p>
-                    </li>
-                </mat-radio-group>
-                <!--<li class="menu-list display-field disabled"
+              <label-translation
+                *ngIf="filterMode.value"
+                [keyword]="'Filter_Menu__' + filterMode.value"
+              ></label-translation>
+            </mat-radio-button>
+            <p *ngIf="filterMode.mode === 3" class="divider dropdown-divider">
+              &nbsp;
+            </p>
+          </li>
+        </mat-radio-group>
+        <!--<li class="menu-list display-field disabled"
                     *ngIf="isShowAllWithoutFilterMode">
                     <a class="cursor-pointer">
                         <i class="fa fa-filter custom-filter__icon" aria-hidden="true"></i>
                         Display Field                        <i class="fa fa-angle-right pull-right"></i>
                     </a>
                 </li>-->
-                <li
-                    class="menu-list display-field list-display-fields"
-                    [attr.data-index]="filterModes.length + 1"
-                    (mouseenter)="handleMouseOverSubmenu($event)"
-                    [xn-dropdown]="copyFieldFilters"
-                    *ngIf="
-                        !isShowAllWithoutFilterMode &&
-                        !!copyFieldFilters &&
-                        !!copyFieldFilters.length &&
-                        (widgetType === WidgetTypeView.FieldSet ||
-                            widgetType === WidgetTypeView.FieldSetReadonly)
-                    "
-                >
-                    <a class="cursor-pointer">
-                        <i
-                            class="fa fa-filter custom-filter__icon"
-                            aria-hidden="true"
-                        ></i>
-                        <label-translation
-                            [keyword]="'Filter_menu__Display_Field'"
-                        ></label-translation>
-                        <i class="fa fa-angle-right pull-right"></i>
-                    </a>
-                    <ul
-                        class="sub-menu"
-                        (click)="refocusOnMenuStatus($event)"
-                        [ngStyle]="{
-                            'min-width': minWidthDisplayFieldsMenu + 'px'
-                        }"
-                    >
-                        <div
-                            class="field-filter"
-                            [perfect-scrollbar]="perfectScrollbarConfig"
-                        >
-                            <li class="field-filter-item">
-                                <mat-checkbox
-                                    color="primary"
-                                    [(ngModel)]="isSelectedAllField"
-                                    (change)="selectAllFields()"
-                                >
-                                    <label-translation
-                                        [keyword]="'Filter_menu__All_fields'"
-                                    ></label-translation>
-                                </mat-checkbox>
-                            </li>
-                            <li class="divider dropdown-divider">&nbsp;</li>
-                            <li
-                                class="field-filter-item"
-                                *ngFor="
-                                    let fieldFilter of copyFieldFilters;
-                                    let idx = index;
-                                    trackBy: copyFieldFiltersTrackBy
-                                "
-                                [ngClass]="{
-                                    'hidden-checkbox': fieldFilter.isHidden
-                                }"
-                            >
-                                <mat-checkbox
-                                    color="primary"
-                                    *ngIf="
-                                        !fieldFilter.isHidden &&
-                                        (fieldFilter.isEditable === undefined ||
-                                            fieldFilter.isEditable)
-                                    "
-                                    [(ngModel)]="fieldFilter.selected"
-                                    (change)="
-                                        selectField(fieldFilter.fieldName)
-                                    "
-                                >
-                                    {{ fieldFilter.fieldDisplayName }}
-                                </mat-checkbox>
-                                <mat-checkbox
-                                    color="primary"
-                                    *ngIf="
-                                        !fieldFilter.isHidden &&
-                                        fieldFilter.isEditable !== undefined &&
-                                            !fieldFilter.isEditable
-                                    "
-                                    [(ngModel)]="fieldFilter.selected"
-                                    [disabled]="true"
-                                >
-                                    {{ fieldFilter.fieldDisplayName }}
-                                </mat-checkbox>
-                            </li>
-                        </div>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-    </ng-template>
-    <li
-        class="menu-list display-field"
-        [attr.data-index]="2"
-        (mouseenter)="handleMouseOverSubmenu($event)"
-        [ngClass]="{ hidden: !isShowProperties && !isShowWidgetSetting }"
-        [xn-dropdown]="[columnLayoutsetting]"
-    >
-        <a
-            id="liSetting{{ randomNumb }}"
-            *ngIf="
-                getAccessRight('SettingButton') &&
-                getAccessRight('SettingButton__SettingMenu')
-            "
-            class="main-setting cursor-pointer"
+        <li
+          class="menu-list display-field list-display-fields"
+          [attr.data-index]="filterModes.length + 1"
+          (mouseenter)="handleMouseOverSubmenu($event)"
+          [xn-dropdown]="copyFieldFilters"
+          *ngIf="
+            !isShowAllWithoutFilterMode &&
+            !!copyFieldFilters &&
+            !!copyFieldFilters.length &&
+            (widgetType === WidgetTypeView.FieldSet ||
+              widgetType === WidgetTypeView.FieldSetReadonly)
+          "
         >
+          <a class="cursor-pointer">
             <i class="fa fa-filter custom-filter__icon" aria-hidden="true"></i>
-            <span
-                ><label-translation
-                    [keyword]="'Filter_menu__Setting'"
-                ></label-translation
-            ></span>
+            <label-translation
+              [keyword]="'Filter_menu__Display_Field'"
+            ></label-translation>
             <i class="fa fa-angle-right pull-right"></i>
-        </a>
-        <ul
-            class="sub-menu sub-menu-level-1-2"
-            [ngClass]="{ right: position === 'right' }"
-        >
-            <li
-                class="menu-list display-field"
-                *ngIf="gridLayoutSettings && isShowToolPanelSetting"
+          </a>
+          <ul
+            class="sub-menu"
+            (click)="refocusOnMenuStatus($event)"
+            [ngStyle]="{
+              'min-width': minWidthDisplayFieldsMenu + 'px'
+            }"
+          >
+            <div
+              class="field-filter"
+              [perfect-scrollbar]="perfectScrollbarConfig"
             >
-                <a class="cursor-pointer">
-                    <mat-checkbox
-                        color="primary"
-                        [(ngModel)]="gridLayoutSettings.isShowToolPanels"
-                        (change)="selectColumnLayoutsetting()"
-                    >
-                        <label-translation
-                            [keyword]="'Filter_menu__Show_Hide_Tool_Panels'"
-                        ></label-translation>
-                    </mat-checkbox>
-                </a>
-            </li>
-
-            <li
-                class="menu-list display-field"
-                [xn-dropdown]="[columnLayoutsetting] || [filterWidgetFormTypes]"
-                [attr.data-index]="1"
-                (mouseenter)="handleMouseOverSubmenu($event)"
-                *ngIf="
-                    isShowWidgetSetting && (columnLayoutsetting || rowSetting)
+              <li class="field-filter-item">
+                <mat-checkbox
+                  color="primary"
+                  [(ngModel)]="isSelectedAllField"
+                  (change)="selectAllFields()"
+                >
+                  <label-translation
+                    [keyword]="'Filter_menu__All_fields'"
+                  ></label-translation>
+                </mat-checkbox>
+              </li>
+              <li class="divider dropdown-divider">&nbsp;</li>
+              <li
+                class="field-filter-item"
+                *ngFor="
+                  let fieldFilter of copyFieldFilters;
+                  let idx = index;
+                  trackBy: copyFieldFiltersTrackBy
                 "
-            >
-                <a class="main-setting cursor-pointer">
-                    <i
-                        class="fa fa-cog custom-filter__icon"
-                        aria-hidden="true"
-                    ></i>
-                    <span
-                        ><label-translation
-                            [keyword]="'Filter_menu__Widget_Setting'"
-                        ></label-translation
-                    ></span>
-                    <i class="fa fa-angle-right pull-right"></i>
-                </a>
-                <ul
-                    class="sub-menu filter-menu widget-setting-filter"
-                    (click)="refocusOnMenuStatus($event)"
-                    [ngStyle]="{
-                        left: displayFieldMenuSettingPositionLeft + 'px'
-                    }"
+                [ngClass]="{
+                  'hidden-checkbox': fieldFilter.isHidden
+                }"
+              >
+                <mat-checkbox
+                  color="primary"
+                  *ngIf="
+                    !fieldFilter.isHidden &&
+                    (fieldFilter.isEditable === undefined ||
+                      fieldFilter.isEditable)
+                  "
+                  [(ngModel)]="fieldFilter.selected"
+                  (change)="selectField(fieldFilter.fieldName)"
                 >
-                    <!------------------Column Layout-->
-                    <li
-                        *ngIf="columnLayoutsetting"
-                        [attr.data-index]="1"
-                        (mouseenter)="handleMouseOverSubmenu($event)"
-                        [xn-dropdown]="[columnLayoutsetting]"
-                        class="menu-list display-field"
-                    >
-                        <a class="cursor-pointer">
-                            <label-translation
-                                [keyword]="'Filter_menu__Column_Layout'"
-                            ></label-translation>
-                            <i class="fa fa-angle-right pull-right"></i>
-                        </a>
-                        <ul class="sub-menu menu-widget-column-setting">
-                            <li class="field-filter-item">
-                                <mat-checkbox
-                                    color="primary"
-                                    [(ngModel)]="
-                                        columnLayoutsetting.isFitWidthColumn
-                                    "
-                                    (change)="selectColumnLayoutsetting()"
-                                >
-                                    <label-translation
-                                        [keyword]="
-                                            'Filter_menu__Fit_width_column'
-                                        "
-                                    ></label-translation>
-                                </mat-checkbox>
-                            </li>
-                        </ul>
-                    </li>
-                    <!------------------Widget Type-->
-                    <!--<li *ngIf="filterWidgetFormTypes && filterWidgetFormTypes.length"-->
-                    <!--[attr.data-index]="2"-->
-                    <!--(mouseenter)="handleMouseOverSubmenu($event)"-->
-                    <!--[xn-dropdown]="filterWidgetFormTypes"-->
-                    <!--class="menu-list display-field">-->
-                    <!--<a class="cursor-pointer">-->
-                    <!--Widget Type-->
-                    <!--<i class="fa fa-angle-right pull-right"></i>-->
-                    <!--</a>-->
-                    <!--<ul class="sub-menu menu-form-type"-->
-                    <!--(click)="refocusOnMenuStatus($event)">-->
-                    <!--<mat-radio-group name="widget-type-radio"-->
-                    <!--[(ngModel)]="selectedWidgetFormType">-->
-                    <!--<li class="field-filter-item" *ngFor="let setting of filterWidgetFormTypes; let idx = index; trackBy: filterWidgetFormTypesTrackBy">-->
-                    <!--<mat-radio-button color="primary"-->
-                    <!--class="mat-radio&#45;&#45;small"-->
-                    <!--value="{{setting.widgetFormType}}"-->
-                    <!--(change)="selectWidgetFormType(setting.widgetFormType)">-->
-                    <!--{{setting.label}}-->
-                    <!--</mat-radio-button>-->
-                    <!--</li>-->
-                    <!--</mat-radio-group>-->
-                    <!--</ul>-->
-                    <!--</li>-->
-                    <!------------------Row Settings-->
-                    <li
-                        *ngIf="rowSetting"
-                        [attr.data-index]="1"
-                        (mouseenter)="handleMouseOverSubmenu($event)"
-                        [xn-dropdown]="[rowSetting]"
-                        class="menu-list display-field"
-                    >
-                        <a class="cursor-pointer">
-                            <label-translation
-                                [keyword]="'Filter_menu__Row_Settings'"
-                            ></label-translation>
-                            <i class="fa fa-angle-right pull-right"></i>
-                        </a>
-                        <ul class="sub-menu menu-widget-column-setting">
-                            <li class="field-filter-item">
-                                <mat-checkbox
-                                    color="primary"
-                                    [(ngModel)]="rowSetting.showTotalRow"
-                                    (change)="selectRowSetting()"
-                                >
-                                    <label-translation
-                                        [keyword]="
-                                            'Filter_menu__Show_Total_Row'
-                                        "
-                                    ></label-translation>
-                                </mat-checkbox>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li
-                class="menu-list display-field menu_property"
-                [ngClass]="{ hidden: !isShowProperties }"
-            >
-                <a class="cursor-pointer" (click)="showPropertiesPanel()">
-                    <i
-                        class="fa fa-wrench custom-filter__icon"
-                        aria-hidden="true"
-                    ></i>
-                    <label-translation
-                        [keyword]="'Filter_menu__Properties'"
-                    ></label-translation>
-                </a>
-            </li>
-        </ul>
+                  {{ fieldFilter.fieldDisplayName }}
+                </mat-checkbox>
+                <mat-checkbox
+                  color="primary"
+                  *ngIf="
+                    !fieldFilter.isHidden &&
+                    fieldFilter.isEditable !== undefined &&
+                    !fieldFilter.isEditable
+                  "
+                  [(ngModel)]="fieldFilter.selected"
+                  [disabled]="true"
+                >
+                  {{ fieldFilter.fieldDisplayName }}
+                </mat-checkbox>
+              </li>
+            </div>
+          </ul>
+        </li>
+      </ul>
     </li>
-    <li
-        class="menu-list display-field"
-        [attr.data-index]="3"
-        (mouseenter)="handleMouseOverSubmenu($event)"
-        *ngIf="isShowOrderDataEntryPaymentSetting"
-        [xn-dropdown]="[columnLayoutsetting]"
+  </ng-template>
+  <li
+    class="menu-list display-field"
+    [attr.data-index]="2"
+    (mouseenter)="handleMouseOverSubmenu($event)"
+    [ngClass]="{ hidden: !isShowProperties && !isShowWidgetSetting }"
+    [xn-dropdown]="[columnLayoutsetting]"
+  >
+    <a
+      id="liSetting{{ randomNumb }}"
+      *ngIf="
+        getAccessRight('SettingButton') &&
+        getAccessRight('SettingButton__SettingMenu')
+      "
+      class="main-setting cursor-pointer"
     >
-        <a
-            id="liOrderDataEntryPaymentSetting{{ randomNumb }}"
-            class="main-setting cursor-pointer"
-        >
-            <i class="fa fa-filter custom-filter__icon" aria-hidden="true"></i>
-            <span
-                ><label-translation
-                    [keyword]="'Filter_menu__Widget_layout'"
-                ></label-translation
-            ></span>
-            <i class="fa fa-angle-right pull-right"></i>
+      <i class="fa fa-filter custom-filter__icon" aria-hidden="true"></i>
+      <span
+        ><label-translation
+          [keyword]="'Filter_menu__Setting'"
+        ></label-translation
+      ></span>
+      <i class="fa fa-angle-right pull-right"></i>
+    </a>
+    <ul
+      class="sub-menu sub-menu-level-1-2"
+      [ngClass]="{ right: position === 'right' }"
+    >
+      <li
+        class="menu-list display-field"
+        *ngIf="gridLayoutSettings && isShowToolPanelSetting"
+      >
+        <a class="cursor-pointer">
+          <mat-checkbox
+            color="primary"
+            [(ngModel)]="gridLayoutSettings.isShowToolPanels"
+            (change)="selectColumnLayoutsetting()"
+          >
+            <label-translation
+              [keyword]="'Filter_menu__Show_Hide_Tool_Panels'"
+            ></label-translation>
+          </mat-checkbox>
+        </a>
+      </li>
+
+      <li
+        class="menu-list display-field"
+        [xn-dropdown]="[columnLayoutsetting] || [filterWidgetFormTypes]"
+        [attr.data-index]="1"
+        (mouseenter)="handleMouseOverSubmenu($event)"
+        *ngIf="isShowWidgetSetting && (columnLayoutsetting || rowSetting)"
+      >
+        <a class="main-setting cursor-pointer">
+          <i class="fa fa-cog custom-filter__icon" aria-hidden="true"></i>
+          <span
+            ><label-translation
+              [keyword]="'Filter_menu__Widget_Setting'"
+            ></label-translation
+          ></span>
+          <i class="fa fa-angle-right pull-right"></i>
         </a>
         <ul
-            class="sub-menu sub-menu-level-1-2"
-            [ngClass]="{ right: position === 'right' }"
+          class="sub-menu filter-menu widget-setting-filter"
+          (click)="refocusOnMenuStatus($event)"
+          [ngStyle]="{
+            left: displayFieldMenuSettingPositionLeft + 'px'
+          }"
         >
-            <li class="menu-list">
-                <mat-radio-group
-                    name="payment-setting-radio"
-                    [(ngModel)]="orderDataEntryWidgetLayoutMode"
+          <!------------------Column Layout-->
+          <li
+            *ngIf="columnLayoutsetting"
+            [attr.data-index]="1"
+            (mouseenter)="handleMouseOverSubmenu($event)"
+            [xn-dropdown]="[columnLayoutsetting]"
+            class="menu-list display-field"
+          >
+            <a class="cursor-pointer">
+              <label-translation
+                [keyword]="'Filter_menu__Column_Layout'"
+              ></label-translation>
+              <i class="fa fa-angle-right pull-right"></i>
+            </a>
+            <ul class="sub-menu menu-widget-column-setting">
+              <li class="field-filter-item">
+                <mat-checkbox
+                  color="primary"
+                  [(ngModel)]="columnLayoutsetting.isFitWidthColumn"
+                  (change)="selectColumnLayoutsetting()"
                 >
-                    <mat-radio-button
-                        color="primary"
-                        value="1"
-                        (change)="selectWidgetLayoutPaymentType(1)"
-                    >
-                        <label-translation
-                            [keyword]="'Filter_menu__Inline'"
-                        ></label-translation>
-                    </mat-radio-button>
-                </mat-radio-group>
-            </li>
-            <li class="menu-list">
-                <mat-radio-group
-                    name="payment-setting-radio"
-                    [(ngModel)]="orderDataEntryWidgetLayoutMode"
+                  <label-translation
+                    [keyword]="'Filter_menu__Fit_width_column'"
+                  ></label-translation>
+                </mat-checkbox>
+              </li>
+            </ul>
+          </li>
+          <!------------------Widget Type-->
+          <!--<li *ngIf="filterWidgetFormTypes && filterWidgetFormTypes.length"-->
+          <!--[attr.data-index]="2"-->
+          <!--(mouseenter)="handleMouseOverSubmenu($event)"-->
+          <!--[xn-dropdown]="filterWidgetFormTypes"-->
+          <!--class="menu-list display-field">-->
+          <!--<a class="cursor-pointer">-->
+          <!--Widget Type-->
+          <!--<i class="fa fa-angle-right pull-right"></i>-->
+          <!--</a>-->
+          <!--<ul class="sub-menu menu-form-type"-->
+          <!--(click)="refocusOnMenuStatus($event)">-->
+          <!--<mat-radio-group name="widget-type-radio"-->
+          <!--[(ngModel)]="selectedWidgetFormType">-->
+          <!--<li class="field-filter-item" *ngFor="let setting of filterWidgetFormTypes; let idx = index; trackBy: filterWidgetFormTypesTrackBy">-->
+          <!--<mat-radio-button color="primary"-->
+          <!--class="mat-radio&#45;&#45;small"-->
+          <!--value="{{setting.widgetFormType}}"-->
+          <!--(change)="selectWidgetFormType(setting.widgetFormType)">-->
+          <!--{{setting.label}}-->
+          <!--</mat-radio-button>-->
+          <!--</li>-->
+          <!--</mat-radio-group>-->
+          <!--</ul>-->
+          <!--</li>-->
+          <!------------------Row Settings-->
+          <li
+            *ngIf="rowSetting"
+            [attr.data-index]="1"
+            (mouseenter)="handleMouseOverSubmenu($event)"
+            [xn-dropdown]="[rowSetting]"
+            class="menu-list display-field"
+          >
+            <a class="cursor-pointer">
+              <label-translation
+                [keyword]="'Filter_menu__Row_Settings'"
+              ></label-translation>
+              <i class="fa fa-angle-right pull-right"></i>
+            </a>
+            <ul class="sub-menu menu-widget-column-setting">
+              <li class="field-filter-item">
+                <mat-checkbox
+                  color="primary"
+                  [(ngModel)]="rowSetting.showTotalRow"
+                  (change)="selectRowSetting()"
                 >
-                    <mat-radio-button
-                        color="primary"
-                        value="2"
-                        (change)="selectWidgetLayoutPaymentType(2)"
-                    >
-                        <label-translation
-                            [keyword]="'Filter_menu__In_Tab'"
-                        ></label-translation>
-                    </mat-radio-button>
-                </mat-radio-group>
-            </li>
+                  <label-translation
+                    [keyword]="'Filter_menu__Show_Total_Row'"
+                  ></label-translation>
+                </mat-checkbox>
+              </li>
+            </ul>
+          </li>
         </ul>
-    </li>
-    <li
-        class="menu-list display-field"
-        [attr.data-index]="3"
-        (mouseenter)="handleMouseOverSubmenu($event)"
-        *ngIf="isShowODEGridProperties"
-        [xn-dropdown]="[columnLayoutsetting]"
-    >
-        <a
-            id="liODEProperties{{ randomNumb }}"
-            class="main-setting cursor-pointer"
-        >
-            <i class="fa fa-filter custom-filter__icon" aria-hidden="true"></i>
-            <span
-                ><label-translation
-                    [keyword]="'Filter_menu__Setting'"
-                ></label-translation
-            ></span>
-            <i class="fa fa-angle-right pull-right"></i>
+      </li>
+      <li
+        class="menu-list display-field menu_property"
+        [ngClass]="{ hidden: !isShowProperties }"
+      >
+        <a class="cursor-pointer" (click)="showPropertiesPanel()">
+          <i class="fa fa-wrench custom-filter__icon" aria-hidden="true"></i>
+          <label-translation
+            [keyword]="'Filter_menu__Properties'"
+          ></label-translation>
         </a>
-        <ul
-            class="sub-menu sub-menu-level-1-2"
-            [ngClass]="{ right: position === 'right' }"
+      </li>
+    </ul>
+  </li>
+  <li
+    class="menu-list display-field"
+    [attr.data-index]="3"
+    (mouseenter)="handleMouseOverSubmenu($event)"
+    *ngIf="isShowOrderDataEntryPaymentSetting"
+    [xn-dropdown]="[columnLayoutsetting]"
+  >
+    <a
+      id="liOrderDataEntryPaymentSetting{{ randomNumb }}"
+      class="main-setting cursor-pointer"
+    >
+      <i class="fa fa-filter custom-filter__icon" aria-hidden="true"></i>
+      <span
+        ><label-translation
+          [keyword]="'Filter_menu__Widget_layout'"
+        ></label-translation
+      ></span>
+      <i class="fa fa-angle-right pull-right"></i>
+    </a>
+    <ul
+      class="sub-menu sub-menu-level-1-2"
+      [ngClass]="{ right: position === 'right' }"
+    >
+      <li class="menu-list">
+        <mat-radio-group
+          name="payment-setting-radio"
+          [(ngModel)]="orderDataEntryWidgetLayoutMode"
         >
-            <li class="menu-list">
-                <mat-checkbox
-                    color="primary"
-                    [(ngModel)]="orderDataEntryProperties.multipleRowDisplay"
-                    (change)="changeODEProperties()"
-                >
-                    <label-translation
-                        [keyword]="'Filter_menu__Multiple_Row_Display'"
-                    ></label-translation>
-                </mat-checkbox>
-            </li>
-            <li class="menu-list">
-                <mat-checkbox
-                    color="primary"
-                    [(ngModel)]="orderDataEntryProperties.autoSwitchToDetail"
-                    (change)="changeODEProperties()"
-                >
-                    <label-translation
-                        [keyword]="'Filter_menu__Auto_switch_to_detail'"
-                    ></label-translation>
-                </mat-checkbox>
-            </li>
-            <li class="menu-list">
-                <mat-checkbox
-                    color="primary"
-                    [(ngModel)]="orderDataEntryProperties.groupView"
-                    (change)="changeODEProperties()"
-                >
-                    <label-translation
-                        [keyword]="'Filter_menu__Group_view'"
-                    ></label-translation>
-                </mat-checkbox>
-            </li>
-        </ul>
-    </li>
-    <li class="menu-list" [hidden]="!isMenuChanged">
-        <button
-            class="mat-btn-block mat-btn-orange"
-            mat-raised-button
-            [ngClass]="{ 'menu-status-changed': isMenuChanged }"
-            type="button"
-            (click)="applyFilter()"
+          <mat-radio-button
+            color="primary"
+            value="1"
+            (change)="selectWidgetLayoutPaymentType(1)"
+          >
+            <label-translation
+              [keyword]="'Filter_menu__Inline'"
+            ></label-translation>
+          </mat-radio-button>
+        </mat-radio-group>
+      </li>
+      <li class="menu-list">
+        <mat-radio-group
+          name="payment-setting-radio"
+          [(ngModel)]="orderDataEntryWidgetLayoutMode"
         >
-            <i class="fa fa-floppy-o" aria-hidden="true"></i>
-            <span class="bt-t-i"
-                ><label-translation
-                    [keyword]="'Filter_menu__Save_Setting'"
-                ></label-translation
-            ></span>
-        </button>
-    </li>
+          <mat-radio-button
+            color="primary"
+            value="2"
+            (change)="selectWidgetLayoutPaymentType(2)"
+          >
+            <label-translation
+              [keyword]="'Filter_menu__In_Tab'"
+            ></label-translation>
+          </mat-radio-button>
+        </mat-radio-group>
+      </li>
+    </ul>
+  </li>
+  <li
+    class="menu-list display-field"
+    [attr.data-index]="3"
+    (mouseenter)="handleMouseOverSubmenu($event)"
+    *ngIf="isShowODEGridProperties"
+    [xn-dropdown]="[columnLayoutsetting]"
+  >
+    <a id="liODEProperties{{ randomNumb }}" class="main-setting cursor-pointer">
+      <i class="fa fa-filter custom-filter__icon" aria-hidden="true"></i>
+      <span
+        ><label-translation
+          [keyword]="'Filter_menu__Setting'"
+        ></label-translation
+      ></span>
+      <i class="fa fa-angle-right pull-right"></i>
+    </a>
+    <ul
+      class="sub-menu sub-menu-level-1-2"
+      [ngClass]="{ right: position === 'right' }"
+    >
+      <li class="menu-list">
+        <mat-checkbox
+          color="primary"
+          [(ngModel)]="orderDataEntryProperties.multipleRowDisplay"
+          (change)="changeODEProperties()"
+        >
+          <label-translation
+            [keyword]="'Filter_menu__Multiple_Row_Display'"
+          ></label-translation>
+        </mat-checkbox>
+      </li>
+      <li class="menu-list">
+        <mat-checkbox
+          color="primary"
+          [(ngModel)]="orderDataEntryProperties.autoSwitchToDetail"
+          (change)="changeODEProperties()"
+        >
+          <label-translation
+            [keyword]="'Filter_menu__Auto_switch_to_detail'"
+          ></label-translation>
+        </mat-checkbox>
+      </li>
+      <li class="menu-list">
+        <mat-checkbox
+          color="primary"
+          [(ngModel)]="orderDataEntryProperties.groupView"
+          (change)="changeODEProperties()"
+        >
+          <label-translation
+            [keyword]="'Filter_menu__Group_view'"
+          ></label-translation>
+        </mat-checkbox>
+      </li>
+    </ul>
+  </li>
+  <li class="menu-list" [hidden]="!isMenuChanged">
+    <button
+      class="mat-btn-block mat-btn-orange"
+      mat-raised-button
+      [ngClass]="{ 'menu-status-changed': isMenuChanged }"
+      type="button"
+      (click)="applyFilter()"
+    >
+      <i class="fa fa-floppy-o" aria-hidden="true"></i>
+      <span class="bt-t-i"
+        ><label-translation
+          [keyword]="'Filter_menu__Save_Setting'"
+        ></label-translation
+      ></span>
+    </button>
+  </li>
 </ul>

@@ -1,1 +1,1 @@
-export * from "./summary-command.component";
+export * from './summary-command.component';

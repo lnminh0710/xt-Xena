@@ -1,92 +1,92 @@
-@import "~sass_files/variables.scss";
+@import '~sass_files/variables.scss';
 
 .xn__form-header {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .search-media-code-left {
-    border-top: none;
-    border-bottom: none;
+  border-top: none;
+  border-bottom: none;
 }
 
 .set-search-media-code__right {
-    margin-bottom: $spacing-size-mx;
+  margin-bottom: $spacing-size-mx;
 }
 
 .search-media-code-grid {
-    height: calc(100% - 35px);
+  height: calc(100% - 35px);
 }
 
 .search-media-code-grid--left {
-    height: calc(100% - 75px) !important;
+  height: calc(100% - 75px) !important;
 }
 
 .search-media-code-grid-standard {
-    height: 100%;
+  height: 100%;
 }
 
 .chain-type-item {
-    float: left;
+  float: left;
 }
 .grid-left {
-    min-width: 700px;
+  min-width: 700px;
 }
 
 @media screen and (min-width: 767px) {
-    .search-media-code-grid__panel {
-        width: 50%;
-        height: 100%;
-    }
+  .search-media-code-grid__panel {
+    width: 50%;
+    height: 100%;
+  }
 
-    .search-media-code-grid__panel--detail {
-        height: 100%;
-    }
+  .search-media-code-grid__panel--detail {
+    height: 100%;
+  }
 
-    .search-media-code-command__panel {
-        width: 40px;
-        margin-top: 15%;
-    }
+  .search-media-code-command__panel {
+    width: 40px;
+    margin-top: 15%;
+  }
 
-    .search-media-code-command__button {
-        margin-bottom: $spacing-size-mx;
-    }
+  .search-media-code-command__button {
+    margin-bottom: $spacing-size-mx;
+  }
 
-    .command__button-spacing {
-        margin-bottom: $spacing-size-sd;
-        margin-left: 7px;
-    }
+  .command__button-spacing {
+    margin-bottom: $spacing-size-sd;
+    margin-left: 7px;
+  }
 }
 
 .search-media-code-button {
-    font-size: 12px;
-    margin-top: 7px;
+  font-size: 12px;
+  margin-top: 7px;
 }
 
 .header-icon {
-    font-size: 30px;
-    margin-right: 10px;
+  font-size: 30px;
+  margin-right: 10px;
 }
 
 .header-text {
-    font-size: 22px;
+  font-size: 22px;
 }
 .spliter-content {
-    height: 100%;
-    display: flex;
-    align-items: stretch;
-    justify-content: space-between;
-    flex-wrap: nowrap;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  flex-wrap: nowrap;
 }
 .spliter-content.left {
-    margin-right: calc(0.5em - 2.5px);
+  margin-right: calc(0.5em - 2.5px);
 }
 .spliter-content.right {
-    margin-left: calc(0.5em - 2.5px);
+  margin-left: calc(0.5em - 2.5px);
 }
 
 .spliter-content-item {
-    width: calc(50% - 0.5em);
+  width: calc(50% - 0.5em);
 }
 .spliter-content-item-separate-space {
-    width: 1em;
+  width: 1em;
 }

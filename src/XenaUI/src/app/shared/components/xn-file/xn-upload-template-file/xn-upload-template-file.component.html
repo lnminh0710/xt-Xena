@@ -1,322 +1,305 @@
 <div class="upload-template-file form-group no-margin">
-    <split
-        direction="horizontal"
-        [gutterSize]="5"
-        (dragEnd)="dragSplitterEnd($event)"
+  <split
+    direction="horizontal"
+    [gutterSize]="5"
+    (dragEnd)="dragSplitterEnd($event)"
+  >
+    <split-area
+      [size]="35"
+      [perfect-scrollbar]="{
+        suppressScrollX: false,
+        suppressScrollY: false
+      }"
     >
-        <split-area
-            [size]="35"
-            [perfect-scrollbar]="{
-                suppressScrollX: false,
-                suppressScrollY: false
-            }"
-        >
-            <div class="xn-uft-left-side border-gray--right">
-                <div class="col-xs-12 no-padding height-pc-100">
-                    <div class="xn__form-header">
-                        <span class="no-margin"
-                            ><label-translation
-                                [keyword]="
-                                    'XnUploadTemplateFile__Document_template'
-                                "
-                            ></label-translation
-                        ></span>
-                    </div>
-                    <div class="col-xs-12 no-padding">
-                        <div
-                            class="col-xs-1 no-padding list-template-of-file-cbo"
-                        >
-                            <xn-combo-box
-                                #templateCtr
-                                wjDropdownHelper
-                                class="custom-wj-input-control xn-select"
-                                placeholder="Please select"
-                                [itemsSource]="templates"
-                                [displayMemberPath]="'textValue'"
-                                [selectedValuePath]="'idValue'"
-                                [isEditable]="true"
-                                [isRequired]="false"
-                                (selectedIndexChanged)="changeTemplate()"
-                            >
-                            </xn-combo-box>
-                            <control-messages
-                                [xn-trigger-click-inside-cbo]="templateCtr"
-                                icon="object-group"
-                            >
-                            </control-messages>
-                        </div>
-                        <div class="col-xs-1 no-padding file-template-menu">
-                            <app-xn-ai-tab-plus
-                                [tabs]="templateFileMenus"
-                                [buttonIcon]="'ellipsis-v'"
-                                [toolTip]="'File Template Menu'"
-                                [customCss]="'file-template-menu-icon'"
-                                (dropdownItemClicked)="
-                                    dropdownItemClickedHandler($event)
-                                "
-                            ></app-xn-ai-tab-plus>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 no-padding margin-top--sd">
-                        <span class="pull-left no-margin xn__form-header"
-                            ><label-translation
-                                [keyword]="
-                                    'XnUploadTemplateFile__Upload_a_Sample_data_file'
-                                "
-                            ></label-translation
-                        ></span>
-                        <a
-                            [ngClass]="{ 'xn-disabled': isDisableUploadButton }"
-                            class="pull-right box-header"
-                            (click)="uploadFileClick()"
-                        >
-                            <a
-                                xn-tooltip
-                                [tooltipText]="'Upload template file'"
-                                [tooltipPlacement]="'top'"
-                                container="body"
-                                class="green-color"
-                            >
-                                <i
-                                    class="fa fa-cloud-upload"
-                                    aria-hidden="true"
-                                ></i>
-                            </a>
-                        </a>
-                        <label class="template-file-name padding-left--sd">{{
-                            templateFileName
-                        }}</label>
-                    </div>
-                    <div class="col-xs-12 no-padding margin-top--sd">
-                        <!-- *ngIf="user.id == '1' || user.id == '2'"> -->
-                        <span class="no-margin pull-left xn__form-header">
-                            <label-translation
-                                [keyword]="'XnUploadTemplateFile__SQL_Template'"
-                            ></label-translation
-                        ></span>
-                        <a
-                            mat-raised-button
-                            [ngClass]="{ 'xn-disabled': !columnViewMode }"
-                            class="pull-left reload-sql-query-column-name"
-                            (click)="reloadSqlTemplateColumnsNameClick()"
-                        >
-                            <a
-                                xn-tooltip
-                                [tooltipText]="
-                                    'Reload SQL template columns name'
-                                "
-                                [tooltipPlacement]="'top'"
-                                container="body"
-                                class="blue-color"
-                            >
-                                <i aria-hidden="true" class="fa fa-undo"></i>
-                            </a>
-                        </a>
-                        <mat-slide-toggle
-                            class="mat-primary pull-right xn__form-header"
-                            (change)="columnViewModeChanged()"
-                            [(ngModel)]="columnViewMode"
-                        >
-                            <label-translation
-                                [keyword]="
-                                    'XnUploadTemplateFile__Column_view_mode'
-                                "
-                            ></label-translation>
-                        </mat-slide-toggle>
-                    </div>
-                    <div class="col-xs-12 no-padding sql-template">
-                        <!-- *ngIf="user.id == '1' || user.id == '2'"> -->
-                        <textarea
-                            *ngIf="!columnViewMode"
-                            class="form-control xn-input textarea"
-                            (keyup)="sqlTemplateChanged($event)"
-                            [(ngModel)]="sqlTemplate"
-                        >
-                        </textarea>
-                        <div
-                            class="col-xs-12 no-padding height-pc-100"
-                            *ngIf="columnViewMode"
-                        >
-                            <xn-ag-grid
-                                [readOnly]="false"
-                                *ngIf="
-                                    sqlColumnsDataSourceTable &&
-                                    sqlColumnsDataSourceTable.columns &&
-                                    sqlColumnsDataSourceTable.columns.length
-                                "
-                                [id]="gridId"
-                                [dataSource]="sqlColumnsDataSourceTable"
-                                [fitWidthColumn]="true"
-                                (cellEditingStarted)="onTableEditStartHandle()"
-                                (cellEditingStopped)="onRowEditEndedHandle()"
-                            >
-                            </xn-ag-grid>
-                        </div>
-                    </div>
-                </div>
+      <div class="xn-uft-left-side border-gray--right">
+        <div class="col-xs-12 no-padding height-pc-100">
+          <div class="xn__form-header">
+            <span class="no-margin"
+              ><label-translation
+                [keyword]="'XnUploadTemplateFile__Document_template'"
+              ></label-translation
+            ></span>
+          </div>
+          <div class="col-xs-12 no-padding">
+            <div class="col-xs-1 no-padding list-template-of-file-cbo">
+              <xn-combo-box
+                #templateCtr
+                wjDropdownHelper
+                class="custom-wj-input-control xn-select"
+                placeholder="Please select"
+                [itemsSource]="templates"
+                [displayMemberPath]="'textValue'"
+                [selectedValuePath]="'idValue'"
+                [isEditable]="true"
+                [isRequired]="false"
+                (selectedIndexChanged)="changeTemplate()"
+              >
+              </xn-combo-box>
+              <control-messages
+                [xn-trigger-click-inside-cbo]="templateCtr"
+                icon="object-group"
+              >
+              </control-messages>
             </div>
-        </split-area>
+            <div class="col-xs-1 no-padding file-template-menu">
+              <app-xn-ai-tab-plus
+                [tabs]="templateFileMenus"
+                [buttonIcon]="'ellipsis-v'"
+                [toolTip]="'File Template Menu'"
+                [customCss]="'file-template-menu-icon'"
+                (dropdownItemClicked)="dropdownItemClickedHandler($event)"
+              ></app-xn-ai-tab-plus>
+            </div>
+          </div>
+          <div class="col-xs-12 no-padding margin-top--sd">
+            <span class="pull-left no-margin xn__form-header"
+              ><label-translation
+                [keyword]="'XnUploadTemplateFile__Upload_a_Sample_data_file'"
+              ></label-translation
+            ></span>
+            <a
+              [ngClass]="{ 'xn-disabled': isDisableUploadButton }"
+              class="pull-right box-header"
+              (click)="uploadFileClick()"
+            >
+              <a
+                xn-tooltip
+                [tooltipText]="'Upload template file'"
+                [tooltipPlacement]="'top'"
+                container="body"
+                class="green-color"
+              >
+                <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+              </a>
+            </a>
+            <label class="template-file-name padding-left--sd">{{
+              templateFileName
+            }}</label>
+          </div>
+          <div class="col-xs-12 no-padding margin-top--sd">
+            <!-- *ngIf="user.id == '1' || user.id == '2'"> -->
+            <span class="no-margin pull-left xn__form-header">
+              <label-translation
+                [keyword]="'XnUploadTemplateFile__SQL_Template'"
+              ></label-translation
+            ></span>
+            <a
+              mat-raised-button
+              [ngClass]="{ 'xn-disabled': !columnViewMode }"
+              class="pull-left reload-sql-query-column-name"
+              (click)="reloadSqlTemplateColumnsNameClick()"
+            >
+              <a
+                xn-tooltip
+                [tooltipText]="'Reload SQL template columns name'"
+                [tooltipPlacement]="'top'"
+                container="body"
+                class="blue-color"
+              >
+                <i aria-hidden="true" class="fa fa-undo"></i>
+              </a>
+            </a>
+            <mat-slide-toggle
+              class="mat-primary pull-right xn__form-header"
+              (change)="columnViewModeChanged()"
+              [(ngModel)]="columnViewMode"
+            >
+              <label-translation
+                [keyword]="'XnUploadTemplateFile__Column_view_mode'"
+              ></label-translation>
+            </mat-slide-toggle>
+          </div>
+          <div class="col-xs-12 no-padding sql-template">
+            <!-- *ngIf="user.id == '1' || user.id == '2'"> -->
+            <textarea
+              *ngIf="!columnViewMode"
+              class="form-control xn-input textarea"
+              (keyup)="sqlTemplateChanged($event)"
+              [(ngModel)]="sqlTemplate"
+            >
+            </textarea>
+            <div
+              class="col-xs-12 no-padding height-pc-100"
+              *ngIf="columnViewMode"
+            >
+              <xn-ag-grid
+                [readOnly]="false"
+                *ngIf="
+                  sqlColumnsDataSourceTable &&
+                  sqlColumnsDataSourceTable.columns &&
+                  sqlColumnsDataSourceTable.columns.length
+                "
+                [id]="gridId"
+                [dataSource]="sqlColumnsDataSourceTable"
+                [fitWidthColumn]="true"
+                (cellEditingStarted)="onTableEditStartHandle()"
+                (cellEditingStopped)="onRowEditEndedHandle()"
+              >
+              </xn-ag-grid>
+            </div>
+          </div>
+        </div>
+      </div>
+    </split-area>
 
-        <split-area
-            [size]="65"
-            [perfect-scrollbar]="{
-                suppressScrollX: false,
-                suppressScrollY: false
-            }"
+    <split-area
+      [size]="65"
+      [perfect-scrollbar]="{
+        suppressScrollX: false,
+        suppressScrollY: false
+      }"
+    >
+      <div class="xn-uft-right-side">
+        <div class="xn__form-header">
+          <span class="no-margin"
+            ><label-translation
+              [keyword]="'XnUploadTemplateFile__Used_countries'"
+            ></label-translation
+          ></span>
+        </div>
+        <xn-country-check-list
+          *ngIf="countryCheckListData && countryCheckListData.length"
+          [data]="countryCheckListData"
+          (outputAllData)="outputDataCountryHandler($event)"
         >
-            <div class="xn-uft-right-side">
-                <div class="xn__form-header">
-                    <span class="no-margin"
-                        ><label-translation
-                            [keyword]="'XnUploadTemplateFile__Used_countries'"
-                        ></label-translation
-                    ></span>
-                </div>
-                <xn-country-check-list
-                    *ngIf="countryCheckListData && countryCheckListData.length"
-                    [data]="countryCheckListData"
-                    (outputAllData)="outputDataCountryHandler($event)"
-                >
-                </xn-country-check-list>
-            </div>
-        </split-area>
-    </split>
+        </xn-country-check-list>
+      </div>
+    </split-area>
+  </split>
 </div>
 <p-dialog
-    [styleClass]="'upload-file-dialog'"
-    header=""
-    [(visible)]="showDialog"
-    modal="modal"
-    width="900"
-    height="500"
-    responsive="true"
-    appendTo="body"
-    (onAfterHide)="close()"
+  [styleClass]="'upload-file-dialog'"
+  header=""
+  [(visible)]="showDialog"
+  modal="modal"
+  width="900"
+  height="500"
+  responsive="true"
+  appendTo="body"
+  (onAfterHide)="close()"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="fa fa-upload header-icon pull-left"></span>
-            <span class="header-text pull-left"
-                ><label-translation
-                    [keyword]="'XnUploadTemplateFile__Upload_File'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="close()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 no-padding height-pc-100">
-        <file-upload
-            #fileUpload
-            [uploadFileMode]="uploadFileMode"
-            [singleFile]="true"
-            [idFolder]="printingUploadTemplateFolderName"
-            [acceptExtensionFiles]="'.txt, .csv'"
-            (onCompleteItem)="onCompleteUploadItem($event)"
-        ></file-upload>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="fa fa-upload header-icon pull-left"></span>
+      <span class="header-text pull-left"
+        ><label-translation
+          [keyword]="'XnUploadTemplateFile__Upload_File'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                type="button"
-                mat-raised-button
-                class="pull-right new-size"
-                xn-tooltip
-                [tooltipText]="'Close'"
-                (click)="close()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [keyword]="'XnUploadTemplateFile__Close'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+  </p-header>
+  <div class="col-xs-12 no-padding height-pc-100">
+    <file-upload
+      #fileUpload
+      [uploadFileMode]="uploadFileMode"
+      [singleFile]="true"
+      [idFolder]="printingUploadTemplateFolderName"
+      [acceptExtensionFiles]="'.txt, .csv'"
+      (onCompleteItem)="onCompleteUploadItem($event)"
+    ></file-upload>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        type="button"
+        mat-raised-button
+        class="pull-right new-size"
+        xn-tooltip
+        [tooltipText]="'Close'"
+        (click)="close()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [keyword]="'XnUploadTemplateFile__Close'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>
 
 <p-dialog
-    [styleClass]="'upload-file-dialog'"
-    header=""
-    [(visible)]="showDialogTemplateName"
-    modal="modal"
-    width="300"
-    height="180"
-    responsive="true"
-    appendTo="body"
-    (onAfterHide)="closeDialogTemplateName()"
+  [styleClass]="'upload-file-dialog'"
+  header=""
+  [(visible)]="showDialogTemplateName"
+  modal="modal"
+  width="300"
+  height="180"
+  responsive="true"
+  appendTo="body"
+  (onAfterHide)="closeDialogTemplateName()"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="fa fa-upload header-icon pull-left"></span>
-            <span class="header-text pull-left">{{ templateTile }}</span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="closeDialogTemplateName()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 no-padding height-pc-100">
-        <input
-            class="form-control xn-input"
-            [ngClass]="{ 'input-error': !templateName && submitTemplateName }"
-            id="txt-template-name-for-upload-file"
-            (change)="templateNameChanged()"
-            [(ngModel)]="templateName"
-        />
-        <div
-            [hidden]="templateName || !submitTemplateName"
-            class="alert alert-danger"
-        >
-            <label-translation
-                [keyword]="
-                    'XnUploadTemplateFile__Please_input_the_template_name'
-                "
-            ></label-translation>
-        </div>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="fa fa-upload header-icon pull-left"></span>
+      <span class="header-text pull-left">{{ templateTile }}</span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="closeDialogTemplateName()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                type="button"
-                mat-raised-button
-                class="pull-right new-size"
-                xn-tooltip
-                [tooltipText]="'Close'"
-                (click)="closeDialogTemplateName()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [keyword]="'XnUploadTemplateFile__Cancel'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                label="Save"
-                pbutton=""
-                mat-raised-button
-                type="button"
-                class="mat-btn-blue"
-                (click)="saveTemplateName(templateNameSavingMode)"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'XnUploadTemplateFile__Save'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+  </p-header>
+  <div class="col-xs-12 no-padding height-pc-100">
+    <input
+      class="form-control xn-input"
+      [ngClass]="{ 'input-error': !templateName && submitTemplateName }"
+      id="txt-template-name-for-upload-file"
+      (change)="templateNameChanged()"
+      [(ngModel)]="templateName"
+    />
+    <div
+      [hidden]="templateName || !submitTemplateName"
+      class="alert alert-danger"
+    >
+      <label-translation
+        [keyword]="'XnUploadTemplateFile__Please_input_the_template_name'"
+      ></label-translation>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        type="button"
+        mat-raised-button
+        class="pull-right new-size"
+        xn-tooltip
+        [tooltipText]="'Close'"
+        (click)="closeDialogTemplateName()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [keyword]="'XnUploadTemplateFile__Cancel'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        label="Save"
+        pbutton=""
+        mat-raised-button
+        type="button"
+        class="mat-btn-blue"
+        (click)="saveTemplateName(templateNameSavingMode)"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'XnUploadTemplateFile__Save'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

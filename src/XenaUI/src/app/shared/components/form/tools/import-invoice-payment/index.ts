@@ -1,1 +1,1 @@
-export { ImportInvoicePaymentComponent } from "./import-invoice-payment.component";
+export { ImportInvoicePaymentComponent } from './import-invoice-payment.component';

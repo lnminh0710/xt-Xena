@@ -1,21 +1,21 @@
 <ng-container>
-    <div [ngClass]="{'xn-disabled' : !isActive}" class="quantity-article">
-        <input
-            #input
-            [(ngModel)]="value"
-            (change)="onChangeQuantityWareHouse($event)"
-            type="text"
-            [readonly]="!isActive"
-            xn-numeric
-            [typeNumber]="0"
-            [format]="'N'"
-            class="full-width quantity numeric"
-        />
-        <i
-            disabled
-            (click)="handleQuantityWareHouse()"
-            class="fa fa-retweet"
-            aria-hidden="true"
-        ></i>
-    </div>
+  <div [ngClass]="{'xn-disabled' : !isActive}" class="quantity-article">
+    <input
+      #input
+      [(ngModel)]="value"
+      (change)="onChangeQuantityWareHouse($event)"
+      type="text"
+      [readonly]="!isActive"
+      xn-numeric
+      [typeNumber]="0"
+      [format]="'N'"
+      class="full-width quantity numeric"
+    />
+    <i
+      disabled
+      (click)="handleQuantityWareHouse()"
+      class="fa fa-retweet"
+      aria-hidden="true"
+    ></i>
+  </div>
 </ng-container>

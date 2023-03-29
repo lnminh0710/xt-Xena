@@ -1,98 +1,91 @@
 <div
-    bsModal
-    [config]="{ ignoreBackdropClick: true }"
-    #xnMessageModal="bs-modal"
-    class="modal fade xn-modal"
-    tabindex="-1"
-    role="dialog"
-    aria-hidden="true"
-    aria-labelledby="xnMessageModal"
-    id="xn-modal-message-main"
-    (focus)="onFocusModal()"
+  bsModal
+  [config]="{ ignoreBackdropClick: true }"
+  #xnMessageModal="bs-modal"
+  class="modal fade xn-modal"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+  aria-labelledby="xnMessageModal"
+  id="xn-modal-message-main"
+  (focus)="onFocusModal()"
 >
-    <div
-        *ngIf="isRenderMessage"
-        id="xn-bs-modal"
-        class="modal-dialog  {{
-            modalSizeCssClass[messageOption.modalSize]
-        }}  {{ messageOption.customClass }}"
-    >
-        <!-- <div *ngIf="isRenderMessage" id="xn-bs-modal" class="modal-dialog  {{messageOption.customClass}}"> -->
-        <div class="modal-content" id="xn-bs-modal-content">
-            <div class="modal-header  {{ messageOption.header.styleClass }}">
-                <span
-                    class="fa  {{
-                        messageOption.header.iconClass
-                    }}  header-icon  pull-left"
-                ></span>
-                <span class="header-text pull-left">
-                    <label-translation
-                        *ngIf="messageOption.header.text && !hasTranslatePopup"
-                        [keyword]="
-                            'Message_Modal__btn_' + messageOption.header.text
-                        "
-                    ></label-translation>
-                    <span *ngIf="hasTranslatePopup">{{
-                        messageOption.header.text
-                    }}</span>
-                </span>
-                <button
-                    *ngIf="showCloseButton"
-                    type="button"
-                    mat-raised-button
-                    class="mat-btn-close-modal"
-                    aria-label="Close"
-                    (click)="closeClicked()"
-                >
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div
-                *ngIf="isRender"
-                class="modal-body xn-translate-text-html"
-                id="xn-bs-modal-body"
-                [innerHTML]="messageBody | keepHtml"
-                [perfect-scrollbar]="{
-                    suppressScrollX: false,
-                    suppressScrollY: false
-                }"
-            ></div>
-            <div class="modal-footer">
-                <!-- Trick the angular can not re-render when object data is changed, after 1 day investigate and the result is "Dont know why" -->
-                <!-- <p *ngFor="let item of messageOption.footer.buttonList" class="hidden">
+  <div
+    *ngIf="isRenderMessage"
+    id="xn-bs-modal"
+    class="modal-dialog  {{ modalSizeCssClass[messageOption.modalSize] }}  {{
+      messageOption.customClass
+    }}"
+  >
+    <!-- <div *ngIf="isRenderMessage" id="xn-bs-modal" class="modal-dialog  {{messageOption.customClass}}"> -->
+    <div class="modal-content" id="xn-bs-modal-content">
+      <div class="modal-header  {{ messageOption.header.styleClass }}">
+        <span
+          class="fa  {{
+            messageOption.header.iconClass
+          }}  header-icon  pull-left"
+        ></span>
+        <span class="header-text pull-left">
+          <label-translation
+            *ngIf="messageOption.header.text && !hasTranslatePopup"
+            [keyword]="'Message_Modal__btn_' + messageOption.header.text"
+          ></label-translation>
+          <span *ngIf="hasTranslatePopup">{{ messageOption.header.text }}</span>
+        </span>
+        <button
+          *ngIf="showCloseButton"
+          type="button"
+          mat-raised-button
+          class="mat-btn-close-modal"
+          aria-label="Close"
+          (click)="closeClicked()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div
+        *ngIf="isRender"
+        class="modal-body xn-translate-text-html"
+        id="xn-bs-modal-body"
+        [innerHTML]="messageBody | keepHtml"
+        [perfect-scrollbar]="{
+          suppressScrollX: false,
+          suppressScrollY: false
+        }"
+      ></div>
+      <div class="modal-footer">
+        <!-- Trick the angular can not re-render when object data is changed, after 1 day investigate and the result is "Dont know why" -->
+        <!-- <p *ngFor="let item of messageOption.footer.buttonList" class="hidden">
                     {{item | json}}
                 </p> -->
-                <!-- End Trick -->
+        <!-- End Trick -->
 
-                <button
-                    #buttonfooter
-                    *ngFor="
-                        let item of messageOption.footer.buttonList;
-                        index as i
-                    "
-                    class="mat-raised-button {{
-                        buttonClass[item ? item.buttonType : '']
-                    }} {{ item ? item.customClass : '' }} {{
-                        item.focus ? 'mat-force-focus' : ''
-                    }}"
-                    type="button"
-                    mat-raised-button
-                    (click)="item.callBackFunc($event)"
-                    autofocus
-                    [disabled]="item && item.disabled"
-                    (keydown.ArrowLeft)="onKeyLeft($event, i)"
-                    (keydown.ArrowRight)="onKeyRight($event, i)"
-                >
-                    <span class="bt-t ui-button-text ui-c">
-                        <label-translation
-                            *ngIf="item && item.text && !hasTranslatePopup"
-                            [keyword]="'Message_Modal__btn_' + item.text"
-                        ></label-translation>
-                        <span *ngIf="hasTranslatePopup">{{ item.text }}</span>
-                    </span>
-                    <!-- <span class="bt-t  ui-button-text ui-c">{{item.text}}</span> -->
-                </button>
-            </div>
-        </div>
+        <button
+          #buttonfooter
+          *ngFor="let item of messageOption.footer.buttonList; index as i"
+          class="mat-raised-button {{
+            buttonClass[item ? item.buttonType : '']
+          }} {{ item ? item.customClass : '' }} {{
+            item.focus ? 'mat-force-focus' : ''
+          }}"
+          type="button"
+          mat-raised-button
+          (click)="item.callBackFunc($event)"
+          autofocus
+          [disabled]="item && item.disabled"
+          (keydown.ArrowLeft)="onKeyLeft($event, i)"
+          (keydown.ArrowRight)="onKeyRight($event, i)"
+        >
+          <span class="bt-t ui-button-text ui-c">
+            <label-translation
+              *ngIf="item && item.text && !hasTranslatePopup"
+              [keyword]="'Message_Modal__btn_' + item.text"
+            ></label-translation>
+            <span *ngIf="hasTranslatePopup">{{ item.text }}</span>
+          </span>
+          <!-- <span class="bt-t  ui-button-text ui-c">{{item.text}}</span> -->
+        </button>
+      </div>
     </div>
+  </div>
 </div>

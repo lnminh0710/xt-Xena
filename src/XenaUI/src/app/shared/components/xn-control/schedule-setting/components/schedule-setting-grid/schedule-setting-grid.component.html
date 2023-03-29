@@ -18,19 +18,19 @@
 ></ag-grid-angular> -->
 
 <xn-ag-grid
-    #scheduleEventGrid
-    *ngIf="showGrid"
-    [id]="gridId"
-    [dataSource]="gridData"
-    [readOnly]="false"
-    [isEditting]="true"
-    [columnsLayoutSettings]="columnsLayoutSettings"
-    (rowDoubleClicked)="onRowDoubleClicked($event)"
-    (deleteClick)="deleteClickHandle($event)"
-    (runScheduleClick)="runScheduleClickHandle($event)"
-    (cellValueChanged)="cellValueChangedHandle($event)"
-    (onCheckAllChecked)="onCheckAllCheckedHandle($event)"
-    (onGridReady)="onGridReadyHandle($event)"
+  #scheduleEventGrid
+  *ngIf="showGrid"
+  [id]="gridId"
+  [dataSource]="gridData"
+  [readOnly]="false"
+  [isEditting]="true"
+  [columnsLayoutSettings]="columnsLayoutSettings"
+  (rowDoubleClicked)="onRowDoubleClicked($event)"
+  (deleteClick)="deleteClickHandle($event)"
+  (runScheduleClick)="runScheduleClickHandle($event)"
+  (cellValueChanged)="cellValueChangedHandle($event)"
+  (onCheckAllChecked)="onCheckAllCheckedHandle($event)"
+  (onGridReady)="onGridReadyHandle($event)"
 >
 </xn-ag-grid>
 <!-- <ng-template #deleteButton let-data>

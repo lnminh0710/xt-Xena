@@ -1,1 +1,1 @@
-﻿export { XnWorkingModulesComponent } from "./xn-working-modules.component";
+﻿export { XnWorkingModulesComponent } from './xn-working-modules.component';

@@ -1,1 +1,1 @@
-export * from "./feedback-combine.component";
+export * from './feedback-combine.component';

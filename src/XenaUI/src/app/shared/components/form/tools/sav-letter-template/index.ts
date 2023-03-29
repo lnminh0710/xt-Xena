@@ -1,1 +1,1 @@
-export { SavLetterTemplateComponent } from "./sav-letter-template.component";
+export { SavLetterTemplateComponent } from './sav-letter-template.component';

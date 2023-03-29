@@ -1,1 +1,1 @@
-export { MailingReturnComponent } from "./mailing-return.component";
+export { MailingReturnComponent } from './mailing-return.component';

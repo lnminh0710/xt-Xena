@@ -1,100 +1,100 @@
 $p-h: 18px;
 $b-sp: 6px;
 .h {
-    position: absolute;
+  position: absolute;
 
-    .h-n {
-        height: $p-h;
-        line-height: $p-h;
-        text-align: center;
-        position: absolute;
-        bottom: $b-sp;
-        padding: 0 2px;
-        z-index: 10;
-    }
-    .h-t {
-        text-align: center;
-        position: absolute;
-        bottom: $b-sp;
-        line-height: $p-h;
-        height: ($p-h * 2);
-        padding: 0 2px;
-        z-index: 10;
-        white-space: nowrap;
-    }
+  .h-n {
+    height: $p-h;
+    line-height: $p-h;
+    text-align: center;
+    position: absolute;
+    bottom: $b-sp;
+    padding: 0 2px;
+    z-index: 10;
+  }
+  .h-t {
+    text-align: center;
+    position: absolute;
+    bottom: $b-sp;
+    line-height: $p-h;
+    height: ($p-h * 2);
+    padding: 0 2px;
+    z-index: 10;
+    white-space: nowrap;
+  }
 }
 
 ul.n-w {
-    min-height: 13px;
-    padding: 0px;
+  min-height: 13px;
+  padding: 0px;
 
-    li {
-        cursor: pointer;
-    }
+  li {
+    cursor: pointer;
+  }
 }
 .n-w > li {
-    float: left;
-    list-style: none;
-    margin: 5px 0;
+  float: left;
+  list-style: none;
+  margin: 5px 0;
 }
 .n-w > li > a {
-    position: relative;
+  position: relative;
 }
 .n-w > li > a:not(:first-child) {
-    margin-left: 1px;
+  margin-left: 1px;
 }
 .n-w > li > a {
-    padding: 6px;
+  padding: 6px;
 
-    span {
-        padding-left: 10px;
-        max-width: 60px !important;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: inline-block;
-        line-height: 13px;
-    }
+  span {
+    padding-left: 10px;
+    max-width: 60px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    line-height: 13px;
+  }
 }
 .n-w > li:not(:first-child) > a:before {
-    width: 0px;
-    height: 0px;
-    border-top: 13px inset transparent;
-    border-bottom: 13px inset transparent;
-    position: absolute;
-    content: "";
-    top: 0;
-    left: 0;
+  width: 0px;
+  height: 0px;
+  border-top: 13px inset transparent;
+  border-bottom: 13px inset transparent;
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
 }
 .n-w > li > a:after {
-    width: 0px;
-    height: 0px;
-    border-top: 13px inset transparent;
-    border-bottom: 13px inset transparent;
-    position: absolute;
-    content: "";
-    top: 0;
-    right: -13px;
-    z-index: 2;
+  width: 0px;
+  height: 0px;
+  border-top: 13px inset transparent;
+  border-bottom: 13px inset transparent;
+  position: absolute;
+  content: '';
+  top: 0;
+  right: -13px;
+  z-index: 2;
 }
 .n-w > li:first-child > a {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
 .d-i {
-    position: absolute;
-    right: -10px;
-    z-index: 3;
-    top: 8px;
-    font-size: 14px;
+  position: absolute;
+  right: -10px;
+  z-index: 3;
+  top: 8px;
+  font-size: 14px;
 }
 .d-a {
-    max-height: 25px;
-    padding: 0 5px;
-    min-width: 30px;
+  max-height: 25px;
+  padding: 0 5px;
+  min-width: 30px;
 
-    .fa-trash {
-        font-size: 16px;
-        margin-top: -5px;
-    }
+  .fa-trash {
+    font-size: 16px;
+    margin-top: -5px;
+  }
 }

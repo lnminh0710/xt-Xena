@@ -1,121 +1,121 @@
 .de__scanning-status {
-    min-width: 495px;
-    height: 115px;
-    padding: 5px;
+  min-width: 495px;
+  height: 115px;
+  padding: 5px;
 
-    .scanning-row {
-        width: 440px;
-    }
+  .scanning-row {
+    width: 440px;
+  }
 
-    .de__ss__remain {
-        float: left;
-    }
+  .de__ss__remain {
+    float: left;
+  }
 
-    .de__ss__list {
-        width: 310px;
-        float: left;
-    }
+  .de__ss__list {
+    width: 310px;
+    float: left;
+  }
 
-    .de__ss__remain,
-    .de__ss__list,
-    .de__ss__list-item {
-        padding-left: 3px;
-        padding-right: 3px;
-    }
+  .de__ss__remain,
+  .de__ss__list,
+  .de__ss__list-item {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
 
-    .de__ss__remain {
-        height: 100%;
+  .de__ss__remain {
+    height: 100%;
 
-        table {
-            tr:last-of-type {
-                td {
-                    padding-bottom: 3px;
-                }
-            }
-
-            td {
-                padding: 1px;
-
-                &.max-width-100px {
-                    max-width: 100px;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
-                }
-            }
+    table {
+      tr:last-of-type {
+        td {
+          padding-bottom: 3px;
         }
-    }
+      }
 
-    .de__ss__list-item__master {
-        padding: 0 0 1px 2px;
-    }
+      td {
+        padding: 1px;
 
-    .de__ss__list-item {
-        padding: 5px 5px 1px 5px;
-        line-height: 19px;
-        height: 52px;
+        &.max-width-100px {
+          max-width: 100px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
     }
+  }
 
-    .de__ss__list-item__body2 {
-        text-overflow: ellipsis;
-        width: 140px;
-        white-space: nowrap;
-        overflow: hidden;
-    }
+  .de__ss__list-item__master {
+    padding: 0 0 1px 2px;
+  }
 
-    .de__ss__list-item__title,
-    .de__ss__list-item__body1 span,
-    .de__ss__list-item__body2 span,
-    .de__ss__list-item__icon {
-        font-weight: 900;
-    }
+  .de__ss__list-item {
+    padding: 5px 5px 1px 5px;
+    line-height: 19px;
+    height: 52px;
+  }
 
-    .de__ss__list-item__icon::before {
-        padding-right: 5px;
-    }
+  .de__ss__list-item__body2 {
+    text-overflow: ellipsis;
+    width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
-    .de_ss_image {
-        display: none;
-        width: 0px;
-        height: 0px;
-    }
+  .de__ss__list-item__title,
+  .de__ss__list-item__body1 span,
+  .de__ss__list-item__body2 span,
+  .de__ss__list-item__icon {
+    font-weight: 900;
+  }
+
+  .de__ss__list-item__icon::before {
+    padding-right: 5px;
+  }
+
+  .de_ss_image {
+    display: none;
+    width: 0px;
+    height: 0px;
+  }
 }
 
 .de__scanning-status--small {
-    min-width: 445px !important;
+  min-width: 445px !important;
 }
 
 .lot-content {
+  float: left;
+  width: 100%;
+  margin-bottom: 2px;
+
+  .lot-title {
     float: left;
-    width: 100%;
-    margin-bottom: 2px;
+    margin-top: 5px;
+  }
 
-    .lot-title {
-        float: left;
-        margin-top: 5px;
-    }
+  .lot-name {
+    float: left;
+    margin-top: 5px;
+    margin-left: 5px !important;
+    margin-right: 0 !important;
+    font-weight: bold;
+    height: 25px;
+    max-width: 250px;
+  }
 
-    .lot-name {
-        float: left;
-        margin-top: 5px;
-        margin-left: 5px !important;
-        margin-right: 0 !important;
-        font-weight: bold;
-        height: 25px;
-        max-width: 250px;
-    }
+  .select-lot {
+    float: left;
+    margin-left: 5px !important;
+    margin-right: 0 !important;
+    max-width: 250px;
+  }
 
-    .select-lot {
-        float: left;
-        margin-left: 5px !important;
-        margin-right: 0 !important;
-        max-width: 250px;
-    }
-
-    .auto-selectLot {
-        float: right;
-        margin-left: 6px;
-        margin-top: 6px;
-        margin-right: 8px;
-    }
+  .auto-selectLot {
+    float: right;
+    margin-left: 6px;
+    margin-top: 6px;
+    margin-right: 8px;
+  }
 }

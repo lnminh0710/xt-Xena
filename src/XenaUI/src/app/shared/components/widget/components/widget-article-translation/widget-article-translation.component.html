@@ -1,62 +1,62 @@
 <div class="col-xs-12 widget-translate">
-    <div class="wt-rs-header">
-        <span class="wt-rs-header__label"
-            ><label-translation
-                [keyword]="'Widget_communication_dialog__Translate_for_text'"
-            ></label-translation
-            >:
-        </span>
-        <span class="wt-rs-header__text-value">
-            {{ originalValue }}
-        </span>
-    </div>
-    <div
-        class="col-xs-12 no-padding wt-rs__apply-for margin-bottom--sd"
-        *ngIf="enableLanguageSelectionMode"
+  <div class="wt-rs-header">
+    <span class="wt-rs-header__label"
+      ><label-translation
+        [keyword]="'Widget_communication_dialog__Translate_for_text'"
+      ></label-translation
+      >:
+    </span>
+    <span class="wt-rs-header__text-value">
+      {{ originalValue }}
+    </span>
+  </div>
+  <div
+    class="col-xs-12 no-padding wt-rs__apply-for margin-bottom--sd"
+    *ngIf="enableLanguageSelectionMode"
+  >
+    <span class="wt-rs__apply-for__text"
+      ><label-translation
+        [keyword]="'Widget_communication_dialog__Apply_for'"
+      ></label-translation
+      >:
+    </span>
+    <mat-radio-group>
+      <mat-radio-button
+        color="primary"
+        class="wt-rs__apply-for__radio"
+        [(ngModel)]="applyFor"
+        (change)="changeTranslateMode()"
+        value="1"
+      >
+        <label-translation
+          [keyword]="'Widget_communication_dialog__All'"
+        ></label-translation>
+      </mat-radio-button>
+      <mat-radio-button
+        color="primary"
+        class="wt-rs__apply-for__radio"
+        [(ngModel)]="applyFor"
+        (change)="changeTranslateMode()"
+        value="2"
+      >
+        <label-translation
+          [keyword]="'Widget_communication_dialog__Only_this_widget'"
+        ></label-translation>
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div class="wt-rs-grid">
+    <wijmo-grid
+      #translateTextGrid
+      [dataSource]="gridData"
+      [readOnly]="false"
+      [allowAddNew]="false"
+      [allowDelete]="false"
+      [isShowedEditButtons]="false"
+      (onTableEditStart)="onTableEditStart($event)"
+      (onTableEditEnd)="onTableEditEnd($event)"
+      (onRowEditEnded)="onTableEditSuccess($event)"
     >
-        <span class="wt-rs__apply-for__text"
-            ><label-translation
-                [keyword]="'Widget_communication_dialog__Apply_for'"
-            ></label-translation
-            >:
-        </span>
-        <mat-radio-group>
-            <mat-radio-button
-                color="primary"
-                class="wt-rs__apply-for__radio"
-                [(ngModel)]="applyFor"
-                (change)="changeTranslateMode()"
-                value="1"
-            >
-                <label-translation
-                    [keyword]="'Widget_communication_dialog__All'"
-                ></label-translation>
-            </mat-radio-button>
-            <mat-radio-button
-                color="primary"
-                class="wt-rs__apply-for__radio"
-                [(ngModel)]="applyFor"
-                (change)="changeTranslateMode()"
-                value="2"
-            >
-                <label-translation
-                    [keyword]="'Widget_communication_dialog__Only_this_widget'"
-                ></label-translation>
-            </mat-radio-button>
-        </mat-radio-group>
-    </div>
-    <div class="wt-rs-grid">
-        <wijmo-grid
-            #translateTextGrid
-            [dataSource]="gridData"
-            [readOnly]="false"
-            [allowAddNew]="false"
-            [allowDelete]="false"
-            [isShowedEditButtons]="false"
-            (onTableEditStart)="onTableEditStart($event)"
-            (onTableEditEnd)="onTableEditEnd($event)"
-            (onRowEditEnded)="onTableEditSuccess($event)"
-        >
-        </wijmo-grid>
-    </div>
+    </wijmo-grid>
+  </div>
 </div>

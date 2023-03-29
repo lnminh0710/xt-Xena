@@ -1,2 +1,2 @@
-﻿export * from "./module-setting.reducer";
-export * from "./module-setting.selectors";
+﻿export * from './module-setting.reducer';
+export * from './module-setting.selectors';

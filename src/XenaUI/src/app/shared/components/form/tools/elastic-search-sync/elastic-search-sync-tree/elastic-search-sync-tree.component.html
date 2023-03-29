@@ -1,20 +1,18 @@
 <div
-    class="t-v"
-    [perfect-scrollbar]="{ suppressScrollX: false, suppressScrollY: false }"
+  class="t-v"
+  [perfect-scrollbar]="{ suppressScrollX: false, suppressScrollY: false }"
 >
-    <div *ngIf="!data || !data.length" class="t-v-e">
-        <label-translation
-            [keyword]="'ESS_Tree__Empty_data'"
-        ></label-translation>
-    </div>
-    <wj-tree-view
-        #wjTreeView
-        [itemsSource]="data"
-        [displayMemberPath]="'header'"
-        [childItemsPath]="'items'"
-        [showCheckboxes]="true"
-        [isReadOnly]="true"
-        (checkedItemsChanged)="onCheckedItemsChanged($event)"
-    >
-    </wj-tree-view>
+  <div *ngIf="!data || !data.length" class="t-v-e">
+    <label-translation [keyword]="'ESS_Tree__Empty_data'"></label-translation>
+  </div>
+  <wj-tree-view
+    #wjTreeView
+    [itemsSource]="data"
+    [displayMemberPath]="'header'"
+    [childItemsPath]="'items'"
+    [showCheckboxes]="true"
+    [isReadOnly]="true"
+    (checkedItemsChanged)="onCheckedItemsChanged($event)"
+  >
+  </wj-tree-view>
 </div>

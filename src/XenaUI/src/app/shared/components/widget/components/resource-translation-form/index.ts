@@ -1,1 +1,1 @@
-export * from "./resource-translation-form.component";
+export * from './resource-translation-form.component';

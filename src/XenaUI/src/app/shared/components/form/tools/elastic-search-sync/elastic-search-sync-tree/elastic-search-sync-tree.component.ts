@@ -1,66 +1,66 @@
 import {
-    Component,
-    OnInit,
-    Input,
-    Output,
-    OnDestroy,
-    ViewChild,
-    EventEmitter,
-} from "@angular/core";
-import { BaseComponent } from "app/pages/private/base";
-import { Router } from "@angular/router";
-import { WjTreeView } from "wijmo/wijmo.angular2.nav";
-import { Uti } from "app/utilities";
-import { SyncModeConstant } from "app/models/elastic-search.mode";
+  Component,
+  OnInit,
+  Input,
+  Output,
+  OnDestroy,
+  ViewChild,
+  EventEmitter,
+} from '@angular/core';
+import { BaseComponent } from 'app/pages/private/base';
+import { Router } from '@angular/router';
+import { WjTreeView } from 'wijmo/wijmo.angular2.nav';
+import { Uti } from 'app/utilities';
+import { SyncModeConstant } from 'app/models/elastic-search.mode';
 
 @Component({
-    selector: "elastic-search-sync-tree",
-    styleUrls: ["./elastic-search-sync-tree.component.scss"],
-    templateUrl: "./elastic-search-sync-tree.component.html",
+  selector: 'elastic-search-sync-tree',
+  styleUrls: ['./elastic-search-sync-tree.component.scss'],
+  templateUrl: './elastic-search-sync-tree.component.html',
 })
 export class ElasticSearchSyncTreeComponent
-    extends BaseComponent
-    implements OnInit, OnDestroy
+  extends BaseComponent
+  implements OnInit, OnDestroy
 {
-    @Input() data: Array<any> = [];
-    private _syncMode: string;
-    @Input() set syncMode(data: string) {
-        this._syncMode = data;
-        if (data === SyncModeConstant.byId) {
-            this.wjTreeView.checkedItems = [];
-        }
+  @Input() data: Array<any> = [];
+  private _syncMode: string;
+  @Input() set syncMode(data: string) {
+    this._syncMode = data;
+    if (data === SyncModeConstant.byId) {
+      this.wjTreeView.checkedItems = [];
     }
-    get syncMode() {
-        return this._syncMode;
+  }
+  get syncMode() {
+    return this._syncMode;
+  }
+
+  @Output() outputData: EventEmitter<any> = new EventEmitter();
+
+  @ViewChild('wjTreeView') wjTreeView: WjTreeView;
+
+  constructor(router?: Router) {
+    super(router);
+  }
+  public ngOnInit() {}
+
+  public ngOnDestroy() {
+    Uti.unsubscribe(this);
+  }
+
+  public onCheckedItemsChanged($event) {
+    if (this.syncMode === SyncModeConstant.byId) {
+      const selectedItem = this.wjTreeView.selectedItem;
+      this.wjTreeView.checkedItems = [selectedItem];
     }
+    this.outputData.emit(this.wjTreeView.checkedItems);
+  }
 
-    @Output() outputData: EventEmitter<any> = new EventEmitter();
+  /*************************************************************************************************/
+  /***************************************PRIVATE METHOD********************************************/
 
-    @ViewChild("wjTreeView") wjTreeView: WjTreeView;
+  //#region Make Data Tree
 
-    constructor(router?: Router) {
-        super(router);
-    }
-    public ngOnInit() {}
-
-    public ngOnDestroy() {
-        Uti.unsubscribe(this);
-    }
-
-    public onCheckedItemsChanged($event) {
-        if (this.syncMode === SyncModeConstant.byId) {
-            const selectedItem = this.wjTreeView.selectedItem;
-            this.wjTreeView.checkedItems = [selectedItem];
-        }
-        this.outputData.emit(this.wjTreeView.checkedItems);
-    }
-
-    /*************************************************************************************************/
-    /***************************************PRIVATE METHOD********************************************/
-
-    //#region Make Data Tree
-
-    /*private executeData(data: Array<any>) {
+  /*private executeData(data: Array<any>) {
         if (!data || !data.length) {
             this.treeViewData = [];
             this.tempData = [];
@@ -112,5 +112,5 @@ export class ElasticSearchSyncTreeComponent
         }
     }*/
 
-    //#endregion
+  //#endregion
 }

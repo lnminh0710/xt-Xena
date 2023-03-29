@@ -1,18 +1,18 @@
 ﻿.working-modules-parked-items-container {
-    max-height: 420px;
-    width: 230px;
-    position: fixed;
-    border: 1px solid #205a7d;
-    background-color: #ecf0f5;
-    color: black;
-    padding: 5px 15px 5px 15px;
+  max-height: 420px;
+  width: 230px;
+  position: fixed;
+  border: 1px solid #205a7d;
+  background-color: #ecf0f5;
+  color: black;
+  padding: 5px 15px 5px 15px;
 
-    .custom-panel {
-        margin-bottom: 5px;
-        border-radius: 4px;
+  .custom-panel {
+    margin-bottom: 5px;
+    border-radius: 4px;
 
-        .panel-body {
-            padding: 5px;
-        }
+    .panel-body {
+      padding: 5px;
     }
+  }
 }

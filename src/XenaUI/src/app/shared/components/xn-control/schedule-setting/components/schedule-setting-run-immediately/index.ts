@@ -1,1 +1,1 @@
-export { ScheduleSettingRunImmediatelyComponent } from "./schedule-setting-run-immediately.component";
+export { ScheduleSettingRunImmediatelyComponent } from './schedule-setting-run-immediately.component';

@@ -1,1 +1,1 @@
-export * from "./ad-main-field.component";
+export * from './ad-main-field.component';

@@ -1,39 +1,36 @@
-import { Injectable, Injector } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import { BaseService } from "../base.service";
+import { Injectable, Injector } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { BaseService } from '../base.service';
 
 @Injectable()
 export class FrequencyService extends BaseService {
-    constructor(injector: Injector) {
-        super(injector);
-    }
+  constructor(injector: Injector) {
+    super(injector);
+  }
 
-    public rebuildFrequencies(idSelectionProject): Observable<any> {
-        return this.get<any>(this.serUrl.rebuildFrequencies, {
-            idSelectionProject,
-        });
-    }
+  public rebuildFrequencies(idSelectionProject): Observable<any> {
+    return this.get<any>(this.serUrl.rebuildFrequencies, {
+      idSelectionProject,
+    });
+  }
 
-    public getFrequencyBusyIndicator(idSelectionProject): Observable<any> {
-        return this.get<any>(this.serUrl.getFrequencyBusyIndicator, {
-            idSelectionProject,
-        });
-    }
+  public getFrequencyBusyIndicator(idSelectionProject): Observable<any> {
+    return this.get<any>(this.serUrl.getFrequencyBusyIndicator, {
+      idSelectionProject,
+    });
+  }
 
-    public getFrequency(
-        idSelectionProject,
-        idSelectionProjectCountry
-    ): Observable<any> {
-        return this.get<any>(this.serUrl.getFrequency, {
-            idSelectionProject,
-            idSelectionProjectCountry,
-        });
-    }
+  public getFrequency(
+    idSelectionProject,
+    idSelectionProjectCountry
+  ): Observable<any> {
+    return this.get<any>(this.serUrl.getFrequency, {
+      idSelectionProject,
+      idSelectionProjectCountry,
+    });
+  }
 
-    public saveFrequency(frequency): Observable<any> {
-        return this.post<any>(
-            this.serUrl.saveFrequency,
-            JSON.stringify(frequency)
-        );
-    }
+  public saveFrequency(frequency): Observable<any> {
+    return this.post<any>(this.serUrl.saveFrequency, JSON.stringify(frequency));
+  }
 }

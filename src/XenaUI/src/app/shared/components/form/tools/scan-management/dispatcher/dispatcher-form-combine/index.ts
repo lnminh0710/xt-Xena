@@ -1,1 +1,1 @@
-export * from "./dispatcher-form-combine.component";
+export * from './dispatcher-form-combine.component';

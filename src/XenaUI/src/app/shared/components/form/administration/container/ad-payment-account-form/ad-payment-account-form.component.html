@@ -1,181 +1,169 @@
 <div
-    *ngIf="isRenderForm"
-    class="form-container height-pc-100"
-    [ngClass]="{ submitted: submitted }"
+  *ngIf="isRenderForm"
+  class="form-container height-pc-100"
+  [ngClass]="{ submitted: submitted }"
 >
-    <form
-        [formGroup]="paymentAccountForm"
-        class="form-horizontal height-pc-100"
-        id="paymentAccountForm"
-        novalidate
-    >
-        <control-focus
-            [formName]="'paymentAccountForm'"
-            [isFocusOnFirstControl]="true"
-        ></control-focus>
-        <div class="col-xs-12 col-sm-6 height-pc-100">
-            <div class="form-group group-for-is-active">
-                <label for="isActive" class="control-label col-sm-3">{{
-                    initData.isActive.displayValue
-                }}</label>
-                <div class="col-sm-9">
-                    <mat-checkbox color="primary" formControlName="isActive">
-                    </mat-checkbox>
-                </div>
-            </div>
-            <div class="form-group">
-                <label
-                    for="idRepIsoCountryCode"
-                    class="control-label col-sm-3"
-                    >{{ countryCode }}</label
-                >
-                <div class="col-sm-9">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #idRepIsoCountryCode
-                            wjDropdownHelper
-                            [form]="paymentAccountForm"
-                            formControlName="idRepIsoCountryCode"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.countryCode"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="idRepIsoCountryCode"
-                            [control]="
-                                paymentAccountForm.controls[
-                                    'idRepIsoCountryCode'
-                                ]
-                            "
-                            icon="globe"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label
-                    for="idRepCashProviderPaymentTermsType"
-                    class="control-label col-sm-3"
-                    >{{ paymentsTermsType }}</label
-                >
-                <div class="col-sm-9">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #idProviderType
-                            wjDropdownHelper
-                            [form]="paymentAccountForm"
-                            formControlName="idProviderType"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.cashProviderType"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="idProviderType"
-                            [control]="
-                                paymentAccountForm.controls['idProviderType']
-                            "
-                            icon="cubes"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="idRepCurrencyCode" class="control-label col-sm-3">
-                    <label-translation
-                        [keyword]="'Ad_Payment__idRepCurrencyCode'"
-                    ></label-translation>
-                </label>
-                <div class="col-sm-9">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #idCurrency
-                            wjDropdownHelper
-                            [form]="paymentAccountForm"
-                            formControlName="idCurrency"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.currency"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="idCurrency"
-                            [control]="
-                                paymentAccountForm.controls['idCurrency']
-                            "
-                            icon="cubes"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="paymentsTermsName" class="control-label col-sm-3">{{
-                    paymentsTermsName
-                }}</label>
-                <div class="col-sm-9">
-                    <textarea
-                        class="form-control xn-input ad-payment-account-textarea"
-                        id="paymentsTermsName"
-                        name="paymentsTermsName"
-                        maxlength="500"
-                        formControlName="paymentsTermsName"
-                    ></textarea>
-                    <control-messages
-                        [control]="
-                            paymentAccountForm.controls['paymentsTermsName']
-                        "
-                        icon="university fa-2"
-                        styleClass="for-notes"
-                    >
-                    </control-messages>
-                </div>
-            </div>
+  <form
+    [formGroup]="paymentAccountForm"
+    class="form-horizontal height-pc-100"
+    id="paymentAccountForm"
+    novalidate
+  >
+    <control-focus
+      [formName]="'paymentAccountForm'"
+      [isFocusOnFirstControl]="true"
+    ></control-focus>
+    <div class="col-xs-12 col-sm-6 height-pc-100">
+      <div class="form-group group-for-is-active">
+        <label for="isActive" class="control-label col-sm-3">{{
+          initData.isActive.displayValue
+        }}</label>
+        <div class="col-sm-9">
+          <mat-checkbox color="primary" formControlName="isActive">
+          </mat-checkbox>
         </div>
-        <div class="col-xs-12 col-sm-6 height-pc-100">
-            <div class="form-group height-pc-100">
-                <label class="control-label col-sm-3 label-editable-table">
-                    <label-translation
-                        [keyword]="'Ad_Payment__Identifier_Codes'"
-                        User_profile_F
-                    ></label-translation>
-                </label>
-                <div class="col-sm-9 height-pc-80">
-                    <xn-ag-grid
-                        *ngIf="
-                            dataSourceTable &&
-                            dataSourceTable.columns &&
-                            dataSourceTable.columns.length
-                        "
-                        [id]="gridId"
-                        [dataSource]="dataSourceTable"
-                        [readOnly]="false"
-                        [isShowedHeader]="true"
-                        [isShowedEditButtons]="true"
-                        [fitWidthColumn]="true"
-                        [allowAddNew]="true"
-                        [allowDelete]="true"
-                        (cellEditingStopped)="onTableEditSuccess($event)"
-                        (onDeletedRows)="onDeletedRowsSuccess($event)"
-                    >
-                    </xn-ag-grid>
-                </div>
-            </div>
+      </div>
+      <div class="form-group">
+        <label for="idRepIsoCountryCode" class="control-label col-sm-3">{{
+          countryCode
+        }}</label>
+        <div class="col-sm-9">
+          <div class="full-width">
+            <xn-combo-box
+              #idRepIsoCountryCode
+              wjDropdownHelper
+              [form]="paymentAccountForm"
+              formControlName="idRepIsoCountryCode"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.countryCode"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="idRepIsoCountryCode"
+              [control]="paymentAccountForm.controls['idRepIsoCountryCode']"
+              icon="globe"
+            >
+            </control-messages>
+          </div>
         </div>
-    </form>
+      </div>
+      <div class="form-group">
+        <label
+          for="idRepCashProviderPaymentTermsType"
+          class="control-label col-sm-3"
+          >{{ paymentsTermsType }}</label
+        >
+        <div class="col-sm-9">
+          <div class="full-width">
+            <xn-combo-box
+              #idProviderType
+              wjDropdownHelper
+              [form]="paymentAccountForm"
+              formControlName="idProviderType"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.cashProviderType"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="idProviderType"
+              [control]="paymentAccountForm.controls['idProviderType']"
+              icon="cubes"
+            >
+            </control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="idRepCurrencyCode" class="control-label col-sm-3">
+          <label-translation
+            [keyword]="'Ad_Payment__idRepCurrencyCode'"
+          ></label-translation>
+        </label>
+        <div class="col-sm-9">
+          <div class="full-width">
+            <xn-combo-box
+              #idCurrency
+              wjDropdownHelper
+              [form]="paymentAccountForm"
+              formControlName="idCurrency"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.currency"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="idCurrency"
+              [control]="paymentAccountForm.controls['idCurrency']"
+              icon="cubes"
+            >
+            </control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="paymentsTermsName" class="control-label col-sm-3">{{
+          paymentsTermsName
+        }}</label>
+        <div class="col-sm-9">
+          <textarea
+            class="form-control xn-input ad-payment-account-textarea"
+            id="paymentsTermsName"
+            name="paymentsTermsName"
+            maxlength="500"
+            formControlName="paymentsTermsName"
+          ></textarea>
+          <control-messages
+            [control]="paymentAccountForm.controls['paymentsTermsName']"
+            icon="university fa-2"
+            styleClass="for-notes"
+          >
+          </control-messages>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 height-pc-100">
+      <div class="form-group height-pc-100">
+        <label class="control-label col-sm-3 label-editable-table">
+          <label-translation
+            [keyword]="'Ad_Payment__Identifier_Codes'"
+            User_profile_F
+          ></label-translation>
+        </label>
+        <div class="col-sm-9 height-pc-80">
+          <xn-ag-grid
+            *ngIf="
+              dataSourceTable &&
+              dataSourceTable.columns &&
+              dataSourceTable.columns.length
+            "
+            [id]="gridId"
+            [dataSource]="dataSourceTable"
+            [readOnly]="false"
+            [isShowedHeader]="true"
+            [isShowedEditButtons]="true"
+            [fitWidthColumn]="true"
+            [allowAddNew]="true"
+            [allowDelete]="true"
+            (cellEditingStopped)="onTableEditSuccess($event)"
+            (onDeletedRows)="onDeletedRowsSuccess($event)"
+          >
+          </xn-ag-grid>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>

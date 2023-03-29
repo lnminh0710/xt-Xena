@@ -1,24 +1,24 @@
 <div *ngIf="orderListSummaryDataSource" class="order-list-summary">
-    <xn-ag-grid
-        [dataSource]="orderListSummaryDataSource"
-        *ngIf="
-            orderListSummaryDataSource &&
-            orderListSummaryDataSource.columns &&
-            orderListSummaryDataSource.columns.length
-        "
-        [id]="gridId"
-        [hasFilterBox]="true"
-        [rowGrouping]="rowGrouping"
-        [allowDelete]="false"
-        [isShowedHeader]="true"
-        [headerTitle]="'Order Summary'"
-        [globalProperties]="globalProperties"
-        [sheetName]="'Order List Summary'"
-        (pdfClick)="onPdfColumnClick($event)"
-        (onRowGroupPanel)="handleRowGrouping($event)"
-        (editRowClick)="onEditRowColumnClick($event)"
-        (rowClick)="onChangeSelectedItems($event)"
-        (deleteClick)="onDeleteOrder($event)"
-    >
-    </xn-ag-grid>
+  <xn-ag-grid
+    [dataSource]="orderListSummaryDataSource"
+    *ngIf="
+      orderListSummaryDataSource &&
+      orderListSummaryDataSource.columns &&
+      orderListSummaryDataSource.columns.length
+    "
+    [id]="gridId"
+    [hasFilterBox]="true"
+    [rowGrouping]="rowGrouping"
+    [allowDelete]="false"
+    [isShowedHeader]="true"
+    [headerTitle]="'Order Summary'"
+    [globalProperties]="globalProperties"
+    [sheetName]="'Order List Summary'"
+    (pdfClick)="onPdfColumnClick($event)"
+    (onRowGroupPanel)="handleRowGrouping($event)"
+    (editRowClick)="onEditRowColumnClick($event)"
+    (rowClick)="onChangeSelectedItems($event)"
+    (deleteClick)="onDeleteOrder($event)"
+  >
+  </xn-ag-grid>
 </div>

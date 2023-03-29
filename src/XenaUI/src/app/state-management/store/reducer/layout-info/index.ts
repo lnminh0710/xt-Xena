@@ -1,2 +1,2 @@
-﻿export * from "./layout-info.reducer";
-export * from "./layout-info.selectors";
+﻿export * from './layout-info.reducer';
+export * from './layout-info.selectors';

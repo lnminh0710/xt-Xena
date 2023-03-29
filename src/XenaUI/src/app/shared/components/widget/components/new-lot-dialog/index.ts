@@ -1,1 +1,1 @@
-﻿export * from "./new-lot-dialog.component";
+﻿export * from './new-lot-dialog.component';

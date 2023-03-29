@@ -1,1 +1,1 @@
-export * from "./dialog-resource-translation.component";
+export * from './dialog-resource-translation.component';

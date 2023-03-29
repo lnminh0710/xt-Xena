@@ -1,1 +1,1 @@
-export { ElasticSearchSyncMainComponent } from "./elastic-search-sync-main.component";
+export { ElasticSearchSyncMainComponent } from './elastic-search-sync-main.component';

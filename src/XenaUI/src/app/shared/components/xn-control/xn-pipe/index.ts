@@ -1,1 +1,1 @@
-export { XnPipeModule } from "./xn-pipe.module";
+export { XnPipeModule } from './xn-pipe.module';

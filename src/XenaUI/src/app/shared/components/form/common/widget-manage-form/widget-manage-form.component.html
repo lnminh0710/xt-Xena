@@ -1,360 +1,343 @@
 <div
-    *ngIf="isRenderForm"
-    class="form-container height-pc-100"
-    [ngClass]="{ submitted: formGroup.submitted }"
+  *ngIf="isRenderForm"
+  class="form-container height-pc-100"
+  [ngClass]="{ submitted: formGroup.submitted }"
 >
-    <div class="col-xs-5 height-pc-100">
-        <form
-            [formGroup]="formGroup"
-            class="form-horizontal"
-            id="widgetManageFormGroup"
-            novalidate
-        >
-            <control-focus
-                #focusControl
-                formName="widgetManageFormGroup"
-                [isFocusOnFirstControl]="true"
-            >
-            </control-focus>
-            <div class="col-xs-12 no-padding height-pc-100">
-                <div class="xn__form-header">
-                    <span
-                        ><label-translation
-                            [keyword]="'Widget_Manage__Widget_Description'"
-                        ></label-translation
-                    ></span>
-                </div>
-                <div class="form-group">
-                    <label for="title" class="control-label col-sm-4">
-                        <label-translation
-                            [keyword]="'Widget_Manage__Widget_title'"
-                        ></label-translation>
-                    </label>
-                    <div class="col-sm-8">
-                        <div class="full-width">
-                            <input
-                                type="text"
-                                class="form-control xn-input"
-                                name="title"
-                                formControlName="title"
-                                autocomplete="off"
-                            />
-                            <control-messages
-                                [type]="'textbox'"
-                                [control]="formGroup.controls.title"
-                                [icon]="'align-justify'"
-                            >
-                            </control-messages>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="type" class="control-label col-sm-4">
-                        <label-translation
-                            [keyword]="'Widget_Manage__Widget_type'"
-                        ></label-translation>
-                    </label>
-                    <div class="col-sm-8">
-                        <div class="full-width">
-                            <xn-combo-box
-                                #type
-                                wjDropdownHelper
-                                [form]="formGroup"
-                                formControlName="type"
-                                class="custom-wj-input-control xn-select"
-                                placeholder="Please select"
-                                [itemsSource]="listComboBox.widgetType"
-                                [displayMemberPath]="'textValue'"
-                                [selectedValuePath]="'idValue'"
-                                [isEditable]="true"
-                                [isRequired]="false"
-                            >
-                            </xn-combo-box>
-                            <control-messages
-                                [xn-trigger-click-inside-cbo]="type"
-                                [control]="formGroup.controls.type"
-                                icon="anchor"
-                            >
-                            </control-messages>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="module" class="control-label col-sm-4">
-                        <label-translation
-                            [keyword]="'Widget_Manage__For_module'"
-                        ></label-translation>
-                    </label>
-                    <div class="col-sm-8">
-                        <div class="full-width">
-                            <wj-multi-select
-                                #module
-                                wjDropdownHelper
-                                [form]="formGroup"
-                                formControlName="module"
-                                placeholder="Please select"
-                                class="custom-wj-input-control xn-select"
-                                [itemsSource]="listComboBox.moduleItems"
-                                [displayMemberPath]="'textValue'"
-                                [checkedMemberPath]="'idValue'"
-                                [isRequired]="false"
-                                (checkedItemsChanged)="onCheckedItemsChanged()"
-                            >
-                            </wj-multi-select>
-                            <control-messages
-                                #moduleControlMessage
-                                [xn-trigger-click-inside-cbo]="module"
-                                [control]="formGroup.controls.module"
-                                icon="anchor"
-                                errorMessage="required"
-                            >
-                            </control-messages>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="icon" class="control-label col-sm-4">
-                        <label-translation
-                            [keyword]="'Widget_Manage__Widget_icon'"
-                        ></label-translation>
-                    </label>
-                    <div class="col-sm-7">
-                        <div class="full-width">
-                            <input
-                                #widgetIcon
-                                type="text"
-                                class="form-control xn-input"
-                                name="icon"
-                                formControlName="icon"
-                                autocomplete="off"
-                            />
-                            <control-messages
-                                [type]="'textbox'"
-                                [control]="formGroup.controls.icon"
-                                [xn-trigger-click-inside-cbo]="widgetIcon"
-                                [triggerClickAction]="
-                                    'https://fontawesome.com/v4.7.0/icons/'
-                                "
-                                [icon]="'align-justify'"
-                            >
-                            </control-messages>
-                        </div>
-                    </div>
-                    <div class="col-sm-1 no-padding-left">
-                        <label class="icon-preview"
-                            ><i
-                                class="fa {{ formGroup.controls.icon.value }}"
-                                aria-hidden="true"
-                            ></i
-                        ></label>
-                    </div>
-                </div>
-                <div class="xn__form-header">
-                    <span
-                        ><label-translation
-                            [keyword]="'Widget_Manage__Widget_Setting'"
-                        ></label-translation
-                    ></span>
-                </div>
-                <div class="form-group">
-                    <label for="listenKey" class="control-label col-sm-4">
-                        <label-translation
-                            [keyword]="'Widget_Manage__Listen_key'"
-                        ></label-translation>
-                    </label>
-                    <div class="col-sm-8">
-                        <div class="full-width">
-                            <input
-                                type="text"
-                                class="form-control xn-input"
-                                name="listenKey"
-                                formControlName="listenKey"
-                                autocomplete="off"
-                            />
-                            <control-messages
-                                [type]="'textbox'"
-                                [icon]="'align-justify'"
-                            >
-                            </control-messages>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="filterKey" class="control-label col-sm-4">
-                        <label-translation
-                            [keyword]="'Widget_Manage__Filter_key'"
-                        ></label-translation>
-                    </label>
-                    <div class="col-sm-8">
-                        <div class="full-width">
-                            <input
-                                type="text"
-                                class="form-control xn-input"
-                                name="filterKey"
-                                formControlName="filterKey"
-                                autocomplete="off"
-                            />
-                            <control-messages
-                                [type]="'textbox'"
-                                [icon]="'align-justify'"
-                            >
-                            </control-messages>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="primaryKey" class="control-label col-sm-4">
-                        <label-translation
-                            [keyword]="'Widget_Manage__Primary_key'"
-                        ></label-translation>
-                    </label>
-                    <div class="col-sm-8">
-                        <div class="full-width">
-                            <input
-                                type="text"
-                                class="form-control xn-input"
-                                name="primaryKey"
-                                formControlName="primaryKey"
-                                autocomplete="off"
-                            />
-                            <control-messages
-                                [type]="'textbox'"
-                                [icon]="'align-justify'"
-                            >
-                            </control-messages>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="primaryKey" class="control-label col-sm-4">
-                        <label-translation
-                            [keyword]="'Widget_Manage__Toolbar_setting'"
-                        ></label-translation>
-                    </label>
-                    <div class="col-sm-8">
-                        <mat-checkbox
-                            color="primary"
-                            class="checkbox-item"
-                            formControlName="add"
-                        >
-                            <label-translation
-                                [keyword]="'Widget_Manage__Add'"
-                            ></label-translation>
-                        </mat-checkbox>
-                        <mat-checkbox
-                            color="primary"
-                            class="checkbox-item"
-                            formControlName="edit"
-                        >
-                            <label-translation
-                                [keyword]="'Widget_Manage__Edit'"
-                            ></label-translation>
-                        </mat-checkbox>
-                        <mat-checkbox
-                            color="primary"
-                            class="checkbox-item"
-                            formControlName="delete"
-                        >
-                            <label-translation
-                                [keyword]="'Widget_Manage__Delete'"
-                            ></label-translation>
-                        </mat-checkbox>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <div class="col-xs-12 no-padding d-o">
-            <div class="xn__form-header">
-                <span
-                    ><label-translation
-                        [keyword]="'Widget_Manage__Display_On'"
-                    ></label-translation
-                ></span>
-            </div>
-            <div
-                class="col-xs-12 no-padding d-o-i-c"
-                [perfect-scrollbar]="{
-                    suppressScrollX: true,
-                    suppressScrollY: false
-                }"
-            >
-                <div
-                    class="margin-top--sd clearfix d-o-f"
-                    *ngFor="let item of widgetGroups"
-                >
-                    <div class="col-xs-12">
-                        <span class="g-t">{{ item.text }}</span>
-                    </div>
-                    <div class="col-xs-12 margin-top--sd margin-bottom--md">
-                        <mat-radio-group
-                            [(ngModel)]="item.value"
-                            name="widget-display-on{{ item.text }}"
-                        >
-                            <mat-radio-button
-                                class="margin-left--md"
-                                *ngFor="let item1 of item.group"
-                                color="primary"
-                                value="{{ item1.value }}"
-                                (change)="onGroupChanged(item)"
-                                name="widget-display-on"
-                            >
-                                <div class="d-o-r">
-                                    <i class="fa  {{ item1.icon }}  d-o-i"></i>
-                                    <span class="d-o-t">{{ item1.text }}</span>
-                                </div>
-                            </mat-radio-button>
-                        </mat-radio-group>
-                    </div>
-                </div>
-            </div>
-            <control-messages
-                [control]="formGroup.controls.displayOn"
-            ></control-messages>
+  <div class="col-xs-5 height-pc-100">
+    <form
+      [formGroup]="formGroup"
+      class="form-horizontal"
+      id="widgetManageFormGroup"
+      novalidate
+    >
+      <control-focus
+        #focusControl
+        formName="widgetManageFormGroup"
+        [isFocusOnFirstControl]="true"
+      >
+      </control-focus>
+      <div class="col-xs-12 no-padding height-pc-100">
+        <div class="xn__form-header">
+          <span
+            ><label-translation
+              [keyword]="'Widget_Manage__Widget_Description'"
+            ></label-translation
+          ></span>
         </div>
-    </div>
-    <div class="col-xs-12 col-sm-6 height-pc-100">
-        <form [formGroup]="formGroup" class="form-horizontal height-pc-100">
-            <div class="xn__form-header">
-                <span class="no-margin"
-                    ><label-translation
-                        [keyword]="'Widget_Manage__Json_Setting'"
-                    ></label-translation
-                ></span>
+        <div class="form-group">
+          <label for="title" class="control-label col-sm-4">
+            <label-translation
+              [keyword]="'Widget_Manage__Widget_title'"
+            ></label-translation>
+          </label>
+          <div class="col-sm-8">
+            <div class="full-width">
+              <input
+                type="text"
+                class="form-control xn-input"
+                name="title"
+                formControlName="title"
+                autocomplete="off"
+              />
+              <control-messages
+                [type]="'textbox'"
+                [control]="formGroup.controls.title"
+                [icon]="'align-justify'"
+              >
+              </control-messages>
             </div>
-            <div class="form-group h-s-30">
-                <div class="col-xs-12 col-sm-6 no-padding-left height-pc-100">
-                    <label
-                        for="getJson"
-                        class="control-label col-xs-12 text-left"
-                    >
-                        <label-translation
-                            [keyword]="'Widget_Manage__Get_json'"
-                        ></label-translation>
-                    </label>
-                    <textarea
-                        class="form-control xn-input"
-                        id="getJson"
-                        name="getJson"
-                        formControlName="getJson"
-                    ></textarea>
-                </div>
-                <div class="col-xs-12 col-sm-6 no-padding-left height-pc-100">
-                    <label
-                        for="primaryKey"
-                        class="control-label col-xs-12 text-left"
-                    >
-                        <label-translation
-                            [keyword]="'Widget_Manage__Update_json'"
-                        ></label-translation>
-                    </label>
-                    <textarea
-                        class="form-control xn-input"
-                        id="updateJson"
-                        name="updateJson"
-                        formControlName="updateJson"
-                    ></textarea>
-                </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="type" class="control-label col-sm-4">
+            <label-translation
+              [keyword]="'Widget_Manage__Widget_type'"
+            ></label-translation>
+          </label>
+          <div class="col-sm-8">
+            <div class="full-width">
+              <xn-combo-box
+                #type
+                wjDropdownHelper
+                [form]="formGroup"
+                formControlName="type"
+                class="custom-wj-input-control xn-select"
+                placeholder="Please select"
+                [itemsSource]="listComboBox.widgetType"
+                [displayMemberPath]="'textValue'"
+                [selectedValuePath]="'idValue'"
+                [isEditable]="true"
+                [isRequired]="false"
+              >
+              </xn-combo-box>
+              <control-messages
+                [xn-trigger-click-inside-cbo]="type"
+                [control]="formGroup.controls.type"
+                icon="anchor"
+              >
+              </control-messages>
             </div>
-        </form>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="module" class="control-label col-sm-4">
+            <label-translation
+              [keyword]="'Widget_Manage__For_module'"
+            ></label-translation>
+          </label>
+          <div class="col-sm-8">
+            <div class="full-width">
+              <wj-multi-select
+                #module
+                wjDropdownHelper
+                [form]="formGroup"
+                formControlName="module"
+                placeholder="Please select"
+                class="custom-wj-input-control xn-select"
+                [itemsSource]="listComboBox.moduleItems"
+                [displayMemberPath]="'textValue'"
+                [checkedMemberPath]="'idValue'"
+                [isRequired]="false"
+                (checkedItemsChanged)="onCheckedItemsChanged()"
+              >
+              </wj-multi-select>
+              <control-messages
+                #moduleControlMessage
+                [xn-trigger-click-inside-cbo]="module"
+                [control]="formGroup.controls.module"
+                icon="anchor"
+                errorMessage="required"
+              >
+              </control-messages>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="icon" class="control-label col-sm-4">
+            <label-translation
+              [keyword]="'Widget_Manage__Widget_icon'"
+            ></label-translation>
+          </label>
+          <div class="col-sm-7">
+            <div class="full-width">
+              <input
+                #widgetIcon
+                type="text"
+                class="form-control xn-input"
+                name="icon"
+                formControlName="icon"
+                autocomplete="off"
+              />
+              <control-messages
+                [type]="'textbox'"
+                [control]="formGroup.controls.icon"
+                [xn-trigger-click-inside-cbo]="widgetIcon"
+                [triggerClickAction]="'https://fontawesome.com/v4.7.0/icons/'"
+                [icon]="'align-justify'"
+              >
+              </control-messages>
+            </div>
+          </div>
+          <div class="col-sm-1 no-padding-left">
+            <label class="icon-preview"
+              ><i
+                class="fa {{ formGroup.controls.icon.value }}"
+                aria-hidden="true"
+              ></i
+            ></label>
+          </div>
+        </div>
+        <div class="xn__form-header">
+          <span
+            ><label-translation
+              [keyword]="'Widget_Manage__Widget_Setting'"
+            ></label-translation
+          ></span>
+        </div>
+        <div class="form-group">
+          <label for="listenKey" class="control-label col-sm-4">
+            <label-translation
+              [keyword]="'Widget_Manage__Listen_key'"
+            ></label-translation>
+          </label>
+          <div class="col-sm-8">
+            <div class="full-width">
+              <input
+                type="text"
+                class="form-control xn-input"
+                name="listenKey"
+                formControlName="listenKey"
+                autocomplete="off"
+              />
+              <control-messages [type]="'textbox'" [icon]="'align-justify'">
+              </control-messages>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="filterKey" class="control-label col-sm-4">
+            <label-translation
+              [keyword]="'Widget_Manage__Filter_key'"
+            ></label-translation>
+          </label>
+          <div class="col-sm-8">
+            <div class="full-width">
+              <input
+                type="text"
+                class="form-control xn-input"
+                name="filterKey"
+                formControlName="filterKey"
+                autocomplete="off"
+              />
+              <control-messages [type]="'textbox'" [icon]="'align-justify'">
+              </control-messages>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="primaryKey" class="control-label col-sm-4">
+            <label-translation
+              [keyword]="'Widget_Manage__Primary_key'"
+            ></label-translation>
+          </label>
+          <div class="col-sm-8">
+            <div class="full-width">
+              <input
+                type="text"
+                class="form-control xn-input"
+                name="primaryKey"
+                formControlName="primaryKey"
+                autocomplete="off"
+              />
+              <control-messages [type]="'textbox'" [icon]="'align-justify'">
+              </control-messages>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="primaryKey" class="control-label col-sm-4">
+            <label-translation
+              [keyword]="'Widget_Manage__Toolbar_setting'"
+            ></label-translation>
+          </label>
+          <div class="col-sm-8">
+            <mat-checkbox
+              color="primary"
+              class="checkbox-item"
+              formControlName="add"
+            >
+              <label-translation
+                [keyword]="'Widget_Manage__Add'"
+              ></label-translation>
+            </mat-checkbox>
+            <mat-checkbox
+              color="primary"
+              class="checkbox-item"
+              formControlName="edit"
+            >
+              <label-translation
+                [keyword]="'Widget_Manage__Edit'"
+              ></label-translation>
+            </mat-checkbox>
+            <mat-checkbox
+              color="primary"
+              class="checkbox-item"
+              formControlName="delete"
+            >
+              <label-translation
+                [keyword]="'Widget_Manage__Delete'"
+              ></label-translation>
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="col-xs-12 no-padding d-o">
+      <div class="xn__form-header">
+        <span
+          ><label-translation
+            [keyword]="'Widget_Manage__Display_On'"
+          ></label-translation
+        ></span>
+      </div>
+      <div
+        class="col-xs-12 no-padding d-o-i-c"
+        [perfect-scrollbar]="{
+          suppressScrollX: true,
+          suppressScrollY: false
+        }"
+      >
+        <div
+          class="margin-top--sd clearfix d-o-f"
+          *ngFor="let item of widgetGroups"
+        >
+          <div class="col-xs-12">
+            <span class="g-t">{{ item.text }}</span>
+          </div>
+          <div class="col-xs-12 margin-top--sd margin-bottom--md">
+            <mat-radio-group
+              [(ngModel)]="item.value"
+              name="widget-display-on{{ item.text }}"
+            >
+              <mat-radio-button
+                class="margin-left--md"
+                *ngFor="let item1 of item.group"
+                color="primary"
+                value="{{ item1.value }}"
+                (change)="onGroupChanged(item)"
+                name="widget-display-on"
+              >
+                <div class="d-o-r">
+                  <i class="fa  {{ item1.icon }}  d-o-i"></i>
+                  <span class="d-o-t">{{ item1.text }}</span>
+                </div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+      </div>
+      <control-messages
+        [control]="formGroup.controls.displayOn"
+      ></control-messages>
     </div>
+  </div>
+  <div class="col-xs-12 col-sm-6 height-pc-100">
+    <form [formGroup]="formGroup" class="form-horizontal height-pc-100">
+      <div class="xn__form-header">
+        <span class="no-margin"
+          ><label-translation
+            [keyword]="'Widget_Manage__Json_Setting'"
+          ></label-translation
+        ></span>
+      </div>
+      <div class="form-group h-s-30">
+        <div class="col-xs-12 col-sm-6 no-padding-left height-pc-100">
+          <label for="getJson" class="control-label col-xs-12 text-left">
+            <label-translation
+              [keyword]="'Widget_Manage__Get_json'"
+            ></label-translation>
+          </label>
+          <textarea
+            class="form-control xn-input"
+            id="getJson"
+            name="getJson"
+            formControlName="getJson"
+          ></textarea>
+        </div>
+        <div class="col-xs-12 col-sm-6 no-padding-left height-pc-100">
+          <label for="primaryKey" class="control-label col-xs-12 text-left">
+            <label-translation
+              [keyword]="'Widget_Manage__Update_json'"
+            ></label-translation>
+          </label>
+          <textarea
+            class="form-control xn-input"
+            id="updateJson"
+            name="updateJson"
+            formControlName="updateJson"
+          ></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>

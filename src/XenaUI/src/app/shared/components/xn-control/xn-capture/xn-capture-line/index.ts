@@ -1,1 +1,1 @@
-export * from "./xn-capture-line.component";
+export * from './xn-capture-line.component';

@@ -1,1 +1,1 @@
-﻿export * from "./module-setting.effect";
+﻿export * from './module-setting.effect';

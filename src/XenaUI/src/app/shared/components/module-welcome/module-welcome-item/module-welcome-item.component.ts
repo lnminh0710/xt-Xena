@@ -1,128 +1,125 @@
 import {
-    Component,
-    OnInit,
-    OnDestroy,
-    Input,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Output,
-    EventEmitter,
-} from "@angular/core";
-import { Module, ParkedItemModel } from "app/models";
-import { ParkedItemService, PropertyPanelService } from "app/services";
-import { parse, format } from "date-fns/esm";
-import { MenuModuleId } from "app/app.constants";
-import { Uti } from "app/utilities";
+  Component,
+  OnInit,
+  OnDestroy,
+  Input,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Output,
+  EventEmitter,
+} from '@angular/core';
+import { Module, ParkedItemModel } from 'app/models';
+import { ParkedItemService, PropertyPanelService } from 'app/services';
+import { parse, format } from 'date-fns/esm';
+import { MenuModuleId } from 'app/app.constants';
+import { Uti } from 'app/utilities';
 
 @Component({
-    selector: "module-welcome-item",
-    styleUrls: ["./module-welcome-item.component.scss"],
-    templateUrl: "./module-welcome-item.component.html",
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'module-welcome-item',
+  styleUrls: ['./module-welcome-item.component.scss'],
+  templateUrl: './module-welcome-item.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModuleWelcomeItemComponent implements OnInit, OnDestroy {
-    public parkedItem: ParkedItemModel;
-    private config: Array<any> = [];
-    public parkedItemFields: Array<any> = [];
-    public globalDateFormat: string = "";
+  public parkedItem: ParkedItemModel;
+  private config: Array<any> = [];
+  public parkedItemFields: Array<any> = [];
+  public globalDateFormat: string = '';
 
-    @Input() activeModule: Module;
-    @Input() subModules: Module[] = [];
-    @Input() set data(data: any) {
-        setTimeout(() => {
-            this.parkedItem = data.item;
-            this.config = data.fieldConfig;
+  @Input() activeModule: Module;
+  @Input() subModules: Module[] = [];
+  @Input() set data(data: any) {
+    setTimeout(() => {
+      this.parkedItem = data.item;
+      this.config = data.fieldConfig;
 
-            this.buildDisplayFields();
-            this.ref.markForCheck();
-        }, 200);
-    }
-    @Input() set globalProperties(globalProperties: any[]) {
-        this.globalDateFormat =
-            this.propertyPanelService.buildGlobalDateFormatFromProperties(
-                globalProperties
-            );
-    }
+      this.buildDisplayFields();
+      this.ref.markForCheck();
+    }, 200);
+  }
+  @Input() set globalProperties(globalProperties: any[]) {
+    this.globalDateFormat =
+      this.propertyPanelService.buildGlobalDateFormatFromProperties(
+        globalProperties
+      );
+  }
 
-    @Output() onSelect: EventEmitter<ParkedItemModel> = new EventEmitter();
+  @Output() onSelect: EventEmitter<ParkedItemModel> = new EventEmitter();
 
-    constructor(
-        private ref: ChangeDetectorRef,
-        private parkedItemService: ParkedItemService,
-        private propertyPanelService: PropertyPanelService,
-        private uti: Uti
-    ) {}
+  constructor(
+    private ref: ChangeDetectorRef,
+    private parkedItemService: ParkedItemService,
+    private propertyPanelService: PropertyPanelService,
+    private uti: Uti
+  ) {}
 
-    ngOnInit() {}
+  ngOnInit() {}
 
-    ngOnDestroy() {}
+  ngOnDestroy() {}
 
-    private buildDisplayFields() {
-        this.parkedItemFields = [];
+  private buildDisplayFields() {
+    this.parkedItemFields = [];
 
-        for (const name in this.parkedItem) {
-            if (!this.parkedItem[name]) {
-                continue;
-            }
+    for (const name in this.parkedItem) {
+      if (!this.parkedItem[name]) {
+        continue;
+      }
 
-            const allowedField = this.parkedItemService.buildFieldFromConfig(
-                name,
-                this.parkedItem,
-                this.config
-            );
-            if (allowedField && allowedField.fieldName) {
-                if (
-                    allowedField.fieldName.toLowerCase().indexOf("date") > -1 &&
-                    allowedField.fieldValue
-                ) {
-                    allowedField.fieldValue = parse(
-                        allowedField.fieldValue,
-                        "dd.MM.yyyy",
-                        new Date()
-                    );
-                }
-                this.parkedItemFields.push(allowedField);
-            }
-        }
-
+      const allowedField = this.parkedItemService.buildFieldFromConfig(
+        name,
+        this.parkedItem,
+        this.config
+      );
+      if (allowedField && allowedField.fieldName) {
         if (
-            this.activeModule &&
-            this.activeModule.idSettingsGUI === MenuModuleId.administration &&
-            this.parkedItem["idSettingsGUI"] &&
-            this.parkedItem["idSettingsGUI"].value
+          allowedField.fieldName.toLowerCase().indexOf('date') > -1 &&
+          allowedField.fieldValue
         ) {
-            const activeSubModule = this.parkedItemService.getActiveSubModule(
-                this.subModules,
-                this.parkedItem["idSettingsGUI"].value
-            );
-            if (activeSubModule) {
-                const titleField = {
-                    fieldName: activeSubModule.moduleName,
-                    fieldValue: activeSubModule.moduleName,
-                    icon: activeSubModule.iconName,
-                    tooltipPlacement: "top",
-                };
-
-                this.parkedItemFields.push(titleField);
-
-                this.parkedItemService.moveHeaderToTop(
-                    activeSubModule.moduleName,
-                    this.parkedItemFields
-                );
-            }
-        } else {
-            this.parkedItemService.moveHeaderToTop(
-                "personNr",
-                this.parkedItemFields
-            );
+          allowedField.fieldValue = parse(
+            allowedField.fieldValue,
+            'dd.MM.yyyy',
+            new Date()
+          );
         }
+        this.parkedItemFields.push(allowedField);
+      }
     }
 
-    public formatDate(date) {
-        return this.uti.formatLocale(date, this.globalDateFormat);
-    }
+    if (
+      this.activeModule &&
+      this.activeModule.idSettingsGUI === MenuModuleId.administration &&
+      this.parkedItem['idSettingsGUI'] &&
+      this.parkedItem['idSettingsGUI'].value
+    ) {
+      const activeSubModule = this.parkedItemService.getActiveSubModule(
+        this.subModules,
+        this.parkedItem['idSettingsGUI'].value
+      );
+      if (activeSubModule) {
+        const titleField = {
+          fieldName: activeSubModule.moduleName,
+          fieldValue: activeSubModule.moduleName,
+          icon: activeSubModule.iconName,
+          tooltipPlacement: 'top',
+        };
 
-    public selectParkedItem(parkedItem) {
-        this.onSelect.emit(parkedItem);
+        this.parkedItemFields.push(titleField);
+
+        this.parkedItemService.moveHeaderToTop(
+          activeSubModule.moduleName,
+          this.parkedItemFields
+        );
+      }
+    } else {
+      this.parkedItemService.moveHeaderToTop('personNr', this.parkedItemFields);
     }
+  }
+
+  public formatDate(date) {
+    return this.uti.formatLocale(date, this.globalDateFormat);
+  }
+
+  public selectParkedItem(parkedItem) {
+    this.onSelect.emit(parkedItem);
+  }
 }

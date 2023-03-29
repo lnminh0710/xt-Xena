@@ -1,70 +1,70 @@
 .project-status-container:not(.small-height) {
-    min-height: 150px;
+  min-height: 150px;
 }
 
 .panel {
-    border-color: #0f5e8c;
-    border-width: 2px;
+  border-color: #0f5e8c;
+  border-width: 2px;
 
-    &.disabled {
-        border-color: #aaa;
+  &.disabled {
+    border-color: #aaa;
 
-        .status-info-container {
-            h4 {
-                color: #aaa !important;
-            }
-        }
-
-        .project-system--img {
-            color: #aaa;
-        }
-    }
-
-    .panel-body.small-padding {
-        padding: 1px 20px;
-    }
-
-    .project-system--master {
-        padding-left: 10px !important;
-        margin-top: -3px;
-    }
-
-    .project-system--master--in-header {
-        padding-left: 10px !important;
+    .status-info-container {
+      h4 {
+        color: #aaa !important;
+      }
     }
 
     .project-system--img {
-        position: absolute;
-        transform: translateX(80%) translateY(-200%);
-        font-size: 30px;
-        color: #e50069;
+      color: #aaa;
+    }
+  }
+
+  .panel-body.small-padding {
+    padding: 1px 20px;
+  }
+
+  .project-system--master {
+    padding-left: 10px !important;
+    margin-top: -3px;
+  }
+
+  .project-system--master--in-header {
+    padding-left: 10px !important;
+  }
+
+  .project-system--img {
+    position: absolute;
+    transform: translateX(80%) translateY(-200%);
+    font-size: 30px;
+    color: #e50069;
+  }
+
+  .project-system--img--in-header {
+    position: absolute;
+    transform: translateX(40%) translateY(-165%);
+    font-size: 24px;
+    color: #e50069;
+  }
+
+  .status-info-container {
+    h4 {
+      font-weight: bold;
+      font-size: 12px;
+
+      &.blue-text {
+        color: #3c8dbc;
+      }
+
+      &.green-text {
+        color: #2e7d32;
+      }
     }
 
-    .project-system--img--in-header {
-        position: absolute;
-        transform: translateX(40%) translateY(-165%);
-        font-size: 24px;
-        color: #e50069;
+    &.font-size-big {
+      h4 {
+        font-size: 17.5px;
+      }
     }
-
-    .status-info-container {
-        h4 {
-            font-weight: bold;
-            font-size: 12px;
-
-            &.blue-text {
-                color: #3c8dbc;
-            }
-
-            &.green-text {
-                color: #2e7d32;
-            }
-        }
-
-        &.font-size-big {
-            h4 {
-                font-size: 17.5px;
-            }
-        }
-    }
+  }
 }

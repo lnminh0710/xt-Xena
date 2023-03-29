@@ -1,125 +1,121 @@
 <div
-    class="margin-top--sd height-pc-100"
-    [ngStyle]="{ display: isShowStep2 ? 'block' : 'none' }"
+  class="margin-top--sd height-pc-100"
+  [ngStyle]="{ display: isShowStep2 ? 'block' : 'none' }"
 >
-    <div class="pull-right xn-magintop-minus-01">
-        <button
-            type="button"
-            mat-raised-button
-            class="mat-btn-blue pull-right margin-left--sd xn-margin"
-            (click)="save(true)"
-        >
-            <span class="bt-t"
-                ><label-translation
-                    [keyword]="'SA_step2__Save_and_Next'"
-                ></label-translation
-            ></span>
-        </button>
-        <button
-            type="button"
-            class="mat-raised-button pull-right margin-left--sd xn-margin"
-            id="btn-continue-set-quantity"
-            (click)="save(false)"
-        >
-            <span class="bt-t"
-                ><label-translation
-                    [keyword]="'SA_step2__Save'"
-                ></label-translation
-            ></span>
-        </button>
+  <div class="pull-right xn-magintop-minus-01">
+    <button
+      type="button"
+      mat-raised-button
+      class="mat-btn-blue pull-right margin-left--sd xn-margin"
+      (click)="save(true)"
+    >
+      <span class="bt-t"
+        ><label-translation
+          [keyword]="'SA_step2__Save_and_Next'"
+        ></label-translation
+      ></span>
+    </button>
+    <button
+      type="button"
+      class="mat-raised-button pull-right margin-left--sd xn-margin"
+      id="btn-continue-set-quantity"
+      (click)="save(false)"
+    >
+      <span class="bt-t"
+        ><label-translation [keyword]="'SA_step2__Save'"></label-translation
+      ></span>
+    </button>
+  </div>
+  <div class="col-xs-12 no-padding">
+    <div
+      class="col-xs-3 no-padding-left xn-width-100 xn-padding-50"
+      *ngIf="_inputData && _inputData.length"
+    >
+      <strong
+        ><label-translation
+          [keyword]="'SA_step2__Name_of_Pool'"
+        ></label-translation
+        >:</strong
+      >
+      {{ _inputData[0].PoolName }}
     </div>
-    <div class="col-xs-12 no-padding">
-        <div
-            class="col-xs-3 no-padding-left xn-width-100 xn-padding-50"
-            *ngIf="_inputData && _inputData.length"
+    <div class="col-xs-3 no-padding-left xn-width-100">
+      <strong
+        ><label-translation
+          [keyword]="'SA_step2__Assign_queue_mode'"
+        ></label-translation
+        >:</strong
+      >
+    </div>
+    <div class="col-xs-4 no-padding form-group">
+      <mat-radio-group name="queue-mode-radio" [(ngModel)]="queueMode">
+        <mat-radio-button
+          class="xn-padding-left-5"
+          color="primary"
+          name="queue-mode-radio"
+          value="1"
+          (change)="changeAssignQueueMode(1)"
         >
-            <strong
-                ><label-translation
-                    [keyword]="'SA_step2__Name_of_Pool'"
-                ></label-translation
-                >:</strong
-            >
-            {{ _inputData[0].PoolName }}
-        </div>
-        <div class="col-xs-3 no-padding-left xn-width-100">
-            <strong
-                ><label-translation
-                    [keyword]="'SA_step2__Assign_queue_mode'"
-                ></label-translation
-                >:</strong
-            >
-        </div>
-        <div class="col-xs-4 no-padding form-group">
-            <mat-radio-group name="queue-mode-radio" [(ngModel)]="queueMode">
-                <mat-radio-button
-                    class="xn-padding-left-5"
-                    color="primary"
-                    name="queue-mode-radio"
-                    value="1"
-                    (change)="changeAssignQueueMode(1)"
-                >
-                    <label-translation
-                        [keyword]="'SA_step2__Deterministic'"
-                    ></label-translation>
-                </mat-radio-button>
-                <mat-radio-button
-                    class="xn-padding-left-5"
-                    color="primary"
-                    name="queue-mode-radio"
-                    value="2"
-                    (change)="changeAssignQueueMode(2)"
-                >
-                    <label-translation
-                        [keyword]="'SA_step2__Random'"
-                    ></label-translation>
-                </mat-radio-button>
-            </mat-radio-group>
-        </div>
+          <label-translation
+            [keyword]="'SA_step2__Deterministic'"
+          ></label-translation>
+        </mat-radio-button>
+        <mat-radio-button
+          class="xn-padding-left-5"
+          color="primary"
+          name="queue-mode-radio"
+          value="2"
+          (change)="changeAssignQueueMode(2)"
+        >
+          <label-translation [keyword]="'SA_step2__Random'"></label-translation>
+        </mat-radio-button>
+      </mat-radio-group>
     </div>
-    <div class="row scan-assignment-step-2-grid scan-assignment-grid">
-        <div class="col-xs-12 col-md-6 height-pc-100">
-            <xn-ag-grid
-                #wjgridPoolsDetailTable
-                *ngIf="
-                    dataSourceTableForPoolsDetail &&
-                    dataSourceTableForPoolsDetail.columns &&
-                    dataSourceTableForPoolsDetail.columns.length
-                "
-                [id]="wjgridPoolsDetailTableId"
-                [dataSource]="dataSourceTableForPoolsDetail"
-                [globalProperties]="globalProperties"
-                [isShowedHeader]="true"
-                headerTitle="Pool's details"
-                [allowSelectAll]="true"
-                [autoSelectFirstRow]="true"
-                [fitWidthColumn]="true"
-                [isDisableRowWithSelectAll]="true"
-                (onMarkedAsSelectedAll)="onChangeSelectedPoolItems($event)"
-            >
-            </xn-ag-grid>
-        </div>
-        <div class="col-xs-12 col-md-6 height-pc-100">
-            <xn-ag-grid
-                #wjgridUsersTable
-                *ngIf="
-                    dataSourceTableForUsers &&
-                    dataSourceTableForUsers.columns &&
-                    dataSourceTableForUsers.columns.length
-                "
-                [id]="wjgridUsersTableId"
-                [dataSource]="dataSourceTableForUsers"
-                [globalProperties]="globalProperties"
-                [isShowedHeader]="true"
-                headerTitle="Users"
-                [allowSelectAll]="true"
-                [autoSelectFirstRow]="true"
-                [fitWidthColumn]="true"
-                [isDisableRowWithSelectAll]="true"
-                [disabledAll]="!selectedPools || !selectedPools.length"
-                (cellEditingStopped)="onTableForUsersEditSuccess($event)"
-                (onMarkedAsSelectedAll)="onChangeSelectedUserItems($event)"
-            >
-            </xn-ag-grid>
-        </div>
+  </div>
+  <div class="row scan-assignment-step-2-grid scan-assignment-grid">
+    <div class="col-xs-12 col-md-6 height-pc-100">
+      <xn-ag-grid
+        #wjgridPoolsDetailTable
+        *ngIf="
+          dataSourceTableForPoolsDetail &&
+          dataSourceTableForPoolsDetail.columns &&
+          dataSourceTableForPoolsDetail.columns.length
+        "
+        [id]="wjgridPoolsDetailTableId"
+        [dataSource]="dataSourceTableForPoolsDetail"
+        [globalProperties]="globalProperties"
+        [isShowedHeader]="true"
+        headerTitle="Pool's details"
+        [allowSelectAll]="true"
+        [autoSelectFirstRow]="true"
+        [fitWidthColumn]="true"
+        [isDisableRowWithSelectAll]="true"
+        (onMarkedAsSelectedAll)="onChangeSelectedPoolItems($event)"
+      >
+      </xn-ag-grid>
     </div>
+    <div class="col-xs-12 col-md-6 height-pc-100">
+      <xn-ag-grid
+        #wjgridUsersTable
+        *ngIf="
+          dataSourceTableForUsers &&
+          dataSourceTableForUsers.columns &&
+          dataSourceTableForUsers.columns.length
+        "
+        [id]="wjgridUsersTableId"
+        [dataSource]="dataSourceTableForUsers"
+        [globalProperties]="globalProperties"
+        [isShowedHeader]="true"
+        headerTitle="Users"
+        [allowSelectAll]="true"
+        [autoSelectFirstRow]="true"
+        [fitWidthColumn]="true"
+        [isDisableRowWithSelectAll]="true"
+        [disabledAll]="!selectedPools || !selectedPools.length"
+        (cellEditingStopped)="onTableForUsersEditSuccess($event)"
+        (onMarkedAsSelectedAll)="onChangeSelectedUserItems($event)"
+      >
+      </xn-ag-grid>
+    </div>
+  </div>
 </div>

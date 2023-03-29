@@ -1,113 +1,113 @@
 /* Set dropdown font-families */
-form-quill-editor-toolbar .ql-font span[data-label="Arial"]::before {
-    font-family: "Arial";
-    content: "Arial";
+form-quill-editor-toolbar .ql-font span[data-label='Arial']::before {
+  font-family: 'Arial';
+  content: 'Arial';
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Arial Black"]::before {
-    font-family: "Arial Black";
-    content: "Arial Black";
+form-quill-editor-toolbar .ql-font span[data-label='Arial Black']::before {
+  font-family: 'Arial Black';
+  content: 'Arial Black';
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Calibri"]::before {
-    font-family: "Arial Black";
-    content: "Calibri";
+form-quill-editor-toolbar .ql-font span[data-label='Calibri']::before {
+  font-family: 'Arial Black';
+  content: 'Calibri';
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Comic Sans MS"]::before {
-    font-family: "Comic Sans MS";
-    content: "Comic Sans MS";
+form-quill-editor-toolbar .ql-font span[data-label='Comic Sans MS']::before {
+  font-family: 'Comic Sans MS';
+  content: 'Comic Sans MS';
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Georgia"]::before {
-    font-family: "Georgia";
-    content: "Georgia";
+form-quill-editor-toolbar .ql-font span[data-label='Georgia']::before {
+  font-family: 'Georgia';
+  content: 'Georgia';
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Helvetica"]::before {
-    font-family: "Helvetica";
-    content: "Helvetica";
-}
-
-form-quill-editor-toolbar
-    .ql-font
-    span[data-label="Lucida Sans Unicode"]::before {
-    font-family: "Lucida Sans Unicode";
-    content: "Lucida Sans Unicode";
+form-quill-editor-toolbar .ql-font span[data-label='Helvetica']::before {
+  font-family: 'Helvetica';
+  content: 'Helvetica';
 }
 
 form-quill-editor-toolbar
-    .ql-font
-    span[data-label="Portable User Interface"]::before {
-    font-family: "Portable User Interface";
-    content: "Portable User Interface";
+  .ql-font
+  span[data-label='Lucida Sans Unicode']::before {
+  font-family: 'Lucida Sans Unicode';
+  content: 'Lucida Sans Unicode';
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Times New Roman"]::before {
-    font-family: "Times New Roman";
-    content: "Times New Roman";
+form-quill-editor-toolbar
+  .ql-font
+  span[data-label='Portable User Interface']::before {
+  font-family: 'Portable User Interface';
+  content: 'Portable User Interface';
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Trebuchet MS"]::before {
-    font-family: "Trebuchet MS";
-    content: "Trebuchet MS";
+form-quill-editor-toolbar .ql-font span[data-label='Times New Roman']::before {
+  font-family: 'Times New Roman';
+  content: 'Times New Roman';
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Verdana"]::before {
-    font-family: "Verdana";
-    content: "Verdana";
+form-quill-editor-toolbar .ql-font span[data-label='Trebuchet MS']::before {
+  font-family: 'Trebuchet MS';
+  content: 'Trebuchet MS';
 }
 
-form-quill-editor-toolbar .ql-font span[data-label="Tahoma"]::before {
-    font-family: "Tahoma";
-    content: "Tahoma";
+form-quill-editor-toolbar .ql-font span[data-label='Verdana']::before {
+  font-family: 'Verdana';
+  content: 'Verdana';
+}
+
+form-quill-editor-toolbar .ql-font span[data-label='Tahoma']::before {
+  font-family: 'Tahoma';
+  content: 'Tahoma';
 }
 
 /* Set content font-families */
 .ql-font-arial {
-    font-family: "Arial";
+  font-family: 'Arial';
 }
 
 .ql-font-arialblack {
-    font-family: "Arial Black";
+  font-family: 'Arial Black';
 }
 
 .ql-font-calibri {
-    font-family: "Calibri";
+  font-family: 'Calibri';
 }
 
 .ql-font-comicsansms {
-    font-family: "Comic Sans MS";
+  font-family: 'Comic Sans MS';
 }
 
 .ql-font-georgia {
-    font-family: "Georgia";
+  font-family: 'Georgia';
 }
 
 .ql-font-helvetica {
-    font-family: "Helvetica";
+  font-family: 'Helvetica';
 }
 
 .ql-font-lucidasansunicode {
-    font-family: "Lucida Sans Unicode";
+  font-family: 'Lucida Sans Unicode';
 }
 
 .ql-font-portableuserinterface {
-    font-family: "Portable User Interface";
+  font-family: 'Portable User Interface';
 }
 
 .ql-font-timenewroman {
-    font-family: "Times New Roman";
+  font-family: 'Times New Roman';
 }
 
 .ql-font-trebuchetms {
-    font-family: "Trebuchet MS";
+  font-family: 'Trebuchet MS';
 }
 
 .ql-font-verdana {
-    font-family: "Verdana";
+  font-family: 'Verdana';
 }
 
 .ql-font-tahoma {
-    font-family: "Tahoma";
+  font-family: 'Tahoma';
 }

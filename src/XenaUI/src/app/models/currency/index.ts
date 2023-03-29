@@ -1,2 +1,2 @@
-﻿export * from "./currency.model";
-export * from "./payment-type.model";
+﻿export * from './currency.model';
+export * from './payment-type.model';

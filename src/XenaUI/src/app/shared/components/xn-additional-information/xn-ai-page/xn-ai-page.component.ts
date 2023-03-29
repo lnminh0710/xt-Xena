@@ -1,20 +1,20 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { AdditionalInfromationPageModel } from "app/models";
+import { Component, OnInit, Input } from '@angular/core';
+import { AdditionalInfromationPageModel } from 'app/models';
 
 @Component({
-    selector: "app-xn-ai-page",
-    templateUrl: "./xn-ai-page.component.html",
+  selector: 'app-xn-ai-page',
+  templateUrl: './xn-ai-page.component.html',
 })
 export class XnAdditionalInformationPageComponent implements OnInit {
-    public page: AdditionalInfromationPageModel;
+  public page: AdditionalInfromationPageModel;
 
-    @Input()
-    set data(data: AdditionalInfromationPageModel) {
-        this.page = data;
-    }
-    @Input() tabID: string;
+  @Input()
+  set data(data: AdditionalInfromationPageModel) {
+    this.page = data;
+  }
+  @Input() tabID: string;
 
-    constructor() {}
+  constructor() {}
 
-    ngOnInit() {}
+  ngOnInit() {}
 }

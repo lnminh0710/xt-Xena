@@ -1,1 +1,1 @@
-export { WfPanelComponent } from "./wf-panel.component";
+export { WfPanelComponent } from './wf-panel.component';

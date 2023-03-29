@@ -1,579 +1,545 @@
 <div
-    *ngIf="isRenderForm"
-    class="form-container margin-top--sd"
-    [ngClass]="{
-        submitted: businessCostForm.submitted,
-        'xn-disabled': !isRenderCompleted
-    }"
+  *ngIf="isRenderForm"
+  class="form-container margin-top--sd"
+  [ngClass]="{
+    submitted: businessCostForm.submitted,
+    'xn-disabled': !isRenderCompleted
+  }"
 >
-    <form
-        [formGroup]="businessCostForm"
-        class="form-horizontal business-cost-form"
-        id="businessCostForm"
-        novalidate
-    >
-        <control-focus
-            #controlFocus
-            formName="businessCostForm"
-            controlWaitingMore="company"
-            [isFocusOnFirstControl]="true"
-        ></control-focus>
-        <div class="col-xs-12 col-md-5">
-            <div class="form-group">
-                <label for="idRepBusinessCosts" class="control-label col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__Business_cost_type'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-8">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #idRepBusinessCosts
-                            wjDropdownHelper
-                            [form]="businessCostForm"
-                            formControlName="idRepBusinessCosts"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.BusnessCostType"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="idRepBusinessCosts"
-                            [control]="
-                                businessCostForm.controls['idRepBusinessCosts']
-                            "
-                            icon="list"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="principal" class="control-label col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__Principal'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-8">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #principal
-                            wjDropdownHelper
-                            [form]="businessCostForm"
-                            formControlName="principal"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.principal"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                            (selectedIndexChanged)="onChangePrincipal()"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="principal"
-                            [control]="businessCostForm.controls['principal']"
-                            icon="list"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label
-                    for="company"
-                    [ngClass]="{
-                        'label-company-selected':
-                            multiSelectCompany &&
-                            multiSelectCompany.selectedItem
-                    }"
-                    class="control-label col-sm-4"
-                >
-                    <label-translation
-                        [keyword]="'Business_Cost_Header__Company'"
-                    ></label-translation>
-                    <span
-                        *ngIf="
-                            multiSelectCompany &&
-                            multiSelectCompany.selectedItem
-                        "
-                        ><br />({{
-                            multiSelectCompany.selectedItem.personType
-                        }})</span
-                    >
-                </label>
-                <div class="col-sm-8" *ngIf="listComboBox.BusinessCostCompany">
-                    <xn-combo-box
-                        formControlName="company"
-                        #multiSelectCompany
-                        wjDropdownHelper
-                        [form]="businessCostForm"
-                        name="company"
-                        class="form-control xn-input xn-wj-ddl xn-select xn-select-not-required"
-                        [isEditable]="true"
-                        [isContentHtml]="true"
-                        [dropDownCssClass]="'wjmo-ddl'"
-                        [displayMemberPath]="'company'"
-                        [selectedValuePath]="'idValue'"
-                        [itemsSource]="listComboBox.BusinessCostCompany"
-                        [itemFormatter]="itemFormatter"
-                        [maxDropDownWidth]="300"
-                        [maxDropDownHeight]=""
-                        [isRequired]="false"
-                        placeholder="Please select"
-                        (selectedIndexChanged)="selectedIndexChanged($event)"
-                    >
-                    </xn-combo-box>
-                    <control-messages
-                        [xn-trigger-click-inside-cbo]="multiSelectCompany"
-                        [control]="businessCostForm.controls.company"
-                        icon="newspaper-o"
-                    ></control-messages>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="invoice" class="control-label col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__Invoice_Number'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-8">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="invoice"
-                        formControlName="invoice"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [type]="'textbox'"
-                        [control]="businessCostForm.controls.invoice"
-                        [icon]="'newspaper-o'"
-                    ></control-messages>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="date" class="control-label col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__Date1'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-8 xn-calendar">
-                    <div class="full-width">
-                        <xn-date-picker
-                            [formControl]="businessCostForm.controls['date']"
-                            #invoiceDate
-                            class="xn-input"
-                            [format]="globalDateFormat"
-                            [min]="'1900-01-01' | toDate"
-                            [max]="lastDayOfThisYear"
-                            [dontShowCalendarWhenFocus]="
-                                !dontShowCalendarWhenFocus
-                            "
-                            [isRequired]="false"
-                            (valueChanged)="onDateChanged('invoiceDate')"
-                        >
-                        </xn-date-picker>
-                        <div class="input-group-addon">
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                    <control-messages
-                        [xn-trigger-click-inside-cbo]="invoiceDate"
-                        [control]="businessCostForm.controls.date"
-                        [icon]="'newspaper-o'"
-                    ></control-messages>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="currency" class="control-label col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__Currency'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-8">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #currency
-                            wjDropdownHelper
-                            [form]="businessCostForm"
-                            formControlName="currency"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.currency"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="currency"
-                            [control]="businessCostForm.controls.currency"
-                            [icon]="'list'"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="controlAmount" class="control-label col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__Control_amount'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-8">
-                    <input
-                        formControlName="controlAmount"
-                        #controlAmountNumber
-                        id="controlAmount"
-                        name="controlAmount"
-                        type="text"
-                        xn-numeric
-                        [min]="0"
-                        [format]="globalNumberFormat"
-                        class="custom-wj-input-control xn-input"
-                    />
-                    <control-messages
-                        [control]="businessCostForm.controls.controlAmount"
-                        [icon]="'align-justify'"
-                        [type]="'textbox'"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="prePayment" class="control-label col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__Pre_payment'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-8">
-                    <div class="col-sm-4 no-padding">
-                        <mat-checkbox
-                            color="primary"
-                            formControlName="prePayment"
-                            (change)="onChangePrePayment($event)"
-                        >
-                            &nbsp;
-                        </mat-checkbox>
-                    </div>
-                    <label for="prePaymentDate" class="control-label col-sm-4"
-                        ><label-translation
-                            [keyword]="'Business_Cost_Header__Pre_payment_date'"
-                        ></label-translation
-                    ></label>
-                    <div class="col-sm-4 no-padding">
-                        <div
-                            class="full-width"
-                            [ngClass]="{
-                                'xn-disabled':
-                                    businessCostForm.controls.prePaymentDate
-                                        .disabled ||
-                                    !businessCostForm.controls.prePayment.value
-                            }"
-                        >
-                            <xn-date-picker
-                                [formControl]="
-                                    businessCostForm.controls['prePaymentDate']
-                                "
-                                #prePaymentDate
-                                class="xn-input"
-                                [format]="globalDateFormat"
-                                [min]="'1900-01-01' | toDate"
-                                [max]="lastDayOfThisYear"
-                                [isRequired]="false"
-                                [dontShowCalendarWhenFocus]="
-                                    !dontShowCalendarWhenFocus
-                                "
-                                [isDisabled]="
-                                    !businessCostForm.controls.prePayment.value
-                                "
-                                (valueChanged)="onDateChanged('prePaymentDate')"
-                            >
-                            </xn-date-picker>
-                            <control-messages
-                                [xn-trigger-click-inside-cbo]="prePaymentDate"
-                                [control]="
-                                    businessCostForm.controls.prePaymentDate
-                                "
-                                [icon]="'calendar'"
-                            ></control-messages>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="vat1" class="control-label col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__VAT_1'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-8">
-                    <div class="col-sm-4 no-padding">
-                        <div
-                            class="full-width"
-                            [ngClass]="{
-                                disabled:
-                                    !listComboBox.vat ||
-                                    (listComboBox.vat.length == 1 &&
-                                        businessCostForm.controls.vat2 &&
-                                        businessCostForm.controls.vat2.value)
-                            }"
-                        >
-                            <xn-combo-box
-                                #vat1
-                                formControlName="vat1"
-                                class="custom-wj-input-control xn-select"
-                                [isDisabled]="
-                                    !listComboBox.vat ||
-                                    (listComboBox.vat.length == 1 &&
-                                        !!businessCostForm.controls.vat2 &&
-                                        !!businessCostForm.controls.vat2.value)
-                                "
-                                [itemsSource]="listComboBox.vat"
-                                [displayMemberPath]="'textValue'"
-                                [selectedValuePath]="'idValue'"
-                                [selectedValue]="
-                                    listComboBox.vat && listComboBox.vat.length
-                                        ? listComboBox.vat[0]
-                                        : {}
-                                "
-                                [isEditable]="true"
-                                [isRequired]="false"
-                                placeholder="Please select"
-                            >
-                                <!--<ng-template wjItemTemplate-->
-                                <!--let-item="item">-->
-                                <!--<span *ngIf="!(businessCostForm.controls.vat2 && item.idValue && item.idValue == businessCostForm.controls.vat2.value)">-->
-                                <!--{{item.textValue}}-->
-                                <!--</span>-->
-                                <!--</ng-template>-->
-                                <c-item>
-                                    <ng-template let-item="item">
-                                        <span
-                                            *ngIf="
-                                                !(
-                                                    businessCostForm.controls
-                                                        .vat2 &&
-                                                    item.idValue &&
-                                                    item.idValue ==
-                                                        businessCostForm
-                                                            .controls.vat2.value
-                                                )
-                                            "
-                                        >
-                                            {{ item.textValue }}
-                                        </span>
-                                    </ng-template>
-                                </c-item>
-                            </xn-combo-box>
-                            <control-messages
-                                [xn-trigger-click-inside-cbo]="vat1"
-                                [control]="businessCostForm.controls.vat1"
-                                [icon]="'list'"
-                            ></control-messages>
-                        </div>
-                    </div>
-
-                    <label for="vat1Amount" class="control-label col-sm-4"
-                        ><label-translation
-                            [keyword]="'Business_Cost_Header__Amount'"
-                        ></label-translation
-                    ></label>
-                    <div
-                        class="col-sm-4 no-padding"
-                        [ngClass]="{
-                            disabled: vat1Ctrl && vat1Ctrl.isDisabled
-                        }"
-                    >
-                        <input
-                            #vat1AmountNumber
-                            formControlName="vat1Amount"
-                            id="vat1Amount"
-                            name="vat1Amount"
-                            type="text"
-                            [isDisabled]="vat1Ctrl && vat1Ctrl.isDisabled"
-                            xn-numeric
-                            [format]="globalNumberFormat"
-                            class="custom-wj-input-control xn-input"
-                        />
-                        <clear-text
-                            *ngIf="!vat1Ctrl || !vat1Ctrl.isDisabled"
-                            [controlType]="'number'"
-                            [inputControl]="
-                                businessCostForm.controls.vat1Amount
-                            "
-                            [enableClearText]="true"
-                            [controlName]="'vat1Amount'"
-                        ></clear-text>
-                        <control-messages
-                            [control]="businessCostForm.controls.vat1Amount"
-                            [icon]="'list'"
-                        ></control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="vat1" class="control-label col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__VAT_2'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-8">
-                    <div class="col-sm-4 no-padding">
-                        <div
-                            class="full-width"
-                            [ngClass]="{
-                                disabled:
-                                    !listComboBox.vat ||
-                                    (listComboBox.vat.length == 1 &&
-                                        businessCostForm.controls.vat1 &&
-                                        businessCostForm.controls.vat1.value)
-                            }"
-                        >
-                            <xn-combo-box
-                                #vat2
-                                wjDropdownHelper
-                                [form]="businessCostForm"
-                                formControlName="vat2"
-                                class="custom-wj-input-control xn-select"
-                                [isDisabled]="
-                                    !listComboBox.vat ||
-                                    (listComboBox.vat.length == 1 &&
-                                        !!businessCostForm.controls.vat1 &&
-                                        !!businessCostForm.controls.vat1.value)
-                                "
-                                [itemsSource]="listComboBox.vat"
-                                [displayMemberPath]="'textValue'"
-                                [selectedValuePath]="'idValue'"
-                                [selectedValue]="
-                                    listComboBox.vat && listComboBox.vat.length
-                                        ? listComboBox.vat[1]
-                                        : {}
-                                "
-                                [isEditable]="true"
-                                [isRequired]="false"
-                                placeholder="Please select"
-                            >
-                                <!--<ng-template wjItemTemplate-->
-                                <!--let-item="item">-->
-                                <!--<span *ngIf="!(businessCostForm.controls.vat1 && item.idValue && item.idValue == businessCostForm.controls.vat1.value)">-->
-                                <!--{{item.textValue}}-->
-                                <!--</span>-->
-                                <!--</ng-template>-->
-                                <c-item>
-                                    <ng-template let-item="item">
-                                        <span
-                                            *ngIf="
-                                                !(
-                                                    businessCostForm.controls
-                                                        .vat1 &&
-                                                    item.idValue &&
-                                                    item.idValue ==
-                                                        businessCostForm
-                                                            .controls.vat1.value
-                                                )
-                                            "
-                                        >
-                                            {{ item.textValue }}
-                                        </span>
-                                    </ng-template>
-                                </c-item>
-                            </xn-combo-box>
-                            <control-messages
-                                [xn-trigger-click-inside-cbo]="vat2"
-                                [control]="businessCostForm.controls.vat1Amount"
-                                [icon]="'list'"
-                            ></control-messages>
-                        </div>
-                    </div>
-
-                    <label for="vat1Amount" class="control-label col-sm-4"
-                        ><label-translation
-                            [keyword]="'Business_Cost_Header__Amount'"
-                        ></label-translation
-                    ></label>
-                    <div
-                        class="col-sm-4 no-padding"
-                        [ngClass]="{
-                            disabled: vat2Ctrl && vat2Ctrl.isDisabled
-                        }"
-                    >
-                        <input
-                            #vat2AmountNumber
-                            formControlName="vat2Amount"
-                            id="vat2Amount"
-                            name="vat2Amount"
-                            type="text"
-                            [isDisabled]="vat2Ctrl && vat2Ctrl.isDisabled"
-                            xn-numeric
-                            [format]="globalNumberFormat"
-                            class="custom-wj-input-control xn-input"
-                        />
-                        <clear-text
-                            *ngIf="!vat2Ctrl || !vat2Ctrl.isDisabled"
-                            [controlType]="'number'"
-                            [inputControl]="
-                                businessCostForm.controls.vat2Amount
-                            "
-                            [enableClearText]="true"
-                            [controlName]="'vat2Amount'"
-                        ></clear-text>
-                        <control-messages
-                            [icon]="'list'"
-                            [control]="businessCostForm.controls.vat2Amount"
-                        ></control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label
-                    for="notes"
-                    class="control-label bold-title text-left col-sm-offset-1 col-md-offset-2 col-lg-offset-2 col-sm-4"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Header__Notes'"
-                    ></label-translation
-                ></label>
-                <div
-                    class="col-sm-offset-1 col-md-offset-2 col-lg-offset-2 col-sm-10"
-                >
-                    <textarea
-                        class="form-control xn-input"
-                        id="notes"
-                        name="notes"
-                        [maxlength]="maxCharactersNotes"
-                        formControlName="notes"
-                    >
-                    </textarea>
-                    <control-messages
-                        icon="comment  fa-2"
-                        [control]="businessCostForm.controls.notes"
-                        styleClass="for-notes"
-                    >
-                    </control-messages>
-                </div>
-            </div>
+  <form
+    [formGroup]="businessCostForm"
+    class="form-horizontal business-cost-form"
+    id="businessCostForm"
+    novalidate
+  >
+    <control-focus
+      #controlFocus
+      formName="businessCostForm"
+      controlWaitingMore="company"
+      [isFocusOnFirstControl]="true"
+    ></control-focus>
+    <div class="col-xs-12 col-md-5">
+      <div class="form-group">
+        <label for="idRepBusinessCosts" class="control-label col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__Business_cost_type'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-8">
+          <div class="full-width">
+            <xn-combo-box
+              #idRepBusinessCosts
+              wjDropdownHelper
+              [form]="businessCostForm"
+              formControlName="idRepBusinessCosts"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.BusnessCostType"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="idRepBusinessCosts"
+              [control]="businessCostForm.controls['idRepBusinessCosts']"
+              icon="list"
+            >
+            </control-messages>
+          </div>
         </div>
-        <div
-            class="col-xs-12 col-md-7 no-padding"
-            style="height: 615px; padding-right: 20px !important"
+      </div>
+      <div class="form-group">
+        <label for="principal" class="control-label col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__Principal'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-8">
+          <div class="full-width">
+            <xn-combo-box
+              #principal
+              wjDropdownHelper
+              [form]="businessCostForm"
+              formControlName="principal"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.principal"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+              (selectedIndexChanged)="onChangePrincipal()"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="principal"
+              [control]="businessCostForm.controls['principal']"
+              icon="list"
+            >
+            </control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label
+          for="company"
+          [ngClass]="{
+            'label-company-selected':
+              multiSelectCompany && multiSelectCompany.selectedItem
+          }"
+          class="control-label col-sm-4"
         >
-            <xn-file-explorer
-                #xnFileExplorerComponent
-                [xnTableUploadedFilesGridId]="
-                    'ca74dbf1-3d7e-4340-9c65-4860fdbc8f2c'
-                "
-                [data]="idBusinessCosts"
-                [globalProperties]="globalProperties"
-                (onDeletedFiles)="onDeletedFiles($event)"
-                [disabled]="idBusinessCosts <= 0"
-            ></xn-file-explorer>
+          <label-translation
+            [keyword]="'Business_Cost_Header__Company'"
+          ></label-translation>
+          <span *ngIf="multiSelectCompany && multiSelectCompany.selectedItem"
+            ><br />({{ multiSelectCompany.selectedItem.personType }})</span
+          >
+        </label>
+        <div class="col-sm-8" *ngIf="listComboBox.BusinessCostCompany">
+          <xn-combo-box
+            formControlName="company"
+            #multiSelectCompany
+            wjDropdownHelper
+            [form]="businessCostForm"
+            name="company"
+            class="form-control xn-input xn-wj-ddl xn-select xn-select-not-required"
+            [isEditable]="true"
+            [isContentHtml]="true"
+            [dropDownCssClass]="'wjmo-ddl'"
+            [displayMemberPath]="'company'"
+            [selectedValuePath]="'idValue'"
+            [itemsSource]="listComboBox.BusinessCostCompany"
+            [itemFormatter]="itemFormatter"
+            [maxDropDownWidth]="300"
+            [maxDropDownHeight]=""
+            [isRequired]="false"
+            placeholder="Please select"
+            (selectedIndexChanged)="selectedIndexChanged($event)"
+          >
+          </xn-combo-box>
+          <control-messages
+            [xn-trigger-click-inside-cbo]="multiSelectCompany"
+            [control]="businessCostForm.controls.company"
+            icon="newspaper-o"
+          ></control-messages>
         </div>
-    </form>
+      </div>
+      <div class="form-group">
+        <label for="invoice" class="control-label col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__Invoice_Number'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-8">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="invoice"
+            formControlName="invoice"
+            autocomplete="off"
+          />
+          <control-messages
+            [type]="'textbox'"
+            [control]="businessCostForm.controls.invoice"
+            [icon]="'newspaper-o'"
+          ></control-messages>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="date" class="control-label col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__Date1'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-8 xn-calendar">
+          <div class="full-width">
+            <xn-date-picker
+              [formControl]="businessCostForm.controls['date']"
+              #invoiceDate
+              class="xn-input"
+              [format]="globalDateFormat"
+              [min]="'1900-01-01' | toDate"
+              [max]="lastDayOfThisYear"
+              [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+              [isRequired]="false"
+              (valueChanged)="onDateChanged('invoiceDate')"
+            >
+            </xn-date-picker>
+            <div class="input-group-addon">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+            </div>
+          </div>
+          <control-messages
+            [xn-trigger-click-inside-cbo]="invoiceDate"
+            [control]="businessCostForm.controls.date"
+            [icon]="'newspaper-o'"
+          ></control-messages>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="currency" class="control-label col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__Currency'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-8">
+          <div class="full-width">
+            <xn-combo-box
+              #currency
+              wjDropdownHelper
+              [form]="businessCostForm"
+              formControlName="currency"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.currency"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="currency"
+              [control]="businessCostForm.controls.currency"
+              [icon]="'list'"
+            >
+            </control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="controlAmount" class="control-label col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__Control_amount'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-8">
+          <input
+            formControlName="controlAmount"
+            #controlAmountNumber
+            id="controlAmount"
+            name="controlAmount"
+            type="text"
+            xn-numeric
+            [min]="0"
+            [format]="globalNumberFormat"
+            class="custom-wj-input-control xn-input"
+          />
+          <control-messages
+            [control]="businessCostForm.controls.controlAmount"
+            [icon]="'align-justify'"
+            [type]="'textbox'"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="prePayment" class="control-label col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__Pre_payment'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-8">
+          <div class="col-sm-4 no-padding">
+            <mat-checkbox
+              color="primary"
+              formControlName="prePayment"
+              (change)="onChangePrePayment($event)"
+            >
+              &nbsp;
+            </mat-checkbox>
+          </div>
+          <label for="prePaymentDate" class="control-label col-sm-4"
+            ><label-translation
+              [keyword]="'Business_Cost_Header__Pre_payment_date'"
+            ></label-translation
+          ></label>
+          <div class="col-sm-4 no-padding">
+            <div
+              class="full-width"
+              [ngClass]="{
+                'xn-disabled':
+                  businessCostForm.controls.prePaymentDate.disabled ||
+                  !businessCostForm.controls.prePayment.value
+              }"
+            >
+              <xn-date-picker
+                [formControl]="businessCostForm.controls['prePaymentDate']"
+                #prePaymentDate
+                class="xn-input"
+                [format]="globalDateFormat"
+                [min]="'1900-01-01' | toDate"
+                [max]="lastDayOfThisYear"
+                [isRequired]="false"
+                [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+                [isDisabled]="!businessCostForm.controls.prePayment.value"
+                (valueChanged)="onDateChanged('prePaymentDate')"
+              >
+              </xn-date-picker>
+              <control-messages
+                [xn-trigger-click-inside-cbo]="prePaymentDate"
+                [control]="businessCostForm.controls.prePaymentDate"
+                [icon]="'calendar'"
+              ></control-messages>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="vat1" class="control-label col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__VAT_1'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-8">
+          <div class="col-sm-4 no-padding">
+            <div
+              class="full-width"
+              [ngClass]="{
+                disabled:
+                  !listComboBox.vat ||
+                  (listComboBox.vat.length == 1 &&
+                    businessCostForm.controls.vat2 &&
+                    businessCostForm.controls.vat2.value)
+              }"
+            >
+              <xn-combo-box
+                #vat1
+                formControlName="vat1"
+                class="custom-wj-input-control xn-select"
+                [isDisabled]="
+                  !listComboBox.vat ||
+                  (listComboBox.vat.length == 1 &&
+                    !!businessCostForm.controls.vat2 &&
+                    !!businessCostForm.controls.vat2.value)
+                "
+                [itemsSource]="listComboBox.vat"
+                [displayMemberPath]="'textValue'"
+                [selectedValuePath]="'idValue'"
+                [selectedValue]="
+                  listComboBox.vat && listComboBox.vat.length
+                    ? listComboBox.vat[0]
+                    : {}
+                "
+                [isEditable]="true"
+                [isRequired]="false"
+                placeholder="Please select"
+              >
+                <!--<ng-template wjItemTemplate-->
+                <!--let-item="item">-->
+                <!--<span *ngIf="!(businessCostForm.controls.vat2 && item.idValue && item.idValue == businessCostForm.controls.vat2.value)">-->
+                <!--{{item.textValue}}-->
+                <!--</span>-->
+                <!--</ng-template>-->
+                <c-item>
+                  <ng-template let-item="item">
+                    <span
+                      *ngIf="
+                        !(
+                          businessCostForm.controls.vat2 &&
+                          item.idValue &&
+                          item.idValue == businessCostForm.controls.vat2.value
+                        )
+                      "
+                    >
+                      {{ item.textValue }}
+                    </span>
+                  </ng-template>
+                </c-item>
+              </xn-combo-box>
+              <control-messages
+                [xn-trigger-click-inside-cbo]="vat1"
+                [control]="businessCostForm.controls.vat1"
+                [icon]="'list'"
+              ></control-messages>
+            </div>
+          </div>
+
+          <label for="vat1Amount" class="control-label col-sm-4"
+            ><label-translation
+              [keyword]="'Business_Cost_Header__Amount'"
+            ></label-translation
+          ></label>
+          <div
+            class="col-sm-4 no-padding"
+            [ngClass]="{
+              disabled: vat1Ctrl && vat1Ctrl.isDisabled
+            }"
+          >
+            <input
+              #vat1AmountNumber
+              formControlName="vat1Amount"
+              id="vat1Amount"
+              name="vat1Amount"
+              type="text"
+              [isDisabled]="vat1Ctrl && vat1Ctrl.isDisabled"
+              xn-numeric
+              [format]="globalNumberFormat"
+              class="custom-wj-input-control xn-input"
+            />
+            <clear-text
+              *ngIf="!vat1Ctrl || !vat1Ctrl.isDisabled"
+              [controlType]="'number'"
+              [inputControl]="businessCostForm.controls.vat1Amount"
+              [enableClearText]="true"
+              [controlName]="'vat1Amount'"
+            ></clear-text>
+            <control-messages
+              [control]="businessCostForm.controls.vat1Amount"
+              [icon]="'list'"
+            ></control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="vat1" class="control-label col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__VAT_2'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-8">
+          <div class="col-sm-4 no-padding">
+            <div
+              class="full-width"
+              [ngClass]="{
+                disabled:
+                  !listComboBox.vat ||
+                  (listComboBox.vat.length == 1 &&
+                    businessCostForm.controls.vat1 &&
+                    businessCostForm.controls.vat1.value)
+              }"
+            >
+              <xn-combo-box
+                #vat2
+                wjDropdownHelper
+                [form]="businessCostForm"
+                formControlName="vat2"
+                class="custom-wj-input-control xn-select"
+                [isDisabled]="
+                  !listComboBox.vat ||
+                  (listComboBox.vat.length == 1 &&
+                    !!businessCostForm.controls.vat1 &&
+                    !!businessCostForm.controls.vat1.value)
+                "
+                [itemsSource]="listComboBox.vat"
+                [displayMemberPath]="'textValue'"
+                [selectedValuePath]="'idValue'"
+                [selectedValue]="
+                  listComboBox.vat && listComboBox.vat.length
+                    ? listComboBox.vat[1]
+                    : {}
+                "
+                [isEditable]="true"
+                [isRequired]="false"
+                placeholder="Please select"
+              >
+                <!--<ng-template wjItemTemplate-->
+                <!--let-item="item">-->
+                <!--<span *ngIf="!(businessCostForm.controls.vat1 && item.idValue && item.idValue == businessCostForm.controls.vat1.value)">-->
+                <!--{{item.textValue}}-->
+                <!--</span>-->
+                <!--</ng-template>-->
+                <c-item>
+                  <ng-template let-item="item">
+                    <span
+                      *ngIf="
+                        !(
+                          businessCostForm.controls.vat1 &&
+                          item.idValue &&
+                          item.idValue == businessCostForm.controls.vat1.value
+                        )
+                      "
+                    >
+                      {{ item.textValue }}
+                    </span>
+                  </ng-template>
+                </c-item>
+              </xn-combo-box>
+              <control-messages
+                [xn-trigger-click-inside-cbo]="vat2"
+                [control]="businessCostForm.controls.vat1Amount"
+                [icon]="'list'"
+              ></control-messages>
+            </div>
+          </div>
+
+          <label for="vat1Amount" class="control-label col-sm-4"
+            ><label-translation
+              [keyword]="'Business_Cost_Header__Amount'"
+            ></label-translation
+          ></label>
+          <div
+            class="col-sm-4 no-padding"
+            [ngClass]="{
+              disabled: vat2Ctrl && vat2Ctrl.isDisabled
+            }"
+          >
+            <input
+              #vat2AmountNumber
+              formControlName="vat2Amount"
+              id="vat2Amount"
+              name="vat2Amount"
+              type="text"
+              [isDisabled]="vat2Ctrl && vat2Ctrl.isDisabled"
+              xn-numeric
+              [format]="globalNumberFormat"
+              class="custom-wj-input-control xn-input"
+            />
+            <clear-text
+              *ngIf="!vat2Ctrl || !vat2Ctrl.isDisabled"
+              [controlType]="'number'"
+              [inputControl]="businessCostForm.controls.vat2Amount"
+              [enableClearText]="true"
+              [controlName]="'vat2Amount'"
+            ></clear-text>
+            <control-messages
+              [icon]="'list'"
+              [control]="businessCostForm.controls.vat2Amount"
+            ></control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label
+          for="notes"
+          class="control-label bold-title text-left col-sm-offset-1 col-md-offset-2 col-lg-offset-2 col-sm-4"
+          ><label-translation
+            [keyword]="'Business_Cost_Header__Notes'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-offset-1 col-md-offset-2 col-lg-offset-2 col-sm-10">
+          <textarea
+            class="form-control xn-input"
+            id="notes"
+            name="notes"
+            [maxlength]="maxCharactersNotes"
+            formControlName="notes"
+          >
+          </textarea>
+          <control-messages
+            icon="comment  fa-2"
+            [control]="businessCostForm.controls.notes"
+            styleClass="for-notes"
+          >
+          </control-messages>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-xs-12 col-md-7 no-padding"
+      style="height: 615px; padding-right: 20px !important"
+    >
+      <xn-file-explorer
+        #xnFileExplorerComponent
+        [xnTableUploadedFilesGridId]="'ca74dbf1-3d7e-4340-9c65-4860fdbc8f2c'"
+        [data]="idBusinessCosts"
+        [globalProperties]="globalProperties"
+        (onDeletedFiles)="onDeletedFiles($event)"
+        [disabled]="idBusinessCosts <= 0"
+      ></xn-file-explorer>
+    </div>
+  </form>
 </div>

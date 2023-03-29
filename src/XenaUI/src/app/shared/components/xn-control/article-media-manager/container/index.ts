@@ -1,1 +1,1 @@
-export * from "./article-media-manager";
+export * from './article-media-manager';

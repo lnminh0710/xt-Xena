@@ -1,290 +1,290 @@
-@import "../color.scss";
+@import '../color.scss';
 /*
  * Skin: red Light
  * ----------
  */
 .skin-red-light {
-    .main-sidebar {
-        background-color: transparent;
-    }
+  .main-sidebar {
+    background-color: transparent;
+  }
 
-    .btn-primary {
+  .btn-primary {
+    background-color: $skin-red-main;
+    border-color: $skin-red-main;
+  }
+
+  .skin-border {
+    border-color: $skin-red-main;
+  }
+
+  .btn-primary:hover,
+  .btn-primary:active,
+  .btn-primary.hover {
+    background-color: $skin-red-hover;
+  }
+
+  .dnd-drag-start {
+    border: 1px dashed $skin-red-main !important;
+  }
+
+  .dnd-drag-enter {
+    opacity: 0.7;
+    border: 1px dashed $skin-red-main !important;
+  }
+
+  .dnd-drag-over {
+    border: 1px dashed $skin-red-main !important;
+  }
+
+  .dnd-sortable-drag {
+    border: 1px dashed $skin-red-main !important;
+  }
+
+  .parked-item-panel {
+    .parked-item-header {
+      .parked-item-menu,
+      .parked-item-title,
+      .parked-item-title-vertical,
+      .parked-item-collapse {
+        color: $gray6;
+      }
+
+      .badge {
         background-color: $skin-red-main;
-        border-color: $skin-red-main;
+      }
+
+      .parked-item-menu {
+        .panel {
+          border-color: $skin-red-main;
+
+          .panel-footer {
+            border-color: $skin-red-main;
+          }
+        }
+      }
+
+      .parked-item-collapse {
+        a.parked-item-toggle {
+          color: $gray6;
+
+          &:hover {
+            color: $gray7;
+          }
+        }
+      }
     }
 
-    .skin-border {
-        border-color: $skin-red-main;
+    .parked-item-content {
+      .panel {
+        background-color: $white1;
+        border-color: $gray8;
+
+        &.active {
+          border-color: $skin-red-main;
+
+          .panel-footer {
+            border-color: $skin-red-main;
+            background-color: $skin-red-main;
+          }
+
+          .edit-icon {
+            color: $edit-orange-color;
+          }
+
+          .star-icon {
+            color: #0004ff;
+          }
+
+          .check-icon {
+            color: #00b80f;
+          }
+        }
+      }
+    }
+  }
+
+  .global-search {
+    .gs__all-icon {
+      color: $light-gray1;
     }
 
-    .btn-primary:hover,
-    .btn-primary:active,
-    .btn-primary.hover {
+    .gs_module-item {
+      .gs__all-icon__bg {
+        background-color: $skin-red-main;
+      }
+    }
+
+    .gs_module-item:hover {
+      .gs__all-icon__bg {
         background-color: $skin-red-hover;
+      }
     }
 
-    .dnd-drag-start {
-        border: 1px dashed $skin-red-main !important;
+    .gs_module-item {
+      .gs__all-icon__bg--searched {
+        background-color: $skin-red-main;
+      }
     }
 
-    .dnd-drag-enter {
-        opacity: 0.7;
-        border: 1px dashed $skin-red-main !important;
+    .gs_module-item:hover {
+      .gs__all-icon__bg--searched {
+        background-color: $skin-red-hover;
+      }
     }
 
-    .dnd-drag-over {
-        border: 1px dashed $skin-red-main !important;
+    .gs_module-item {
+      border: 1px solid $skin-red-main;
+      border-radius: 5px;
     }
 
-    .dnd-sortable-drag {
-        border: 1px dashed $skin-red-main !important;
+    .gs_module-item__clicked {
+      border: 1px solid $skin-red-hover;
+      background-color: $search-module-clicked;
     }
 
-    .parked-item-panel {
-        .parked-item-header {
-            .parked-item-menu,
-            .parked-item-title,
-            .parked-item-title-vertical,
-            .parked-item-collapse {
-                color: $gray6;
+    .global-search__pin {
+      color: $yellow1;
+    }
+
+    .global-search__unpin {
+      color: $white1;
+    }
+
+    .panel-heading {
+      background-color: $skin-red-main;
+    }
+
+    .panel-heading:hover {
+      background-color: $skin-red-hover;
+    }
+  }
+
+  xn-datatable {
+    .ui-datatable th.ui-state-default {
+      background-color: $skin-red-main;
+      color: #fff;
+    }
+
+    .ui-datatable tbody > tr.ui-widget-content.ui-state-highlight {
+      background-color: $skin-red-row-hover;
+    }
+
+    .ui-datatable
+      tbody.ui-datatable-hoverable-rows
+      > tr.ui-widget-content:not(.ui-state-highlight):hover {
+      background: $skin-red-row-hover;
+    }
+
+    .ui-paginator .ui-paginator-page.ui-state-active {
+      background-color: $skin-red-main;
+    }
+
+    .ui-datatable tbody > tr.ui-widget-content.ui-state-highlight {
+      color: #000;
+    }
+  }
+
+  xn-menu-bar {
+    .header-icon {
+      color: $skin-red-main;
+    }
+  }
+
+  xn-tab {
+    .tab-container {
+      .tab-content {
+        background-color: $white;
+        border: 1px solid $skin-red-main;
+        border-top: none;
+      }
+    }
+
+    ul {
+      border-bottom: 1px solid $skin-red-main;
+
+      li.tab-summary {
+        > a {
+          color: $gray9;
+
+          &:hover,
+          &:focus {
+            border-color: transparent;
+            background: transparent;
+            color: $gray6;
+          }
+
+          .panel {
+            .panel-heading,
+            .panel-body,
+            .panel-footer {
+              border: 1px solid $white2;
             }
 
-            .badge {
-                background-color: $skin-red-main;
+            .panel-heading {
+              border-bottom: none;
             }
 
-            .parked-item-menu {
-                .panel {
-                    border-color: $skin-red-main;
-
-                    .panel-footer {
-                        border-color: $skin-red-main;
-                    }
-                }
+            .panel-body {
+              .square-box {
+                border: 1px solid $white2;
+              }
             }
-
-            .parked-item-collapse {
-                a.parked-item-toggle {
-                    color: $gray6;
-
-                    &:hover {
-                        color: $gray7;
-                    }
-                }
-            }
+          }
         }
 
-        .parked-item-content {
+        &.active {
+          > a {
+            &.active {
+              border: 1px solid $skin-red-main !important;
+              border-bottom-color: $white !important;
+              border-top-width: 5px !important;
+              color: $gray6;
+              background: $white;
+
+              .panel {
+                .panel-heading {
+                  color: $skin-red-main;
+                }
+
+                .panel-body {
+                  h2 {
+                    color: $skin-red-main;
+                  }
+                }
+              }
+            }
+
             .panel {
-                background-color: $white1;
-                border-color: $gray8;
-
-                &.active {
-                    border-color: $skin-red-main;
-
-                    .panel-footer {
-                        border-color: $skin-red-main;
-                        background-color: $skin-red-main;
-                    }
-
-                    .edit-icon {
-                        color: $edit-orange-color;
-                    }
-
-                    .star-icon {
-                        color: #0004ff;
-                    }
-
-                    .check-icon {
-                        color: #00b80f;
-                    }
-                }
+              .panel-heading,
+              .panel-body,
+              .panel-footer {
+                border: 1px solid transparent;
+              }
             }
+          }
         }
+      }
     }
+  }
 
-    .global-search {
-        .gs__all-icon {
-            color: $light-gray1;
-        }
+  xn-tab-button {
+    .parent-container {
+      background-color: $view-mode;
 
-        .gs_module-item {
-            .gs__all-icon__bg {
-                background-color: $skin-red-main;
-            }
-        }
+      a.overlap {
+        background-color: $view-mode;
+      }
 
-        .gs_module-item:hover {
-            .gs__all-icon__bg {
-                background-color: $skin-red-hover;
-            }
-        }
+      .button-container {
+        a:not(:last-child) {
+          background-color: $view-mode;
+          border-color: $view-mode;
 
-        .gs_module-item {
-            .gs__all-icon__bg--searched {
-                background-color: $skin-red-main;
-            }
+          &:hover {
+            background-color: $blue4;
+          }
         }
-
-        .gs_module-item:hover {
-            .gs__all-icon__bg--searched {
-                background-color: $skin-red-hover;
-            }
-        }
-
-        .gs_module-item {
-            border: 1px solid $skin-red-main;
-            border-radius: 5px;
-        }
-
-        .gs_module-item__clicked {
-            border: 1px solid $skin-red-hover;
-            background-color: $search-module-clicked;
-        }
-
-        .global-search__pin {
-            color: $yellow1;
-        }
-
-        .global-search__unpin {
-            color: $white1;
-        }
-
-        .panel-heading {
-            background-color: $skin-red-main;
-        }
-
-        .panel-heading:hover {
-            background-color: $skin-red-hover;
-        }
+      }
     }
-
-    xn-datatable {
-        .ui-datatable th.ui-state-default {
-            background-color: $skin-red-main;
-            color: #fff;
-        }
-
-        .ui-datatable tbody > tr.ui-widget-content.ui-state-highlight {
-            background-color: $skin-red-row-hover;
-        }
-
-        .ui-datatable
-            tbody.ui-datatable-hoverable-rows
-            > tr.ui-widget-content:not(.ui-state-highlight):hover {
-            background: $skin-red-row-hover;
-        }
-
-        .ui-paginator .ui-paginator-page.ui-state-active {
-            background-color: $skin-red-main;
-        }
-
-        .ui-datatable tbody > tr.ui-widget-content.ui-state-highlight {
-            color: #000;
-        }
-    }
-
-    xn-menu-bar {
-        .header-icon {
-            color: $skin-red-main;
-        }
-    }
-
-    xn-tab {
-        .tab-container {
-            .tab-content {
-                background-color: $white;
-                border: 1px solid $skin-red-main;
-                border-top: none;
-            }
-        }
-
-        ul {
-            border-bottom: 1px solid $skin-red-main;
-
-            li.tab-summary {
-                > a {
-                    color: $gray9;
-
-                    &:hover,
-                    &:focus {
-                        border-color: transparent;
-                        background: transparent;
-                        color: $gray6;
-                    }
-
-                    .panel {
-                        .panel-heading,
-                        .panel-body,
-                        .panel-footer {
-                            border: 1px solid $white2;
-                        }
-
-                        .panel-heading {
-                            border-bottom: none;
-                        }
-
-                        .panel-body {
-                            .square-box {
-                                border: 1px solid $white2;
-                            }
-                        }
-                    }
-                }
-
-                &.active {
-                    > a {
-                        &.active {
-                            border: 1px solid $skin-red-main !important;
-                            border-bottom-color: $white !important;
-                            border-top-width: 5px !important;
-                            color: $gray6;
-                            background: $white;
-
-                            .panel {
-                                .panel-heading {
-                                    color: $skin-red-main;
-                                }
-
-                                .panel-body {
-                                    h2 {
-                                        color: $skin-red-main;
-                                    }
-                                }
-                            }
-                        }
-
-                        .panel {
-                            .panel-heading,
-                            .panel-body,
-                            .panel-footer {
-                                border: 1px solid transparent;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    xn-tab-button {
-        .parent-container {
-            background-color: $view-mode;
-
-            a.overlap {
-                background-color: $view-mode;
-            }
-
-            .button-container {
-                a:not(:last-child) {
-                    background-color: $view-mode;
-                    border-color: $view-mode;
-
-                    &:hover {
-                        background-color: $blue4;
-                    }
-                }
-            }
-        }
-    }
+  }
 }

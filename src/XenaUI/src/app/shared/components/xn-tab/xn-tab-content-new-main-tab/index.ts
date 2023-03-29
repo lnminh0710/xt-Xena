@@ -1,1 +1,1 @@
-﻿export { XnTabContentNewMainTabComponent } from "./xn-tab-content-new-main-tab.component";
+﻿export { XnTabContentNewMainTabComponent } from './xn-tab-content-new-main-tab.component';

@@ -6,5 +6,5 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-export * from "./button-module";
-export * from "./button";
+export * from './button-module';
+export * from './button';

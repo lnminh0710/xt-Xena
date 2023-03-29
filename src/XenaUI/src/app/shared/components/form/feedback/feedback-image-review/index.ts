@@ -1,1 +1,1 @@
-export { FeedbackImageReviewComponent } from "./feedback-image-review.component";
+export { FeedbackImageReviewComponent } from './feedback-image-review.component';

@@ -1,83 +1,81 @@
 <p-dialog
-    #pDialogScheduleSetting
-    header=""
-    [(visible)]="showDialog"
-    [styleClass]="dialogStyleClass"
-    modal="true"
-    positionTop="150"
-    responsive="true"
-    appendTo="body"
-    [resizable]="isResizable"
-    [draggable]="isDraggable"
-    [width]="1300"
-    [height]="740"
-    [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
+  #pDialogScheduleSetting
+  header=""
+  [(visible)]="showDialog"
+  [styleClass]="dialogStyleClass"
+  modal="true"
+  positionTop="150"
+  responsive="true"
+  appendTo="body"
+  [resizable]="isResizable"
+  [draggable]="isDraggable"
+  [width]="1300"
+  [height]="740"
+  [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="header-text"
-                ><label-translation
-                    [keyword]="'ScheduleSetting__Schedule_Setting'"
-                ></label-translation
+  <p-header>
+    <div class="modal-header--information">
+      <span class="header-text"
+        ><label-translation
+          [keyword]="'ScheduleSetting__Schedule_Setting'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="closeWindowDialog()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-expand-popup"
+        *ngIf="!isMaximized"
+        (click)="maximize()"
+      >
+        <span class="fa fa-window-maximize"></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-collapse-popup"
+        *ngIf="isMaximized"
+        (click)="restore()"
+      >
+        <span class="fa fa-window-restore"></span>
+      </button>
+    </div>
+  </p-header>
+  <div class="col-xs-12 no-padding height-pc-100">
+    <div class="col-xs-12 no-padding margin-top--sd">
+      <div class="col-md-12 no-padding">
+        <button
+          label="Save"
+          *ngFor="let button of scheduleTypes"
+          pbutton=""
+          mat-raised-button
+          type="button"
+          class="s-t"
+          [ngClass]="{
+            'mat-btn-dark-grey': !button.select,
+            'mat-btn-green': button.select
+          }"
+          (click)="onScheduleTypeClick(button)"
+        >
+          <span class="bt-t ui-button-text ui-c">
+            <!-- <span class="bt-t">{{button.title}}</span> -->
+            <span class="bt-t"
+              ><label-translation
+                *ngIf="button.title"
+                [keyword]="'ScheduleSetting__btn_' + button.title"
+              ></label-translation
             ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="closeWindowDialog()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-expand-popup"
-                *ngIf="!isMaximized"
-                (click)="maximize()"
-            >
-                <span class="fa fa-window-maximize"></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-collapse-popup"
-                *ngIf="isMaximized"
-                (click)="restore()"
-            >
-                <span class="fa fa-window-restore"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 no-padding height-pc-100">
-        <div class="col-xs-12 no-padding margin-top--sd">
-            <div class="col-md-12 no-padding">
-                <button
-                    label="Save"
-                    *ngFor="let button of scheduleTypes"
-                    pbutton=""
-                    mat-raised-button
-                    type="button"
-                    class="s-t"
-                    [ngClass]="{
-                        'mat-btn-dark-grey': !button.select,
-                        'mat-btn-green': button.select
-                    }"
-                    (click)="onScheduleTypeClick(button)"
-                >
-                    <span class="bt-t ui-button-text ui-c">
-                        <!-- <span class="bt-t">{{button.title}}</span> -->
-                        <span class="bt-t"
-                            ><label-translation
-                                *ngIf="button.title"
-                                [keyword]="
-                                    'ScheduleSetting__btn_' + button.title
-                                "
-                            ></label-translation
-                        ></span>
-                    </span>
-                </button>
-                <!-- <mat-radio-group name="schedule-type-radio"
+          </span>
+        </button>
+        <!-- <mat-radio-group name="schedule-type-radio"
                     [(ngModel)]="scheduleType">
                     <mat-radio-button *ngFor="let radio of scheduleTypes"
                       color="primary"
@@ -87,53 +85,53 @@
                         {{radio.title}}
                     </mat-radio-button>
                 </mat-radio-group> -->
-            </div>
-        </div>
-        <div class="col-xs-12 no-padding margin-top--sd schedule-setting-form">
-            <schedule-setting-form
-                #scheduleSettingForm
-                [scheduleType]="scheduleType"
-                [dontShowCalendarWhenFocus]="dontShowCalendarWhenFocus"
-                [globalDateFormat]="globalDateFormat"
-                [inputData]="scheduleSettingData"
-                [currentRowData]="currentRowData"
-                (onRunAction)="onRunHandler($event)"
-                (outputDataAction)="outputDataHandler($event)"
-                (formDirtyAction)="formDirtyHandler($event)"
-            >
-            </schedule-setting-form>
-        </div>
+      </div>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                label="Cancel"
-                pbutton=""
-                type="button"
-                mat-raised-button
-                class="mat-btn-red"
-                (click)="closeWindowDialog()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'ScheduleSetting__Close'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                label="Save"
-                pbutton=""
-                mat-raised-button
-                type="button"
-                class="mat-btn-blue"
-                (click)="saveSetting()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'ScheduleSetting__Save'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+    <div class="col-xs-12 no-padding margin-top--sd schedule-setting-form">
+      <schedule-setting-form
+        #scheduleSettingForm
+        [scheduleType]="scheduleType"
+        [dontShowCalendarWhenFocus]="dontShowCalendarWhenFocus"
+        [globalDateFormat]="globalDateFormat"
+        [inputData]="scheduleSettingData"
+        [currentRowData]="currentRowData"
+        (onRunAction)="onRunHandler($event)"
+        (outputDataAction)="outputDataHandler($event)"
+        (formDirtyAction)="formDirtyHandler($event)"
+      >
+      </schedule-setting-form>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        label="Cancel"
+        pbutton=""
+        type="button"
+        mat-raised-button
+        class="mat-btn-red"
+        (click)="closeWindowDialog()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'ScheduleSetting__Close'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        label="Save"
+        pbutton=""
+        mat-raised-button
+        type="button"
+        class="mat-btn-blue"
+        (click)="saveSetting()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'ScheduleSetting__Save'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

@@ -1,1 +1,1 @@
-﻿export { FilterMenuComponent } from "./filter-menu.component";
+﻿export { FilterMenuComponent } from './filter-menu.component';

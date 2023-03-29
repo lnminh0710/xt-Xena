@@ -1,1 +1,1 @@
-export { ConfirmNewProfileComponent } from "./confirm-new-profile.component";
+export { ConfirmNewProfileComponent } from './confirm-new-profile.component';

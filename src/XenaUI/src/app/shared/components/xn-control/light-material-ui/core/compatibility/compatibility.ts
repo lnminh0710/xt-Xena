@@ -6,10 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Directive, InjectionToken, NgModule } from "@angular/core";
+import { Directive, InjectionToken, NgModule } from '@angular/core';
 
 export const MATERIAL_COMPATIBILITY_MODE = new InjectionToken<boolean>(
-    "md-compatibility-mode"
+  'md-compatibility-mode'
 );
 
 /** Selector that matches all elements that may have style collisions with AngularJS Material. */
@@ -192,8 +192,8 @@ export class MdPrefixRejector {}
  * there are any uses of the `mat-` prefix.
  */
 @NgModule({
-    declarations: [MatPrefixRejector, MdPrefixRejector],
-    exports: [MatPrefixRejector, MdPrefixRejector],
+  declarations: [MatPrefixRejector, MdPrefixRejector],
+  exports: [MatPrefixRejector, MdPrefixRejector],
 })
 export class CompatibilityModule {}
 

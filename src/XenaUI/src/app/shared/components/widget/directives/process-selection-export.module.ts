@@ -1,10 +1,10 @@
-import { NgModule } from "@angular/core";
-import { ProcessSelectionExportDirective } from "./process-selection-export.directive";
+import { NgModule } from '@angular/core';
+import { ProcessSelectionExportDirective } from './process-selection-export.directive';
 
 @NgModule({
-    imports: [],
-    declarations: [ProcessSelectionExportDirective],
-    exports: [ProcessSelectionExportDirective],
-    providers: [],
+  imports: [],
+  declarations: [ProcessSelectionExportDirective],
+  exports: [ProcessSelectionExportDirective],
+  providers: [],
 })
 export class ProcessSelectionExportModule {}

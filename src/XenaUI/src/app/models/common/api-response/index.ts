@@ -1,1 +1,1 @@
-﻿export * from "./api-result-response.model";
+﻿export * from './api-result-response.model';

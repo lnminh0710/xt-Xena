@@ -1,1 +1,1 @@
-export * from "./xn-numeric-textbox.component";
+export * from './xn-numeric-textbox.component';

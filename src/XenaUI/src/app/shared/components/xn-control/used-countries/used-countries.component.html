@@ -1,30 +1,30 @@
 <div
-    [ngClass]="{ 'showed-sub-list': isShowedSubList }"
-    class="used-country"
-    *ngIf="isRendered"
+  [ngClass]="{ 'showed-sub-list': isShowedSubList }"
+  class="used-country"
+  *ngIf="isRendered"
 >
-    <div class="col-xs-12" [perfect-scrollbar]="perfectScrollbarConfig">
-        <div
-            class="flag-container"
-            [ngStyle]="{
-                width: mainList.length * defaulWidthColumn + 10 + 'px'
-            }"
-        >
-            <div
-                *ngFor="let colItem of mainList"
-                class="colum-item"
-                [ngStyle]="{ width: defaulWidthColumn + 'px' }"
-            >
-                <div *ngFor="let rowItem of colItem" class="row-item">
-                    <span class="fa fa-circle used-country__icon"></span>
-                    <img
-                        src="public/assets/img/blank.gif"
-                        class="flag  flag-{{ rowItem.isoCode.toLowerCase() }}"
-                        alt="{{ rowItem.textValue }}"
-                    />
-                    {{ rowItem.countryCode }}
-                </div>
-            </div>
+  <div class="col-xs-12" [perfect-scrollbar]="perfectScrollbarConfig">
+    <div
+      class="flag-container"
+      [ngStyle]="{
+        width: mainList.length * defaulWidthColumn + 10 + 'px'
+      }"
+    >
+      <div
+        *ngFor="let colItem of mainList"
+        class="colum-item"
+        [ngStyle]="{ width: defaulWidthColumn + 'px' }"
+      >
+        <div *ngFor="let rowItem of colItem" class="row-item">
+          <span class="fa fa-circle used-country__icon"></span>
+          <img
+            src="public/assets/img/blank.gif"
+            class="flag  flag-{{ rowItem.isoCode.toLowerCase() }}"
+            alt="{{ rowItem.textValue }}"
+          />
+          {{ rowItem.countryCode }}
         </div>
+      </div>
     </div>
+  </div>
 </div>

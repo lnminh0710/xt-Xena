@@ -1,1 +1,1 @@
-export * from "./widget-content-detail.effect";
+export * from './widget-content-detail.effect';

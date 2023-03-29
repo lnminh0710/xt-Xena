@@ -1,140 +1,128 @@
 <div class="number-order-summary">
-    <div class="flexbox filter-segment">
-        <div
-            *ngFor="let item of uiFilterData; index as i"
-            (click)="filterTypeClicked($event, i)"
-            class="filter-box"
-            [ngClass]="{ 'filter-box-active': currentFilterType == item.type }"
-        >
-            <div *ngIf="item.subTitle" class="filter-title">
-                {{ item.title
-                }}<ng-template [ngIf]="item.type == 'Week'"> #: </ng-template
-                ><ng-template [ngIf]="item.type != 'Week'">: </ng-template
-                ><strong>{{ item.subTitle }}</strong>
-            </div>
-            <div *ngIf="!item.subTitle" class="filter-title">
-                <strong>{{ item.title }}</strong>
-            </div>
-            <div class="filter-icon">
-                <span>
-                    <i
-                        class="fa"
-                        [ngClass]="[
-                            item.loading ? 'fa-spinner fa-spin' : item.icon
-                        ]"
-                        aria-hidden="true"
-                    ></i>
-                </span>
-            </div>
-            <div class="filter-count">
-                <span
-                    ><label-translation
-                        [keyword]="'Number_Order_Summary__Quantity'"
-                    ></label-translation
-                ></span>
-                <span class="font-size-14px">
-                    <strong>{{ item.count }}</strong>
-                </span>
-            </div>
-        </div>
+  <div class="flexbox filter-segment">
+    <div
+      *ngFor="let item of uiFilterData; index as i"
+      (click)="filterTypeClicked($event, i)"
+      class="filter-box"
+      [ngClass]="{ 'filter-box-active': currentFilterType == item.type }"
+    >
+      <div *ngIf="item.subTitle" class="filter-title">
+        {{ item.title
+        }}<ng-template [ngIf]="item.type == 'Week'"> #: </ng-template
+        ><ng-template [ngIf]="item.type != 'Week'">: </ng-template
+        ><strong>{{ item.subTitle }}</strong>
+      </div>
+      <div *ngIf="!item.subTitle" class="filter-title">
+        <strong>{{ item.title }}</strong>
+      </div>
+      <div class="filter-icon">
+        <span>
+          <i
+            class="fa"
+            [ngClass]="[item.loading ? 'fa-spinner fa-spin' : item.icon]"
+            aria-hidden="true"
+          ></i>
+        </span>
+      </div>
+      <div class="filter-count">
+        <span
+          ><label-translation
+            [keyword]="'Number_Order_Summary__Quantity'"
+          ></label-translation
+        ></span>
+        <span class="font-size-14px">
+          <strong>{{ item.count }}</strong>
+        </span>
+      </div>
     </div>
-    <div>
-        <div [ngSwitch]="currentFilterType">
-            <div *ngSwitchCase="'Day'"></div>
-            <div *ngSwitchCase="'Week'"></div>
-            <div *ngSwitchCase="'Month'"></div>
-            <div *ngSwitchCase="'ByDate'">
-                <div class="flexbox filter-by-date">
-                    <div>
-                        <strong>{{ localizer["fromDate"] }}</strong>
-                    </div>
-                    <div class="flexbox-inline-input">
-                        <xn-date-picker
-                            #byDateDateFrom
-                            [isRequired]="false"
-                            [isInGrid]="true"
-                            [max]="byDateDateTo ? byDateDateTo.value : null"
-                            [value]="today"
-                            [format]="globalDateFormat"
-                            class=""
-                        ></xn-date-picker>
-                    </div>
-                    <div>
-                        <strong>{{ localizer["toDate"] }}</strong>
-                    </div>
-                    <div class="flexbox-inline-input">
-                        <xn-date-picker
-                            #byDateDateTo
-                            [isRequired]="false"
-                            [isInGrid]="true"
-                            [min]="byDateDateFrom ? byDateDateFrom.value : null"
-                            [value]="today"
-                            [format]="globalDateFormat"
-                            class=""
-                        ></xn-date-picker>
-                    </div>
-                    <div>
-                        <button
-                            type="button"
-                            mat-raised-button
-                            (click)="
-                                filterDateRangeEvent(
-                                    $event,
-                                    byDateDateFrom,
-                                    byDateDateTo
-                                )
-                            "
-                            class="mat-btn-blue"
-                        >
-                            {{ localizer["search"] }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div *ngSwitchCase="'SendToAdmin'">
-                <div class="flexbox filter-by-date">
-                    <div>
-                        <strong>{{ localizer["fromDate"] }}</strong>
-                    </div>
-                    <div class="flexbox-inline-input">
-                        <xn-date-picker
-                            #byAdminDateFrom
-                            [isRequired]="false"
-                            [isInGrid]="true"
-                            [max]="byAdminDateTo ? byAdminDateTo.value : null"
-                            [value]="today"
-                            [format]="globalDateFormat"
-                            class=""
-                        ></xn-date-picker>
-                    </div>
-                    <div>
-                        <strong>{{ localizer["toDate"] }}</strong>
-                    </div>
-                    <div class="flexbox-inline-input">
-                        <xn-date-picker
-                            #byAdminDateTo
-                            [isRequired]="false"
-                            [isInGrid]="true"
-                            [min]="
-                                byAdminDateFrom ? byAdminDateFrom.value : null
-                            "
-                            [value]="today"
-                            [format]="globalDateFormat"
-                            class=""
-                        ></xn-date-picker>
-                    </div>
-                    <div>
-                        <button
-                            type="button"
-                            mat-raised-button
-                            class="mat-btn-blue"
-                        >
-                            {{ localizer["search"] }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div *ngSwitchDefault></div>
+  </div>
+  <div>
+    <div [ngSwitch]="currentFilterType">
+      <div *ngSwitchCase="'Day'"></div>
+      <div *ngSwitchCase="'Week'"></div>
+      <div *ngSwitchCase="'Month'"></div>
+      <div *ngSwitchCase="'ByDate'">
+        <div class="flexbox filter-by-date">
+          <div>
+            <strong>{{ localizer['fromDate'] }}</strong>
+          </div>
+          <div class="flexbox-inline-input">
+            <xn-date-picker
+              #byDateDateFrom
+              [isRequired]="false"
+              [isInGrid]="true"
+              [max]="byDateDateTo ? byDateDateTo.value : null"
+              [value]="today"
+              [format]="globalDateFormat"
+              class=""
+            ></xn-date-picker>
+          </div>
+          <div>
+            <strong>{{ localizer['toDate'] }}</strong>
+          </div>
+          <div class="flexbox-inline-input">
+            <xn-date-picker
+              #byDateDateTo
+              [isRequired]="false"
+              [isInGrid]="true"
+              [min]="byDateDateFrom ? byDateDateFrom.value : null"
+              [value]="today"
+              [format]="globalDateFormat"
+              class=""
+            ></xn-date-picker>
+          </div>
+          <div>
+            <button
+              type="button"
+              mat-raised-button
+              (click)="
+                filterDateRangeEvent($event, byDateDateFrom, byDateDateTo)
+              "
+              class="mat-btn-blue"
+            >
+              {{ localizer['search'] }}
+            </button>
+          </div>
         </div>
+      </div>
+      <div *ngSwitchCase="'SendToAdmin'">
+        <div class="flexbox filter-by-date">
+          <div>
+            <strong>{{ localizer['fromDate'] }}</strong>
+          </div>
+          <div class="flexbox-inline-input">
+            <xn-date-picker
+              #byAdminDateFrom
+              [isRequired]="false"
+              [isInGrid]="true"
+              [max]="byAdminDateTo ? byAdminDateTo.value : null"
+              [value]="today"
+              [format]="globalDateFormat"
+              class=""
+            ></xn-date-picker>
+          </div>
+          <div>
+            <strong>{{ localizer['toDate'] }}</strong>
+          </div>
+          <div class="flexbox-inline-input">
+            <xn-date-picker
+              #byAdminDateTo
+              [isRequired]="false"
+              [isInGrid]="true"
+              [min]="byAdminDateFrom ? byAdminDateFrom.value : null"
+              [value]="today"
+              [format]="globalDateFormat"
+              class=""
+            ></xn-date-picker>
+          </div>
+          <div>
+            <button type="button" mat-raised-button class="mat-btn-blue">
+              {{ localizer['search'] }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchDefault></div>
     </div>
+  </div>
 </div>

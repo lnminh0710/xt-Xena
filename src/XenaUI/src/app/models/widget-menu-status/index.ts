@@ -1,1 +1,1 @@
-export * from "./widget-menu-status.model";
+export * from './widget-menu-status.model';

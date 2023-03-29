@@ -1,1 +1,1 @@
-export * from "./campaign-combine-form.component";
+export * from './campaign-combine-form.component';

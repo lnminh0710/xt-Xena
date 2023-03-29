@@ -1,1 +1,1 @@
-﻿export { OrderDataEntryTabComponent } from "./order-data-entry-tab.component";
+﻿export { OrderDataEntryTabComponent } from './order-data-entry-tab.component';

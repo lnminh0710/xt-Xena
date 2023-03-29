@@ -1,91 +1,91 @@
 <p-dialog
-    #pDialogEmailTemplate
-    header=""
-    [styleClass]="'email-customer-dialog'"
-    [(visible)]="showDialog"
-    [resizable]="false"
-    [draggable]="false"
-    modal="modal"
-    width="500"
-    responsive="false"
-    appendTo="body"
-    [closable]="false"
+  #pDialogEmailTemplate
+  header=""
+  [styleClass]="'email-customer-dialog'"
+  [(visible)]="showDialog"
+  [resizable]="false"
+  [draggable]="false"
+  modal="modal"
+  width="500"
+  responsive="false"
+  appendTo="body"
+  [closable]="false"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="fa fa-floppy-o header-icon pull-left"></span>
-            <span class="header-text pull-left"
-                ><label-translation
-                    [keyword]="'Dialog_add_customer__Create_New_Template'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="cancel()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 no-padding height-pc-100">
-        <label for="customerName" class="col-xs-12 control-label required"
-            ><label-translation
-                [keyword]="'Dialog_add_customer__Template_Name'"
-            ></label-translation
-            >:</label
-        >
-        <div class="col-xs-12">
-            <input
-                #customerNameCtrl
-                xn-numeric
-                [min]="0"
-                [typeNumber]="typeNumber"
-                [format]="'F'"
-                class="form-control xn-input"
-                type="text"
-                id="customerName"
-                name="customerName"
-                [(ngModel)]="customerName"
-                autocomplete="off"
-                (keyup)="customerNameUp($event)"
-            />
-            <div class="alert alert-danger" *ngIf="!customerName && submitted">
-                <label-translation
-                    [keyword]="'Dialog_add_customer__Required'"
-                ></label-translation>
-            </div>
-        </div>
-        <div class="col-xs-12 error" *ngIf="isError">Person not found</div>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="fa fa-floppy-o header-icon pull-left"></span>
+      <span class="header-text pull-left"
+        ><label-translation
+          [keyword]="'Dialog_add_customer__Create_New_Template'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="cancel()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                type="button"
-                mat-raised-button
-                class="btn-cancel pull-right"
-                (click)="cancel()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [keyword]="'Dialog_add_customer__Cancel'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-orange pull-right"
-                (click)="save()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [keyword]="'Dialog_add_customer__Save'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+  </p-header>
+  <div class="col-xs-12 no-padding height-pc-100">
+    <label for="customerName" class="col-xs-12 control-label required"
+      ><label-translation
+        [keyword]="'Dialog_add_customer__Template_Name'"
+      ></label-translation
+      >:</label
+    >
+    <div class="col-xs-12">
+      <input
+        #customerNameCtrl
+        xn-numeric
+        [min]="0"
+        [typeNumber]="typeNumber"
+        [format]="'F'"
+        class="form-control xn-input"
+        type="text"
+        id="customerName"
+        name="customerName"
+        [(ngModel)]="customerName"
+        autocomplete="off"
+        (keyup)="customerNameUp($event)"
+      />
+      <div class="alert alert-danger" *ngIf="!customerName && submitted">
+        <label-translation
+          [keyword]="'Dialog_add_customer__Required'"
+        ></label-translation>
+      </div>
+    </div>
+    <div class="col-xs-12 error" *ngIf="isError">Person not found</div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        type="button"
+        mat-raised-button
+        class="btn-cancel pull-right"
+        (click)="cancel()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [keyword]="'Dialog_add_customer__Cancel'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-orange pull-right"
+        (click)="save()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [keyword]="'Dialog_add_customer__Save'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

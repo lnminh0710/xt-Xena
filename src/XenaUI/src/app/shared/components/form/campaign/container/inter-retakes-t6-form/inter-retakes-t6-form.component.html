@@ -1,348 +1,327 @@
 <div class="form-container campaign-t6-form">
-    <div class="">
-        <mat-radio-group name="inter-retakes-radio" [(ngModel)]="chainValue">
-            <mat-radio-button
-                class="margin-left--md"
-                color="primary"
-                name="inter-retakes-radio"
-                value="asile"
-                (change)="radioChecked('asile')"
+  <div class="">
+    <mat-radio-group name="inter-retakes-radio" [(ngModel)]="chainValue">
+      <mat-radio-button
+        class="margin-left--md"
+        color="primary"
+        name="inter-retakes-radio"
+        value="asile"
+        (change)="radioChecked('asile')"
+      >
+        <label-translation
+          [keyword]="'Inter_Retakes_T6__Asile'"
+        ></label-translation>
+      </mat-radio-button>
+      <mat-radio-button
+        class="margin-left--md"
+        color="primary"
+        name="inter-retakes-radio"
+        value="inter"
+        (change)="radioChecked('inter')"
+      >
+        <label-translation
+          [keyword]="'Inter_Retakes_T6__Inter'"
+        ></label-translation>
+      </mat-radio-button>
+      <mat-radio-button
+        class="margin-left--md"
+        color="primary"
+        name="inter-retakes-radio"
+        value="all"
+        (change)="radioChecked('all')"
+      >
+        <label-translation
+          [keyword]="'Inter_Retakes_T6__All'"
+        ></label-translation>
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div class="t6-split">
+    <split
+      #splitContainer
+      direction="horizontal"
+      (dragStart)="dragStart()"
+      (dragEnd)="dragEnd($event)"
+      [gutterSize]="5"
+    >
+      <split-area [size]="50">
+        <div class="height-pc-100 padding-right--sd">
+          <div class="col-xs-12 no-padding campaign-grid__panel">
+            <xn-ag-grid
+              #campaignGridLeft
+              *ngIf="
+                campaignDataLeft &&
+                campaignDataLeft.columns &&
+                campaignDataLeft.columns.length
+              "
+              [id]="campaignGridLeftId"
+              [dataSource]="campaignDataLeft"
+              [hasSearch]="true"
+              [pageSize]="pageSize"
+              [serverPaging]="true"
+              [isShowedHeader]="true"
+              [rowGrouping]="rowLeftGrouping"
+              [readOnly]="false"
+              [headerTitle]="'Search campaign'"
+              [fitWidthColumn]="true"
+              [isUsedSearchTextboxInside]="true"
+              [globalProperties]="globalProps"
+              (onRowGroupPanel)="handleRowLeftGroupPanel($event)"
+              (rowDoubleClicked)="campaignDataLeftRowDoubleClick($event)"
+              (onActionTranslateDialog)="openTranslateDialog($event)"
+              (onTableSearch)="onLeftTableSearch($event)"
+              (pageChanged)="onPageChanged($event)"
+              (pageNumberChanged)="onPageNumberChanged($event)"
             >
-                <label-translation
-                    [keyword]="'Inter_Retakes_T6__Asile'"
-                ></label-translation>
-            </mat-radio-button>
-            <mat-radio-button
-                class="margin-left--md"
-                color="primary"
-                name="inter-retakes-radio"
-                value="inter"
-                (change)="radioChecked('inter')"
+            </xn-ag-grid>
+          </div>
+          <div class="col-xs-12 no-padding campaign-command__panel">
+            <div class="campaign-command__button">
+              <button
+                (click)="addCampaign()"
+                class="mat-btn-blue mat-btn-non-fix--icon"
+                mat-raised-button
+                xn-tooltip
+                [tooltipText]="'Add'"
+                [tooltipPlacement]="'top'"
+                container="body"
+              >
+                <i
+                  class="campaign-command__button--down fa fa-step-forward"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </div>
+            <div class="campaign-command__button margin-left--lg">
+              <button
+                (click)="removeCampaign()"
+                class="mat-btn-blue mat-btn-non-fix--icon"
+                mat-raised-button
+                xn-tooltip
+                [tooltipText]="'Remove'"
+                [tooltipPlacement]="'top'"
+                container="body"
+              >
+                <i
+                  class="fa campaign-command__button--up fa-step-forward"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </div>
+            <div class="campaign-command__button">
+              <button
+                (click)="removeAllCampaign()"
+                class="mat-btn-blue mat-btn-non-fix--icon"
+                mat-raised-button
+                xn-tooltip
+                [tooltipText]="'Remove all'"
+                [tooltipPlacement]="'top'"
+                container="body"
+              >
+                <i
+                  class="fa campaign-command__button--up fa-fast-forward"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </div>
+          </div>
+          <div
+            class="col-xs-12 no-padding campaign-grid__panel"
+            [ngClass]="{
+              'xn-disabled-none-set-opacity': !isRenderCompleted
+            }"
+          >
+            <xn-ag-grid
+              #campaignGridBottom
+              *ngIf="
+                campaignDataBottom &&
+                campaignDataBottom.columns &&
+                campaignDataBottom.columns.length
+              "
+              [id]="campaignGridBottomId"
+              [dataSource]="campaignDataBottom"
+              [isShowedHeader]="true"
+              [rowGrouping]="rowBottomGrouping"
+              [readOnly]="false"
+              [headerTitle]="'Campaign data'"
+              [fitWidthColumn]="true"
+              [globalProperties]="globalProps"
+              (onRowGroupPanel)="handleRowBottomGroupPanel($event)"
+              (rowClick)="campaignDataBottomRowClick($event)"
+              (onActionTranslateDialog)="openTranslateDialog($event)"
+              (rowDoubleClicked)="campaignDataBottomRowDoubleClick($event)"
+              (cellEditingStopped)="onBottomCellEditEndHandler($event)"
             >
-                <label-translation
-                    [keyword]="'Inter_Retakes_T6__Inter'"
-                ></label-translation>
-            </mat-radio-button>
-            <mat-radio-button
-                class="margin-left--md"
-                color="primary"
-                name="inter-retakes-radio"
-                value="all"
-                (change)="radioChecked('all')"
-            >
-                <label-translation
-                    [keyword]="'Inter_Retakes_T6__All'"
-                ></label-translation>
-            </mat-radio-button>
-        </mat-radio-group>
-    </div>
-    <div class="t6-split">
-        <split
-            #splitContainer
-            direction="horizontal"
-            (dragStart)="dragStart()"
-            (dragEnd)="dragEnd($event)"
-            [gutterSize]="5"
-        >
-            <split-area [size]="50">
-                <div class="height-pc-100 padding-right--sd">
-                    <div class="col-xs-12 no-padding campaign-grid__panel">
-                        <xn-ag-grid
-                            #campaignGridLeft
-                            *ngIf="
-                                campaignDataLeft &&
-                                campaignDataLeft.columns &&
-                                campaignDataLeft.columns.length
-                            "
-                            [id]="campaignGridLeftId"
-                            [dataSource]="campaignDataLeft"
-                            [hasSearch]="true"
-                            [pageSize]="pageSize"
-                            [serverPaging]="true"
-                            [isShowedHeader]="true"
-                            [rowGrouping]="rowLeftGrouping"
-                            [readOnly]="false"
-                            [headerTitle]="'Search campaign'"
-                            [fitWidthColumn]="true"
-                            [isUsedSearchTextboxInside]="true"
-                            [globalProperties]="globalProps"
-                            (onRowGroupPanel)="handleRowLeftGroupPanel($event)"
-                            (rowDoubleClicked)="
-                                campaignDataLeftRowDoubleClick($event)
-                            "
-                            (onActionTranslateDialog)="
-                                openTranslateDialog($event)
-                            "
-                            (onTableSearch)="onLeftTableSearch($event)"
-                            (pageChanged)="onPageChanged($event)"
-                            (pageNumberChanged)="onPageNumberChanged($event)"
-                        >
-                        </xn-ag-grid>
-                    </div>
-                    <div class="col-xs-12 no-padding campaign-command__panel">
-                        <div class="campaign-command__button">
-                            <button
-                                (click)="addCampaign()"
-                                class="mat-btn-blue mat-btn-non-fix--icon"
-                                mat-raised-button
-                                xn-tooltip
-                                [tooltipText]="'Add'"
-                                [tooltipPlacement]="'top'"
-                                container="body"
-                            >
-                                <i
-                                    class="campaign-command__button--down fa fa-step-forward"
-                                    aria-hidden="true"
-                                ></i>
-                            </button>
-                        </div>
-                        <div class="campaign-command__button margin-left--lg">
-                            <button
-                                (click)="removeCampaign()"
-                                class="mat-btn-blue mat-btn-non-fix--icon"
-                                mat-raised-button
-                                xn-tooltip
-                                [tooltipText]="'Remove'"
-                                [tooltipPlacement]="'top'"
-                                container="body"
-                            >
-                                <i
-                                    class="fa campaign-command__button--up fa-step-forward"
-                                    aria-hidden="true"
-                                ></i>
-                            </button>
-                        </div>
-                        <div class="campaign-command__button">
-                            <button
-                                (click)="removeAllCampaign()"
-                                class="mat-btn-blue mat-btn-non-fix--icon"
-                                mat-raised-button
-                                xn-tooltip
-                                [tooltipText]="'Remove all'"
-                                [tooltipPlacement]="'top'"
-                                container="body"
-                            >
-                                <i
-                                    class="fa campaign-command__button--up fa-fast-forward"
-                                    aria-hidden="true"
-                                ></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div
-                        class="col-xs-12 no-padding campaign-grid__panel"
-                        [ngClass]="{
-                            'xn-disabled-none-set-opacity': !isRenderCompleted
-                        }"
-                    >
-                        <xn-ag-grid
-                            #campaignGridBottom
-                            *ngIf="
-                                campaignDataBottom &&
-                                campaignDataBottom.columns &&
-                                campaignDataBottom.columns.length
-                            "
-                            [id]="campaignGridBottomId"
-                            [dataSource]="campaignDataBottom"
-                            [isShowedHeader]="true"
-                            [rowGrouping]="rowBottomGrouping"
-                            [readOnly]="false"
-                            [headerTitle]="'Campaign data'"
-                            [fitWidthColumn]="true"
-                            [globalProperties]="globalProps"
-                            (onRowGroupPanel)="
-                                handleRowBottomGroupPanel($event)
-                            "
-                            (rowClick)="campaignDataBottomRowClick($event)"
-                            (onActionTranslateDialog)="
-                                openTranslateDialog($event)
-                            "
-                            (rowDoubleClicked)="
-                                campaignDataBottomRowDoubleClick($event)
-                            "
-                            (cellEditingStopped)="
-                                onBottomCellEditEndHandler($event)
-                            "
-                        >
-                        </xn-ag-grid>
-                    </div>
-                </div>
-            </split-area>
-            <split-area [size]="50">
-                <div class="col-xs-12 campaign-panel--right">
-                    <xn-ag-grid
-                        #campaignGridRight
-                        *ngIf="
-                            campaignDataRight &&
-                            campaignDataRight.columns &&
-                            campaignDataRight.columns.length
-                        "
-                        [id]="campaignGridRightId"
-                        [dataSource]="campaignDataRight"
-                        [isShowedHeader]="true"
-                        [rowGrouping]="rowRightGrouping"
-                        [readOnly]="false"
-                        [headerTitle]="'Detail data'"
-                        [fitWidthColumn]="true"
-                        [globalProperties]="globalProps"
-                        (onRowGroupPanel)="handleRowRightGroupPanel($event)"
-                        (cellEditingStopped)="onRightCellEditEndHandler($event)"
-                        (onActionTranslateDialog)="
-                            openTranslateDialogRight($event)
-                        "
-                        (rowEditingStopped)="onRightRowEditEndHandler($event)"
-                        (onMarkedAsSelectedAll)="
-                            onCheckAllCheckedHandler($event)
-                        "
-                    >
-                    </xn-ag-grid>
-                </div>
-            </split-area>
-        </split>
-    </div>
+            </xn-ag-grid>
+          </div>
+        </div>
+      </split-area>
+      <split-area [size]="50">
+        <div class="col-xs-12 campaign-panel--right">
+          <xn-ag-grid
+            #campaignGridRight
+            *ngIf="
+              campaignDataRight &&
+              campaignDataRight.columns &&
+              campaignDataRight.columns.length
+            "
+            [id]="campaignGridRightId"
+            [dataSource]="campaignDataRight"
+            [isShowedHeader]="true"
+            [rowGrouping]="rowRightGrouping"
+            [readOnly]="false"
+            [headerTitle]="'Detail data'"
+            [fitWidthColumn]="true"
+            [globalProperties]="globalProps"
+            (onRowGroupPanel)="handleRowRightGroupPanel($event)"
+            (cellEditingStopped)="onRightCellEditEndHandler($event)"
+            (onActionTranslateDialog)="openTranslateDialogRight($event)"
+            (rowEditingStopped)="onRightRowEditEndHandler($event)"
+            (onMarkedAsSelectedAll)="onCheckAllCheckedHandler($event)"
+          >
+          </xn-ag-grid>
+        </div>
+      </split-area>
+    </split>
+  </div>
 </div>
 
 <p-dialog
-    header=""
-    [(visible)]="showDialog"
-    [resizable]="false"
-    modal="modal"
-    width="500"
-    responsive="true"
-    [styleClass]="'days-to-wait-dialog'"
-    (onAfterHide)="cancelSetDaystoWait()"
+  header=""
+  [(visible)]="showDialog"
+  [resizable]="false"
+  modal="modal"
+  width="500"
+  responsive="true"
+  [styleClass]="'days-to-wait-dialog'"
+  (onAfterHide)="cancelSetDaystoWait()"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="fa fa-warning header-icon pull-left"></span>
-            <span class="header-text pull-left"
-                ><label-translation
-                    [keyword]="'Inter_Retakes_T6__Warning'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="cancelSetDaystoWait()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="campaign__modal-message">
-        <p>
-            <label-translation
-                [keyword]="'Inter_Retakes_T6__To_add_an_Campaign_to_the_set'"
-            ></label-translation>
-        </p>
-        <p>
-            <label-translation
-                [keyword]="'Inter_Retakes_T6__You_can_add_days_to_wait_below'"
-            ></label-translation>
-        </p>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="fa fa-warning header-icon pull-left"></span>
+      <span class="header-text pull-left"
+        ><label-translation
+          [keyword]="'Inter_Retakes_T6__Warning'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="cancelSetDaystoWait()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
-    <div class="campaign__daysToWait form-horizontal">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label
-                    for="txt-campaign-days-to-wait"
-                    class="control-label col-sm-4 required"
-                    ><label-translation
-                        [keyword]="'Inter_Retakes_T6__Input_a_day'"
-                    ></label-translation
-                    >:
-                </label>
-                <div class="col-sm-8">
-                    <input
-                        [(ngModel)]="campaignDialogModel.daysToWait"
-                        id="txt-campaign-days-to-wait"
-                        name="txt-campaign-days-to-wait"
-                        type="text"
-                        xn-numeric
-                        [min]="0"
-                        [format]="globalNumberFormat"
-                        class="custom-wj-input-control xn-input"
-                        (ngModelChange)="daysToWaitChange($event)"
-                    />
-                    <div class="input-group-addon">
-                        <i class="fa fa-sum"></i>
-                    </div>
-                    <clear-text
-                        [enableClearText]="true"
-                        [controlName]="'txt-campaign-days-to-wait'"
-                    ></clear-text>
-                    <div
-                        [hidden]="
-                            !!campaignDialogModel.daysToWait ||
-                            !isContinueClicked
-                        "
-                        class="alert alert-danger"
-                    >
-                        <label-translation
-                            [keyword]="
-                                'Inter_Retakes_T6__You_must_input_days_to_wait_to_continue'
-                            "
-                        ></label-translation
-                        >.
-                    </div>
-                    <div
-                        [hidden]="
-                            !campaignDialogModel.daysToWait || daysToWaitValid
-                        "
-                        class="alert alert-danger"
-                    >
-                        <label-translation
-                            [keyword]="
-                                'Inter_Retakes_T6__You_must_input_days_to_wait_less_than_9999999'
-                            "
-                        ></label-translation
-                        >.
-                    </div>
-                </div>
-            </div>
+  </p-header>
+  <div class="campaign__modal-message">
+    <p>
+      <label-translation
+        [keyword]="'Inter_Retakes_T6__To_add_an_Campaign_to_the_set'"
+      ></label-translation>
+    </p>
+    <p>
+      <label-translation
+        [keyword]="'Inter_Retakes_T6__You_can_add_days_to_wait_below'"
+      ></label-translation>
+    </p>
+  </div>
+  <div class="campaign__daysToWait form-horizontal">
+    <div class="col-xs-12">
+      <div class="form-group">
+        <label
+          for="txt-campaign-days-to-wait"
+          class="control-label col-sm-4 required"
+          ><label-translation
+            [keyword]="'Inter_Retakes_T6__Input_a_day'"
+          ></label-translation
+          >:
+        </label>
+        <div class="col-sm-8">
+          <input
+            [(ngModel)]="campaignDialogModel.daysToWait"
+            id="txt-campaign-days-to-wait"
+            name="txt-campaign-days-to-wait"
+            type="text"
+            xn-numeric
+            [min]="0"
+            [format]="globalNumberFormat"
+            class="custom-wj-input-control xn-input"
+            (ngModelChange)="daysToWaitChange($event)"
+          />
+          <div class="input-group-addon">
+            <i class="fa fa-sum"></i>
+          </div>
+          <clear-text
+            [enableClearText]="true"
+            [controlName]="'txt-campaign-days-to-wait'"
+          ></clear-text>
+          <div
+            [hidden]="!!campaignDialogModel.daysToWait || !isContinueClicked"
+            class="alert alert-danger"
+          >
+            <label-translation
+              [keyword]="
+                'Inter_Retakes_T6__You_must_input_days_to_wait_to_continue'
+              "
+            ></label-translation
+            >.
+          </div>
+          <div
+            [hidden]="!campaignDialogModel.daysToWait || daysToWaitValid"
+            class="alert alert-danger"
+          >
+            <label-translation
+              [keyword]="
+                'Inter_Retakes_T6__You_must_input_days_to_wait_less_than_9999999'
+              "
+            ></label-translation
+            >.
+          </div>
         </div>
+      </div>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                type="button"
-                mat-raised-button
-                class="pull-right margin-left--sd xn-margin"
-                (click)="cancelSetDaystoWait()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [keyword]="'Inter_Retakes_T6__Cancel'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-blue pull-right xn-margin"
-                id="btn-continue-set-days-to-wait"
-                [disabled]="isContinueClicked"
-                (click)="continueSetDaystoWait()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [keyword]="'Inter_Retakes_T6__Continue'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        type="button"
+        mat-raised-button
+        class="pull-right margin-left--sd xn-margin"
+        (click)="cancelSetDaystoWait()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [keyword]="'Inter_Retakes_T6__Cancel'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-blue pull-right xn-margin"
+        id="btn-continue-set-days-to-wait"
+        [disabled]="isContinueClicked"
+        (click)="continueSetDaystoWait()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [keyword]="'Inter_Retakes_T6__Continue'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>
 
 <widget-module-info-translation
-    *ngIf="isRenderWidgetInfoTranslation"
-    [translateTextGridId]="'c0013e96-2167-4278-a300-58276a7166e5'"
-    [combinationTranslateMode]="combinationTranslateMode"
-    [isEditArticleT3]="true"
-    (onHide)="onHiddenWidgetInfoTranslation($event)"
-    [data]="dataResult"
-    (isCompletedRender)="reattach()"
-    #widgetInfoTranslation
+  *ngIf="isRenderWidgetInfoTranslation"
+  [translateTextGridId]="'c0013e96-2167-4278-a300-58276a7166e5'"
+  [combinationTranslateMode]="combinationTranslateMode"
+  [isEditArticleT3]="true"
+  (onHide)="onHiddenWidgetInfoTranslation($event)"
+  [data]="dataResult"
+  (isCompletedRender)="reattach()"
+  #widgetInfoTranslation
 ></widget-module-info-translation>

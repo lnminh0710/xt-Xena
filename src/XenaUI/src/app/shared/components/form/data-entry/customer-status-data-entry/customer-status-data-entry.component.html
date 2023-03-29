@@ -1,37 +1,37 @@
 <div
-    class="col-xs-12 height-100-pc status-container"
-    [ngClass]="{
-        'red-bg': displayItems.length && !isCustomerBusinessStatus,
-        'orange-bg': displayItems.length && isCustomerBusinessStatus,
-        'white-color': displayItems.length
-    }"
+  class="col-xs-12 height-100-pc status-container"
+  [ngClass]="{
+    'red-bg': displayItems.length && !isCustomerBusinessStatus,
+    'orange-bg': displayItems.length && isCustomerBusinessStatus,
+    'white-color': displayItems.length
+  }"
 >
-    <div class="title">
-        <label-translation
-            *ngIf="isCustomerBusinessStatus"
-            [keyword]="'Customer_Status_Data__Customer_Business_Status'"
-        ></label-translation>
-        <label-translation
-            *ngIf="!isCustomerBusinessStatus"
-            [keyword]="'Customer_Status_Data__Customer_Status'"
-        ></label-translation>
-    </div>
+  <div class="title">
+    <label-translation
+      *ngIf="isCustomerBusinessStatus"
+      [keyword]="'Customer_Status_Data__Customer_Business_Status'"
+    ></label-translation>
+    <label-translation
+      *ngIf="!isCustomerBusinessStatus"
+      [keyword]="'Customer_Status_Data__Customer_Status'"
+    ></label-translation>
+  </div>
 
-    <div class="content" *ngIf="displayItems.length">
-        <ul class="no-margin no-padding">
-            <li *ngFor="let item of displayItems" class="no-margin no-padding">
-                <span>
-                    <i
-                        class="fa fa-check margin-right--sd"
-                        *ngIf="item.isActive && !item.isDanger"
-                    ></i>
-                    <i
-                        class="fa fa-exclamation-triangle margin-right--sd"
-                        *ngIf="item.isActive && item.isDanger"
-                    ></i>
-                    {{ item.text }}
-                </span>
-            </li>
-        </ul>
-    </div>
+  <div class="content" *ngIf="displayItems.length">
+    <ul class="no-margin no-padding">
+      <li *ngFor="let item of displayItems" class="no-margin no-padding">
+        <span>
+          <i
+            class="fa fa-check margin-right--sd"
+            *ngIf="item.isActive && !item.isDanger"
+          ></i>
+          <i
+            class="fa fa-exclamation-triangle margin-right--sd"
+            *ngIf="item.isActive && item.isDanger"
+          ></i>
+          {{ item.text }}
+        </span>
+      </li>
+    </ul>
+  </div>
 </div>

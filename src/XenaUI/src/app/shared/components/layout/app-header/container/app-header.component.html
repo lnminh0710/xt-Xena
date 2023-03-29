@@ -1,206 +1,201 @@
 <!-- Main Header -->
 <header
-    class="main-header"
-    [ngClass]="{ 'background-header_gradient': gradientBackgroundStatus }"
+  class="main-header"
+  [ngClass]="{ 'background-header_gradient': gradientBackgroundStatus }"
 >
-    <!-- Logo -->
-    <div class="module logo">
-        <!--        <span class="build-version"> {{buildVersion}}</span>-->
-        <!-- mini logo for sidebar mini 50x50 pixels -->
-        <div class="float-left module-info">
-            <ul class="nav navbar-nav">
-                <li
-                    dropdown
-                    class="margin-right--sd"
-                    *ngIf="activeModule && subModules.length > 0"
-                >
-                    <a
-                        mat-button
-                        dropdownToggle
-                        id="sub-modules-dropdown"
-                        class="sub-module xn-icon__dot_list--light cursor-pointer"
-                    >
-                        <span class="xn-icon__dot_list icon-white"></span>
-                        <!--<i class="glyphicon glyphicon-option-vertical"></i>-->
-                    </a>
-                    <!--sub menu-->
-                    <xn-menu-bar
-                        *dropdownMenu
-                        role="menu"
-                        aria-labelledby="sub-modules-dropdown"
-                        class="dropdown-menu"
-                        (click)="preventClose($event)"
-                        [modules]="subModules"
-                        [activeModule]="activeModule"
-                        (onSelectedModule)="onSelectedSubModule($event)"
-                        (onClickNewModule)="onClickNewModule($event)"
-                        (onSearchingModule)="onSearchingModule($event)"
-                    ></xn-menu-bar>
-                </li>
-            </ul>
-        </div>
-        <span class="float-left">
-            <i
-                *ngIf="activeModule && activeModule.moduleName"
-                class="fa {{ activeModule.iconName }}"
-            ></i>
-            {{ activeModule ? activeModule.moduleName : "" }}
-        </span>
-        <span
-            *ngIf="
-                activeSubModule &&
-                activeSubModule.moduleName &&
-                activeModule &&
-                    activeModule.moduleName != activeSubModule.moduleName
-            "
-            class="margin-left--md"
+  <!-- Logo -->
+  <div class="module logo">
+    <!--        <span class="build-version"> {{buildVersion}}</span>-->
+    <!-- mini logo for sidebar mini 50x50 pixels -->
+    <div class="float-left module-info">
+      <ul class="nav navbar-nav">
+        <li
+          dropdown
+          class="margin-right--sd"
+          *ngIf="activeModule && subModules.length > 0"
         >
-            <i class="fa fa-caret-right"></i>
-            <span class="margin-left--md">{{
-                activeSubModule.moduleName
-            }}</span>
-        </span>
-
-        <breadcrumb-master
-            [tabID]="selectedODETab ? selectedODETab.TabID : null"
-        ></breadcrumb-master>
+          <a
+            mat-button
+            dropdownToggle
+            id="sub-modules-dropdown"
+            class="sub-module xn-icon__dot_list--light cursor-pointer"
+          >
+            <span class="xn-icon__dot_list icon-white"></span>
+            <!--<i class="glyphicon glyphicon-option-vertical"></i>-->
+          </a>
+          <!--sub menu-->
+          <xn-menu-bar
+            *dropdownMenu
+            role="menu"
+            aria-labelledby="sub-modules-dropdown"
+            class="dropdown-menu"
+            (click)="preventClose($event)"
+            [modules]="subModules"
+            [activeModule]="activeModule"
+            (onSelectedModule)="onSelectedSubModule($event)"
+            (onClickNewModule)="onClickNewModule($event)"
+            (onSearchingModule)="onSearchingModule($event)"
+          ></xn-menu-bar>
+        </li>
+      </ul>
     </div>
-    <!-- Header Navbar -->
-    <nav class="navbar navbar-static-top" role="navigation">
-        <!-- Navbar Right Menu -->
-        <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
-                <li
-                    *ngIf="
-                        isSelectionProject &&
-                        (isParkedItemCollapsedState | async) &&
-                        selectedEntity
-                    "
-                    class="project-status margin-right-20vw"
-                >
-                    <parked-item-project-status
-                        [showInHeader]="true"
-                    ></parked-item-project-status>
-                </li>
-                <li>
-                    <div class="search-box">
-                        <input
-                            type="text"
-                            id="txt-header-global-search"
-                            #searchInputElm
-                            class="form-control"
-                            placeholder="Global Search"
-                            (focus)="focusSearchBox()"
-                            (focusout)="focusOutSearchBox()"
-                            (keyup.out-zone)="keypress($event)"
-                            (keyup.enter)="searchText && search($event)"
-                            autocomplete="off"
-                        />
-                        <div class="search-box_icon">
-                            <a
-                                #clearSearchElm
-                                class="hidden cursor-pointer"
-                                (click.out-zone)="clearSearchText()"
-                            >
-                                <i
-                                    class="fa fa-times-circle clear-text"
-                                    aria-hidden="true"
-                                ></i>
-                            </a>
-                            <button
-                                mat-icon-button
-                                color="primary"
-                                *ngIf="!isFocus && !searchText"
-                            >
-                                <i class="fa fa-search" aria-hidden="true"></i>
-                            </button>
-                            <button
-                                mat-mini-fab
-                                color="primary"
-                                *ngIf="isFocus || searchText"
-                                (click)="search($event)"
-                            >
-                                <i class="fa fa-search" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </div>
-                </li>
-                <!-- Notifications Menu -->
-                <!-- <li class="dropdown notifications-menu  notificationsBox  disabled"
+    <span class="float-left">
+      <i
+        *ngIf="activeModule && activeModule.moduleName"
+        class="fa {{ activeModule.iconName }}"
+      ></i>
+      {{ activeModule ? activeModule.moduleName : '' }}
+    </span>
+    <span
+      *ngIf="
+        activeSubModule &&
+        activeSubModule.moduleName &&
+        activeModule &&
+        activeModule.moduleName != activeSubModule.moduleName
+      "
+      class="margin-left--md"
+    >
+      <i class="fa fa-caret-right"></i>
+      <span class="margin-left--md">{{ activeSubModule.moduleName }}</span>
+    </span>
+
+    <breadcrumb-master
+      [tabID]="selectedODETab ? selectedODETab.TabID : null"
+    ></breadcrumb-master>
+  </div>
+  <!-- Header Navbar -->
+  <nav class="navbar navbar-static-top" role="navigation">
+    <!-- Navbar Right Menu -->
+    <div class="navbar-custom-menu">
+      <ul class="nav navbar-nav">
+        <li
+          *ngIf="
+            isSelectionProject &&
+            (isParkedItemCollapsedState | async) &&
+            selectedEntity
+          "
+          class="project-status margin-right-20vw"
+        >
+          <parked-item-project-status
+            [showInHeader]="true"
+          ></parked-item-project-status>
+        </li>
+        <li>
+          <div class="search-box">
+            <input
+              type="text"
+              id="txt-header-global-search"
+              #searchInputElm
+              class="form-control"
+              placeholder="Global Search"
+              (focus)="focusSearchBox()"
+              (focusout)="focusOutSearchBox()"
+              (keyup.out-zone)="keypress($event)"
+              (keyup.enter)="searchText && search($event)"
+              autocomplete="off"
+            />
+            <div class="search-box_icon">
+              <a
+                #clearSearchElm
+                class="hidden cursor-pointer"
+                (click.out-zone)="clearSearchText()"
+              >
+                <i class="fa fa-times-circle clear-text" aria-hidden="true"></i>
+              </a>
+              <button
+                mat-icon-button
+                color="primary"
+                *ngIf="!isFocus && !searchText"
+              >
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </button>
+              <button
+                mat-mini-fab
+                color="primary"
+                *ngIf="isFocus || searchText"
+                (click)="search($event)"
+              >
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </li>
+        <!-- Notifications Menu -->
+        <!-- <li class="dropdown notifications-menu  notificationsBox  disabled"
                     dropdown>
                 </li> -->
-                <li
-                    class="dropdown notifications-menu notificationsBox"
-                    dropdown
-                    [autoClose]="autoCloseDropdown"
-                    (updateAutoClose)="updateDropdownAutoClose($event)"
-                ></li>
+        <li
+          class="dropdown notifications-menu notificationsBox"
+          dropdown
+          [autoClose]="autoCloseDropdown"
+          (updateAutoClose)="updateDropdownAutoClose($event)"
+        ></li>
 
-                <!-- Feedback -->
-                <li id="xn-feedback-under-icon">
-                    <a
-                        mat-button
-                        xn-tooltip
-                        [tooltipText]="'Feedback'"
-                        [tooltipPlacement]="'bottom'"
-                        (click)="feedbackClicked()"
-                    >
-                        <i
-                            class="fa"
-                            [ngClass]="{
-                                'fa-spinner fa-spin': isFeedbackLoading,
-                                'fa-email-capture': !isFeedbackLoading
-                            }"
-                        ></i>
-                    </a>
-                </li>
+        <!-- Feedback -->
+        <li id="xn-feedback-under-icon">
+          <a
+            mat-button
+            xn-tooltip
+            [tooltipText]="'Feedback'"
+            [tooltipPlacement]="'bottom'"
+            (click)="feedbackClicked()"
+          >
+            <i
+              class="fa"
+              [ngClass]="{
+                'fa-spinner fa-spin': isFeedbackLoading,
+                'fa-email-capture': !isFeedbackLoading
+              }"
+            ></i>
+          </a>
+        </li>
 
-                <!-- User Account Menu -->
-                <li
-                    class="dropdown user user-menu userBox"
-                    dropdown
-                    [autoClose]="autoCloseDropdown"
-                    (onHidden)="onUserDropdownClosed()"
-                    (updateAutoClose)="updateDropdownAutoClose($event)"
-                ></li>
+        <!-- User Account Menu -->
+        <li
+          class="dropdown user user-menu userBox"
+          dropdown
+          [autoClose]="autoCloseDropdown"
+          (onHidden)="onUserDropdownClosed()"
+          (updateAutoClose)="updateDropdownAutoClose($event)"
+        ></li>
 
-                <li *ngIf="mainModules.length > 0" class="main-module" dropdown>
-                    <a mat-button dropdownToggle id="main-modules-dropdown">
-                        <span class="xn-icon__list icon-white"></span>
-                        <!--<i class="fa fa-list-ul"></i>-->
-                    </a>
-                    <xn-menu-bar
-                        role="menu"
-                        aria-labelledby="main-modules-dropdown"
-                        class="dropdown-menu"
-                        [modules]="mainModules"
-                        [activeModule]="activeModule"
-                        [position]="'right'"
-                        (click)="preventClose($event)"
-                        (onSelectedModule)="onSelectedModule($event)"
-                        (onClickNewModule)="onClickNewModule($event)"
-                        (onSearchingModule)="onSearchingModule($event)"
-                    ></xn-menu-bar>
-                </li>
-                <!-- Control Sidebar Toggle Button -->
-                <li [class.disabled]="!isViewMode">
-                    <a
-                        mat-button
-                        [ngClass]="[isViewMode ? '' : 'display-none']"
-                        data-toggle="control-sidebar"
-                        class="user-setting toggle-sidebar-right cursor-pointer"
-                    >
-                        <i class="fa fa-cog toggle-sidebar-right"></i>
-                    </a>
+        <li *ngIf="mainModules.length > 0" class="main-module" dropdown>
+          <a mat-button dropdownToggle id="main-modules-dropdown">
+            <span class="xn-icon__list icon-white"></span>
+            <!--<i class="fa fa-list-ul"></i>-->
+          </a>
+          <xn-menu-bar
+            role="menu"
+            aria-labelledby="main-modules-dropdown"
+            class="dropdown-menu"
+            [modules]="mainModules"
+            [activeModule]="activeModule"
+            [position]="'right'"
+            (click)="preventClose($event)"
+            (onSelectedModule)="onSelectedModule($event)"
+            (onClickNewModule)="onClickNewModule($event)"
+            (onSearchingModule)="onSearchingModule($event)"
+          ></xn-menu-bar>
+        </li>
+        <!-- Control Sidebar Toggle Button -->
+        <li [class.disabled]="!isViewMode">
+          <a
+            mat-button
+            [ngClass]="[isViewMode ? '' : 'display-none']"
+            data-toggle="control-sidebar"
+            class="user-setting toggle-sidebar-right cursor-pointer"
+          >
+            <i class="fa fa-cog toggle-sidebar-right"></i>
+          </a>
 
-                    <a
-                        [ngClass]="[isViewMode ? 'display-none' : '']"
-                        class="user-setting cursor-pointer"
-                    >
-                        <i class="fa fa-cog"></i>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+          <a
+            [ngClass]="[isViewMode ? 'display-none' : '']"
+            class="user-setting cursor-pointer"
+          >
+            <i class="fa fa-cog"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
 </header>

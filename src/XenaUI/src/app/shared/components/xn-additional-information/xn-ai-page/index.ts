@@ -1,1 +1,1 @@
-﻿export { XnAdditionalInformationPageComponent } from "./xn-ai-page.component";
+﻿export { XnAdditionalInformationPageComponent } from './xn-ai-page.component';

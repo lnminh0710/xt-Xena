@@ -1,40 +1,38 @@
 <perfect-scrollbar
-    class="col-xs-12 working-modules-parked-items-container"
-    id="{{ workingModule.idSettingsGUI }}-parked-items-list"
-    *ngIf="
-        (hasParkedItems || workingModule.isCanNew) &&
-        accessRight && accessRight.module
-    "
+  class="col-xs-12 working-modules-parked-items-container"
+  id="{{ workingModule.idSettingsGUI }}-parked-items-list"
+  *ngIf="
+    (hasParkedItems || workingModule.isCanNew) &&
+    accessRight &&
+    accessRight.module
+  "
 >
-    <div class="working-modules__pkit__container">
-        <div
-            *ngIf="workingModule.isCanNew && accessRight.module.new"
-            class="panel panel-default custom-panel no-padding"
-            (click)="clickNewModuleItem(workingModule)"
-        >
-            <div class="panel-body">
-                <i
-                    class="fa fa-plus-circle text-success"
-                    aria-hidden="true"
-                ></i>
-                <label-translation
-                    [keyword]="'XnWorkingParkedItems__Create_new'"
-                ></label-translation>
-                {{ workingModule.moduleName }}
-            </div>
-        </div>
-
-        <parked-item
-            [data]="{ item: item, fieldConfig: config }"
-            [isNewItem]="item.isNew"
-            [subModules]="localSubModules"
-            [activeModule]="workingModule"
-            [allowClose]="false"
-            [smallHeight]="true"
-            [selectedParkedItem]="selectedParkedItem"
-            *ngFor="let item of localParkedItems"
-            (onSelect)="selectParkedItem($event)"
-            [accessRight]="accessRight.parkedItem"
-        ></parked-item>
+  <div class="working-modules__pkit__container">
+    <div
+      *ngIf="workingModule.isCanNew && accessRight.module.new"
+      class="panel panel-default custom-panel no-padding"
+      (click)="clickNewModuleItem(workingModule)"
+    >
+      <div class="panel-body">
+        <i class="fa fa-plus-circle text-success" aria-hidden="true"></i>
+        <label-translation
+          [keyword]="'XnWorkingParkedItems__Create_new'"
+        ></label-translation>
+        {{ workingModule.moduleName }}
+      </div>
     </div>
+
+    <parked-item
+      [data]="{ item: item, fieldConfig: config }"
+      [isNewItem]="item.isNew"
+      [subModules]="localSubModules"
+      [activeModule]="workingModule"
+      [allowClose]="false"
+      [smallHeight]="true"
+      [selectedParkedItem]="selectedParkedItem"
+      *ngFor="let item of localParkedItems"
+      (onSelect)="selectParkedItem($event)"
+      [accessRight]="accessRight.parkedItem"
+    ></parked-item>
+  </div>
 </perfect-scrollbar>

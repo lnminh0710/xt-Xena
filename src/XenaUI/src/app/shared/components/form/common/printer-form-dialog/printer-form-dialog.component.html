@@ -1,102 +1,102 @@
 <p-dialog
-    *ngIf="showDialog"
-    [styleClass]="'xn-p-dialog-printer-form'"
-    [(visible)]="showDialog"
-    modal="true"
-    width="600"
-    responsive="true"
-    appendTo="body"
-    [resizable]="false"
-    [draggable]="true"
-    [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
+  *ngIf="showDialog"
+  [styleClass]="'xn-p-dialog-printer-form'"
+  [(visible)]="showDialog"
+  modal="true"
+  width="600"
+  responsive="true"
+  appendTo="body"
+  [resizable]="false"
+  [draggable]="true"
+  [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="header-text"
-                ><label-translation
-                    [keyword]="'Printer_Form__Print_File'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="close()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 padding-top--lg padding-bottom--lg">
-        <label for="profileName" class="control-label col-sm-4 required"
-            ><label-translation
-                [keyword]="'Printer_Form__Select_Printer'"
-            ></label-translation
-            >:
-        </label>
-        <div class="col-sm-8">
-            <xn-combo-box
-                #printerCtr
-                wjDropdownHelper
-                [form]="formGroup"
-                [(ngModel)]="printer"
-                class="custom-wj-input-control xn-select--no-icon"
-                [itemsSource]="printerList"
-                [displayMemberPath]="'textValue'"
-                [selectedValuePath]="'idValue'"
-                [isEditable]="true"
-                [isRequired]="false"
-                placeholder="Please select"
-                (selectedIndexChanged)="onPrinterChanged()"
-            >
-            </xn-combo-box>
-        </div>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="header-text"
+        ><label-translation
+          [keyword]="'Printer_Form__Print_File'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
-    <div class="col-xs-12 loading" *ngIf="showLoading">
-        <i class="fa fa-spinner fa-spin"></i>
+  </p-header>
+  <div class="col-xs-12 padding-top--lg padding-bottom--lg">
+    <label for="profileName" class="control-label col-sm-4 required"
+      ><label-translation
+        [keyword]="'Printer_Form__Select_Printer'"
+      ></label-translation
+      >:
+    </label>
+    <div class="col-sm-8">
+      <xn-combo-box
+        #printerCtr
+        wjDropdownHelper
+        [form]="formGroup"
+        [(ngModel)]="printer"
+        class="custom-wj-input-control xn-select--no-icon"
+        [itemsSource]="printerList"
+        [displayMemberPath]="'textValue'"
+        [selectedValuePath]="'idValue'"
+        [isEditable]="true"
+        [isRequired]="false"
+        placeholder="Please select"
+        (selectedIndexChanged)="onPrinterChanged()"
+      >
+      </xn-combo-box>
     </div>
-    <div
-        class="col-xs-12 printed-text padding-top--lg padding-bottom--lg"
-        *ngIf="printedText"
+  </div>
+  <div class="col-xs-12 loading" *ngIf="showLoading">
+    <i class="fa fa-spinner fa-spin"></i>
+  </div>
+  <div
+    class="col-xs-12 printed-text padding-top--lg padding-bottom--lg"
+    *ngIf="printedText"
+  >
+    <span class="bt-t-i"
+      ><label-translation
+        [keyword]="'Printer_Form__Print_Wait_Processing'"
+      ></label-translation
+      >{{ printedText }}</span
     >
-        <span class="bt-t-i"
-            ><label-translation
-                [keyword]="'Printer_Form__Print_Wait_Processing'"
-            ></label-translation
-            >{{ printedText }}</span
-        >
-    </div>
+  </div>
 
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                label="Cancel"
-                type="button"
-                class="min-width--100"
-                mat-raised-button
-                (click)="close()"
-            >
-                <span class="bt-t-i"
-                    ><label-translation
-                        [keyword]="'SettingDialog__Cancel'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                [disabled]="!printerCtr || !printerCtr.selectedValue"
-                class="mat-btn-orange min-width--100"
-                (click)="print()"
-            >
-                <span class="fa fa-save"></span>
-                <span class="bt-t-i"
-                    ><label-translation
-                        [keyword]="'Printer_Form__Print'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        label="Cancel"
+        type="button"
+        class="min-width--100"
+        mat-raised-button
+        (click)="close()"
+      >
+        <span class="bt-t-i"
+          ><label-translation
+            [keyword]="'SettingDialog__Cancel'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        [disabled]="!printerCtr || !printerCtr.selectedValue"
+        class="mat-btn-orange min-width--100"
+        (click)="print()"
+      >
+        <span class="fa fa-save"></span>
+        <span class="bt-t-i"
+          ><label-translation
+            [keyword]="'Printer_Form__Print'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

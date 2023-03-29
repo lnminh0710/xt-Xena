@@ -1,36 +1,36 @@
 <div class="search-box">
-    <input
-        #inputControl
-        id="{{ id }}"
-        type="text"
-        [readonly]="readonly"
-        class="form-control search-input {{ cssClass }}"
-        [ngClass]="{ 'has-button': hasSearchButton }"
-        placeholder="{{ placeholder }}"
-        autocomplete="off"
-        [disabled]="isDisabled"
-        [(value)]="value"
-        (keypress)="onKeyPress($event)"
-        (keyup)="onKeyUp($event)"
-    />
-    <button
-        type="button"
-        mat-button
-        class="mat-btn-blue search-button"
-        *ngIf="hasSearchButton"
-        (click)="searchClicked($event)"
-    >
-        <i class="fa fa-search"></i>
-    </button>
+  <input
+    #inputControl
+    id="{{ id }}"
+    type="text"
+    [readonly]="readonly"
+    class="form-control search-input {{ cssClass }}"
+    [ngClass]="{ 'has-button': hasSearchButton }"
+    placeholder="{{ placeholder }}"
+    autocomplete="off"
+    [disabled]="isDisabled"
+    [(value)]="value"
+    (keypress)="onKeyPress($event)"
+    (keyup)="onKeyUp($event)"
+  />
+  <button
+    type="button"
+    mat-button
+    class="mat-btn-blue search-button"
+    *ngIf="hasSearchButton"
+    (click)="searchClicked($event)"
+  >
+    <i class="fa fa-search"></i>
+  </button>
 
-    <div
-        class="search-indicator-icon"
-        [ngClass]="{
-            'has-search-button': hasSearchButton,
-            'is-inside-form': isInsideForm
-        }"
-        *ngIf="isLoading"
-    >
-        <i class="fa fa-spinner fa-spin"></i>
-    </div>
+  <div
+    class="search-indicator-icon"
+    [ngClass]="{
+      'has-search-button': hasSearchButton,
+      'is-inside-form': isInsideForm
+    }"
+    *ngIf="isLoading"
+  >
+    <i class="fa fa-spinner fa-spin"></i>
+  </div>
 </div>

@@ -1,1 +1,1 @@
-﻿export * from "./stock-correction";
+﻿export * from './stock-correction';

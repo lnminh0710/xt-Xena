@@ -1,1 +1,1 @@
-export * from "./history-container";
+export * from './history-container';

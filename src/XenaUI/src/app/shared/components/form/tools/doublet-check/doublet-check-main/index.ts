@@ -1,1 +1,1 @@
-export * from "./doublet-check-main.component";
+export * from './doublet-check-main.component';

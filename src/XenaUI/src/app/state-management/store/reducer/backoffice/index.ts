@@ -1,2 +1,2 @@
-﻿export * from "./backoffice.reducer";
-export * from "./backoffice.selectors";
+﻿export * from './backoffice.reducer';
+export * from './backoffice.selectors';

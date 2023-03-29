@@ -1,102 +1,98 @@
 <p-dialog
-    header=""
-    [styleClass]="'prime-dialog-article-hot-key'"
-    [(visible)]="showDialog"
-    modal="true"
-    width="350"
-    height="200"
-    positionTop="150"
-    responsive="true"
-    appendTo="body"
-    [resizable]="true"
-    [draggable]="true"
-    [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
-    (onHide)="close()"
-    *ngIf="showDialog"
+  header=""
+  [styleClass]="'prime-dialog-article-hot-key'"
+  [(visible)]="showDialog"
+  modal="true"
+  width="350"
+  height="200"
+  positionTop="150"
+  responsive="true"
+  appendTo="body"
+  [resizable]="true"
+  [draggable]="true"
+  [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
+  (onHide)="close()"
+  *ngIf="showDialog"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="header-text"
-                ><label-translation
-                    [keyword]="'Hot_Key_Setting__Hot_Key'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="close()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-
-    <div class="row content-detail">
-        <form
-            novalidate
-            class="form-horizontal"
-            [formGroup]="hotKeySettingForm"
-        >
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="hotKey"
-                    ><label-translation
-                        [keyword]="'Hot_Key_Setting__Key'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-10">
-                    <input
-                        #hotKeytxt
-                        autofocus
-                        class="form-control xn-input"
-                        placeholder="Enter hot key"
-                        formControlName="hotKey"
-                        name="hotKey"
-                        readonly="readonly"
-                    />
-                    <control-messages
-                        [type]="'textbox'"
-                        [control]="hotKeySettingForm.controls.hotKey"
-                        [icon]="'keyboard-o'"
-                    ></control-messages>
-                </div>
-            </div>
-        </form>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="header-text"
+        ><label-translation
+          [keyword]="'Hot_Key_Setting__Hot_Key'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
+  </p-header>
 
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                type="button"
-                mat-raised-button
-                class="ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                (click)="close()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'Hot_Key_Setting__Close'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                type="button"
-                [disabled]="
-                    hotKeySettingForm.invalid ||
-                    !hasLetterKey ||
-                    !hasHandlerKey ||
-                    keyBufferKeep.length < 2
-                "
-                mat-raised-button
-                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                (click)="save()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'Hot_Key_Setting__Save'"
-                    ></label-translation
-                ></span>
-            </button>
+  <div class="row content-detail">
+    <form novalidate class="form-horizontal" [formGroup]="hotKeySettingForm">
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="hotKey"
+          ><label-translation
+            [keyword]="'Hot_Key_Setting__Key'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-10">
+          <input
+            #hotKeytxt
+            autofocus
+            class="form-control xn-input"
+            placeholder="Enter hot key"
+            formControlName="hotKey"
+            name="hotKey"
+            readonly="readonly"
+          />
+          <control-messages
+            [type]="'textbox'"
+            [control]="hotKeySettingForm.controls.hotKey"
+            [icon]="'keyboard-o'"
+          ></control-messages>
         </div>
-    </p-footer>
+      </div>
+    </form>
+  </div>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        type="button"
+        mat-raised-button
+        class="ui-widget ui-state-default ui-corner-all ui-button-text-only"
+        (click)="close()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'Hot_Key_Setting__Close'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        type="button"
+        [disabled]="
+          hotKeySettingForm.invalid ||
+          !hasLetterKey ||
+          !hasHandlerKey ||
+          keyBufferKeep.length < 2
+        "
+        mat-raised-button
+        class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+        (click)="save()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'Hot_Key_Setting__Save'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

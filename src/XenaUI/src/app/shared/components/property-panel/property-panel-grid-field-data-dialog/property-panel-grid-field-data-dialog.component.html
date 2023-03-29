@@ -1,125 +1,122 @@
 <p-dialog
-    header=""
-    [(visible)]="showDialog"
-    modal="true"
-    width="300"
-    positionTop="150"
-    responsive="true"
-    appendTo="body"
-    [resizable]="false"
-    [draggable]="true"
-    [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
+  header=""
+  [(visible)]="showDialog"
+  modal="true"
+  width="300"
+  positionTop="150"
+  responsive="true"
+  appendTo="body"
+  [resizable]="false"
+  [draggable]="true"
+  [contentStyle]="{ 'padding-bottom': 0, 'padding-top': 0 }"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="header-text"
-                ><label-translation
-                    [keyword]="'Property_pdfdd__Format_Fields'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="close()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="row">
-        <ng-template #popTemplate>
-            <app-property-panel-grid
-                [datasource]="properties"
-                [isRoot]="false"
-                (onPropertiesChange)="propertiesChange($event)"
-            >
-            </app-property-panel-grid>
-        </ng-template>
-
-        <div
-            [perfect-scrollbar]="perfectScrollbarConfig"
-            class="col-xs-12 no-padding grid-content"
-        >
-            <table class="table table-striped no-margin-bottom full-width">
-                <thead>
-                    <tr>
-                        <th
-                            class="col-xs-12 text-left bg-gray xn-padding--sm"
-                            colspan="2"
-                        >
-                            <label-translation
-                                [keyword]="'Property_pdfdd__Field_Name'"
-                            ></label-translation>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <ng-template
-                        let-item
-                        ngFor
-                        [ngForOf]="displayFields"
-                        let-idx="index"
-                        [ngForTrackBy]="itemsTrackBy"
-                    >
-                        <tr *ngIf="item.setting && item.setting.display">
-                            <td class="text-left xn-padding--sm">
-                                {{ item.columnName }}
-                            </td>
-                            <td>
-                                <button
-                                    class="mat-btn-non-fix no-border pull-right"
-                                    mat-raised-button
-                                    type="button"
-                                    (click)="showPopover(item, pop)"
-                                    triggers=""
-                                    [popover]="popTemplate"
-                                    popoverTitle="Format Style"
-                                    placement="right"
-                                    [outsideClick]="true"
-                                    #pop="bs-popover"
-                                    container="body"
-                                >
-                                    &hellip;
-                                </button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </tbody>
-            </table>
-        </div>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="header-text"
+        ><label-translation
+          [keyword]="'Property_pdfdd__Format_Fields'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
+  </p-header>
+  <div class="row">
+    <ng-template #popTemplate>
+      <app-property-panel-grid
+        [datasource]="properties"
+        [isRoot]="false"
+        (onPropertiesChange)="propertiesChange($event)"
+      >
+      </app-property-panel-grid>
+    </ng-template>
 
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                label="Cancel"
-                pbutton=""
-                type="button"
-                mat-raised-button
-                (click)="close()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'Property_pdfdd__Cancel'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                label="Save"
-                pbutton=""
-                mat-raised-button
-                type="button"
-                class="mat-btn-blue"
-                (click)="apply()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'Property_pdfdd__Apply'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+    <div
+      [perfect-scrollbar]="perfectScrollbarConfig"
+      class="col-xs-12 no-padding grid-content"
+    >
+      <table class="table table-striped no-margin-bottom full-width">
+        <thead>
+          <tr>
+            <th class="col-xs-12 text-left bg-gray xn-padding--sm" colspan="2">
+              <label-translation
+                [keyword]="'Property_pdfdd__Field_Name'"
+              ></label-translation>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-template
+            let-item
+            ngFor
+            [ngForOf]="displayFields"
+            let-idx="index"
+            [ngForTrackBy]="itemsTrackBy"
+          >
+            <tr *ngIf="item.setting && item.setting.display">
+              <td class="text-left xn-padding--sm">
+                {{ item.columnName }}
+              </td>
+              <td>
+                <button
+                  class="mat-btn-non-fix no-border pull-right"
+                  mat-raised-button
+                  type="button"
+                  (click)="showPopover(item, pop)"
+                  triggers=""
+                  [popover]="popTemplate"
+                  popoverTitle="Format Style"
+                  placement="right"
+                  [outsideClick]="true"
+                  #pop="bs-popover"
+                  container="body"
+                >
+                  &hellip;
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        label="Cancel"
+        pbutton=""
+        type="button"
+        mat-raised-button
+        (click)="close()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'Property_pdfdd__Cancel'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        label="Save"
+        pbutton=""
+        mat-raised-button
+        type="button"
+        class="mat-btn-blue"
+        (click)="apply()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'Property_pdfdd__Apply'"
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

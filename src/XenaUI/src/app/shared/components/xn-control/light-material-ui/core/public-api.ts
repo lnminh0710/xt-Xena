@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-export * from "./common-behaviors/index";
-export * from "./compatibility/compatibility";
-export * from "./ripple/index";
-export * from "./gestures";
-export * from "./style";
+export * from './common-behaviors/index';
+export * from './compatibility/compatibility';
+export * from './ripple/index';
+export * from './gestures';
+export * from './style';

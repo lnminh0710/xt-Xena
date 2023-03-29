@@ -1,1 +1,1 @@
-export * from "./xn-capture-item-list.component";
+export * from './xn-capture-item-list.component';

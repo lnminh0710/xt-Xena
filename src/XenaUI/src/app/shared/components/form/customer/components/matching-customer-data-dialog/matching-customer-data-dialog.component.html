@@ -1,107 +1,103 @@
 <p-dialog
-    header=""
-    [(visible)]="showDialog"
-    [styleClass]="'xn-p-dialog-resizable ode-matching-customer-dialog'"
-    appendTo="body"
-    modal="modal"
-    [draggable]="true"
-    [resizable]="true"
-    responsive="true"
-    [width]="1000"
+  header=""
+  [(visible)]="showDialog"
+  [styleClass]="'xn-p-dialog-resizable ode-matching-customer-dialog'"
+  appendTo="body"
+  modal="modal"
+  [draggable]="true"
+  [resizable]="true"
+  responsive="true"
+  [width]="1000"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="fa fa-external-link header-icon pull-left"></span>
-            <span class="header-text pull-left"
-                ><label-translation
-                    [keyword]="'Matching_Customer__Customer_Matched'"
-                ></label-translation
-            ></span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="close()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="matching-grid">
-        <!--<xn-ag-grid *ngIf="dataSource && dataSource.columns && dataSource.columns.length"
+  <p-header>
+    <div class="modal-header--information">
+      <span class="fa fa-external-link header-icon pull-left"></span>
+      <span class="header-text pull-left"
+        ><label-translation
+          [keyword]="'Matching_Customer__Customer_Matched'"
+        ></label-translation
+      ></span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
+    </div>
+  </p-header>
+  <div class="matching-grid">
+    <!--<xn-ag-grid *ngIf="dataSource && dataSource.columns && dataSource.columns.length"
                     [id]="gridId"
                     [dataSource]="dataSource"
                     (rowClick)="onRowClickHandler($event)"
                     (rowDoubleClicked)="onRowDoubleClickHandler($event)"></xn-ag-grid>-->
-        <gs-result
-            *ngIf="
-                dataSource && dataSource.columns && dataSource.columns.length
-            "
-            [gridId]="gridId"
-            [dataResult]="dataSource"
-            [treeViewMode]="true"
-            [serverPaging]="false"
-            [preventSearch]="true"
-            [module]="ofModule"
-            [dontAllowSearchWhenInit]="true"
-            [allowDrag]="true"
-            [allowMasterDetail]="false"
-            (onRowClicked)="onRowClickHandler($event)"
-            (onRowDoubleClicked)="onRowDoubleClickHandler($event)"
-        >
-        </gs-result>
+    <gs-result
+      *ngIf="dataSource && dataSource.columns && dataSource.columns.length"
+      [gridId]="gridId"
+      [dataResult]="dataSource"
+      [treeViewMode]="true"
+      [serverPaging]="false"
+      [preventSearch]="true"
+      [module]="ofModule"
+      [dontAllowSearchWhenInit]="true"
+      [allowDrag]="true"
+      [allowMasterDetail]="false"
+      (onRowClicked)="onRowClickHandler($event)"
+      (onRowDoubleClicked)="onRowDoubleClickHandler($event)"
+    >
+    </gs-result>
+  </div>
+  <p-footer>
+    <div
+      class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix no-border no-padding"
+    >
+      <button
+        label="Cancel"
+        pbutton=""
+        type="button"
+        mat-raised-button
+        (click)="close()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'Matching_Customer__Cancel'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        *ngIf="!isVerticalLayout"
+        label="Cancel"
+        class="mat-btn-orange"
+        pbutton=""
+        type="button"
+        mat-raised-button
+        (click)="ignoreAndSave()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'Matching_Customer__Ignore_Save'"
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        label="Save"
+        pbutton=""
+        *ngIf="allowApply"
+        mat-raised-button
+        type="button"
+        class="mat-btn-blue"
+        (click)="apply()"
+      >
+        <span class="bt-t ui-button-text ui-c"
+          ><label-translation
+            [keyword]="'Matching_Customer__Apply'"
+          ></label-translation
+        ></span>
+      </button>
     </div>
-    <p-footer>
-        <div
-            class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix no-border no-padding"
-        >
-            <button
-                label="Cancel"
-                pbutton=""
-                type="button"
-                mat-raised-button
-                (click)="close()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'Matching_Customer__Cancel'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                *ngIf="!isVerticalLayout"
-                label="Cancel"
-                class="mat-btn-orange"
-                pbutton=""
-                type="button"
-                mat-raised-button
-                (click)="ignoreAndSave()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'Matching_Customer__Ignore_Save'"
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                label="Save"
-                pbutton=""
-                *ngIf="allowApply"
-                mat-raised-button
-                type="button"
-                class="mat-btn-blue"
-                (click)="apply()"
-            >
-                <span class="bt-t ui-button-text ui-c"
-                    ><label-translation
-                        [keyword]="'Matching_Customer__Apply'"
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-        <div
-            class="widget-info__resize_bottom xn-icon__resize icon-black"
-        ></div>
-    </p-footer>
+    <div class="widget-info__resize_bottom xn-icon__resize icon-black"></div>
+  </p-footer>
 </p-dialog>

@@ -1,1 +1,1 @@
-﻿export * from "./property-panel-order-field-dialog.component";
+﻿export * from './property-panel-order-field-dialog.component';

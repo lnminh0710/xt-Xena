@@ -1,76 +1,76 @@
 .data-entry__article-grid {
-    min-width: 615px;
-    height: 100%;
-    min-height: 180px;
+  min-width: 615px;
+  height: 100%;
+  min-height: 180px;
 }
 
 form .form-inline {
-    padding: 5px;
-    min-height: 34px;
+  padding: 5px;
+  min-height: 34px;
 }
 
 .de__ag__full-width {
-    width: 100%;
+  width: 100%;
 }
 
 .new-label {
-    float: left;
-    line-height: 21px;
+  float: left;
+  line-height: 21px;
 }
 
 .new-input {
-    width: 30%;
+  width: 30%;
 }
 
 .fa-plus {
-    font-size: 20px;
-    position: relative;
-    top: 4px;
-    padding-left: 15px;
+  font-size: 20px;
+  position: relative;
+  top: 4px;
+  padding-left: 15px;
 }
 
 .gift-container {
-    padding-left: 18px;
+  padding-left: 18px;
 
-    & .radio.radio-inline {
-        margin-top: 4px;
-    }
+  & .radio.radio-inline {
+    margin-top: 4px;
+  }
 }
 
 .de__ag__command {
-    padding-left: 0px;
-    height: 43px;
-    width: calc(100% - 316px);
-    float: left;
+  padding-left: 0px;
+  height: 43px;
+  width: calc(100% - 316px);
+  float: left;
 
-    .de__ag__command-add {
-        cursor: pointer;
+  .de__ag__command-add {
+    cursor: pointer;
 
-        i {
-            font-size: 25px;
-            padding-left: 0px;
-            margin-top: -1.5px;
-        }
+    i {
+      font-size: 25px;
+      padding-left: 0px;
+      margin-top: -1.5px;
     }
+  }
 
-    .de__ag__command-check,
-    .checkbox.de__ag__command-check {
-        margin-top: -10px;
-        padding-left: 9px;
+  .de__ag__command-check,
+  .checkbox.de__ag__command-check {
+    margin-top: -10px;
+    padding-left: 9px;
 
-        & label {
-            padding-top: 1px !important;
-        }
+    & label {
+      padding-top: 1px !important;
     }
+  }
 }
 
 .fa-gift {
-    font-size: 26px;
-    position: relative;
+  font-size: 26px;
+  position: relative;
 }
 
 .article-grid {
-    height: calc((100% - 35px));
+  height: calc((100% - 35px));
 }
 
 /*.article-grid-add {
@@ -78,37 +78,37 @@ form .form-inline {
 }*/
 
 .header {
-    width: 100%;
-    background-color: lightgrey;
-    color: #fff;
+  width: 100%;
+  background-color: lightgrey;
+  color: #fff;
 }
 
 .xn-padding-left-5 {
-    padding-left: 5px;
+  padding-left: 5px;
 }
 
 .inactive-gift {
-    position: absolute;
-    top: 0;
-    font-size: 30px;
-    color: red;
+  position: absolute;
+  top: 0;
+  font-size: 30px;
+  color: red;
 }
 
 .article-number {
-    float: left;
-    width: 145px;
-    padding-left: 15px;
-    padding-right: 15px;
+  float: left;
+  width: 145px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .quantity-number {
-    float: left;
-    padding-right: 15px;
-    width: 85px;
+  float: left;
+  padding-right: 15px;
+  width: 85px;
 }
 
 .alert-danger {
-    &.article-list {
-        margin-bottom: 5px;
-    }
+  &.article-list {
+    margin-bottom: 5px;
+  }
 }

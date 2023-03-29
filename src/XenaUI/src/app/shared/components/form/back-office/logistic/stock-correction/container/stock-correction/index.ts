@@ -1,1 +1,1 @@
-﻿export * from "./stock-correction.component";
+﻿export * from './stock-correction.component';

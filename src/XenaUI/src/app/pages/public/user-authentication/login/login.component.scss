@@ -1,4 +1,4 @@
-@import "../user.authentication.scss";
+@import '../user.authentication.scss';
 
 /*.user-image {
     display: block;
@@ -12,258 +12,258 @@
 */
 
 .l-m {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100vh;
 }
 
 .l-p {
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.4);
-    width: 550px;
-    height: 100vh;
-    padding: 10px 15px;
-    z-index: 100;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  width: 550px;
+  height: 100vh;
+  padding: 10px 15px;
+  z-index: 100;
 }
 
 .l-lg {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 25%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 25%;
 
-    span {
-        color: #fff;
-        font-stretch: expanded;
-        display: inline-block;
-        letter-spacing: 16px;
-        margin-top: 5px;
-        text-align: center;
-        display: block;
-        margin-right: -15px;
-        font-size: 30px;
-        font-weight: 600;
-    }
+  span {
+    color: #fff;
+    font-stretch: expanded;
+    display: inline-block;
+    letter-spacing: 16px;
+    margin-top: 5px;
+    text-align: center;
+    display: block;
+    margin-right: -15px;
+    font-size: 30px;
+    font-weight: 600;
+  }
 
-    .lg {
-        width: 93px;
-    }
+  .lg {
+    width: 93px;
+  }
 }
 
 .l-fr {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 50px;
-    width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  width: 450px;
 }
 
 .f-t {
-    color: #9bbcd0;
-    font-size: 16px;
-    margin-bottom: 20px;
+  color: #9bbcd0;
+  font-size: 16px;
+  margin-bottom: 20px;
 }
 
 .f-ur,
 .f-pw {
-    width: 100%;
-    margin-bottom: 10px;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 .f-r-fp {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    color: #9bbcd0;
-    margin-bottom: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  color: #9bbcd0;
+  margin-bottom: 30px;
 
-    a {
-        color: inherit;
-    }
+  a {
+    color: inherit;
+  }
 }
 
 .f-sb {
-    width: 100%;
+  width: 100%;
 
-    button {
-        width: 100%;
-        border-radius: 15px;
-        background-color: rgba(50, 108, 156, 0.5) !important;
-        height: 40px;
-    }
+  button {
+    width: 100%;
+    border-radius: 15px;
+    background-color: rgba(50, 108, 156, 0.5) !important;
+    height: 40px;
+  }
 }
 
 .l-ft {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .lg-ft {
-    width: 110px;
+  width: 110px;
 }
 
 .ft-v {
-    display: flex;
-    align-items: flex-end;
-    color: #ffffff;
+  display: flex;
+  align-items: flex-end;
+  color: #ffffff;
 }
 
 .w-t {
-    margin-top: -5%;
-    padding: 0 30px;
-    width: 600px;
-    color: #fff;
-    margin-left: 68%;
-    position: absolute;
-    z-index: 100;
+  margin-top: -5%;
+  padding: 0 30px;
+  width: 600px;
+  color: #fff;
+  margin-left: 68%;
+  position: absolute;
+  z-index: 100;
 }
 
 .selection-input-customize {
-    input {
-        background: transparent;
-        color: #fff;
-        font-size: 14px;
-    }
+  input {
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+  }
 
-    label {
-        font-size: 12px !important;
-        color: #9bbcd0;
-    }
+  label {
+    font-size: 12px !important;
+    color: #9bbcd0;
+  }
 }
 
 .submit {
-    .error {
-        input {
-            border-bottom: 1px solid #dd4b39;
-        }
-
-        label {
-            color: #dd4b39;
-        }
+  .error {
+    input {
+      border-bottom: 1px solid #dd4b39;
     }
 
-    .l-er {
-        color: #dd4b39;
-        margin-bottom: 10px;
+    label {
+      color: #dd4b39;
     }
+  }
+
+  .l-er {
+    color: #dd4b39;
+    margin-bottom: 10px;
+  }
 }
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #fff;
-    -webkit-box-shadow: inset 0 0 0px 9999px #074163;
+  -webkit-text-fill-color: #fff;
+  -webkit-box-shadow: inset 0 0 0px 9999px #074163;
 }
 
 @keyframes move_wave {
-    0% {
-        transform: translateX(0) translateZ(0) scaleY(1);
-    }
+  0% {
+    transform: translateX(0) translateZ(0) scaleY(1);
+  }
 
-    50% {
-        transform: translateX(-25%) translateZ(0) scaleY(0.55);
-    }
+  50% {
+    transform: translateX(-25%) translateZ(0) scaleY(0.55);
+  }
 
-    100% {
-        transform: translateX(-50%) translateZ(0) scaleY(1);
-    }
+  100% {
+    transform: translateX(-50%) translateZ(0) scaleY(1);
+  }
 }
 
 .waveWrapper {
-    overflow: hidden;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    margin: auto;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  margin: auto;
 }
 
 .waveWrapperInner {
-    position: absolute;
-    width: 100%;
-    overflow: hidden;
-    height: 100%;
-    bottom: -1px;
-    background: linear-gradient(
-        45deg,
-        rgba(12, 109, 165, 1) 0%,
-        rgba(14, 96, 143, 1) 22%,
-        rgba(18, 113, 167, 1) 60%,
-        rgba(15, 105, 157, 1) 60%,
-        rgba(19, 107, 158, 1) 70%,
-        rgba(18, 99, 145, 1) 80%,
-        rgba(18, 113, 167, 1) 80%,
-        rgba(18, 113, 167, 1) 82%,
-        rgba(30, 113, 161, 1) 83%,
-        rgba(19, 103, 151, 1) 83%,
-        rgba(17, 109, 161, 1) 93%,
-        rgba(16, 105, 155, 1) 93%
-    );
+  position: absolute;
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
+  bottom: -1px;
+  background: linear-gradient(
+    45deg,
+    rgba(12, 109, 165, 1) 0%,
+    rgba(14, 96, 143, 1) 22%,
+    rgba(18, 113, 167, 1) 60%,
+    rgba(15, 105, 157, 1) 60%,
+    rgba(19, 107, 158, 1) 70%,
+    rgba(18, 99, 145, 1) 80%,
+    rgba(18, 113, 167, 1) 80%,
+    rgba(18, 113, 167, 1) 82%,
+    rgba(30, 113, 161, 1) 83%,
+    rgba(19, 103, 151, 1) 83%,
+    rgba(17, 109, 161, 1) 93%,
+    rgba(16, 105, 155, 1) 93%
+  );
 }
 
 .bgTop {
-    z-index: 15;
-    opacity: 0.5;
+  z-index: 15;
+  opacity: 0.5;
 }
 
 .bgMiddle {
-    z-index: 10;
-    opacity: 0.75;
+  z-index: 10;
+  opacity: 0.75;
 }
 
 .bgBottom {
-    z-index: 5;
+  z-index: 5;
 }
 
 .wave {
-    position: absolute;
-    left: 0;
-    width: 200%;
-    height: 100%;
-    background-repeat: repeat no-repeat;
-    background-position: 0 bottom;
-    transform-origin: center bottom;
+  position: absolute;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background-repeat: repeat no-repeat;
+  background-position: 0 bottom;
+  transform-origin: center bottom;
 }
 
 .waveTop {
-    background-image: url("~/public/assets/img/wave-top.png");
-    background-size: 50% 100px;
+  background-image: url('~/public/assets/img/wave-top.png');
+  background-size: 50% 100px;
 }
 
 .waveAnimation .waveTop {
-    animation: move-wave 3s;
-    -webkit-animation: move-wave 3s;
-    -webkit-animation-delay: 1s;
-    animation-delay: 1s;
+  animation: move-wave 3s;
+  -webkit-animation: move-wave 3s;
+  -webkit-animation-delay: 1s;
+  animation-delay: 1s;
 }
 
 .waveMiddle {
-    background-image: url("~/public/assets/img/wave-mid.png");
-    background-size: 50% 120px;
+  background-image: url('~/public/assets/img/wave-mid.png');
+  background-size: 50% 120px;
 }
 
 .waveAnimation .waveMiddle {
-    animation: move_wave 10s linear infinite;
+  animation: move_wave 10s linear infinite;
 }
 
 .waveBottom {
-    background-image: url("~/public/assets/img/wave-bot.png");
-    background-size: 50% 100px;
+  background-image: url('~/public/assets/img/wave-bot.png');
+  background-size: 50% 100px;
 }
 
 .waveAnimation .waveBottom {
-    animation: move_wave 15s linear infinite;
+  animation: move_wave 15s linear infinite;
 }
 
 // firefox
 input:invalid {
-    box-shadow: none;
+  box-shadow: none;
 }

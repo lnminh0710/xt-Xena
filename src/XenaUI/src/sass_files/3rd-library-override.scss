@@ -1,30 +1,30 @@
-@import "color.scss";
+@import 'color.scss';
 
 /*
  * Component: ng2-dnd
  * ----------------------
  */
 .dnd-drag-start {
-    -moz-transform: scale(0.8);
-    -ms-transform: scale(0.8);
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
-    opacity: 0.7;
+  -moz-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  -webkit-transform: scale(0.8);
+  transform: scale(0.8);
+  opacity: 0.7;
 }
 
 .dnd-drag-enter {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .dnd-drag-over {
 }
 
 .dnd-sortable-drag {
-    -moz-transform: scale(0.9);
-    -webkit-transform: scale(0.9);
-    -ms-transform: scale(0.9);
-    transform: scale(0.9);
-    opacity: 0.7;
+  -moz-transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  transform: scale(0.9);
+  opacity: 0.7;
 }
 
 /*
@@ -32,10 +32,10 @@
  * ----------------------
  */
 .slim-loading-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 /*
@@ -43,25 +43,25 @@
  * ----------------------
  */
 .gu-mirror {
-    button.close-btn {
-        display: none;
-    }
+  button.close-btn {
+    display: none;
+  }
 }
 
 .gu-transit {
-    .panel {
-        opacity: 0.2;
-        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
-        filter: alpha(opacity=20);
-    }
+  .panel {
+    opacity: 0.2;
+    -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)';
+    filter: alpha(opacity=20);
+  }
 }
 
 tr.gu-mirror {
-    &.green-cell {
-        td {
-            color: $green;
-        }
+  &.green-cell {
+    td {
+      color: $green;
     }
+  }
 }
 
 /*

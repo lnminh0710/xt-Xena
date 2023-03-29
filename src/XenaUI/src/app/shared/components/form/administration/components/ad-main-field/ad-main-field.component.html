@@ -1,247 +1,242 @@
 <div
-    *ngIf="isRenderForm"
-    [formGroup]="adMainFieldForm"
-    class="ad__main-field__add"
+  *ngIf="isRenderForm"
+  [formGroup]="adMainFieldForm"
+  class="ad__main-field__add"
 >
-    <div *ngIf="commonConfig['headerText']" class="form-group xn__form-header">
-        <span
-            ><label-translation
-                [keyword]="'Ad_Main__' + commonConfig['headerText']"
-            ></label-translation
-        ></span>
+  <div *ngIf="commonConfig['headerText']" class="form-group xn__form-header">
+    <span
+      ><label-translation
+        [keyword]="'Ad_Main__' + commonConfig['headerText']"
+      ></label-translation
+    ></span>
+  </div>
+  <div class="form-group" *ngIf="!hiddenFields['isActive']">
+    <label for="isActive" class="control-label col-sm-4">{{
+      administrationMainFieldData.isActive.displayValue
+    }}</label>
+    <div class="col-sm-8">
+      <mat-checkbox color="primary" formControlName="isActive"> </mat-checkbox>
+      <control-messages [control]="adMainFieldForm.controls.isActive">
+      </control-messages>
     </div>
-    <div class="form-group" *ngIf="!hiddenFields['isActive']">
-        <label for="isActive" class="control-label col-sm-4">{{
-            administrationMainFieldData.isActive.displayValue
-        }}</label>
-        <div class="col-sm-8">
-            <mat-checkbox color="primary" formControlName="isActive">
-            </mat-checkbox>
-            <control-messages [control]="adMainFieldForm.controls.isActive">
-            </control-messages>
-        </div>
+  </div>
+  <div
+    *ngIf="formFieldConfig['principal'] && !hiddenFields['principal']"
+    class="form-group"
+  >
+    <label for="principal" class="control-label col-sm-4">
+      <label-translation [keyword]="'Ad_Main__Principal'"></label-translation>
+    </label>
+    <div class="col-sm-8">
+      <div class="full-width">
+        <xn-combo-box
+          #principal
+          wjDropdownHelper
+          [form]="adMainFieldForm"
+          formControlName="principal"
+          class="custom-wj-input-control xn-select"
+          [itemsSource]="listComboBox.principal"
+          [displayMemberPath]="'textValue'"
+          [selectedValuePath]="'idValue'"
+          [isEditable]="true"
+          [isRequired]="false"
+          placeholder="Please select"
+        >
+        </xn-combo-box>
+        <control-messages
+          [xn-trigger-click-inside-cbo]="principal"
+          [mandatoryColor]="mandatoryCheckColor['principal']"
+          [control]="adMainFieldForm.controls['principal']"
+          icon="globe"
+        >
+        </control-messages>
+      </div>
     </div>
-    <div
-        *ngIf="formFieldConfig['principal'] && !hiddenFields['principal']"
-        class="form-group"
-    >
-        <label for="principal" class="control-label col-sm-4">
-            <label-translation
-                [keyword]="'Ad_Main__Principal'"
-            ></label-translation>
-        </label>
-        <div class="col-sm-8">
-            <div class="full-width">
-                <xn-combo-box
-                    #principal
-                    wjDropdownHelper
-                    [form]="adMainFieldForm"
-                    formControlName="principal"
-                    class="custom-wj-input-control xn-select"
-                    [itemsSource]="listComboBox.principal"
-                    [displayMemberPath]="'textValue'"
-                    [selectedValuePath]="'idValue'"
-                    [isEditable]="true"
-                    [isRequired]="false"
-                    placeholder="Please select"
-                >
-                </xn-combo-box>
-                <control-messages
-                    [xn-trigger-click-inside-cbo]="principal"
-                    [mandatoryColor]="mandatoryCheckColor['principal']"
-                    [control]="adMainFieldForm.controls['principal']"
-                    icon="globe"
-                >
-                </control-messages>
-            </div>
-        </div>
+  </div>
+  <div class="form-group" *ngIf="!hiddenFields['company']">
+    <label for="company" class="control-label col-sm-4">{{
+      administrationMainFieldData.company.displayValue
+    }}</label>
+    <div class="col-sm-8">
+      <input
+        type="text"
+        class="form-control xn-input"
+        name="company"
+        formControlName="company"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['company']"
+        [type]="'textbox'"
+        [control]="adMainFieldForm.controls.company"
+        [icon]="'home'"
+      >
+      </control-messages>
     </div>
-    <div class="form-group" *ngIf="!hiddenFields['company']">
-        <label for="company" class="control-label col-sm-4">{{
-            administrationMainFieldData.company.displayValue
-        }}</label>
-        <div class="col-sm-8">
-            <input
-                type="text"
-                class="form-control xn-input"
-                name="company"
-                formControlName="company"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['company']"
-                [type]="'textbox'"
-                [control]="adMainFieldForm.controls.company"
-                [icon]="'home'"
-            >
-            </control-messages>
-        </div>
+  </div>
+  <div class="form-group" *ngIf="!hiddenFields['idRepTitle']">
+    <label for="title" class="control-label col-sm-4">{{
+      administrationMainFieldData.idRepTitle.displayValue
+    }}</label>
+    <div class="col-sm-8">
+      <div class="full-width">
+        <xn-combo-box
+          #idRepTitle
+          wjDropdownHelper
+          [form]="adMainFieldForm"
+          formControlName="idRepTitle"
+          class="custom-wj-input-control xn-select"
+          [itemsSource]="listComboBox.title"
+          [displayMemberPath]="'textValue'"
+          [selectedValuePath]="'idValue'"
+          [isEditable]="true"
+          [isRequired]="false"
+          placeholder="Please select"
+        >
+        </xn-combo-box>
+        <control-messages
+          [xn-trigger-click-inside-cbo]="idRepTitle"
+          [mandatoryColor]="mandatoryCheckColor['idRepTitle']"
+          [control]="adMainFieldForm.controls['idRepTitle']"
+          icon="anchor"
+        >
+        </control-messages>
+      </div>
     </div>
-    <div class="form-group" *ngIf="!hiddenFields['idRepTitle']">
-        <label for="title" class="control-label col-sm-4">{{
-            administrationMainFieldData.idRepTitle.displayValue
-        }}</label>
-        <div class="col-sm-8">
-            <div class="full-width">
-                <xn-combo-box
-                    #idRepTitle
-                    wjDropdownHelper
-                    [form]="adMainFieldForm"
-                    formControlName="idRepTitle"
-                    class="custom-wj-input-control xn-select"
-                    [itemsSource]="listComboBox.title"
-                    [displayMemberPath]="'textValue'"
-                    [selectedValuePath]="'idValue'"
-                    [isEditable]="true"
-                    [isRequired]="false"
-                    placeholder="Please select"
-                >
-                </xn-combo-box>
-                <control-messages
-                    [xn-trigger-click-inside-cbo]="idRepTitle"
-                    [mandatoryColor]="mandatoryCheckColor['idRepTitle']"
-                    [control]="adMainFieldForm.controls['idRepTitle']"
-                    icon="anchor"
-                >
-                </control-messages>
-            </div>
-        </div>
+  </div>
+  <div class="form-group" *ngIf="!hiddenFields['lastName']">
+    <label for="lastName" class="control-label col-sm-4">{{
+      administrationMainFieldData.lastName.displayValue
+    }}</label>
+    <div class="col-sm-8">
+      <input
+        type="text"
+        class="form-control xn-input"
+        name="lastName"
+        formControlName="lastName"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['lastName']"
+        [control]="adMainFieldForm.controls['lastName']"
+        [type]="'textbox'"
+        icon="map-marker"
+      >
+      </control-messages>
     </div>
-    <div class="form-group" *ngIf="!hiddenFields['lastName']">
-        <label for="lastName" class="control-label col-sm-4">{{
-            administrationMainFieldData.lastName.displayValue
-        }}</label>
-        <div class="col-sm-8">
-            <input
-                type="text"
-                class="form-control xn-input"
-                name="lastName"
-                formControlName="lastName"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['lastName']"
-                [control]="adMainFieldForm.controls['lastName']"
-                [type]="'textbox'"
-                icon="map-marker"
-            >
-            </control-messages>
-        </div>
+  </div>
+  <div class="form-group" *ngIf="!hiddenFields['firstName']">
+    <label for="firstName" class="control-label col-sm-4">{{
+      administrationMainFieldData.firstName.displayValue
+    }}</label>
+    <div class="col-sm-8">
+      <input
+        type="text"
+        class="form-control xn-input"
+        name="firstName"
+        formControlName="firstName"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['firstName']"
+        [control]="adMainFieldForm.controls['firstName']"
+        [type]="'textbox'"
+        icon="map-marker"
+      >
+      </control-messages>
     </div>
-    <div class="form-group" *ngIf="!hiddenFields['firstName']">
-        <label for="firstName" class="control-label col-sm-4">{{
-            administrationMainFieldData.firstName.displayValue
-        }}</label>
-        <div class="col-sm-8">
-            <input
-                type="text"
-                class="form-control xn-input"
-                name="firstName"
-                formControlName="firstName"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['firstName']"
-                [control]="adMainFieldForm.controls['firstName']"
-                [type]="'textbox'"
-                icon="map-marker"
-            >
-            </control-messages>
-        </div>
+  </div>
+  <div class="form-group" *ngIf="!hiddenFields['additionalName']">
+    <label for="additionalName" class="control-label col-sm-4">{{
+      administrationMainFieldData.nameAddition.displayValue
+    }}</label>
+    <div class="col-sm-8">
+      <input
+        type="text"
+        class="form-control xn-input"
+        name="additionalName"
+        formControlName="additionalName"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['additionalName']"
+        [control]="adMainFieldForm.controls['additionalName']"
+        [type]="'textbox'"
+        icon="map-marker"
+      >
+      </control-messages>
     </div>
-    <div class="form-group" *ngIf="!hiddenFields['additionalName']">
-        <label for="additionalName" class="control-label col-sm-4">{{
-            administrationMainFieldData.nameAddition.displayValue
-        }}</label>
-        <div class="col-sm-8">
-            <input
-                type="text"
-                class="form-control xn-input"
-                name="additionalName"
-                formControlName="additionalName"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['additionalName']"
-                [control]="adMainFieldForm.controls['additionalName']"
-                [type]="'textbox'"
-                icon="map-marker"
-            >
-            </control-messages>
-        </div>
+  </div>
+  <div class="form-group" *ngIf="!hiddenFields['middlename']">
+    <label for="middlename" class="control-label col-sm-4">{{
+      administrationMainFieldData.middlename.displayValue
+    }}</label>
+    <div class="col-sm-8">
+      <input
+        type="text"
+        class="form-control xn-input"
+        name="middlename"
+        formControlName="middlename"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['middlename']"
+        [control]="adMainFieldForm.controls['middlename']"
+        [type]="'textbox'"
+        icon="map-marker"
+      >
+      </control-messages>
     </div>
-    <div class="form-group" *ngIf="!hiddenFields['middlename']">
-        <label for="middlename" class="control-label col-sm-4">{{
-            administrationMainFieldData.middlename.displayValue
-        }}</label>
-        <div class="col-sm-8">
-            <input
-                type="text"
-                class="form-control xn-input"
-                name="middlename"
-                formControlName="middlename"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['middlename']"
-                [control]="adMainFieldForm.controls['middlename']"
-                [type]="'textbox'"
-                icon="map-marker"
-            >
-            </control-messages>
-        </div>
+  </div>
+  <div class="form-group" *ngIf="!hiddenFields['suffixName']">
+    <label for="suffixName" class="control-label col-sm-4">{{
+      administrationMainFieldData.suffixName.displayValue
+    }}</label>
+    <div class="col-sm-8">
+      <input
+        type="text"
+        class="form-control xn-input"
+        name="suffixName"
+        formControlName="suffixName"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['suffixName']"
+        [control]="adMainFieldForm.controls['suffixName']"
+        [type]="'textbox'"
+        icon="map-marker"
+      >
+      </control-messages>
     </div>
-    <div class="form-group" *ngIf="!hiddenFields['suffixName']">
-        <label for="suffixName" class="control-label col-sm-4">{{
-            administrationMainFieldData.suffixName.displayValue
-        }}</label>
-        <div class="col-sm-8">
-            <input
-                type="text"
-                class="form-control xn-input"
-                name="suffixName"
-                formControlName="suffixName"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['suffixName']"
-                [control]="adMainFieldForm.controls['suffixName']"
-                [type]="'textbox'"
-                icon="map-marker"
-            >
-            </control-messages>
-        </div>
+  </div>
+  <div class="form-group" *ngIf="!hiddenFields['idRepTitleOfCourtesy']">
+    <label for="idRepTitleOfCourtesy" class="control-label col-sm-4">{{
+      administrationMainFieldData.idRepTitleOfCourtesy.displayValue
+    }}</label>
+    <div class="col-sm-8">
+      <div class="full-width">
+        <xn-combo-box
+          #idRepTitleOfCourtesy
+          wjDropdownHelper
+          [form]="adMainFieldForm"
+          formControlName="idRepTitleOfCourtesy"
+          class="custom-wj-input-control xn-select"
+          [itemsSource]="listComboBox.titleOfCourtesy"
+          [displayMemberPath]="'textValue'"
+          [selectedValuePath]="'idValue'"
+          [isEditable]="true"
+          [isRequired]="false"
+          placeholder="Please select"
+        >
+        </xn-combo-box>
+        <control-messages
+          [xn-trigger-click-inside-cbo]="idRepTitleOfCourtesy"
+          [mandatoryColor]="mandatoryCheckColor['idRepTitleOfCourtesy']"
+          [control]="adMainFieldForm.controls['idRepTitleOfCourtesy']"
+          icon="anchor"
+        >
+        </control-messages>
+      </div>
     </div>
-    <div class="form-group" *ngIf="!hiddenFields['idRepTitleOfCourtesy']">
-        <label for="idRepTitleOfCourtesy" class="control-label col-sm-4">{{
-            administrationMainFieldData.idRepTitleOfCourtesy.displayValue
-        }}</label>
-        <div class="col-sm-8">
-            <div class="full-width">
-                <xn-combo-box
-                    #idRepTitleOfCourtesy
-                    wjDropdownHelper
-                    [form]="adMainFieldForm"
-                    formControlName="idRepTitleOfCourtesy"
-                    class="custom-wj-input-control xn-select"
-                    [itemsSource]="listComboBox.titleOfCourtesy"
-                    [displayMemberPath]="'textValue'"
-                    [selectedValuePath]="'idValue'"
-                    [isEditable]="true"
-                    [isRequired]="false"
-                    placeholder="Please select"
-                >
-                </xn-combo-box>
-                <control-messages
-                    [xn-trigger-click-inside-cbo]="idRepTitleOfCourtesy"
-                    [mandatoryColor]="
-                        mandatoryCheckColor['idRepTitleOfCourtesy']
-                    "
-                    [control]="adMainFieldForm.controls['idRepTitleOfCourtesy']"
-                    icon="anchor"
-                >
-                </control-messages>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>

@@ -1,1 +1,1 @@
-export * from "./xn-file-explorer.component";
+export * from './xn-file-explorer.component';

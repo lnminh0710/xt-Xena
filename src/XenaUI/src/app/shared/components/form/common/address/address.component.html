@@ -1,348 +1,340 @@
 <div
-    *ngIf="isRenderForm"
-    [formGroup]="addressForm"
-    class="customer__contact-edit__form"
+  *ngIf="isRenderForm"
+  [formGroup]="addressForm"
+  class="customer__contact-edit__form"
 >
-    <div
-        *ngIf="
-            !hiddenFields['idRepIsoCountryCode'] &&
-            !dontShowControl['idRepIsoCountryCode']
-        "
-        class="form-group"
+  <div
+    *ngIf="
+      !hiddenFields['idRepIsoCountryCode'] &&
+      !dontShowControl['idRepIsoCountryCode']
+    "
+    class="form-group"
+  >
+    <label
+      for="idRepIsoCountryCode"
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      >{{ data.idRepIsoCountryCode.displayValue }}</label
     >
-        <label
-            for="idRepIsoCountryCode"
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            >{{ data.idRepIsoCountryCode.displayValue }}</label
+    <div
+      class="widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
+    >
+      <div class="full-width">
+        <xn-combo-box
+          #idRepIsoCountryCode
+          wjDropdownHelper
+          [form]="addressForm"
+          formControlName="idRepIsoCountryCode"
+          class="custom-wj-input-control xn-select"
+          [itemsSource]="listComboBox.countryCode"
+          [displayMemberPath]="'textValue'"
+          [selectedValuePath]="'idValue'"
+          [isEditable]="true"
+          [isRequired]="true"
+          placeholder="Please select"
+          (selectedIndexChanged)="changeCountryCode()"
         >
-        <div
-            class="widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
+        </xn-combo-box>
+        <control-messages
+          [xn-trigger-click-inside-cbo]="idRepIsoCountryCode"
+          [mandatoryColor]="mandatoryCheckColor['idRepIsoCountryCode']"
+          [control]="addressForm.controls['idRepIsoCountryCode']"
+          icon="globe"
+          [componentControl]="idRepIsoCountryCode"
+          [hotKeyValue]="hotKeySettingService.idRepIsoCountryCode$ | async"
         >
-            <div class="full-width">
-                <xn-combo-box
-                    #idRepIsoCountryCode
-                    wjDropdownHelper
-                    [form]="addressForm"
-                    formControlName="idRepIsoCountryCode"
-                    class="custom-wj-input-control xn-select"
-                    [itemsSource]="listComboBox.countryCode"
-                    [displayMemberPath]="'textValue'"
-                    [selectedValuePath]="'idValue'"
-                    [isEditable]="true"
-                    [isRequired]="true"
-                    placeholder="Please select"
-                    (selectedIndexChanged)="changeCountryCode()"
-                >
-                </xn-combo-box>
-                <control-messages
-                    [xn-trigger-click-inside-cbo]="idRepIsoCountryCode"
-                    [mandatoryColor]="
-                        mandatoryCheckColor['idRepIsoCountryCode']
-                    "
-                    [control]="addressForm.controls['idRepIsoCountryCode']"
-                    icon="globe"
-                    [componentControl]="idRepIsoCountryCode"
-                    [hotKeyValue]="
-                        hotKeySettingService.idRepIsoCountryCode$ | async
-                    "
-                >
-                </control-messages>
-            </div>
-        </div>
+        </control-messages>
+      </div>
     </div>
-    <div
-        *ngIf="
-            !hiddenFields['idRepLanguage'] && !dontShowControl['idRepLanguage']
-        "
-        class="form-group"
+  </div>
+  <div
+    *ngIf="!hiddenFields['idRepLanguage'] && !dontShowControl['idRepLanguage']"
+    class="form-group"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="idRepLanguage"
+      >{{ data.idRepLanguage.displayValue }}</label
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="idRepLanguage"
-            >{{ data.idRepLanguage.displayValue }}</label
+    <div
+      class="widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
+    >
+      <div class="full-width">
+        <xn-combo-box
+          #idRepLanguage
+          wjDropdownHelper
+          [form]="addressForm"
+          formControlName="idRepLanguage"
+          class="custom-wj-input-control xn-select"
+          [itemsSource]="listComboBox.language"
+          [displayMemberPath]="'textValue'"
+          [selectedValuePath]="'idValue'"
+          [isEditable]="true"
+          [isRequired]="true"
+          placeholder="Please select"
         >
-        <div
-            class="widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
+        </xn-combo-box>
+        <control-messages
+          [xn-trigger-click-inside-cbo]="idRepLanguage"
+          [mandatoryColor]="mandatoryCheckColor['idRepLanguage']"
+          [control]="addressForm.controls['idRepLanguage']"
+          icon="language"
+          [componentControl]="idRepLanguage"
+          [hotKeyValue]="hotKeySettingService.idRepLanguage$ | async"
         >
-            <div class="full-width">
-                <xn-combo-box
-                    #idRepLanguage
-                    wjDropdownHelper
-                    [form]="addressForm"
-                    formControlName="idRepLanguage"
-                    class="custom-wj-input-control xn-select"
-                    [itemsSource]="listComboBox.language"
-                    [displayMemberPath]="'textValue'"
-                    [selectedValuePath]="'idValue'"
-                    [isEditable]="true"
-                    [isRequired]="true"
-                    placeholder="Please select"
-                >
-                </xn-combo-box>
-                <control-messages
-                    [xn-trigger-click-inside-cbo]="idRepLanguage"
-                    [mandatoryColor]="mandatoryCheckColor['idRepLanguage']"
-                    [control]="addressForm.controls['idRepLanguage']"
-                    icon="language"
-                    [componentControl]="idRepLanguage"
-                    [hotKeyValue]="hotKeySettingService.idRepLanguage$ | async"
-                >
-                </control-messages>
-            </div>
-        </div>
+        </control-messages>
+      </div>
     </div>
-    <div
-        *ngIf="!hiddenFields['street'] && addressForm.controls['street']"
-        class="form-group"
+  </div>
+  <div
+    *ngIf="!hiddenFields['street'] && addressForm.controls['street']"
+    class="form-group"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="street"
+      >{{ data.street.displayValue }}</label
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="street"
-            >{{ data.street.displayValue }}</label
-        >
-        <div
-            class="widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
-        >
-            <input
-                #street
-                class="form-control xn-input"
-                type="text"
-                id="street"
-                name="street"
-                formControlName="street"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['street']"
-                [control]="addressForm.controls['street']"
-                [type]="'textbox'"
-                [icon]="'home'"
-                [componentControl]="street"
-                [hotKeyValue]="hotKeySettingService.street$ | async"
-            >
-            </control-messages>
-        </div>
+    <div
+      class="widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
+    >
+      <input
+        #street
+        class="form-control xn-input"
+        type="text"
+        id="street"
+        name="street"
+        formControlName="street"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['street']"
+        [control]="addressForm.controls['street']"
+        [type]="'textbox'"
+        [icon]="'home'"
+        [componentControl]="street"
+        [hotKeyValue]="hotKeySettingService.street$ | async"
+      >
+      </control-messages>
     </div>
-    <div
-        *ngIf="!hiddenFields['streetNr'] && addressForm.controls['streetNr']"
-        class="form-group"
+  </div>
+  <div
+    *ngIf="!hiddenFields['streetNr'] && addressForm.controls['streetNr']"
+    class="form-group"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="streetNr"
+      >{{ data.streetNr.displayValue }}</label
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="streetNr"
-            >{{ data.streetNr.displayValue }}</label
-        >
-        <div
-            class="widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
-        >
-            <input
-                #streetNr
-                class="form-control xn-input"
-                type="text"
-                id="streetNr"
-                name="streetNr"
-                formControlName="streetNr"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['streetNr']"
-                [type]="'textbox'"
-                [control]="addressForm.controls['streetNr']"
-                [icon]="'home'"
-                [componentControl]="streetNr"
-                [hotKeyValue]="hotKeySettingService.streetNr$ | async"
-            >
-            </control-messages>
-        </div>
+    <div
+      class="widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
+    >
+      <input
+        #streetNr
+        class="form-control xn-input"
+        type="text"
+        id="streetNr"
+        name="streetNr"
+        formControlName="streetNr"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['streetNr']"
+        [type]="'textbox'"
+        [control]="addressForm.controls['streetNr']"
+        [icon]="'home'"
+        [componentControl]="streetNr"
+        [hotKeyValue]="hotKeySettingService.streetNr$ | async"
+      >
+      </control-messages>
     </div>
-    <div
-        *ngIf="
-            !hiddenFields['streetAddition1'] &&
-            addressForm.controls['streetAddition1']
-        "
-        class="form-group"
+  </div>
+  <div
+    *ngIf="
+      !hiddenFields['streetAddition1'] &&
+      addressForm.controls['streetAddition1']
+    "
+    class="form-group"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="streetAddition1"
+      >{{ data.streetAddition1.displayValue }}</label
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="streetAddition1"
-            >{{ data.streetAddition1.displayValue }}</label
-        >
-        <div
-            class="widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
-        >
-            <input
-                #streetAddition1
-                class="form-control xn-input"
-                type="text"
-                id="streetAddition1"
-                name="streetAddition1"
-                formControlName="streetAddition1"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['streetAddition1']"
-                [type]="'textbox'"
-                [icon]="'home'"
-                [control]="addressForm.controls['streetAddition1']"
-                [componentControl]="streetAddition1"
-                [hotKeyValue]="hotKeySettingService.streetAddition1$ | async"
-            >
-            </control-messages>
-        </div>
+    <div
+      class="widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
+    >
+      <input
+        #streetAddition1
+        class="form-control xn-input"
+        type="text"
+        id="streetAddition1"
+        name="streetAddition1"
+        formControlName="streetAddition1"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['streetAddition1']"
+        [type]="'textbox'"
+        [icon]="'home'"
+        [control]="addressForm.controls['streetAddition1']"
+        [componentControl]="streetAddition1"
+        [hotKeyValue]="hotKeySettingService.streetAddition1$ | async"
+      >
+      </control-messages>
     </div>
-    <div
-        *ngIf="
-            !hiddenFields['streetAddition2'] &&
-            addressForm.controls['streetAddition2']
-        "
-        class="form-group"
+  </div>
+  <div
+    *ngIf="
+      !hiddenFields['streetAddition2'] &&
+      addressForm.controls['streetAddition2']
+    "
+    class="form-group"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="streetAddition2"
+      >{{ data.streetAddition2.displayValue }}</label
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="streetAddition2"
-            >{{ data.streetAddition2.displayValue }}</label
-        >
-        <div
-            class="widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
-        >
-            <input
-                #streetAddition2
-                class="form-control xn-input"
-                type="text"
-                id="streetAddition2"
-                name="streetAddition2"
-                formControlName="streetAddition2"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['streetAddition2']"
-                [type]="'textbox'"
-                [icon]="'home'"
-                [control]="addressForm.controls['streetAddition2']"
-                [componentControl]="streetAddition2"
-                [hotKeyValue]="hotKeySettingService.streetAddition2$ | async"
-            >
-            </control-messages>
-        </div>
+    <div
+      class="widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
+    >
+      <input
+        #streetAddition2
+        class="form-control xn-input"
+        type="text"
+        id="streetAddition2"
+        name="streetAddition2"
+        formControlName="streetAddition2"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['streetAddition2']"
+        [type]="'textbox'"
+        [icon]="'home'"
+        [control]="addressForm.controls['streetAddition2']"
+        [componentControl]="streetAddition2"
+        [hotKeyValue]="hotKeySettingService.streetAddition2$ | async"
+      >
+      </control-messages>
     </div>
-    <div
-        *ngIf="
-            !hiddenFields['idRepPoBox'] && addressForm.controls['idRepPoBox']
-        "
-        class="form-group poBox"
+  </div>
+  <div
+    *ngIf="!hiddenFields['idRepPoBox'] && addressForm.controls['idRepPoBox']"
+    class="form-group poBox"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="poboxLabel"
+      >{{ data.idRepPoBox.displayValue }}</label
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="poboxLabel"
-            >{{ data.idRepPoBox.displayValue }}</label
-        >
-        <div
-            class="widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
-        >
-            <div class="full-width">
-                <div class="col-sm-6 no-padding">
-                    <xn-combo-box
-                        #multiSelectDDLPoBox
-                        wjDropdownHelper
-                        [form]="addressForm"
-                        formControlName="idRepPoBox"
-                        class="custom-wj-input-control xn-select xn-select-not-required"
-                        [itemsSource]="listComboBox.pOBox"
-                        [displayMemberPath]="'textValue'"
-                        [selectedValuePath]="'idValue'"
-                        (gotFocus)="gotFocusPoBox($event)"
-                        [isEditable]="true"
-                        [isRequired]="true"
-                        placeholder="Please select"
-                    >
-                    </xn-combo-box>
-                    <control-messages
-                        [xn-trigger-click-inside-cbo]="multiSelectDDLPoBox"
-                        [mandatoryColor]="mandatoryCheckColor['idRepPoBox']"
-                        [control]="addressForm.controls['idRepPoBox']"
-                        icon="codepen"
-                        [componentControl]="multiSelectDDLPoBox"
-                        [hotKeyValue]="hotKeySettingService.idRepPoBox$ | async"
-                    >
-                    </control-messages>
-                </div>
-                <div class="col-sm-6 no-padding padding-left-4">
-                    <input
-                        #poboxLabel
-                        *ngIf="!hiddenFields['poboxLabel']"
-                        class="form-control xn-input"
-                        type="text"
-                        id="poboxLabel"
-                        name="poboxLabel"
-                        formControlName="poboxLabel"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [mandatoryColor]="mandatoryCheckColor['poboxLabel']"
-                        [control]="addressForm.controls['poboxLabel']"
-                        [type]="'textbox'"
-                        [icon]="'codepen'"
-                        [componentControl]="poboxLabel"
-                        [hotKeyValue]="hotKeySettingService.poboxLabel$ | async"
-                    >
-                    </control-messages>
-                </div>
-            </div>
+    <div
+      class="widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
+    >
+      <div class="full-width">
+        <div class="col-sm-6 no-padding">
+          <xn-combo-box
+            #multiSelectDDLPoBox
+            wjDropdownHelper
+            [form]="addressForm"
+            formControlName="idRepPoBox"
+            class="custom-wj-input-control xn-select xn-select-not-required"
+            [itemsSource]="listComboBox.pOBox"
+            [displayMemberPath]="'textValue'"
+            [selectedValuePath]="'idValue'"
+            (gotFocus)="gotFocusPoBox($event)"
+            [isEditable]="true"
+            [isRequired]="true"
+            placeholder="Please select"
+          >
+          </xn-combo-box>
+          <control-messages
+            [xn-trigger-click-inside-cbo]="multiSelectDDLPoBox"
+            [mandatoryColor]="mandatoryCheckColor['idRepPoBox']"
+            [control]="addressForm.controls['idRepPoBox']"
+            icon="codepen"
+            [componentControl]="multiSelectDDLPoBox"
+            [hotKeyValue]="hotKeySettingService.idRepPoBox$ | async"
+          >
+          </control-messages>
         </div>
+        <div class="col-sm-6 no-padding padding-left-4">
+          <input
+            #poboxLabel
+            *ngIf="!hiddenFields['poboxLabel']"
+            class="form-control xn-input"
+            type="text"
+            id="poboxLabel"
+            name="poboxLabel"
+            formControlName="poboxLabel"
+            autocomplete="off"
+          />
+          <control-messages
+            [mandatoryColor]="mandatoryCheckColor['poboxLabel']"
+            [control]="addressForm.controls['poboxLabel']"
+            [type]="'textbox'"
+            [icon]="'codepen'"
+            [componentControl]="poboxLabel"
+            [hotKeyValue]="hotKeySettingService.poboxLabel$ | async"
+          >
+          </control-messages>
+        </div>
+      </div>
     </div>
-    <div
-        *ngIf="!hiddenFields['zip'] && addressForm.controls['zip']"
-        class="form-group"
+  </div>
+  <div
+    *ngIf="!hiddenFields['zip'] && addressForm.controls['zip']"
+    class="form-group"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="zip"
+      >{{ data.zip.displayValue }}</label
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="zip"
-            >{{ data.zip.displayValue }}</label
-        >
-        <div
-            class="col-sm-8 widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
-        >
-            <!--<wj-input-mask #zip
+    <div
+      class="col-sm-8 widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
+    >
+      <!--<wj-input-mask #zip
                            class="custom-wj-input-control"
                            id="zip"
                            name="zip"
@@ -351,137 +343,137 @@
                            [mask]="zipMaskPattern.validationZipMaskFormat">
             </wj-input-mask>-->
 
-            <input
-                #zip
-                class="form-control xn-input"
-                type="text"
-                id="zip"
-                name="zip"
-                formControlName="zip"
-                autocomplete="off"
-            />
+      <input
+        #zip
+        class="form-control xn-input"
+        type="text"
+        id="zip"
+        name="zip"
+        formControlName="zip"
+        autocomplete="off"
+      />
 
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['zip']"
-                [type]="'textbox'"
-                [icon]="'codepen'"
-                [control]="addressForm.controls['zip']"
-                [componentControl]="zip"
-                [hotKeyValue]="hotKeySettingService.zip$ | async"
-            >
-            </control-messages>
-        </div>
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['zip']"
+        [type]="'textbox'"
+        [icon]="'codepen'"
+        [control]="addressForm.controls['zip']"
+        [componentControl]="zip"
+        [hotKeyValue]="hotKeySettingService.zip$ | async"
+      >
+      </control-messages>
     </div>
-    <div
-        *ngIf="!hiddenFields['zip2'] && addressForm.controls['zip2']"
-        class="form-group"
+  </div>
+  <div
+    *ngIf="!hiddenFields['zip2'] && addressForm.controls['zip2']"
+    class="form-group"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="zip2"
+      >{{ data.zip2.displayValue }}</label
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="zip2"
-            >{{ data.zip2.displayValue }}</label
-        >
-        <div
-            class="col-sm-8 widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
-        >
-            <input
-                #zip2
-                class="form-control xn-input"
-                type="text"
-                id="zip2"
-                name="zip2"
-                formControlName="zip2"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['zip2']"
-                [type]="'textbox'"
-                [icon]="'codepen'"
-                [control]="addressForm.controls['zip2']"
-                [componentControl]="zip2"
-                [hotKeyValue]="hotKeySettingService.zip2$ | async"
-            >
-            </control-messages>
-        </div>
-    </div>
     <div
-        *ngIf="!hiddenFields['place'] && addressForm.controls['place']"
-        class="form-group"
+      class="col-sm-8 widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="place"
-            >{{ data.place.displayValue }}</label
-        >
-        <div
-            class="widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
-        >
-            <input
-                #place
-                class="form-control xn-input"
-                type="text"
-                id="place"
-                name="place"
-                formControlName="place"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['place']"
-                [type]="'textbox'"
-                [icon]="'home'"
-                [control]="addressForm.controls['place']"
-                [componentControl]="place"
-                [hotKeyValue]="hotKeySettingService.place$ | async"
-            >
-            </control-messages>
-        </div>
+      <input
+        #zip2
+        class="form-control xn-input"
+        type="text"
+        id="zip2"
+        name="zip2"
+        formControlName="zip2"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['zip2']"
+        [type]="'textbox'"
+        [icon]="'codepen'"
+        [control]="addressForm.controls['zip2']"
+        [componentControl]="zip2"
+        [hotKeyValue]="hotKeySettingService.zip2$ | async"
+      >
+      </control-messages>
     </div>
+  </div>
+  <div
+    *ngIf="!hiddenFields['place'] && addressForm.controls['place']"
+    class="form-group"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="place"
+      >{{ data.place.displayValue }}</label
+    >
     <div
-        *ngIf="!hiddenFields['area'] && addressForm.controls['area']"
-        class="form-group"
+      class="widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
     >
-        <label
-            class="control-label col-sm-4 width140"
-            [ngClass]="{ 'col-sm-2': isVerticalLayout }"
-            for="area"
-            >{{ data.area.displayValue }}</label
-        >
-        <div
-            class="widthFullMinus140"
-            [ngClass]="{
-                'col-sm-8': !isVerticalLayout,
-                'col-sm-10': isVerticalLayout
-            }"
-        >
-            <input
-                #area
-                class="form-control xn-input"
-                type="text"
-                id="area"
-                name="area"
-                [attr.dont-allow-char]="dontAllowCharForArea"
-                formControlName="area"
-                autocomplete="off"
-            />
-            <control-messages
-                [mandatoryColor]="mandatoryCheckColor['area']"
-                [type]="'textbox'"
-                [icon]="'home'"
-                [control]="addressForm.controls['area']"
-                [componentControl]="area"
-                [hotKeyValue]="hotKeySettingService.area$ | async"
-            >
-            </control-messages>
-        </div>
+      <input
+        #place
+        class="form-control xn-input"
+        type="text"
+        id="place"
+        name="place"
+        formControlName="place"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['place']"
+        [type]="'textbox'"
+        [icon]="'home'"
+        [control]="addressForm.controls['place']"
+        [componentControl]="place"
+        [hotKeyValue]="hotKeySettingService.place$ | async"
+      >
+      </control-messages>
     </div>
+  </div>
+  <div
+    *ngIf="!hiddenFields['area'] && addressForm.controls['area']"
+    class="form-group"
+  >
+    <label
+      class="control-label col-sm-4 width140"
+      [ngClass]="{ 'col-sm-2': isVerticalLayout }"
+      for="area"
+      >{{ data.area.displayValue }}</label
+    >
+    <div
+      class="widthFullMinus140"
+      [ngClass]="{
+        'col-sm-8': !isVerticalLayout,
+        'col-sm-10': isVerticalLayout
+      }"
+    >
+      <input
+        #area
+        class="form-control xn-input"
+        type="text"
+        id="area"
+        name="area"
+        [attr.dont-allow-char]="dontAllowCharForArea"
+        formControlName="area"
+        autocomplete="off"
+      />
+      <control-messages
+        [mandatoryColor]="mandatoryCheckColor['area']"
+        [type]="'textbox'"
+        [icon]="'home'"
+        [control]="addressForm.controls['area']"
+        [componentControl]="area"
+        [hotKeyValue]="hotKeySettingService.area$ | async"
+      >
+      </control-messages>
+    </div>
+  </div>
 </div>

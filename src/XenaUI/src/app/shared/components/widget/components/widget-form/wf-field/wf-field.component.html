@@ -1,307 +1,301 @@
 <div
+  *ngIf="isEditingLayout"
+  class="m-i ignore-drag"
+  [ngClass]="{
+    'm-c': control && control.checked,
+    'm-uc': control && !control.checked,
+    'm-i-has-bg':
+      configStyleGeneral.background ||
+      configStyleLabel.background ||
+      configStyleSeparate.background ||
+      configStyleData.background
+  }"
+  [style.height]="!control.height ? '' : control.height + 'px'"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+  (click)="openFieldDialog()"
+>
+  <div
+    class="d-field ignore-drag"
+    xn-tooltip
+    [tooltipText]="'Setting'"
+    [tooltipPlacement]="'top'"
+    container="body"
     *ngIf="isEditingLayout"
-    class="m-i ignore-drag"
+    (mouseenter)="onMenuMouseEnter()"
+    (mouseleave)="onMenuMouseLeave()"
+  >
+    <menu-setting-form-component
+      [control]="control"
+      [column]="column"
+      [panel]="panel"
+      [canDelete]="canDelete"
+      (onChangeAction)="onChangeHandler($event)"
+      (onDeletePanel)="onDelete($event)"
+      (onDeleteColumn)="deleteColumn($event)"
+      (onApplyAction)="onApplyHandler($event)"
+      (onToggleAction)="onToggleHandler($event)"
+      (onMenuClickAction)="onMenuClickHandler($event)"
+      (onSettingDialogAction)="openSettingDialog($event)"
+    ></menu-setting-form-component>
+  </div>
+</div>
+<div
+  [formGroup]="form"
+  *ngIf="isEditingLayout && !isRow"
+  [ngClass]="{
+    hidden: control.isHidden,
+    'container-inline-col': !isRow,
+    isResizing: control.isResizing
+  }"
+  class="container-inline m-o ignore-drag"
+  mwlResizable
+  [enableGhostResize]="'false'"
+  [resizeEdges]="{ bottom: true, right: false, top: false, left: false }"
+  (resizeStart)="onResizeStart($event, control)"
+  (resizeEnd)="onResizeEnd($event, control)"
+  [style.height]="!control.height ? '' : control.height + 'px'"
+  [ngStyle]="configStyleGeneral"
+>
+  <div
+    class="form-group container-inline-label"
+    [style.padding-left]="paddingLeftLabel"
+    [style.padding-right]="paddingRightLabel"
     [ngClass]="{
-        'm-c': control && control.checked,
-        'm-uc': control && !control.checked,
-        'm-i-has-bg':
-            configStyleGeneral.background ||
-            configStyleLabel.background ||
-            configStyleSeparate.background ||
-            configStyleData.background
+      'align-self-top': alignVerticalTop,
+      'align-self-center': alignVerticalCenter,
+      'align-self-bottom': alignVerticalBottom,
+      'width-auto': autoWidthLabel
     }"
-    [style.height]="!control.height ? '' : control.height + 'px'"
+    [ngStyle]="fieldStyleWrapper"
+  >
+    <div
+      class="item-inline-label"
+      [ngStyle]="configStyleLabel"
+      [ngClass]="{
+        readonly: control.readOnly,
+        'important-black-label': isDesignWidgetMode,
+        'blinking-update-item-bg': control.hasJustUpdated
+      }"
+    >
+      <label
+        class="control-label label-field no-padding"
+        [style.maxHeight]="control.height ? '' : control.height + 'px'"
+        [xnDraggable]="{
+          zone: 'widget',
+          data: {
+            fieldColumn: control.key,
+            fieldText: control.label,
+            fieldValue: control.value,
+            srcWidgetDetail: dataSource,
+            mode: 'translate'
+          }
+        }"
+      >
+        {{ control.label }}
+      </label>
+    </div>
+  </div>
+  <div
+    class="form-group container-inline-label separator"
+    [ngClass]="{
+      'align-self-top': alignVerticalTop,
+      'align-self-center': alignVerticalCenter,
+      'align-self-bottom': alignVerticalBottom,
+      'width-auto': !widthSeparate
+    }"
+    [ngStyle]="configStyleSeparate"
+    [style.maxHeight]="control.height ? '' : control.height + 'px'"
+    id="{{ separatorId }}"
+    *ngIf="separatorValue"
+  >
+    <label class="control-label no-padding">
+      {{ separatorValue }}
+    </label>
+  </div>
+  <div
+    class="form-group no-padding container-inline-content"
+    [ngClass]="{
+      'align-self-top': alignVerticalTop,
+      'align-self-center': alignVerticalCenter,
+      'align-self-bottom': alignVerticalBottom
+    }"
+    [ngStyle]="fieldValueStyleWrapper"
+  >
+    <div
+      class="item-inline-content height-pc-100"
+      [ngClass]="{
+        readonly: control.readOnly,
+        'no-padding': separatorValue,
+        'important-black-label': isDesignWidgetMode
+      }"
+      [ngStyle]="{
+        'text-align': control.align || dataTextAlign,
+        visibility: hiddenData
+      }"
+      [style.width]="widthData"
+    >
+      <inline-edit
+        [editing]="editFormMode"
+        [form]="form"
+        [control]="control"
+        [inputControlWidth]="controlWidth"
+        formControlName="{{ control.key }}"
+        [isDateOfBirth]="control.key.toLowerCase().indexOf('birth') > -1"
+        [dataStyle]="configStyleData"
+        [justifyContent]="justifyContent"
+        [isDialogMode]="isDialogMode"
+        [alignVerticalTop]="alignVerticalTop"
+        [alignVerticalBottom]="alignVerticalBottom"
+        [alignVerticalCenter]="alignVerticalCenter"
+        [isEditingLayout]="isEditingLayout"
+        [globalProperties]="globalProperties"
+        [widgetProperties]="widgetProperties"
+        [errorShow]="errorShow"
+        [isRow]="isRow"
+        [height]="control.height"
+        (onEditField)="onEditField($event)"
+        (onCancelEditField)="onCancelEditField($event)"
+        (onEnterKeyPress)="onEnterKeyPress($event)"
+        (onUpdateValue)="onUpdateValue($event)"
+        (onDoubleClickEditAction)="onDoubleClickEditHandler($event)"
+      >
+      </inline-edit>
+    </div>
+  </div>
+  <div
+    class="rz ignore-drag"
+    mwlResizeHandle
+    *ngIf="!isRow && !isSettingDialog && control.height != ''"
+    [resizeEdges]="{ bottom: true }"
+    [ngStyle]="{ display: isHover ? 'block' : 'none' }"
     (mouseenter)="onMouseEnter()"
     (mouseleave)="onMouseLeave()"
-    (click)="openFieldDialog()"
->
-    <div
-        class="d-field ignore-drag"
-        xn-tooltip
-        [tooltipText]="'Setting'"
-        [tooltipPlacement]="'top'"
-        container="body"
-        *ngIf="isEditingLayout"
-        (mouseenter)="onMenuMouseEnter()"
-        (mouseleave)="onMenuMouseLeave()"
-    >
-        <menu-setting-form-component
-            [control]="control"
-            [column]="column"
-            [panel]="panel"
-            [canDelete]="canDelete"
-            (onChangeAction)="onChangeHandler($event)"
-            (onDeletePanel)="onDelete($event)"
-            (onDeleteColumn)="deleteColumn($event)"
-            (onApplyAction)="onApplyHandler($event)"
-            (onToggleAction)="onToggleHandler($event)"
-            (onMenuClickAction)="onMenuClickHandler($event)"
-            (onSettingDialogAction)="openSettingDialog($event)"
-        ></menu-setting-form-component>
-    </div>
+    (mousedown)="onMousedownOnResize(control)"
+    (mouseup)="onMouseupOnResize(control)"
+  >
+    <i class="fa fa-circle-o ignore-drag"></i>
+  </div>
 </div>
 <div
-    [formGroup]="form"
-    *ngIf="isEditingLayout && !isRow"
+  [formGroup]="form"
+  *ngIf="!isEditingLayout || isRow"
+  [ngClass]="{ hidden: control.isHidden, 'container-inline-col': !isRow }"
+  class="container-inline"
+  [style.height]="!control.height || editFormMode ? '' : control.height + 'px'"
+  [ngStyle]="configStyleGeneral"
+>
+  <div
+    class="form-group container-inline-label"
+    [style.padding-left]="paddingLeftLabel"
+    [style.padding-right]="paddingRightLabel"
     [ngClass]="{
-        hidden: control.isHidden,
-        'container-inline-col': !isRow,
-        isResizing: control.isResizing
+      'align-self-top': alignVerticalTop,
+      'align-self-center': alignVerticalCenter,
+      'align-self-bottom': alignVerticalBottom,
+      'width-auto': autoWidthLabel
     }"
-    class="container-inline m-o ignore-drag"
-    mwlResizable
-    [enableGhostResize]="'false'"
-    [resizeEdges]="{ bottom: true, right: false, top: false, left: false }"
-    (resizeStart)="onResizeStart($event, control)"
-    (resizeEnd)="onResizeEnd($event, control)"
-    [style.height]="!control.height ? '' : control.height + 'px'"
-    [ngStyle]="configStyleGeneral"
->
+    [ngStyle]="fieldStyleWrapper"
+  >
     <div
-        class="form-group container-inline-label"
-        [style.padding-left]="paddingLeftLabel"
-        [style.padding-right]="paddingRightLabel"
-        [ngClass]="{
-            'align-self-top': alignVerticalTop,
-            'align-self-center': alignVerticalCenter,
-            'align-self-bottom': alignVerticalBottom,
-            'width-auto': autoWidthLabel
-        }"
-        [ngStyle]="fieldStyleWrapper"
+      class="item-inline-label"
+      [ngStyle]="configStyleLabel"
+      [ngClass]="{
+        readonly: control.readOnly,
+        'important-black-label': isDesignWidgetMode,
+        'blinking-update-item-bg': control.hasJustUpdated
+      }"
     >
-        <div
-            class="item-inline-label"
-            [ngStyle]="configStyleLabel"
-            [ngClass]="{
-                readonly: control.readOnly,
-                'important-black-label': isDesignWidgetMode,
-                'blinking-update-item-bg': control.hasJustUpdated
-            }"
-        >
-            <label
-                class="control-label label-field no-padding"
-                [style.maxHeight]="control.height ? '' : control.height + 'px'"
-                [xnDraggable]="{
-                    zone: 'widget',
-                    data: {
-                        fieldColumn: control.key,
-                        fieldText: control.label,
-                        fieldValue: control.value,
-                        srcWidgetDetail: dataSource,
-                        mode: 'translate'
-                    }
-                }"
-            >
-                {{ control.label }}
-            </label>
-        </div>
-    </div>
-    <div
-        class="form-group container-inline-label separator"
-        [ngClass]="{
-            'align-self-top': alignVerticalTop,
-            'align-self-center': alignVerticalCenter,
-            'align-self-bottom': alignVerticalBottom,
-            'width-auto': !widthSeparate
-        }"
-        [ngStyle]="configStyleSeparate"
+      <label
+        class="control-label label-field no-padding"
         [style.maxHeight]="control.height ? '' : control.height + 'px'"
-        id="{{ separatorId }}"
-        *ngIf="separatorValue"
-    >
-        <label class="control-label no-padding">
-            {{ separatorValue }}
-        </label>
-    </div>
-    <div
-        class="form-group no-padding container-inline-content"
-        [ngClass]="{
-            'align-self-top': alignVerticalTop,
-            'align-self-center': alignVerticalCenter,
-            'align-self-bottom': alignVerticalBottom
+        [xnDraggable]="{
+          zone: 'widget',
+          data: {
+            fieldColumn: control.key,
+            fieldText: control.label,
+            fieldValue: control.value,
+            srcWidgetDetail: dataSource,
+            mode: 'translate'
+          }
         }"
-        [ngStyle]="fieldValueStyleWrapper"
-    >
-        <div
-            class="item-inline-content height-pc-100"
-            [ngClass]="{
-                readonly: control.readOnly,
-                'no-padding': separatorValue,
-                'important-black-label': isDesignWidgetMode
-            }"
-            [ngStyle]="{
-                'text-align': control.align || dataTextAlign,
-                visibility: hiddenData
-            }"
-            [style.width]="widthData"
-        >
-            <inline-edit
-                [editing]="editFormMode"
-                [form]="form"
-                [control]="control"
-                [inputControlWidth]="controlWidth"
-                formControlName="{{ control.key }}"
-                [isDateOfBirth]="
-                    control.key.toLowerCase().indexOf('birth') > -1
-                "
-                [dataStyle]="configStyleData"
-                [justifyContent]="justifyContent"
-                [isDialogMode]="isDialogMode"
-                [alignVerticalTop]="alignVerticalTop"
-                [alignVerticalBottom]="alignVerticalBottom"
-                [alignVerticalCenter]="alignVerticalCenter"
-                [isEditingLayout]="isEditingLayout"
-                [globalProperties]="globalProperties"
-                [widgetProperties]="widgetProperties"
-                [errorShow]="errorShow"
-                [isRow]="isRow"
-                [height]="control.height"
-                (onEditField)="onEditField($event)"
-                (onCancelEditField)="onCancelEditField($event)"
-                (onEnterKeyPress)="onEnterKeyPress($event)"
-                (onUpdateValue)="onUpdateValue($event)"
-                (onDoubleClickEditAction)="onDoubleClickEditHandler($event)"
-            >
-            </inline-edit>
-        </div>
+      >
+        {{ control.label }}
+      </label>
     </div>
+  </div>
+  <div
+    class="form-group container-inline-label separator"
+    [ngClass]="{
+      'align-self-top': alignVerticalTop,
+      'align-self-center': alignVerticalCenter,
+      'align-self-bottom': alignVerticalBottom,
+      'width-auto': !widthSeparate
+    }"
+    [ngStyle]="configStyleSeparate"
+    [style.maxHeight]="control.height ? '' : control.height + 'px'"
+    id="{{ separatorId }}"
+    *ngIf="separatorValue"
+  >
+    <label class="control-label no-padding">
+      {{ separatorValue }}
+    </label>
+  </div>
+  <div
+    class="form-group no-padding container-inline-content"
+    [ngClass]="{
+      'align-self-top': alignVerticalTop,
+      'align-self-center': alignVerticalCenter,
+      'align-self-bottom': alignVerticalBottom
+    }"
+    [ngStyle]="fieldValueStyleWrapper"
+  >
     <div
-        class="rz ignore-drag"
-        mwlResizeHandle
-        *ngIf="!isRow && !isSettingDialog && control.height != ''"
-        [resizeEdges]="{ bottom: true }"
-        [ngStyle]="{ display: isHover ? 'block' : 'none' }"
-        (mouseenter)="onMouseEnter()"
-        (mouseleave)="onMouseLeave()"
-        (mousedown)="onMousedownOnResize(control)"
-        (mouseup)="onMouseupOnResize(control)"
+      class="item-inline-content height-pc-100"
+      [ngClass]="{
+        readonly: control.readOnly,
+        'no-padding': separatorValue,
+        'important-black-label': isDesignWidgetMode
+      }"
+      [ngStyle]="{
+        'text-align': control.align || dataTextAlign,
+        visibility: hiddenData
+      }"
+      [style.width]="widthData"
     >
-        <i class="fa fa-circle-o ignore-drag"></i>
+      <inline-edit
+        [editing]="editFormMode"
+        [form]="form"
+        [control]="control"
+        [inputControlWidth]="controlWidth"
+        formControlName="{{ control.key }}"
+        [isDateOfBirth]="control.key.toLowerCase().indexOf('birth') > -1"
+        [dataStyle]="configStyleData"
+        [isSAVLetter]="isSAVLetter"
+        [justifyContent]="justifyContent"
+        [isDialogMode]="isDialogMode"
+        [alignVerticalTop]="alignVerticalTop"
+        [alignVerticalBottom]="alignVerticalBottom"
+        [alignVerticalCenter]="alignVerticalCenter"
+        [isEditingLayout]="isEditingLayout"
+        [globalProperties]="globalProperties"
+        [widgetProperties]="widgetProperties"
+        [errorShow]="errorShow"
+        [isRow]="isRow"
+        [height]="control.height"
+        (onEditField)="onEditField($event)"
+        (onCancelEditField)="onCancelEditField($event)"
+        (onEnterKeyPress)="onEnterKeyPress($event)"
+        (onUpdateValue)="onUpdateValue($event)"
+        (onDoubleClickEditAction)="onDoubleClickEditHandler($event)"
+      >
+      </inline-edit>
     </div>
+  </div>
 </div>
 <div
-    [formGroup]="form"
-    *ngIf="!isEditingLayout || isRow"
-    [ngClass]="{ hidden: control.isHidden, 'container-inline-col': !isRow }"
-    class="container-inline"
-    [style.height]="
-        !control.height || editFormMode ? '' : control.height + 'px'
-    "
-    [ngStyle]="configStyleGeneral"
->
-    <div
-        class="form-group container-inline-label"
-        [style.padding-left]="paddingLeftLabel"
-        [style.padding-right]="paddingRightLabel"
-        [ngClass]="{
-            'align-self-top': alignVerticalTop,
-            'align-self-center': alignVerticalCenter,
-            'align-self-bottom': alignVerticalBottom,
-            'width-auto': autoWidthLabel
-        }"
-        [ngStyle]="fieldStyleWrapper"
-    >
-        <div
-            class="item-inline-label"
-            [ngStyle]="configStyleLabel"
-            [ngClass]="{
-                readonly: control.readOnly,
-                'important-black-label': isDesignWidgetMode,
-                'blinking-update-item-bg': control.hasJustUpdated
-            }"
-        >
-            <label
-                class="control-label label-field no-padding"
-                [style.maxHeight]="control.height ? '' : control.height + 'px'"
-                [xnDraggable]="{
-                    zone: 'widget',
-                    data: {
-                        fieldColumn: control.key,
-                        fieldText: control.label,
-                        fieldValue: control.value,
-                        srcWidgetDetail: dataSource,
-                        mode: 'translate'
-                    }
-                }"
-            >
-                {{ control.label }}
-            </label>
-        </div>
-    </div>
-    <div
-        class="form-group container-inline-label separator"
-        [ngClass]="{
-            'align-self-top': alignVerticalTop,
-            'align-self-center': alignVerticalCenter,
-            'align-self-bottom': alignVerticalBottom,
-            'width-auto': !widthSeparate
-        }"
-        [ngStyle]="configStyleSeparate"
-        [style.maxHeight]="control.height ? '' : control.height + 'px'"
-        id="{{ separatorId }}"
-        *ngIf="separatorValue"
-    >
-        <label class="control-label no-padding">
-            {{ separatorValue }}
-        </label>
-    </div>
-    <div
-        class="form-group no-padding container-inline-content"
-        [ngClass]="{
-            'align-self-top': alignVerticalTop,
-            'align-self-center': alignVerticalCenter,
-            'align-self-bottom': alignVerticalBottom
-        }"
-        [ngStyle]="fieldValueStyleWrapper"
-    >
-        <div
-            class="item-inline-content height-pc-100"
-            [ngClass]="{
-                readonly: control.readOnly,
-                'no-padding': separatorValue,
-                'important-black-label': isDesignWidgetMode
-            }"
-            [ngStyle]="{
-                'text-align': control.align || dataTextAlign,
-                visibility: hiddenData
-            }"
-            [style.width]="widthData"
-        >
-            <inline-edit
-                [editing]="editFormMode"
-                [form]="form"
-                [control]="control"
-                [inputControlWidth]="controlWidth"
-                formControlName="{{ control.key }}"
-                [isDateOfBirth]="
-                    control.key.toLowerCase().indexOf('birth') > -1
-                "
-                [dataStyle]="configStyleData"
-                [isSAVLetter]="isSAVLetter"
-                [justifyContent]="justifyContent"
-                [isDialogMode]="isDialogMode"
-                [alignVerticalTop]="alignVerticalTop"
-                [alignVerticalBottom]="alignVerticalBottom"
-                [alignVerticalCenter]="alignVerticalCenter"
-                [isEditingLayout]="isEditingLayout"
-                [globalProperties]="globalProperties"
-                [widgetProperties]="widgetProperties"
-                [errorShow]="errorShow"
-                [isRow]="isRow"
-                [height]="control.height"
-                (onEditField)="onEditField($event)"
-                (onCancelEditField)="onCancelEditField($event)"
-                (onEnterKeyPress)="onEnterKeyPress($event)"
-                (onUpdateValue)="onUpdateValue($event)"
-                (onDoubleClickEditAction)="onDoubleClickEditHandler($event)"
-            >
-            </inline-edit>
-        </div>
-    </div>
-</div>
-<div
-    *ngIf="!control.isHidden && widgetFormType == 1"
-    [attr.data-id]="control.key"
-    [ngClass]="{ 'xn-show': listVirtualElementNames.includes(control.key) }"
-    class="container-inline virtual-container xn-hidden"
+  *ngIf="!control.isHidden && widgetFormType == 1"
+  [attr.data-id]="control.key"
+  [ngClass]="{ 'xn-show': listVirtualElementNames.includes(control.key) }"
+  class="container-inline virtual-container xn-hidden"
 ></div>

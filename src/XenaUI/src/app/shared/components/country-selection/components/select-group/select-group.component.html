@@ -1,48 +1,40 @@
 <div class="select-group">
-    <div
-        class="col-xs-12 no-padding group-items"
-        [perfect-scrollbar]="perfectScrollbarConfig"
-    >
-        <div class="col-xs-12 no-padding" *ngFor="let item of mainList">
-            <mat-checkbox
-                color="primary"
-                value="{{ item.idValue }}"
-                [(ngModel)]="item.isActive"
-                (change)="itemChanged(item.idValue)"
-            >
-                {{ item.textValue }}
-            </mat-checkbox>
-        </div>
+  <div
+    class="col-xs-12 no-padding group-items"
+    [perfect-scrollbar]="perfectScrollbarConfig"
+  >
+    <div class="col-xs-12 no-padding" *ngFor="let item of mainList">
+      <mat-checkbox
+        color="primary"
+        value="{{ item.idValue }}"
+        [(ngModel)]="item.isActive"
+        (change)="itemChanged(item.idValue)"
+      >
+        {{ item.textValue }}
+      </mat-checkbox>
     </div>
-    <div class="but-function-group">
-        <div class="pull-left">
-            <a
-                mat-button
-                class="mat-btn-blue"
-                [disabled]="disabledSaveChange"
-                (click)="onSaveSelectCountry()"
-            >
-                <i class="fa fa-save"></i>
-                <span
-                    ><label-translation
-                        [keyword]="'Save changes'"
-                    ></label-translation
-                ></span>
-            </a>
-        </div>
-        <div class="padding-left--sd pull-left">
-            <a
-                mat-button
-                class="mat-btn-orange"
-                (click)="onAddNewGroupClicked()"
-            >
-                <i class="fa fa-plus"></i>
-                <span
-                    ><label-translation
-                        [keyword]="'Add new group'"
-                    ></label-translation
-                ></span>
-            </a>
-        </div>
+  </div>
+  <div class="but-function-group">
+    <div class="pull-left">
+      <a
+        mat-button
+        class="mat-btn-blue"
+        [disabled]="disabledSaveChange"
+        (click)="onSaveSelectCountry()"
+      >
+        <i class="fa fa-save"></i>
+        <span
+          ><label-translation [keyword]="'Save changes'"></label-translation
+        ></span>
+      </a>
     </div>
+    <div class="padding-left--sd pull-left">
+      <a mat-button class="mat-btn-orange" (click)="onAddNewGroupClicked()">
+        <i class="fa fa-plus"></i>
+        <span
+          ><label-translation [keyword]="'Add new group'"></label-translation
+        ></span>
+      </a>
+    </div>
+  </div>
 </div>

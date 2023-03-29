@@ -1,27 +1,27 @@
 <div class="text-center">
-    <!-- <mat-checkbox *ngIf="buttonAndCheckboxValue.Status != 1"
+  <!-- <mat-checkbox *ngIf="buttonAndCheckboxValue.Status != 1"
         color="primary"
         [(ngModel)]="buttonAndCheckboxValue.Value"
         (change)="onCheckboxChange($event)">
     </mat-checkbox> -->
-    <i
-        *ngIf="buttonAndCheckboxValue.Status == 1"
-        (click)="resetStatusSendLetter()"
-        class="fa fa-spinner fa-spin fa-2x"
-    ></i>
-    <button
-        *ngIf="buttonAndCheckboxValue.Status != 1"
-        mat-raised-button
-        class="mat-btn-non-fix--icon mat-btn-small"
-        [ngClass]="{
-            'mat-btn-orange': buttonAndCheckboxValue.Status == 0,
-            'mat-btn-blue': buttonAndCheckboxValue.Status == 2,
-            'mat-btn-green': buttonAndCheckboxValue.Status == 3
-        }"
-        [disabled]="buttonAndCheckboxValue.Status == 1"
-        type="button"
-        (click)="btnClick()"
-    >
-        <i class="fa fa-paper-plane-o"></i>
-    </button>
+  <i
+    *ngIf="buttonAndCheckboxValue.Status == 1"
+    (click)="resetStatusSendLetter()"
+    class="fa fa-spinner fa-spin fa-2x"
+  ></i>
+  <button
+    *ngIf="buttonAndCheckboxValue.Status != 1"
+    mat-raised-button
+    class="mat-btn-non-fix--icon mat-btn-small"
+    [ngClass]="{
+      'mat-btn-orange': buttonAndCheckboxValue.Status == 0,
+      'mat-btn-blue': buttonAndCheckboxValue.Status == 2,
+      'mat-btn-green': buttonAndCheckboxValue.Status == 3
+    }"
+    [disabled]="buttonAndCheckboxValue.Status == 1"
+    type="button"
+    (click)="btnClick()"
+  >
+    <i class="fa fa-paper-plane-o"></i>
+  </button>
 </div>

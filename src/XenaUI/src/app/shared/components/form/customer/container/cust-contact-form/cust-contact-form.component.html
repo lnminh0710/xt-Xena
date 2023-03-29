@@ -1,416 +1,387 @@
 <div
-    *ngIf="isRenderForm"
-    class="form-container"
-    [ngClass]="{ submitted: formGroup.submitted }"
+  *ngIf="isRenderForm"
+  class="form-container"
+  [ngClass]="{ submitted: formGroup.submitted }"
 >
-    <form
-        [formGroup]="formGroup"
-        class="form-horizontal height-pc-100"
-        id="contactFormGroup"
-        novalidate
+  <form
+    [formGroup]="formGroup"
+    class="form-horizontal height-pc-100"
+    id="contactFormGroup"
+    novalidate
+  >
+    <control-focus
+      #focusControl
+      formName="contactFormGroup"
+      [isFocusOnFirstControl]="true"
     >
-        <control-focus
-            #focusControl
-            formName="contactFormGroup"
-            [isFocusOnFirstControl]="true"
-        >
-        </control-focus>
+    </control-focus>
+    <div
+      class="col-xs-12 col-md-5 height-pc-100"
+      [perfect-scrollbar]="perfectScrollbarConfig"
+    >
+      <div class="xn__form-header">
+        <span
+          ><label-translation
+            [keyword]="'Cust_Contact__Main_Information'"
+          ></label-translation
+        ></span>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['idRepContactAddressType']">
+        <label for="idRepContactAddressType" class="control-label col-sm-4">
+          {{ contactModel.idRepContactAddressType.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <div class="full-width">
+            <wj-multi-select
+              #idRepContactAddressType
+              placeholder="Please select"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.contactType"
+              [displayMemberPath]="'textValue'"
+              [checkedMemberPath]="'selected'"
+              [isRequired]="true"
+              (checkedItemsChanged)="onIdRepContactAddressTypeChanged()"
+            >
+            </wj-multi-select>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="idRepContactAddressType"
+              [mandatoryColor]="mandatoryColor['idRepContactAddressType']"
+              [control]="formGroup.controls['idRepContactAddressType']"
+              icon="address-card"
+            >
+            </control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['idRepTitle']">
+        <label for="idRepTitle" class="control-label col-sm-4">
+          {{ contactModel.idRepTitle.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <div class="full-width">
+            <xn-combo-box
+              #idRepTitle
+              wjDropdownHelper
+              [form]="formGroup"
+              formControlName="idRepTitle"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.title"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="idRepTitle"
+              [mandatoryColor]="mandatoryColor['idRepTitle']"
+              [control]="formGroup.controls['idRepTitle']"
+              icon="anchor"
+            >
+            </control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['firstName']">
+        <label for="firstName" class="control-label col-sm-4">
+          {{ contactModel.firstName.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="firstName"
+            formControlName="firstName"
+            autocomplete="off"
+          />
+          <control-messages
+            [type]="'textbox'"
+            [mandatoryColor]="mandatoryColor['firstName']"
+            [control]="formGroup.controls.firstName"
+            [icon]="'user'"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['lastName']">
+        <label for="lastName" class="control-label col-sm-4">
+          {{ contactModel.lastName.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="lastName"
+            formControlName="lastName"
+            autocomplete="off"
+          />
+          <control-messages
+            [type]="'textbox'"
+            [mandatoryColor]="mandatoryColor['lastName']"
+            [control]="formGroup.controls.lastName"
+            [icon]="'user'"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['nameAddition']">
+        <label for="nameAddition" class="control-label col-sm-4">
+          {{ contactModel.nameAddition.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="nameAddition"
+            formControlName="nameAddition"
+            autocomplete="off"
+          />
+          <control-messages
+            [type]="'textbox'"
+            [mandatoryColor]="mandatoryColor['nameAddition']"
+            [control]="formGroup.controls.nameAddition"
+            [icon]="'user'"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['middlename']">
+        <label for="middlename" class="control-label col-sm-4">
+          {{ contactModel.middlename.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="middlename"
+            formControlName="middlename"
+            autocomplete="off"
+          />
+          <control-messages
+            [type]="'textbox'"
+            [mandatoryColor]="mandatoryColor['middlename']"
+            [control]="formGroup.controls.middlename"
+            [icon]="'user'"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['suffixName']">
+        <label for="suffixName" class="control-label col-sm-4">
+          {{ contactModel.suffixName.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="suffixName"
+            formControlName="suffixName"
+            autocomplete="off"
+          />
+          <control-messages
+            [type]="'textbox'"
+            [mandatoryColor]="mandatoryColor['suffixName']"
+            [control]="formGroup.controls.suffixName"
+            [icon]="'user'"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['company']">
+        <label for="company" class="control-label col-sm-4">
+          {{ contactModel.company.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="company"
+            formControlName="company"
+            autocomplete="off"
+          />
+          <control-messages
+            [mandatoryColor]="mandatoryColor['company']"
+            [control]="formGroup.controls.company"
+            [type]="'textbox'"
+            [icon]="'university'"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['position']">
+        <label for="position" class="control-label col-sm-4">
+          {{ contactModel.position.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="position"
+            formControlName="position"
+            autocomplete="off"
+          />
+          <control-messages
+            [type]="'textbox'"
+            [mandatoryColor]="mandatoryColor['position']"
+            [control]="formGroup.controls.position"
+            [icon]="'map-marker'"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['department']">
+        <label for="department" class="control-label col-sm-4">
+          {{ contactModel.department.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="department"
+            formControlName="department"
+            autocomplete="off"
+          />
+          <control-messages
+            [type]="'textbox'"
+            [mandatoryColor]="mandatoryColor['department']"
+            [control]="formGroup.controls.department"
+            [icon]="'building-o'"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['idRepTitleOfCourtesy']">
+        <label for="idRepTitleOfCourtesy" class="control-label col-sm-4">
+          {{ contactModel.idRepTitleOfCourtesy.displayValue }}
+        </label>
+        <div class="col-sm-8">
+          <div class="full-width">
+            <xn-combo-box
+              #idRepTitleOfCourtesy
+              wjDropdownHelper
+              [form]="formGroup"
+              formControlName="idRepTitleOfCourtesy"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.titleOfCourtesy"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="idRepTitleOfCourtesy"
+              [mandatoryColor]="mandatoryColor['idRepTitleOfCourtesy']"
+              [control]="formGroup.controls['idRepTitleOfCourtesy']"
+              icon="user"
+            >
+            </control-messages>
+          </div>
+        </div>
+      </div>
+      <form-fg-address
+        *ngIf="isRenderedAddressFG"
+        [initInformation]="addressFGData"
+        [hiddenFields]="hiddenFields"
+        [mandatoryCheckColor]="mandatoryColor"
+        (onCountryChangedAction)="onContactCountryChangedHandler($event)"
+      >
+      </form-fg-address>
+      <div class="xn__form-header">
+        <span
+          ><label-translation
+            [keyword]="'Cust_Contact__Additional_Inforamtion'"
+          ></label-translation
+        ></span>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['dateOfBirth']">
+        <label for="dateOfBirth" class="control-label col-sm-4">
+          {{ contactModel.dateOfBirth.displayValue }}
+        </label>
         <div
-            class="col-xs-12 col-md-5 height-pc-100"
-            [perfect-scrollbar]="perfectScrollbarConfig"
+          class="col-sm-8 xn-calendar"
+          [ngClass]="{
+            'xn__calendar-validate': !formGroup.controls['dateOfBirth'].valid
+          }"
         >
-            <div class="xn__form-header">
-                <span
-                    ><label-translation
-                        [keyword]="'Cust_Contact__Main_Information'"
-                    ></label-translation
-                ></span>
-            </div>
-            <div
-                class="form-group"
-                *ngIf="!hiddenFields['idRepContactAddressType']"
+          <div class="full-width">
+            <xn-date-picker
+              #wjDOB
+              [formControl]="formGroup.controls['dateOfBirth']"
+              class="xn-input"
+              [title]="dobDateFormat"
+              [format]="dobDateFormat"
+              [placeholder]="dobDateFormat"
+              [min]="'1900-01-01' | toDate"
+              [max]="lastDayOfThisYear"
+              [dontAutoFillDateWhenEnter]="true"
+              [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+              [isRequired]="false"
             >
-                <label
-                    for="idRepContactAddressType"
-                    class="control-label col-sm-4"
-                >
-                    {{ contactModel.idRepContactAddressType.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <div class="full-width">
-                        <wj-multi-select
-                            #idRepContactAddressType
-                            placeholder="Please select"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.contactType"
-                            [displayMemberPath]="'textValue'"
-                            [checkedMemberPath]="'selected'"
-                            [isRequired]="true"
-                            (checkedItemsChanged)="
-                                onIdRepContactAddressTypeChanged()
-                            "
-                        >
-                        </wj-multi-select>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="
-                                idRepContactAddressType
-                            "
-                            [mandatoryColor]="
-                                mandatoryColor['idRepContactAddressType']
-                            "
-                            [control]="
-                                formGroup.controls['idRepContactAddressType']
-                            "
-                            icon="address-card"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['idRepTitle']">
-                <label for="idRepTitle" class="control-label col-sm-4">
-                    {{ contactModel.idRepTitle.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #idRepTitle
-                            wjDropdownHelper
-                            [form]="formGroup"
-                            formControlName="idRepTitle"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.title"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="idRepTitle"
-                            [mandatoryColor]="mandatoryColor['idRepTitle']"
-                            [control]="formGroup.controls['idRepTitle']"
-                            icon="anchor"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['firstName']">
-                <label for="firstName" class="control-label col-sm-4">
-                    {{ contactModel.firstName.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="firstName"
-                        formControlName="firstName"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [type]="'textbox'"
-                        [mandatoryColor]="mandatoryColor['firstName']"
-                        [control]="formGroup.controls.firstName"
-                        [icon]="'user'"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['lastName']">
-                <label for="lastName" class="control-label col-sm-4">
-                    {{ contactModel.lastName.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="lastName"
-                        formControlName="lastName"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [type]="'textbox'"
-                        [mandatoryColor]="mandatoryColor['lastName']"
-                        [control]="formGroup.controls.lastName"
-                        [icon]="'user'"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['nameAddition']">
-                <label for="nameAddition" class="control-label col-sm-4">
-                    {{ contactModel.nameAddition.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="nameAddition"
-                        formControlName="nameAddition"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [type]="'textbox'"
-                        [mandatoryColor]="mandatoryColor['nameAddition']"
-                        [control]="formGroup.controls.nameAddition"
-                        [icon]="'user'"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['middlename']">
-                <label for="middlename" class="control-label col-sm-4">
-                    {{ contactModel.middlename.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="middlename"
-                        formControlName="middlename"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [type]="'textbox'"
-                        [mandatoryColor]="mandatoryColor['middlename']"
-                        [control]="formGroup.controls.middlename"
-                        [icon]="'user'"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['suffixName']">
-                <label for="suffixName" class="control-label col-sm-4">
-                    {{ contactModel.suffixName.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="suffixName"
-                        formControlName="suffixName"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [type]="'textbox'"
-                        [mandatoryColor]="mandatoryColor['suffixName']"
-                        [control]="formGroup.controls.suffixName"
-                        [icon]="'user'"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['company']">
-                <label for="company" class="control-label col-sm-4">
-                    {{ contactModel.company.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="company"
-                        formControlName="company"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [mandatoryColor]="mandatoryColor['company']"
-                        [control]="formGroup.controls.company"
-                        [type]="'textbox'"
-                        [icon]="'university'"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['position']">
-                <label for="position" class="control-label col-sm-4">
-                    {{ contactModel.position.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="position"
-                        formControlName="position"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [type]="'textbox'"
-                        [mandatoryColor]="mandatoryColor['position']"
-                        [control]="formGroup.controls.position"
-                        [icon]="'map-marker'"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['department']">
-                <label for="department" class="control-label col-sm-4">
-                    {{ contactModel.department.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="department"
-                        formControlName="department"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        [type]="'textbox'"
-                        [mandatoryColor]="mandatoryColor['department']"
-                        [control]="formGroup.controls.department"
-                        [icon]="'building-o'"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div
-                class="form-group"
-                *ngIf="!hiddenFields['idRepTitleOfCourtesy']"
+            </xn-date-picker>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="wjDOB"
+              [mandatoryColor]="mandatoryColor['dateOfBirth']"
+              [control]="formGroup.controls.dateOfBirth"
+              icon="calendar"
             >
-                <label
-                    for="idRepTitleOfCourtesy"
-                    class="control-label col-sm-4"
-                >
-                    {{ contactModel.idRepTitleOfCourtesy.displayValue }}
-                </label>
-                <div class="col-sm-8">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #idRepTitleOfCourtesy
-                            wjDropdownHelper
-                            [form]="formGroup"
-                            formControlName="idRepTitleOfCourtesy"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.titleOfCourtesy"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="idRepTitleOfCourtesy"
-                            [mandatoryColor]="
-                                mandatoryColor['idRepTitleOfCourtesy']
-                            "
-                            [control]="
-                                formGroup.controls['idRepTitleOfCourtesy']
-                            "
-                            icon="user"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <form-fg-address
-                *ngIf="isRenderedAddressFG"
-                [initInformation]="addressFGData"
-                [hiddenFields]="hiddenFields"
-                [mandatoryCheckColor]="mandatoryColor"
-                (onCountryChangedAction)="
-                    onContactCountryChangedHandler($event)
-                "
-            >
-            </form-fg-address>
-            <div class="xn__form-header">
-                <span
-                    ><label-translation
-                        [keyword]="'Cust_Contact__Additional_Inforamtion'"
-                    ></label-translation
-                ></span>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['dateOfBirth']">
-                <label for="dateOfBirth" class="control-label col-sm-4">
-                    {{ contactModel.dateOfBirth.displayValue }}
-                </label>
-                <div
-                    class="col-sm-8 xn-calendar"
-                    [ngClass]="{
-                        'xn__calendar-validate':
-                            !formGroup.controls['dateOfBirth'].valid
-                    }"
-                >
-                    <div class="full-width">
-                        <xn-date-picker
-                            #wjDOB
-                            [formControl]="formGroup.controls['dateOfBirth']"
-                            class="xn-input"
-                            [title]="dobDateFormat"
-                            [format]="dobDateFormat"
-                            [placeholder]="dobDateFormat"
-                            [min]="'1900-01-01' | toDate"
-                            [max]="lastDayOfThisYear"
-                            [dontAutoFillDateWhenEnter]="true"
-                            [dontShowCalendarWhenFocus]="
-                                !dontShowCalendarWhenFocus
-                            "
-                            [isRequired]="false"
-                        >
-                        </xn-date-picker>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="wjDOB"
-                            [mandatoryColor]="mandatoryColor['dateOfBirth']"
-                            [control]="formGroup.controls.dateOfBirth"
-                            icon="calendar"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
+            </control-messages>
+          </div>
         </div>
-        <div class="col-xs-12 col-md-5 height-pc-100">
-            <div class="form-group xn__form-header">
-                <span class="no-margin"
-                    ><label-translation
-                        [keyword]="'Cust_Contact__Communication'"
-                    ></label-translation
-                ></span>
-            </div>
-            <div class="form-group contact-communication">
-                <xn-communication-table
-                    [data]="commInputputData"
-                    [gridId]="'338111d5-de1f-4168-bf09-6362ce13f305'"
-                    (onHasError)="onCommHasError($event)"
-                    (outputData)="getCommOutputData($event)"
-                ></xn-communication-table>
-            </div>
-            <div class="form-group" *ngIf="!hiddenFields['notes']">
-                <label
-                    for="notes"
-                    class="control-label col-sm-4 bold-title margin-top--lg text-left no-padding-left"
-                >
-                    {{ contactModel.notes.displayValue }}
-                </label>
-                <textarea
-                    class="form-control xn-input"
-                    id="notes"
-                    name="notes"
-                    [maxlength]="maxCharactersNotes"
-                    (keypress)="updateLeftCharacters($event)"
-                    (keydown)="updateLeftCharacters($event)"
-                    formControlName="notes"
-                ></textarea>
-                <control-messages
-                    [mandatoryColor]="mandatoryColor['notes']"
-                    [control]="formGroup.controls.notes"
-                    icon="comment  fa-2"
-                    styleClass="for-notes"
-                >
-                </control-messages>
-                <p>
-                    *
-                    <label-translation
-                        [keyword]="'Cust_Contact__You_have'"
-                    ></label-translation>
-                    {{ formGroup.leftCharacters }}
-                    <label-translation
-                        [keyword]="'Cust_Contact__characters_more'"
-                    ></label-translation>
-                </p>
-            </div>
-        </div>
-    </form>
+      </div>
+    </div>
+    <div class="col-xs-12 col-md-5 height-pc-100">
+      <div class="form-group xn__form-header">
+        <span class="no-margin"
+          ><label-translation
+            [keyword]="'Cust_Contact__Communication'"
+          ></label-translation
+        ></span>
+      </div>
+      <div class="form-group contact-communication">
+        <xn-communication-table
+          [data]="commInputputData"
+          [gridId]="'338111d5-de1f-4168-bf09-6362ce13f305'"
+          (onHasError)="onCommHasError($event)"
+          (outputData)="getCommOutputData($event)"
+        ></xn-communication-table>
+      </div>
+      <div class="form-group" *ngIf="!hiddenFields['notes']">
+        <label
+          for="notes"
+          class="control-label col-sm-4 bold-title margin-top--lg text-left no-padding-left"
+        >
+          {{ contactModel.notes.displayValue }}
+        </label>
+        <textarea
+          class="form-control xn-input"
+          id="notes"
+          name="notes"
+          [maxlength]="maxCharactersNotes"
+          (keypress)="updateLeftCharacters($event)"
+          (keydown)="updateLeftCharacters($event)"
+          formControlName="notes"
+        ></textarea>
+        <control-messages
+          [mandatoryColor]="mandatoryColor['notes']"
+          [control]="formGroup.controls.notes"
+          icon="comment  fa-2"
+          styleClass="for-notes"
+        >
+        </control-messages>
+        <p>
+          *
+          <label-translation
+            [keyword]="'Cust_Contact__You_have'"
+          ></label-translation>
+          {{ formGroup.leftCharacters }}
+          <label-translation
+            [keyword]="'Cust_Contact__characters_more'"
+          ></label-translation>
+        </p>
+      </div>
+    </div>
+  </form>
 </div>

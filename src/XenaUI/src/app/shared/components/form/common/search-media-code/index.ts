@@ -1,1 +1,1 @@
-export * from "./search-media-code.component";
+export * from './search-media-code.component';

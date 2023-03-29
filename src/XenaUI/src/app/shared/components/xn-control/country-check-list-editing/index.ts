@@ -1,1 +1,1 @@
-export { CountryCheckListEditingComponent } from "./country-check-list-editing.component";
+export { CountryCheckListEditingComponent } from './country-check-list-editing.component';

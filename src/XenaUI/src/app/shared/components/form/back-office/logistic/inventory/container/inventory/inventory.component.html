@@ -1,107 +1,105 @@
 <div
-    *ngIf="isRenderForm"
-    class="form-container no-padding margin-top--sd col-xs-12 no-padding-left"
-    [ngClass]="{ submitted: inventoryForm.submitted }"
+  *ngIf="isRenderForm"
+  class="form-container no-padding margin-top--sd col-xs-12 no-padding-left"
+  [ngClass]="{ submitted: inventoryForm.submitted }"
 >
-    <form
-        [formGroup]="inventoryForm"
-        class="form-horizontal"
-        id="inventoryForm"
-        novalidate
-    >
-        <control-focus formName="inventoryForm"></control-focus>
-        <div class="col-xs-12 no-padding form-container">
-            <div class="pull-left info-group form-group">
-                <div class="col-xs-6 no-padding-left max-width">
-                    <label
-                        for="warehouse"
-                        class="control-label col-xs-12 no-padding-top no-padding-right"
-                        >Warehouse1</label
-                    >
-                    <div class="col-xs-12 no-padding-right">
-                        <xn-combo-box
-                            #warehouseCtrl
-                            wjDropdownHelper
-                            [form]="inventoryForm"
-                            formControlName="warehouse"
-                            class="custom-wj-input-control xn-select focus-ignore"
-                            [itemsSource]="listComboBox.wareHouse"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                            (keyup)="warehouseKeyUp($event)"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="warehouseCtrl"
-                            [icon]="'list'"
-                            [control]="inventoryForm.controls['warehouse']"
-                        ></control-messages>
-                    </div>
-                </div>
-                <div class="col-xs-6 no-padding-left max-width">
-                    <label
-                        for="articleNr"
-                        class="control-label col-xs-12 no-padding"
-                        >Article #</label
-                    >
-                    <div class="col-xs-12 no-padding">
-                        <wj-auto-complete
-                            #searchArticleNumberCtl
-                            wjDropdownHelper
-                            [form]="inventoryForm"
-                            class="xn-custom-auto-complete xn-auto-complete focus-ignore"
-                            formControlName="articleNr"
-                            [itemsSourceFunction]="searchArticleNr"
-                            [displayMemberPath]="'ArticleNr'"
-                            [selectedValuePath]="'IdArticle'"
-                            [cssMatch]="'highlight'"
-                            [isRequired]="false"
-                            [minLength]="0"
-                            [delay]="300"
-                            placeholder="Search Article Number"
-                            (keyup)="searchArticleNumberKeyUp($event)"
-                        >
-                        </wj-auto-complete>
-                        <control-messages
-                            [icon]="'search'"
-                            [control]="inventoryForm.controls['articleNr']"
-                        ></control-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="pull-left info-group form-group group-price">
-                <div class="col-xs-12 no-padding-left">
-                    <label
-                        for="quantity"
-                        class="control-label col-xs-12 no-padding-top no-padding-right"
-                    >
-                        <label-translation
-                            [keyword]="'Inventory__Quantity'"
-                            User_profile_F
-                        ></label-translation>
-                    </label>
-                    <div class="col-xs-12 no-padding-right">
-                        <input
-                            #quantityCtl
-                            formControlName="qty"
-                            id="qty"
-                            name="qty"
-                            type="text"
-                            xn-numeric
-                            [min]="1"
-                            [format]="globalNumberFormat"
-                            class="custom-wj-input-control xn-input plus-bg-color"
-                        />
-                        <control-messages
-                            [icon]="'balance-scale'"
-                            [control]="inventoryForm.controls['qty']"
-                        ></control-messages>
-                    </div>
-                </div>
-                <!--<div class="col-xs-4 no-padding-left max-width">
+  <form
+    [formGroup]="inventoryForm"
+    class="form-horizontal"
+    id="inventoryForm"
+    novalidate
+  >
+    <control-focus formName="inventoryForm"></control-focus>
+    <div class="col-xs-12 no-padding form-container">
+      <div class="pull-left info-group form-group">
+        <div class="col-xs-6 no-padding-left max-width">
+          <label
+            for="warehouse"
+            class="control-label col-xs-12 no-padding-top no-padding-right"
+            >Warehouse1</label
+          >
+          <div class="col-xs-12 no-padding-right">
+            <xn-combo-box
+              #warehouseCtrl
+              wjDropdownHelper
+              [form]="inventoryForm"
+              formControlName="warehouse"
+              class="custom-wj-input-control xn-select focus-ignore"
+              [itemsSource]="listComboBox.wareHouse"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+              (keyup)="warehouseKeyUp($event)"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="warehouseCtrl"
+              [icon]="'list'"
+              [control]="inventoryForm.controls['warehouse']"
+            ></control-messages>
+          </div>
+        </div>
+        <div class="col-xs-6 no-padding-left max-width">
+          <label for="articleNr" class="control-label col-xs-12 no-padding"
+            >Article #</label
+          >
+          <div class="col-xs-12 no-padding">
+            <wj-auto-complete
+              #searchArticleNumberCtl
+              wjDropdownHelper
+              [form]="inventoryForm"
+              class="xn-custom-auto-complete xn-auto-complete focus-ignore"
+              formControlName="articleNr"
+              [itemsSourceFunction]="searchArticleNr"
+              [displayMemberPath]="'ArticleNr'"
+              [selectedValuePath]="'IdArticle'"
+              [cssMatch]="'highlight'"
+              [isRequired]="false"
+              [minLength]="0"
+              [delay]="300"
+              placeholder="Search Article Number"
+              (keyup)="searchArticleNumberKeyUp($event)"
+            >
+            </wj-auto-complete>
+            <control-messages
+              [icon]="'search'"
+              [control]="inventoryForm.controls['articleNr']"
+            ></control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="pull-left info-group form-group group-price">
+        <div class="col-xs-12 no-padding-left">
+          <label
+            for="quantity"
+            class="control-label col-xs-12 no-padding-top no-padding-right"
+          >
+            <label-translation
+              [keyword]="'Inventory__Quantity'"
+              User_profile_F
+            ></label-translation>
+          </label>
+          <div class="col-xs-12 no-padding-right">
+            <input
+              #quantityCtl
+              formControlName="qty"
+              id="qty"
+              name="qty"
+              type="text"
+              xn-numeric
+              [min]="1"
+              [format]="globalNumberFormat"
+              class="custom-wj-input-control xn-input plus-bg-color"
+            />
+            <control-messages
+              [icon]="'balance-scale'"
+              [control]="inventoryForm.controls['qty']"
+            ></control-messages>
+          </div>
+        </div>
+        <!--<div class="col-xs-4 no-padding-left max-width">
                     <label for="size" class="control-label col-xs-12 no-padding">Weight</label>
                     <div class="col-xs-12 no-padding">
                         <input #weightCtl
@@ -161,255 +159,253 @@
                                           [control]="inventoryForm.controls['deep']"></control-messages>
                     </div>
                 </div>-->
-            </div>
-            <div class="pull-left info-group form-group">
-                <div class="pull-left no-padding">
-                    <label
-                        for="notes"
-                        class="control-label col-xs-12 no-padding"
-                        >Notes</label
-                    >
-                    <div class="col-xs-12 no-padding">
-                        <input
-                            class="form-control xn-input"
-                            formControlName="notes"
-                            autocomplete="off"
-                            (keyup)="noteKeyUp($event)"
-                        />
-                        <control-messages
-                            icon="comment"
-                            [control]="inventoryForm.controls['notes']"
-                        ></control-messages>
-                    </div>
-                </div>
-                <div class="pull-left no-padding group-button">
-                    <button
-                        [disabled]="!enabledAddButton"
-                        type="button"
-                        mat-raised-button
-                        class="mat-btn-blue btn-add-item"
-                        (click)="add()"
-                    >
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                    </button>
-                    <button
-                        [disabled]="!enabledImportButton"
-                        type="button"
-                        mat-raised-button
-                        class="mat-btn-green btn-upload width-115"
-                        (click)="importFile()"
-                    >
-                        <i class="fa fa-upload" aria-hidden="true"></i>
-                        <span class="bt-t-i"
-                            ><label-translation
-                                [keyword]="'Inventory__Import'"
-                                User_profile_F
-                            ></label-translation
-                        ></span>
-                    </button>
-                    <button
-                        type="button"
-                        mat-raised-button
-                        class="mat-btn-green btn-upload width-140"
-                        (click)="downloadTemplateFile()"
-                    >
-                        <i class="fa fa-cloud-download" aria-hidden="true"></i>
-                        <span class="bt-t-i"
-                            ><label-translation
-                                [keyword]="'Inventory__Template_File'"
-                                User_profile_F
-                            ></label-translation
-                        ></span>
-                    </button>
-                </div>
-            </div>
+      </div>
+      <div class="pull-left info-group form-group">
+        <div class="pull-left no-padding">
+          <label for="notes" class="control-label col-xs-12 no-padding"
+            >Notes</label
+          >
+          <div class="col-xs-12 no-padding">
+            <input
+              class="form-control xn-input"
+              formControlName="notes"
+              autocomplete="off"
+              (keyup)="noteKeyUp($event)"
+            />
+            <control-messages
+              icon="comment"
+              [control]="inventoryForm.controls['notes']"
+            ></control-messages>
+          </div>
         </div>
-    </form>
-    <div class="col-xs-12 inventory-grid">
-        <div class="xn__form-header col-xs-12">
-            <p class="pull-left xn__form-header-title">
-                <label-translation
-                    [keyword]="'Inventory__Inventory'"
-                    User_profile_F
-                ></label-translation>
-            </p>
-            <p class="pull-right xn__form-header-title">
-                <label-translation
-                    [keyword]="'Inventory__Number_of_entries'"
-                    User_profile_F
-                ></label-translation
-                >: {{ inventoryDataSource.data.length }}
-            </p>
+        <div class="pull-left no-padding group-button">
+          <button
+            [disabled]="!enabledAddButton"
+            type="button"
+            mat-raised-button
+            class="mat-btn-blue btn-add-item"
+            (click)="add()"
+          >
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+          <button
+            [disabled]="!enabledImportButton"
+            type="button"
+            mat-raised-button
+            class="mat-btn-green btn-upload width-115"
+            (click)="importFile()"
+          >
+            <i class="fa fa-upload" aria-hidden="true"></i>
+            <span class="bt-t-i"
+              ><label-translation
+                [keyword]="'Inventory__Import'"
+                User_profile_F
+              ></label-translation
+            ></span>
+          </button>
+          <button
+            type="button"
+            mat-raised-button
+            class="mat-btn-green btn-upload width-140"
+            (click)="downloadTemplateFile()"
+          >
+            <i class="fa fa-cloud-download" aria-hidden="true"></i>
+            <span class="bt-t-i"
+              ><label-translation
+                [keyword]="'Inventory__Template_File'"
+                User_profile_F
+              ></label-translation
+            ></span>
+          </button>
         </div>
-        <div class="col-xs-12 no-padding grid">
-            <xn-ag-grid
-                #xnAgGridComponent
-                *ngIf="
-                    inventoryDataSource &&
-                    inventoryDataSource.columns &&
-                    inventoryDataSource.columns.length
-                "
-                [id]="gridId"
-                [dataSource]="inventoryDataSource"
-                [readOnly]="false"
-                [isShowedEditButtons]="true"
-                [showMenuRowGrouping]="true"
-                [isEditting]="true"
-                [allowDelete]="true"
-                [enableQtyWithColor]="true"
-                [fitWidthColumn]="true"
-                [globalProperties]="globalProps"
-                (cellValueChanged)="onTableEditSuccess($event)"
-                (onRowMarkedAsDelete)="deleteInventoryItem($event)"
-                (onDeletedRows)="deleteInventoryItem($event)"
-                (hasValidationError)="hasValidationError($event)"
-            >
-            </xn-ag-grid>
-        </div>
+      </div>
     </div>
+  </form>
+  <div class="col-xs-12 inventory-grid">
+    <div class="xn__form-header col-xs-12">
+      <p class="pull-left xn__form-header-title">
+        <label-translation
+          [keyword]="'Inventory__Inventory'"
+          User_profile_F
+        ></label-translation>
+      </p>
+      <p class="pull-right xn__form-header-title">
+        <label-translation
+          [keyword]="'Inventory__Number_of_entries'"
+          User_profile_F
+        ></label-translation
+        >: {{ inventoryDataSource.data.length }}
+      </p>
+    </div>
+    <div class="col-xs-12 no-padding grid">
+      <xn-ag-grid
+        #xnAgGridComponent
+        *ngIf="
+          inventoryDataSource &&
+          inventoryDataSource.columns &&
+          inventoryDataSource.columns.length
+        "
+        [id]="gridId"
+        [dataSource]="inventoryDataSource"
+        [readOnly]="false"
+        [isShowedEditButtons]="true"
+        [showMenuRowGrouping]="true"
+        [isEditting]="true"
+        [allowDelete]="true"
+        [enableQtyWithColor]="true"
+        [fitWidthColumn]="true"
+        [globalProperties]="globalProps"
+        (cellValueChanged)="onTableEditSuccess($event)"
+        (onRowMarkedAsDelete)="deleteInventoryItem($event)"
+        (onDeletedRows)="deleteInventoryItem($event)"
+        (hasValidationError)="hasValidationError($event)"
+      >
+      </xn-ag-grid>
+    </div>
+  </div>
 </div>
 
 <p-dialog
-    [styleClass]="'upload-inventory-file-dialog'"
-    header=""
-    [(visible)]="showUploadDialog"
-    modal="modal"
-    width="900"
-    height="500"
-    responsive="true"
-    appendTo="body"
-    (onAfterHide)="close()"
+  [styleClass]="'upload-inventory-file-dialog'"
+  header=""
+  [(visible)]="showUploadDialog"
+  modal="modal"
+  width="900"
+  height="500"
+  responsive="true"
+  appendTo="body"
+  (onAfterHide)="close()"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="fa fa-upload header-icon pull-left"></span>
-            <span class="header-text pull-left">
-                <label-translation
-                    [keyword]="'Inventory__Upload_File'"
-                    User_profile_F
-                ></label-translation>
-            </span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="close()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 no-padding height-pc-100" *ngIf="showUploadDialog">
-        <file-upload
-            #fileUpload
-            [uploadFileMode]="uploadFileMode"
-            [idFolder]="idFolder"
-            [checkFileCorrect]="checkFileCorrect"
-            [allowSelectDuplicateFile]="false"
-            [acceptExtensionFiles]="'*.xlsx'"
-            [singleFile]="true"
-            (onCompleteItem)="onCompleteUploadItem($event)"
-        ></file-upload>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="fa fa-upload header-icon pull-left"></span>
+      <span class="header-text pull-left">
+        <label-translation
+          [keyword]="'Inventory__Upload_File'"
+          User_profile_F
+        ></label-translation>
+      </span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                type="button"
-                mat-raised-button
-                class="pull-right new-size"
-                xn-tooltip
-                [tooltipText]="'Close'"
-                (click)="close()"
-            >
-                <label-translation
-                    [keyword]="'Inventory__Close'"
-                    User_profile_F
-                ></label-translation>
-            </button>
-        </div>
-    </p-footer>
+  </p-header>
+  <div class="col-xs-12 no-padding height-pc-100" *ngIf="showUploadDialog">
+    <file-upload
+      #fileUpload
+      [uploadFileMode]="uploadFileMode"
+      [idFolder]="idFolder"
+      [checkFileCorrect]="checkFileCorrect"
+      [allowSelectDuplicateFile]="false"
+      [acceptExtensionFiles]="'*.xlsx'"
+      [singleFile]="true"
+      (onCompleteItem)="onCompleteUploadItem($event)"
+    ></file-upload>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        type="button"
+        mat-raised-button
+        class="pull-right new-size"
+        xn-tooltip
+        [tooltipText]="'Close'"
+        (click)="close()"
+      >
+        <label-translation
+          [keyword]="'Inventory__Close'"
+          User_profile_F
+        ></label-translation>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>
 
 <p-dialog
-    [styleClass]="'upload-inventory-file-dialog'"
-    header=""
-    [(visible)]="showConfirmDialog"
-    modal="modal"
-    width="400"
-    height="200"
-    responsive="true"
-    appendTo="body"
-    (onAfterHide)="close()"
+  [styleClass]="'upload-inventory-file-dialog'"
+  header=""
+  [(visible)]="showConfirmDialog"
+  modal="modal"
+  width="400"
+  height="200"
+  responsive="true"
+  appendTo="body"
+  (onAfterHide)="close()"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="fa fa-upload header-icon pull-left"></span>
-            <span class="header-text pull-left">
-                <label-translation
-                    [keyword]="'Inventory__Import_Confirmation'"
-                    User_profile_F
-                ></label-translation>
-            </span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="close()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 height-pc-100">
-        <div class="radios-container">
-            <mat-radio-group [(ngModel)]="importType">
-                <mat-radio-button color="primary" value="0" [checked]="true">
-                    <label-translation
-                        [keyword]="'Inventory__Import_immediately'"
-                        User_profile_F
-                    ></label-translation>
-                </mat-radio-button>
-                <mat-radio-button color="primary" value="1">
-                    <label-translation
-                        [keyword]="'Inventory__Import_data_to_table'"
-                        User_profile_F
-                    ></label-translation>
-                </mat-radio-button>
-            </mat-radio-group>
-        </div>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="fa fa-upload header-icon pull-left"></span>
+      <span class="header-text pull-left">
+        <label-translation
+          [keyword]="'Inventory__Import_Confirmation'"
+          User_profile_F
+        ></label-translation>
+      </span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="close()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-blue pull-right new-size"
-                (click)="processImportData()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [keyword]="'Inventory__Import'"
-                        User_profile_F
-                    ></label-translation
-                ></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                class="pull-right new-size"
-                xn-tooltip
-                [tooltipText]="'Close'"
-                (click)="close()"
-            >
-                <span class="bt-t"
-                    ><label-translation
-                        [keyword]="'Inventory__Close'"
-                        User_profile_F
-                    ></label-translation
-                ></span>
-            </button>
-        </div>
-    </p-footer>
+  </p-header>
+  <div class="col-xs-12 height-pc-100">
+    <div class="radios-container">
+      <mat-radio-group [(ngModel)]="importType">
+        <mat-radio-button color="primary" value="0" [checked]="true">
+          <label-translation
+            [keyword]="'Inventory__Import_immediately'"
+            User_profile_F
+          ></label-translation>
+        </mat-radio-button>
+        <mat-radio-button color="primary" value="1">
+          <label-translation
+            [keyword]="'Inventory__Import_data_to_table'"
+            User_profile_F
+          ></label-translation>
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-blue pull-right new-size"
+        (click)="processImportData()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [keyword]="'Inventory__Import'"
+            User_profile_F
+          ></label-translation
+        ></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        class="pull-right new-size"
+        xn-tooltip
+        [tooltipText]="'Close'"
+        (click)="close()"
+      >
+        <span class="bt-t"
+          ><label-translation
+            [keyword]="'Inventory__Close'"
+            User_profile_F
+          ></label-translation
+        ></span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

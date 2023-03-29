@@ -1,180 +1,179 @@
 <!-- the grid -->
 <div class="campaign-country-grid-container">
-    <div>
-        <button
-            type="button"
-            mat-raised-button
-            class="btn-costs"
-            (click)="viewPostageCost()"
-            [ngClass]="{
-                'btn-primary': !isShowPostageCostItem,
-                'btn-default': isShowPostageCostItem
-            }"
+  <div>
+    <button
+      type="button"
+      mat-raised-button
+      class="btn-costs"
+      (click)="viewPostageCost()"
+      [ngClass]="{
+        'btn-primary': !isShowPostageCostItem,
+        'btn-default': isShowPostageCostItem
+      }"
+    >
+      <i class="fa fa-money" aria-hidden="true"></i>
+      <span class="bt-t-i" *ngIf="isShowPostageCostItem"
+        ><label-translation
+          [keyword]="'Campaign_Country_T1b__Hide_postage_costs'"
+        ></label-translation
+      ></span>
+      <span class="bt-t-i" *ngIf="!isShowPostageCostItem"
+        ><label-translation
+          [keyword]="'Campaign_Country_T1b__Show_postage_costs'"
+        ></label-translation
+      ></span>
+    </button>
+
+    <button
+      type="button"
+      mat-raised-button
+      class="mat-btn-blue btn-reload"
+      (click)="reload()"
+    >
+      <i class="fa fa-refresh" aria-hidden="true"></i>
+      <span class="bt-t-i"
+        ><label-translation
+          [keyword]="'Campaign_Country_T1b__Reload'"
+        ></label-translation
+      ></span>
+    </button>
+  </div>
+  <div style="height: calc(100% - 40px)">
+    <ag-grid-angular
+      #agGrid
+      style="width: 100%; height: 100%"
+      class="ag-theme-balham"
+      [gridOptions]="gridOptions"
+      [columnDefs]="gridOptions.columnDefs"
+      [rowData]="gridOptions.rowData"
+      [suppressDragLeaveHidesColumns]="true"
+      [suppressContextMenu]="true"
+      enableColResize
+      rowSelection="single"
+      (gridReady)="onReady($event)"
+      (cellEditingStarted)="onCellEditingStarted($event)"
+      (cellEditingStopped)="onCellEditEnded($event)"
+    >
+    </ag-grid-angular>
+
+    <ng-template #checkBoxCell let-data>
+      <div class="text-center">
+        <i
+          class="fa fa-check"
+          [ngClass]="{
+            active: data && data.value,
+            'in-active': data && !data.value
+          }"
+        ></i>
+      </div>
+    </ng-template>
+
+    <ng-template #checkBoxEditCell let-data>
+      <div class="text-center">
+        <mat-checkbox color="primary" [(ngModel)]="data.value"> </mat-checkbox>
+      </div>
+    </ng-template>
+
+    <ng-template #labelCell let-data>
+      <span> {{ data.value }}</span>
+    </ng-template>
+
+    <ng-template #labelDateCell let-data>
+      {{ formatDate(data.value, globalDateFormat) }}
+    </ng-template>
+
+    <ng-template #labelDropdownCell let-data>
+      <span> {{ data.displayValue }} </span>
+    </ng-template>
+
+    <ng-template #multiSelectEditCell let-data>
+      <wj-multi-select
+        #multisel
+        [itemsSource]="data.options"
+        class="full-width no-border"
+        [displayMemberPath]="'value'"
+        [checkedMemberPath]="'selected'"
+        [isEditable]="false"
+        (checkedItemsChanged)="onCheckedItemsChanged(data, multisel)"
+        style="width: 100%"
+      >
+      </wj-multi-select>
+    </ng-template>
+
+    <ng-template #dropdownEditCell let-data>
+      <xn-combo-box
+        #cellCombo
+        wjDropdownHelper
+        class="full-width no-border"
+        [itemsSource]="data.options || []"
+        [displayMemberPath]="'value'"
+        [selectedValuePath]="'key'"
+        [(selectedValue)]="data.value"
+        [isEditable]="false"
+        [isRequired]="false"
+        placeholder="Please select"
+        (selectedIndexChanged)="onSelectedIndexChanged(data)"
+      >
+      </xn-combo-box>
+    </ng-template>
+
+    <ng-template #datePickerEditCell let-data>
+      <xn-date-picker
+        class="xn-date-picker--in-grid"
+        [format]="globalDateFormat"
+        [(ngModel)]="data.value"
+        [isInGrid]="true"
+        [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
+        (inGrid)="calendarToggle($event)"
+      >
+      </xn-date-picker>
+    </ng-template>
+
+    <ng-template #labelPostageCostsCell let-data>
+      <div *ngIf="data">
+        <i
+          class="fa fa-check"
+          [ngClass]="{
+            active: data.value.isActive == true,
+            'in-active': data.value.isActive == false
+          }"
         >
-            <i class="fa fa-money" aria-hidden="true"></i>
-            <span class="bt-t-i" *ngIf="isShowPostageCostItem"
-                ><label-translation
-                    [keyword]="'Campaign_Country_T1b__Hide_postage_costs'"
-                ></label-translation
-            ></span>
-            <span class="bt-t-i" *ngIf="!isShowPostageCostItem"
-                ><label-translation
-                    [keyword]="'Campaign_Country_T1b__Show_postage_costs'"
-                ></label-translation
-            ></span>
-        </button>
+        </i>
+        <label class="lbl-defaultCosts" *ngIf="data.value.isActive">
+          {{ data.value.postageCosts }}
+        </label>
+      </div>
+    </ng-template>
 
-        <button
-            type="button"
-            mat-raised-button
-            class="mat-btn-blue btn-reload"
-            (click)="reload()"
-        >
-            <i class="fa fa-refresh" aria-hidden="true"></i>
-            <span class="bt-t-i"
-                ><label-translation
-                    [keyword]="'Campaign_Country_T1b__Reload'"
-                ></label-translation
-            ></span>
-        </button>
-    </div>
-    <div style="height: calc(100% - 40px)">
-        <ag-grid-angular
-            #agGrid
-            style="width: 100%; height: 100%"
-            class="ag-theme-balham"
-            [gridOptions]="gridOptions"
-            [columnDefs]="gridOptions.columnDefs"
-            [rowData]="gridOptions.rowData"
-            [suppressDragLeaveHidesColumns]="true"
-            [suppressContextMenu]="true"
-            enableColResize
-            rowSelection="single"
-            (gridReady)="onReady($event)"
-            (cellEditingStarted)="onCellEditingStarted($event)"
-            (cellEditingStopped)="onCellEditEnded($event)"
-        >
-        </ag-grid-angular>
+    <ng-template #postageCostsEditCell let-data>
+      <edit-checkbox-component
+        *ngIf="data"
+        [(cbStatus)]="data.value.isActive"
+        [(value)]="data.value.postageCosts"
+        [(defaultText)]="data.value.defaultCosts"
+      >
+      </edit-checkbox-component>
+    </ng-template>
 
-        <ng-template #checkBoxCell let-data>
-            <div class="text-center">
-                <i
-                    class="fa fa-check"
-                    [ngClass]="{
-                        active: data && data.value,
-                        'in-active': data && !data.value
-                    }"
-                ></i>
-            </div>
-        </ng-template>
-
-        <ng-template #checkBoxEditCell let-data>
-            <div class="text-center">
-                <mat-checkbox color="primary" [(ngModel)]="data.value">
-                </mat-checkbox>
-            </div>
-        </ng-template>
-
-        <ng-template #labelCell let-data>
-            <span> {{ data.value }}</span>
-        </ng-template>
-
-        <ng-template #labelDateCell let-data>
-            {{ formatDate(data.value, globalDateFormat) }}
-        </ng-template>
-
-        <ng-template #labelDropdownCell let-data>
-            <span> {{ data.displayValue }} </span>
-        </ng-template>
-
-        <ng-template #multiSelectEditCell let-data>
-            <wj-multi-select
-                #multisel
-                [itemsSource]="data.options"
-                class="full-width no-border"
-                [displayMemberPath]="'value'"
-                [checkedMemberPath]="'selected'"
-                [isEditable]="false"
-                (checkedItemsChanged)="onCheckedItemsChanged(data, multisel)"
-                style="width: 100%"
-            >
-            </wj-multi-select>
-        </ng-template>
-
-        <ng-template #dropdownEditCell let-data>
-            <xn-combo-box
-                #cellCombo
-                wjDropdownHelper
-                class="full-width no-border"
-                [itemsSource]="data.options || []"
-                [displayMemberPath]="'value'"
-                [selectedValuePath]="'key'"
-                [(selectedValue)]="data.value"
-                [isEditable]="false"
-                [isRequired]="false"
-                placeholder="Please select"
-                (selectedIndexChanged)="onSelectedIndexChanged(data)"
-            >
-            </xn-combo-box>
-        </ng-template>
-
-        <ng-template #datePickerEditCell let-data>
-            <xn-date-picker
-                class="xn-date-picker--in-grid"
-                [format]="globalDateFormat"
-                [(ngModel)]="data.value"
-                [isInGrid]="true"
-                [dontShowCalendarWhenFocus]="!dontShowCalendarWhenFocus"
-                (inGrid)="calendarToggle($event)"
-            >
-            </xn-date-picker>
-        </ng-template>
-
-        <ng-template #labelPostageCostsCell let-data>
-            <div *ngIf="data">
-                <i
-                    class="fa fa-check"
-                    [ngClass]="{
-                        active: data.value.isActive == true,
-                        'in-active': data.value.isActive == false
-                    }"
-                >
-                </i>
-                <label class="lbl-defaultCosts" *ngIf="data.value.isActive">
-                    {{ data.value.postageCosts }}
-                </label>
-            </div>
-        </ng-template>
-
-        <ng-template #postageCostsEditCell let-data>
-            <edit-checkbox-component
-                *ngIf="data"
-                [(cbStatus)]="data.value.isActive"
-                [(value)]="data.value.postageCosts"
-                [(defaultText)]="data.value.defaultCosts"
-            >
-            </edit-checkbox-component>
-        </ng-template>
-
-        <ng-template #numericEditCell let-data>
-            <input
-                #inputNumber
-                class="full-width no-border numeric"
-                type="text"
-                xn-numeric
-                [(ngModel)]="data.value"
-                [format]="'N'"
-                [isRequired]="false"
-                (initialized)="inputNumber.focus()"
-            />
-        </ng-template>
-    </div>
+    <ng-template #numericEditCell let-data>
+      <input
+        #inputNumber
+        class="full-width no-border numeric"
+        type="text"
+        xn-numeric
+        [(ngModel)]="data.value"
+        [format]="'N'"
+        [isRequired]="false"
+        (initialized)="inputNumber.focus()"
+      />
+    </ng-template>
+  </div>
 </div>
 
 <widget-module-info-translation
-    [tableData]="campaignT2RawData"
-    [translateTextGridId]="'44e1893e-344d-4020-aded-651625743f8e'"
-    [enableApplyFor]="false"
-    (onHide)="onHiddenWidgetInfoTranslation($event)"
+  [tableData]="campaignT2RawData"
+  [translateTextGridId]="'44e1893e-344d-4020-aded-651625743f8e'"
+  [enableApplyFor]="false"
+  (onHide)="onHiddenWidgetInfoTranslation($event)"
 >
 </widget-module-info-translation>

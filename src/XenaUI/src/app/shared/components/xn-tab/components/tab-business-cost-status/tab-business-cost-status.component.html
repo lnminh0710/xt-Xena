@@ -1,51 +1,51 @@
 ﻿<div
-    class="business-cost-status panel"
-    [ngClass]="{
-        new: mainTabActive && status == 'new',
-        good: mainTabActive && status == 'good',
-        warning: mainTabActive && status == 'warning',
-        alert: mainTabActive && status == 'alert',
-        'margin-top-10px': mainTabActive
-    }"
+  class="business-cost-status panel"
+  [ngClass]="{
+    new: mainTabActive && status == 'new',
+    good: mainTabActive && status == 'good',
+    warning: mainTabActive && status == 'warning',
+    alert: mainTabActive && status == 'alert',
+    'margin-top-10px': mainTabActive
+  }"
 >
-    <div class="panel-heading">
-        <label-translation
-            [keyword]="'TabBusinessCost__Cost_Status'"
-        ></label-translation>
-    </div>
-    <div class="panel-body">
-        <table
-            [ngClass]="{
-                'text-primary': mainTabActive && status == 'new',
-                'text-success': mainTabActive && status == 'good',
-                'text-warning': mainTabActive && status == 'warning',
-                'text-danger': mainTabActive && status == 'alert'
-            }"
-        >
-            <tbody>
-                <tr>
-                    <td class="text-center">
-                        <strong class="font-size-15px">2,042.00</strong>
-                    </td>
-                    <td rowspan="2" class="text-center col-xs-5 font-size-35px">
-                        <i
-                            class="fa"
-                            aria-hidden="true"
-                            [ngClass]="{
-                                'fa-star': status == 'new',
-                                'fa-check-circle': status == 'good',
-                                'fa-exclamation-triangle': status == 'warning',
-                                'fa-times-circle': status == 'alert'
-                            }"
-                        ></i>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-center">
-                        <strong class="font-size-15px">(2,042.00)</strong>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="panel-heading">
+    <label-translation
+      [keyword]="'TabBusinessCost__Cost_Status'"
+    ></label-translation>
+  </div>
+  <div class="panel-body">
+    <table
+      [ngClass]="{
+        'text-primary': mainTabActive && status == 'new',
+        'text-success': mainTabActive && status == 'good',
+        'text-warning': mainTabActive && status == 'warning',
+        'text-danger': mainTabActive && status == 'alert'
+      }"
+    >
+      <tbody>
+        <tr>
+          <td class="text-center">
+            <strong class="font-size-15px">2,042.00</strong>
+          </td>
+          <td rowspan="2" class="text-center col-xs-5 font-size-35px">
+            <i
+              class="fa"
+              aria-hidden="true"
+              [ngClass]="{
+                'fa-star': status == 'new',
+                'fa-check-circle': status == 'good',
+                'fa-exclamation-triangle': status == 'warning',
+                'fa-times-circle': status == 'alert'
+              }"
+            ></i>
+          </td>
+        </tr>
+        <tr>
+          <td class="text-center">
+            <strong class="font-size-15px">(2,042.00)</strong>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

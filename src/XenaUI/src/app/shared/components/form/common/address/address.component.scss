@@ -1,44 +1,44 @@
 .form-group label {
-    padding-top: 8px;
-    font-weight: normal;
+  padding-top: 8px;
+  font-weight: normal;
 }
 
 .form-group .half-size {
-    width: 49%;
-    float: right;
+  width: 49%;
+  float: right;
 }
 
 .form-group .margin2p {
-    margin-right: 2%;
+  margin-right: 2%;
 }
 
 .form-group .margin-top-4px {
-    margin-top: 4px;
+  margin-top: 4px;
 }
 
 .form-group .no-margin-bottom {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .form-group .abc-checkbox label::before,
 .form-group .abc-checkbox label::after {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 .xn-padding--sm {
-    text-align: left;
+  text-align: left;
 }
 
 .form-control {
-    border-radius: 4px;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .edited .ng-invalid,
 :host-context(.submitted) .ng-invalid {
-    border-color: #a94442;
+  border-color: #a94442;
 }
 
 .padding-left-4 {
-    padding-left: 4px !important;
+  padding-left: 4px !important;
 }

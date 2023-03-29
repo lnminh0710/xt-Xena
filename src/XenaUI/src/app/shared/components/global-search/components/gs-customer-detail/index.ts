@@ -1,1 +1,1 @@
-export { GlobalSearchCustomerDetailComponent } from "./gs-customer-detail.component";
+export { GlobalSearchCustomerDetailComponent } from './gs-customer-detail.component';

@@ -1,19 +1,19 @@
 .fa {
-    font-size: 19px;
-    margin-left: 2px;
-    margin-right: 2px;
+  font-size: 19px;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 .quantity {
-    width: calc(100% - 30px) !important;
+  width: calc(100% - 30px) !important;
 }
 
 .disabled > input {
-    pointer-events: none;
-    cursor: not-allowed;
-    background: #ddd;
+  pointer-events: none;
+  cursor: not-allowed;
+  background: #ddd;
 }
 
 input {
-    text-align: center;
+  text-align: center;
 }

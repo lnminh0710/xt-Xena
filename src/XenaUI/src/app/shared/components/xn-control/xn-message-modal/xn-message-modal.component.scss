@@ -1,55 +1,55 @@
 .modal-header {
-    padding: 10px 10px !important;
-    height: 62px;
+  padding: 10px 10px !important;
+  height: 62px;
 
-    .header-icon {
-        font-size: 30px;
-        margin-right: 10px;
-    }
+  .header-icon {
+    font-size: 30px;
+    margin-right: 10px;
+  }
 
-    .header-text {
-        font-size: 22px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: calc(100% - 70px);
-    }
+  .header-text {
+    font-size: 22px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 70px);
+  }
 }
 
 .modal-footer {
-    display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .modal-footer button {
-    margin-bottom: 0;
-    margin-left: 5px;
-    min-width: 0px;
+  margin-bottom: 0;
+  margin-left: 5px;
+  min-width: 0px;
 }
 
 /*Message Modal close button*/
 .mat-btn-close-modal {
-    width: 40px;
-    position: absolute;
-    height: 61px;
-    top: 0;
-    right: 0;
-    background: none !important;
-    box-shadow: none !important;
-    min-width: 0px !important;
-    opacity: 1;
+  width: 40px;
+  position: absolute;
+  height: 61px;
+  top: 0;
+  right: 0;
+  background: none !important;
+  box-shadow: none !important;
+  min-width: 0px !important;
+  opacity: 1;
 
-    .mat-button-wrapper {
-        margin-left: -1px;
-    }
+  .mat-button-wrapper {
+    margin-left: -1px;
+  }
 }
 
 .modal-body {
-    max-height: calc(100% - 130px);
-    margin-bottom: 15px;
-    padding-bottom: 0 !important;
+  max-height: calc(100% - 130px);
+  margin-bottom: 15px;
+  padding-bottom: 0 !important;
 }
 
 :host .mat-raised-button:focus ::ng-deep {
-    outline: 1px dotted #00588b !important;
+  outline: 1px dotted #00588b !important;
 }

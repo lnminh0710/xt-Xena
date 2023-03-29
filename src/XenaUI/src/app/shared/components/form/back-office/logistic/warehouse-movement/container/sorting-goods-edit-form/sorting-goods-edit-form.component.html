@@ -1,216 +1,214 @@
 <div
-    *ngIf="isRenderForm"
-    class="form-container height-pc-100"
-    [ngClass]="{
-        submitted: formGroup['submitted'],
-        'xn-disabled': disableForm
-    }"
+  *ngIf="isRenderForm"
+  class="form-container height-pc-100"
+  [ngClass]="{
+    submitted: formGroup['submitted'],
+    'xn-disabled': disableForm
+  }"
 >
-    <form
-        [formGroup]="formGroup"
-        class="height-pc-100"
-        name="shortingGoodEditForm"
-        id="shortingGoodEditForm"
-        novalidate
+  <form
+    [formGroup]="formGroup"
+    class="height-pc-100"
+    name="shortingGoodEditForm"
+    id="shortingGoodEditForm"
+    novalidate
+  >
+    <control-focus
+      #focusControl
+      formName="shortingGoodEditForm"
+      controlWaitingMore="quantity"
+      [noLoop]="true"
+      (callBackWhenReachFinalField)="addStokedArticleItemClick()"
     >
-        <control-focus
-            #focusControl
-            formName="shortingGoodEditForm"
-            controlWaitingMore="quantity"
-            [noLoop]="true"
-            (callBackWhenReachFinalField)="addStokedArticleItemClick()"
+    </control-focus>
+    <div class="col-xs-12">
+      <div class="col-xs-12 col-sm-4 no-padding-left">
+        <label
+          ><label-translation
+            [keyword]="'Sorting_Good__Movement_id'"
+          ></label-translation
+          >:</label
         >
-        </control-focus>
-        <div class="col-xs-12">
-            <div class="col-xs-12 col-sm-4 no-padding-left">
-                <label
-                    ><label-translation
-                        [keyword]="'Sorting_Good__Movement_id'"
-                    ></label-translation
-                    >:</label
-                >
-                <label class="padding-left--sd color-movement">{{
-                    mainId
-                }}</label>
-            </div>
-            <div class="col-xs-12 col-sm-8 no-padding">
-                <label class="col-xs--pc-10"
-                    ><label-translation
-                        [keyword]="'Sorting_Good__Article_Number'"
-                    ></label-translation
-                ></label>
-                <div [ngClass]="{ 'xn-disabled': disabledFormStokedArticle }">
-                    <label class="col-xs--pc-10 required"
-                        ><label-translation
-                            [keyword]="'Sorting_Good__Qty'"
-                        ></label-translation
-                    ></label>
-                    <label class="col-xs--pc-14"
-                        ><label-translation
-                            [keyword]="'Sorting_Good__Division'"
-                        ></label-translation
-                    ></label>
-                    <label class="col-xs--pc-14"
-                        ><label-translation
-                            [keyword]="'Sorting_Good__Coordinates'"
-                        ></label-translation
-                    ></label>
-                    <label class="col-xs--pc-14"
-                        ><label-translation
-                            [keyword]="'Sorting_Good__Lot'"
-                        ></label-translation
-                    ></label>
-                    <label class="col-xs--pc-14 no-wrap"
-                        ><label-translation
-                            [keyword]="'Sorting_Good__Expiry_date'"
-                        ></label-translation
-                    ></label>
-                    <label class="col-xs--pc-14 no-wrap"
-                        ><label-translation
-                            [keyword]="'Sorting_Good__Closing_reason'"
-                        ></label-translation
-                    ></label>
-                </div>
-            </div>
+        <label class="padding-left--sd color-movement">{{ mainId }}</label>
+      </div>
+      <div class="col-xs-12 col-sm-8 no-padding">
+        <label class="col-xs--pc-10"
+          ><label-translation
+            [keyword]="'Sorting_Good__Article_Number'"
+          ></label-translation
+        ></label>
+        <div [ngClass]="{ 'xn-disabled': disabledFormStokedArticle }">
+          <label class="col-xs--pc-10 required"
+            ><label-translation
+              [keyword]="'Sorting_Good__Qty'"
+            ></label-translation
+          ></label>
+          <label class="col-xs--pc-14"
+            ><label-translation
+              [keyword]="'Sorting_Good__Division'"
+            ></label-translation
+          ></label>
+          <label class="col-xs--pc-14"
+            ><label-translation
+              [keyword]="'Sorting_Good__Coordinates'"
+            ></label-translation
+          ></label>
+          <label class="col-xs--pc-14"
+            ><label-translation
+              [keyword]="'Sorting_Good__Lot'"
+            ></label-translation
+          ></label>
+          <label class="col-xs--pc-14 no-wrap"
+            ><label-translation
+              [keyword]="'Sorting_Good__Expiry_date'"
+            ></label-translation
+          ></label>
+          <label class="col-xs--pc-14 no-wrap"
+            ><label-translation
+              [keyword]="'Sorting_Good__Closing_reason'"
+            ></label-translation
+          ></label>
         </div>
-        <div class="col-xs-12 form-group">
-            <div class="col-xs-12 col-sm-4 no-padding-left">
-                <!-- <a class="mat-btn-blue  pull-right"
+      </div>
+    </div>
+    <div class="col-xs-12 form-group">
+      <div class="col-xs-12 col-sm-4 no-padding-left">
+        <!-- <a class="mat-btn-blue  pull-right"
                        mat-raised-button
                        (click)="confirmAll()">
                         Confirm All
                     </a> -->
+      </div>
+      <div class="col-xs-12 col-sm-8 no-padding">
+        <label class="col-xs--pc-10 article-label color-movement">{{
+          newArticleNumber
+        }}</label>
+        <div [ngClass]="{ 'xn-disabled': disabledFormStokedArticle }">
+          <div class="col-xs--pc-10">
+            <input
+              #focusQuantity
+              formControlName="quantity"
+              id="quantity"
+              name="quantity"
+              type="text"
+              [isDisabled]="disabledFormStokedArticle"
+              xn-numeric
+              [min]="0"
+              [format]="globalNumberFormat"
+              class="custom-wj-input-control xn-input--no-icon"
+            />
+            <clear-text
+              [enableClearText]="true"
+              [controlType]="'number'"
+              [inputControl]="quantity"
+              [controlName]="'quantity'"
+            ></clear-text>
+            <control-messages
+              [control]="formGroup.controls['quantity']"
+            ></control-messages>
+          </div>
+          <div class="col-xs--pc-14">
+            <input
+              type="text"
+              class="form-control xn-input--no-icon"
+              name="division"
+              formControlName="division"
+              autocomplete="off"
+            />
+          </div>
+          <div class="col-xs--pc-14">
+            <input
+              type="text"
+              class="form-control xn-input--no-icon"
+              name="coordinates"
+              formControlName="coordinates"
+              autocomplete="off"
+            />
+          </div>
+          <div class="col-xs--pc-14">
+            <input
+              type="text"
+              class="form-control xn-input--no-icon"
+              name="lot"
+              formControlName="lot"
+              autocomplete="off"
+            />
+          </div>
+          <div class="col-xs--pc-14">
+            <xn-date-picker
+              #wjDOB
+              [formControl]="formGroup.controls['expiryDate']"
+              class="xn-input"
+              [min]="'1900-01-01' | toDate"
+              [dontShowCalendarWhenFocus]="
+                !formGroup.controls['expiryDate'].value
+              "
+              [isRequired]="false"
+              [format]="globalDateFormat"
+            >
+            </xn-date-picker>
+            <div class="input-group-addon">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
             </div>
-            <div class="col-xs-12 col-sm-8 no-padding">
-                <label class="col-xs--pc-10 article-label color-movement">{{
-                    newArticleNumber
-                }}</label>
-                <div [ngClass]="{ 'xn-disabled': disabledFormStokedArticle }">
-                    <div class="col-xs--pc-10">
-                        <input
-                            #focusQuantity
-                            formControlName="quantity"
-                            id="quantity"
-                            name="quantity"
-                            type="text"
-                            [isDisabled]="disabledFormStokedArticle"
-                            xn-numeric
-                            [min]="0"
-                            [format]="globalNumberFormat"
-                            class="custom-wj-input-control xn-input--no-icon"
-                        />
-                        <clear-text
-                            [enableClearText]="true"
-                            [controlType]="'number'"
-                            [inputControl]="quantity"
-                            [controlName]="'quantity'"
-                        ></clear-text>
-                        <control-messages
-                            [control]="formGroup.controls['quantity']"
-                        ></control-messages>
-                    </div>
-                    <div class="col-xs--pc-14">
-                        <input
-                            type="text"
-                            class="form-control xn-input--no-icon"
-                            name="division"
-                            formControlName="division"
-                            autocomplete="off"
-                        />
-                    </div>
-                    <div class="col-xs--pc-14">
-                        <input
-                            type="text"
-                            class="form-control xn-input--no-icon"
-                            name="coordinates"
-                            formControlName="coordinates"
-                            autocomplete="off"
-                        />
-                    </div>
-                    <div class="col-xs--pc-14">
-                        <input
-                            type="text"
-                            class="form-control xn-input--no-icon"
-                            name="lot"
-                            formControlName="lot"
-                            autocomplete="off"
-                        />
-                    </div>
-                    <div class="col-xs--pc-14">
-                        <xn-date-picker
-                            #wjDOB
-                            [formControl]="formGroup.controls['expiryDate']"
-                            class="xn-input"
-                            [min]="'1900-01-01' | toDate"
-                            [dontShowCalendarWhenFocus]="
-                                !formGroup.controls['expiryDate'].value
-                            "
-                            [isRequired]="false"
-                            [format]="globalDateFormat"
-                        >
-                        </xn-date-picker>
-                        <div class="input-group-addon">
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                    <div class="col-xs--pc-14">
-                        <xn-combo-box
-                            #closingReasonDropDownList
-                            wjDropdownHelper
-                            [form]="formGroup"
-                            formControlName="closingReason"
-                            class="custom-wj-input-control xn-select xn-input--no-icon"
-                            [itemsSource]="closingReasonData"
-                            [isDisabled]="disabledFormStokedArticle"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                    </div>
-                    <div class="col-xs--pc-10">
-                        <a
-                            class="mat-btn-blue"
-                            mat-raised-button
-                            type="button"
-                            [disabled]="disabledFormStokedArticle"
-                            (click)="addStokedArticleItemClick()"
-                        >
-                            <i class="fa fa-plus"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+          </div>
+          <div class="col-xs--pc-14">
+            <xn-combo-box
+              #closingReasonDropDownList
+              wjDropdownHelper
+              [form]="formGroup"
+              formControlName="closingReason"
+              class="custom-wj-input-control xn-select xn-input--no-icon"
+              [itemsSource]="closingReasonData"
+              [isDisabled]="disabledFormStokedArticle"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+          </div>
+          <div class="col-xs--pc-10">
+            <a
+              class="mat-btn-blue"
+              mat-raised-button
+              type="button"
+              [disabled]="disabledFormStokedArticle"
+              (click)="addStokedArticleItemClick()"
+            >
+              <i class="fa fa-plus"></i>
+            </a>
+          </div>
         </div>
-        <div
-            class="col-xs-12 no-padding padding-top--sd"
-            [ngStyle]="gridSectionHeight"
+      </div>
+    </div>
+    <div
+      class="col-xs-12 no-padding padding-top--sd"
+      [ngStyle]="gridSectionHeight"
+    >
+      <div class="col-xs-12 col-sm-4 height-pc-100">
+        <xn-ag-grid
+          #arrivedArticleGridComponent
+          [dataSource]="arrivedArticleGrid"
+          [globalProperties]="globalProperties"
+          [showMenuRowGrouping]="true"
+          [id]="'08cc09be-1935-4ce4-920b-fc89022138a8'"
+          (rowClick)="arrivedArticleGridRowClick($event)"
+          (rowClickedAction)="rowClickedHandler($event)"
         >
-            <div class="col-xs-12 col-sm-4 height-pc-100">
-                <xn-ag-grid
-                    #arrivedArticleGridComponent
-                    [dataSource]="arrivedArticleGrid"
-                    [globalProperties]="globalProperties"
-                    [showMenuRowGrouping]="true"
-                    [id]="'08cc09be-1935-4ce4-920b-fc89022138a8'"
-                    (rowClick)="arrivedArticleGridRowClick($event)"
-                    (rowClickedAction)="rowClickedHandler($event)"
-                >
-                </xn-ag-grid>
-            </div>
-            <div class="col-xs-12 col-sm-8 height-pc-100">
-                <xn-ag-grid
-                    #stockedArticleGridComponent
-                    [dataSource]="stockedArticleGrid"
-                    [showMenuRowGrouping]="true"
-                    [globalProperties]="globalProperties"
-                    [id]="'a3d7d233-a03d-4c01-b273-3c250acd8c49'"
-                    (deleteClick)="onDeleteColumnClickHandler($event)"
-                >
-                </xn-ag-grid>
-            </div>
-        </div>
-    </form>
+        </xn-ag-grid>
+      </div>
+      <div class="col-xs-12 col-sm-8 height-pc-100">
+        <xn-ag-grid
+          #stockedArticleGridComponent
+          [dataSource]="stockedArticleGrid"
+          [showMenuRowGrouping]="true"
+          [globalProperties]="globalProperties"
+          [id]="'a3d7d233-a03d-4c01-b273-3c250acd8c49'"
+          (deleteClick)="onDeleteColumnClickHandler($event)"
+        >
+        </xn-ag-grid>
+      </div>
+    </div>
+  </form>
 </div>

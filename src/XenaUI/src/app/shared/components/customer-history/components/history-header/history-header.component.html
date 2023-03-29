@@ -1,32 +1,32 @@
 <div *ngIf="data">
-    <div *ngIf="data.menu && data.menu.length">
-        <ng-template #popTemplate>
-            <div class="list-group">
-                <a
-                    class="list-group-item cursor-pointer"
-                    *ngFor="let item of data.menu[0].items"
-                    (click)="selectMenuItem(item, pop)"
-                >
-                    <i class="fa {{ item.icon }}"></i>
-                    {{ item.text }}
-                </a>
-            </div>
-        </ng-template>
-
+  <div *ngIf="data.menu && data.menu.length">
+    <ng-template #popTemplate>
+      <div class="list-group">
         <a
-            class="menu-header cursor-pointer"
-            triggers="click"
-            [popover]="popTemplate"
-            placement="bottom"
-            #pop="bs-popover"
-            [outsideClick]="true"
-            container="body"
-            containerClass="customer-history__header-menu"
+          class="list-group-item cursor-pointer"
+          *ngFor="let item of data.menu[0].items"
+          (click)="selectMenuItem(item, pop)"
         >
-            <i class="fa fa-ellipsis-v"></i>
+          <i class="fa {{ item.icon }}"></i>
+          {{ item.text }}
         </a>
-    </div>
+      </div>
+    </ng-template>
 
-    <i class="fa {{ data.content.icon }}"></i>
-    <label> {{ data.content.text }} </label>
+    <a
+      class="menu-header cursor-pointer"
+      triggers="click"
+      [popover]="popTemplate"
+      placement="bottom"
+      #pop="bs-popover"
+      [outsideClick]="true"
+      container="body"
+      containerClass="customer-history__header-menu"
+    >
+      <i class="fa fa-ellipsis-v"></i>
+    </a>
+  </div>
+
+  <i class="fa {{ data.content.icon }}"></i>
+  <label> {{ data.content.text }} </label>
 </div>

@@ -1,51 +1,47 @@
 <div
-    *ngIf="isRenderForm"
-    class="bc__row-form"
-    [ngClass]="{
-        submitted: businessCostRowForm.submitted,
-        'xn-disabled': !isRenderCompleted
-    }"
+  *ngIf="isRenderForm"
+  class="bc__row-form"
+  [ngClass]="{
+    submitted: businessCostRowForm.submitted,
+    'xn-disabled': !isRenderCompleted
+  }"
 >
-    <form
-        [formGroup]="businessCostRowForm"
-        class="form-horizontal"
-        id="businessCostRowForm"
-        novalidate
-    >
-        <control-focus
-            #focusControl
-            formName="businessCostRowForm"
-            [isFocusOnFirstControl]="!formEditMode"
-        ></control-focus>
-        <div class="col-xs-12 col-md-4 business-cost-row__form">
-            <div class="xn__form-header">
-                <span>New Row</span>
-            </div>
-            <!-- . -->
-            <div class="form-group">
-                <label for="department" class="control-label col-sm-3"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Row__Select_campaign'"
-                    ></label-translation
-                ></label>
-                <div
-                    class="col-sm-9"
-                    [ngClass]="{
-                        'xn-disabled':
-                            businessCostRowForm &&
-                            businessCostRowForm.controls &&
-                            businessCostRowForm.controls.campaign.disabled,
-                        'orange-background-edit':
-                            !idBusinessCost &&
-                            campaignItem &&
-                            campaignItem.campaignId,
-                        'green-background-edit':
-                            idBusinessCost &&
-                            campaignItem &&
-                            campaignItem.campaignId
-                    }"
-                >
-                    <!-- <app-xn-input-debounce cssClass="xn-input"
+  <form
+    [formGroup]="businessCostRowForm"
+    class="form-horizontal"
+    id="businessCostRowForm"
+    novalidate
+  >
+    <control-focus
+      #focusControl
+      formName="businessCostRowForm"
+      [isFocusOnFirstControl]="!formEditMode"
+    ></control-focus>
+    <div class="col-xs-12 col-md-4 business-cost-row__form">
+      <div class="xn__form-header">
+        <span>New Row</span>
+      </div>
+      <!-- . -->
+      <div class="form-group">
+        <label for="department" class="control-label col-sm-3"
+          ><label-translation
+            [keyword]="'Business_Cost_Row__Select_campaign'"
+          ></label-translation
+        ></label>
+        <div
+          class="col-sm-9"
+          [ngClass]="{
+            'xn-disabled':
+              businessCostRowForm &&
+              businessCostRowForm.controls &&
+              businessCostRowForm.controls.campaign.disabled,
+            'orange-background-edit':
+              !idBusinessCost && campaignItem && campaignItem.campaignId,
+            'green-background-edit':
+              idBusinessCost && campaignItem && campaignItem.campaignId
+          }"
+        >
+          <!-- <app-xn-input-debounce cssClass="xn-input"
                                            [hasIndicator]="true"
                                            [hasSearchButton]="false"
                                            [isLoading]="isSearching"
@@ -58,277 +54,267 @@
                                       [control]="businessCostRowForm.controls.campaign"
                                       icon="search">
                     </control-messages> -->
-                    <wj-auto-complete
-                        #searchCampaignCtl
-                        wjDropdownHelper
-                        [selectItemWhenHasOneRowWithoutFocus]="true"
-                        [form]="businessCostRowForm"
-                        class="custom-wj-input-control xn-select"
-                        formControlName="campaign"
-                        [itemsSourceFunction]="searchCampaign"
-                        [displayMemberPath]="'campaignNr'"
-                        [selectedValuePath]="'campaignId'"
-                        [cssMatch]="'highlight'"
-                        [isRequired]="false"
-                        [minLength]="0"
-                        [delay]="300"
-                        placeholder="Search item"
-                        (gotFocus)="onFocusSearchCampaign()"
-                        (selectedValueChange)="
-                            campaignSelectedValueChange($event)
-                        "
-                    >
-                    </wj-auto-complete>
-                    <control-messages
-                        [xn-trigger-click-inside-cbo]="searchCampaignCtl"
-                        [control]="businessCostRowForm.controls.campaign"
-                        (clickOnGroupAddon)="onSearchCampaignClicked()"
-                        icon="search"
-                    >
-                    </control-messages>
-                    <div *ngIf="isSearching" class="indicator">
-                        <i class="fa fa-spinner fa-spin fa-fw"></i>
-                    </div>
-                </div>
-            </div>
-            <div
-                class="form-group"
-                [hidden]="!campaignItem || !campaignItem.campaignId"
-            >
-                <label for="costType" class="control-label col-sm-3"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Row__Cost_Type'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-9">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #costTypeCtl
-                            wjDropdownHelper
-                            [form]="businessCostRowForm"
-                            formControlName="costType"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.businessCosts_CostType"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                            (selectedIndexChanged)="onChangeCostType($event)"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            #controlMessageCostType
-                            [xn-trigger-click-inside-cbo]="costTypeCtl"
-                            [control]="businessCostRowForm.controls.costType"
-                            icon="asterisk"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div *ngIf="controlDisplayConfig.description" class="form-group">
-                <label for="description" class="control-label col-sm-3"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Row__Description'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-9">
-                    <input
-                        type="text"
-                        class="form-control xn-input"
-                        name="description"
-                        formControlName="description"
-                        autocomplete="off"
-                    />
-                    <control-messages
-                        type="textbox"
-                        [control]="businessCostRowForm.controls.description"
-                        icon="file-text"
-                    ></control-messages>
-                </div>
-            </div>
-            <div
-                *ngIf="controlDisplayConfig.description"
-                class="xn__form-header"
-            >
-                <span>Cost</span>
-            </div>
-            <div *ngIf="controlDisplayConfig['currency']" class="form-group">
-                <label for="currency" class="control-label col-sm-3"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Row__Currency'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-9">
-                    <div class="full-width">
-                        <xn-combo-box
-                            #ctrCurrency
-                            wjDropdownHelper
-                            [form]="businessCostRowForm"
-                            formControlName="currency"
-                            class="custom-wj-input-control xn-select"
-                            [itemsSource]="listComboBox.currency"
-                            [displayMemberPath]="'textValue'"
-                            [selectedValuePath]="'idValue'"
-                            [isEditable]="true"
-                            [isRequired]="false"
-                            placeholder="Please select"
-                        >
-                        </xn-combo-box>
-                        <control-messages
-                            [xn-trigger-click-inside-cbo]="ctrCurrency"
-                            [control]="businessCostRowForm.controls.currency"
-                            icon="money"
-                        >
-                        </control-messages>
-                    </div>
-                </div>
-            </div>
-            <div
-                *ngIf="controlDisplayConfig['costPerPiece']"
-                class="form-group"
-            >
-                <label for="costPerPiece" class="control-label col-sm-3"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Row__Cost_per_piece'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-9">
-                    <input
-                        #costPerPieceNumber
-                        formControlName="costPerPiece"
-                        type="text"
-                        xn-numeric
-                        [min]="0"
-                        [format]="globalNumberFormat"
-                        class="custom-wj-input-control xn-input"
-                    />
-                    <clear-text
-                        [enableClearText]="true"
-                        [controlType]="'number'"
-                        [inputControl]="costPerPieceNumber"
-                        [controlName]="'costPerPiece'"
-                    ></clear-text>
-                    <control-messages
-                        [control]="businessCostRowForm.controls.costPerPiece"
-                        icon="sum"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div *ngIf="controlDisplayConfig['totalAmount']" class="form-group">
-                <label for="totalAmount" class="control-label col-sm-3"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Row__Total_Amount'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-9">
-                    <input
-                        #totalAmountNumber
-                        formControlName="totalAmount"
-                        type="text"
-                        xn-numeric
-                        [min]="0"
-                        [format]="globalNumberFormat"
-                        class="custom-wj-input-control xn-input"
-                    />
-                    <clear-text
-                        [enableClearText]="true"
-                        [controlType]="'number'"
-                        [inputControl]="totalAmountNumber"
-                        [controlName]="'totalAmount'"
-                    ></clear-text>
-                    <control-messages
-                        [control]="businessCostRowForm.controls.totalAmount"
-                        icon="sum"
-                    >
-                    </control-messages>
-                </div>
-            </div>
-            <div
-                class="form-group bc__row-form__note"
-                [hidden]="!campaignItem || !campaignItem.campaignId"
-            >
-                <label for="notes" class="control-label col-sm-3 bold-title"
-                    ><label-translation
-                        [keyword]="'Business_Cost_Row__Notes'"
-                    ></label-translation
-                ></label>
-                <div class="col-sm-9">
-                    <textarea
-                        class="form-control xn-input"
-                        id="notes"
-                        name="notes"
-                        [maxlength]="maxCharactersNotes"
-                        (keypress)="updateLeftCharacters($event)"
-                        (keydown)="updateLeftCharacters($event)"
-                        formControlName="notes"
-                    ></textarea>
-                    <div class="input-group-addon for-notes">
-                        <i class="fa fa-comment fa-2"></i>
-                    </div>
-                    <p>
-                        *
-                        <label-translation
-                            [keyword]="'Business_Cost_Row__You_have'"
-                        ></label-translation>
-                        {{ businessCostRowForm.leftCharacters }}
-                        <label-translation
-                            [keyword]="'Business_Cost_Row__characters_more'"
-                        ></label-translation>
-                    </p>
-                </div>
-            </div>
+          <wj-auto-complete
+            #searchCampaignCtl
+            wjDropdownHelper
+            [selectItemWhenHasOneRowWithoutFocus]="true"
+            [form]="businessCostRowForm"
+            class="custom-wj-input-control xn-select"
+            formControlName="campaign"
+            [itemsSourceFunction]="searchCampaign"
+            [displayMemberPath]="'campaignNr'"
+            [selectedValuePath]="'campaignId'"
+            [cssMatch]="'highlight'"
+            [isRequired]="false"
+            [minLength]="0"
+            [delay]="300"
+            placeholder="Search item"
+            (gotFocus)="onFocusSearchCampaign()"
+            (selectedValueChange)="campaignSelectedValueChange($event)"
+          >
+          </wj-auto-complete>
+          <control-messages
+            [xn-trigger-click-inside-cbo]="searchCampaignCtl"
+            [control]="businessCostRowForm.controls.campaign"
+            (clickOnGroupAddon)="onSearchCampaignClicked()"
+            icon="search"
+          >
+          </control-messages>
+          <div *ngIf="isSearching" class="indicator">
+            <i class="fa fa-spinner fa-spin fa-fw"></i>
+          </div>
         </div>
-        <div class="col-xs-12 col-md-8">
-            <div class="xn__form-header">
-                <span
-                    ><label-translation
-                        [keyword]="'Business_Cost_Row__Country'"
-                    ></label-translation
-                ></span>
-            </div>
-            <div [hidden]="!hiddenCountry">
-                <i
-                    class="bc__row-form__search-country fa fa-spinner fa-spin fa-fw"
-                ></i>
-            </div>
-            <xn-country-check-list
-                [hidden]="hiddenCountry"
-                [data]="countryCheckListData"
-                [isExpand]="true"
-                (outputAllData)="getCountryItems($event)"
+      </div>
+      <div
+        class="form-group"
+        [hidden]="!campaignItem || !campaignItem.campaignId"
+      >
+        <label for="costType" class="control-label col-sm-3"
+          ><label-translation
+            [keyword]="'Business_Cost_Row__Cost_Type'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-9">
+          <div class="full-width">
+            <xn-combo-box
+              #costTypeCtl
+              wjDropdownHelper
+              [form]="businessCostRowForm"
+              formControlName="costType"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.businessCosts_CostType"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+              (selectedIndexChanged)="onChangeCostType($event)"
             >
-            </xn-country-check-list>
+            </xn-combo-box>
+            <control-messages
+              #controlMessageCostType
+              [xn-trigger-click-inside-cbo]="costTypeCtl"
+              [control]="businessCostRowForm.controls.costType"
+              icon="asterisk"
+            >
+            </control-messages>
+          </div>
         </div>
-    </form>
-    <div class="col-xs-12 business-cost-row__grid">
-        <xn-ag-grid
-            [isShowedHeader]="true"
-            *ngIf="
-                businessCostRowGrid &&
-                businessCostRowGrid.columns &&
-                businessCostRowGrid.columns.length
-            "
-            [id]="gridId"
-            [fitWidthColumn]="true"
-            [preventAutoSelectFirstRow]="true"
-            [dataSource]="businessCostRowGrid"
-            [headerTitle]="'Business Cost Items'"
-            [showMenuRowGrouping]="true"
-            [globalProperties]="globalPropertiesLocal"
-            (rowDoubleClicked)="businessCostRowGridItemDoubleClick($event)"
-            (deleteClick)="deleteClickHandle($event)"
-        >
-        </xn-ag-grid>
+      </div>
+      <div *ngIf="controlDisplayConfig.description" class="form-group">
+        <label for="description" class="control-label col-sm-3"
+          ><label-translation
+            [keyword]="'Business_Cost_Row__Description'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-9">
+          <input
+            type="text"
+            class="form-control xn-input"
+            name="description"
+            formControlName="description"
+            autocomplete="off"
+          />
+          <control-messages
+            type="textbox"
+            [control]="businessCostRowForm.controls.description"
+            icon="file-text"
+          ></control-messages>
+        </div>
+      </div>
+      <div *ngIf="controlDisplayConfig.description" class="xn__form-header">
+        <span>Cost</span>
+      </div>
+      <div *ngIf="controlDisplayConfig['currency']" class="form-group">
+        <label for="currency" class="control-label col-sm-3"
+          ><label-translation
+            [keyword]="'Business_Cost_Row__Currency'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-9">
+          <div class="full-width">
+            <xn-combo-box
+              #ctrCurrency
+              wjDropdownHelper
+              [form]="businessCostRowForm"
+              formControlName="currency"
+              class="custom-wj-input-control xn-select"
+              [itemsSource]="listComboBox.currency"
+              [displayMemberPath]="'textValue'"
+              [selectedValuePath]="'idValue'"
+              [isEditable]="true"
+              [isRequired]="false"
+              placeholder="Please select"
+            >
+            </xn-combo-box>
+            <control-messages
+              [xn-trigger-click-inside-cbo]="ctrCurrency"
+              [control]="businessCostRowForm.controls.currency"
+              icon="money"
+            >
+            </control-messages>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="controlDisplayConfig['costPerPiece']" class="form-group">
+        <label for="costPerPiece" class="control-label col-sm-3"
+          ><label-translation
+            [keyword]="'Business_Cost_Row__Cost_per_piece'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-9">
+          <input
+            #costPerPieceNumber
+            formControlName="costPerPiece"
+            type="text"
+            xn-numeric
+            [min]="0"
+            [format]="globalNumberFormat"
+            class="custom-wj-input-control xn-input"
+          />
+          <clear-text
+            [enableClearText]="true"
+            [controlType]="'number'"
+            [inputControl]="costPerPieceNumber"
+            [controlName]="'costPerPiece'"
+          ></clear-text>
+          <control-messages
+            [control]="businessCostRowForm.controls.costPerPiece"
+            icon="sum"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div *ngIf="controlDisplayConfig['totalAmount']" class="form-group">
+        <label for="totalAmount" class="control-label col-sm-3"
+          ><label-translation
+            [keyword]="'Business_Cost_Row__Total_Amount'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-9">
+          <input
+            #totalAmountNumber
+            formControlName="totalAmount"
+            type="text"
+            xn-numeric
+            [min]="0"
+            [format]="globalNumberFormat"
+            class="custom-wj-input-control xn-input"
+          />
+          <clear-text
+            [enableClearText]="true"
+            [controlType]="'number'"
+            [inputControl]="totalAmountNumber"
+            [controlName]="'totalAmount'"
+          ></clear-text>
+          <control-messages
+            [control]="businessCostRowForm.controls.totalAmount"
+            icon="sum"
+          >
+          </control-messages>
+        </div>
+      </div>
+      <div
+        class="form-group bc__row-form__note"
+        [hidden]="!campaignItem || !campaignItem.campaignId"
+      >
+        <label for="notes" class="control-label col-sm-3 bold-title"
+          ><label-translation
+            [keyword]="'Business_Cost_Row__Notes'"
+          ></label-translation
+        ></label>
+        <div class="col-sm-9">
+          <textarea
+            class="form-control xn-input"
+            id="notes"
+            name="notes"
+            [maxlength]="maxCharactersNotes"
+            (keypress)="updateLeftCharacters($event)"
+            (keydown)="updateLeftCharacters($event)"
+            formControlName="notes"
+          ></textarea>
+          <div class="input-group-addon for-notes">
+            <i class="fa fa-comment fa-2"></i>
+          </div>
+          <p>
+            *
+            <label-translation
+              [keyword]="'Business_Cost_Row__You_have'"
+            ></label-translation>
+            {{ businessCostRowForm.leftCharacters }}
+            <label-translation
+              [keyword]="'Business_Cost_Row__characters_more'"
+            ></label-translation>
+          </p>
+        </div>
+      </div>
     </div>
+    <div class="col-xs-12 col-md-8">
+      <div class="xn__form-header">
+        <span
+          ><label-translation
+            [keyword]="'Business_Cost_Row__Country'"
+          ></label-translation
+        ></span>
+      </div>
+      <div [hidden]="!hiddenCountry">
+        <i class="bc__row-form__search-country fa fa-spinner fa-spin fa-fw"></i>
+      </div>
+      <xn-country-check-list
+        [hidden]="hiddenCountry"
+        [data]="countryCheckListData"
+        [isExpand]="true"
+        (outputAllData)="getCountryItems($event)"
+      >
+      </xn-country-check-list>
+    </div>
+  </form>
+  <div class="col-xs-12 business-cost-row__grid">
+    <xn-ag-grid
+      [isShowedHeader]="true"
+      *ngIf="
+        businessCostRowGrid &&
+        businessCostRowGrid.columns &&
+        businessCostRowGrid.columns.length
+      "
+      [id]="gridId"
+      [fitWidthColumn]="true"
+      [preventAutoSelectFirstRow]="true"
+      [dataSource]="businessCostRowGrid"
+      [headerTitle]="'Business Cost Items'"
+      [showMenuRowGrouping]="true"
+      [globalProperties]="globalPropertiesLocal"
+      (rowDoubleClicked)="businessCostRowGridItemDoubleClick($event)"
+      (deleteClick)="deleteClickHandle($event)"
+    >
+    </xn-ag-grid>
+  </div>
 </div>
 <module-search-dialog
-    #searchCampaignDialogModule
-    [headerTitle]="moduleDialog.campaign.title"
-    [searchIndex]="moduleDialog.campaign.searchIndex"
-    [module]="moduleDialog.campaign.module"
-    (onItemSelect)="campaignNumberItemSelect($event)"
+  #searchCampaignDialogModule
+  [headerTitle]="moduleDialog.campaign.title"
+  [searchIndex]="moduleDialog.campaign.searchIndex"
+  [module]="moduleDialog.campaign.module"
+  (onItemSelect)="campaignNumberItemSelect($event)"
 >
 </module-search-dialog>

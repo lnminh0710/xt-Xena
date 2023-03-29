@@ -1,1 +1,1 @@
-export { PropertyPanelDateFormatDialogComponent } from "./property-panel-date-format-dialog.component";
+export { PropertyPanelDateFormatDialogComponent } from './property-panel-date-format-dialog.component';

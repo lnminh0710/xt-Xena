@@ -1,124 +1,124 @@
 <div
-    *ngIf="isRenderForm"
-    class="form-container"
-    [ngClass]="{ submitted: formGroup.submitted }"
+  *ngIf="isRenderForm"
+  class="form-container"
+  [ngClass]="{ submitted: formGroup.submitted }"
 >
-    <form
-        [formGroup]="formGroup"
-        id="adContactFormGroup"
-        class="form-horizontal height-pc-100"
+  <form
+    [formGroup]="formGroup"
+    id="adContactFormGroup"
+    class="form-horizontal height-pc-100"
+  >
+    <control-focus
+      #focusControl
+      formName="adContactFormGroup"
+      [isFocusOnFirstControl]="true"
     >
-        <control-focus
-            #focusControl
-            formName="adContactFormGroup"
-            [isFocusOnFirstControl]="true"
+    </control-focus>
+    <div
+      class="col-xs-12 col-md-5 height-pc-100"
+      [perfect-scrollbar]="{
+        suppressScrollX: false,
+        suppressScrollY: false
+      }"
+    >
+      <ad-contact-main-field
+        *ngIf="isRenderedMainField"
+        [initInformation]="mainFieldData"
+        [mandatoryCheckColor]="mandatoryColor"
+        [dontShowCalendarWhenFocus]="dontShowCalendarWhenFocus"
+        [hiddenFields]="hiddenFields"
+        [dateFormat]="globalDateFormat"
+        (contactAddressChanged)="onContactAddressChanged()"
+        (initFormGroup)="onInitFormGroup($event)"
+      >
+      </ad-contact-main-field>
+      <form-fg-address
+        *ngIf="isRenderedAddressFG"
+        [initInformation]="addressFGData"
+        [hiddenFields]="hiddenFields"
+        [mandatoryCheckColor]="mandatoryColor"
+        (onCountryChangedAction)="onCountryChangedHandler($event)"
+      >
+      </form-fg-address>
+    </div>
+    <div
+      class="col-xs-12 col-md-5 height-pc-100"
+      [perfect-scrollbar]="{
+        suppressScrollX: false,
+        suppressScrollY: false
+      }"
+    >
+      <div class="form-group xn__form-header">
+        <span class="no-margin">
+          <label-translation
+            [keyword]="'Ad_Contact__Communication'"
+            User_profile_F
+          ></label-translation>
+        </span>
+      </div>
+      <div class="form-group admin-contact-communication">
+        <xn-communication-table
+          [data]="commInputputData"
+          [gridId]="'f0a10a4a-0981-4870-baf7-1dfe7f75a503'"
+          (onHasError)="onCommHasError($event)"
+          (outputData)="getCommOutputData($event)"
         >
-        </control-focus>
-        <div
-            class="col-xs-12 col-md-5 height-pc-100"
-            [perfect-scrollbar]="{
-                suppressScrollX: false,
-                suppressScrollY: false
-            }"
-        >
-            <ad-contact-main-field
-                *ngIf="isRenderedMainField"
-                [initInformation]="mainFieldData"
-                [mandatoryCheckColor]="mandatoryColor"
-                [dontShowCalendarWhenFocus]="dontShowCalendarWhenFocus"
-                [hiddenFields]="hiddenFields"
-                [dateFormat]="globalDateFormat"
-                (contactAddressChanged)="onContactAddressChanged()"
-                (initFormGroup)="onInitFormGroup($event)"
-            >
-            </ad-contact-main-field>
-            <form-fg-address
-                *ngIf="isRenderedAddressFG"
-                [initInformation]="addressFGData"
-                [hiddenFields]="hiddenFields"
-                [mandatoryCheckColor]="mandatoryColor"
-                (onCountryChangedAction)="onCountryChangedHandler($event)"
-            >
-            </form-fg-address>
+        </xn-communication-table>
+      </div>
+      <div class="form-group">
+        <div class="form-group xn__form-header no-background">
+          <span class="no-margin">
+            <label-translation
+              [keyword]="'Ad_Contact__Used_Countries'"
+              User_profile_F
+            ></label-translation>
+          </span>
         </div>
-        <div
-            class="col-xs-12 col-md-5 height-pc-100"
-            [perfect-scrollbar]="{
-                suppressScrollX: false,
-                suppressScrollY: false
-            }"
+        <xn-country-check-list
+          #countryList
+          *ngIf="isRenderedCountryCheckList"
+          [data]="countryCheckListData"
+          (outputData)="getDataForCountryCheckList($event)"
         >
-            <div class="form-group xn__form-header">
-                <span class="no-margin">
-                    <label-translation
-                        [keyword]="'Ad_Contact__Communication'"
-                        User_profile_F
-                    ></label-translation>
-                </span>
-            </div>
-            <div class="form-group admin-contact-communication">
-                <xn-communication-table
-                    [data]="commInputputData"
-                    [gridId]="'f0a10a4a-0981-4870-baf7-1dfe7f75a503'"
-                    (onHasError)="onCommHasError($event)"
-                    (outputData)="getCommOutputData($event)"
-                >
-                </xn-communication-table>
-            </div>
-            <div class="form-group">
-                <div class="form-group xn__form-header no-background">
-                    <span class="no-margin">
-                        <label-translation
-                            [keyword]="'Ad_Contact__Used_Countries'"
-                            User_profile_F
-                        ></label-translation>
-                    </span>
-                </div>
-                <xn-country-check-list
-                    #countryList
-                    *ngIf="isRenderedCountryCheckList"
-                    [data]="countryCheckListData"
-                    (outputData)="getDataForCountryCheckList($event)"
-                >
-                </xn-country-check-list>
-            </div>
-            <div class="form-group">
-                <label
-                    for="notes"
-                    class="control-label col-sm-4 bold-title text-left no-padding-left"
-                >
-                    {{ contactModel.notes.displayValue }}
-                </label>
-                <textarea
-                    class="form-control xn-input"
-                    id="notes"
-                    name="notes"
-                    [maxlength]="maxCharactersNotes"
-                    (keypress)="updateLeftCharacters($event)"
-                    (keydown)="updateLeftCharacters($event)"
-                    formControlName="notes"
-                >
-                </textarea>
-                <control-messages
-                    [mandatoryColor]="mandatoryColor['notes']"
-                    [control]="formGroup.controls['notes']"
-                    icon="comment  fa-2"
-                    styleClass="for-notes"
-                >
-                </control-messages>
-                <p>
-                    *
-                    <label-translation
-                        [keyword]="'Ad_Contact__You_have'"
-                        User_profile_F
-                    ></label-translation>
-                    {{ formGroup.leftCharacters }}
-                    <label-translation
-                        [keyword]="'Ad_Contact__characters_more'"
-                        User_profile_F
-                    ></label-translation>
-                </p>
-            </div>
-        </div>
-    </form>
+        </xn-country-check-list>
+      </div>
+      <div class="form-group">
+        <label
+          for="notes"
+          class="control-label col-sm-4 bold-title text-left no-padding-left"
+        >
+          {{ contactModel.notes.displayValue }}
+        </label>
+        <textarea
+          class="form-control xn-input"
+          id="notes"
+          name="notes"
+          [maxlength]="maxCharactersNotes"
+          (keypress)="updateLeftCharacters($event)"
+          (keydown)="updateLeftCharacters($event)"
+          formControlName="notes"
+        >
+        </textarea>
+        <control-messages
+          [mandatoryColor]="mandatoryColor['notes']"
+          [control]="formGroup.controls['notes']"
+          icon="comment  fa-2"
+          styleClass="for-notes"
+        >
+        </control-messages>
+        <p>
+          *
+          <label-translation
+            [keyword]="'Ad_Contact__You_have'"
+            User_profile_F
+          ></label-translation>
+          {{ formGroup.leftCharacters }}
+          <label-translation
+            [keyword]="'Ad_Contact__characters_more'"
+            User_profile_F
+          ></label-translation>
+        </p>
+      </div>
+    </div>
+  </form>
 </div>

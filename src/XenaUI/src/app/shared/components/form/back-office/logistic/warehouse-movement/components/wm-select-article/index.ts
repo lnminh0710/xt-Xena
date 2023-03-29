@@ -1,1 +1,1 @@
-export * from "./wm-select-article.component";
+export * from './wm-select-article.component';

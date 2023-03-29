@@ -1,55 +1,55 @@
-@import "variables";
+@import 'variables';
 
 .control-label {
-    text-align: left;
+  text-align: left;
 }
 
 .control-label label {
-    font-weight: bold;
-    width: 30px;
+  font-weight: bold;
+  width: 30px;
 }
 
 .campaign-country-container {
-    padding: 20px;
+  padding: 20px;
 }
 
 .form-group {
-    min-height: 34px;
+  min-height: 34px;
 }
 
 .campaign-number > .campaign-number-input {
-    padding: 0px 7px;
+  padding: 0px 7px;
 }
 
 .campaign-number > :first-child {
-    padding-left: 0;
+  padding-left: 0;
 }
 
 .campaign-number > :last-child {
-    padding-right: 0;
+  padding-right: 0;
 }
 
 .alert {
-    padding: 10px;
+  padding: 10px;
 }
 
 .split-number {
-    float: left;
-    margin-top: -25px;
-    margin-left: -10px;
-    font-weight: bold;
+  float: left;
+  margin-top: -25px;
+  margin-left: -10px;
+  font-weight: bold;
 }
 
 .campaign-number-prefix {
-    padding-left: 0px;
+  padding-left: 0px;
 }
 
 .background-odd {
-    background-color: $light-gray1;
+  background-color: $light-gray1;
 }
 
 @media (min-width: 1200px) {
-    .xn-radio-group {
-        text-align: right;
-    }
+  .xn-radio-group {
+    text-align: right;
+  }
 }

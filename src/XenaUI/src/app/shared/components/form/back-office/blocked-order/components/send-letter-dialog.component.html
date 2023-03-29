@@ -1,104 +1,104 @@
 <p-dialog
-    #pDialogSendLetterSav
-    [styleClass]="dialogStyleClass"
-    header=""
-    [(visible)]="showDialog"
-    [resizable]="isResizable"
-    [draggable]="isDraggable"
-    modal="modal"
-    width="1000"
-    [height]="dialogHeight"
-    responsive="true"
-    appendTo="body"
+  #pDialogSendLetterSav
+  [styleClass]="dialogStyleClass"
+  header=""
+  [(visible)]="showDialog"
+  [resizable]="isResizable"
+  [draggable]="isDraggable"
+  modal="modal"
+  width="1000"
+  [height]="dialogHeight"
+  responsive="true"
+  appendTo="body"
 >
-    <p-header>
-        <div class="modal-header--information">
-            <span class="header-text">
-                <label-translation
-                    [keyword]="'Back_Office_Send_Letter__Send_Letter'"
-                ></label-translation>
-            </span>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-close-popup"
-                aria-label="Close"
-                (click)="closeWindowDialog()"
-            >
-                <span class="fa fa-fw fa-close"></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-expand-popup"
-                [disabled]="isMinimized"
-                *ngIf="!isMaximized"
-                (click)="maximize()"
-            >
-                <span class="fa fa-window-maximize"></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-collapse-popup"
-                [disabled]="isMinimized"
-                *ngIf="isMaximized"
-                (click)="restore()"
-            >
-                <span class="fa fa-window-restore"></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-minimize-popup"
-                *ngIf="!isMinimized"
-                (click)="minimize()"
-            >
-                <span class="fa fa-window-minimize"></span>
-            </button>
-            <button
-                type="button"
-                mat-raised-button
-                class="mat-btn-minimize-popup"
-                *ngIf="isMinimized"
-                (click)="restoreMinimize()"
-            >
-                <span class="fa fa-window-minimize"></span>
-            </button>
-        </div>
-    </p-header>
-    <div class="col-xs-12 no-padding height-pc-100">
-        <send-letter-form
-            #sendLetterFormComponent
-            *ngIf="showDialogData"
-            [isPreview]="isPreview"
-            [isSAVWidget]="isSAVWidget"
-            [showDialogData]="showDialogData"
-            (isDirtyAction)="isDirtyHandler($event)"
-        >
-        </send-letter-form>
+  <p-header>
+    <div class="modal-header--information">
+      <span class="header-text">
+        <label-translation
+          [keyword]="'Back_Office_Send_Letter__Send_Letter'"
+        ></label-translation>
+      </span>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-close-popup"
+        aria-label="Close"
+        (click)="closeWindowDialog()"
+      >
+        <span class="fa fa-fw fa-close"></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-expand-popup"
+        [disabled]="isMinimized"
+        *ngIf="!isMaximized"
+        (click)="maximize()"
+      >
+        <span class="fa fa-window-maximize"></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-collapse-popup"
+        [disabled]="isMinimized"
+        *ngIf="isMaximized"
+        (click)="restore()"
+      >
+        <span class="fa fa-window-restore"></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-minimize-popup"
+        *ngIf="!isMinimized"
+        (click)="minimize()"
+      >
+        <span class="fa fa-window-minimize"></span>
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        class="mat-btn-minimize-popup"
+        *ngIf="isMinimized"
+        (click)="restoreMinimize()"
+      >
+        <span class="fa fa-window-minimize"></span>
+      </button>
     </div>
-    <p-footer>
-        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-            <button
-                label="Save"
-                type="button"
-                mat-raised-button
-                [disabled]="!isDirty"
-                class="mat-btn-blue"
-                (click)="sendLetterClick()"
-            >
-                <span class="bt-t ui-button-text ui-c">
-                    <label-translation
-                        *ngIf="!isPreview"
-                        [keyword]="'Back_Office_Send_Letter__Save'"
-                    ></label-translation>
-                    <label-translation
-                        *ngIf="isPreview"
-                        [keyword]="'Back_Office_Send_Letter__Preview'"
-                    ></label-translation>
-                </span>
-            </button>
-        </div>
-    </p-footer>
+  </p-header>
+  <div class="col-xs-12 no-padding height-pc-100">
+    <send-letter-form
+      #sendLetterFormComponent
+      *ngIf="showDialogData"
+      [isPreview]="isPreview"
+      [isSAVWidget]="isSAVWidget"
+      [showDialogData]="showDialogData"
+      (isDirtyAction)="isDirtyHandler($event)"
+    >
+    </send-letter-form>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button
+        label="Save"
+        type="button"
+        mat-raised-button
+        [disabled]="!isDirty"
+        class="mat-btn-blue"
+        (click)="sendLetterClick()"
+      >
+        <span class="bt-t ui-button-text ui-c">
+          <label-translation
+            *ngIf="!isPreview"
+            [keyword]="'Back_Office_Send_Letter__Save'"
+          ></label-translation>
+          <label-translation
+            *ngIf="isPreview"
+            [keyword]="'Back_Office_Send_Letter__Preview'"
+          ></label-translation>
+        </span>
+      </button>
+    </div>
+  </p-footer>
 </p-dialog>

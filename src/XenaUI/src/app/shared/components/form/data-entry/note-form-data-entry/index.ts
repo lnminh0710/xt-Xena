@@ -1,1 +1,1 @@
-export * from "./note-form-data-entry.component";
+export * from './note-form-data-entry.component';

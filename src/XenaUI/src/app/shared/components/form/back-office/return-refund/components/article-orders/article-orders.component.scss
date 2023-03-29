@@ -1,27 +1,27 @@
 .article-grid {
-    height: 100%;
+  height: 100%;
 }
 
 .article-grid .fa {
-    font-size: 19px;
-    margin-left: 2px;
-    margin-right: 2px;
+  font-size: 19px;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 .error {
-    border-color: #f54545;
+  border-color: #f54545;
 }
 
 .quantity {
-    width: calc(100% - 20px) !important;
+  width: calc(100% - 20px) !important;
 }
 
 :host ::ng-deep {
-    .parent-row {
-        background-color: #de96f7;
-    }
+  .parent-row {
+    background-color: #de96f7;
+  }
 
-    .child-row {
-        background-color: #eacbf5;
-    }
+  .child-row {
+    background-color: #eacbf5;
+  }
 }

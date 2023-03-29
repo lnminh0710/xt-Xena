@@ -1,9 +1,9 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: "cash-payment-type",
-    templateUrl: "./cash-payment-type.component.html",
+  selector: 'cash-payment-type',
+  templateUrl: './cash-payment-type.component.html',
 })
 export class CashPaymentTypeComponent {
-    @Input() currencyList: Array<any>;
+  @Input() currencyList: Array<any>;
 }

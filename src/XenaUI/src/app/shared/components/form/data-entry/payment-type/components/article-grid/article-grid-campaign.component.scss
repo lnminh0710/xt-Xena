@@ -1,52 +1,52 @@
 .data-entry__article-grid {
-    min-width: 615px;
-    height: 100%;
-    min-height: 180px;
+  min-width: 615px;
+  height: 100%;
+  min-height: 180px;
 }
 
 form .form-inline {
-    padding: 5px;
-    min-height: 34px;
+  padding: 5px;
+  min-height: 34px;
 }
 
 .de__ag__full-width {
-    width: 100%;
+  width: 100%;
 }
 
 .new-label {
-    float: left;
-    line-height: 21px;
+  float: left;
+  line-height: 21px;
 }
 
 .new-input {
-    width: 30%;
+  width: 30%;
 }
 
 .article-grid {
-    height: 100%;
+  height: 100%;
 }
 
 .header {
-    width: 100%;
-    background-color: lightgrey;
-    color: #fff;
+  width: 100%;
+  background-color: lightgrey;
+  color: #fff;
 }
 
 .article-number {
-    float: left;
-    width: 145px;
-    padding-left: 15px;
-    padding-right: 15px;
+  float: left;
+  width: 145px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .quantity-number {
-    float: left;
-    padding-right: 15px;
-    width: 85px;
+  float: left;
+  padding-right: 15px;
+  width: 85px;
 }
 
 .alert-danger {
-    &.article-list {
-        margin-bottom: 5px;
-    }
+  &.article-list {
+    margin-bottom: 5px;
+  }
 }

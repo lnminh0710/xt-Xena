@@ -1,191 +1,160 @@
 <div class="campaign-t3-form">
-    <div class="campaign-grid-standard">
-        <split direction="vertical" [gutterSize]="5" (dragStart)="dragStart()">
-            <split-area
-                [size]="35"
-                [perfect-scrollbar]="perfectScrollbarConfig"
+  <div class="campaign-grid-standard">
+    <split direction="vertical" [gutterSize]="5" (dragStart)="dragStart()">
+      <split-area [size]="35" [perfect-scrollbar]="perfectScrollbarConfig">
+        <div class="split-area-container">
+          <div class="campaign-grid__panel">
+            <xn-ag-grid
+              #campaignGridLeft
+              *ngIf="
+                campaignDataLeft &&
+                campaignDataLeft.columns &&
+                campaignDataLeft.columns.length
+              "
+              [id]="campaignGridLeftId"
+              [dataSource]="campaignDataLeft"
+              [hasSearch]="true"
+              [pageSize]="pageSize"
+              [rowGrouping]="rowLeftGrouping"
+              [serverPaging]="true"
+              [isShowedHeader]="true"
+              [isUsedSearchTextboxInside]="true"
+              [headerTitle]="'Search article'"
+              [globalProperties]="globalProperties"
+              (onRowGroupPanel)="handleRowLeftGroupPanel($event)"
+              (rowDoubleClicked)="campaignDataLeftRowDoubleClick($event)"
+              (onActionTranslateDialog)="openTranslateDialog($event)"
+              (onTableSearch)="onLeftTableSearch($event)"
+              (pageChanged)="onPageChanged($event)"
+              (pageNumberChanged)="onPageNumberChanged($event)"
             >
-                <div class="split-area-container">
-                    <div class="campaign-grid__panel">
-                        <xn-ag-grid
-                            #campaignGridLeft
-                            *ngIf="
-                                campaignDataLeft &&
-                                campaignDataLeft.columns &&
-                                campaignDataLeft.columns.length
-                            "
-                            [id]="campaignGridLeftId"
-                            [dataSource]="campaignDataLeft"
-                            [hasSearch]="true"
-                            [pageSize]="pageSize"
-                            [rowGrouping]="rowLeftGrouping"
-                            [serverPaging]="true"
-                            [isShowedHeader]="true"
-                            [isUsedSearchTextboxInside]="true"
-                            [headerTitle]="'Search article'"
-                            [globalProperties]="globalProperties"
-                            (onRowGroupPanel)="handleRowLeftGroupPanel($event)"
-                            (rowDoubleClicked)="
-                                campaignDataLeftRowDoubleClick($event)
-                            "
-                            (onActionTranslateDialog)="
-                                openTranslateDialog($event)
-                            "
-                            (onTableSearch)="onLeftTableSearch($event)"
-                            (pageChanged)="onPageChanged($event)"
-                            (pageNumberChanged)="onPageNumberChanged($event)"
-                        >
-                        </xn-ag-grid>
-                    </div>
-                    <div class="campaign-command__panel">
-                        <div class="spacing-top"></div>
-                        <div class="command__button">
-                            <button
-                                (click)="addCampaign()"
-                                class="mat-btn-blue mat-btn-non-fix--icon"
-                                mat-raised-button
-                                xn-tooltip
-                                [tooltipText]="'Add'"
-                                [tooltipPlacement]="'top'"
-                                container="body"
-                            >
-                                <i
-                                    class="fa fa-step-forward"
-                                    aria-hidden="true"
-                                ></i>
-                            </button>
-                            <!-- <div class="command__button-spacing" (click)="addCampaign()">
+            </xn-ag-grid>
+          </div>
+          <div class="campaign-command__panel">
+            <div class="spacing-top"></div>
+            <div class="command__button">
+              <button
+                (click)="addCampaign()"
+                class="mat-btn-blue mat-btn-non-fix--icon"
+                mat-raised-button
+                xn-tooltip
+                [tooltipText]="'Add'"
+                [tooltipPlacement]="'top'"
+                container="body"
+              >
+                <i class="fa fa-step-forward" aria-hidden="true"></i>
+              </button>
+              <!-- <div class="command__button-spacing" (click)="addCampaign()">
                                 <span class="move-grid-item-button  fa  fa-step-forward"></span>
                             </div> -->
-                        </div>
-                        <div class="spacing-bottom"></div>
-                        <div class="command__button">
-                            <button
-                                (click)="removeCampaign()"
-                                class="mat-btn-blue mat-btn-non-fix--icon"
-                                mat-raised-button
-                                xn-tooltip
-                                [tooltipText]="'Remove'"
-                                [tooltipPlacement]="'top'"
-                                container="body"
-                            >
-                                <i
-                                    class="fa fa-step-backward"
-                                    aria-hidden="true"
-                                ></i>
-                            </button>
-                            <!-- <div class="command__button-spacing" (click)="removeCampaign()">
+            </div>
+            <div class="spacing-bottom"></div>
+            <div class="command__button">
+              <button
+                (click)="removeCampaign()"
+                class="mat-btn-blue mat-btn-non-fix--icon"
+                mat-raised-button
+                xn-tooltip
+                [tooltipText]="'Remove'"
+                [tooltipPlacement]="'top'"
+                container="body"
+              >
+                <i class="fa fa-step-backward" aria-hidden="true"></i>
+              </button>
+              <!-- <div class="command__button-spacing" (click)="removeCampaign()">
                                 <span class="move-grid-item-button  fa  fa-step-backward"></span>
                             </div> -->
-                        </div>
-                        <div class="command__button">
-                            <button
-                                (click)="removeAllCampaign()"
-                                class="mat-btn-blue mat-btn-non-fix--icon"
-                                mat-raised-button
-                                xn-tooltip
-                                [tooltipText]="'Remove all'"
-                                [tooltipPlacement]="'top'"
-                                container="body"
-                            >
-                                <i
-                                    class="fa fa-fast-backward"
-                                    aria-hidden="true"
-                                ></i>
-                            </button>
-                            <!-- <div class="command__button-spacing" (click)="removeAllCampaign()">
+            </div>
+            <div class="command__button">
+              <button
+                (click)="removeAllCampaign()"
+                class="mat-btn-blue mat-btn-non-fix--icon"
+                mat-raised-button
+                xn-tooltip
+                [tooltipText]="'Remove all'"
+                [tooltipPlacement]="'top'"
+                container="body"
+              >
+                <i class="fa fa-fast-backward" aria-hidden="true"></i>
+              </button>
+              <!-- <div class="command__button-spacing" (click)="removeAllCampaign()">
                                 <span class="move-grid-item-button  fa  fa-fast-backward"></span>
                             </div> -->
-                        </div>
-                    </div>
-                    <div
-                        class="campaign-grid__panel"
-                        [ngClass]="{
-                            'xn-disabled-none-set-opacity': !isRenderCompleted
-                        }"
-                    >
-                        <xn-ag-grid
-                            #campaignGridRight
-                            *ngIf="
-                                campaignDataRight &&
-                                campaignDataRight.columns &&
-                                campaignDataRight.columns.length
-                            "
-                            [id]="campaignGridRightId"
-                            [dataSource]="campaignDataRight"
-                            [rowGrouping]="rowRightGrouping"
-                            [isShowedHeader]="true"
-                            [headerTitle]="'Articles selected'"
-                            [globalProperties]="globalProperties"
-                            (onRowGroupPanel)="handleRowRightGroupPanel($event)"
-                            (onActionTranslateDialog)="
-                                openTranslateDialog($event)
-                            "
-                            (rowDoubleClicked)="
-                                campaignDataRightRowDoubleClick($event)
-                            "
-                            (rowClick)="campaignDataRightRowClick($event)"
-                        >
-                        </xn-ag-grid>
-                    </div>
-                </div>
-            </split-area>
-            <split-area
-                [size]="65"
-                [perfect-scrollbar]="perfectScrollbarConfig"
+            </div>
+          </div>
+          <div
+            class="campaign-grid__panel"
+            [ngClass]="{
+              'xn-disabled-none-set-opacity': !isRenderCompleted
+            }"
+          >
+            <xn-ag-grid
+              #campaignGridRight
+              *ngIf="
+                campaignDataRight &&
+                campaignDataRight.columns &&
+                campaignDataRight.columns.length
+              "
+              [id]="campaignGridRightId"
+              [dataSource]="campaignDataRight"
+              [rowGrouping]="rowRightGrouping"
+              [isShowedHeader]="true"
+              [headerTitle]="'Articles selected'"
+              [globalProperties]="globalProperties"
+              (onRowGroupPanel)="handleRowRightGroupPanel($event)"
+              (onActionTranslateDialog)="openTranslateDialog($event)"
+              (rowDoubleClicked)="campaignDataRightRowDoubleClick($event)"
+              (rowClick)="campaignDataRightRowClick($event)"
             >
-                <div class="split-area-container">
-                    <xn-ag-grid
-                        #campaignGridBottom
-                        *ngIf="
-                            campaignDataBottom &&
-                            campaignDataBottom.columns &&
-                            campaignDataBottom.columns.length
-                        "
-                        [id]="campaignGridBottomId"
-                        [dataSource]="campaignDataBottom"
-                        [rowGrouping]="rowBottomGrouping"
-                        [isShowedHeader]="true"
-                        [readOnly]="false"
-                        [headerTitle]="'Article\'s data'"
-                        [isEditting]="true"
-                        [fitWidthColumn]="true"
-                        [globalProperties]="globalProperties"
-                        (onRowGroupPanel)="handleRowBottomGroupPanel($event)"
-                        (cellEditingStopped)="
-                            onBottomCellEditEndedHandler($event)
-                        "
-                        (rowEditingStopped)="
-                            onBottomRowEditEndedHandler($event)
-                        "
-                        (onActionTranslateDialog)="
-                            openTranslateDialogBottom($event)
-                        "
-                        (cellValueChanged)="onTableEditSuccess($event)"
-                        (onCheckAllChecked)="onCheckAllChecked($event)"
-                        (onMarkedAsSelectedAll)="
-                            onCheckAllCheckedHandler($event)
-                        "
-                    >
-                    </xn-ag-grid>
-                </div>
-            </split-area>
-        </split>
-    </div>
+            </xn-ag-grid>
+          </div>
+        </div>
+      </split-area>
+      <split-area [size]="65" [perfect-scrollbar]="perfectScrollbarConfig">
+        <div class="split-area-container">
+          <xn-ag-grid
+            #campaignGridBottom
+            *ngIf="
+              campaignDataBottom &&
+              campaignDataBottom.columns &&
+              campaignDataBottom.columns.length
+            "
+            [id]="campaignGridBottomId"
+            [dataSource]="campaignDataBottom"
+            [rowGrouping]="rowBottomGrouping"
+            [isShowedHeader]="true"
+            [readOnly]="false"
+            [headerTitle]="'Article\'s data'"
+            [isEditting]="true"
+            [fitWidthColumn]="true"
+            [globalProperties]="globalProperties"
+            (onRowGroupPanel)="handleRowBottomGroupPanel($event)"
+            (cellEditingStopped)="onBottomCellEditEndedHandler($event)"
+            (rowEditingStopped)="onBottomRowEditEndedHandler($event)"
+            (onActionTranslateDialog)="openTranslateDialogBottom($event)"
+            (cellValueChanged)="onTableEditSuccess($event)"
+            (onCheckAllChecked)="onCheckAllChecked($event)"
+            (onMarkedAsSelectedAll)="onCheckAllCheckedHandler($event)"
+          >
+          </xn-ag-grid>
+        </div>
+      </split-area>
+    </split>
+  </div>
 </div>
 
 <widget-article-translation-dialog
-    (onItemsEditedTranslateData)="onItemsEditedTranslateData($event)"
+  (onItemsEditedTranslateData)="onItemsEditedTranslateData($event)"
 >
 </widget-article-translation-dialog>
 
 <widget-module-info-translation
-    *ngIf="isRenderWidgetInfoTranslation"
-    [translateTextGridId]="'c0013e96-2167-4278-a300-58276a7166e5'"
-    [combinationTranslateMode]="combinationTranslateMode"
-    [isEditArticleT3]="true"
-    (onHide)="onHiddenWidgetInfoTranslation($event)"
-    [data]="dataResult"
-    (isCompletedRender)="reattach()"
-    #widgetInfoTranslation
+  *ngIf="isRenderWidgetInfoTranslation"
+  [translateTextGridId]="'c0013e96-2167-4278-a300-58276a7166e5'"
+  [combinationTranslateMode]="combinationTranslateMode"
+  [isEditArticleT3]="true"
+  (onHide)="onHiddenWidgetInfoTranslation($event)"
+  [data]="dataResult"
+  (isCompletedRender)="reattach()"
+  #widgetInfoTranslation
 ></widget-module-info-translation>

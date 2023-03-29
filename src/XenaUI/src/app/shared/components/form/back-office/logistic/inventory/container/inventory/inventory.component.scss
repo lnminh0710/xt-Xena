@@ -1,65 +1,65 @@
 .form-container {
-    padding: 10px 0 0 0 !important;
-    margin-top: 0 !important;
-    height: 100%;
+  padding: 10px 0 0 0 !important;
+  margin-top: 0 !important;
+  height: 100%;
 }
 
 .form-horizontal .form-group label {
-    text-align: left;
-    margin-bottom: 5px;
+  text-align: left;
+  margin-bottom: 5px;
 }
 
 .max-width {
-    max-width: 200px;
-    padding-left: 0 !important;
-    padding-right: 10px;
+  max-width: 200px;
+  padding-left: 0 !important;
+  padding-right: 10px;
 }
 
 .xn__form-header {
-    margin-top: 20px;
-    padding-right: 80px;
+  margin-top: 20px;
+  padding-right: 80px;
 }
 
 .inventory-grid {
-    height: calc(100% - 69px);
+  height: calc(100% - 69px);
 
-    .grid {
-        margin-top: -43px;
-        height: calc(100% - 25px);
-    }
+  .grid {
+    margin-top: -43px;
+    height: calc(100% - 25px);
+  }
 }
 
 .group-button {
-    margin-top: 22px;
-    height: 32px;
-    margin-left: 5px;
+  margin-top: 22px;
+  height: 32px;
+  margin-left: 5px;
 
-    .btn-upload {
-        font-size: 13px;
-    }
+  .btn-upload {
+    font-size: 13px;
+  }
 }
 
 .group-price {
-    margin-left: -15px !important;
+  margin-left: -15px !important;
 
-    .max-width {
-        max-width: 110px;
-    }
+  .max-width {
+    max-width: 110px;
+  }
 }
 
 .radios-container {
-    margin-top: 20px;
-    text-align: center;
+  margin-top: 20px;
+  text-align: center;
 
-    mat-radio-button:first-of-type {
-        margin-right: 30px;
-    }
+  mat-radio-button:first-of-type {
+    margin-right: 30px;
+  }
 }
 
 .width-115 {
-    min-width: 115px;
+  min-width: 115px;
 }
 
 .width-140 {
-    min-width: 140px;
+  min-width: 140px;
 }

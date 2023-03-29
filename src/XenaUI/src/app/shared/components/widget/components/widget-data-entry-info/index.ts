@@ -1,1 +1,1 @@
-export { WidgetDataEntryInfoComponent } from "./widget-data-entry-info.component";
+export { WidgetDataEntryInfoComponent } from './widget-data-entry-info.component';

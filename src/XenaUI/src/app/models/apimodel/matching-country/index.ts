@@ -1,1 +1,1 @@
-export * from "./matching-country.model";
+export * from './matching-country.model';

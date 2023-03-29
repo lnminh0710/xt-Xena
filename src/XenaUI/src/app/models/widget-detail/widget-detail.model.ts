@@ -1,296 +1,285 @@
-import { NgGridItemConfig } from "app/shared/components/grid-stack";
+import { NgGridItemConfig } from 'app/shared/components/grid-stack';
 import {
-    FilterModeEnum,
-    WidgetLayoutSettingModeEnum,
-    WidgetFormTypeEnum,
-    OrderDataEntryWidgetLayoutModeEnum,
-} from "app/app.constants";
-import { FieldFilter, ColumnLayoutSetting, WidgetKeyType } from "app/models";
-import { WidgetUtils } from "app/shared/components/widget/utils";
-import { WidgetPropertyModel } from "app/models/property-panel";
-import { RowSetting } from "../filter-mode.model";
+  FilterModeEnum,
+  WidgetLayoutSettingModeEnum,
+  WidgetFormTypeEnum,
+  OrderDataEntryWidgetLayoutModeEnum,
+} from 'app/app.constants';
+import { FieldFilter, ColumnLayoutSetting, WidgetKeyType } from 'app/models';
+import { WidgetUtils } from 'app/shared/components/widget/utils';
+import { WidgetPropertyModel } from 'app/models/property-panel';
+import { RowSetting } from '../filter-mode.model';
 
 export class WidgetDetail {
-    public idSettingsWidget: number = null;
-    public id: string = "";
-    public idRepWidgetType: number = null;
-    public idRepWidgetApp: number = null;
-    public moduleName: string = "";
-    public title: string = "";
-    public fieldsTranslating: boolean = false;
+  public idSettingsWidget: number = null;
+  public id: string = '';
+  public idRepWidgetType: number = null;
+  public idRepWidgetApp: number = null;
+  public moduleName: string = '';
+  public title: string = '';
+  public fieldsTranslating: boolean = false;
 
-    // Detail widget content
-    public contentDetail: any = {};
+  // Detail widget content
+  public contentDetail: any = {};
 
-    // Request string for get widget data
-    public request: string = "";
+  // Request string for get widget data
+  public request: string = '';
 
-    // Request string for updating data
-    public updateRequest: string = "";
+  // Request string for updating data
+  public updateRequest: string = '';
 
-    // Widget Settings
-    public widgetDataType: WidgetDataType = null;
+  // Widget Settings
+  public widgetDataType: WidgetDataType = null;
 
-    public isMainArea: boolean = false;
+  public isMainArea: boolean = false;
 
-    public defaultProperties: string = "";
+  public defaultProperties: string = '';
 
-    // Custom Data (Optional)
-    public extensionData: any = "";
+  // Custom Data (Optional)
+  public extensionData: any = '';
 
-    // Used for table widget that have the same type.
-    public syncWidgetIds: Array<string> = null;
+  // Used for table widget that have the same type.
+  public syncWidgetIds: Array<string> = null;
 
-    public constructor(init?: Partial<WidgetDetail>) {
-        Object.assign(this, init);
-        this.widgetDataType =
-            init && init.widgetDataType
-                ? new WidgetDataType(init.widgetDataType)
-                : null;
-    }
+  public constructor(init?: Partial<WidgetDetail>) {
+    Object.assign(this, init);
+    this.widgetDataType =
+      init && init.widgetDataType
+        ? new WidgetDataType(init.widgetDataType)
+        : null;
+  }
 }
 
 /**
  * IListenKeyConfig
  */
 export interface IListenKeyConfig {
-    key: string;
-    filterKey: string;
+  key: string;
+  filterKey: string;
 }
 
 /**ListenKey
  *
  */
 export class ListenKey {
-    public main: IListenKeyConfig = null;
-    public sub: Array<IListenKeyConfig> = null;
-    public key: string = null;
+  public main: IListenKeyConfig = null;
+  public sub: Array<IListenKeyConfig> = null;
+  public key: string = null;
 
-    public constructor(init?: Partial<ListenKey>) {
-        Object.assign(this, init);
-    }
+  public constructor(init?: Partial<ListenKey>) {
+    Object.assign(this, init);
+  }
 }
 
 /**
  * WidgetDataType
  */
 export class WidgetDataType {
-    public listenKey: ListenKey;
-    public filterKey: string;
-    public jsonTextUpdate: string;
-    public primaryKey: string;
-    public isPrimaryKeyForMain: boolean;
-    public editTableSetting: EditTableSetting;
-    public otherSetting: OtherSetting;
+  public listenKey: ListenKey;
+  public filterKey: string;
+  public jsonTextUpdate: string;
+  public primaryKey: string;
+  public isPrimaryKeyForMain: boolean;
+  public editTableSetting: EditTableSetting;
+  public otherSetting: OtherSetting;
 
-    // Parent Widget IDs
-    public parentWidgetIds: Array<string>;
+  // Parent Widget IDs
+  public parentWidgetIds: Array<string>;
 
-    public constructor(init?: Partial<WidgetDataType>) {
-        Object.assign(this, init);
-        this.editTableSetting =
-            init && init.editTableSetting
-                ? new EditTableSetting(init.editTableSetting)
-                : null;
-        this.otherSetting =
-            init && init.otherSetting
-                ? new OtherSetting(init.otherSetting)
-                : null;
+  public constructor(init?: Partial<WidgetDataType>) {
+    Object.assign(this, init);
+    this.editTableSetting =
+      init && init.editTableSetting
+        ? new EditTableSetting(init.editTableSetting)
+        : null;
+    this.otherSetting =
+      init && init.otherSetting ? new OtherSetting(init.otherSetting) : null;
+  }
+
+  public listenKeyRequest(moduleId: string): { [key: string]: any } {
+    let filterParam = {};
+    let mainValue, subValue: string;
+    let widgetUtils: WidgetUtils = new WidgetUtils();
+
+    if (this.filterKey) {
+      this.filterKey.split(',').forEach((filKey) => {
+        filterParam[filKey] = '';
+      });
     }
 
-    public listenKeyRequest(moduleId: string): { [key: string]: any } {
-        let filterParam = {};
-        let mainValue, subValue: string;
-        let widgetUtils: WidgetUtils = new WidgetUtils();
+    if (this.listenKey.main && this.listenKey.main.key) {
+      mainValue = widgetUtils.getValueFromWidgetDataTypeValues(
+        moduleId,
+        this.listenKey.main.key,
+        true
+      );
+      const filterKey =
+        this.listenKey.main.filterKey || this.listenKey.main.key;
+      filterParam[filterKey] = mainValue ? mainValue : '';
+    }
 
-        if (this.filterKey) {
-            this.filterKey.split(",").forEach((filKey) => {
-                filterParam[filKey] = "";
-            });
-        }
-
-        if (this.listenKey.main && this.listenKey.main.key) {
-            mainValue = widgetUtils.getValueFromWidgetDataTypeValues(
-                moduleId,
-                this.listenKey.main.key,
-                true
+    if (this.listenKey.sub && this.listenKey.sub.length) {
+      // Find valid parent
+      let parentId =
+        this.parentWidgetIds && this.parentWidgetIds.length
+          ? this.parentWidgetIds[0]
+          : '';
+      if (WidgetUtils.widgetDataTypeValues[moduleId]) {
+        if (
+          WidgetUtils.widgetDataTypeValues[moduleId].renderFor &&
+          WidgetUtils.widgetDataTypeValues[moduleId].renderFor.length
+        ) {
+          this.parentWidgetIds.forEach((prId) => {
+            WidgetUtils.widgetDataTypeValues[moduleId].renderFor.forEach(
+              (widgetTargetRender) => {
+                if (
+                  prId == widgetTargetRender.srcWidgetId &&
+                  widgetTargetRender.widgetKeyType == WidgetKeyType.Sub
+                ) {
+                  parentId = prId;
+                }
+              }
             );
-            const filterKey =
-                this.listenKey.main.filterKey || this.listenKey.main.key;
-            filterParam[filterKey] = mainValue ? mainValue : "";
+          });
         }
-
-        if (this.listenKey.sub && this.listenKey.sub.length) {
-            // Find valid parent
-            let parentId =
-                this.parentWidgetIds && this.parentWidgetIds.length
-                    ? this.parentWidgetIds[0]
-                    : "";
-            if (WidgetUtils.widgetDataTypeValues[moduleId]) {
-                if (
-                    WidgetUtils.widgetDataTypeValues[moduleId].renderFor &&
-                    WidgetUtils.widgetDataTypeValues[moduleId].renderFor.length
-                ) {
-                    this.parentWidgetIds.forEach((prId) => {
-                        WidgetUtils.widgetDataTypeValues[
-                            moduleId
-                        ].renderFor.forEach((widgetTargetRender) => {
-                            if (
-                                prId == widgetTargetRender.srcWidgetId &&
-                                widgetTargetRender.widgetKeyType ==
-                                    WidgetKeyType.Sub
-                            ) {
-                                parentId = prId;
-                            }
-                        });
-                    });
-                }
-            }
-            this.listenKey.sub.forEach((sub) => {
-                subValue = widgetUtils.getValueFromWidgetDataTypeValues(
-                    moduleId,
-                    sub.key,
-                    false,
-                    parentId
-                );
-                filterParam[sub.filterKey] = subValue ? subValue : "";
-                if (
-                    subValue &&
-                    WidgetUtils.widgetDataTypeValues[moduleId] &&
-                    WidgetUtils.widgetDataTypeValues[moduleId][
-                        this.filterKey
-                    ] &&
-                    WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey]
-                        .Sub &&
-                    WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey]
-                        .Sub.length
-                ) {
-                    const arraySub: Array<any> =
-                        WidgetUtils.widgetDataTypeValues[moduleId][
-                            this.filterKey
-                        ].Sub;
-                    const findItem = arraySub.find(
-                        (item) => item["value"] == subValue
-                    );
-                    if (findItem) filterParam["item"] = findItem.item;
-                }
-            });
+      }
+      this.listenKey.sub.forEach((sub) => {
+        subValue = widgetUtils.getValueFromWidgetDataTypeValues(
+          moduleId,
+          sub.key,
+          false,
+          parentId
+        );
+        filterParam[sub.filterKey] = subValue ? subValue : '';
+        if (
+          subValue &&
+          WidgetUtils.widgetDataTypeValues[moduleId] &&
+          WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey] &&
+          WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey].Sub &&
+          WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey].Sub.length
+        ) {
+          const arraySub: Array<any> =
+            WidgetUtils.widgetDataTypeValues[moduleId][this.filterKey].Sub;
+          const findItem = arraySub.find((item) => item['value'] == subValue);
+          if (findItem) filterParam['item'] = findItem.item;
         }
-        return filterParam;
+      });
     }
+    return filterParam;
+  }
 
-    public get listenKeyCount() {
-        let count: number = 0;
-        if (this.listenKey.main && this.listenKey.main.key) {
-            count += 1;
-        }
-        if (this.listenKey.sub && this.listenKey.sub.length) {
-            count += this.listenKey.sub.length;
-        }
-        return count;
+  public get listenKeyCount() {
+    let count: number = 0;
+    if (this.listenKey.main && this.listenKey.main.key) {
+      count += 1;
     }
+    if (this.listenKey.sub && this.listenKey.sub.length) {
+      count += this.listenKey.sub.length;
+    }
+    return count;
+  }
 }
 
 /**
  * EditTableSetting
  */
 export class EditTableSetting {
-    public edit: string = "0";
-    public addNew: string = "0";
-    public delete: string = "0";
-    public dontAllowRefresh: string = "0";
-    public doesNotHasGetSP: string = "0";
-    public mediaCode: string = "0";
-    public fitColumn: string = "0";
-    public colTranslate: string;
-    public treeView: string = "0";
-    public showFilter: string = "0";
+  public edit: string = '0';
+  public addNew: string = '0';
+  public delete: string = '0';
+  public dontAllowRefresh: string = '0';
+  public doesNotHasGetSP: string = '0';
+  public mediaCode: string = '0';
+  public fitColumn: string = '0';
+  public colTranslate: string;
+  public treeView: string = '0';
+  public showFilter: string = '0';
 
-    public get allowEditRow(): boolean {
-        if (this.edit == "1" || this.addNew == "1" || this.delete == "1")
-            return true;
-        return false;
-    }
+  public get allowEditRow(): boolean {
+    if (this.edit == '1' || this.addNew == '1' || this.delete == '1')
+      return true;
+    return false;
+  }
 
-    public get allowNewRowAdd(): boolean {
-        if (this.addNew == "1") return true;
-        return false;
-    }
+  public get allowNewRowAdd(): boolean {
+    if (this.addNew == '1') return true;
+    return false;
+  }
 
-    public get allowRowDelete(): boolean {
-        if (this.delete == "1") return true;
-        return false;
-    }
+  public get allowRowDelete(): boolean {
+    if (this.delete == '1') return true;
+    return false;
+  }
 
-    public get allowMediaCode(): boolean {
-        if (this.mediaCode == "1") return true;
-        return false;
-    }
+  public get allowMediaCode(): boolean {
+    if (this.mediaCode == '1') return true;
+    return false;
+  }
 
-    public get allowFitColumn(): boolean {
-        if (this.fitColumn == "1") return true;
-        return false;
-    }
+  public get allowFitColumn(): boolean {
+    if (this.fitColumn == '1') return true;
+    return false;
+  }
 
-    public get allowColTranslation(): boolean {
-        if (this.colTranslate) return true;
-        return false;
-    }
+  public get allowColTranslation(): boolean {
+    if (this.colTranslate) return true;
+    return false;
+  }
 
-    public get allowTreeView(): boolean {
-        if (this.treeView == "1") return true;
-        return false;
-    }
+  public get allowTreeView(): boolean {
+    if (this.treeView == '1') return true;
+    return false;
+  }
 
-    public get allowShowFilter(): boolean {
-        if (this.showFilter == "1") return true;
-        return false;
-    }
+  public get allowShowFilter(): boolean {
+    if (this.showFilter == '1') return true;
+    return false;
+  }
 
-    public constructor(init?: Partial<EditTableSetting>) {
-        Object.assign(this, init);
-    }
+  public constructor(init?: Partial<EditTableSetting>) {
+    Object.assign(this, init);
+  }
 }
 
 /**
  * OtherSetting
  */
 export class OtherSetting {
-    public dontAllowRefresh: string = "0";
-    public doesNotHasGetSP: string = "0";
+  public dontAllowRefresh: string = '0';
+  public doesNotHasGetSP: string = '0';
 
-    public get getDontAllowRefresh(): boolean {
-        if (this.dontAllowRefresh == "1") return true;
-        return false;
-    }
+  public get getDontAllowRefresh(): boolean {
+    if (this.dontAllowRefresh == '1') return true;
+    return false;
+  }
 
-    public get getDoesNotHasGetSP(): boolean {
-        if (this.doesNotHasGetSP == "1") return true;
-        return false;
-    }
+  public get getDoesNotHasGetSP(): boolean {
+    if (this.doesNotHasGetSP == '1') return true;
+    return false;
+  }
 
-    public constructor(init?: Partial<OtherSetting>) {
-        Object.assign(this, init);
-    }
+  public constructor(init?: Partial<OtherSetting>) {
+    Object.assign(this, init);
+  }
 }
 
 export class FilterData {
-    public filterMode: FilterModeEnum = FilterModeEnum.ShowAll;
-    public subFilterMode: FilterModeEnum = FilterModeEnum.ShowAll;
-    public fieldFilters: Array<FieldFilter> = [];
-    public columnLayoutsetting: ColumnLayoutSetting = null;
-    public rowSetting: RowSetting = null;
-    public widgetLayoutSettingMode: WidgetLayoutSettingModeEnum =
-        WidgetLayoutSettingModeEnum.FullWidth;
-    public widgetFormType: WidgetFormTypeEnum = null;
-    public orderDataEntryWidgetLayoutMode: OrderDataEntryWidgetLayoutModeEnum =
-        null;
-    public orderDataEntryProperties: OrderDataEntryProperties =
-        new OrderDataEntryProperties();
+  public filterMode: FilterModeEnum = FilterModeEnum.ShowAll;
+  public subFilterMode: FilterModeEnum = FilterModeEnum.ShowAll;
+  public fieldFilters: Array<FieldFilter> = [];
+  public columnLayoutsetting: ColumnLayoutSetting = null;
+  public rowSetting: RowSetting = null;
+  public widgetLayoutSettingMode: WidgetLayoutSettingModeEnum =
+    WidgetLayoutSettingModeEnum.FullWidth;
+  public widgetFormType: WidgetFormTypeEnum = null;
+  public orderDataEntryWidgetLayoutMode: OrderDataEntryWidgetLayoutModeEnum =
+    null;
+  public orderDataEntryProperties: OrderDataEntryProperties =
+    new OrderDataEntryProperties();
 
-    public constructor(init?: Partial<FilterData>) {
-        Object.assign(this, init);
-    }
+  public constructor(init?: Partial<FilterData>) {
+    Object.assign(this, init);
+  }
 }
 
 /**
@@ -298,158 +287,158 @@ export class FilterData {
  * Used for saving page setting.
  */
 export class LightWidgetDetail {
-    public idSettingsWidget: number = null;
-    public id: string = "";
-    public title: string = "";
-    public moduleName: string = "";
-    public widgetDataType: WidgetDataType = null;
-    // Used for table widget that have the same type.
-    public syncWidgetIds: Array<string> = null;
-    // Custom Data (Optional)
-    public extensionData: any = null;
-    public idRepWidgetType: number = null;
-    public idRepWidgetApp: number = null;
+  public idSettingsWidget: number = null;
+  public id: string = '';
+  public title: string = '';
+  public moduleName: string = '';
+  public widgetDataType: WidgetDataType = null;
+  // Used for table widget that have the same type.
+  public syncWidgetIds: Array<string> = null;
+  // Custom Data (Optional)
+  public extensionData: any = null;
+  public idRepWidgetType: number = null;
+  public idRepWidgetApp: number = null;
 
-    public constructor(init?: Partial<LightWidgetDetail>) {
-        // Don't use Object.assign in this case to avoid unnescessary param that causing huge memmory in store
-        // Object.assign(this, init);
-        this.id = init.id || "";
-        this.idSettingsWidget = init.idSettingsWidget || null;
-        this.title = init.title || null;
-        this.moduleName = init.moduleName || null;
-        this.extensionData = init.extensionData || null;
-        this.syncWidgetIds = init.syncWidgetIds || null;
-        this.idRepWidgetType = init.idRepWidgetType || null;
-        this.idRepWidgetApp = init.idRepWidgetApp || null;
-        this.widgetDataType =
-            init && init.widgetDataType
-                ? new WidgetDataType(init.widgetDataType)
-                : null;
-    }
+  public constructor(init?: Partial<LightWidgetDetail>) {
+    // Don't use Object.assign in this case to avoid unnescessary param that causing huge memmory in store
+    // Object.assign(this, init);
+    this.id = init.id || '';
+    this.idSettingsWidget = init.idSettingsWidget || null;
+    this.title = init.title || null;
+    this.moduleName = init.moduleName || null;
+    this.extensionData = init.extensionData || null;
+    this.syncWidgetIds = init.syncWidgetIds || null;
+    this.idRepWidgetType = init.idRepWidgetType || null;
+    this.idRepWidgetApp = init.idRepWidgetApp || null;
+    this.widgetDataType =
+      init && init.widgetDataType
+        ? new WidgetDataType(init.widgetDataType)
+        : null;
+  }
 }
 
 /**
  * WidgetDetailPage
  */
 export class WidgetDetailPage {
-    public widgetDetail: WidgetDetail = null;
-    public defaultValue: string = "";
-    public description: string = "";
-    public config: NgGridItemConfig = null;
-    public columnsLayoutSettings: any;
-    public filterData: FilterData = null;
-    public properties: WidgetPropertyModel[] = [];
+  public widgetDetail: WidgetDetail = null;
+  public defaultValue: string = '';
+  public description: string = '';
+  public config: NgGridItemConfig = null;
+  public columnsLayoutSettings: any;
+  public filterData: FilterData = null;
+  public properties: WidgetPropertyModel[] = [];
 
-    public constructor(init?: Partial<WidgetDetailPage>) {
-        Object.assign(this, init);
-        let widgetDetail: WidgetDetail;
-        if (init) {
-            widgetDetail = Object.assign({}, init.widgetDetail);
-        }
-        this.widgetDetail = widgetDetail
-            ? <WidgetDetail>new LightWidgetDetail(widgetDetail)
-            : null;
+  public constructor(init?: Partial<WidgetDetailPage>) {
+    Object.assign(this, init);
+    let widgetDetail: WidgetDetail;
+    if (init) {
+      widgetDetail = Object.assign({}, init.widgetDetail);
     }
+    this.widgetDetail = widgetDetail
+      ? <WidgetDetail>new LightWidgetDetail(widgetDetail)
+      : null;
+  }
 }
 
 /**
  *GridConfig
  */
 export interface GridConfig {
-    designSizeDiffPercentage?: number;
+  designSizeDiffPercentage?: number;
 }
 
 /**
  * WidgetDetailPageSetting
  */
 export class WidgetDetailPageSetting {
-    public gridConfig: GridConfig = null;
-    [key: string]: any;
+  public gridConfig: GridConfig = null;
+  [key: string]: any;
 
-    public constructor(init?: Partial<WidgetDetailPageSetting>) {
-        Object.assign(this, init);
-    }
+  public constructor(init?: Partial<WidgetDetailPageSetting>) {
+    Object.assign(this, init);
+  }
 }
 
 export interface WidgetItemSize {
-    width: number;
-    height: number;
+  width: number;
+  height: number;
 }
 
 export interface IDragDropCommunicationData {
-    srcWidgetDetail?: WidgetDetail;
-    mode?: string;
-    originalText?: string;
-    fieldText?: string;
-    fieldColumn?: string;
-    originalValue?: string;
-    fieldValue?: string;
+  srcWidgetDetail?: WidgetDetail;
+  mode?: string;
+  originalText?: string;
+  fieldText?: string;
+  fieldColumn?: string;
+  originalValue?: string;
+  fieldValue?: string;
 }
 
 export class DragMode {
-    static Default = "default";
-    static Translate = "translate";
+  static Default = 'default';
+  static Translate = 'translate';
 }
 
 /**
  * LayoutPageInfoModel
  */
 export class LayoutPageInfoModel {
-    public id: string;
-    public moduleName: string;
-    public widgetboxesTitle: {
-        id: string;
-        title: string;
-        widgetDetail: WidgetDetail;
-    }[];
+  public id: string;
+  public moduleName: string;
+  public widgetboxesTitle: {
+    id: string;
+    title: string;
+    widgetDetail: WidgetDetail;
+  }[];
 
-    constructor(init?: Partial<LayoutPageInfoModel>) {
-        Object.assign(this, init);
-    }
+  constructor(init?: Partial<LayoutPageInfoModel>) {
+    Object.assign(this, init);
+  }
 }
 
 /**
  * TableDataState
  */
 export class TableDataState {
-    public dataSourceTable: any;
-    public isTableEdited = false;
-    public isOnEditingTable = false;
-    public copiedData: any;
-    constructor(init?: Partial<TableDataState>) {
-        Object.assign(this, init);
-    }
+  public dataSourceTable: any;
+  public isTableEdited = false;
+  public isOnEditingTable = false;
+  public copiedData: any;
+  constructor(init?: Partial<TableDataState>) {
+    Object.assign(this, init);
+  }
 }
 
 /**
  * ReloadMode
  **/
 export enum ReloadMode {
-    ListenKey,
-    UpdatingData,
+  ListenKey,
+  UpdatingData,
 }
 
 /**
  * WidgetState
  */
 export class WidgetState {
-    public key: string;
-    public data: WidgetDetail;
-    public tableData: TableDataState;
-    public selected: boolean;
+  public key: string;
+  public data: WidgetDetail;
+  public tableData: TableDataState;
+  public selected: boolean;
 
-    constructor(init?: Partial<WidgetState>) {
-        Object.assign(this, init);
-        this.tableData = new TableDataState();
-    }
+  constructor(init?: Partial<WidgetState>) {
+    Object.assign(this, init);
+    this.tableData = new TableDataState();
+  }
 }
 
 export class OrderDataEntryProperties {
-    public multipleRowDisplay = false;
-    public autoSwitchToDetail = false;
-    public groupView = false;
+  public multipleRowDisplay = false;
+  public autoSwitchToDetail = false;
+  public groupView = false;
 
-    constructor(init?: Partial<OrderDataEntryProperties>) {
-        Object.assign(this, init);
-    }
+  constructor(init?: Partial<OrderDataEntryProperties>) {
+    Object.assign(this, init);
+  }
 }

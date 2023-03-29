@@ -1,1 +1,1 @@
-export * from "./xn-communication-table.component";
+export * from './xn-communication-table.component';

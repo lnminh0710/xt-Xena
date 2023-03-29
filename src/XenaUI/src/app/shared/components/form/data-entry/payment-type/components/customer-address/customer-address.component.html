@@ -1,41 +1,41 @@
 <div class="col-xs-12 de__customer-address">
-    <div class="col-xs-12 no-padding de__ca__name" *ngIf="data">
-        {{ data.title }} {{ data.firstName | uppercase }}
-        {{ data.lastName | uppercase }} {{ data.nameAddition | uppercase }}
-    </div>
+  <div class="col-xs-12 no-padding de__ca__name" *ngIf="data">
+    {{ data.title }} {{ data.firstName | uppercase }}
+    {{ data.lastName | uppercase }} {{ data.nameAddition | uppercase }}
+  </div>
 
-    <div
-        class="col-xs-12 no-padding de__ca__address"
-        *ngIf="data && !addressFormat"
-    >
-        <span *ngIf="data.address">
-            {{ data.address.streetNr }}
-            {{ data.address.street | uppercase }}
-            {{ data.address.streetAddition1 | uppercase }}
-            {{ data.address.streetAddition2 | uppercase }}
-            {{ data.address.poboxLabel | uppercase }}
-            {{ data.address.zip }}
-            {{ data.address.place | uppercase }}
-            {{ data.address.area | uppercase }}
-        </span>
-        {{ data.countryCode | uppercase }}
-    </div>
+  <div
+    class="col-xs-12 no-padding de__ca__address"
+    *ngIf="data && !addressFormat"
+  >
+    <span *ngIf="data.address">
+      {{ data.address.streetNr }}
+      {{ data.address.street | uppercase }}
+      {{ data.address.streetAddition1 | uppercase }}
+      {{ data.address.streetAddition2 | uppercase }}
+      {{ data.address.poboxLabel | uppercase }}
+      {{ data.address.zip }}
+      {{ data.address.place | uppercase }}
+      {{ data.address.area | uppercase }}
+    </span>
+    {{ data.countryCode | uppercase }}
+  </div>
 
-    <div
-        class="col-xs-12 no-padding de__ca__address"
-        [innerHTML]="addressFormat"
-        *ngIf="addressFormat"
-    ></div>
+  <div
+    class="col-xs-12 no-padding de__ca__address"
+    [innerHTML]="addressFormat"
+    *ngIf="addressFormat"
+  ></div>
 
-    <div
-        class="col-xs-12 no-padding de__ca__birthday"
-        *ngIf="data && data.birthDay"
-    >
-        <div class="de__ca__birthday__label">
-            {{ localizer["dateOfBirth"] }}
-        </div>
-        <div class="de__ca__birthday__data margin-left--sd">
-            {{ formatDate(data.birthDay, globalDateFormat) }}
-        </div>
+  <div
+    class="col-xs-12 no-padding de__ca__birthday"
+    *ngIf="data && data.birthDay"
+  >
+    <div class="de__ca__birthday__label">
+      {{ localizer['dateOfBirth'] }}
     </div>
+    <div class="de__ca__birthday__data margin-left--sd">
+      {{ formatDate(data.birthDay, globalDateFormat) }}
+    </div>
+  </div>
 </div>

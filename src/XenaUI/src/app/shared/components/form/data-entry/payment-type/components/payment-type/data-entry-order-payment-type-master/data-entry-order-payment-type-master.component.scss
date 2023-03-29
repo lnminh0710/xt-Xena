@@ -1,110 +1,110 @@
-@import "~sass_files/color.scss";
+@import '~sass_files/color.scss';
 
 .de__payment-type {
-    padding: 10px 10px;
-    min-width: 540px;
+  padding: 10px 10px;
+  min-width: 540px;
 }
 
 .glyphicon-remove-circle {
-    margin-right: -22px;
-    margin-top: -31px;
-    float: right;
-    background-color: #fff;
-    cursor: pointer;
+  margin-right: -22px;
+  margin-top: -31px;
+  float: right;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 .glyphicon-remove-circle:hover {
-    color: #ff0000;
+  color: #ff0000;
 }
 
 .add-more-payment {
-    margin-left: 10px;
-    margin-top: 5px;
+  margin-left: 10px;
+  margin-top: 5px;
 
-    span {
-        font-size: 21px;
-    }
+  span {
+    font-size: 21px;
+  }
 }
 
 .in-active {
-    display: none !important;
+  display: none !important;
 }
 
 .de__pt-empty,
 .de__payment-type__item--bg {
-    margin-bottom: 10px;
-    padding: 5px 5px;
+  margin-bottom: 10px;
+  padding: 5px 5px;
 }
 
 :host /deep/ ul {
-    li {
-        min-height: 33px;
-        max-height: 33px;
-        padding-top: 0;
+  li {
+    min-height: 33px;
+    max-height: 33px;
+    padding-top: 0;
 
-        &:first-child {
-            margin-left: 5px;
-        }
-
-        a.remove-button {
-            position: absolute;
-            top: -13px;
-            right: -10px;
-            padding: 5px;
-            margin: 0;
-            background: none;
-            border: none;
-            color: $btn-red;
-            cursor: pointer !important;
-            z-index: 800;
-
-            &:hover {
-                border: none;
-                color: $btn-red;
-            }
-
-            .fa-times-circle {
-                color: $btn-red;
-                background: #fff;
-                line-height: 10px;
-                border-radius: 50%;
-
-                &:hover {
-                    color: #a70a0a;
-                }
-            }
-
-            &.disabled {
-                cursor: default;
-
-                .fa-times-circle {
-                    color: #919191;
-
-                    &:hover {
-                        color: #919191;
-                    }
-                }
-            }
-        }
-
-        > a:not(.remove-button) {
-            margin-right: 2px;
-            min-height: 33px;
-            max-height: 33px;
-        }
-
-        > a:not(.active):not(.remove-button) {
-            padding-top: 10px;
-        }
+    &:first-child {
+      margin-left: 5px;
     }
+
+    a.remove-button {
+      position: absolute;
+      top: -13px;
+      right: -10px;
+      padding: 5px;
+      margin: 0;
+      background: none;
+      border: none;
+      color: $btn-red;
+      cursor: pointer !important;
+      z-index: 800;
+
+      &:hover {
+        border: none;
+        color: $btn-red;
+      }
+
+      .fa-times-circle {
+        color: $btn-red;
+        background: #fff;
+        line-height: 10px;
+        border-radius: 50%;
+
+        &:hover {
+          color: #a70a0a;
+        }
+      }
+
+      &.disabled {
+        cursor: default;
+
+        .fa-times-circle {
+          color: #919191;
+
+          &:hover {
+            color: #919191;
+          }
+        }
+      }
+    }
+
+    > a:not(.remove-button) {
+      margin-right: 2px;
+      min-height: 33px;
+      max-height: 33px;
+    }
+
+    > a:not(.active):not(.remove-button) {
+      padding-top: 10px;
+    }
+  }
 }
 
 .state-disabled {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: #b3b0b0;
-    opacity: 0.3;
-    top: 0;
-    z-index: 1000;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #b3b0b0;
+  opacity: 0.3;
+  top: 0;
+  z-index: 1000;
 }

@@ -1,85 +1,85 @@
 <div class="col-xs-12 form-group list-template-of-file">
-    <div class="col-xs-12 xn__form-header">
-        <span class="no-margin"
-            ><label-translation
-                [keyword]="'ListTemplateOfFile__Template_Name'"
-            ></label-translation
-        ></span>
-    </div>
-    <div
-        class="col-xs-12"
-        [ngStyle]="{ display: !(isModeEditing && allowEdit) ? '' : 'none' }"
+  <div class="col-xs-12 xn__form-header">
+    <span class="no-margin"
+      ><label-translation
+        [keyword]="'ListTemplateOfFile__Template_Name'"
+      ></label-translation
+    ></span>
+  </div>
+  <div
+    class="col-xs-12"
+    [ngStyle]="{ display: !(isModeEditing && allowEdit) ? '' : 'none' }"
+  >
+    <p>{{ templateCtr.text }}</p>
+  </div>
+  <div
+    class="col-xs-12 no-padding list-template-of-file-cbo"
+    [ngClass]="{
+      't-s': isModeEditing && allowEdit,
+      't-h': !(isModeEditing && allowEdit)
+    }"
+  >
+    <xn-combo-box
+      #templateCtr
+      wjDropdownHelper
+      class="custom-wj-input-control xn-select"
+      placeholder="Please select"
+      [itemsSource]="templates"
+      [displayMemberPath]="'textValue'"
+      [selectedValuePath]="'idValue'"
+      [isEditable]="true"
+      [isRequired]="false"
+      (selectedIndexChanged)="changeTemplate()"
+      (gotFocus)="onFocusTemplate()"
     >
-        <p>{{ templateCtr.text }}</p>
-    </div>
-    <div
-        class="col-xs-12 no-padding list-template-of-file-cbo"
-        [ngClass]="{
-            't-s': isModeEditing && allowEdit,
-            't-h': !(isModeEditing && allowEdit)
-        }"
+    </xn-combo-box>
+    <control-messages
+      [xn-trigger-click-inside-cbo]="templateCtr"
+      icon="object-group"
     >
-        <xn-combo-box
-            #templateCtr
-            wjDropdownHelper
-            class="custom-wj-input-control xn-select"
-            placeholder="Please select"
-            [itemsSource]="templates"
-            [displayMemberPath]="'textValue'"
-            [selectedValuePath]="'idValue'"
-            [isEditable]="true"
-            [isRequired]="false"
-            (selectedIndexChanged)="changeTemplate()"
-            (gotFocus)="onFocusTemplate()"
-        >
-        </xn-combo-box>
-        <control-messages
-            [xn-trigger-click-inside-cbo]="templateCtr"
-            icon="object-group"
-        >
-        </control-messages>
-    </div>
-    <div class="col-xs-12 xn__form-header">
-        <span class="no-margin"
-            ><label-translation
-                [keyword]="'ListTemplateOfFile__Columns_Name'"
-            ></label-translation
-        ></span>
-    </div>
+    </control-messages>
+  </div>
+  <div class="col-xs-12 xn__form-header">
+    <span class="no-margin"
+      ><label-translation
+        [keyword]="'ListTemplateOfFile__Columns_Name'"
+      ></label-translation
+    ></span>
+  </div>
+  <div
+    class="col-xs-12"
+    [ngClass]="{
+      'list-template-of-file-label': isModeEditing && allowEdit,
+      'list-template-of-file-label--non-hd': !(isModeEditing && allowEdit)
+    }"
+    [perfect-scrollbar]="{ suppressScrollX: true, suppressScrollY: false }"
+  >
+    <p *ngFor="let item of labelList">
+      {{ item }}
+    </p>
+  </div>
+  <div class="col-xs-12 ltof-group-button">
+    <label class="template-file-name">{{
+      objMediaOriginalName && objMediaOriginalName?.mediaOriginalName
+        ? objMediaOriginalName.mediaOriginalName
+        : ''
+    }}</label>
     <div
-        class="col-xs-12"
-        [ngClass]="{
-            'list-template-of-file-label': isModeEditing && allowEdit,
-            'list-template-of-file-label--non-hd': !(isModeEditing && allowEdit)
-        }"
-        [perfect-scrollbar]="{ suppressScrollX: true, suppressScrollY: false }"
+      class="file-action-button"
+      xn-tooltip
+      [tooltipText]="'Download template file'"
+      [tooltipPlacement]="'top'"
     >
-        <p *ngFor="let item of labelList">
-            {{ item }}
-        </p>
+      <a
+        mat-raised-button
+        [ngClass]="{ 'xn-disabled': isDisableDownloadButton }"
+        class="pull-left margin-left--sm"
+        (click)="downloadFileClick()"
+      >
+        <a class="blue-color">
+          <i aria-hidden="true" class="fa fa-download"></i>
+        </a>
+      </a>
     </div>
-    <div class="col-xs-12 ltof-group-button">
-        <label class="template-file-name">{{
-            objMediaOriginalName && objMediaOriginalName?.mediaOriginalName
-                ? objMediaOriginalName.mediaOriginalName
-                : ""
-        }}</label>
-        <div
-            class="file-action-button"
-            xn-tooltip
-            [tooltipText]="'Download template file'"
-            [tooltipPlacement]="'top'"
-        >
-            <a
-                mat-raised-button
-                [ngClass]="{ 'xn-disabled': isDisableDownloadButton }"
-                class="pull-left margin-left--sm"
-                (click)="downloadFileClick()"
-            >
-                <a class="blue-color">
-                    <i aria-hidden="true" class="fa fa-download"></i>
-                </a>
-            </a>
-        </div>
-    </div>
+  </div>
 </div>

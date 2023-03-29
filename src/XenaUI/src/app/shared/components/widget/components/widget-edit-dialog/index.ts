@@ -1,1 +1,1 @@
-﻿export { WidgetEditDialogComponent } from "./widget-edit-dialog.component";
+﻿export { WidgetEditDialogComponent } from './widget-edit-dialog.component';

@@ -1,1 +1,1 @@
-export * from "./control-focus.component";
+export * from './control-focus.component';

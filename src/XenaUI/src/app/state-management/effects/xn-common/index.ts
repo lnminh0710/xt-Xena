@@ -1,1 +1,1 @@
-export * from "./xn-common.effect";
+export * from './xn-common.effect';

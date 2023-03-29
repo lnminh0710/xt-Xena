@@ -1,1 +1,1 @@
-﻿export * from "./widget-target-render.action";
+﻿export * from './widget-target-render.action';

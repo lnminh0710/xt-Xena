@@ -1,1 +1,1 @@
-export * from "./advance-search-builder.component";
+export * from './advance-search-builder.component';

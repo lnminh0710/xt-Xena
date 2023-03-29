@@ -1,1 +1,1 @@
-﻿export * from "./tab-summary.action";
+﻿export * from './tab-summary.action';

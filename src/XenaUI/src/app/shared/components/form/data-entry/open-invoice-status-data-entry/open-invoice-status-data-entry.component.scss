@@ -1,44 +1,44 @@
 .status-container {
-    min-width: 100px;
+  min-width: 100px;
 
-    &.red-bg {
-        background-color: #b10000;
-    }
+  &.red-bg {
+    background-color: #b10000;
+  }
 
-    &.orange-bg {
-        background-color: #e67807;
-    }
+  &.orange-bg {
+    background-color: #e67807;
+  }
 }
 
 .title {
-    font-size: 12px;
-    font-weight: bold;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding-left: 5px;
-    padding-right: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .content {
-    padding-left: 5px;
-    padding-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
 
-    ul {
-        padding: 0;
-        list-style: none;
-    }
+  ul {
+    padding: 0;
+    list-style: none;
+  }
 }
 
 .orange-color {
-    color: orange;
+  color: orange;
 }
 
 .white-color {
-    color: white;
+  color: white;
 }
 
 .row-item {
-    display: grid;
-    grid-template-columns: 130px max-content;
-    grid-gap: 16px;
+  display: grid;
+  grid-template-columns: 130px max-content;
+  grid-gap: 16px;
 }

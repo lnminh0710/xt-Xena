@@ -1,1 +1,1 @@
-﻿export { XnDoublePageViewComponent } from "./xn-double-page-view.component";
+﻿export { XnDoublePageViewComponent } from './xn-double-page-view.component';

@@ -1,1 +1,1 @@
-export { WfLineBreakComponent } from "./wf-line-break.component";
+export { WfLineBreakComponent } from './wf-line-break.component';

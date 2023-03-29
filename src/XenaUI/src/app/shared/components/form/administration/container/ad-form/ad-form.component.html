@@ -1,91 +1,89 @@
 <div
-    *ngIf="isRenderForm"
-    [ngClass]="{ submitted: formGroup.submitted }"
-    class="form-container"
+  *ngIf="isRenderForm"
+  [ngClass]="{ submitted: formGroup.submitted }"
+  class="form-container"
 >
-    <form
-        [formGroup]="formGroup"
-        id="administrationFormGroup"
-        class="form-horizontal height-pc-100"
+  <form
+    [formGroup]="formGroup"
+    id="administrationFormGroup"
+    class="form-horizontal height-pc-100"
+  >
+    <control-focus
+      #focusControl
+      [formName]="'administrationFormGroup'"
+      controlWaitingMore="company"
+      focusControl="principal,company"
+    ></control-focus>
+    <div
+      class="col-xs-12 col-md-5 height-pc-100"
+      [perfect-scrollbar]="perfectScrollbarConfig"
     >
-        <control-focus
-            #focusControl
-            [formName]="'administrationFormGroup'"
-            controlWaitingMore="company"
-            focusControl="principal,company"
-        ></control-focus>
-        <div
-            class="col-xs-12 col-md-5 height-pc-100"
-            [perfect-scrollbar]="perfectScrollbarConfig"
+      <ad-main-field
+        *ngIf="isRenderedMainField"
+        [initInformation]="mainFieldData"
+        [mandatoryCheckColor]="mandatoryColor"
+        [hiddenFields]="hiddenFields"
+        (initFormGroup)="onInitFormGroup($event)"
+      ></ad-main-field>
+      <form-fg-address
+        *ngIf="isRenderedAddressFG"
+        [initInformation]="addressFGData"
+        [hiddenFields]="hiddenFields"
+        [mandatoryCheckColor]="mandatoryColor"
+        (onCountryChangedAction)="onCountryChangedHandler($event)"
+      ></form-fg-address>
+    </div>
+    <div class="col-xs-12 col-md-5 height-pc-100">
+      <div class="form-group xn__form-header no-background">
+        <span class="no-margin">
+          <label-translation
+            [keyword]="'Ad__Communication'"
+            User_profile_F
+          ></label-translation>
+        </span>
+      </div>
+      <div class="form-group admin-communication">
+        <xn-communication-table
+          [data]="commInputputData"
+          [gridId]="'24ca2fb5-18db-48d8-ae37-2129e9ec48ba'"
+          (onHasError)="onCommHasError($event)"
+          (outputData)="getCommOutputData($event)"
+        ></xn-communication-table>
+      </div>
+
+      <div class="form-group">
+        <label
+          for="notes"
+          class="control-label col-sm-4 bold-title margin-top--lg text-left no-padding-left"
         >
-            <ad-main-field
-                *ngIf="isRenderedMainField"
-                [initInformation]="mainFieldData"
-                [mandatoryCheckColor]="mandatoryColor"
-                [hiddenFields]="hiddenFields"
-                (initFormGroup)="onInitFormGroup($event)"
-            ></ad-main-field>
-            <form-fg-address
-                *ngIf="isRenderedAddressFG"
-                [initInformation]="addressFGData"
-                [hiddenFields]="hiddenFields"
-                [mandatoryCheckColor]="mandatoryColor"
-                (onCountryChangedAction)="onCountryChangedHandler($event)"
-            ></form-fg-address>
-        </div>
-        <div class="col-xs-12 col-md-5 height-pc-100">
-            <div class="form-group xn__form-header no-background">
-                <span class="no-margin">
-                    <label-translation
-                        [keyword]="'Ad__Communication'"
-                        User_profile_F
-                    ></label-translation>
-                </span>
-            </div>
-            <div class="form-group admin-communication">
-                <xn-communication-table
-                    [data]="commInputputData"
-                    [gridId]="'24ca2fb5-18db-48d8-ae37-2129e9ec48ba'"
-                    (onHasError)="onCommHasError($event)"
-                    (outputData)="getCommOutputData($event)"
-                ></xn-communication-table>
-            </div>
+          {{ currentPerson.notes.displayValue }}
+        </label>
 
-            <div class="form-group">
-                <label
-                    for="notes"
-                    class="control-label col-sm-4 bold-title margin-top--lg text-left no-padding-left"
-                >
-                    {{ currentPerson.notes.displayValue }}
-                </label>
-
-                <textarea
-                    class="form-control xn-input"
-                    id="notes"
-                    name="notes"
-                    [maxlength]="maxCharactersNotes"
-                    (keypress)="updateLeftCharacters($event)"
-                    (keydown)="updateLeftCharacters($event)"
-                    formControlName="notes"
-                ></textarea>
-                <control-messages
-                    [mandatoryColor]="mandatoryColor['notes']"
-                    [control]="formGroup.controls['notes']"
-                    icon="comment  fa-2"
-                    styleClass="for-notes"
-                >
-                </control-messages>
-                <p>
-                    *
-                    <label-translation
-                        [keyword]="'Ad__You_have'"
-                    ></label-translation>
-                    {{ formGroup.leftCharacters }}
-                    <label-translation
-                        [keyword]="'Ad__characters_more'"
-                    ></label-translation>
-                </p>
-            </div>
-        </div>
-    </form>
+        <textarea
+          class="form-control xn-input"
+          id="notes"
+          name="notes"
+          [maxlength]="maxCharactersNotes"
+          (keypress)="updateLeftCharacters($event)"
+          (keydown)="updateLeftCharacters($event)"
+          formControlName="notes"
+        ></textarea>
+        <control-messages
+          [mandatoryColor]="mandatoryColor['notes']"
+          [control]="formGroup.controls['notes']"
+          icon="comment  fa-2"
+          styleClass="for-notes"
+        >
+        </control-messages>
+        <p>
+          *
+          <label-translation [keyword]="'Ad__You_have'"></label-translation>
+          {{ formGroup.leftCharacters }}
+          <label-translation
+            [keyword]="'Ad__characters_more'"
+          ></label-translation>
+        </p>
+      </div>
+    </div>
+  </form>
 </div>

@@ -1,1 +1,1 @@
-﻿export { ParkedItemComponent } from "./parked-item.component";
+﻿export { ParkedItemComponent } from './parked-item.component';

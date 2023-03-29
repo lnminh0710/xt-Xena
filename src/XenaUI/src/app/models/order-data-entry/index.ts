@@ -1,1 +1,1 @@
-export * from "./send-order-to-administrator.model";
+export * from './send-order-to-administrator.model';

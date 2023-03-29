@@ -1,3 +1,3 @@
-export * from "./wijmo-grid";
-export * from "./template";
-export * from "./components";
+export * from './wijmo-grid';
+export * from './template';
+export * from './components';

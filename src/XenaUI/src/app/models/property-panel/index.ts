@@ -1,1 +1,1 @@
-﻿export * from "./widget-property.model";
+﻿export * from './widget-property.model';

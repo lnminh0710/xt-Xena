@@ -1,35 +1,35 @@
 .collapse-panel {
+  position: absolute;
+  height: 100%;
+  cursor: pointer;
+  width: 10px;
+  z-index: 100;
+  i {
+    top: calc(50% - 20px);
+    font-size: 27px;
     position: absolute;
-    height: 100%;
-    cursor: pointer;
-    width: 10px;
-    z-index: 100;
-    i {
-        top: calc(50% - 20px);
-        font-size: 27px;
-        position: absolute;
-    }
+  }
 }
 .country-selection-middle {
-    min-width: 500px;
+  min-width: 500px;
 }
 .panel-show {
-    display: none;
+  display: none;
 }
 .collapse-left-hide {
-    left: 0px;
+  left: 0px;
 }
 .collapse-right-hide {
-    right: 0px;
+  right: 0px;
 }
 .searching-button {
-    min-width: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 42px;
-    border-radius: 0 3px 3px 0;
+  min-width: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 42px;
+  border-radius: 0 3px 3px 0;
 }
 .label-title {
-    padding-top: 10px !important;
+  padding-top: 10px !important;
 }

@@ -1,1 +1,1 @@
-export * from "./purchase-form-header.component";
+export * from './purchase-form-header.component';

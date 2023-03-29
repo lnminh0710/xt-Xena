@@ -1,1 +1,1 @@
-﻿export * from "./search-result.reducer";
+﻿export * from './search-result.reducer';

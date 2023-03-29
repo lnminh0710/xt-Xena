@@ -1,1 +1,1 @@
-﻿export * from "./customer-history.model";
+﻿export * from './customer-history.model';

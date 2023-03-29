@@ -4,16 +4,16 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-    production: true,
-    silent: false,
-    apiEndpoint: "https://gammon.xoontec.vn",
-    googleAnalytics: {
-        active: true,
-        uaId: "",
-        logging: {
-            debug: true,
-            exceptions: true,
-            verbose: true,
-        },
+  production: true,
+  silent: false,
+  apiEndpoint: 'https://gammon.xoontec.vn',
+  googleAnalytics: {
+    active: true,
+    uaId: '',
+    logging: {
+      debug: true,
+      exceptions: true,
+      verbose: true,
     },
+  },
 };

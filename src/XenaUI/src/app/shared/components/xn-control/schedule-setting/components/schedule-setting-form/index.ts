@@ -1,1 +1,1 @@
-export { ScheduleSettingFormComponent } from "./schedule-setting-form.component";
+export { ScheduleSettingFormComponent } from './schedule-setting-form.component';

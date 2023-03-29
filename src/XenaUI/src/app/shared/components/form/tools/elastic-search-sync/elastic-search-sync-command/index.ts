@@ -1,1 +1,1 @@
-export { ElasticSearchSyncCommandComponent } from "./elastic-search-sync-command.component";
+export { ElasticSearchSyncCommandComponent } from './elastic-search-sync-command.component';

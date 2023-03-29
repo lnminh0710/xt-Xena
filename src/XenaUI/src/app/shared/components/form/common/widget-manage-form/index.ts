@@ -1,1 +1,1 @@
-export { WidgetManageFormComponent } from "./widget-manage-form.component";
+export { WidgetManageFormComponent } from './widget-manage-form.component';

@@ -1,4 +1,4 @@
 export interface IMySelectorPosition {
-    top: string;
-    left: string;
+  top: string;
+  left: string;
 }

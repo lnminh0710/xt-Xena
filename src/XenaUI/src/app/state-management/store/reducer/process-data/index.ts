@@ -1,2 +1,2 @@
-﻿export * from "./process-data.reducer";
-export * from "./process-data.selectors";
+﻿export * from './process-data.reducer';
+export * from './process-data.selectors';

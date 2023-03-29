@@ -1,61 +1,59 @@
 <div
-    class="p"
-    [ngClass]="{
-        'p-e': isEditingLayout,
-        'd-a':
-            isDragging &&
-            (isDisableDrag || (panel.isRow && isIncludeLinebreak)),
-        'pn-n': !panel.isRow,
-        'pn-r': panel.isRow,
-        'pn-r-e': panel.isRow && isEditingLayout,
-        'p-n-d': !isDragging && isEditingLayout
-    }"
-    [ngStyle]="configPanelStyle"
-    attr.elWrapperPanelId="{{ panel.key }}"
+  class="p"
+  [ngClass]="{
+    'p-e': isEditingLayout,
+    'd-a': isDragging && (isDisableDrag || (panel.isRow && isIncludeLinebreak)),
+    'pn-n': !panel.isRow,
+    'pn-r': panel.isRow,
+    'pn-r-e': panel.isRow && isEditingLayout,
+    'p-n-d': !isDragging && isEditingLayout
+  }"
+  [ngStyle]="configPanelStyle"
+  attr.elWrapperPanelId="{{ panel.key }}"
 >
+  <div
+    *ngIf="isEditingLayout"
+    class="dr-i"
+    xn-tooltip
+    [tooltipText]="'Move panel'"
+    [tooltipPlacement]="'top'"
+  >
+    <i class="fa fa-arrows"></i>
+  </div>
+  <div
+    *ngIf="isEditingLayout"
+    dragula="{{ dragName }}"
+    attr.layout-type="{{ panel.layoutType }}"
+    [ngClass]="{
+      'dont-accept': isDisableDrag || (panel.isRow && isIncludeLinebreak),
+      'p-dg': !panelChildren.length,
+      'p-r': panel.isRow,
+      isResizing: panel.isResizing
+    }"
+    [dragulaModel]="panelChildren"
+    mwlResizable
+    [enableGhostResize]="'true'"
+    [resizeEdges]="{ bottom: true, right: false, top: false, left: false }"
+    (resizeStart)="onResizeStart($event, panel)"
+    (resizeEnd)="onResizeEnd($event, panel)"
+    [ngStyle]="{ height: panel.height }"
+    attr.elPanelId="{{ panel.key }}"
+    [perfect-scrollbar]="{ suppressScrollX: true, suppressScrollY: false }"
+  >
+    <!-- <div *ngFor="let control of panel.children | callback:filterUndefineControl" -->
     <div
-        *ngIf="isEditingLayout"
-        class="dr-i"
-        xn-tooltip
-        [tooltipText]="'Move panel'"
-        [tooltipPlacement]="'top'"
+      *ngFor="let control of panelChildren; let i = index"
+      class="p-c xn-allow-drag"
+      [ngClass]="{
+        'ctr-c': control && control.checked,
+        'ctr-un': control && !control.checked,
+        'ignore-drag': control.isResizing,
+        'dont-accept': control.layoutType == 'lineBreak'
+      }"
+      id="{{ control.key }}"
+      attr.layout-type="{{ control.layoutType }}"
     >
-        <i class="fa fa-arrows"></i>
-    </div>
-    <div
-        *ngIf="isEditingLayout"
-        dragula="{{ dragName }}"
-        attr.layout-type="{{ panel.layoutType }}"
-        [ngClass]="{
-            'dont-accept': isDisableDrag || (panel.isRow && isIncludeLinebreak),
-            'p-dg': !panelChildren.length,
-            'p-r': panel.isRow,
-            isResizing: panel.isResizing
-        }"
-        [dragulaModel]="panelChildren"
-        mwlResizable
-        [enableGhostResize]="'true'"
-        [resizeEdges]="{ bottom: true, right: false, top: false, left: false }"
-        (resizeStart)="onResizeStart($event, panel)"
-        (resizeEnd)="onResizeEnd($event, panel)"
-        [ngStyle]="{ height: panel.height }"
-        attr.elPanelId="{{ panel.key }}"
-        [perfect-scrollbar]="{ suppressScrollX: true, suppressScrollY: false }"
-    >
-        <!-- <div *ngFor="let control of panel.children | callback:filterUndefineControl" -->
-        <div
-            *ngFor="let control of panelChildren; let i = index"
-            class="p-c xn-allow-drag"
-            [ngClass]="{
-                'ctr-c': control && control.checked,
-                'ctr-un': control && !control.checked,
-                'ignore-drag': control.isResizing,
-                'dont-accept': control.layoutType == 'lineBreak'
-            }"
-            id="{{ control.key }}"
-            attr.layout-type="{{ control.layoutType }}"
-        >
-            <!-- <div class="chk"
+      <!-- <div class="chk"
                 *ngIf="!control.isHidden"
                 [ngClass]="{'chk-f': control.layoutType == 'control',
                            'chk-l': control.layoutType == 'lineBreak'}">
@@ -64,233 +62,230 @@
                             (change)="itemChecked(control)">
                 </mat-checkbox>
             </div> -->
-            <wf-line-break
-                *ngIf="control.layoutType == 'lineBreak' && !panel.isRow"
-                [lineBreak]="control"
-                [dragName]="dragName"
-                [isEditingLayout]="isEditingLayout"
-                [isControlPressing]="isControlPressing"
-                [isSettingDialog]="isSettingDialog"
-                [isJustDragged]="isJustDragged"
-                [isDuplicatedDialogForm]="isDuplicatedDialogForm"
-                (onDeleteAction)="onDeleteLineBreakHandler($event)"
-                (onRightClickAction)="onRightClickControlHandler($event)"
-                (onLineBreakResizeEndAction)="onLineBreakResizeEndHandler()"
-                (onMouseDownAction)="onMouseDownHandler($event)"
-            >
-            </wf-line-break>
-            <wf-field
-                *ngIf="control.layoutType == 'control'"
-                [control]="control"
-                [panel]="panel"
-                [column]="column"
-                [canDelete]="canDelete"
-                [dataStyle]="dataStyle"
-                [formStyle]="formStyle"
-                [importantFormStyle]="importantFormStyle"
-                [fieldStyle]="fieldStyle"
-                [dataSource]="dataSource"
-                [inlineLabelStyle]="inlineLabelStyle"
-                [isDesignWidgetMode]="isDesignWidgetMode"
-                [minLabelWidth]="minLabelWidth"
-                [labelTextAlign]="labelTextAlign"
-                [dataTextAlign]="dataTextAlign"
-                [editFormMode]="editFormMode"
-                [form]="form"
-                [controlWidth]="controlWidth"
-                [isDialogMode]="isDialogMode"
-                [globalProperties]="globalProperties"
-                [widgetProperties]="widgetProperties"
-                [widgetFormType]="widgetFormType"
-                [listVirtualElementNames]="listVirtualElementNames"
-                [isEditingLayout]="isEditingLayout"
-                [isControlPressing]="isControlPressing"
-                [errorShow]="errorShow"
-                [isRow]="panel.isRow"
-                [index]="i"
-                [isSettingDialog]="isSettingDialog"
-                [isJustDragged]="isJustDragged"
-                [designColumnsOnWidget]="designColumnsOnWidget"
-                [isDuplicatedDialogForm]="isDuplicatedDialogForm"
-                (onDeleteColumn)="deleteColumn($event)"
-                (onDeletePanel)="onDelete($event)"
-                (onMenuClickAction)="onMenuClickHandler($event)"
-                (onSettingDialogAction)="openSettingDialog($event)"
-                (onEditFieldAction)="onEditField($event)"
-                (onCancelEditFieldAction)="onCancelEditField($event)"
-                (onEnterKeyPressAction)="onEnterKeyPress($event)"
-                (onUpdateValueAction)="onUpdateValue($event)"
-                (onRightClickAction)="onRightClickControlHandler($event)"
-                (onMouseDownAction)="onMouseDownHandler($event)"
-                (onFieldResizeEndAction)="onFieldResizeEndHandler($event)"
-                (onMenuMouseOverAction)="onMenuMouseOverHandler($event)"
-                (onApplyAction)="onApplyHandler($event)"
-            >
-            </wf-field>
-        </div>
-        <div
-            class="e-p ignore-drag"
-            [ngStyle]="{
-                'min-height': (panel.height || minPanelHeight) + 'px'
-            }"
-            *ngIf="panel && panel.children && !panel.children.length"
-        >
-            <div>
-                <label-translation
-                    [keyword]="'WfPanel__Drag_fields_here'"
-                ></label-translation>
-            </div>
-        </div>
-        <div
-            class="rz ignore-drag"
-            *ngIf="!isSettingDialog && panel.height != 'auto'"
-            style="display: none"
-            id="resize-icon"
-            mwlResizeHandle
-            [resizeEdges]="{ bottom: true }"
-            (mousedown)="onMousedownOnResize(panel)"
-            (mouseup)="onMouseupOnResize(panel)"
-        >
-            <i class="fa fa-circle-o ignore-drag"></i>
-        </div>
+      <wf-line-break
+        *ngIf="control.layoutType == 'lineBreak' && !panel.isRow"
+        [lineBreak]="control"
+        [dragName]="dragName"
+        [isEditingLayout]="isEditingLayout"
+        [isControlPressing]="isControlPressing"
+        [isSettingDialog]="isSettingDialog"
+        [isJustDragged]="isJustDragged"
+        [isDuplicatedDialogForm]="isDuplicatedDialogForm"
+        (onDeleteAction)="onDeleteLineBreakHandler($event)"
+        (onRightClickAction)="onRightClickControlHandler($event)"
+        (onLineBreakResizeEndAction)="onLineBreakResizeEndHandler()"
+        (onMouseDownAction)="onMouseDownHandler($event)"
+      >
+      </wf-line-break>
+      <wf-field
+        *ngIf="control.layoutType == 'control'"
+        [control]="control"
+        [panel]="panel"
+        [column]="column"
+        [canDelete]="canDelete"
+        [dataStyle]="dataStyle"
+        [formStyle]="formStyle"
+        [importantFormStyle]="importantFormStyle"
+        [fieldStyle]="fieldStyle"
+        [dataSource]="dataSource"
+        [inlineLabelStyle]="inlineLabelStyle"
+        [isDesignWidgetMode]="isDesignWidgetMode"
+        [minLabelWidth]="minLabelWidth"
+        [labelTextAlign]="labelTextAlign"
+        [dataTextAlign]="dataTextAlign"
+        [editFormMode]="editFormMode"
+        [form]="form"
+        [controlWidth]="controlWidth"
+        [isDialogMode]="isDialogMode"
+        [globalProperties]="globalProperties"
+        [widgetProperties]="widgetProperties"
+        [widgetFormType]="widgetFormType"
+        [listVirtualElementNames]="listVirtualElementNames"
+        [isEditingLayout]="isEditingLayout"
+        [isControlPressing]="isControlPressing"
+        [errorShow]="errorShow"
+        [isRow]="panel.isRow"
+        [index]="i"
+        [isSettingDialog]="isSettingDialog"
+        [isJustDragged]="isJustDragged"
+        [designColumnsOnWidget]="designColumnsOnWidget"
+        [isDuplicatedDialogForm]="isDuplicatedDialogForm"
+        (onDeleteColumn)="deleteColumn($event)"
+        (onDeletePanel)="onDelete($event)"
+        (onMenuClickAction)="onMenuClickHandler($event)"
+        (onSettingDialogAction)="openSettingDialog($event)"
+        (onEditFieldAction)="onEditField($event)"
+        (onCancelEditFieldAction)="onCancelEditField($event)"
+        (onEnterKeyPressAction)="onEnterKeyPress($event)"
+        (onUpdateValueAction)="onUpdateValue($event)"
+        (onRightClickAction)="onRightClickControlHandler($event)"
+        (onMouseDownAction)="onMouseDownHandler($event)"
+        (onFieldResizeEndAction)="onFieldResizeEndHandler($event)"
+        (onMenuMouseOverAction)="onMenuMouseOverHandler($event)"
+        (onApplyAction)="onApplyHandler($event)"
+      >
+      </wf-field>
     </div>
     <div
-        *ngIf="!isEditingLayout"
-        [ngClass]="{ 'p-r': panel.isRow }"
-        [ngStyle]="{ height: panel.height }"
-        [perfect-scrollbar]="{ suppressScrollX: true, suppressScrollY: false }"
+      class="e-p ignore-drag"
+      [ngStyle]="{
+        'min-height': (panel.height || minPanelHeight) + 'px'
+      }"
+      *ngIf="panel && panel.children && !panel.children.length"
     >
-        <div *ngFor="let control of panel.children; let i = index" class="p-c">
-            <wf-line-break
-                *ngIf="control.layoutType == 'lineBreak' && !panel.isRow"
-                [lineBreak]="control"
-                [dragName]="dragName"
-                [isEditingLayout]="isEditingLayout"
-                [isControlPressing]="isControlPressing"
-                [isSettingDialog]="isSettingDialog"
-                [isDuplicatedDialogForm]="isDuplicatedDialogForm"
-                (onDeleteAction)="onDeleteLineBreakHandler($event)"
-                (onRightClickAction)="onRightClickControlHandler($event)"
-                (onLineBreakResizeEndAction)="onLineBreakResizeEndHandler()"
-                (onMouseDownAction)="onMouseDownHandler($event)"
-            >
-            </wf-line-break>
-            <wf-field
-                *ngIf="control.layoutType == 'control'"
-                [control]="control"
-                [panel]="panel"
-                [column]="column"
-                [canDelete]="canDelete"
-                [dataStyle]="dataStyle"
-                [formStyle]="formStyle"
-                [importantFormStyle]="importantFormStyle"
-                [fieldStyle]="fieldStyle"
-                [dataSource]="dataSource"
-                [inlineLabelStyle]="inlineLabelStyle"
-                [isDesignWidgetMode]="isDesignWidgetMode"
-                [minLabelWidth]="minLabelWidth"
-                [labelTextAlign]="labelTextAlign"
-                [dataTextAlign]="dataTextAlign"
-                [editFormMode]="editFormMode"
-                [form]="form"
-                [controlWidth]="controlWidth"
-                [isDialogMode]="isDialogMode"
-                [globalProperties]="globalProperties"
-                [widgetProperties]="widgetProperties"
-                [widgetFormType]="widgetFormType"
-                [listVirtualElementNames]="listVirtualElementNames"
-                [isEditingLayout]="isEditingLayout"
-                [isControlPressing]="isControlPressing"
-                [errorShow]="errorShow"
-                [isRow]="panel.isRow"
-                [index]="i"
-                [isSettingDialog]="isSettingDialog"
-                [designColumnsOnWidget]="designColumnsOnWidget"
-                [isDuplicatedDialogForm]="isDuplicatedDialogForm"
-                (onDeleteColumn)="deleteColumn($event)"
-                (onDeletePanel)="onDelete($event)"
-                (onMenuClickAction)="onMenuClickHandler($event)"
-                (onSettingDialogAction)="openSettingDialog($event)"
-                (onEditFieldAction)="onEditField($event)"
-                (onCancelEditFieldAction)="onCancelEditField($event)"
-                (onEnterKeyPressAction)="onEnterKeyPress($event)"
-                (onUpdateValueAction)="onUpdateValue($event)"
-                (onRightClickAction)="onRightClickControlHandler($event)"
-                (onMouseDownAction)="onMouseDownHandler($event)"
-                (onFieldResizeEndAction)="onFieldResizeEndHandler($event)"
-                (onApplyAction)="onApplyHandler($event)"
-            >
-            </wf-field>
-        </div>
-        <div
-            class="e-b"
-            *ngIf="
-                panel &&
-                panel.children &&
-                !panel.children.length &&
-                isEditingLayout
-            "
-        >
-            <div></div>
-        </div>
+      <div>
+        <label-translation
+          [keyword]="'WfPanel__Drag_fields_here'"
+        ></label-translation>
+      </div>
     </div>
     <div
-        class="p-t ignore-drag"
-        [ngClass]="{ 'p-t-v': !isEditingTitle, 'p-t-e': isEditingTitle }"
+      class="rz ignore-drag"
+      *ngIf="!isSettingDialog && panel.height != 'auto'"
+      style="display: none"
+      id="resize-icon"
+      mwlResizeHandle
+      [resizeEdges]="{ bottom: true }"
+      (mousedown)="onMousedownOnResize(panel)"
+      (mouseup)="onMouseupOnResize(panel)"
     >
-        <div
-            *ngIf="!isEditingTitle"
-            class="pt-t"
-            [ngStyle]="configTitleStyle"
-            xn-tooltip
-            [tooltipText]="panel.title"
-            [tooltipPlacement]="'top'"
-            container="body"
-        >
-            {{ panel.title }}
-            <div class="underline-title" [ngStyle]="configUnderlineStyle">
-                &nbsp;&nbsp;
-            </div>
-        </div>
-        <!--<div *ngIf="isEditingTitle">-->
-        <!--<input  class="xn-control"-->
-        <!--id="panel-title-{{panel.key}}"-->
-        <!--[(ngModel)]="panel.title"-->
-        <!--[ngClass]="{'input-error': hasTitleError}"-->
-        <!--(keyup)="titleKeyUp($event)">-->
-        <!--<button class="mat-btn-orange  s-t"-->
-        <!--mat-raised-button-->
-        <!--type="button"-->
-        <!--xn-tooltip-->
-        <!--[tooltipText]="'Save Title'"-->
-        <!--[tooltipPlacement]="'top'"-->
-        <!--container="body"-->
-        <!--(click)="saveTitle()">-->
-        <!--<span class="fa  fa-save"></span>-->
-        <!--</button>-->
-        <!--</div>-->
+      <i class="fa fa-circle-o ignore-drag"></i>
+    </div>
+  </div>
+  <div
+    *ngIf="!isEditingLayout"
+    [ngClass]="{ 'p-r': panel.isRow }"
+    [ngStyle]="{ height: panel.height }"
+    [perfect-scrollbar]="{ suppressScrollX: true, suppressScrollY: false }"
+  >
+    <div *ngFor="let control of panel.children; let i = index" class="p-c">
+      <wf-line-break
+        *ngIf="control.layoutType == 'lineBreak' && !panel.isRow"
+        [lineBreak]="control"
+        [dragName]="dragName"
+        [isEditingLayout]="isEditingLayout"
+        [isControlPressing]="isControlPressing"
+        [isSettingDialog]="isSettingDialog"
+        [isDuplicatedDialogForm]="isDuplicatedDialogForm"
+        (onDeleteAction)="onDeleteLineBreakHandler($event)"
+        (onRightClickAction)="onRightClickControlHandler($event)"
+        (onLineBreakResizeEndAction)="onLineBreakResizeEndHandler()"
+        (onMouseDownAction)="onMouseDownHandler($event)"
+      >
+      </wf-line-break>
+      <wf-field
+        *ngIf="control.layoutType == 'control'"
+        [control]="control"
+        [panel]="panel"
+        [column]="column"
+        [canDelete]="canDelete"
+        [dataStyle]="dataStyle"
+        [formStyle]="formStyle"
+        [importantFormStyle]="importantFormStyle"
+        [fieldStyle]="fieldStyle"
+        [dataSource]="dataSource"
+        [inlineLabelStyle]="inlineLabelStyle"
+        [isDesignWidgetMode]="isDesignWidgetMode"
+        [minLabelWidth]="minLabelWidth"
+        [labelTextAlign]="labelTextAlign"
+        [dataTextAlign]="dataTextAlign"
+        [editFormMode]="editFormMode"
+        [form]="form"
+        [controlWidth]="controlWidth"
+        [isDialogMode]="isDialogMode"
+        [globalProperties]="globalProperties"
+        [widgetProperties]="widgetProperties"
+        [widgetFormType]="widgetFormType"
+        [listVirtualElementNames]="listVirtualElementNames"
+        [isEditingLayout]="isEditingLayout"
+        [isControlPressing]="isControlPressing"
+        [errorShow]="errorShow"
+        [isRow]="panel.isRow"
+        [index]="i"
+        [isSettingDialog]="isSettingDialog"
+        [designColumnsOnWidget]="designColumnsOnWidget"
+        [isDuplicatedDialogForm]="isDuplicatedDialogForm"
+        (onDeleteColumn)="deleteColumn($event)"
+        (onDeletePanel)="onDelete($event)"
+        (onMenuClickAction)="onMenuClickHandler($event)"
+        (onSettingDialogAction)="openSettingDialog($event)"
+        (onEditFieldAction)="onEditField($event)"
+        (onCancelEditFieldAction)="onCancelEditField($event)"
+        (onEnterKeyPressAction)="onEnterKeyPress($event)"
+        (onUpdateValueAction)="onUpdateValue($event)"
+        (onRightClickAction)="onRightClickControlHandler($event)"
+        (onMouseDownAction)="onMouseDownHandler($event)"
+        (onFieldResizeEndAction)="onFieldResizeEndHandler($event)"
+        (onApplyAction)="onApplyHandler($event)"
+      >
+      </wf-field>
     </div>
     <div
-        class="d-i ignore-drag"
-        [ngClass]="{ 'panel-setting': panel.children.length }"
-        xn-tooltip
-        [tooltipText]="'Setting'"
-        [tooltipPlacement]="'top'"
-        container="body"
-        *ngIf="isEditingLayout"
+      class="e-b"
+      *ngIf="
+        panel && panel.children && !panel.children.length && isEditingLayout
+      "
     >
-        <menu-setting-form-component
-            [column]="column"
-            [panel]="panel"
-            [control]="_control"
-            [canDelete]="canDelete"
-            (onDeletePanel)="onDelete($event)"
-            (onDeleteColumn)="deleteColumn($event)"
-            (onToggleAction)="onToggleHandler($event)"
-            (onMenuClickAction)="onMenuClickHandler($event)"
-            (onSettingDialogAction)="openSettingDialog($event)"
-            (onChangeAction)="onChangeHandler($event)"
-            (onApplyAction)="onApplyHandler($event)"
-        ></menu-setting-form-component>
+      <div></div>
     </div>
+  </div>
+  <div
+    class="p-t ignore-drag"
+    [ngClass]="{ 'p-t-v': !isEditingTitle, 'p-t-e': isEditingTitle }"
+  >
+    <div
+      *ngIf="!isEditingTitle"
+      class="pt-t"
+      [ngStyle]="configTitleStyle"
+      xn-tooltip
+      [tooltipText]="panel.title"
+      [tooltipPlacement]="'top'"
+      container="body"
+    >
+      {{ panel.title }}
+      <div class="underline-title" [ngStyle]="configUnderlineStyle">
+        &nbsp;&nbsp;
+      </div>
+    </div>
+    <!--<div *ngIf="isEditingTitle">-->
+    <!--<input  class="xn-control"-->
+    <!--id="panel-title-{{panel.key}}"-->
+    <!--[(ngModel)]="panel.title"-->
+    <!--[ngClass]="{'input-error': hasTitleError}"-->
+    <!--(keyup)="titleKeyUp($event)">-->
+    <!--<button class="mat-btn-orange  s-t"-->
+    <!--mat-raised-button-->
+    <!--type="button"-->
+    <!--xn-tooltip-->
+    <!--[tooltipText]="'Save Title'"-->
+    <!--[tooltipPlacement]="'top'"-->
+    <!--container="body"-->
+    <!--(click)="saveTitle()">-->
+    <!--<span class="fa  fa-save"></span>-->
+    <!--</button>-->
+    <!--</div>-->
+  </div>
+  <div
+    class="d-i ignore-drag"
+    [ngClass]="{ 'panel-setting': panel.children.length }"
+    xn-tooltip
+    [tooltipText]="'Setting'"
+    [tooltipPlacement]="'top'"
+    container="body"
+    *ngIf="isEditingLayout"
+  >
+    <menu-setting-form-component
+      [column]="column"
+      [panel]="panel"
+      [control]="_control"
+      [canDelete]="canDelete"
+      (onDeletePanel)="onDelete($event)"
+      (onDeleteColumn)="deleteColumn($event)"
+      (onToggleAction)="onToggleHandler($event)"
+      (onMenuClickAction)="onMenuClickHandler($event)"
+      (onSettingDialogAction)="openSettingDialog($event)"
+      (onChangeAction)="onChangeHandler($event)"
+      (onApplyAction)="onApplyHandler($event)"
+    ></menu-setting-form-component>
+  </div>
 </div>

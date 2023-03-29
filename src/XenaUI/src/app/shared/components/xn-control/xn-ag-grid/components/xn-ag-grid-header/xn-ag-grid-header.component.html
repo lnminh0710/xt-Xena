@@ -1,134 +1,132 @@
 <div
-    class="title-container"
-    *ngIf="isShowedHeader"
-    [ngClass]="{ 'has-border': hasHeaderBorder }"
+  class="title-container"
+  *ngIf="isShowedHeader"
+  [ngClass]="{ 'has-border': hasHeaderBorder }"
 >
-    <div>
-        <label-translation
-            *ngIf="headerTitle"
-            [keyword]="'XnAgGridHeader__ht_' + headerTitle"
-        ></label-translation>
-    </div>
-    <a
-        mat-button
-        *ngIf="isShowCellMoveBtn"
-        class="icon-switch box-header-btns pull-left"
-        xn-tooltip
-        [tooltipText]="'Go to next column/row'"
-        [tooltipPlacement]="'top'"
-        container="body"
-        (click)="onClickCellMoveDefault($event)"
-    >
-        <input
-            type="image"
-            class="dropdown-toggle xn-margin--sm"
-            [ngClass]="{ 'rotate-left': isCellMoveDefault }"
-            src="public/imgs/cell-move.png"
-            alt="Widget Menu"
-            width="20"
-            height="20"
-        />
-    </a>
-    <div>
-        <label-translation
-            [keyword]="'XnAgGridHeader__N_of_entries'"
-        ></label-translation
-        >: {{ totalResults }}
-    </div>
+  <div>
+    <label-translation
+      *ngIf="headerTitle"
+      [keyword]="'XnAgGridHeader__ht_' + headerTitle"
+    ></label-translation>
+  </div>
+  <a
+    mat-button
+    *ngIf="isShowCellMoveBtn"
+    class="icon-switch box-header-btns pull-left"
+    xn-tooltip
+    [tooltipText]="'Go to next column/row'"
+    [tooltipPlacement]="'top'"
+    container="body"
+    (click)="onClickCellMoveDefault($event)"
+  >
+    <input
+      type="image"
+      class="dropdown-toggle xn-margin--sm"
+      [ngClass]="{ 'rotate-left': isCellMoveDefault }"
+      src="public/imgs/cell-move.png"
+      alt="Widget Menu"
+      width="20"
+      height="20"
+    />
+  </a>
+  <div>
+    <label-translation
+      [keyword]="'XnAgGridHeader__N_of_entries'"
+    ></label-translation
+    >: {{ totalResults }}
+  </div>
 </div>
 <div
-    class="controls-container"
-    *ngIf="
-        hasSearch || hasFilterBox || isShowedEditButtons || hasGoToNextColRow
-    "
+  class="controls-container"
+  *ngIf="hasSearch || hasFilterBox || isShowedEditButtons || hasGoToNextColRow"
 >
-    <div class="search-n-filter-box">
-        <div *ngIf="hasSearch" class="search-box">
-            <div class="input-group">
-                <app-xn-input-debounce
-                    delayTimer="600"
-                    placeholder="Search"
-                    [value]="searchText"
-                    [hasIndicator]="true"
-                    [hasSearchButton]="true"
-                    [isLoading]="isSearching"
-                    (onValueChanged)="doSearch($event)"
-                    (onSearchButtonClicked)="searchClicked($event)"
-                    cssClass="form-control input-sm"
-                >
-                </app-xn-input-debounce>
-            </div>
-        </div>
-
-        <div *ngIf="hasFilterBox" class="filter-box">
-            <div class="input-group">
-                <input
-                    type="text"
-                    class="form-control input-sm"
-                    placeholder="Filter"
-                    [(ngModel)]="filter"
-                    (keyup)="onFilterKeyup()"
-                    autocomplete="off"
-                />
-                <span class="input-group-addon">
-                    <i class="fa fa-filter" aria-hidden="true"></i>
-                </span>
-            </div>
-        </div>
-    </div>
-    <div class="custom-buttons">
-        <a
-            *ngIf="hasGoToNextColRow"
-            class="btn btn-primary btn-sm btn-upload-editable-table cursor-pointer"
-            xn-tooltip
-            [tooltipText]="'Go to next column/row'"
-            [tooltipPlacement]="'top'"
-            container="body"
-            (click)="onClickCellMoveBtn($event)"
+  <div class="search-n-filter-box">
+    <div *ngIf="hasSearch" class="search-box">
+      <div class="input-group">
+        <app-xn-input-debounce
+          delayTimer="600"
+          placeholder="Search"
+          [value]="searchText"
+          [hasIndicator]="true"
+          [hasSearchButton]="true"
+          [isLoading]="isSearching"
+          (onValueChanged)="doSearch($event)"
+          (onSearchButtonClicked)="searchClicked($event)"
+          cssClass="form-control input-sm"
         >
-            <input
-                type="image"
-                class="dropdown-toggle xn-margin--sm"
-                [ngClass]="{ 'rotate-left': isCellMoveForward }"
-                src="public/imgs/cell-move.png"
-                alt="Go to next column/row"
-                width="20"
-                height="20"
-            />
-        </a>
+        </app-xn-input-debounce>
+      </div>
     </div>
 
-    <div class="edit-button-box" *ngIf="!readOnly && isShowedEditButtons">
-        <a
-            class="btn btn-primary btn-sm btn-upload-editable-table cursor-pointer"
-            xn-tooltip
-            [tooltipText]="'Upload file'"
-            (click)="uploadFile()"
-            *ngIf="allowUploadFile"
-        >
-            <i class="fa fa-upload" aria-hidden="true"></i>
-        </a>
-
-        <a
-            class="btn btn-primary btn-sm btn-plus-editable-table cursor-pointer"
-            [ngClass]="[allowAddNew && hasValidationError ? 'disabled' : '']"
-            xn-tooltip
-            [tooltipText]="'Add New Row'"
-            (click)="addNewRow()"
-            *ngIf="allowAddNew"
-        >
-            <i class="fa fa-plus" aria-hidden="true"></i>
-        </a>
-
-        <a
-            class="btn btn-primary btn-sm btn-del-editable-table cursor-pointer"
-            [ngClass]="[allowDelete && !isMarkedAsDelete ? 'disabled' : '']"
-            (click)="deleteRows()"
-            xn-tooltip
-            [tooltipText]="'Delete'"
-            *ngIf="allowDelete"
-        >
-            <i class="fa fa-trash-o" aria-hidden="true"></i>
-        </a>
+    <div *ngIf="hasFilterBox" class="filter-box">
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control input-sm"
+          placeholder="Filter"
+          [(ngModel)]="filter"
+          (keyup)="onFilterKeyup()"
+          autocomplete="off"
+        />
+        <span class="input-group-addon">
+          <i class="fa fa-filter" aria-hidden="true"></i>
+        </span>
+      </div>
     </div>
+  </div>
+  <div class="custom-buttons">
+    <a
+      *ngIf="hasGoToNextColRow"
+      class="btn btn-primary btn-sm btn-upload-editable-table cursor-pointer"
+      xn-tooltip
+      [tooltipText]="'Go to next column/row'"
+      [tooltipPlacement]="'top'"
+      container="body"
+      (click)="onClickCellMoveBtn($event)"
+    >
+      <input
+        type="image"
+        class="dropdown-toggle xn-margin--sm"
+        [ngClass]="{ 'rotate-left': isCellMoveForward }"
+        src="public/imgs/cell-move.png"
+        alt="Go to next column/row"
+        width="20"
+        height="20"
+      />
+    </a>
+  </div>
+
+  <div class="edit-button-box" *ngIf="!readOnly && isShowedEditButtons">
+    <a
+      class="btn btn-primary btn-sm btn-upload-editable-table cursor-pointer"
+      xn-tooltip
+      [tooltipText]="'Upload file'"
+      (click)="uploadFile()"
+      *ngIf="allowUploadFile"
+    >
+      <i class="fa fa-upload" aria-hidden="true"></i>
+    </a>
+
+    <a
+      class="btn btn-primary btn-sm btn-plus-editable-table cursor-pointer"
+      [ngClass]="[allowAddNew && hasValidationError ? 'disabled' : '']"
+      xn-tooltip
+      [tooltipText]="'Add New Row'"
+      (click)="addNewRow()"
+      *ngIf="allowAddNew"
+    >
+      <i class="fa fa-plus" aria-hidden="true"></i>
+    </a>
+
+    <a
+      class="btn btn-primary btn-sm btn-del-editable-table cursor-pointer"
+      [ngClass]="[allowDelete && !isMarkedAsDelete ? 'disabled' : '']"
+      (click)="deleteRows()"
+      xn-tooltip
+      [tooltipText]="'Delete'"
+      *ngIf="allowDelete"
+    >
+      <i class="fa fa-trash-o" aria-hidden="true"></i>
+    </a>
+  </div>
 </div>

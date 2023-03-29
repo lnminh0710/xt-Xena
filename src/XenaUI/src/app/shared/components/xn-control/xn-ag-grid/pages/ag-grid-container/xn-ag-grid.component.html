@@ -1,128 +1,126 @@
 <ng-container *ngIf="serverPaging">
-    <div
-        class="no-padding paging-grid"
-        [ngClass]="{ 'p-p-i': isUsedSearchTextboxInside }"
+  <div
+    class="no-padding paging-grid"
+    [ngClass]="{ 'p-p-i': isUsedSearchTextboxInside }"
+  >
+    <xn-pagination
+      [boundaryLinks]="true"
+      [itemsPerPage]="pageSize"
+      [paginationFromPopup]="paginationFromPopup"
+      [pageIndex]="pageIndex"
+      [totalItems]="totalResults"
+      [(ngModel)]="currentPage"
+      (pageChanged)="currentPageChanged($event)"
+      (pageNumberDefault)="onPageNumberDefault($event)"
+      [maxSize]="6"
+      [keywordSearch]="hightlightKeywords"
     >
-        <xn-pagination
-            [boundaryLinks]="true"
-            [itemsPerPage]="pageSize"
-            [paginationFromPopup]="paginationFromPopup"
-            [pageIndex]="pageIndex"
-            [totalItems]="totalResults"
-            [(ngModel)]="currentPage"
-            (pageChanged)="currentPageChanged($event)"
-            (pageNumberDefault)="onPageNumberDefault($event)"
-            [maxSize]="6"
-            [keywordSearch]="hightlightKeywords"
-        >
-        </xn-pagination>
-    </div>
+    </xn-pagination>
+  </div>
 </ng-container>
 
 <div
-    *ngIf="serverPaging && isSearching"
-    class="i"
-    [ngClass]="{ 'i-d-e': isUsedSearchTextboxInside }"
+  *ngIf="serverPaging && isSearching"
+  class="i"
+  [ngClass]="{ 'i-d-e': isUsedSearchTextboxInside }"
 >
-    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+  <i class="fa fa-spinner fa-pulse fa-3x"></i>
 </div>
 
 <xn-ag-grid-header
-    #xnAgGridHeader
-    [isShowedHeader]="isShowedHeader"
-    [pageIndex]="currentPageIndex"
-    [itemsPerPage]="currentPageSize"
-    [isShowCellMoveBtn]="isArticlesSelected"
-    [hasHeaderBorder]="hasHeaderBorder"
-    [headerTitle]="headerTitle"
-    [serverPaging]="serverPaging"
-    [totalResults]="
-        gridOptions && gridOptions.rowData ? gridOptions.rowData.length : 0
-    "
-    [hasSearch]="hasSearch"
-    [hasFilterBox]="hasFilterBox"
-    [allowUploadFile]="allowUploadFile"
-    [allowAddNew]="allowAddNew"
-    [allowDelete]="allowDelete"
-    [isShowedEditButtons]="isShowedEditButtons"
-    [isMarkedAsDelete]="isMarkedAsDelete"
-    [hasValidationError]="hasValidationErrorLocal"
-    [isSearching]="isSearching"
-    [hasGoToNextColRow]="hasGoToNextColRow"
-    [searchText]="searchText"
-    (onSearch)="onGridHeaderSearch($event)"
-    (onFilter)="onGridHeaderFilter($event)"
-    (onUpload)="uploadFile()"
-    (onAdd)="addNewRow()"
-    (onDeleteRows)="deleteRows()"
-    (onCellDirectionChanged)="onCellDirectionChanged($event)"
+  #xnAgGridHeader
+  [isShowedHeader]="isShowedHeader"
+  [pageIndex]="currentPageIndex"
+  [itemsPerPage]="currentPageSize"
+  [isShowCellMoveBtn]="isArticlesSelected"
+  [hasHeaderBorder]="hasHeaderBorder"
+  [headerTitle]="headerTitle"
+  [serverPaging]="serverPaging"
+  [totalResults]="
+    gridOptions && gridOptions.rowData ? gridOptions.rowData.length : 0
+  "
+  [hasSearch]="hasSearch"
+  [hasFilterBox]="hasFilterBox"
+  [allowUploadFile]="allowUploadFile"
+  [allowAddNew]="allowAddNew"
+  [allowDelete]="allowDelete"
+  [isShowedEditButtons]="isShowedEditButtons"
+  [isMarkedAsDelete]="isMarkedAsDelete"
+  [hasValidationError]="hasValidationErrorLocal"
+  [isSearching]="isSearching"
+  [hasGoToNextColRow]="hasGoToNextColRow"
+  [searchText]="searchText"
+  (onSearch)="onGridHeaderSearch($event)"
+  (onFilter)="onGridHeaderFilter($event)"
+  (onUpload)="uploadFile()"
+  (onAdd)="addNewRow()"
+  (onDeleteRows)="deleteRows()"
+  (onCellDirectionChanged)="onCellDirectionChanged($event)"
 >
 </xn-ag-grid-header>
 
 <ag-grid-angular
-    #agGrid
-    *ngIf="gridOptions"
-    id="{{ printId }}"
-    class="ag-theme-balham"
-    [ngClass]="{
-        'has-header':
-            isShowedHeader &&
-            !(isShowedEditButtons || hasSearch || hasFilterBox),
-        'has-search':
-            !isShowedHeader &&
-            (isShowedEditButtons || hasSearch || hasFilterBox),
-        'has-search-n-header':
-            isShowedHeader && (isShowedEditButtons || hasSearch || hasFilterBox)
-    }"
-    [gridOptions]="gridOptions"
-    [columnDefs]="gridOptions.columnDefs"
-    [rowData]="gridOptions.rowData"
-    [pinnedTopRowData]="pinnedTopRowData"
-    [pinnedBottomRowData]="pinnedBottomRowData"
-    [sideBar]="sideBar"
-    [getRowHeight]="getRowHeight"
-    [suppressDragLeaveHidesColumns]="true"
-    [suppressContextMenu]="suppressContextMenu"
-    [suppressHorizontalScroll]="suppressHorizontalScroll"
-    [popupParent]="popupParent"
-    [getContextMenuItems]="buildContextMenuItems"
-    enableColResize
-    [colResizeDefault]="colResizeDefault"
-    enableSorting
-    enableFilter
-    [rowSelection]="rowSelection"
-    [suppressCopyRowsToClipboard]="true"
-    [rowGroupPanelShow]="rowGroupPanelShow"
-    [floatingFilter]="columnFilter"
-    [overlayLoadingTemplate]="overlayLoadingTemplate"
-    [masterDetail]="masterDetail"
-    [detailCellRenderer]="detailCellRenderer"
-    [detailRowHeight]="detailRowHeight"
-    [headerHeight]="headerHeight"
-    [rowBuffer]="rowBuffer"
-    [localeText]="localeText"
-    (gridReady)="onReady($event)"
-    (columnResized)="onColumnResized($event)"
-    (rowDoubleClicked)="onRowDoubleClicked($event)"
-    (rowEditingStarted)="onRowEditingStarted($event)"
-    (rowEditingStopped)="onRowEditingStopped($event)"
-    (cellEditingStarted)="onCellEditingStarted($event)"
-    (cellEditingStopped)="onCellEditingStopped($event)"
-    (cellValueChanged)="onCellValueChanged($event)"
-    (selectionChanged)="onSelectionChanged($event)"
-    (rowClicked)="rowClickedHandler($event)"
-    (displayedColumnsChanged)="displayedColumnsChanged($event)"
-    (cellFocused)="onCellFocused($event)"
-    (columnVisible)="columnVisible($event)"
-    (columnMoved)="onColumnMoved($event)"
-    (columnPinned)="onColumnPinned($event)"
-    (dragStopped)="onDragStopped($event)"
-    (gridSizeChanged)="onGridSizeChanged($event)"
-    (sortChanged)="sortChanged($event)"
-    (columnRowGroupChanged)="onColumnRowGroupChanged($event)"
-    (cellClicked)="onCellClicked($event)"
-    (cellContextMenu)="onCellContextMenu($event)"
-    (rowGroupOpened)="onRowGroupOpened($event)"
-    (bodyScroll)="onBodyScroll($event)"
+  #agGrid
+  *ngIf="gridOptions"
+  id="{{ printId }}"
+  class="ag-theme-balham"
+  [ngClass]="{
+    'has-header':
+      isShowedHeader && !(isShowedEditButtons || hasSearch || hasFilterBox),
+    'has-search':
+      !isShowedHeader && (isShowedEditButtons || hasSearch || hasFilterBox),
+    'has-search-n-header':
+      isShowedHeader && (isShowedEditButtons || hasSearch || hasFilterBox)
+  }"
+  [gridOptions]="gridOptions"
+  [columnDefs]="gridOptions.columnDefs"
+  [rowData]="gridOptions.rowData"
+  [pinnedTopRowData]="pinnedTopRowData"
+  [pinnedBottomRowData]="pinnedBottomRowData"
+  [sideBar]="sideBar"
+  [getRowHeight]="getRowHeight"
+  [suppressDragLeaveHidesColumns]="true"
+  [suppressContextMenu]="suppressContextMenu"
+  [suppressHorizontalScroll]="suppressHorizontalScroll"
+  [popupParent]="popupParent"
+  [getContextMenuItems]="buildContextMenuItems"
+  enableColResize
+  [colResizeDefault]="colResizeDefault"
+  enableSorting
+  enableFilter
+  [rowSelection]="rowSelection"
+  [suppressCopyRowsToClipboard]="true"
+  [rowGroupPanelShow]="rowGroupPanelShow"
+  [floatingFilter]="columnFilter"
+  [overlayLoadingTemplate]="overlayLoadingTemplate"
+  [masterDetail]="masterDetail"
+  [detailCellRenderer]="detailCellRenderer"
+  [detailRowHeight]="detailRowHeight"
+  [headerHeight]="headerHeight"
+  [rowBuffer]="rowBuffer"
+  [localeText]="localeText"
+  (gridReady)="onReady($event)"
+  (columnResized)="onColumnResized($event)"
+  (rowDoubleClicked)="onRowDoubleClicked($event)"
+  (rowEditingStarted)="onRowEditingStarted($event)"
+  (rowEditingStopped)="onRowEditingStopped($event)"
+  (cellEditingStarted)="onCellEditingStarted($event)"
+  (cellEditingStopped)="onCellEditingStopped($event)"
+  (cellValueChanged)="onCellValueChanged($event)"
+  (selectionChanged)="onSelectionChanged($event)"
+  (rowClicked)="rowClickedHandler($event)"
+  (displayedColumnsChanged)="displayedColumnsChanged($event)"
+  (cellFocused)="onCellFocused($event)"
+  (columnVisible)="columnVisible($event)"
+  (columnMoved)="onColumnMoved($event)"
+  (columnPinned)="onColumnPinned($event)"
+  (dragStopped)="onDragStopped($event)"
+  (gridSizeChanged)="onGridSizeChanged($event)"
+  (sortChanged)="sortChanged($event)"
+  (columnRowGroupChanged)="onColumnRowGroupChanged($event)"
+  (cellClicked)="onCellClicked($event)"
+  (cellContextMenu)="onCellContextMenu($event)"
+  (rowGroupOpened)="onRowGroupOpened($event)"
+  (bodyScroll)="onBodyScroll($event)"
 >
 </ag-grid-angular>
