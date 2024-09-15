@@ -141,15 +141,19 @@ export class NoteFormDataEntryComponent
             !customerDataState.formValue ||
             !customerDataState.formValue.idPerson
           ) {
+            this.idPerson = null;
+            this.datasource = null;
             this.displayItems.length = 0;
+            this.noteFormComponent.reset();
+            this.cdf.detectChanges();
             return;
           }
 
           if (this.idPerson != customerDataState.formValue.idPerson) {
             this.idPerson = customerDataState.formValue.idPerson;
             this.outputData.emit(this.idPerson);
+            this.getCustomerStatusByIdPerson();
           }
-          this.getCustomerStatusByIdPerson();
         });
       }
     );

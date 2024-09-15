@@ -290,7 +290,10 @@ export class CustomerFormComponent
         this.setOutputData(false);
         return;
       }
-      if (!this.formGroup.dirty) {
+      if (
+        !this.formGroup.dirty ||
+        !Configuration.PublicSettings.enableCheckDedupe
+      ) {
         this.callSaveData();
         return;
       }
@@ -344,7 +347,8 @@ export class CustomerFormComponent
       !this.isRenderForm ||
       !this.formGroup ||
       !this.formGroup.value ||
-      !this.formGroup.value.idRepIsoCountryCode
+      !this.formGroup.value.idRepIsoCountryCode ||
+      !Configuration.PublicSettings.enableCheckDedupe
     )
       return;
 

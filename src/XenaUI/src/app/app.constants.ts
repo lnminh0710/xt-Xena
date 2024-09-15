@@ -55,6 +55,7 @@ export class Configuration {
   public valueChangeDeboundTimeDefault = 500;
   public noteLengthDefault = 500;
   public enableTimeTraceLog = false;
+  public static enableCheckDedupe = false;
   public textEditorFont = [
     {
       import: 'formats/font',

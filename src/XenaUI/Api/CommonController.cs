@@ -192,6 +192,7 @@ namespace XenaUI.Api
             result.SignalRApiUrl = _serverConfig.ServerSetting.SignalRApiUrl;
             result.PdfApiUrl = _serverConfig.ServerSetting.PdfApiUrl;
             result.ScanningTool = _appSettings.ScanningTool;
+            result.EnableCheckDedupe = _appSettings.EnableCheckDedupe;
             result.Sentry = _sentrySettings;
             result.SystemInfo = await _commonBusiness.GetSystemInfo();
 

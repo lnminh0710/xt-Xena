@@ -109,6 +109,11 @@ namespace XenaUI.Utils
         public bool EnableTimeTraceLog { get; set; }
 
         /// <summary>
+        /// EnableCheckDedupe
+        /// </summary>
+        public bool EnableCheckDedupe { get; set; }
+
+        /// <summary>
         /// TrackingUrl
         /// </summary>
         public string TrackingUrl { get; set; }

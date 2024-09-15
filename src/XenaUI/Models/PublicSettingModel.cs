@@ -60,6 +60,11 @@ namespace XenaUI.Models
         public bool EnableSignalR { get; set; }
 
         /// <summary>
+        /// EnableCheckDedupe
+        /// </summary>
+        public bool EnableCheckDedupe { get; set; }
+
+        /// <summary>
         /// EnableSignalRForWidgetDetail
         /// </summary>
         public bool EnableSignalRForWidgetDetail { get; set; }
