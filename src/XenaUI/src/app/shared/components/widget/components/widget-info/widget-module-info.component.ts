@@ -536,10 +536,16 @@ export class WidgetModuleComponent
 
     this.listenKeyRequestItem = this.getListenKeyRequestItem();
     this.disableButtonEditWidget =
-      (this.currentModule.idSettingsGUI === 7 && !!this.listenKeyValue) ||
       (!this.isSelectionProject && !this.listenKeyRequestItem) ||
       (!!this.listenKeyRequestItem && !this.listenKeyRequestItem.value) ||
       this.data.idRepWidgetType == this.WidgetTypeView.FieldSetReadonly;
+
+    if (
+      this.currentModule.idSettingsGUI === 7 &&
+      this.data.idRepWidgetType === this.WidgetTypeView.NoteForm
+    ) {
+      this.disableButtonEditWidget = !this.listenKeyValue;
+    }
 
     this.enableEditWidgetContextMenu();
 
@@ -3590,6 +3596,7 @@ export class WidgetModuleComponent
                   });
                 }
                 this.widgetFormComponent.invokeSaveWidgetSuccess();
+                this.disableButtonEditWidget = false;
               });
             });
         this.afterWidgetGetData(formValues);
@@ -7258,7 +7265,10 @@ export class WidgetModuleComponent
   }
 
   private checkMatchingDataBeforeSaveWidgetData() {
-    if (!this.checkFieldMatchingDataEdited()) {
+    if (
+      !this.checkFieldMatchingDataEdited() ||
+      !Configuration.PublicSettings.enableCheckDedupe
+    ) {
       this.saveFormWidget();
       return;
     }
@@ -7347,6 +7357,6 @@ export class WidgetModuleComponent
 
   public onSelectCustomerODE(event: any) {
     this.listenKeyValue = event;
-    this.disableButtonEditWidget = false;
+    this.disableButtonEditWidget = !event;
   }
 }

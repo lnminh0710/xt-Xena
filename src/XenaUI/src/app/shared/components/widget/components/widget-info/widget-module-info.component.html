@@ -592,68 +592,79 @@
         [hidden]="!widgetState.selected"
         *ngIf="widgetState.data.idRepWidgetType == WidgetTypeView.EditableGrid"
       >
-        <xn-ag-grid
-          #widgetComponent
-          [gridTranslation]="widgetComponent"
-          [isActivated]="widgetState.selected"
+        <ng-container *ngIf="currentModule.idSettingsGUI !== 7">
+          <xn-ag-grid
+            #widgetComponent
+            [gridTranslation]="widgetComponent"
+            [isActivated]="widgetState.selected"
+            [widgetDetail]="widgetState.data"
+            [readOnly]="!accessRight.edit || !accessRight.delete"
+            [isEditting]="
+              isOnEditingTable ||
+              widgetState.data.idRepWidgetApp ==
+                RepWidgetAppIdEnum.PrinterAndConfirm
+            "
+            [gridStyle]="gridStyle"
+            [printId]="printId"
+            [dataSource]="widgetState.tableData.dataSourceTable"
+            [allowDelete]="allowRowDelete && accessRight.delete"
+            [allowMediaCode]="allowMediaCode"
+            [enterMovesDown]="enterMovesDown"
+            [currentModule]="currentModule"
+            [globalProperties]="globalProperties"
+            [widgetProperties]="properties"
+            [showTotalRow]="showTotalRow"
+            [rowGrouping]="rowGrouping"
+            [pivoting]="pivoting"
+            [columnFilter]="columnFilter"
+            [fitWidthColumn]="allowFitColumn"
+            [isShowToolPanels]="
+              columnsLayoutSettings && columnsLayoutSettings.isShowToolPanels
+            "
+            [columnsLayoutSettings]="columnsLayoutSettings"
+            [autoSaveColumnsLayout]="false"
+            [parentInstance]="widgetInstance"
+            [treeViewMode]="allowTreeView"
+            [customTooltip]="
+              buildCustomTooltip(widgetState.data.idRepWidgetApp)
+            "
+            [allowSetColumnState]="
+              widgetState.data.idRepWidgetApp !=
+              RepWidgetAppIdEnum.RepositoryDetail
+            "
+            [canExport]="accessRight.export"
+            [rowSelection]="rowSelection"
+            [sheetName]="title.value"
+            [isInWidget]="true"
+            [rowBackground]="applyRowBackground"
+            [rowBackgroundGlobal]="tableStyle"
+            [borderRow]="borderRow"
+            [background]="backgroundColor"
+            [backgroundImage]="backGroundImageStyle"
+            [allowTranslation]="allowGridTranslation"
+            (onRowGroupPanel)="handleRowGroupPanel($event)"
+            (changeColumnLayout)="onChangeColumnLayoutHandler($event)"
+            (rowDoubleClicked)="onRowDoubleClickHandler($event)"
+            (cellEditingStarted)="onTableEditStart($event)"
+            (cellEditingStopped)="onTableEditEnd($event)"
+            (cellValueChanged)="onTableEditSuccess($event)"
+            (onRowMarkedAsDelete)="onRowMarkedAsDeleted($event)"
+            (hasValidationError)="hasValidationErrorHandler($event)"
+            (rowClick)="onRowClick($event)"
+            (downloadClick)="onDownloadFile($event)"
+            (uploadClick)="onUploadFile($event)"
+            (mediacodeClick)="onWijmoGridMediacodeClick($event)"
+            (saveColumnsLayoutAction)="saveColumnsLayoutHandle()"
+          >
+          </xn-ag-grid>
+        </ng-container>
+        <customer-order-data-entry
+          *ngIf="currentModule.idSettingsGUI === 7"
+          [tabID]="tabID"
           [widgetDetail]="widgetState.data"
-          [readOnly]="!accessRight.edit || !accessRight.delete"
-          [isEditting]="
-            isOnEditingTable ||
-            widgetState.data.idRepWidgetApp ==
-              RepWidgetAppIdEnum.PrinterAndConfirm
-          "
-          [gridStyle]="gridStyle"
-          [printId]="printId"
-          [dataSource]="widgetState.tableData.dataSourceTable"
-          [allowDelete]="allowRowDelete && accessRight.delete"
-          [allowMediaCode]="allowMediaCode"
-          [enterMovesDown]="enterMovesDown"
-          [currentModule]="currentModule"
           [globalProperties]="globalProperties"
-          [widgetProperties]="properties"
-          [showTotalRow]="showTotalRow"
-          [rowGrouping]="rowGrouping"
-          [pivoting]="pivoting"
-          [columnFilter]="columnFilter"
-          [fitWidthColumn]="allowFitColumn"
-          [isShowToolPanels]="
-            columnsLayoutSettings && columnsLayoutSettings.isShowToolPanels
-          "
-          [columnsLayoutSettings]="columnsLayoutSettings"
-          [autoSaveColumnsLayout]="false"
-          [parentInstance]="widgetInstance"
-          [treeViewMode]="allowTreeView"
-          [customTooltip]="buildCustomTooltip(widgetState.data.idRepWidgetApp)"
-          [allowSetColumnState]="
-            widgetState.data.idRepWidgetApp !=
-            RepWidgetAppIdEnum.RepositoryDetail
-          "
-          [canExport]="accessRight.export"
-          [rowSelection]="rowSelection"
-          [sheetName]="title.value"
-          [isInWidget]="true"
-          [rowBackground]="applyRowBackground"
-          [rowBackgroundGlobal]="tableStyle"
-          [borderRow]="borderRow"
-          [background]="backgroundColor"
-          [backgroundImage]="backGroundImageStyle"
-          [allowTranslation]="allowGridTranslation"
-          (onRowGroupPanel)="handleRowGroupPanel($event)"
-          (changeColumnLayout)="onChangeColumnLayoutHandler($event)"
-          (rowDoubleClicked)="onRowDoubleClickHandler($event)"
-          (cellEditingStarted)="onTableEditStart($event)"
-          (cellEditingStopped)="onTableEditEnd($event)"
-          (cellValueChanged)="onTableEditSuccess($event)"
-          (onRowMarkedAsDelete)="onRowMarkedAsDeleted($event)"
-          (hasValidationError)="hasValidationErrorHandler($event)"
-          (rowClick)="onRowClick($event)"
-          (downloadClick)="onDownloadFile($event)"
-          (uploadClick)="onUploadFile($event)"
-          (mediacodeClick)="onWijmoGridMediacodeClick($event)"
-          (saveColumnsLayoutAction)="saveColumnsLayoutHandle()"
         >
-        </xn-ag-grid>
+        </customer-order-data-entry>
       </div>
 
       <div

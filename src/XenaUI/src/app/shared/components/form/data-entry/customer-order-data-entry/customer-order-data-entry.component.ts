@@ -31,6 +31,7 @@ import {
   WidgetDetail,
   MessageModel,
   OrderDataEntryCustomerOrderModel,
+  FormModel,
 } from 'app/models';
 import { DataEntryFormBase } from 'app/shared/components/form/data-entry/data-entry-form-base';
 import { Router } from '@angular/router';
@@ -56,6 +57,8 @@ export class CustomerOrderDataEntryComponent
 {
   @Input() tabID: string;
   @Input() globalProperties: any;
+  @Input() widgetDetail: WidgetDetail;
+
   @Input() gridId: string;
 
   @Output() onHeaderColsUpdated = new EventEmitter<Array<string>>();
@@ -75,6 +78,11 @@ export class CustomerOrderDataEntryComponent
   public formDisplayType: WidgetFormTypeEnum = WidgetFormTypeEnum.List;
   public renderGrid = true;
   public currentModule = ModuleList.OrderDataEntry;
+  private dataEntryCustomerIdState: Observable<number>;
+  private dataEntryCustomerIdStateSubscription: Subscription;
+  private dataEntryCustomerState: Observable<FormModel>;
+  private dataEntryStateCustomerSubscription: Subscription;
+  customerId: number;
 
   constructor(
     private store: Store<AppState>,
@@ -100,12 +108,35 @@ export class CustomerOrderDataEntryComponent
         dataEntryReducer.getDataEntryState(state, this.tabID)
           .selectedOrderSummaryItem
     );
+    this.dataEntryCustomerState = this.store.select(
+      (state) =>
+        dataEntryReducer.getDataEntryState(state, this.tabID).customerData
+    );
     this.differ = this.differs.find({}).create();
   }
 
   public ngOnInit() {
-    this.getOrderDetailByIdSalesOrder();
+    this.subscribeCustomerChanged();
     this.subscribeSelectedOrderSummaryItemState();
+  }
+
+  private subscribeCustomerChanged() {
+    this.dataEntryCustomerIdState = this.store.select(
+      (state) =>
+        dataEntryReducer.getDataEntryState(state, this.tabID).customerId
+    );
+
+    this.dataEntryStateCustomerSubscription =
+      this.dataEntryCustomerState.subscribe((response: FormModel) => {
+        this.appErrorHandler.executeAction(() => {
+          if (response == null) {
+            this.customerId = null;
+          } else if (response && response.formValue) {
+            this.customerId = response.formValue.idPerson;
+          }
+          this.getOrderDetailByIdSalesOrder();
+        });
+      });
   }
 
   public ngOnDestroy() {
@@ -130,87 +161,59 @@ export class CustomerOrderDataEntryComponent
     if (this.selectedOrderSummaryItemStateSubscription)
       this.selectedOrderSummaryItemStateSubscription.unsubscribe();
 
-    this.selectedOrderSummaryItemStateSubscription =
-      this.selectedOrderSummaryItemState.subscribe(
-        (selectedOrderSummaryItemState: any) => {
-          this.appErrorHandler.executeAction(() => {
-            if (
-              !selectedOrderSummaryItemState ||
-              !selectedOrderSummaryItemState.IdSalesOrder
-            ) {
-              return;
-            }
+    // this.selectedOrderSummaryItemStateSubscription =
+    //   this.selectedOrderSummaryItemState.subscribe(
+    //     (selectedOrderSummaryItemState: any) => {
+    //       this.appErrorHandler.executeAction(() => {
+    //         if (
+    //           !selectedOrderSummaryItemState ||
+    //           !selectedOrderSummaryItemState.IdSalesOrder
+    //         ) {
+    //           return;
+    //         }
 
-            if (
-              this.idSalesOrder != selectedOrderSummaryItemState.IdSalesOrder
-            ) {
-              this.idSalesOrder = selectedOrderSummaryItemState.IdSalesOrder;
-            }
-            this.getOrderDetailByIdSalesOrder();
-          });
-        }
-      );
+    //         if (
+    //           this.idSalesOrder != selectedOrderSummaryItemState.IdSalesOrder
+    //         ) {
+    //           this.idSalesOrder = selectedOrderSummaryItemState.IdSalesOrder;
+    //         }
+    //         this.getOrderDetailByIdSalesOrder();
+    //       });
+    //     }
+    //   );
   }
 
   private getOrderDetailByIdSalesOrder() {
-    if (isNil(this.idSalesOrder)) {
+    if (!this.customerId) {
       this.datasource = null;
       return;
     }
 
-    const request = {
-      Request: {
-        ModuleName: 'GlobalModule',
-        ServiceName: 'GlobalService',
-        Data: `
-                        {
-                        \"MethodName\" : \"SpAppWg002CustomerOrders\",
-                        \"CrudType\"  : null,
-                        \"Object\" : null,
-                        \"Mode\" :  null,
-                        \"WidgetTitle\" : \"Order Detail\",
-                        \"IsDisplayHiddenFieldWithMsg\" : \"1\",
-                        <<LoginInformation>>,
-                        <<InputParameter>>
-                       }`,
-      },
-    };
+    this.widgetTemplateSettingService
+      .getWidgetDetailByRequestString(this.widgetDetail, {
+        IdPerson: this.customerId,
+      })
 
-    let widgetDetail: any = {
-      id: Uti.guid(),
-      idRepWidgetApp: 125,
-      idRepWidgetType: 3,
-      moduleName: 'Order Data Entry',
-      request: JSON.stringify(request),
-      title: `Order Detail`,
-    };
-    this.widgetTemplateSettingServiceSubscription =
-      this.widgetTemplateSettingService
-        .getWidgetDetailByRequestString(widgetDetail, {
-          IdSalesOrder: this.idSalesOrder,
-        })
-        .subscribe((response: WidgetDetail) => {
-          this.appErrorHandler.executeAction(() => {
-            if (!response || !response.contentDetail) return;
+      .subscribe((response: WidgetDetail) => {
+        this.appErrorHandler.executeAction(() => {
+          if (!response || !response.contentDetail) return;
 
-            this.datasource = this.datatableService.buildDataSource(
-              response.contentDetail
-            );
+          this.datasource = this.datatableService.buildDataSource(
+            response.contentDetail
+          );
 
-            this.buildFormData(response);
+          this.buildFormData(response);
 
-            this.onHeaderColsUpdated.emit(
-              Object['values'](response.contentDetail.columnSettings).map(
-                (x) => {
-                  return {
-                    fieldName: x.OriginalColumnName,
-                    fieldDisplayName: x.ColumnHeader,
-                  };
-                }
-              )
-            );
-          });
+          this.onHeaderColsUpdated.emit(
+            Object['values'](response.contentDetail.columnSettings).map((x) => {
+              return {
+                fieldName: x.OriginalColumnName,
+                fieldDisplayName: x.ColumnHeader,
+              };
+            })
+          );
         });
+      });
   }
 
   public rebuildTranslateText() {

@@ -984,11 +984,7 @@ export class OrderDataEntryFormComponent
     this.orderDataEntryForm.controls['orderType'].setValue(
       this.orderTypeValueFromWidgetProperty || ''
     );
-    this.orderDataEntryForm.controls['orderDate'].setValue(
-      formControlValueState['orderDate']
-        ? new Date(formControlValueState['orderDate'])
-        : new Date()
-    );
+    this.orderDataEntryForm.controls['orderDate'].setValue(new Date());
     this.orderDataEntryForm.controls['orderDate'].markAsPristine();
     this.orderDataEntryForm.controls['orderDay'].setValue(
       formControlValueState['orderDay']
@@ -1066,7 +1062,6 @@ export class OrderDataEntryFormComponent
 
             //if IsoCountryCode of Customer is existing in Countrys of Campaign
             if (!this.customerHasCountryOfCurrentCampaign(2)) return;
-
             if (
               Configuration.PublicSettings.callODEDoublet &&
               this.isCallDoubletCheckBeforeSavingODE()
@@ -1134,7 +1129,7 @@ export class OrderDataEntryFormComponent
       mediacode: null,
       orderBy: formControlValueState['orderBy'],
       orderType: null,
-      orderDate: formControlValueState['orderDate'] || new Date(),
+      orderDate: new Date(),
       orderMonth: formControlValueState['orderMonth'],
       orderDay: formControlValueState['orderDay'],
       orderYear: formControlValueState['orderYear'],
@@ -1650,7 +1645,7 @@ export class OrderDataEntryFormComponent
           this.tabID
         )
       );
-      this.focusOnBarcode(1500);
+      this.focusOnMediaCode(1500);
       //allow call save OrderType
       this._isPreventSaveOrderTypeFromProperties = false;
 
@@ -1741,7 +1736,7 @@ export class OrderDataEntryFormComponent
     setTimeout(() => {
       this.scanBarcodeProcess.preventFocus = false;
       this.isDataProcessing = false;
-      this.focusOnBarcode(1500);
+      this.focusOnMediaCode(1500);
       //allow call save OrderType
       this._isPreventSaveOrderTypeFromProperties = false;
     }, 300);
@@ -3256,10 +3251,11 @@ export class OrderDataEntryFormComponent
 
   private isCallDoubletCheckBeforeSavingODE() {
     return (
-      !this.idPerson ||
-      (this.customerData &&
-        this.customerData.isDirty &&
-        this.customerData.needToCheckMatchingData)
+      Configuration.PublicSettings.enableCheckDedupe &&
+      (!this.idPerson ||
+        (this.customerData &&
+          this.customerData.isDirty &&
+          this.customerData.needToCheckMatchingData))
     );
   }
   //#endregion
@@ -3528,7 +3524,7 @@ export class OrderDataEntryFormComponent
         !this.orderDataEntryForm.controls['orderBy'].value
       ) {
         setTimeout(() => {
-          this.barcodeCtrl.nativeElement.focus();
+          this.mediacodeCtrl.nativeElement.focus();
         }, 500);
         return;
       } else if (!this.orderDataEntryForm.controls['mediacode'].value)
@@ -3621,13 +3617,10 @@ export class OrderDataEntryFormComponent
     }, 200);
   }
 
-  private focusOnBarcode(timeout?: number) {
-    if (
-      this.orderDataEntryForm.controls['isDisplayBarCode'].value &&
-      !this.orderDataEntryForm.controls['barcode'].value
-    )
+  private focusOnMediaCode(timeout?: number) {
+    if (!this.orderDataEntryForm.controls['mediacode'].value)
       setTimeout(() => {
-        this.barcodeCtrl.nativeElement.focus();
+        this.mediacodeCtrl.nativeElement.focus();
       }, timeout || 300);
     else this.focusOnControl();
   }

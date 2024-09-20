@@ -3089,76 +3089,74 @@ export class XnTabButtonComponent
   }
 
   public saveOnlyWithoutControllingTab() {
-    setTimeout(() => {
-      let isValid = true;
-      if (this.ofModule.idSettingsGUI == MenuModuleId.orderDataEntry) {
-        switch (this.currentAction) {
-          case TabButtonActionConst.CHANGE_TAB:
+    let isValid = true;
+    if (this.ofModule.idSettingsGUI == MenuModuleId.orderDataEntry) {
+      switch (this.currentAction) {
+        case TabButtonActionConst.CHANGE_TAB:
+          this.store.dispatch(
+            this.tabButtonActions.setCurrentAction(
+              TabButtonActionConst.SAVE_ORDER_DATA_ENTRY_AND_CHANGE_TAB,
+              this.ofModule
+            )
+          );
+          break;
+
+        case TabButtonActionConst.REMOVE_TAB:
+          this.store.dispatch(
+            this.tabButtonActions.setCurrentAction(
+              TabButtonActionConst.SAVE_ORDER_DATA_ENTRY_AND_REMOVE_TAB,
+              this.ofModule
+            )
+          );
+          break;
+
+        case TabButtonActionConst.RELOAD_ORDER_DATA_ENTRY:
+          this.store.dispatch(
+            this.tabButtonActions.setCurrentAction(
+              TabButtonActionConst.SAVE_ORDER_DATA_ENTRY_AND_RELOAD,
+              this.ofModule
+            )
+          );
+          break;
+
+        default:
+          if (
+            !this.isOrderDataEntrySaveDisabled ||
+            !this.isOrderDataEntrySaveDisabled.status ||
+            (this.selectedODETab &&
+              this.selectedODETab.TabID == 'Scanning' &&
+              !this.idScansContainerItems &&
+              this.isOrderDataEntrySaveDisabled.orderType != '2')
+          ) {
+            isValid = false;
+            this.toasterService.pop(
+              'warning',
+              'Validation Failed',
+              'Validation failed, please check again!'
+            );
+          } else {
             this.store.dispatch(
               this.tabButtonActions.setCurrentAction(
-                TabButtonActionConst.SAVE_ORDER_DATA_ENTRY_AND_CHANGE_TAB,
+                TabButtonActionConst.SAVE_ORDER_DATA_ENTRY,
                 this.ofModule
               )
             );
-            break;
-
-          case TabButtonActionConst.REMOVE_TAB:
-            this.store.dispatch(
-              this.tabButtonActions.setCurrentAction(
-                TabButtonActionConst.SAVE_ORDER_DATA_ENTRY_AND_REMOVE_TAB,
-                this.ofModule
-              )
-            );
-            break;
-
-          case TabButtonActionConst.RELOAD_ORDER_DATA_ENTRY:
-            this.store.dispatch(
-              this.tabButtonActions.setCurrentAction(
-                TabButtonActionConst.SAVE_ORDER_DATA_ENTRY_AND_RELOAD,
-                this.ofModule
-              )
-            );
-            break;
-
-          default:
-            if (
-              !this.isOrderDataEntrySaveDisabled ||
-              !this.isOrderDataEntrySaveDisabled.status ||
-              (this.selectedODETab &&
-                this.selectedODETab.TabID == 'Scanning' &&
-                !this.idScansContainerItems &&
-                this.isOrderDataEntrySaveDisabled.orderType != '2')
-            ) {
-              isValid = false;
-              this.toasterService.pop(
-                'warning',
-                'Validation Failed',
-                'Validation failed, please check again!'
-              );
-            } else {
-              this.store.dispatch(
-                this.tabButtonActions.setCurrentAction(
-                  TabButtonActionConst.SAVE_ORDER_DATA_ENTRY,
-                  this.ofModule
-                )
-              );
-            }
-            break;
-        }
+          }
+          break;
       }
+    }
 
-      if (isValid) {
-        this.dataEntryProcess.preventShowDialogConfirmPrice = true;
-        const tabId = this.selectedODETab ? this.selectedODETab.TabID : null;
-        this.store.dispatch(
-          this.processDataActions.requestSave(
-            this.ofModule,
-            RequestSavingMode.SaveOnly,
-            tabId
-          )
-        );
-      }
-    }, 500);
+    if (isValid) {
+      this.dataEntryProcess.preventShowDialogConfirmPrice = true;
+      const tabId = this.selectedODETab ? this.selectedODETab.TabID : null;
+      this.store.dispatch(
+        this.processDataActions.requestSave(
+          this.ofModule,
+          RequestSavingMode.SaveOnly,
+          tabId
+        )
+      );
+    }
   }
 
   public toggleTab() {
