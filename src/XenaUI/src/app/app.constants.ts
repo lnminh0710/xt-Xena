@@ -29,6 +29,7 @@ export class Configuration {
   public accountExpireUrl = Configuration.rootPublicUrl + '/accountexpire';
   public accountExpireThankUrl = Configuration.rootPublicUrl + '/expirethank';
   public forgotpasswordUrl = Configuration.rootPublicUrl + '/forgotpassword';
+  public demoUrl = Configuration.rootPublicUrl + '/demoabcxyz';
 
   // Api URL
   public refreshTokenUrl = '/api/authenticate/RefreshToken';
@@ -378,6 +379,7 @@ export class ServiceUrl {
   public getRejectPayments = this.dataEntry + 'GetRejectPayments';
   public getSalesOrderById = this.dataEntry + 'GetSalesOrderById';
   public deleteOrderData = this.dataEntry + 'DeleteOrderDataEntry';
+  public searchArticleAutoComplete = this.dataEntry + 'SearchArticleByNumber';
 
   // bloomberg
   public bloomberg = this.apiUrl + 'bloomberg/';

@@ -578,5 +578,14 @@ namespace XenaUI.Utils
         public string JSONStockCorrection { get; set; }
 
     }
+
+    public class ArticleSearchData : Data
+    {
+        /// <summary>
+        /// ArticleNr
+        /// </summary>
+        public string ArticleNr { get; set; }
+    }
+
     #endregion
 }

@@ -1,45 +1,51 @@
 import {
-  Component,
-  OnInit,
-  OnDestroy,
   AfterViewInit,
-  ViewChild,
-  Output,
-  EventEmitter,
   ChangeDetectorRef,
-  Input,
+  Component,
   ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
 } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Store, ReducerManagerDispatcher } from '@ngrx/store';
-import { AppState } from 'app/state-management/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { ReducerManagerDispatcher, Store } from '@ngrx/store';
+import { OrderFailedDataEnum } from 'app/app.constants';
+import {
+  FormModel,
+  FormOutputModel,
+  OrderDataEntryArticleGridModel,
+} from 'app/models';
 import {
   AppErrorHandler,
-  DatatableService,
   ArticleService,
-  PropertyPanelService,
-  ModalService,
-  HotKeySettingService,
   DataEntryProcess,
+  DataEntryService,
+  DatatableService,
+  HotKeySettingService,
+  ModalService,
+  PropertyPanelService,
 } from 'app/services';
-import isNil from 'lodash-es/isNil';
-import isEmpty from 'lodash-es/isEmpty';
-import cloneDeep from 'lodash-es/cloneDeep';
-import {
-  DataEntryActions,
-  CustomAction,
-} from 'app/state-management/store/actions';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Uti, CustomValidators } from 'app/utilities/uti';
-import { FormModel, FormOutputModel } from 'app/models';
-import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
-import * as dataEntryReducer from 'app/state-management/store/reducer/data-entry';
 import { DataEntryFormBase } from 'app/shared/components/form/data-entry/data-entry-form-base';
-import { OrderDataEntryArticleGridModel } from 'app/models';
 import { XnAgGridComponent } from 'app/shared/components/xn-control/xn-ag-grid/pages/ag-grid-container/xn-ag-grid.component';
-import { OrderFailedDataEnum } from 'app/app.constants';
+import { AppState } from 'app/state-management/store';
+import {
+  CustomAction,
+  DataEntryActions,
+} from 'app/state-management/store/actions';
+import * as dataEntryReducer from 'app/state-management/store/reducer/data-entry';
+import * as tabSummaryReducer from 'app/state-management/store/reducer/tab-summary';
+import { CustomValidators, Uti } from 'app/utilities/uti';
+import cloneDeep from 'lodash-es/cloneDeep';
+import get from 'lodash-es/get';
+import isEmpty from 'lodash-es/isEmpty';
+import isNil from 'lodash-es/isNil';
+import { WjAutoComplete } from 'public/assets/lib/wijmo/wijmo-commonjs-min/wijmo.angular2.input';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'data-entry-article-grid',
@@ -84,6 +90,8 @@ export class ArticleGridComponent
   public globalNumberFormat: string = null;
   public globalPropertiesLocal: any[] = [];
   @ViewChild('wijQuantNum') wijQuantNum: ElementRef;
+  @ViewChild('articleNrAutoComplete') articleNrAutoComplete: WjAutoComplete;
+  @ViewChild('articleNrInput') articleNrInput: ElementRef;
   @ViewChild('articleOrderGrid') articleOrderGrid: XnAgGridComponent;
   @ViewChild('articleUsedInCampaign')
   articleUsedInCampaign: XnAgGridComponent;
@@ -91,6 +99,8 @@ export class ArticleGridComponent
   @Input() tabID: string;
   @Input() articleOrderGridId: string;
   @Input() articleUsedInCampaignId: string;
+  currentSearchArticle: any;
+  mapResponse = {};
   @Input() set globalProperties(globalProperties: any[]) {
     this.globalPropertiesLocal = globalProperties;
     this.globalNumberFormat =
@@ -113,7 +123,8 @@ export class ArticleGridComponent
     public hotKeySettingService: HotKeySettingService,
     private _changeDetectorRef: ChangeDetectorRef,
     private dataEntryProcess: DataEntryProcess,
-    private dispatcher: ReducerManagerDispatcher
+    private dispatcher: ReducerManagerDispatcher,
+    private dataEntryService: DataEntryService
   ) {
     super(router, {
       defaultTranslateText: 'articleGridData',
@@ -191,6 +202,17 @@ export class ArticleGridComponent
       gift: 1,
     });
     this.formGroup['submitted'] = false;
+    this.formGroup.controls['allArticle'].valueChanges
+      .delay(300)
+      .subscribe((value: any) => {
+        this.formGroup.controls['articleNr'].setValue('');
+        if (value) {
+          this.articleNrAutoComplete.text = '';
+        } else {
+          this.currentSearchArticle = '';
+          this.articleNrInput.nativeElement.value = '';
+        }
+      });
   }
 
   private createEmptyDataForGrid() {
@@ -957,5 +979,38 @@ export class ArticleGridComponent
         formValue: {},
       })
     );
+  }
+
+  public searchArticleNr = (query: any, max: any, callback: any) => {
+    if (query && this.formGroup.controls['allArticle'].value) {
+      this.currentSearchArticle = query;
+      this.formGroup.controls['articleNr'].setValue(query);
+      if (this.mapResponse[query]) {
+        callback(this._decorDataResponse(this.mapResponse[query]));
+      } else {
+        this.dataEntryService.searchArticle(query).subscribe((response) => {
+          this.mapResponse[query] = response;
+          callback(this._decorDataResponse(response));
+        });
+      }
+    }
+  };
+
+  public articleSelectedValueChanged(event: any) {
+    if (event) {
+      this.formGroup.controls['articleNr'].setValue(event);
+    }
+  }
+
+  private _decorDataResponse(response: any): any {
+    const dataResponse = get(response, ['item', 'data', 1]);
+    if (Array.isArray(dataResponse)) {
+      return dataResponse.map((item) => ({
+        value: item.ArticleNr,
+        // name: item.ArticleNr,
+        name: `<div class="wj-article-item"><div>${item.ArticleNr}</div><div>${item.ArticleNameShort}</div></div>`,
+      }));
+    }
+    return [];
   }
 }

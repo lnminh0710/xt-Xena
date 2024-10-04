@@ -242,5 +242,14 @@ namespace XenaUI.Api
             return await _orderDataEntryBusiness.TestColissimo(idSaleOrder, datax);
 
         }
+        
+        [HttpGet]
+        [Route("SearchArticleByNumber")]
+        [AllowAnonymous]
+        public async Task<object> SearchArticleByNumber(string articleNr)
+        {
+            return await _orderDataEntryBusiness.SearchArticleByNumber(articleNr);
+
+        }
     }
 }

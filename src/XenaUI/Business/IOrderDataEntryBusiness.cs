@@ -116,6 +116,8 @@ namespace XenaUI.Business
         Task<object> GetSalesOrderById(string idSalesOrder);
 
         Task<object> TestColissimo(string idSaleOrder, Dictionary<string, object> model);
+        
+        Task<WSDataReturn> SearchArticleByNumber(string articleNr);
     }
 }
 

@@ -476,4 +476,11 @@ export class DataEntryService extends BaseService {
     //delete file
     return this.post<any>(this.serUrl.deleteOrderData, jsonData);
   }
+
+  public searchArticle(articleNr: string): Observable<any> {
+    //search article
+    return this.get<any>(this.serUrl.searchArticleAutoComplete, {
+      ArticleNr: articleNr,
+    });
+  }
 }

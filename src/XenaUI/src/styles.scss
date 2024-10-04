@@ -272,3 +272,21 @@ a:active {
 .margin-top-25px {
   margin-top: 25px;
 }
+
+.wj-hide-dropdown-icon {
+  .wj-input-group-btn {
+    display: none;
+  }
+}
+
+.wj-article-item {
+  display: grid;
+  grid-gap: 4px;
+  grid-template-columns: 6rem 1fr;
+}
+
+.no-highlight {
+  .highlight {
+    background-color: transparent !important;
+  }
+}

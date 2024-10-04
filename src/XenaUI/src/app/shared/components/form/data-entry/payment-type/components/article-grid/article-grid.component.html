@@ -5,10 +5,14 @@
         <label class="control-label new-label">{{
           localizer['articleNr']
         }}</label>
-        <div class="article-number">
+        <div
+          class="article-number {{
+            formGroup.controls['allArticle'].value ? 'd-none' : ''
+          }}"
+        >
           <input
             type="text"
-            #articleNr
+            #articleNrInput
             formControlName="articleNr"
             id="articleNr"
             name="articleNr"
@@ -21,7 +25,7 @@
           <control-messages
             [control]="formGroup.controls.articleNr"
             icon="file-text"
-            [componentControl]="articleNr"
+            [componentControl]="articleNrInput"
             [hotKeyValue]="hotKeySettingService.articleNr$ | async"
           >
           </control-messages>
@@ -31,6 +35,45 @@
             ></label-translation>
           </div>
         </div>
+
+        <div
+          class="article-number {{
+            !formGroup.controls['allArticle'].value ? 'd-none' : ''
+          }}"
+        >
+          <wj-auto-complete
+            #articleNrAutoComplete
+            wjDropdownHelper
+            [form]="formGroup"
+            name="articleNr"
+            maxlength="10"
+            formControlName="articleNr"
+            class="wj-auto-complete-for-grid wj-input-with-icon wj-hide-dropdown-icon"
+            [itemsSourceFunction]="searchArticleNr"
+            [displayMemberPath]="'name'"
+            [selectedValuePath]="'value'"
+            [cssMatch]="'highlight'"
+            [minLength]="0"
+            [delay]="300"
+            placeholder="{{ localizer['articleNr'] }}"
+            (selectedValueChange)="articleSelectedValueChanged($event)"
+            (gotFocus)="articleNrAutoComplete.isDroppedDown = true"
+          >
+          </wj-auto-complete>
+          <control-messages
+            [control]="formGroup.controls.articleNr"
+            icon="file-text"
+            [componentControl]="articleNrAutoComplete"
+            [hotKeyValue]="hotKeySettingService.articleNr$ | async"
+          >
+          </control-messages>
+          <div *ngIf="showArticleNrError" class="alert alert-danger">
+            <label-translation
+              [keyword]="'The article does not exist'"
+            ></label-translation>
+          </div>
+        </div>
+
         <div class="quantity-number">
           <input
             #quantity

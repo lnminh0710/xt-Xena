@@ -107,6 +107,7 @@ namespace XenaUI.Service
         Task<object> GetSalesOrderById(OrderDataEntryGetSalesOrderByIdData data);
 
         Task<WSEditReturn> SaveOrderFileFromColissimo(SaveResponseFromColissimoData data);
+        Task<WSDataReturn> SearchArticleByNumber(ArticleSearchData data);
     }
 }
 

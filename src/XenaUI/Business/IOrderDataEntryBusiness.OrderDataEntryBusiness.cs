@@ -345,5 +345,18 @@ namespace XenaUI.Business
         {
             return await _shipmentBusiness.ProcessRequestShipment(idSaleOrder, datax);
         }
+
+
+        public async Task<WSDataReturn> SearchArticleByNumber(string articleNr)
+        {
+            _logger.Debug("start SearchArticleByNumber ");
+            _logger.Info("start SearchArticleByNumber");
+            ArticleSearchData data = (ArticleSearchData)ServiceDataRequest.ConvertToRelatedType(typeof(ArticleSearchData));
+            data.ArticleNr = articleNr;
+            WSDataReturn result = await _orderDataEntryService.SearchArticleByNumber(data);
+            _logger.Debug("_logger.Debug result SearchArticleByNumber " + result);
+            _logger.Info("_logger.Info result SearchArticleByNumber" + result);
+            return result;
+        }
     }
 }

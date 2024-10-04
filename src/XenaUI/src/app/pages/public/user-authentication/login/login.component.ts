@@ -21,6 +21,7 @@ import {
 } from 'app/app.constants';
 import { LocalStorageHelper, SessionStorageProvider, Uti } from 'app/utilities';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'login',
@@ -49,6 +50,8 @@ export class LoginComponent implements OnInit {
                                         margin-top: 20px;
                                     ">Transform data into insights, automate and innovate, to deliver experiences everyone will lose, and set the pace in your industry</p>
                                 </div>`;
+  demoUrl: string;
+  showDemo: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -76,6 +79,8 @@ export class LoginComponent implements OnInit {
     this.checkRememberLogin();
 
     this.forgotpasswordUrl = this.consts.forgotpasswordUrl;
+    this.showDemo = !environment.production;
+    this.demoUrl = this.consts.demoUrl;
 
     let lastUserPicture = localStorage.getItem(
       this.consts.localStorageLastUserPicture

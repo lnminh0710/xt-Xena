@@ -1,0 +1,15 @@
+<div>
+  <wj-auto-complete
+    #autoCompleteCtr
+    class="wj-auto-complete-for-grid wj-hide-dropdown-icon"
+    [itemsSourceFunction]="searchArticleNr"
+    [displayMemberPath]="'name'"
+    [selectedValuePath]="'value'"
+    [cssMatch]="'highlight'"
+    [isRequired]="true"
+    [minLength]="0"
+    [delay]="300"
+    placeholder="Search item"
+  >
+  </wj-auto-complete>
+</div>

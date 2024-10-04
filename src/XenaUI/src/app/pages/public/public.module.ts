@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { PublicRoutingModule } from './public.routes';
@@ -8,7 +8,10 @@ import { PublicComponent } from './public.component';
 import {
   AuthenticationService,
   CommonService,
+  DataEntryService,
+  DatatableService,
   DeviceDetectorService,
+  ObservableShareService,
 } from 'app/services';
 import * as uti from 'app/utilities';
 import { GlobalSettingService, UserService } from 'app/services';
@@ -27,6 +30,13 @@ import { MaterialModule } from 'app/shared/components/xn-control/light-material-
 import { LabelTranslationModule } from '../../shared/components/label-translation/label-translation.module';
 import { XnResourceTranslationModule } from '../../shared/directives/xn-resource-translation';
 import { XnAgGridModule } from 'app/shared/components/xn-control/xn-ag-grid';
+import { SharedModule } from 'public/assets/lib/primeng/primeng';
+import { DemoComponent } from './demo/demo.component';
+import { WijmoGridComponent } from 'app/shared/components/wijmo';
+import { WjInputModule } from 'public/assets/lib/wijmo/wijmo-commonjs-min/wijmo.angular2.input';
+import { WjCoreModule } from 'public/assets/lib/wijmo/wijmo-commonjs-min/wijmo.angular2.core';
+import { XnWjDropdownHelperModule } from 'app/shared/directives/xn-wj-dropdown-helper/xn-wj-dropdown-helper.module';
+import { HttpClientModule } from '@angular/common/http';
 
 const modules = [
   FormsModule,
@@ -35,7 +45,11 @@ const modules = [
   LabelTranslationModule,
   XnResourceTranslationModule,
   MaterialModule,
-  XnAgGridModule,
+  ReactiveFormsModule,
+  WjCoreModule,
+  WjInputModule,
+  XnWjDropdownHelperModule,
+  HttpClientModule,
 ];
 
 const widgets = [];
@@ -50,6 +64,9 @@ const services = [
   GlobalSettingConstant,
   CommonService,
   DeviceDetectorService,
+  DataEntryService,
+  DatatableService,
+  ObservableShareService,
 ];
 
 const pages = [
@@ -63,6 +80,7 @@ const pages = [
   AccountExpireComponent,
   AccountExpireThankComponent,
   RequestTrackingComponent,
+  DemoComponent,
 ];
 
 @NgModule({

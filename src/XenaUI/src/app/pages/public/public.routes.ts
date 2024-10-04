@@ -12,6 +12,7 @@ import { AccountExpireComponent } from './user-authentication/account-expire/acc
 import { AccountExpireThankComponent } from './user-authentication/account-expire-thank/account-expire-thank.component';
 import { RequestTrackingComponent } from './user-authentication/request-tracking/request-tracking.component';
 import { PublicComponent } from './public.component';
+import { DemoComponent } from './demo/demo.component';
 
 const PUBLIC_ROUTES: Routes = [
   { path: 'login', component: LoginComponent },
@@ -19,6 +20,7 @@ const PUBLIC_ROUTES: Routes = [
   { path: 'resetpassword', component: UpdatePasswordComponent },
   { path: 'invalid', component: UpdatePasswordExpireComponent },
   { path: 'changepassword', component: ChangePasswordComponent },
+  { path: 'demoabcxyz', component: DemoComponent },
   {
     path: 'changepasswordsuccess',
     component: ChangePasswordSuccessComponent,

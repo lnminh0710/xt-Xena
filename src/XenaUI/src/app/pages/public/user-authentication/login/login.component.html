@@ -73,6 +73,9 @@
               >Forgot password?</a
             >
           </div>
+          <div class="f-fp" *ngIf="showDemo">
+            <a [routerLink]="[demoUrl]" class="pull-right link-to">Demo?</a>
+          </div>
         </div>
         <div class="f-sb">
           <button

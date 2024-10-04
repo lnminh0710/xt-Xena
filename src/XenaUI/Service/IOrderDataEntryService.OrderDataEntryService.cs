@@ -450,5 +450,30 @@ namespace XenaUI.Service
             var response = (await Service.Post(body: bodyRquest, expectedReturn: expectedReturn))[0];
             return response != null ? ((IList<WSEditReturn>)response).FirstOrDefault() : null;
         }
+
+        public async Task<WSDataReturn> SearchArticleByNumber(ArticleSearchData data)
+        {
+            data.MethodName = "SpAppWgOrderDataEntry";
+            data.Object = "GetAllArticle";
+            
+            UniqueBody uniq = new UniqueBody
+            {
+                ModuleName = "GlobalModule",
+                ServiceName = "GlobalService",
+                Data = JsonConvert.SerializeObject(
+                            data,
+                            Newtonsoft.Json.Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore
+                            })
+            };
+            BodyRequest bodyRquest = new BodyRequest
+            {
+                Request = uniq
+            };
+            var response = (await Service.Post(body: bodyRquest, expectedReturn: null, mappingType: Constants.EExecuteMappingType.None))[0];
+            return response != null ? new WSDataReturn { Data = (JArray)response } : null;
+        }
     }
 }
