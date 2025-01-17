@@ -343,7 +343,7 @@ export class DataEntryPaymentTypeItemComponent
 
   private initData() {
     this.dataEntryPaymentTypeItemForm = this.formBuilder.group({
-      paymentTypeId: [PaymentTypeIdEnum.OpenInvoice, Validators.required],
+      paymentTypeId: ['', Validators.required],
       paymentTypeText: null,
       paymentTypeGroup: null, //1: Cash, 2: Cheque, 3: CreditCard, 4: PostBank
       currency: [
